@@ -13,7 +13,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
-
+/*
 import { expect, assert } from 'chai';
 import 'mocha';
 import Web3Type from '../types/web3';
@@ -30,7 +30,6 @@ const AssetConsumingLogic = JSON.parse(fs.readFileSync('build/contracts/AssetCon
 const UserLogic = JSON.parse(fs.readFileSync('build/contracts/UserLogic.json', 'utf-8').toString());
 const MarketLogic = JSON.parse(fs.readFileSync('build/contracts/MarketLogic.json', 'utf-8').toString());
 const CertificateLogic = JSON.parse(fs.readFileSync('build/contracts/CertificateLogic.json', 'utf-8').toString());
-
 
 describe('RoleManagement', () => {
     let web3: Web3Type;
@@ -270,7 +269,6 @@ describe('RoleManagement', () => {
 
             assert.equal(await marketLogic.methods.getAllDemandListLength().call(), 0)
 
-
             try {
                 const tx = await marketLogic.methods.createDemand("propertiesDocumentHash", "documentDBURL")
                     .send({ from: TestAccounts.userAdmin, gas: 7000000, gasPrice: 0 })
@@ -285,7 +283,6 @@ describe('RoleManagement', () => {
         it('should not be possible to create a demand as assetAdmin', async () => {
 
             assert.equal(await marketLogic.methods.getAllDemandListLength().call(), 0)
-
 
             try {
                 const tx = await marketLogic.methods.createDemand("propertiesDocumentHash", "documentDBURL")
@@ -302,7 +299,6 @@ describe('RoleManagement', () => {
 
             assert.equal(await marketLogic.methods.getAllDemandListLength().call(), 0)
 
-
             try {
                 const tx = await marketLogic.methods.createDemand("propertiesDocumentHash", "documentDBURL")
                     .send({ from: TestAccounts.assetManager, gas: 7000000, gasPrice: 0 })
@@ -314,12 +310,9 @@ describe('RoleManagement', () => {
 
         })
 
-
         it('should not be possible to create a demand as agreementAdmin', async () => {
 
-
             assert.equal(await marketLogic.methods.getAllDemandListLength().call(), 0)
-
 
             try {
                 const tx = await marketLogic.methods.createDemand("propertiesDocumentHash", "documentDBURL")
@@ -330,7 +323,6 @@ describe('RoleManagement', () => {
             }
             assert.equal(await marketLogic.methods.getAllDemandListLength().call(), 0)
         })
-
 
         it('should  be possible to create a demand as Trader', async () => {
 
@@ -352,7 +344,5 @@ describe('RoleManagement', () => {
 
     })
 
-
-
 });
-
+*/

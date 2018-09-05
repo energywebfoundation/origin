@@ -25,7 +25,7 @@ import "../Interfaces/RolesInterface.sol";
 
 /// @title The logic-contract for the user-data
 /// @notice this contract will not directly store any data, instead it will store them into the userDB-contract
-contract UserLogic is RoleManagement, Updatable, RolesInterface {
+contract UserLogic is RoleManagement, Updatable, RolesInterface, Owned {
 
     UserContractLookup public userContractLookup;
 
@@ -33,17 +33,15 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     UserDB public db;
 
     modifier isInitialized {
-        require(address(db) != 0x0);
+        require(address(db) != 0x0,"already initialized");
         _;
     }
 
     /// @notice constructor 
-    /// @param _coo address of the Certificate Registry contract (CoO.sol)
     /// @dev it will also call the RoleManagement-constructor 
-    constructor(UserContractLookup _userContractLookup) RoleManagement() Owned(msg.sender) public {
+    constructor(UserContractLookup _userContractLookup) RoleManagement(_userContractLookup) Owned(msg.sender) public {
 
     }
-
 
     /// @notice function to deactive an use, only executable for user-admins
     /// @param _user the user that should be deactivated
@@ -53,10 +51,11 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         isInitialized
     {
         require(
-            !isRole(RoleManagement.Role.TopAdmin,_user) 
+            !isRole(RoleManagement.Role.TopAdmin,_user)
             && !isRole(RoleManagement.Role.UserAdmin,_user) 
             && !isRole(RoleManagement.Role.AssetAdmin,_user)
             && !isRole(RoleManagement.Role.AgreementAdmin,_user)
+            ,"user has an admin role at the moment"
         );
 
         db.setUserActive(_user, false);
@@ -67,7 +66,7 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     function init(address _database) external onlyOwner {
         require(db == UserDB(0x0), "db already initialized");
         db = UserDB(_database);
-        db.setRoles(msg.sender, RoleManagement.TopAdmin);
+        db.setRoles(msg.sender, uint(RoleManagement.Role.TopAdmin));
     }
 
     /// @notice funciton that can be called to create a new user in the storage-contract, only executable for user-admins!
@@ -104,7 +103,7 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
     /// @param _newLogic contract-address of the new smart contract, replacing the currently active one
     function update(address _newLogic) 
         external
-        onlyAccount(address(cooContract))
+        onlyOwner
         isInitialized
     {
         db.changeOwner(_newLogic);

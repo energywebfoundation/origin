@@ -18,7 +18,7 @@
     "deploy-contracts": "node build/ts/utils/deployment/startMigrate",
     "build": "npm run compile-contracts && npm run build-ts && npm run build-schemas",
     "precompile-contracts": "rm -rf build/contracts",
-    "compile-contracts": "node build/ts/utils/deployment/compile",
+    "compile-contracts": "node compile.js",
     "prebuild-ts": "rm -rf build/ts",
     "build-ts": "node_modules/typescript/bin/tsc && cp src/types/*.d.ts build/ts/types/",
     "prebuild-schemas": "rm -rf build/schemas && mkdir build/schemas",
@@ -46,8 +46,10 @@
     "ew-asset-registry-lib": "0.0.1",
     "jsonschema": "^1.2.4",
     "precise-proofs": "git+https://github.com/slockit/precise-proofs.git",
+    "sloffle": "v1.1.2",
     "web3": "^1.0.0-beta.34",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "write-json-file": "^2.3.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
@@ -61,7 +63,6 @@
     "solc": "^0.4.23",
     "tslint": "^5.11.0",
     "typescript": "^2.9.2",
-    "typescript-json-schema": "^0.31.0",
-    "write-json-file": "^2.3.0"
+    "typescript-json-schema": "^0.31.0"
   }
 }

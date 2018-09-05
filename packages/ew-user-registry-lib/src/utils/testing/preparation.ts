@@ -13,7 +13,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
-
+/*
 import { expect, assert } from 'chai';
 import 'mocha';
 import Web3Type from '../../types/web3';
@@ -21,7 +21,6 @@ import * as fs from 'fs';
 import { getInstanceFromBuild } from './utils'
 import { TestAccounts } from './TestAccounts'
 const UserLogic = JSON.parse(fs.readFileSync('build/contracts/UserLogic.json', 'utf-8').toString());
-
 
 export async function prepare(web3: Web3Type) {
 
@@ -72,8 +71,4 @@ export async function prepare(web3: Web3Type) {
         .send({ from: TestAccounts.topAdmin, gas: 7000000, gasPrice: 0 })
 }
 
-
-
-
-
-
+*/

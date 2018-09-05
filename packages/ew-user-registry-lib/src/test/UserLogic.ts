@@ -13,7 +13,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
-
+/* 
 import { expect, assert } from 'chai';
 import 'mocha';
 import Web3Type from '../types/web3';
@@ -175,4 +175,4 @@ describe('UserLogic', () => {
         assert.deepEqual(userBefore, await userLogic.methods.getFullUser("0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8").call())
     })
 });
-
+ */

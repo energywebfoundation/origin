@@ -13,7 +13,7 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
-
+/*
 import { expect, assert } from 'chai';
 import 'mocha';
 import Web3Type from '../types/web3';
@@ -71,7 +71,6 @@ describe('UserLogic Facade', () => {
         
         }
         
-
         conf = {
             blockchainProperties: {
                 web3: web3,
@@ -97,7 +96,6 @@ describe('UserLogic Facade', () => {
         } as any, user)
     })
 
-
-
 });
 
+*/

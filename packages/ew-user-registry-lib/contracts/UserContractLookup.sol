@@ -29,8 +29,6 @@ contract UserContractLookup is Owned {
 
     /// @notice function to initialize the contracts, setting the needed contract-addresses
     /// @param _userRegistry user-registry logic contract address
-    /// @param _assetProducingRegistry asset-registry logic contract address
-    /// @param _certificateRegistry certificate-registry logic contract address
     function init(Updatable _userRegistry) 
         external
         onlyOwner
@@ -41,8 +39,6 @@ contract UserContractLookup is Owned {
 
     /// @notice function to update one or more logic-contracts
     /// @param _userRegistry address of the new user-registry-logic-contract
-    /// @param _assetProducingRegistry address of the new asset-registry-logic-contract
-    /// @param _certificateRegistry address of the new certificate-registry-logic-contract
     function update(
         Updatable _userRegistry
     )
