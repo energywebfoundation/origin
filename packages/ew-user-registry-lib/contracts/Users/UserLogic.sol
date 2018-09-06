@@ -25,9 +25,8 @@ import "../Interfaces/RolesInterface.sol";
 
 /// @title The logic-contract for the user-data
 /// @notice this contract will not directly store any data, instead it will store them into the userDB-contract
-contract UserLogic is RoleManagement, Updatable, RolesInterface, Owned {
+contract UserLogic is RoleManagement, Updatable, RolesInterface {
 
-    UserContractLookup public userContractLookup;
 
     /// @notice db user-db for storing the contract
     UserDB public db;
@@ -39,9 +38,7 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface, Owned {
 
     /// @notice constructor 
     /// @dev it will also call the RoleManagement-constructor 
-    constructor(UserContractLookup _userContractLookup) RoleManagement(_userContractLookup) Owned(msg.sender) public {
-
-    }
+    constructor(UserContractLookup _userContractLookup) RoleManagement(_userContractLookup) public {}
 
     /// @notice function to deactive an use, only executable for user-admins
     /// @param _user the user that should be deactivated

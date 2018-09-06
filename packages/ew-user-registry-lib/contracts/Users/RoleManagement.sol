@@ -16,9 +16,10 @@
 pragma solidity ^0.4.24;
 import "../UserContractLookup.sol";
 import "../Interfaces/RolesInterface.sol";
+import "../Msc/Owned.sol";
 
 /// @notice contract for managing the rights and roles
-contract RoleManagement {
+contract RoleManagement is Owned{
 
     /// @notice all possible available roles
     /*
@@ -48,8 +49,8 @@ contract RoleManagement {
         _; 
     }
 
-    modifier onlyAccount(address accountAddress) {
-        require(msg.sender == accountAddress,"account is not accountAddress");
+    modifier onlyAccount(address _accountAddress) {
+        require(msg.sender == _accountAddress,"account is not accountAddress");
         _;
     }
 
@@ -64,7 +65,7 @@ contract RoleManagement {
     }
 
     /// @notice constructor 
-    constructor(UserContractLookup _userContractLookup) public {
+    constructor(UserContractLookup _userContractLookup) Owned(msg.sender) public {
         userContractLookup = _userContractLookup;
     }
 
