@@ -16,7 +16,7 @@
 pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
-import "../Msc/Owned.sol";
+import "ew-utils-general-contracts/Msc/Owned.sol";
 
 /// @title The database contract for the users, traders and admins of the certificate of origin
 /// @notice This contract only provides getter and setter methods that are only callable by the corresponging owner-contract

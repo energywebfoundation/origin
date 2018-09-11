@@ -12,14 +12,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Martin Kuechler, martin.kuchler@slock.it
+// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 
 pragma solidity ^0.4.24;
 
-/// @title this interface defines the required update-function that every updatable-contract has to implement
-interface Updatable {
-   
-   function update(address _newLogic) external;
+/// @title this interface defines functions for defining functions of the user-logic in order to call them in different contracts
+interface UserContractLookupInterface {
 
-   
+    function userRegistry() external view returns (address);
+
 }

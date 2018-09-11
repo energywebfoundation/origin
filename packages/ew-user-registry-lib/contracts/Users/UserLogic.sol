@@ -17,11 +17,12 @@
 pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
-import "../Users/UserDB.sol";
-import "./RoleManagement.sol";
-import "../UserContractLookup.sol";
-import "../Interfaces/Updatable.sol";
-import "../Interfaces/RolesInterface.sol";
+import "../../contracts/Users/UserDB.sol";
+import "../../contracts/Users/RoleManagement.sol";
+import "ew-utils-general-contracts/Interfaces/Updatable.sol";
+import "../../contracts/Interfaces/RolesInterface.sol";
+import "../../contracts/Interfaces/UserContractLookupInterface.sol";
+
 
 /// @title The logic-contract for the user-data
 /// @notice this contract will not directly store any data, instead it will store them into the userDB-contract
@@ -38,7 +39,7 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
 
     /// @notice constructor 
     /// @dev it will also call the RoleManagement-constructor 
-    constructor(UserContractLookup _userContractLookup) RoleManagement(_userContractLookup) public {}
+    constructor(UserContractLookupInterface _userContractLookup) RoleManagement(_userContractLookup) public {}
 
     /// @notice function to deactive an use, only executable for user-admins
     /// @param _user the user that should be deactivated

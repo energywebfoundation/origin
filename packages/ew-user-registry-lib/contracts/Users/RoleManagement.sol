@@ -14,9 +14,9 @@
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 pragma solidity ^0.4.24;
-import "../UserContractLookup.sol";
-import "../Interfaces/RolesInterface.sol";
-import "../Msc/Owned.sol";
+import "../../contracts/Interfaces/UserContractLookupInterface.sol";
+import "../../contracts/Interfaces/RolesInterface.sol";
+import "ew-utils-general-contracts/Msc/Owned.sol";
 
 /// @notice contract for managing the rights and roles
 contract RoleManagement is Owned{
@@ -41,7 +41,7 @@ contract RoleManagement is Owned{
         Matcher
     } 
 
-    UserContractLookup public userContractLookup;
+    UserContractLookupInterface public userContractLookup;
 
     /// @notice modifier for checking if an user is allowed to execute the intended action
     modifier onlyRole (RoleManagement.Role _role) { 
@@ -65,7 +65,7 @@ contract RoleManagement is Owned{
     }
 
     /// @notice constructor 
-    constructor(UserContractLookup _userContractLookup) Owned(msg.sender) public {
+    constructor(UserContractLookupInterface _userContractLookup) Owned(msg.sender) public {
         userContractLookup = _userContractLookup;
     }
 
