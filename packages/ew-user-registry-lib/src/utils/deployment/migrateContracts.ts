@@ -2,8 +2,8 @@ import { Sloffle } from 'sloffle';
 import { TestAccounts } from '../testing/TestAccounts';
 
 import Web3Type from '../../types/web3';
-import { UserLogic } from '../../contractWrapper/UserLogic';
-import { UserContractLookup } from '../../contractWrapper/UserContractLookup';
+import { UserLogic } from '../../../dist/ts/wrappedContracts/UserLogic';
+import { UserContractLookup } from '../../../dist/ts/wrappedContracts/UserContractLookup';
 
 export async function migrateContracts(web3: Web3Type): Promise<JSON> {
     return new Promise<any>(async (resolve, reject) => {
@@ -11,19 +11,19 @@ export async function migrateContracts(web3: Web3Type): Promise<JSON> {
         const sloffle = new Sloffle(web3);
 
         const userContractLookupWeb3 = await sloffle.deploy(
-            'UserContractLookup',
+            './solidity_modules/ew-user-registry-contracts/dist/UserContractLookup.json',
             [],
             { from: TestAccounts.topAdmin, privateKey: '0x' + TestAccounts.topAdminPK },
         );
 
         const userLogicWeb3 = await sloffle.deploy(
-            'UserLogic',
+            './solidity_modules/ew-user-registry-contracts/dist/UserLogic.json',
             [userContractLookupWeb3._address],
             { from: TestAccounts.topAdmin, privateKey: '0x' + TestAccounts.topAdminPK },
         );
 
         const userDbWeb3 = await sloffle.deploy(
-            'UserDB',
+            './solidity_modules/ew-user-registry-contracts/dist/UserDB.json',
             [userLogicWeb3._address],
             { from: TestAccounts.topAdmin, privateKey: '0x' + TestAccounts.topAdminPK },
         );
