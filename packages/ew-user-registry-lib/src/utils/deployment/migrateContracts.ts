@@ -5,7 +5,7 @@ import Web3Type from '../../types/web3';
 import { UserLogic } from '../../../dist/ts/wrappedContracts/UserLogic';
 import { UserContractLookup } from '../../../dist/ts/wrappedContracts/UserContractLookup';
 
-export async function migrateContracts(web3: Web3Type): Promise<JSON> {
+export async function migrateUserRegistryContracts(web3: Web3Type): Promise<JSON> {
     return new Promise<any>(async (resolve, reject) => {
 
         const sloffle = new Sloffle(web3);
