@@ -34,8 +34,7 @@
     "curlrequest": "^1.0.1",
     "ethereumjs-tx": "^1.3.7",
     "jsonschema": "^1.2.4",
-    "precise-proofs": "git+https://github.com/slockit/precise-proofs.git",
-    "sloffle": "v1.2.0",
+    "sloffle": "v1.1.2",
     "web3": "^1.0.0-beta.34",
     "winston": "^3.0.0",
     "write-json-file": "^2.3.0"
@@ -46,7 +45,6 @@
     "@types/node": "^9.6.28",
     "chai": "^4.1.2",
     "ethers": "^3.0.17",
-    "ewf-coo-test-backend": "git+https://github.com/slockit/ewf-coo-test-backend.git",
     "ganache-cli": "^6.1.8",
     "mocha": "^5.2.0",
     "solc": "^0.4.23",

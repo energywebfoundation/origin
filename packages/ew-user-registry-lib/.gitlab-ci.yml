@@ -2,6 +2,7 @@ image: docker.slock.it/build-images/node:10-alpine
 
 stages:
   - build
+  - test
   - deploy
 
 build-pkg:
@@ -15,6 +16,32 @@ build-pkg:
     name: build-js
     paths:
       - build/
+
+test-parity:
+  tags:
+    - short-jobs
+  stage: test
+  services:
+    - name: docker.slock.it/build-images/parity:v1.11.7
+      alias: parity
+  script:
+    - sh /prepare.sh
+    - npm install -g spm
+    - npm install 
+    - spm install
+    - npm test
+
+test-ganache:
+  tags:
+    - short-jobs
+  stage: test
+  script:
+    - sh /prepare.sh
+    - npm install -g spm
+    - npm install 
+    - spm install
+    - npm run start-ganache
+    - npm test
 
 push-to-registry:
   stage: deploy
