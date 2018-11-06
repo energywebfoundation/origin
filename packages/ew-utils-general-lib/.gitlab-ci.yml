@@ -1,0 +1,30 @@
+image: 'docker.slock.it/build-images/node:10-alpine'
+stages:
+  - build
+  - deploy
+build-pkg:
+  stage: build
+  tags:
+    - short-jobs
+  script:
+    - sh /prepare.sh
+    - npm install
+    - npm run build-ts
+  artifacts:
+    name: build-js
+    paths:
+      - build/ts/
+push-to-registry:
+  stage: deploy
+  tags:
+    - short-jobs
+  only:
+    - '/^v[0-9]*\.[0-9]*\.[0-9]*-?.*$/'
+  except:
+    - branches
+  dependencies:
+    - build-pkg
+  script:
+    - sh /prepare.sh
+    - npm --no-git-tag-version -f version $CI_COMMIT_TAG --allow-same-version
+    - npm publish
