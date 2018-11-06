@@ -13,7 +13,7 @@ build-pkg:
   artifacts:
     name: build-js
     paths:
-      - build/ts/
+      - dist/
 push-to-registry:
   stage: deploy
   tags:
