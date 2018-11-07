@@ -1,7 +1,7 @@
 import Web3Type from '../types/web3';
 import * as Winston from 'winston';
 
-export interface Configuration {
+export interface Entity {
     blockchainProperties: BlockchainProperties;
     offChainDataSource?: OffChainDataSource;
     logger: Winston.Logger;

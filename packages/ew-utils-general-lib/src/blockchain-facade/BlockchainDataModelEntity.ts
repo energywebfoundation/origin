@@ -1,9 +1,9 @@
-import { Configuration } from './Configuration';
+import * as Configuration from './Configuration';
 import { PreciseProofs } from 'precise-proofs';
 import axios from 'axios';
 import { validateJson } from '../off-chain-data/json-validator';
 
-export interface OffChainStorageProperties {
+export interface OffChainProperties {
     rootHash: string;
     salts: string[];
     schema: string[];
@@ -14,13 +14,13 @@ export interface OnChainProperties {
     url: string;
 }
 
-export abstract class BlockchainDataModelEntity {
+export abstract class Entity {
 
     id: string;
-    configuration: Configuration;
+    configuration: Configuration.Entity;
     proofs: PreciseProofs.Proof[];
 
-    constructor(id: string, configuration: Configuration) {
+    constructor(id: string, configuration: Configuration.Entity) {
         this.id = id;
         this.configuration = configuration;
         this.proofs = [];
@@ -30,12 +30,9 @@ export abstract class BlockchainDataModelEntity {
         this.proofs.push(proof);
     }
 
-    getUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/${this.constructor.name}`;
-    }
+    abstract getUrl(): string;
 
-    prepareEntityCreation(onChainProperties: OnChainProperties, offChainProperties: any, schema: any): OffChainStorageProperties {
-
+    prepareEntityCreation(onChainProperties: OnChainProperties, offChainProperties: any, schema: any): OffChainProperties {
         validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
 
         if (this.configuration.offChainDataSource) {
@@ -51,7 +48,7 @@ export abstract class BlockchainDataModelEntity {
         return null;
     }
 
-    async putToOffChainStorage(properties: any, offChainStorageProperties: OffChainStorageProperties) {
+    async putToOffChainStorage(properties: any, offChainStorageProperties: OffChainProperties) {
 
         if (this.configuration.offChainDataSource) {
             await axios.put(`${this.getUrl()}/${this.id}`, {
@@ -97,9 +94,9 @@ export abstract class BlockchainDataModelEntity {
 
     }
 
-    abstract async sync(): Promise<BlockchainDataModelEntity>;
+    abstract async sync(): Promise<Entity>;
 
-    protected generateAndAddProofs(properties: any, salts?: string[]): OffChainStorageProperties {
+    protected generateAndAddProofs(properties: any, salts?: string[]): OffChainProperties {
         this.proofs = [];
         let leafs;
         if (salts) {

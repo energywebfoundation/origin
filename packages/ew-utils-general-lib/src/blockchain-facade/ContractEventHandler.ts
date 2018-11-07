@@ -1,14 +1,13 @@
-import Web3Type from '../types/web3';
-import { Configuration } from './Configuration';
+import * as Configuration from './Configuration';
 
-export class ContractEventHandler {
-    
+export default class ContractEventHandler {
+
     lastBlockChecked: number;
     unhandledEvents: any[];
     contractInstance: any;
 
     onEventRegistry: Function[][];
-    onAnyContractEventRegistry: Function[]; 
+    onAnyContractEventRegistry: Function[];
 
     constructor(contractInstance: any, lastBlockChecked: number) {
         this.contractInstance = contractInstance;
@@ -20,12 +19,12 @@ export class ContractEventHandler {
 
     }
 
-    async tick(configuration: Configuration) {
-        
+    async tick(configuration: Configuration.Entity) {
+
         const blockNumber = await configuration.blockchainProperties.web3.eth.getBlockNumber();
-        const events = await this.contractInstance.getPastEvents('allEvents', {fromBlock: this.lastBlockChecked + 1, toBlock: blockNumber});
+        const events = await this.contractInstance.getPastEvents('allEvents', { fromBlock: this.lastBlockChecked + 1, toBlock: blockNumber });
         this.unhandledEvents = events.reverse().concat(this.unhandledEvents);
-        this.lastBlockChecked = blockNumber > this.lastBlockChecked ? blockNumber : this.lastBlockChecked; 
+        this.lastBlockChecked = blockNumber > this.lastBlockChecked ? blockNumber : this.lastBlockChecked;
         this.walkThroughUnhandledEvent();
 
     }
@@ -34,13 +33,13 @@ export class ContractEventHandler {
         if (this.unhandledEvents.length > 0) {
             const event = this.unhandledEvents.pop();
 
-            if (this.onEventRegistry[event.event]) { 
+            if (this.onEventRegistry[event.event]) {
                 this.onEventRegistry[event.event].forEach((onEvent) => onEvent(event));
             }
             this.onAnyContractEventRegistry.forEach((onEvent) => onEvent(event));
             this.walkThroughUnhandledEvent();
-        } 
-        
+        }
+
     }
 
     onEvent(eventName: string, onEvent: Function) {

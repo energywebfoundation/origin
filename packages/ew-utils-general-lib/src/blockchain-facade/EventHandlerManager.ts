@@ -1,14 +1,14 @@
 import Web3Type from '../types/web3';
-import { ContractEventHandler } from './ContractEventHandler';
-import { Configuration } from './Configuration';
+import ContractEventHandler from './ContractEventHandler';
+import * as Configuration from './Configuration';
 
-export class EventHandlerManager {
+export default class EventHandlerManager {
     private contractEventHandlers: ContractEventHandler[];
     private tickTime: number;
     private running: boolean;
-    private configuration: Configuration;
+    private configuration: Configuration.Entity;
 
-    constructor(tickTime: number, configuration: Configuration) {
+    constructor(tickTime: number, configuration: Configuration.Entity) {
         this.tickTime = tickTime;
         this.configuration = configuration;
         this.contractEventHandlers = [];
@@ -21,7 +21,7 @@ export class EventHandlerManager {
     start() {
         this.running = true;
         this.loop();
-    
+
     }
 
     stop() {
