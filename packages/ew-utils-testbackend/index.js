@@ -1,4 +1,4 @@
-onst express = require('express')
+const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 
@@ -22,7 +22,7 @@ app.put('/ProducingAsset/:id', function (req, res) {
 
 
 app.get('/ConsumingAsset/:id', (req, res) => {
-  console.log(`GET - ConsumingAsset ${req.params.id}`)    
+  console.log(`GET - ConsumingAsset ${req.params.id}`)
   res.send(consumingAssets[req.params.id])
 })
 
