@@ -12,11 +12,6 @@ build-pkg:
     - sh /prepare.sh
     - npm install 
 
-  artifacts:
-    name: build-js
-    paths:
-      - dist/
-
 push-to-registry:
   stage: deploy
   tags:
