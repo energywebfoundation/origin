@@ -1,0 +1,74 @@
+image: docker.slock.it/build-images/node:10-alpine
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-pkg:
+  stage: build
+  tags:
+    - short-jobs
+  script:
+    - sh /prepare.sh
+    - npm install 
+    - npm run build-ts
+
+  artifacts:
+    name: build-js
+    paths:
+      - dist/
+
+test-parity:
+  tags:
+    - short-jobs
+  stage: test
+  services:
+    - name: docker.slock.it/build-images/parity:v1.11.8-tobalaba
+      alias: parity
+  script:
+    - sh /prepare.sh
+    - cp ci.connection-config.json connection-config.json 
+    - npm install 
+    - npm run start-test-backend > /dev/null 2>&1 &
+    - npm test 
+
+test-parity-POA:
+  tags:
+    - long-jobs
+  stage: test
+  services:
+    - name: docker.slock.it/build-images/parity:v1.11.8-tobalaba-poa
+      alias: parity
+  script:
+    - sh /prepare.sh
+    - cp ci.connection-config.json connection-config.json 
+    - npm install 
+    - npm run start-test-backend > /dev/null 2>&1 &
+    - npm test
+
+test-ganache:
+  tags:
+    - short-jobs
+  stage: test
+  script:
+    - sh /prepare.sh
+    - npm install 
+    - npm run start-test-backend > /dev/null 2>&1 &
+    - npm run start-ganache > /dev/null 2>&1 &
+    - npm test
+
+push-to-registry:
+  stage: deploy
+  tags:
+    - short-jobs
+  only: # deploy only on  semantic versions tags
+    - /^v[0-9]*\.[0-9]*\.[0-9]*-?.*$/
+  except:
+    - branches
+  dependencies:
+    - build-pkg
+  script:
+    - sh /prepare.sh
+    - npm --no-git-tag-version -f version $CI_COMMIT_TAG
+    - npm publish

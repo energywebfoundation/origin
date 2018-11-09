@@ -1,14 +1,13 @@
-import * as Configuration from '../Configuration';
-import * as BlockchainDataModel from '../BlockchainDataModelEntity';
+import * as GeneralLib from 'ew-utils-general-lib';
 
-export interface OnChainProperties extends BlockchainDataModel.OnChainProperties {
+export interface OnChainProperties extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
     certificatesUsedForWh: number;
-    smartMeter: Configuration.EthAccount;
-    owner: Configuration.EthAccount;
+    smartMeter: GeneralLib.Configuration.EthAccount;
+    owner: GeneralLib.Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     active: boolean;
     lastSmartMeterReadFileHash: string;
-    matcher: Configuration.EthAccount[];
+    matcher: GeneralLib.Configuration.EthAccount[];
 
 }
 
@@ -25,27 +24,28 @@ export interface OffChainProperties {
     gpsLongitude: string;
 }
 
-export abstract class Entity extends BlockchainDataModel.Entity  implements OnChainProperties {
+export abstract class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
+    implements OnChainProperties {
 
     offChainProperties: OffChainProperties;
     certificatesUsedForWh: number;
-    smartMeter: Configuration.EthAccount;
-    owner: Configuration.EthAccount;
+    smartMeter: GeneralLib.Configuration.EthAccount;
+    owner: GeneralLib.Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     lastSmartMeterReadFileHash: string;
-    matcher: Configuration.EthAccount[];
+    matcher: GeneralLib.Configuration.EthAccount[];
     propertiesDocumentHash: string;
     url: string;
     active: boolean;
 
     initialized: boolean;
 
-    configuration: Configuration.Entity;
+    configuration: GeneralLib.Configuration.Entity;
 
-    constructor(id: string, configuration: Configuration.Entity) {
+    constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
         super(id, configuration);
 
         this.initialized = false;
     }
 
-} 
+}

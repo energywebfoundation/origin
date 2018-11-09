@@ -13,58 +13,104 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
-
 import { assert } from 'chai';
+import * as fs from 'fs';
+
 import 'mocha';
-import Web3Type from '../types/web3';
-import * as TestAccounts from '../utils/testing/TestAccounts';
-import { makeSnapshot, revertSnapshot, getInstanceFromBuild } from '../utils/testing/utils';
-import { prepare } from '../utils/testing/preparation';
-import * as Configuration from '../blockchain-facade/Configuration';
-import * as ProducingAsset from '../blockchain-facade/ProducingAsset';
-import { AssetProducingRegistryLogic } from '../contractWrapper/AssetProducingRegistryLogic';
-import { CertificateLogic } from '../contractWrapper/CertificateLogic';
-import * as Certificate from '../blockchain-facade/Trading/Certificate';
-import {OffChainProperties as AssetOffChainProperties} from '../blockchain-facade/Asset';
-
-import axios from 'axios';
-import { PreciseProofs } from '../../node_modules/precise-proofs/dist/js';
-import { logger } from './Logger';
-
-const Web3 = require('web3');
+import { Web3Type } from '../types/web3';
+import * as GeneralLib from 'ew-utils-general-lib';
+import { logger } from '../Logger';
+import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-contracts';
+import { migrateAssetRegistryContracts, AssetConsumingRegistryLogic, AssetProducingRegistryLogic } from 'ew-asset-registry-contracts';
+import * as Asset from '..';
 
 describe('AssetProducing Facade', () => {
-    let web3: Web3Type;
-    let snapShotId: Number;
+    const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
 
-    let conf: Configuration.Entity;
-    let proofs: PreciseProofs.Proof[];
+    const Web3 = require('web3');
+    const web3: Web3Type = new Web3(configFile.develop.web3);
 
-    const init = async () => {
-        web3 = new Web3('http://localhost:8545');
-    };
+    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
+        configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
 
-    before(async () => {
-        await init();
-        snapShotId = await makeSnapshot(web3);
-        await prepare(web3);
-        debugger;
+    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
+    let conf: GeneralLib.Configuration.Entity;
+
+    let userContractLookup: UserContractLookup;
+    let userContractLookupAddr: string;
+    let assetProducingLogic: AssetProducingRegistryLogic;
+    let userLogic: UserLogic;
+
+    /*
+    let assetContractLookup: AssetContractLookup;
+    let assetProducingLogic: AssetProducingRegistryLogic;
+    let assetProducingDB: AssetProducingDB;
+    let assetConsumingDB: AssetConsumingDB;
+    */
+
+    const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
+    const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
+
+    const assetSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
+
+    const matcherPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
+    const matcher = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
+
+    const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
+    const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
+
+    it('should deploy user-registry contracts', async () => {
+        const userContracts = await migrateUserRegistryContracts((web3 as any));
+        userContractLookupAddr =
+            userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserContractLookup.json'];
+        userLogic =
+            new UserLogic((web3 as any), userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserLogic.json']);
+
+        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+
+        await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
+
+        userContractLookup = new UserContractLookup((web3 as any),
+                                                    userContractLookupAddr);
+
     });
 
-    after(async () => {
-        await revertSnapshot(snapShotId, web3);
+    it('should deploy asset-registry contracts', async () => {
+        const deployedContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr);
+        assetProducingLogic = new AssetProducingRegistryLogic((web3 as any), deployedContracts[process.cwd() + '/node_modules/ew-asset-registry-contracts/dist/contracts/AssetProducingRegistryLogic.json']);
     });
 
-    it('should create an asset', async () => {
+    it('should onboard tests-users', async () => {
 
-        const assetProps: ProducingAsset.OnChainProperties = {
+        await userLogic.setUser(assetOwnerAddress, 'assetOwner', { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(assetOwnerAddress, 8, { privateKey: privateKeyDeployment });
+    });
+
+    it('should onboard a new asset', async () => {
+        conf = {
+            blockchainProperties: {
+                activeUser: {
+                    address: accountDeployment, privateKey: privateKeyDeployment,
+                },
+                producingAssetLogicInstance: assetProducingLogic,
+                userLogicInstance: userLogic,
+                web3,
+            },
+            offChainDataSource: {
+                baseUrl: 'http://localhost:3030',
+            },
+            logger,
+        };
+
+        const assetProps: Asset.ProducingAsset.OnChainProperties = {
             certificatesUsedForWh: 0,
-            smartMeter: { address: TestAccounts.smartMeter },
-            owner: { address: TestAccounts.assetManager },
+            smartMeter: { address: assetSmartmeter },
+            owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            matcher: [{ address: TestAccounts.matcher }],
+            matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null,
             certificatesCreatedForWh: 0,
@@ -72,7 +118,7 @@ describe('AssetProducing Facade', () => {
             maxOwnerChanges: 3,
         };
 
-        const assetPropsOffChain: ProducingAsset.OffChainProperties = {
+        const assetPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
             operationalSince: 0,
             capacityWh: 10,
             country: 'bla',
@@ -83,66 +129,46 @@ describe('AssetProducing Facade', () => {
             houseNumber: 'bla',
             gpsLatitude: 'bla',
             gpsLongitude: 'bla',
-            assetType: ProducingAsset.Type.Wind,
-            complianceRegistry: ProducingAsset.Compliance.EEC,
+            assetType: Asset.ProducingAsset.Type.Wind,
+            complianceRegistry: Asset.ProducingAsset.Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
         };
 
-        conf = {
-            blockchainProperties: {
-                web3,
-                producingAssetLogicInstance: new AssetProducingRegistryLogic(web3),
-                certificateLogicInstance: new CertificateLogic(web3),
-                activeUser: {
-                    address: TestAccounts.assetAdmin, privateKey: '0x' + TestAccounts.assetAdminPK,
-                },
-            },
-            offChainDataSource: {
-                baseUrl: 'http://localhost:3030',
-            },
-            logger,
-              
-        };
-        assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
+        assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 0);
 
-        const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
-        proofs = [...asset.proofs];
-
+        const asset = await Asset.ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         delete asset.configuration;
         delete asset.proofs;
         delete asset.propertiesDocumentHash;
 
         assert.deepEqual({
             id: '0',
-            initialized: false,
-            certificatesUsedForWh: '0',
-            smartMeter: TestAccounts.smartMeter,
-            owner: TestAccounts.assetManager,
+            initialized: true,
+            smartMeter: { address: assetSmartmeter },
+            owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: '0',
             active: true,
             lastSmartMeterReadFileHash: '',
-            matcher: [TestAccounts.matcher],
-            certificatesCreatedForWh: '0',
-            lastSmartMeterCO2OffsetRead: '0',
-            maxOwnerChanges: '3',
-            url: `${conf.offChainDataSource.baseUrl}/ProducingAsset`,
+            matcher: [{ address: [matcher] }],
             offChainProperties: assetPropsOffChain,
+            maxOwnerChanges: '3',
+            url: 'http://localhost:3030/ProducingAsset',
         } as any,        asset);
+        assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 1);
 
-        assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
-    it('should throw on invalid json', async () => {
+    it('should fail when trying to onboard the same asset again', async () => {
 
-        const assetProps: ProducingAsset.OnChainProperties = {
+        const assetProps: Asset.ProducingAsset.OnChainProperties = {
             certificatesUsedForWh: 0,
-            smartMeter: { address: TestAccounts.smartMeter },
-            owner: { address: TestAccounts.assetManager },
+            smartMeter: { address: assetSmartmeter },
+            owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            matcher: [{ address: TestAccounts.matcher }],
+            matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null,
             certificatesCreatedForWh: 0,
@@ -150,125 +176,31 @@ describe('AssetProducing Facade', () => {
             maxOwnerChanges: 3,
         };
 
-        const assetPropsOffChain: any = {
+        const assetPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
             operationalSince: 0,
             capacityWh: 10,
-            country: 1234,
-            region: 'bla',
-            zip: 'bla',
-            city: 'bla',
-            street: 'bla',
-            houseNumber: 'bla',
-            gpsLatitude: 'bla',
-            gpsLongitude: 'bla',
+            country: 'USA',
+            region: 'AnyState',
+            zip: '012345',
+            city: 'Anytown',
+            street: 'Main-Street',
+            houseNumber: '42',
+            gpsLatitude: '0.0123123',
+            gpsLongitude: '31.1231',
+            assetType: Asset.ProducingAsset.Type.Wind,
+            complianceRegistry: Asset.ProducingAsset.Compliance.EEC,
+            otherGreenAttributes: '',
+            typeOfPublicSupport: '',
         };
 
-        conf = {
-            blockchainProperties: {
-                web3,
-                producingAssetLogicInstance: new AssetProducingRegistryLogic(web3),
-                certificateLogicInstance: new CertificateLogic(web3),
-                activeUser: {
-                    address: TestAccounts.assetAdmin, privateKey: '0x' + TestAccounts.assetAdminPK,
-                },
-            },
-            offChainDataSource: {
-                baseUrl: 'http://localhost:3030',
-            },
-            logger,
-        };
+        assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 1);
 
         try {
-            const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
-            assert.fail(0, 1, 'Exception not thrown');
-        } catch (e) {
-            assert.ok(e.message, 'http://localhost:3030/ProducingAsset json is invalid\n0. error at 1234');
+            const asset = await Asset.ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        } catch (ex) {
+            assert.include(ex.message, 'smartmeter does already exist');
         }
-       
-    });
-
-    it('should throw on corrupt data source', async () => {
-
-        conf = {
-            blockchainProperties: {
-                web3,
-                producingAssetLogicInstance: new AssetProducingRegistryLogic(web3),
-                certificateLogicInstance: new CertificateLogic(web3),
-                activeUser: {
-                    address: TestAccounts.assetAdmin, privateKey: '0x' + TestAccounts.assetAdminPK,
-                },
-            },
-            offChainDataSource: {
-                baseUrl: 'http://localhost:3030',
-            },
-            logger,
-        };
-        
-        const url = `${conf.offChainDataSource.baseUrl}/ProducingAsset`;
-        const data = (await axios.get(url + '/0')as any).data;
-        data.properties.operationalSince = 1;
-        await axios.put(url + '/0', data);
-
-        const asset = await new ProducingAsset.Entity('0', conf);
-        
-        let thrown = false;
-        await asset.sync().catch((e) => {
-            assert.equal(e.message, 'Proof for property operationalSince is invalid.');
-            thrown = true;
-        });
-        if (!thrown) {
-            assert.fail(0, 1, 'Exception not thrown');
-        }
-        
-    });
-
-    it('should create certificates', async () => {
-
-        assert.equal(await Certificate.getCertificateListLength(conf), 0);
-
-        //   let cert1 = await new Certificate(0, blockchainProps).sync()
-        //   console.log(cert1)
-        await conf.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(0, 100, false, 'newFileHash', 100, false, { from: TestAccounts.smartMeter, privateKey: '0x' + TestAccounts.smartMeterPK });
-
-        const cert1 = await new Certificate.Entity(0, conf).sync();
-        delete cert1.configuration;
-        delete cert1.creationTime;
-        //   console.log(cert1)
-        assert.deepEqual({
-            id: 0,
-            assetId: '0',
-            owner: TestAccounts.assetManager,
-            powerInW: '100',
-            retired: false,
-            dataLog: 'newFileHash',
-            coSaved: '100',
-            escrow: [TestAccounts.matcher],
-            parentId: '0',
-            children: [],
-            maxOwnerChanges: '3',
-            ownerChangeCounter: '0',
-        } as any,        cert1);
-        assert.equal(await Certificate.getCertificateListLength(conf), 1);
-
-        await conf.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(0, 200, false, 'newFileHash2', 200, false, { from: TestAccounts.smartMeter, privateKey: '0x' + TestAccounts.smartMeterPK });
-        const cert2 = await new Certificate.Entity(1, conf).sync();
-        delete cert2.configuration;
-        delete cert2.creationTime;
-        assert.deepEqual({
-            id: 1,
-            assetId: '0',
-            owner: TestAccounts.assetManager,
-            powerInW: '100',
-            retired: false,
-            dataLog: 'newFileHash2',
-            coSaved: '100',
-            escrow: [TestAccounts.matcher],
-            parentId: '1',
-            children: [],
-            maxOwnerChanges: '3',
-            ownerChangeCounter: '0',
-        } as any,        cert2);
-        assert.equal(await Certificate.getCertificateListLength(conf), 2);
+        assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 1);
 
     });
 

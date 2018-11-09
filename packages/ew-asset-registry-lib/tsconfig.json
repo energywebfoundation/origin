@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./build/ts",
+        "outDir": "./dist/js",
         "sourceMap": true,
         "noImplicitAny": false,
         "declaration": true,
@@ -8,10 +8,12 @@
         "target": "es6",
         "jsx": "react",
         "allowSyntheticDefaultImports": true,
-        "lib": ["es2017", "dom"]
+        "lib": [
+            "es2017",
+            "dom"
+        ]
     },
     "include": [
-        "./src/**/*",
-        "./dist/ts"
+        "./src/**/*"
     ]
 }
