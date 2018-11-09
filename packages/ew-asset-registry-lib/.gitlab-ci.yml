@@ -13,6 +13,7 @@ build-pkg:
     - sh /prepare.sh
     - npm install 
     - npm run build-ts
+    - npm run build-schemas
 
   artifacts:
     name: build-js

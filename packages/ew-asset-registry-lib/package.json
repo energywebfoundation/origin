@@ -2,8 +2,8 @@
   "name": "ew-asset-registry-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "build/ts/index.js",
-  "types": "build/ts/index.d.ts",
+  "main": "dist/js/index.js",
+  "types": "dist/js/index.d.ts",
   "directories": {
     "test": "test"
   },
