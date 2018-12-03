@@ -1,13 +1,13 @@
 import * as Configuration from './Configuration';
 
-export default class ContractEventHandler {
+export class ContractEventHandler {
 
     lastBlockChecked: number;
     unhandledEvents: any[];
     contractInstance: any;
 
-    onEventRegistry: Function[][];
-    onAnyContractEventRegistry: Function[];
+    onEventRegistry: any[];
+    onAnyContractEventRegistry: any[];
 
     constructor(contractInstance: any, lastBlockChecked: number) {
         this.contractInstance = contractInstance;

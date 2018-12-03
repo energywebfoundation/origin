@@ -1,8 +1,8 @@
 import Web3Type from '../types/web3';
-import ContractEventHandler from './ContractEventHandler';
+import { ContractEventHandler } from './ContractEventHandler';
 import * as Configuration from './Configuration';
 
-export default class EventHandlerManager {
+export class EventHandlerManager {
     private contractEventHandlers: ContractEventHandler[];
     private tickTime: number;
     private running: boolean;
