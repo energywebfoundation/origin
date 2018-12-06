@@ -1,0 +1,54 @@
+.PageWrapper {
+    .PageFooter,
+    .PageNav {
+      padding: 0 95px;
+      height: 94px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #3C3C3C;
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.179659);
+  
+      .NavMenu {
+        > li {
+          margin-bottom: 0;
+        }
+      }
+    }
+  
+    .PageContentWrapper {
+      min-height: calc(100vh - 391px);
+      padding: 63px 95px;
+  
+      .PageHeader {
+        height: 52.5px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(151, 151, 151, .14);
+  
+        .PageTitle {
+          padding-top: 10px;
+          font-weight: 300;
+          font-size: 28px;
+          letter-spacing: .6px;
+          line-height: 34px;
+          color: #FFFFFF;
+          mix-blend-mode: normal;
+          opacity: .26;
+        }
+  
+        .PageButtons {
+          display: flex;
+  
+          .ButtonWrapper {
+            margin-left: 14px;
+          }
+        }
+      }
+  
+      .PageBody {
+        margin-top: 29px;
+      }
+    }
+  }
+  

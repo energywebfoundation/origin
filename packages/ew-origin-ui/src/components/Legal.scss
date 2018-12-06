@@ -1,0 +1,17 @@
+.PageWrapper {
+  .PageBody {
+    margin-top: 32.5px;
+
+    .Line {
+      line-height: 24px;
+      font-size: 12px;
+      color: #B7B7B7;
+
+      a {
+        color: #BA77FF;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    }
+  }
+}

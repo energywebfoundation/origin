@@ -1,0 +1,160 @@
+.PageWrapper {
+  
+  .DetailViewWrapper {
+    .FindAsset {
+      display: flex;
+
+      input {
+        background: #2C2C2C;
+        border-radius: 3px;
+        border: none;
+        outline: none;
+        font-weight: 300;
+        font-size: 19px;
+        letter-spacing: .407143px;
+        color: #C4C0C0;
+        height: 50px;
+        margin-right: 8px;
+        width: 100%;
+        padding: 0 14px;
+      }
+
+      .find-asset-button {
+        background: #654784;
+        border-radius: 3px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.267125);
+        height: 50px;
+        width: 200px;
+        font-weight: 500;
+        font-size: 14px;
+        text-align: center;
+        letter-spacing: .3px;
+        color: #FFFFFF;
+        border: none;
+        outline: none;
+        padding-top: 14px;
+      }
+
+    }
+
+    .PageContentWrapper {
+      padding: 15px 0 0;
+
+      .PageHeader {
+        .PageTitle {
+          font-weight: 100;
+          line-height: normal;
+          font-size: 28px;
+          letter-spacing: .6px;
+          color: #FFFFFF;
+          mix-blend-mode: normal;
+          opacity: .77;
+
+          span {
+            font-size: 16px;
+          }
+        }
+      }
+
+      .PageBody {
+        padding: 12px 0;
+        background: #292929;
+        border-radius: 3px;
+
+        .history {
+          margin-left: 26px;
+          margin-top: 15px;
+          .title {
+            font-weight: 300;
+            font-size: 11px;
+            color: #989898;
+            mix-blend-mode: normal;
+            opacity: .7;
+            margin-bottom: 10px;
+            
+          }
+          .timestamp {
+            font-size: 11px;
+          }
+  
+       
+
+        }
+     
+
+        table {
+          table-layout: fixed;
+          width: 100%;
+
+          tr {
+            td {
+              vertical-align: top;
+              padding: 18px 26px;
+
+              &:not(:last-child) {
+                border-right: 1px solid rgba(216, 216, 216, .14);
+              }
+
+              .Label {
+                font-weight: 300;
+                font-size: 11px;
+                color: #989898;
+                mix-blend-mode: normal;
+                opacity: .7;
+              }
+
+              .Data {
+                font-size: 16px;
+                letter-spacing: .0888889px;
+                color: #FFFFFF;
+                display: flex;
+                align-items: baseline;
+                margin-top: 6px;
+
+                span {
+                  font-weight: 500;
+                  font-size: 10px;
+                  color: #FFFFFF;
+                  mix-blend-mode: normal;
+                  opacity: .67;
+                  margin-left: 6px;
+                }
+              }
+
+              .Image {
+                margin-top: 35px;
+
+                &.Map {
+                  margin-top: 25px;
+                  border: 5px solid #3C3C3C;
+                  box-sizing: border-box;
+                  position: relative;
+
+                  img {
+                    &:not(.Marker) {
+                      width: 100%;
+                    }
+
+                    &.Marker {
+                      position: absolute;
+                      left: calc(50% - 8px);
+                      top: calc(50% - 12px);
+                    }
+                  }
+                }
+              }
+
+              .Description {
+                line-height: 18px;
+                font-size: 10px;
+                letter-spacing: .0555556px;
+                color: #D5D5D5;
+                margin-top: 3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

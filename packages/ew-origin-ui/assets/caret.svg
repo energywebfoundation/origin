@@ -1,0 +1,12 @@
+<svg width="14" height="9" viewBox="0 0 14 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>&gt; 3</title>
+    <desc>Created using Figma</desc>
+    <g id="Canvas" transform="translate(5147 2544)">
+        <g id="&gt; 3">
+            <use xlink:href="#path0_fill" transform="matrix(6.12323e-17 1 -1 6.12323e-17 -5133.5 -2543.5)" fill="#BA77FF" />
+        </g>
+    </g>
+    <defs>
+        <path id="path0_fill" fill-rule="evenodd" d="M 1.66036 13L 0.19364 11.4342L 5.06605 6.45076L 0 1.599L 1.56354 0L 8 6.51659L 1.66036 13Z" />
+    </defs>
+</svg>
