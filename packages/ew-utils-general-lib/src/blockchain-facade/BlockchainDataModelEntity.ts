@@ -56,7 +56,9 @@ export abstract class Entity {
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema,
             });
-            this.configuration.logger.verbose(`Put off chain properties to ${this.getUrl()}/${this.id}`);
+            if (this.configuration.logger) {
+                this.configuration.logger.verbose(`Put off chain properties to ${this.getUrl()}/${this.id}`);
+            }
         }
     }
 
@@ -67,7 +69,9 @@ export abstract class Entity {
             this.generateAndAddProofs(data.properties, data.salts);
 
             this.verifyOffChainProperties(hash, offChainProperties, data.schema);
-            this.configuration.logger.verbose(`Got off chain properties from ${this.getUrl()}/${this.id}`);
+            if (this.configuration.logger) {
+                this.configuration.logger.verbose(`Got off chain properties from ${this.getUrl()}/${this.id}`);
+            }
             return offChainProperties;
 
         }
