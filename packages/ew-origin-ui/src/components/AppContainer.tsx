@@ -18,7 +18,7 @@
 import * as React from 'react';
 
 import Web3 = require('web3');
-import * as EwAsset from 'ew-asset-registry-lib'; 
+
 // import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
 // import { Demands } from './Demands';
@@ -27,13 +27,15 @@ import { StoreState, Actions } from '../types';
 // import { Footer } from './Footer';
 // import { Legal } from './Legal';
 // import { About } from './About';
-// import { Asset } from './Asset';
+import { Asset } from './Asset';
 // import { Admin } from './Admin';
 import * as queryString from 'query-string';
 import './AppContainer.scss';
 import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
+import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwUser from 'ew-user-registry-lib';
 import * as AssetContractLookupBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetContractLookup.json';
 import * as AssetProducingRegistryBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetProducingRegistryLogic.json';
 import * as AssetConsumingRegistryBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetConsumingRegistryLogic.json';
@@ -218,14 +220,14 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
         
 
-        // const currentUser = accounts.length > 0 ?
-        //     await (new User(accounts[0], conf.blockchainProperties)).syncWithBlockchain() :
-        //     null;
+        const currentUser: EwUser.User = accounts.length > 0 ?
+            await (new EwUser.User(accounts[0], conf)).sync() :
+            null;
 
         (await EwAsset.ProducingAsset.getAllAssets(conf)).forEach((p: EwAsset.ProducingAsset.Entity) =>
              this.props.actions.producingAssetCreatedOrUpdated(p)
         );
-        console.log(this.props);
+ 
 
         // (await ConsumingAsset.GET_ALL_ASSETS(conf.blockchainProperties)).forEach((c: ConsumingAsset) =>
         //     this.props.actions.consumingAssetCreatedOrUpdated(c)
@@ -239,23 +241,23 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         //     this.props.actions.certificateCreatedOrUpdated(c)
         // );
 
-        // this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
+        this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
 
         // this.initEventHandler(conf);
 
     }
 
-    // Asset() {
-    //     return <Asset
-    //         certificates={this.props.certificates}
-    //         producingAssets={this.props.producingAssets}
-    //         demands={this.props.demands}
-    //         consumingAssets={this.props.consumingAssets}
-    //         conf={this.props.conf}
-    //         currentUser={this.props.currentUser}
-    //         baseUrl={(this.props as any).match.params.contractAddress}
-    //     />;
-    // }
+    Asset() {
+        return <Asset
+            certificates={this.props.certificates}
+            producingAssets={this.props.producingAssets}
+            demands={this.props.demands}
+            consumingAssets={this.props.consumingAssets}
+            conf={this.props.conf}
+            currentUser={this.props.currentUser}
+            baseUrl={(this.props as any).match.params.contractAddress}
+        />;
+    }
 
     // CertificateTable() {
     //     return <Certificates

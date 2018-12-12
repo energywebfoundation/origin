@@ -46,6 +46,7 @@
     "ew-asset-registry-lib": "0.0.8",
     "ew-market-lib": "0.0.1",
     "ew-origin-lib": "0.0.1",
+    "ew-user-registry-lib": "0.0.12",
     "ew-utils-general-lib": "0.0.5",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",

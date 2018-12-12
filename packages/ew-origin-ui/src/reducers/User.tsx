@@ -1,17 +1,14 @@
-// import { User } from 'ewf-coo'
-// import { Actions } from '../actions/index'
+import { Actions } from '../actions/index';
 
-// const defaultState = null
+const defaultState = null
 
-// export default function reducer(state =  defaultState, action) {
+export default function reducer(state =  defaultState, action) {
 
-//     switch(action.type) {
+    switch (action.type) {
         
-//         case Actions.currentUserUpdated:
-    
-//             return action.user
-//         default:
-//             return state
-//     }
-// }
-
+        case Actions.currentUserUpdated:
+            return action.user;
+        default:
+            return state;
+    }
+}
