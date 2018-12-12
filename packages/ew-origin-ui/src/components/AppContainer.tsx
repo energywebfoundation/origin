@@ -35,6 +35,9 @@ import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as AssetContractLookupBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetContractLookup.json';
+import * as AssetProducingRegistryBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetProducingRegistryLogic.json';
+import * as AssetConsumingRegistryBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetConsumingRegistryLogic.json';
+import * as UserLogicBuild from '../../node_modules/ew-user-registry-contracts/dist/contracts/UserLogic.json';
 
 interface AppContainerProps extends StoreState {
     actions: Actions;
@@ -175,51 +178,54 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const assetLookupContractInstance: any = new web3.eth.Contract((AssetContractLookupBuild as any).abi, assetContractLookupAddress);
+        const assetLookupContractInstance: any = new web3.eth.Contract(
+            (AssetContractLookupBuild as any).abi,
+            assetContractLookupAddress
+        );
 
-        const bla = await assetLookupContractInstance.methods.assetProducingRegistry().call();
+        const assetProducingRegistryAddress: string = await assetLookupContractInstance.methods.assetProducingRegistry().call();
+        const assetConsumingRegistryAddress: string = await assetLookupContractInstance.methods.assetConsumingRegistry().call();
+        const userRegistryAddress: string = await assetLookupContractInstance.methods.userRegistry().call();
 
-        console.log(bla);
-//         const assetProducingRegistryAddress = await this.cooContractInstance.methods.assetProducingRegistry().call()
-//         const demandLogicAddress = await this.cooContractInstance.methods.demandRegistry().call()
-//         const certificateLogicAddress = await this.cooContractInstance.methods.certificateRegistry().call()
-//         const assetConsumingRegistryAddress = await this.cooContractInstance.methods.assetConsumingRegistry().call()
-//         const userLogicAddress = await this.cooContractInstance.methods.userRegistry().call()
-
-        return null; /*{
+        return {
             blockchainProperties: {
-                web3: web3;
-                demandLogicInstance?: any;
-                producingAssetLogicInstance?: any;
-                userLogicInstance?: any;
-                activeUser?: EthAccount;
-                matcherAccount?: EthAccount;
-                privateKey?: string;
-
-            }
+                web3: web3,
+        
+                producingAssetLogicInstance: new web3.eth.Contract(
+                    (AssetProducingRegistryBuild as any).abi,
+                    assetProducingRegistryAddress),
+                consumingAssetLogicInstance: new web3.eth.Contract(
+                    (AssetConsumingRegistryBuild as any).abi,
+                    assetConsumingRegistryAddress),
+                
+                userLogicInstance: new web3.eth.Contract(
+                    (UserLogicBuild as any).abi,
+                    userRegistryAddress)
+            },
+            offChainDataSource: {
+                baseUrl: 'http://localhost:3030'
+            },
 
             logger: null
-        };*/
+        };
 
     }
 
     async componentDidMount(): Promise<void> {
 
-        this.initConf((this.props as any).match.params.contractAddress);
-
-        // const conf = new conf((this.props as any).match.params.contractAddress);
-        // const accounts = await conf.web3.eth.getAccounts();
-
-        // await conf.initContract();
-        // this.props.actions.confUpdated(conf);
+        const conf: General.Configuration.Entity = await this.initConf((this.props as any).match.params.contractAddress);
+        this.props.actions.configurationUpdated(conf);
+        const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
+        
 
         // const currentUser = accounts.length > 0 ?
         //     await (new User(accounts[0], conf.blockchainProperties)).syncWithBlockchain() :
         //     null;
 
-        // (await ProducingAsset.GET_ALL_ASSETS(conf.blockchainProperties)).forEach((p: ProducingAsset) =>
-        //     this.props.actions.producingAssetCreatedOrUpdated(p)
-        // );
+        (await EwAsset.ProducingAsset.getAllAssets(conf)).forEach((p: EwAsset.ProducingAsset.Entity) =>
+             this.props.actions.producingAssetCreatedOrUpdated(p)
+        );
+        console.log(this.props);
 
         // (await ConsumingAsset.GET_ALL_ASSETS(conf.blockchainProperties)).forEach((c: ConsumingAsset) =>
         //     this.props.actions.consumingAssetCreatedOrUpdated(c)
@@ -282,7 +288,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
     render(): JSX.Element {
 
-        return <span>test</span>;
+        return <span>{this.props.conf ? "yes" : "no"}</span>;
         
         // if (this.props.conf == null) {
         //     return <div><p>loading...</p></div>;
