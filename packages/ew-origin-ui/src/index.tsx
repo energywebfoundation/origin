@@ -8,28 +8,28 @@
  * @copyright 2018 by Slock.it GmbH
  */
 
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { AppContainer } from './components/AppContainer'
-import { Provider } from 'react-redux'
-import { createStore, Reducer } from 'redux'
-import { StoreState } from './types'
-import reducer from './reducers'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
+import { AppContainer } from './components/AppContainer';
+import { Provider } from 'react-redux';
+import { createStore, Reducer } from 'redux';
+import { StoreState } from './types';
+import reducer from './reducers';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 // import {certificateCreatedOrUpdated, currentUserUpdated, consumingAssetCreatedOrUpdated, demandCreatedOrUpdated, producingAssetCreatedOrUpdated, web3ServiceUpdated} from './actions'
-import './index.scss'
-
+import {configurationUpdated, producingAssetCreatedOrUpdated} from './actions';
+import './index.scss';
 
 const store = createStore<any>(reducer);
 
 const mapDispatchToProps = (dispatch) => ({
-        // actions: bindActionCreators({ certificateCreatedOrUpdated, currentUserUpdated, consumingAssetCreatedOrUpdated, demandCreatedOrUpdated, producingAssetCreatedOrUpdated, web3ServiceUpdated}, dispatch)
+        actions: bindActionCreators({ configurationUpdated, producingAssetCreatedOrUpdated}, dispatch)
 });
   
 const mapStateToProps = (state) => {
-    return state
+    return state;
 };
 
 // const {whyDidYouUpdate} = require('why-did-you-update')
@@ -43,4 +43,4 @@ ReactDOM.render(
         </BrowserRouter>
     </Provider>,
     document.getElementById('root')
-)
+);
