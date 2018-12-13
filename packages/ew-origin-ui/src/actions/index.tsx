@@ -3,6 +3,7 @@
 import * as General from 'ew-utils-general-lib';
 import * as EwAsset from 'ew-asset-registry-lib'; 
 import * as EwUser from 'ew-user-registry-lib';
+import * as OriginIssuer from 'ew-origin-lib';
 
 export enum Actions {
     certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
@@ -14,10 +15,10 @@ export enum Actions {
 
 }
 
-// export const certificateCreatedOrUpdated = (certificate: Certificate) => ({
-//     type: Actions.certificateCreatedOrUpdated,
-//     certificate
-// })
+export const certificateCreatedOrUpdated = (certificate: OriginIssuer.Certificate.Entity): any => ({
+    type: Actions.certificateCreatedOrUpdated,
+    certificate
+});
 
 // export const demandCreatedOrUpdated= (demand: Demand) => ({
 //     type: Actions.demandCreatedOrUpdated,

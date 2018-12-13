@@ -15,109 +15,116 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { ProducingAsset, User, AssetType, Certificate } from 'ewf-coo'
-import { Web3Service } from '../utils/Web3Service'
-import { OrganizationFilter } from './OrganizationFilter'
-import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom'
-import { Nav } from 'react-bootstrap'
-import FadeIn from 'react-fade-in'
-import { Table } from '../elements/Table/Table'
-import TableUtils from '../elements/utils/TableUtils'
+import * as General from 'ew-utils-general-lib';
+import * as OriginIssuer from 'ew-origin-lib';
+import * as Market from 'ew-market-lib';
+import * as EwUser from 'ew-user-registry-lib';
+import * as EwAsset from 'ew-asset-registry-lib'; 
+import { OrganizationFilter } from './OrganizationFilter';
+import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
+import FadeIn from 'react-fade-in';
+import { Table } from '../elements/Table/Table';
+import TableUtils from '../elements/utils/TableUtils';
 
 export interface ProducingAssetTableProps {
-    web3Service: Web3Service,
-    certificates: Certificate[],
-    producingAssets: ProducingAsset[],
-    currentUser: User,
-    baseUrl: string,
-    switchedToOrganization: boolean
+    conf: General.Configuration.Entity;
+    certificates: OriginIssuer.Certificate.Entity[];
+    producingAssets: EwAsset.ProducingAsset.Entity[];
+    currentUser: EwUser.User;
+    baseUrl: string;
+    switchedToOrganization: boolean;
 }
 
 export interface ProducingAssetTableState {
-    enrichedProducingAssetData: EnrichedProducingAssetData[],
-    detailViewForAssetId: number
+    enrichedProducingAssetData: EnrichedProducingAssetData[];
+    detailViewForAssetId: number;
 
 }
 
 export interface EnrichedProducingAssetData {
-    producingAsset: ProducingAsset,
-    organizationName: string,
-    notSoldCertificates: Certificate[]
+    producingAsset: EwAsset.ProducingAsset.Entity;
+    organizationName: string;
+    notSoldCertificates: OriginIssuer.Certificate.Entity[];
 
 }
 
 export class ProducingAssetTable extends React.Component<ProducingAssetTableProps, {}> {
 
-    state: ProducingAssetTableState
+    state: ProducingAssetTableState;
 
-    constructor(props) {
-        super(props)
+    constructor(props: ProducingAssetTableProps) {
+        super(props);
 
         this.state = {
             enrichedProducingAssetData: [],
             detailViewForAssetId: null
-        }
+        };
 
-        this.switchToOrganization = this.switchToOrganization.bind(this)
-        this.operationClicked = this.operationClicked.bind(this)
+        this.switchToOrganization = this.switchToOrganization.bind(this);
+        this.operationClicked = this.operationClicked.bind(this);
 
     }
 
-    switchToOrganization(switchedToOrganization: boolean) {
+    switchToOrganization(switchedToOrganization: boolean): void {
         this.setState({
             switchedToOrganization: switchedToOrganization
-        })
+        });
     }
 
-    async componentDidMount() {
-        await this.getOrganizationNames(this.props)
+    async componentDidMount(): Promise<void> {
+        await this.getOrganizationNames(this.props);
 
     }
 
-    async componentWillReceiveProps(newProps: ProducingAssetTableProps) {
-        await this.getOrganizationNames(newProps)
+    async componentWillReceiveProps(newProps: ProducingAssetTableProps): Promise<void>  {
+        await this.getOrganizationNames(newProps);
     }
 
-    async getOrganizationNames(props: ProducingAssetTableProps) {
+    async getOrganizationNames(props: ProducingAssetTableProps): Promise<void>  {
 
-        const enrichedProducingAssetData = []
-
-        const promieses = props.producingAssets.map(async (producingAsset: ProducingAsset, index: number) =>
+        const promieses = props.producingAssets.map(async (producingAsset: EwAsset.ProducingAsset.Entity, index: number) =>
             ({
                 producingAsset: producingAsset,
-                notSoldCertificates: this.props.certificates.filter((certificate: Certificate) => certificate.owner === producingAsset.owner && certificate.assetId === producingAsset.id),
-                organizationName: (await (new User(producingAsset.owner, props.web3Service.blockchainProperties)).syncWithBlockchain()).organization
+                notSoldCertificates: this.props.certificates
+                    .filter((certificate: OriginIssuer.Certificate.Entity) => 
+                        certificate.owner === producingAsset.owner && certificate.assetId.toString() === producingAsset.id
+                    ),
+                organizationName: (await (new EwUser.User(producingAsset.owner.address, props.conf))
+                        .sync()
+                    ).organization
             })
-        )
+        );
 
         Promise.all(promieses).then((enrichedProducingAssetData) =>
             this.setState({
                 enrichedProducingAssetData: enrichedProducingAssetData
             })
-        )
+        );
 
     }
 
-    operationClicked(key: string, id: number) {
+    operationClicked(key: string, id: number): void {
         this.setState({
             detailViewForAssetId: id
-        })
+        });
 
     }
 
-    render() {
+    render(): JSX.Element {
         if (this.state.detailViewForAssetId !== null) {
-            return <Redirect push to={'/' + this.props.baseUrl + '/assets/producing_detail_view/' + this.state.detailViewForAssetId} />
+            return <Redirect push to={'/' + this.props.baseUrl + '/assets/producing_detail_view/' + this.state.detailViewForAssetId} />;
         }
 
-        const defaultWidth = 106
-        const getKey = TableUtils.getKey
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) => (TableUtils.generateHeader(label, width, right, body))
-        const generateFooter = TableUtils.generateFooter
+        const defaultWidth: number = 106;
+        const getKey: any = TableUtils.getKey;
+        const generateHeader: Function = (label, width = defaultWidth, right = false, body = false) =>
+            (TableUtils.generateHeader(label, width, right, body));
+        const generateFooter: any = TableUtils.generateFooter;
 
-        const TableHeader = [
+        const TableHeader: any[] = [
             generateHeader('#', 137.11),
             generateHeader('Owner', 136),
             generateHeader('Town, Country', 136),
@@ -127,67 +134,77 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             generateHeader('Tags for Sale (kWh)', 135.89, true),
             generateHeader('CO2 Reduction (kg)', 137.39, true),
             generateHeader('Generated Tags (kWh)', 137.39, true, true)
-        ]
+        ];
 
-        const TableFooter = [
+        const TableFooter: any = [
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 5,
+                colspan: 5
             },
             generateFooter('Sold Tags (kWh)'),
             generateFooter('Tags for Sale (kWh)'),
             generateFooter('CO2 Reduction (kg)'),
             generateFooter('Generated Tags (kWh)', true)
-        ]
+        ];
 
-        const assets = null
-        const total = null
+        const assets = null;
+        const total = null;
 
-        let totalSold = 0
-        let totalNotSold = 0
+        let totalSold = 0;
+        let totalNotSold = 0;
 
-        const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue
+        const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
 
-        const filteredEnrichedAssetData = this.state.enrichedProducingAssetData.filter((enrichedProducingAssetData: EnrichedProducingAssetData) => {
+        const filteredEnrichedAssetData = this.state.enrichedProducingAssetData
+            .filter((enrichedProducingAssetData: EnrichedProducingAssetData) => {
 
-            return !this.props.switchedToOrganization || enrichedProducingAssetData.producingAsset.owner === this.props.currentUser.accountAddress
+                return !this.props.switchedToOrganization 
+                    || enrichedProducingAssetData.producingAsset.owner.address === this.props.currentUser.id;
 
-        })
+            });
 
-        let data = []
+        let data = [];
         data = filteredEnrichedAssetData.map((enrichedProducingAssetData: EnrichedProducingAssetData) => {
-            const producingAsset = enrichedProducingAssetData.producingAsset
-            const generatedKWh = producingAsset.certificatesCreatedForWh / 1000
-            const kWhForSale = enrichedProducingAssetData.notSoldCertificates.length < 1 ? 0 : enrichedProducingAssetData.notSoldCertificates
-                .map((certificate: Certificate) => certificate.powerInW)
-                .reduce(accumulatorCb) / 1000
+            const producingAsset = enrichedProducingAssetData.producingAsset;
+            const generatedKWh = producingAsset.certificatesCreatedForWh / 1000;
+            const kWhForSale = enrichedProducingAssetData.notSoldCertificates.length < 1 ? 
+                0 : enrichedProducingAssetData.notSoldCertificates
+                    .map((certificate: OriginIssuer.Certificate.Entity) => certificate.powerInW)
+                    .reduce(accumulatorCb) / 1000;
 
-            totalSold += generatedKWh - kWhForSale
-            totalNotSold += kWhForSale
+            totalSold += generatedKWh - kWhForSale;
+            totalNotSold += kWhForSale;
 
             return ([
                 producingAsset.id,
                 enrichedProducingAssetData.organizationName,
-                (producingAsset.city + ', ' + producingAsset.country),
-                AssetType[producingAsset.assetType],
-                (producingAsset.capacityWh / 1000).toFixed(3),
-                (Math.max(0,generatedKWh - kWhForSale)).toFixed(3),
+                (producingAsset.offChainProperties.city + ', ' + producingAsset.offChainProperties.country),
+                EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
+                (producingAsset.offChainProperties.capacityWh / 1000).toFixed(3),
+                (Math.max(0, generatedKWh - kWhForSale)).toFixed(3),
                 kWhForSale.toFixed(3),
                 
-                (producingAsset.cO2UsedForCertificate/1000).toFixed(3),
+                '(producingAsset..cO2UsedForCertificate/1000).toFixed(3)',
                 
                 generatedKWh.toFixed(3)
                 
-            ])
+            ]);
 
-        })
+        });
 
-        const operations = ['Show Details']
+        const operations = ['Show Details'];
 
         return <div className='ProductionWrapper'>
-            <Table header={TableHeader} footer={TableFooter} operationClicked={this.operationClicked} actions={true} data={data} operations={operations} />
-        </div>
+            <Table 
+                header={TableHeader}
+                footer={TableFooter}
+                operationClicked={this.operationClicked}
+                actions={true}
+                data={data}
+                operations={operations} 
+            />
+        </div>;
 
     }
 

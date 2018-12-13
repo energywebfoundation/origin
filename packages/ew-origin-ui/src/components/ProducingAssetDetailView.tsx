@@ -15,90 +15,100 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as React from 'react'
-import FadeIn from 'react-fade-in'
+import * as React from 'react';
+import FadeIn from 'react-fade-in';
 
-import * as marker from '../../assets/marker.svg'
-import * as map from '../../assets/map.svg'
-import * as wind from '../../assets/icon_wind.svg'
-import * as hydro from '../../assets/icon_hydro.svg'
-import * as solar from '../../assets/icon_solar.svg'
-import * as moment from 'moment'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { ProducingAsset, User, Certificate, AssetType, Compliance } from 'ewf-coo'
-import { Web3Service } from '../utils/Web3Service'
-import { MapContainer } from './MapContainer'
+import * as marker from '../../assets/marker.svg';
+import * as map from '../../assets/map.svg';
+import * as wind from '../../assets/icon_wind.svg';
+import * as hydro from '../../assets/icon_hydro.svg';
+import * as solar from '../../assets/icon_solar.svg';
+import * as moment from 'moment';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
+import * as General from 'ew-utils-general-lib';
+import * as OriginIssuer from 'ew-origin-lib';
+import * as Market from 'ew-market-lib';
+import * as EwUser from 'ew-user-registry-lib';
+import * as EwAsset from 'ew-asset-registry-lib'; 
+import { MapContainer } from './MapContainer';
 
-import './DetailView.scss'
+import './DetailView.scss';
 
 export interface DetailViewProps {
-  web3Service: Web3Service,
-  id: number,
-  baseUrl: string,
-  certificates: Certificate[],
-  producingAssets: ProducingAsset[],
-  addSearchField: boolean
+  conf: General.Configuration.Entity;
+  id: number;
+  baseUrl: string;
+  certificates: OriginIssuer.Certificate.Entity[];
+  producingAssets: EwAsset.ProducingAsset.Entity[];
+  addSearchField: boolean;
 }
 
 export interface DetailViewState {
-  newId: number,
-  owner: User,
-  notSoldCertificates: number
+  newId: number;
+  owner: EwUser.User;
+  notSoldCertificates: number;
 
 }
 
-const TableWidth = [210, 210, 210, 210, 407]
+const TableWidth = [210, 210, 210, 210, 407];
 
 export class ProducingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
-  constructor(props) {
-    super(props)
+  constructor(props: DetailViewProps) {
+    super(props);
     this.state = {
       newId: null,
       owner: null,
       notSoldCertificates: 0
-    }
-    this.onInputChange = this.onInputChange.bind(this)
+    };
+    this.onInputChange = this.onInputChange.bind(this);
 
   }
 
-  onInputChange(e) {
+  onInputChange(e: any): void {
 
-    this.setState({ newId: e.target.value })
+    this.setState({ newId: e.target.value });
   }
 
-  async componentDidMount() {
-    await this.getOwner(this.props)
+  async componentDidMount(): Promise<void> {
+    await this.getOwner(this.props);
 
   }
 
-  async componentWillReceiveProps(newProps: DetailViewProps) {
-    await this.getOwner(newProps)
+  async componentWillReceiveProps(newProps: DetailViewProps): Promise<void>  {
+    await this.getOwner(newProps);
   }
 
-  async getOwner(props: DetailViewProps) {
-    const selectedAsset = props.producingAssets.find((p: ProducingAsset) => p.id === props.id)
-    if (selectedAsset) {
-      if (this.props.certificates.length > 0) {
+  async getOwner(props: DetailViewProps): Promise<void>  {
+    if (props.id !== null && props.id !== undefined) {
+      const selectedAsset = props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === props.id.toString());
+      if (selectedAsset) {
+        if (this.props.certificates.length > 0) {
+          this.setState({
+            notSoldCertificates: this.props.certificates
+              .map((certificate: OriginIssuer.Certificate.Entity) => 
+                certificate.owner.address === selectedAsset.owner.address 
+                && certificate.assetId.toString() === selectedAsset.id ?
+                  certificate.powerInW 
+                  : 0)
+              .reduce((a, b) => a + b)
+          });
+        }
         this.setState({
-          notSoldCertificates: this.props.certificates
-            .map((certificate: Certificate) => certificate.owner === selectedAsset.owner && certificate.assetId === selectedAsset.id ?
-              certificate.powerInW : 0)
-            .reduce((a, b) => a + b)
-        })
+          owner: await (new EwUser.User(selectedAsset.owner.address, props.conf).sync())
+  
+        });
+  
       }
-      this.setState({
-        owner: await (new User(selectedAsset.owner, props.web3Service.blockchainProperties).syncWithBlockchain())
-
-      })
-
     }
+ 
 
   }
 
-  render() {
+  render(): JSX.Element {
 
-    const selectedAsset = this.props.producingAssets.find((p: ProducingAsset) => p.id === this.props.id)
-    let data
+    const selectedAsset: EwAsset.ProducingAsset.Entity = this.props.id !== null && this.props.id !== undefined ? this.props.producingAssets
+      .find((p: EwAsset.ProducingAsset.Entity) => p.id === this.props.id.toString()) : null;
+    let data;
     if (selectedAsset) {
       data = [
         [
@@ -108,7 +118,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
           },
           {
             label: 'Certified by Registry',
-            data: Compliance[selectedAsset.complianceRegistry]
+            data: EwAsset.ProducingAsset.Compliance[selectedAsset.offChainProperties.complianceRegistry]
           },
           {
             label: 'Kind',
@@ -116,13 +126,13 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
           },
           {
             label: 'Sold Tags',
-            data: (selectedAsset.certificatesCreatedForWh/1000).toFixed(3),
+            data: (selectedAsset.certificatesCreatedForWh / 1000).toFixed(3),
             tip: 'kWh',
             isAdditionalInformation: true
           },
           {
             label: 'Geo Location',
-            data: selectedAsset.gpsLatitude + ', ' + selectedAsset.gpsLongitude,
+            data: selectedAsset.offChainProperties.gpsLatitude + ', ' + selectedAsset.offChainProperties.gpsLongitude,
             image: map,
             type: 'map',
             rowspan: 3,
@@ -132,23 +142,23 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
         [
           {
             label: 'Asset Type',
-            data: AssetType[selectedAsset.assetType],
-            image: AssetType.Wind === selectedAsset.assetType ? wind :
-              AssetType.Solar === selectedAsset.assetType ? solar : hydro,
+            data: EwAsset.ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
+            image: EwAsset.ProducingAsset.Type.Wind === selectedAsset.offChainProperties.assetType ? wind :
+              EwAsset.ProducingAsset.Type.Solar === selectedAsset.offChainProperties.assetType ? solar : hydro,
             rowspan: 2
           },
           {
             label: 'Other Green Attributes',
-            data: selectedAsset.otherGreenAttributes
+            data: selectedAsset.offChainProperties.otherGreenAttributes
           },
           {
             label: 'Commissioning Date',
-            data: moment(selectedAsset.operationalSince * 1000).format('DD MMM YY')
+            data: moment(selectedAsset.offChainProperties.operationalSince * 1000).format('DD MMM YY')
           },
 
           {
             label: 'Tags for Sale',
-            data: (this.state.notSoldCertificates/1000).toFixed(3),
+            data: (this.state.notSoldCertificates / 1000).toFixed(3),
             tip: 'kWh',
             isAdditionalInformation: true
           }
@@ -156,22 +166,22 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
         [
           {
             label: 'Public Support',
-            data: selectedAsset.typeOfPublicSupport,
+            data: selectedAsset.offChainProperties.typeOfPublicSupport,
             description: ''
           },
           {
             label: 'Nameplate Capacity',
-            data: (selectedAsset.capacityWh/1000).toFixed(3),
+            data: (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3),
             tip: 'kW'
           },
           {
             label: 'Total Saved CO2',
-            data: (selectedAsset.lastSmartMeterCO2OffsetRead/1000).toFixed(3),
+            data: (selectedAsset.lastSmartMeterCO2OffsetRead / 1000).toFixed(3),
             tip: 'kg',
             isAdditionalInformation: true
           }
         ]
-      ]
+      ];
     }
 
     const pageBody = <div className='PageBody'>
@@ -182,8 +192,8 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
           {data.map((row: any) => (
             <tr key={row.key} >
               {row.map((col, cIndex) => {
-                if(col.isAdditionalInformation && !this.props.addSearchField) {
-                  return null
+                if (col.isAdditionalInformation && !this.props.addSearchField) {
+                  return null;
                 }
                 return (
                 <td key={col.key} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
@@ -206,7 +216,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                   )}
                   {col.description && (<div className='Description'>{col.description}</div>)}
                 </td>
-              )})
+              ); })
               }
             </tr>
           ))
@@ -214,7 +224,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
         </tbody>
       </table>
     }
-  </div>
+  </div>;
 
     return (
       <div>
@@ -236,10 +246,10 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
 
       </div>
 
-    )
+    );
   }
 }
 
 const addCommas = (intNum) => {
-  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
-}
+  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+};
