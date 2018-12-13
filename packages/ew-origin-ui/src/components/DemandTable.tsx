@@ -49,12 +49,12 @@
 
 // }
 
-// export const PeriodToSeconds = [
-//     31536000,
-//     2592000,
-//     86400,
-//     3600
-// ]
+export const PeriodToSeconds = [
+    31536000,
+    2592000,
+    86400,
+    3600
+]
 
 // export class DemandTable extends React.Component<DemandTableProps, {}> {
 

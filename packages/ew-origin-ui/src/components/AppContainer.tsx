@@ -23,8 +23,8 @@ import Web3 = require('web3');
 import { Route, Switch } from 'react-router-dom';
 // import { Demands } from './Demands';
 import { StoreState, Actions } from '../types';
-// import { Header } from './Header';
-// import { Footer } from './Footer';
+import { Header } from './Header';
+import { Footer } from './Footer';
 // import { Legal } from './Legal';
 // import { About } from './About';
 import { Asset } from './Asset';
@@ -40,6 +40,7 @@ import * as AssetContractLookupBuild from '../../node_modules/ew-asset-registry-
 import * as AssetProducingRegistryBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetProducingRegistryLogic.json';
 import * as AssetConsumingRegistryBuild from '../../node_modules/ew-asset-registry-contracts/dist/contracts/AssetConsumingRegistryLogic.json';
 import * as UserLogicBuild from '../../node_modules/ew-user-registry-contracts/dist/contracts/UserLogic.json';
+import * as UserLookupBuild from '../../node_modules/ew-user-registry-contracts/dist/contracts/UserContractLookup.json';
 
 interface AppContainerProps extends StoreState {
     actions: Actions;
@@ -53,7 +54,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         // this.CertificateTable = this.CertificateTable.bind(this);
         // this.DemandTable = this.DemandTable.bind(this);
         // this.Admin = this.Admin.bind(this);
-        // this.Asset = this.Asset.bind(this);
+        this.Asset = this.Asset.bind(this);
     }
 
     async initEventHandler(conf: General.Configuration.Entity): Promise<void> {
@@ -67,7 +68,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.certificateCreatedOrUpdated(
                 await (new OriginIssuer.Certificate.Entity(
                     event.returnValues._certificateId,
-                    this.props.conf).sync()
+                    this.props.configuration).sync()
                 )
             )
             
@@ -77,7 +78,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.certificateCreatedOrUpdated(
                 await (new OriginIssuer.Certificate.Entity(
                     event.returnValues._certificateId,
-                    this.props.conf).sync()
+                    this.props.configuration).sync()
                 )
             )
         );
@@ -86,7 +87,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.certificateCreatedOrUpdated(
                 await (new OriginIssuer.Certificate.Entity(
                     event.returnValues._certificateId,
-                    this.props.conf).sync()
+                    this.props.configuration).sync()
                 )
             )
         );
@@ -104,7 +105,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.demandCreatedOrUpdated(
                 await (new Market.Demand.Entity(
                     event.returnValues._demandId,
-                    this.props.conf).sync()
+                    this.props.configuration).sync()
                 )
             )
         );
@@ -122,7 +123,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new EwAsset.ProducingAsset.Entity(
                     event.returnValues._assetId,
-                    this.props.conf
+                    this.props.configuration
                 ).sync())
             )
 
@@ -132,7 +133,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new EwAsset.ProducingAsset.Entity(
                     event.returnValues._assetId,
-                    this.props.conf
+                    this.props.configuration
                 ).sync())
             )
         );
@@ -141,7 +142,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new EwAsset.ProducingAsset.Entity(
                     event.returnValues._assetId,
-                    this.props.conf
+                    this.props.configuration
                 ).sync())
             )
         );
@@ -150,7 +151,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             this.props.actions.producingAssetCreatedOrUpdated(
                 await (new EwAsset.ProducingAsset.Entity(
                     event.returnValues._assetId,
-                    this.props.conf
+                    this.props.configuration
                 ).sync())
             )
         );
@@ -187,7 +188,13 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
         const assetProducingRegistryAddress: string = await assetLookupContractInstance.methods.assetProducingRegistry().call();
         const assetConsumingRegistryAddress: string = await assetLookupContractInstance.methods.assetConsumingRegistry().call();
-        const userRegistryAddress: string = await assetLookupContractInstance.methods.userRegistry().call();
+        const userLookupAddress: string = await assetLookupContractInstance.methods.userRegistry().call();
+
+        const userLookupContract: any = new web3.eth.Contract(
+            (UserLookupBuild as any).abi,
+            userLookupAddress);
+
+        const userRegistryAddress: string = await userLookupContract.methods.userRegistry().call();
 
         return {
             blockchainProperties: {
@@ -224,11 +231,11 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             await (new EwUser.User(accounts[0], conf)).sync() :
             null;
 
-        (await EwAsset.ProducingAsset.getAllAssets(conf)).forEach((p: EwAsset.ProducingAsset.Entity) =>
-             this.props.actions.producingAssetCreatedOrUpdated(p)
-        );
- 
-
+        (await EwAsset.ProducingAsset.getAllAssets(conf))
+            .forEach((p: EwAsset.ProducingAsset.Entity) =>
+                this.props.actions.producingAssetCreatedOrUpdated(p)
+            );
+    
         // (await ConsumingAsset.GET_ALL_ASSETS(conf.blockchainProperties)).forEach((c: ConsumingAsset) =>
         //     this.props.actions.consumingAssetCreatedOrUpdated(c)
         // );
@@ -253,7 +260,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             producingAssets={this.props.producingAssets}
             demands={this.props.demands}
             consumingAssets={this.props.consumingAssets}
-            conf={this.props.conf}
+            conf={this.props.configuration}
             currentUser={this.props.currentUser}
             baseUrl={(this.props as any).match.params.contractAddress}
         />;
@@ -290,28 +297,26 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
     render(): JSX.Element {
 
-        return <span>{this.props.conf ? "yes" : "no"}</span>;
-        
-        // if (this.props.conf == null) {
-        //     return <div><p>loading...</p></div>;
-        // }
+        if (this.props.configuration == null) {
+            return <div><p>loading...</p></div>;
+        }
 
-        // return <div className={`AppWrapper ${false ? 'Profile--open' : ''}`}>
-        //     <Header currentUser={this.props.currentUser} baseUrl={(this.props as any).match.params.contractAddress} />
-        //     <Switch>
+        return <div className={`AppWrapper ${false ? 'Profile--open' : ''}`}>
+            <Header currentUser={this.props.currentUser} baseUrl={(this.props as any).match.params.contractAddress} />
+            <Switch>
 
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress + '/assets/'} component={this.Asset} />
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress + '/certificates'} component={this.CertificateTable} />
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} />
+                <Route path={'/' + (this.props as any).match.params.contractAddress + '/assets/'} component={this.Asset} />
+                {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
+                <Route path={'/' + (this.props as any).match.params.contractAddress + '/certificates'} component={this.CertificateTable} />
+                <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} />
           
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress + '/about'} component={About} />
-        //         <Route path={'/' + (this.props as any).match.params.contractAddress} component={this.Asset} />
+                <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
+                <Route path={'/' + (this.props as any).match.params.contractAddress + '/about'} component={About} /> */}
+                <Route path={'/' + (this.props as any).match.params.contractAddress} component={this.Asset} />
 
-        //     </Switch>
-        //     <Footer cooContractAddress={(this.props as any).match.params.contractAddress} />
-        // </div>;
+            </Switch>
+            <Footer cooContractAddress={(this.props as any).match.params.contractAddress} />
+        </div>;
 
     }
 
