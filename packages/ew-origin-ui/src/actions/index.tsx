@@ -30,10 +30,10 @@ export const producingAssetCreatedOrUpdated = (producingAsset: EwAsset.Producing
     producingAsset
 });
 
-// export const consumingAssetCreatedOrUpdated = (consumingAsset: ConsumingAsset) => ({
-//     type: Actions.consumingAssetCreatedOrUpdated,
-//     consumingAsset
-// })
+export const consumingAssetCreatedOrUpdated = (consumingAsset: EwAsset.ConsumingAsset.Entity) => ({
+    type: Actions.consumingAssetCreatedOrUpdated,
+    consumingAsset
+});
 
 export const currentUserUpdated = (user: EwUser.User): any => ({
     type: Actions.currentUserUpdated,

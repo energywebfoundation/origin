@@ -19,13 +19,13 @@ import reducer from './reducers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 // import {certificateCreatedOrUpdated, currentUserUpdated, consumingAssetCreatedOrUpdated, demandCreatedOrUpdated, producingAssetCreatedOrUpdated, web3ServiceUpdated} from './actions'
-import {currentUserUpdated, configurationUpdated, producingAssetCreatedOrUpdated, certificateCreatedOrUpdated} from './actions';
+import {currentUserUpdated, configurationUpdated, producingAssetCreatedOrUpdated, consumingAssetCreatedOrUpdated, certificateCreatedOrUpdated} from './actions';
 import './index.scss';
 
 const store = createStore<any>(reducer);
 
 const mapDispatchToProps = (dispatch) => ({
-        actions: bindActionCreators({currentUserUpdated, configurationUpdated, producingAssetCreatedOrUpdated, certificateCreatedOrUpdated}, dispatch)
+        actions: bindActionCreators({currentUserUpdated, configurationUpdated, producingAssetCreatedOrUpdated, certificateCreatedOrUpdated, consumingAssetCreatedOrUpdated}, dispatch)
 });
   
 const mapStateToProps = (state) => {

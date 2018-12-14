@@ -26,10 +26,10 @@ import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom'
 import { Nav, NavItem } from 'react-bootstrap';
 import FadeIn from 'react-fade-in';
 import { ProducingAssetTable } from './ProducingAssetTable';
-//import { ConsumingAssetTable } from './ConsumingAssetTable';
+import { ConsumingAssetTable } from './ConsumingAssetTable';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
-//import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
+import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
 
 export interface AssetProps {
     conf: General.Configuration.Entity;
@@ -58,7 +58,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
-        //this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this);
+        this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this);
         this.ProducingAssetTable = this.ProducingAssetTable.bind(this);
         this.onFilterOrganization = this.onFilterOrganization.bind(this);
 
@@ -81,17 +81,17 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         />;
     }
 
-    // ConsumingAssetTable(): JSX.Element  {
-    //     return <ConsumingAssetTable
-    //         certificates={this.props.certificates}
-    //         demands={this.props.demands}
-    //         consumingAssets={this.props.consumingAssets}
-    //         conf={this.props.conf}
-    //         currentUser={this.props.currentUser}
-    //         baseUrl={this.props.baseUrl}
-    //         switchedToOrganization={this.state.switchedToOrganization}
-    //     />;
-    // }
+    ConsumingAssetTable(): JSX.Element  {
+        return <ConsumingAssetTable
+            certificates={this.props.certificates}
+            demands={this.props.demands}
+            consumingAssets={this.props.consumingAssets}
+            conf={this.props.conf}
+            currentUser={this.props.currentUser}
+            baseUrl={this.props.baseUrl}
+            switchedToOrganization={this.state.switchedToOrganization}
+        />;
+    }
 
     ProductionDetailView(id: number): JSX.Element  {
         return <ProducingAssetDetailView
@@ -103,14 +103,14 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         />;
     }
 
-    // ConsumingDetailView(id: number): JSX.Element  {
-    //     return <ConsumingAssetDetailView
-    //         id={id} baseUrl={this.props.baseUrl}
-    //         consumingAssets={this.props.consumingAssets}
-    //         conf={this.props.conf}
-    //         certificates={this.props.certificates}
-    //     />;
-    // }
+    ConsumingDetailView(id: number): JSX.Element  {
+        return <ConsumingAssetDetailView
+            id={id} baseUrl={this.props.baseUrl}
+            consumingAssets={this.props.consumingAssets}
+            conf={this.props.conf}
+            certificates={this.props.certificates}
+        />;
+    }
 
     onFilterOrganization(index: number): void {
         this.setState({
@@ -140,7 +140,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
             }, {
                 key: 'consumption',
                 label: 'Consumption List',
-                component: null, //this.ConsumingAssetTable,
+                component: this.ConsumingAssetTable,
                 buttons: [
                     {
                         type: 'dropdown',
@@ -182,9 +182,9 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 if (matches.length > 0 && key === 'producing_detail_view') {
                     matches[0].component = () => this.ProductionDetailView(id ? parseInt(id, 10) : id);
                 } 
-                // else if (matches.length > 0 && key === 'consuming_detail_view') {
-                //     matches[0].component = () => this.ConsumingDetailView(id ? parseInt(id, 10) : id);
-                // }
+                else if (matches.length > 0 && key === 'consuming_detail_view') {
+                     matches[0].component = () => this.ConsumingDetailView(id ? parseInt(id, 10) : id);
+                }
                 return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/assets'} />);
             }} />
             <Route exact path={'/' + this.props.baseUrl + '/assets'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }} />)} />
