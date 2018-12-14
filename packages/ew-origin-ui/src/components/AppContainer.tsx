@@ -236,9 +236,10 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                 this.props.actions.producingAssetCreatedOrUpdated(p)
             );
     
-        // (await ConsumingAsset.GET_ALL_ASSETS(conf.blockchainProperties)).forEach((c: ConsumingAsset) =>
-        //     this.props.actions.consumingAssetCreatedOrUpdated(c)
-        // );
+        (await EwAsset.ConsumingAsset.getAllAssets(conf))
+            .forEach((c: EwAsset.ConsumingAsset.Entity) =>
+                this.props.actions.consumingAssetCreatedOrUpdated(c)
+            );
 
         // (await Demand.GET_ALL_ACTIVE_DEMANDS(conf.blockchainProperties)).forEach((d: Demand) =>
         //     this.props.actions.demandCreatedOrUpdated(d)
@@ -249,6 +250,8 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         // );
 
         this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
+
+        console.log(this.props)
 
         // this.initEventHandler(conf);
 
