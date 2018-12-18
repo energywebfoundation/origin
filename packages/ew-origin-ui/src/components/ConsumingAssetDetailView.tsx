@@ -33,6 +33,7 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 
 import './DetailView.scss'
+import { getOffChainText } from '../utils/Helper';
 
 export interface DetailViewProps {
   conf: General.Configuration.Entity;
@@ -102,8 +103,8 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
 
   render(): JSX.Element {
     
-    const selectedAsset: EwAsset.ConsumingAsset.Entity = this.props.consumingAssets
-        .find((c: EwAsset.ConsumingAsset.Entity) => c.id === this.props.id.toString());
+    const selectedAsset: EwAsset.ConsumingAsset.Entity = this.props.id !== null && this.props.id !== undefined ? this.props.consumingAssets
+    .find((p: EwAsset.ConsumingAsset.Entity) => p.id === this.props.id.toString()) : null;
     
     let data
     if (selectedAsset) {
@@ -111,7 +112,7 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
       data = [
         [
           {
-            label: 'Owner',
+            label: 'Owner' + getOffChainText('owner', selectedAsset.offChainProperties),
             data: this.state.owner ? this.state.owner.organization : ''
           },
 
@@ -121,7 +122,7 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
           },
 
           {
-            label: 'Geo Location',
+            label: 'Geo Location' + getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
             data: selectedAsset.offChainProperties.gpsLatitude + ', ' + selectedAsset.offChainProperties.gpsLongitude,
             image: map,
             type: 'map',
@@ -132,13 +133,13 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
         [
 
           {
-            label: 'Commissioning Date',
+            label: 'Commissioning Date' + getOffChainText('operationalSince', selectedAsset.offChainProperties),
             data: moment(selectedAsset.offChainProperties.operationalSince * 1000).format('DD MMM YY')
           },
 
 
           {
-            label: 'Nameplate Capacity',
+            label: 'Nameplate Capacity'  + getOffChainText('capacityWh', selectedAsset.offChainProperties),
             data: (selectedAsset.offChainProperties.capacityWh ? (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3) : '-'),
             tip: 'kW'
           }

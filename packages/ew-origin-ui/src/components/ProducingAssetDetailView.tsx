@@ -33,6 +33,7 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 
 import './DetailView.scss';
+import { isOffChainProperty, getOffChainText } from '../utils/Helper';
 
 export interface DetailViewProps {
   conf: General.Configuration.Entity;
@@ -117,21 +118,18 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
             data: this.state.owner ? this.state.owner.organization : ''
           },
           {
-            label: 'Certified by Registry',
+            label: 'Certified by Registry' + getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
             data: EwAsset.ProducingAsset.Compliance[selectedAsset.offChainProperties.complianceRegistry]
           },
           {
-            label: 'Kind',
-            data: 'Production'
-          },
-          {
-            label: 'Sold Tags',
-            data: (selectedAsset.certificatesCreatedForWh / 1000).toFixed(3),
+            label: 'Meter Read' + getOffChainText('lastSmartMeterReadWh', selectedAsset.offChainProperties),
+            data: (selectedAsset.lastSmartMeterReadWh / 1000).toFixed(3),
             tip: 'kWh',
             isAdditionalInformation: true
           },
+
           {
-            label: 'Geo Location',
+            label: 'Geo Location' + getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
             data: selectedAsset.offChainProperties.gpsLatitude + ', ' + selectedAsset.offChainProperties.gpsLongitude,
             image: map,
             type: 'map',
@@ -141,44 +139,31 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
         ],
         [
           {
-            label: 'Asset Type',
+            label: 'Asset Type' + getOffChainText('assetType', selectedAsset.offChainProperties),
             data: EwAsset.ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
             image: EwAsset.ProducingAsset.Type.Wind === selectedAsset.offChainProperties.assetType ? wind :
               EwAsset.ProducingAsset.Type.Solar === selectedAsset.offChainProperties.assetType ? solar : hydro,
             rowspan: 2
           },
           {
-            label: 'Other Green Attributes',
+            label: 'Other Green Attributes' + getOffChainText('otherGreenAttributes', selectedAsset.offChainProperties),
             data: selectedAsset.offChainProperties.otherGreenAttributes
           },
           {
-            label: 'Commissioning Date',
+            label: 'Commissioning Date' + getOffChainText('operationalSince', selectedAsset.offChainProperties),
             data: moment(selectedAsset.offChainProperties.operationalSince * 1000).format('DD MMM YY')
-          },
-
-          {
-            label: 'Tags for Sale',
-            data: (this.state.notSoldCertificates / 1000).toFixed(3),
-            tip: 'kWh',
-            isAdditionalInformation: true
           }
         ],
         [
           {
-            label: 'Public Support',
+            label: 'Public Support' + getOffChainText('typeOfPublicSupport', selectedAsset.offChainProperties),
             data: selectedAsset.offChainProperties.typeOfPublicSupport,
             description: ''
           },
           {
-            label: 'Nameplate Capacity',
+            label: 'Nameplate Capacity' + getOffChainText('capacityWh', selectedAsset.offChainProperties),
             data: (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3),
             tip: 'kW'
-          },
-          {
-            label: 'Total Saved CO2',
-            data: (selectedAsset.lastSmartMeterCO2OffsetRead / 1000).toFixed(3),
-            tip: 'kg',
-            isAdditionalInformation: true
           }
         ]
       ];
