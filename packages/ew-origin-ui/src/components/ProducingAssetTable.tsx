@@ -130,10 +130,8 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             generateHeader('Town, Country', 136),
             generateHeader('Type', 72),
             generateHeader('Nameplate Capacity (kW)', 125.45, true),
-            generateHeader('Sold Tags (kWh)', 135.89, true),
-            generateHeader('Tags for Sale (kWh)', 135.89, true),
-            generateHeader('CO2 Reduction (kg)', 137.39, true),
-            generateHeader('Generated Tags (kWh)', 137.39, true, true)
+            generateHeader('Meter Read (kWh)', 135.89, true)
+
         ];
 
         const TableFooter: any = [
@@ -142,10 +140,8 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 key: 'total',
                 colspan: 5
             },
-            generateFooter('Sold Tags (kWh)'),
-            generateFooter('Tags for Sale (kWh)'),
-            generateFooter('CO2 Reduction (kg)'),
-            generateFooter('Generated Tags (kWh)', true)
+            generateFooter('Meter Read (kWh)')
+         
         ];
 
         const assets = null;
@@ -182,12 +178,7 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 (producingAsset.offChainProperties.city + ', ' + producingAsset.offChainProperties.country),
                 EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
                 (producingAsset.offChainProperties.capacityWh / 1000).toFixed(3),
-                (Math.max(0, generatedKWh - kWhForSale)).toFixed(3),
-                kWhForSale.toFixed(3),
-                
-                '(producingAsset..cO2UsedForCertificate/1000).toFixed(3)',
-                
-                generatedKWh.toFixed(3)
+                (producingAsset.lastSmartMeterReadWh / 1000).toFixed(3) 
                 
             ]);
 

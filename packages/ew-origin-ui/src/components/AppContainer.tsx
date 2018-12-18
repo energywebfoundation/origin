@@ -318,7 +318,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                 <Route path={'/' + (this.props as any).match.params.contractAddress} component={this.Asset} />
 
             </Switch>
-            <Footer cooContractAddress={(this.props as any).match.params.contractAddress} />
+            {/* <Footer cooContractAddress={(this.props as any).match.params.contractAddress} /> */}
         </div>;
 
     }
