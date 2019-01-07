@@ -2,6 +2,7 @@
   "name": "ew-deployment",
   "version": "1.0.0",
   "description": "",
+  "main": "build/ts/index.js",
   "scripts": {
     "test": "echo 'no Test yet'",
     "build-ts": "rm -rf build/ts && node_modules/typescript/bin/tsc && cp src/types/*.d.ts build/ts/types/"
