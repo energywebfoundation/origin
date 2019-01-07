@@ -1,0 +1,24 @@
+{
+  "name": "ew-deployment",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo 'no Test yet'",
+    "build-ts": "rm -rf build/ts && node_modules/typescript/bin/tsc && cp src/types/*.d.ts build/ts/types/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.slock.it/ewf/origin/utils/ew-deployment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "^1.0.0-beta.34"
+  },
+  "devDependencies": {
+    "@types/node": "^9.6.28",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2",
+    "typescript-json-schema": "^0.31.0"
+  }
+}
