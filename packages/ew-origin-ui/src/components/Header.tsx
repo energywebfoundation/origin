@@ -26,12 +26,12 @@ import {
 
 // import Profile from '../Profile/Profile'
 
-import * as logo from '../../assets/logo.svg'
-import * as avatar from '../../assets/avatar.svg'
-import view_profile from '../../assets/view_profile.svg'
-import * as EwUser from 'ew-user-registry-lib';
+import logo from '../../assets/logo.svg';
+import avatar from '../../assets/avatar.svg';
+import view_profile from '../../assets/view_profile.svg';
+import EwUser from 'ew-user-registry-lib';
 
-import './Header.scss'
+import './Header.scss';
 
 
 export interface HeaderProps {

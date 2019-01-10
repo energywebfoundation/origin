@@ -18,12 +18,12 @@
 import * as React from 'react';
 import FadeIn from 'react-fade-in';
 
-import * as marker from '../../assets/marker.svg';
-import * as map from '../../assets/map.svg';
-import * as wind from '../../assets/icon_wind.svg';
-import * as hydro from '../../assets/icon_hydro.svg';
-import * as solar from '../../assets/icon_solar.svg';
-import * as moment from 'moment';
+import marker from '../../assets/marker.svg';
+import map from '../../assets/map.svg';
+import wind from '../../assets/icon_wind.svg';
+import hydro from '../../assets/icon_hydro.svg';
+import solar from '../../assets/icon_solar.svg';
+import moment from 'moment';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
