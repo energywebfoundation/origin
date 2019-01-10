@@ -8,9 +8,9 @@ import {
 } from 'react-bootstrap';
 import Toggle from 'react-toggle';
 import DatePicker from 'react-date-picker';
-import * as renderHTML  from 'react-render-html';
-import * as moment from 'moment';
-import * as action from '../../../assets/action.svg';
+import renderHTML  from 'react-render-html';
+import moment from 'moment';
+import action from '../../../assets/action.svg';
 import { PeriodToSeconds } from '../../components/DemandTable';
 import * as EwAsset from 'ew-asset-registry-lib'; 
 

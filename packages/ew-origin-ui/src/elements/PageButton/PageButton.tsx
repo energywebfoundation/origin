@@ -3,10 +3,10 @@ import {
   DropdownButton,
   MenuItem
 } from 'react-bootstrap'
-import * as moment from 'moment'
+import moment from 'moment'
 import { DateRange } from 'react-date-range'
-import * as datepick from '../../../assets/datepick.svg'
-import * as plus from '../../../assets/plus.svg'
+import datepick from '../../../assets/datepick.svg'
+import plus from '../../../assets/plus.svg'
 import '../Block/Block.scss'
 import './PageButton.scss'
 

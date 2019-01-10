@@ -21,8 +21,8 @@ import {
   withRouter
 } from 'react-router-dom'
 
-import * as outline from '../../assets/outline-o.svg'
-import * as ewfLogo from '../../assets/EWF.png'
+import outline from '../../assets/outline-o.svg'
+import ewfLogo from '../../assets/EWF.png'
 import './Footer.scss'
 
 const FooterLinks = [

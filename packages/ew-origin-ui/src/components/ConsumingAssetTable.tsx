@@ -121,8 +121,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
             generateHeader('Owner'),
             generateHeader('Town, Country'),
             generateHeader('Nameplate Capacity (kW)', defaultWidth, true),
-            generateHeader('Consumption (kWh)', defaultWidth, true),
-            generateHeader('Certified (kWh)', defaultWidth, true, true)
+            generateHeader('Consumption (kWh)', defaultWidth, true)
         ];
 
         const TableFooter = [
@@ -131,8 +130,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
                 key: 'total',
                 colspan: 4
             },
-            generateFooter('Consumption (kWh)'),
-            generateFooter('Certified (kWh)', true)
+            generateFooter('Consumption (kWh)')
         ];
 
         //  this.getCO2Offset()
@@ -167,7 +165,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
             ];
         });
 
-        console.log(data)
+      
 
         return <div className='ConsumptionWrapper'>
             <Table 
