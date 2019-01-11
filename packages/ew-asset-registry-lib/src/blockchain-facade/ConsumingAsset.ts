@@ -37,7 +37,9 @@ export const createAsset =
 
         await consumingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 
-        configuration.logger.info(`Consuming asset ${consumingAsset.id} created`);
+        if (configuration.logger) {
+            configuration.logger.info(`Consuming asset ${consumingAsset.id} created`);
+        }
 
         return consumingAsset.sync();
 
@@ -85,7 +87,9 @@ export class Entity extends Asset.Entity implements OnChainProperties {
             this.initialized = true;
 
             this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
-            this.configuration.logger.verbose(`Consuming asset ${this.id} synced`);
+            if (this.configuration.logger) {
+                this.configuration.logger.verbose(`Consuming asset ${this.id} synced`);
+            }
         }
 
         return this;

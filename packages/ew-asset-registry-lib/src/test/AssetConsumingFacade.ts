@@ -62,11 +62,11 @@ describe('AssetConsumingLogic Facade', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy user-registry contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts((web3 as any));
+        const userContracts = await migrateUserRegistryContracts((web3 as any), privateKeyDeployment);
         userContractLookupAddr =
-            userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserContractLookup.json'];
+            (userContracts as any).UserContractLookup;
         userLogic =
-            new UserLogic((web3 as any), userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserLogic.json']);
+            new UserLogic((web3 as any), (userContracts as any).UserLogic);
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
@@ -78,8 +78,8 @@ describe('AssetConsumingLogic Facade', () => {
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr);
-        assetConsumingLogic = new AssetConsumingRegistryLogic((web3 as any), deployedContracts[process.cwd() + '/node_modules/ew-asset-registry-contracts/dist/contracts/AssetConsumingRegistryLogic.json']);
+        const deployedContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr, privateKeyDeployment);
+        assetConsumingLogic = new AssetConsumingRegistryLogic((web3 as any), (deployedContracts as any).AssetConsumingRegistryLogic);
     });
 
     it('should onboard tests-users', async () => {

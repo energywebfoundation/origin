@@ -95,7 +95,9 @@ export const createAsset =
 
         await producingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 
-        configuration.logger.info(`Producing asset ${producingAsset.id} created`);
+        if (configuration.logger) {
+            configuration.logger.info(`Producing asset ${producingAsset.id} created`);
+        }
 
         return producingAsset.sync();
 
@@ -106,6 +108,7 @@ export class Entity extends Asset.Entity implements OnChainProperties {
     certificatesCreatedForWh: number;
     lastSmartMeterCO2OffsetRead: number;
     maxOwnerChanges: number;
+    offChainProperties: OffChainProperties;
 
     getUrl(): string {
         return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset`;
@@ -128,7 +131,9 @@ export class Entity extends Asset.Entity implements OnChainProperties {
             this.maxOwnerChanges = asset.maxOwnerChanges;
 
             this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
-            this.configuration.logger.verbose(`Producing asset ${this.id} synced`);
+            if (this.configuration.logger) {
+                this.configuration.logger.verbose(`Producing asset ${this.id} synced`);
+            }
 
         }
         return this;

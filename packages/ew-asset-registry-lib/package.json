@@ -40,21 +40,22 @@
     "axios": "^0.18.0",
     "curlrequest": "^1.0.1",
     "ethereumjs-tx": "^1.3.7",
-    "ew-asset-registry-contracts": "v0.1.6",
-    "ew-user-registry-contracts": "0.0.6",
-    "ew-utils-general-lib": "0.0.2",
+    "ew-asset-registry-contracts": "0.1.8-beta04",
+    "ew-user-registry-contracts": "0.0.8-beta03",
+    "ew-utils-general-lib": "0.0.6",
     "ew-utils-testbackend": "0.0.3",
     "jsonschema": "^1.2.4",
     "precise-proofs": "0.0.1",
-    "sloffle": "v1.3.0-beta06",
-    "web3": "^1.0.0-beta.36",
+    "web3": "^1.0.0-beta.37",
     "winston": "^3.0.0",
-    "write-json-file": "^2.3.0"
+    "write-json-file": "^2.3.0",
+    "yaeti": "^1.0.2"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/mocha": "^2.2.48",
     "@types/node": "^9.6.28",
+    "@types/web3": "^1.0.14",
     "chai": "^4.1.2",
     "ganache-cli": "^6.1.8",
     "mocha": "^5.2.0",
@@ -62,5 +63,6 @@
     "tslint": "^5.11.0",
     "typescript": "^2.9.2",
     "typescript-json-schema": "^0.31.0"
-  }
+  },
+  "postinstall": "rm -f node_modules/web3/index.d.ts"
 }
