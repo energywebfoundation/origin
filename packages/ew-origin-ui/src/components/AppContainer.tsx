@@ -36,7 +36,7 @@ import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as EwAsset from 'ew-asset-registry-lib'; 
 import * as EwUser from 'ew-user-registry-lib';
-import { AssetProducingRegistryLogicJSON, AssetConsumingRegistryLogicJSON, AssetContractLookupJSON, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
+import { AssetProducingRegistryLogicJSON, AssetConsumingRegistryLogicJSON, AssetContractLookupJSON, AssetProducingRegistryLogic, AssetConsumingRegistryLogic, AssetContractLookup } from 'ew-asset-registry-contracts';
 import {UserLogicJSON, UserContractLookupJSON  } from 'ew-user-registry-contracts';
 
 interface AppContainerProps extends StoreState {
@@ -178,14 +178,9 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const assetLookupContractInstance: any = new web3.eth.Contract(
-            AssetContractLookupJSON.abi,
-            assetContractLookupAddress
-        );
-
-        const assetProducingRegistryAddress: string = await assetLookupContractInstance.methods.assetProducingRegistry().call();
-        const assetConsumingRegistryAddress: string = await assetLookupContractInstance.methods.assetConsumingRegistry().call();
-        const userLookupAddress: string = await assetLookupContractInstance.methods.userRegistry().call();
+        const assetLookupContractInstance: AssetContractLookup = new AssetContractLookup(web3, assetContractLookupAddress);
+   
+        const userLookupAddress: string = await assetLookupContractInstance.userRegistry();
 
         const userLookupContract: any = new web3.eth.Contract(
             UserContractLookupJSON.abi,
@@ -197,8 +192,12 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             blockchainProperties: {
                 web3: web3,
         
-                producingAssetLogicInstance: new AssetProducingRegistryLogic(web3, assetProducingRegistryAddress),
-                consumingAssetLogicInstance: new AssetConsumingRegistryLogic(web3, assetConsumingRegistryAddress),
+                producingAssetLogicInstance: new AssetProducingRegistryLogic(
+                    web3,
+                    await assetLookupContractInstance.assetProducingRegistry()),
+                consumingAssetLogicInstance: new AssetConsumingRegistryLogic(
+                    web3,
+                    await assetLookupContractInstance.assetConsumingRegistry()),
                 
                 userLogicInstance: new web3.eth.Contract(
                     UserLogicJSON.abi,
@@ -219,7 +218,6 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         this.props.actions.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
         
-
         const currentUser: EwUser.User = accounts.length > 0 ?
             await (new EwUser.User(accounts[0], conf)).sync() :
             null;
