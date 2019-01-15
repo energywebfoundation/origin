@@ -32,7 +32,7 @@ export abstract class Entity {
 
     abstract getUrl(): string;
 
-    prepareEntityCreation(onChainProperties: OnChainProperties, offChainProperties: any, schema: any): OffChainProperties {
+    prepareEntityCreation(onChainProperties: OnChainProperties, offChainProperties: any, schema: any, debug: boolean): OffChainProperties {
         validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
 
         if (this.configuration.offChainDataSource) {
@@ -43,7 +43,7 @@ export abstract class Entity {
                 throw new Error('Hash should not be set');
             }
 
-            return this.generateAndAddProofs(offChainProperties);
+            return this.generateAndAddProofs(offChainProperties, debug);
         }
         return null;
     }
@@ -62,13 +62,13 @@ export abstract class Entity {
         }
     }
 
-    async getOffChainProperties(hash: string): Promise<any> {
+    async getOffChainProperties(hash: string, debug?: boolean): Promise<any> {
         if (this.configuration.offChainDataSource) {
             const data = (await axios.get(`${this.getUrl()}/${this.id}`)).data;
             const offChainProperties = data.properties;
             this.generateAndAddProofs(data.properties, data.salts);
 
-            this.verifyOffChainProperties(hash, offChainProperties, data.schema);
+            this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Got off chain properties from ${this.getUrl()}/${this.id}`);
             }
@@ -78,14 +78,19 @@ export abstract class Entity {
         return null;
     }
 
-    verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {
+    verifyOffChainProperties(rootHash: string, properties: any, schema: string[], debug: boolean) {
 
         Object.keys(properties).map((key) => {
 
-            const proof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
+            const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
 
-            if (proof) {
-                if (!PreciseProofs.verifyProof(rootHash, proof, schema)) {
+            if (debug) {
+                console.log('\nDEBUG');
+
+            }
+
+            if (theProof) {
+                if (!PreciseProofs.verifyProof(rootHash, theProof, schema)) {
                     throw new Error(`Proof for property ${key} is invalid.`);
 
                 }
@@ -100,29 +105,34 @@ export abstract class Entity {
 
     abstract async sync(): Promise<Entity>;
 
-    protected generateAndAddProofs(properties: any, salts?: string[]): OffChainProperties {
+    protected generateAndAddProofs(properties: any, debug: boolean, salts?: string[]): OffChainProperties {
         this.proofs = [];
-        let leafs;
-        if (salts) {
-            leafs = PreciseProofs.createLeafs(properties, salts);
-        } else {
-            leafs = PreciseProofs.createLeafs(properties);
-        }
-
+        let leafs = salts ? PreciseProofs.createLeafs(properties, salts) : 
+            PreciseProofs.createLeafs(properties);
+       
         leafs = PreciseProofs.sortLeafsByKey(leafs);
 
         const merkleTree = PreciseProofs.createMerkleTree(leafs.map((leaf: PreciseProofs.Leaf) => leaf.hash));
+        
         leafs.forEach((leaf: PreciseProofs.Leaf) =>
             this.addProof(PreciseProofs.createProof(leaf.key, leafs, true, merkleTree)),
         );
 
         const schema = leafs.map((leaf: PreciseProofs.Leaf) => leaf.key);
 
-        return {
+        const result = {
             rootHash: PreciseProofs.createExtendedTreeRootHash(merkleTree[merkleTree.length - 1][0], schema),
             salts: leafs.map((leaf: PreciseProofs.Leaf) => leaf.salt),
             schema,
         };
+
+        if (debug) {
+            console.log('\nDEBUG');
+            console.log(result);
+            PreciseProofs.printTree(merkleTree, leafs, schema);
+        }
+        
+        return result;
 
     }
 
