@@ -66,7 +66,7 @@ export abstract class Entity {
         if (this.configuration.offChainDataSource) {
             const data = (await axios.get(`${this.getUrl()}/${this.id}`)).data;
             const offChainProperties = data.properties;
-            this.generateAndAddProofs(data.properties, data.salts);
+            this.generateAndAddProofs(data.properties, debug, data.salts);
 
             this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);
             if (this.configuration.logger) {
@@ -85,7 +85,10 @@ export abstract class Entity {
             const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
 
             if (debug) {
-                console.log('\nDEBUG');
+                console.log('\nDEBUG verifyOffChainProperties');
+                console.log('rootHash: ' + rootHash);
+                console.log('properties: ' + properties);
+
 
             }
 
@@ -127,7 +130,7 @@ export abstract class Entity {
         };
 
         if (debug) {
-            console.log('\nDEBUG');
+            console.log('\nDEBUG generateAndAddProofs');
             console.log(result);
             PreciseProofs.printTree(merkleTree, leafs, schema);
         }
