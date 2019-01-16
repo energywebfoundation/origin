@@ -38,6 +38,7 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import { AssetProducingRegistryLogicJSON, AssetConsumingRegistryLogicJSON, AssetContractLookupJSON, AssetProducingRegistryLogic, AssetConsumingRegistryLogic, AssetContractLookup } from 'ew-asset-registry-contracts';
 import {UserLogicJSON, UserContractLookupJSON  } from 'ew-user-registry-contracts';
+import {OriginContractLookup, CertificateLogic} from 'ew-origin-contracts';
 
 interface AppContainerProps extends StoreState {
     actions: Actions;
@@ -160,7 +161,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         eventHandlerManager.start();
     }
 
-    async initConf(assetContractLookupAddress: string): Promise<General.Configuration.Entity> {
+    async initConf(originIssuerContractLookupAddress: string): Promise<General.Configuration.Entity> {
         let web3: any = null;
         const params: any = queryString.parse((this.props as any).location.search);
 
@@ -178,7 +179,14 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const assetLookupContractInstance: AssetContractLookup = new AssetContractLookup(web3, assetContractLookupAddress);
+        const originLookupContract: OriginContractLookup = new OriginContractLookup(
+            (web3 as any),
+            originIssuerContractLookupAddress
+        );
+
+        const assetLookupContractInstance: AssetContractLookup = new AssetContractLookup(
+            web3,
+            await originLookupContract.assetContractLookup());
    
         const userLookupAddress: string = await assetLookupContractInstance.userRegistry();
 
@@ -187,6 +195,8 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             userLookupAddress);
 
         const userRegistryAddress: string = await userLookupContract.methods.userRegistry().call();
+
+
 
         return {
             blockchainProperties: {
@@ -198,7 +208,10 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                 consumingAssetLogicInstance: new AssetConsumingRegistryLogic(
                     web3,
                     await assetLookupContractInstance.assetConsumingRegistry()),
-                
+                certificateLogicInstance: new CertificateLogic(
+                    web3,
+                    await originLookupContract.originLogicRegistry()
+                ),
                 userLogicInstance: new web3.eth.Contract(
                     UserLogicJSON.abi,
                     userRegistryAddress)
@@ -236,12 +249,19 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         //     this.props.actions.demandCreatedOrUpdated(d)
         // );
 
+        (await OriginIssuer.Certificate.getAllCertificates(conf))
+            .forEach((certificate: OriginIssuer.Certificate.Entity) =>
+                this.props.actions.certificateCreatedOrUpdated(certificate)
+            );
+            
+
         // (await Certificate.GET_ALL_CERTIFICATES(conf.blockchainProperties)).forEach((c: Certificate) =>
         //     this.props.actions.certificateCreatedOrUpdated(c)
         // );
 
         this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
 
+        console.log(this.props.certificates)
 
         // this.initEventHandler(conf);
 
