@@ -84,13 +84,14 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
   }
 
   init(props: DetailViewProps) {
-    const selectedCertificate: OriginIssuer.Certificate.Entity = 
+    if (props.id) {
+        const selectedCertificate: OriginIssuer.Certificate.Entity = 
         props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === props.id.toString());
-    if (selectedCertificate) {
-        // TODO
-        //this.getOwner(props, selectedCertificate, () => this.enrichEvent(props, selectedCertificate));
-
-    }
+        if (selectedCertificate) {
+            // TODO
+            //this.getOwner(props, selectedCertificate, () => this.enrichEvent(props, selectedCertificate));
+        }
+      }  
 
   }
 
@@ -155,7 +156,11 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
 
   render() {
 
-    const selectedCertificate = this.props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === this.props.id.toString());
+
+
+    const selectedCertificate = this.props.id !== null && this.props.id !== undefined ? 
+        this.props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === this.props.id.toString()) :
+        null;
 
     let data;
     let events = [];

@@ -19,7 +19,7 @@ import * as React from 'react';
 
 import Web3 = require('web3');
 
-// import { Certificates } from './Certificates';
+import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
 // import { Demands } from './Demands';
 import { StoreState, Actions } from '../types';
@@ -49,7 +49,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
     constructor(props: AppContainerProps) {
         super(props);
         
-        // this.CertificateTable = this.CertificateTable.bind(this);
+        this.CertificateTable = this.CertificateTable.bind(this);
         // this.DemandTable = this.DemandTable.bind(this);
         // this.Admin = this.Admin.bind(this);
         this.Asset = this.Asset.bind(this);
@@ -254,14 +254,8 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                 this.props.actions.certificateCreatedOrUpdated(certificate)
             );
             
-
-        // (await Certificate.GET_ALL_CERTIFICATES(conf.blockchainProperties)).forEach((c: Certificate) =>
-        //     this.props.actions.certificateCreatedOrUpdated(c)
-        // );
-
         this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
 
-        console.log(this.props.certificates)
 
         // this.initEventHandler(conf);
 
@@ -279,15 +273,15 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         />;
     }
 
-    // CertificateTable() {
-    //     return <Certificates
-    //         baseUrl={(this.props as any).match.params.contractAddress}
-    //         producingAssets={this.props.producingAssets}
-    //         certificates={this.props.certificates}
-    //         conf={this.props.conf}
-    //         currentUser={this.props.currentUser}
-    //     />;
-    // }
+    CertificateTable() {
+        return <Certificates
+            baseUrl={(this.props as any).match.params.contractAddress}
+            producingAssets={this.props.producingAssets}
+            certificates={this.props.certificates}
+            conf={this.props.configuration}
+            currentUser={this.props.currentUser}
+        />;
+    }
 
     // DemandTable() {
     //     return <Demands
@@ -319,8 +313,9 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             <Switch>
 
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/assets/'} component={this.Asset} />
-                {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/certificates'} component={this.CertificateTable} />
+                {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
+                
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} />
           
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />

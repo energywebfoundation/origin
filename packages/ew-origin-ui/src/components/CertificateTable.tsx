@@ -219,6 +219,8 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             return <Redirect push to={'/' + this.props.baseUrl + '/certificates/detail_view/' + this.state.detailViewForCertificateId} />;
         }
 
+        
+
         const defaultWidth = 106;
         const getKey = TableUtils.getKey;
         const generateHeader = (label, width = defaultWidth, right = false, body = false) => (TableUtils.generateHeader(label, width, right, body));
@@ -265,12 +267,14 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             return [
                 certificate.id,
                 enrichedCertificateData.certificateOwner.organization,
-                OriginIssuer.Certificate.Entity[enrichedCertificateData.producingAsset.offChainProperties.assetType],
-                // new Date(enrichedCertificateData.producingAsset.operationalSince * 1000).toDateString(),
-                // enrichedCertificateData.producingAsset.gpsLongitude + ' ' + enrichedCertificateData.producingAsset.gpsLatitude,
-                // enrichedCertificateData.producingAsset.city + ', ' + enrichedCertificateData.producingAsset.country,
-                // enrichedCertificateData.producingAsset.capacityWh / 1000,
-                // Compliance[enrichedCertificateData.producingAsset.complianceRegistry],
+                EwAsset.ProducingAsset.Type[enrichedCertificateData.producingAsset.offChainProperties.assetType],
+                new Date(enrichedCertificateData.producingAsset.offChainProperties.operationalSince * 1000).toDateString(),
+                enrichedCertificateData.producingAsset.offChainProperties.gpsLongitude + 
+                    ' ' + enrichedCertificateData.producingAsset.offChainProperties.gpsLatitude,
+                enrichedCertificateData.producingAsset.offChainProperties.city + 
+                    ', ' + enrichedCertificateData.producingAsset.offChainProperties.country,
+                enrichedCertificateData.producingAsset.offChainProperties.capacityWh / 1000,
+                EwAsset.ProducingAsset.Compliance[enrichedCertificateData.producingAsset.offChainProperties.complianceRegistry],
                 new Date(enrichedCertificateData.certificate.creationTime * 1000).toDateString(),
                 // ˚
                 (enrichedCertificateData.certificate.powerInW / 1000).toFixed(3)
