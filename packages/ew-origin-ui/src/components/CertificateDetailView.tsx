@@ -84,12 +84,12 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
   }
 
   init(props: DetailViewProps) {
-    if (props.id) {
+    if (props.id !== null && props.id !== undefined) {
         const selectedCertificate: OriginIssuer.Certificate.Entity = 
         props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === props.id.toString());
         if (selectedCertificate) {
-            // TODO
-            //this.getOwner(props, selectedCertificate, () => this.enrichEvent(props, selectedCertificate));
+   
+            this.getOwner(props, selectedCertificate, () => this.enrichEvent(props, selectedCertificate));
         }
       }  
 
@@ -98,65 +98,64 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
   async getOwner(props: DetailViewProps, selectedCertificate: OriginIssuer.Certificate.Entity, cb) {
 
     this.setState({
-      owner: await (new EwUser.User(selectedCertificate.owner.address, props.conf).sync())
+      owner: await (new EwUser.User(selectedCertificate.owner.address, props.conf as any).sync())
 
     },            cb);
 
   }
 
-//   async enrichEvent(props: DetailViewProps, selectedCertificate: OriginIssuer.Certificate.Entity) {
-//     const asset = this.props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString());
-//     const jointEvents = (await asset.getEventWithFileHash(selectedCertificate.dataLog))
-//       .concat(await selectedCertificate.getCertificateEvents())
-//       .map(async event => {
-//         let lable;
-//         let description;
+  async enrichEvent(props: DetailViewProps, selectedCertificate: OriginIssuer.Certificate.Entity) {
+    const asset = this.props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString());
+    console.log('###')
+    console.log(await selectedCertificate.getAllCertificateEvents())
+    const jointEvents = (await selectedCertificate.getAllCertificateEvents())
+      .map(async (event: any) => {
+        let lable;
+        let description;
 
-//         switch (event.event) {
-//           case 'LogNewMeterRead':
-//             lable = 'Initial Logging';
-//             description = 'Logging by Asset #' + event.returnValues._assetId;
-//             break;
-//           case 'LogCreatedCertificate':
-//             const organization = (await (new User(event.returnValues.owner, props.web3Service.blockchainProperties).syncWithBlockchain())).organization;
-//             lable = 'Certificate Created';
-//             description = 'Initially owned by ' + organization;
-//             break;
-//           case 'LogRetireRequest':
-//             lable = 'Certificate Claimed';
-//             description = 'Initiated by ' + this.state.owner.firstName + ' ' + this.state.owner.surname + ' from ' + this.state.owner.organization;
-//             break;
-//           case 'LogCertificateOwnerChanged':
-//             const newOwner = (await (new User(event.returnValues._newOwner, props.web3Service.blockchainProperties).syncWithBlockchain())).organization;
-//             const oldOwner = (await (new User(event.returnValues._oldOwner, props.web3Service.blockchainProperties).syncWithBlockchain())).organization;
-//             lable = 'Certificate Owner Change';
-//             description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
-//             break;
-//           default:
-//             lable = event.event;
+        switch (event.event) {
+          case 'LogNewMeterRead':
+            lable = 'Initial Logging';
+            description = 'Logging by Asset #' + event.returnValues._assetId;
+            break;
+          case 'LogCreatedCertificate':
+            const organization = (await (new EwUser.User(event.returnValues.owner, props.conf as any).sync())).organization;
+            lable = 'Certificate Created';
+            description = 'Initially owned by ' + organization;
+            break;
+          case 'LogRetireRequest':
+            lable = 'Certificate Claimed';
+            description = 'Initiated by ' + this.state.owner.organization;
+            break;
+          case 'LogCertificateOwnerChanged':
+            const newOwner = (await (new EwUser.User((event as any).returnValues._newOwner, props.conf as any).sync())).organization;
+            const oldOwner = (await (new EwUser.User((event as any).returnValues._oldOwner, props.conf as any).sync())).organization;
+            lable = 'Certificate Owner Change';
+            description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
+            break;
+          default:
+            lable = event.event;
 
-//         }
+        }
 
-    //     return {
-    //       txHash: event.transactionHash,
-    //       lable: lable,
-    //       description: description,
-    //       timestamp: (await props.web3Service.web3.eth.getBlock(event.blockNumber)).timestamp
-    //     };
-    //   });
+        return {
+          txHash: event.transactionHash,
+          lable: lable,
+          description: description,
+          timestamp: (await props.conf.blockchainProperties.web3.eth.getBlock(event.blockNumber)).timestamp
+        };
+      });
 
-//     Promise.all(jointEvents).then((events) => {
+    Promise.all(jointEvents).then((events) => {
 
-//       this.setState({
-//         events: events as any
-//       });
-//     });
+      this.setState({
+        events: events as any
+      });
+    });
 
-//   }
+  }
 
   render() {
-
-
 
     const selectedCertificate = this.props.id !== null && this.props.id !== undefined ? 
         this.props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === this.props.id.toString()) :
@@ -172,6 +171,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
           {event.lable} - {event.description}<br />
 
         </p>);
+
       const asset = this.props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString());
 
       //const jointEvents = asset.getEventWithFileHash(selectedCertificate.dataLog);

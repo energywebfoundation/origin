@@ -90,7 +90,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             ({
                 certificate: certificate,
                 producingAsset: this.props.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === certificate.assetId.toString()),
-                certificateOwner: (await (new EwUser.User(certificate.owner.address, props.conf)).sync())
+                certificateOwner: (await (new EwUser.User(certificate.owner.address, props.conf as any)).sync())
             })
         );
 

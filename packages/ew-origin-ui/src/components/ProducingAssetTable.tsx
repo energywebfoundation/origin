@@ -92,7 +92,7 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                     .filter((certificate: OriginIssuer.Certificate.Entity) => 
                         certificate.owner === producingAsset.owner && certificate.assetId.toString() === producingAsset.id
                     ),
-                organizationName: (await (new EwUser.User(producingAsset.owner.address, props.conf))
+                organizationName: (await (new EwUser.User(producingAsset.owner.address, props.conf as any))
                         .sync()
                     ).organization
             })
