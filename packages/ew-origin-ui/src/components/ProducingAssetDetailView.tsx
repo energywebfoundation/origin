@@ -95,7 +95,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
           });
         }
         this.setState({
-          owner: await (new EwUser.User(selectedAsset.owner.address, props.conf).sync())
+          owner: await (new EwUser.User(selectedAsset.owner.address, props.conf as any).sync())
   
         });
   

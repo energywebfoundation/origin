@@ -36,7 +36,7 @@ import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as EwAsset from 'ew-asset-registry-lib'; 
 import * as EwUser from 'ew-user-registry-lib';
-import { AssetProducingRegistryLogicJSON, AssetConsumingRegistryLogicJSON, AssetContractLookupJSON, AssetProducingRegistryLogic, AssetConsumingRegistryLogic, AssetContractLookup } from 'ew-asset-registry-contracts';
+import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic, AssetContractLookup } from 'ew-asset-registry-contracts';
 import {UserLogicJSON, UserContractLookupJSON  } from 'ew-user-registry-contracts';
 import {OriginContractLookup, CertificateLogic} from 'ew-origin-contracts';
 
@@ -232,7 +232,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
         
         const currentUser: EwUser.User = accounts.length > 0 ?
-            await (new EwUser.User(accounts[0], conf)).sync() :
+            await (new EwUser.User(accounts[0], conf as any)).sync() :
             null;
 
         (await EwAsset.ProducingAsset.getAllAssets(conf))

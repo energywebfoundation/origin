@@ -87,7 +87,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         const promieses = props.consumingAssets.map(async (consumingAsset: EwAsset.ConsumingAsset.Entity, index: number) =>
             ({
                 consumingAsset: consumingAsset,
-                organizationName: (await (new EwUser.User(consumingAsset.owner.address, props.conf)).sync()).organization
+                organizationName: (await (new EwUser.User(consumingAsset.owner.address, props.conf as any)).sync()).organization
             })
         )
 
