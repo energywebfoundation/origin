@@ -1,0 +1,69 @@
+{
+  "name": "ew-market-lib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/js/index.js",
+  "types": "dist/js/index.d.ts",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start-test-backend": "node node_modules/ew-utils-testbackend/index.js",
+    "test": "npm run build-ts && mocha dist/js/test/ --timeout 60000",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "testlight": "npm run build-ts && mocha build/ts/test/",
+    "debug-light-test": "npm run build-ts && mocha --inspect-brk build/ts/test/",
+    "setup-SS": "npm run build-ts && node build/ts/utils/deployment/secretStore",
+    "build-and-deploy": "npm run build && npm run deploy-contracts",
+    "deploy-contracts": "node build/ts/utils/deployment/startMigrate",
+    "build": "npm run compile-contracts && npm run build-ts && npm run build-schemas",
+    "precompile-contracts": "rm -rf build/contracts",
+    "compile-contracts": "node build/ts/utils/deployment/compile",
+    "prebuild-ts": "rm -rf build/ts",
+    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc && cp src/types/*.d.ts dist/js/types/",
+    "prebuild-schemas": "rm -rf dist/schemas && mkdir dist/schemas",
+    "build-schemas": "npm run build-schema:AssetPropertiesOffChain && npm run build-schema:ProducingAssetPropertiesOffChain",
+    "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts OffChainProperties > dist/schemas/AssetPropertiesOffChain.schema.json",
+    "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts OffChainProperties > dist/schemas/ProducingAssetPropertiesOffChain.schema.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib/issues"
+  },
+  "homepage": "https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "curlrequest": "^1.0.1",
+    "ethereumjs-tx": "^1.3.7",
+    "ew-asset-registry-contracts": "v0.1.6",
+    "ew-asset-registry-lib": "^0.0.3",
+    "ew-market-contracts": "^0.0.2",
+    "ew-user-registry-contracts": "0.0.6",
+    "ew-utils-general-lib": "0.0.2",
+    "ew-utils-testbackend": "0.0.3",
+    "jsonschema": "^1.2.4",
+    "precise-proofs": "0.0.1",
+    "sloffle": "v1.3.0-beta06",
+    "web3": "^1.0.0-beta.36",
+    "winston": "^3.0.0",
+    "write-json-file": "^2.3.0",
+    "yaeti": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.6.28",
+    "chai": "^4.1.2",
+    "ganache-cli": "^6.1.8",
+    "mocha": "^5.2.0",
+    "solc": "^0.4.23",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2",
+    "typescript-json-schema": "^0.31.0"
+  }
+}
