@@ -1,34 +1,37 @@
 import * as GeneralLib from 'ew-utils-general-lib';
-import { timingSafeEqual } from 'crypto';
+import { TransactionReceipt } from 'web3/types';
 
 export interface AgreementOnChainProperties extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
     demandId: number;
     supplyId: number;
 }
 
-export const createAgreement =
-    async (agreementPropertiesOnChain: AgreementOnChainProperties,
-           configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
-        const agreement = new Entity(null, configuration);
+export const createAgreement = async (agreementPropertiesOnChain: AgreementOnChainProperties,
+                                      configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
+    const agreement = new Entity(null, configuration);
 
-        const tx = await configuration.blockchainProperties.demandLogicInstance.createAgreement(
-            agreementPropertiesOnChain.propertiesDocumentHash,
-            agreementPropertiesOnChain.url,
-            agreementPropertiesOnChain.demandId,
-            agreementPropertiesOnChain.supplyId,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            },
-        );
+    const tx = await configuration.blockchainProperties.demandLogicInstance.createAgreement(
+        agreementPropertiesOnChain.propertiesDocumentHash,
+        agreementPropertiesOnChain.url,
+        agreementPropertiesOnChain.demandId,
+        agreementPropertiesOnChain.supplyId,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey,
+        },
+    );
 
-        agreement.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
+    agreement.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
 
-        configuration.logger.info(`Agreement ${agreement.id} created`);
+    configuration.logger.info(`Agreement ${agreement.id} created`);
 
-        return agreement.sync();
+    return agreement.sync();
 
-    };
+};
+
+export const getAllAgreementListLength = async (conf: GeneralLib.Configuration.Entity): Promise<number> => {
+    return conf.blockchainProperties.demandLogicInstance.getAllAgreementListLength();
+};
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements AgreementOnChainProperties {
 
@@ -65,6 +68,32 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             this.initialized = true;
         }
         return this;
+    }
 
+    async approveAgreementDemand(): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.demandLogicInstance.approveAgreementDemand(
+                this.id,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey });
+        }
+        else {
+            return this.configuration.blockchainProperties.demandLogicInstance.approveAgreementDemand(
+                this.id,
+                { from: this.configuration.blockchainProperties.activeUser.address },
+            );
+        }
+    }
+
+    async approveAgreementSupply(): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.demandLogicInstance.approveAgreementSupply(
+                this.id,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey });
+        }
+        else {
+            return this.configuration.blockchainProperties.demandLogicInstance.approveAgreementSupply(
+                this.id,
+                { from: this.configuration.blockchainProperties.activeUser.address });
+        }
     }
 }
