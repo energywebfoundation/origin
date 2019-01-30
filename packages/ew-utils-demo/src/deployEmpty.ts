@@ -8,26 +8,21 @@ import { migrateMarketRegistryContracts } from 'ew-market-contracts';
 
 export const deployEmptyContracts = async() => {
 
-  const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
+  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
 
   const Web3 = require('web3');
-  const web3: Web3Type = new Web3(configFile.develop.web3);
-
-  const deploymentPK = configFile.develop.deployKey.startsWith('0x') ?
-      configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
-
-  const deploymentAccount = web3.eth.accounts.privateKeyToAccount(deploymentPK).address;
-
-  console.log('Deployment Account Created: ' + deploymentAccount);
-
+  const web3: Web3Type = new Web3(connectionConfig.develop.web3);
 
   //deploy user, asset and market contracts and store instances of lookup contracts
   const userContracts = await migrateUserRegistryContracts((web3 as any))
   const userContractLookup = userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserContractLookup.json']
+  const userLogic = userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserLogic.json']
   console.log("User Contract Deployed: " + userContractLookup)
 
   const assetContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookup)
   const assetContractLookup = assetContracts[process.cwd() + "/node_modules/ew-asset-registry-contracts/dist/contracts/AssetContractLookup.json"]
+  const assetProducingRegistryLogic = assetContracts[process.cwd() + "/node_modules/ew-asset-registry-contracts/dist/contracts/AssetProducingRegistryLogic.json"]
+  const assetConsumingRegistryLogic = assetContracts[process.cwd() + "/node_modules/ew-asset-registry-contracts/dist/contracts/AssetConsumingRegistryLogic.json"]
   console.log("Asset Contract Deployed: " + assetContractLookup)
 
   const marketContracts = await migrateMarketRegistryContracts((web3 as any), assetContractLookup)
@@ -40,12 +35,12 @@ export const deployEmptyContracts = async() => {
   let deployResult = {} as any
   deployResult.userContractLookup = userContractLookup
   deployResult.assetContractLookup = assetContractLookup
-  deployResult.marketContractLookup = marketContractLookup
+  deployResult.userLogic = userLogic
+  deployResult.assetConsumingRegistryLogic = assetConsumingRegistryLogic
+  deployResult.assetProducingRegistryLogic = assetProducingRegistryLogic
 
   const writeJsonFile = require('write-json-file')
   await writeJsonFile('contractConfig.json', deployResult)
-
-
 }
 
-deployEmptyContracts()
+//deployEmptyContracts()

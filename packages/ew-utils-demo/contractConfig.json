@@ -1,5 +1,7 @@
 {
-	"userContractLookup": "0xA63159c7FAfb134d396c6ab23b5b778c79d4027b",
-	"assetContractLookup": "0x27c21f51cF5a2f8ceDe328b65495d2EB14f32461",
-	"marketContractLookup": "0x2A05d2b7Ea432D395dee3f3c61Cd83A54AdaA1e2"
+	"userContractLookup": "0x3D5Cb85Aa9f4DFF4fF3FFc845C67e7392b501b49",
+	"assetContractLookup": "0x63271Da196810ae2039db77Df87C392991B2F4c3",
+	"userLogic": "0xC0205069f5e070466796A310E41a30b1518ca16C",
+	"assetConsumingRegistryLogic": "0xad20C6d111cB34Ff2C74Bb2602F30f4daAB9A2d9",
+	"assetProducingRegistryLogic": "0x4d15C3db9ad4EBE3e206f5Fe59a168272B0EEaB0"
 }
