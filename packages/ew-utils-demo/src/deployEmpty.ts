@@ -13,6 +13,8 @@ export const deployEmptyContracts = async() => {
   const Web3 = require('web3');
   const web3: Web3Type = new Web3(connectionConfig.develop.web3);
 
+  console.log("-----------------------------------------------------------")
+
   //deploy user, asset and market contracts and store instances of lookup contracts
   const userContracts = await migrateUserRegistryContracts((web3 as any))
   const userContractLookup = userContracts[process.cwd() + '/node_modules/ew-user-registry-contracts/dist/contracts/UserContractLookup.json']
@@ -28,6 +30,8 @@ export const deployEmptyContracts = async() => {
   const marketContracts = await migrateMarketRegistryContracts((web3 as any), assetContractLookup)
   const marketContractLookup = marketContracts[process.cwd() + "/node_modules/ew-market-contracts/dist/contracts/MarketContractLookup.json"]
   console.log("Market Contract Deployed: " + marketContractLookup)
+
+  console.log("-----------------------------------------------------------\n")
 
   //initialise all contracts
   //migrateContracts already intializes the contracts

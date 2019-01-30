@@ -60,6 +60,8 @@ export const onboard = async() => {
         break
 
       case "CREATE_PRODUCING_ASSET":
+
+        console.log("-----------------------------------------------------------")
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -140,8 +142,12 @@ export const onboard = async() => {
           console.log("ERROR: " + e)
         }
 
+        console.log("-----------------------------------------------------------\n")
+
         break
       case "CREATE_CONSUMING_ASSET":
+
+        console.log("-----------------------------------------------------------")
         conf = {
           blockchainProperties: {
             activeUser: {
@@ -170,16 +176,16 @@ export const onboard = async() => {
         };
 
         const assetConsumingPropsOffChain: Asset.Asset.OffChainProperties = {
-          operationalSince: action.data.operationalSince,
           capacityWh: action.data.capacityWh,
-          country: action.data.country,
-          region: action.data.region,
-          zip: action.data.zip,
           city: action.data.city,
-          street: action.data.street,
-          houseNumber: action.data.houseNumber,
+          country: action.data.country,
           gpsLatitude: action.data.gpsLatitude,
           gpsLongitude: action.data.gpsLongitude,
+          houseNumber: action.data.houseNumber,
+          operationalSince: action.data.operationalSince,
+          region: action.data.region,
+          street: action.data.street,
+          zip: action.data.zip,
         };
 
         try {
@@ -189,6 +195,7 @@ export const onboard = async() => {
           console.log(e)
         }
 
+        console.log("-----------------------------------------------------------\n")
         break
       case "CREATE_DEMAND":
         console.log("create demand")
@@ -198,10 +205,41 @@ export const onboard = async() => {
         await sleep(2000);
         break
       case "SAVE_SMARTMETER_READ_PRODUCING":
-        console.log("save smart meter reading")
+
+        console.log("-----------------------------------------------------------")
+
+        conf.blockchainProperties.activeUser = {
+          address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
+        };
+
+        try {
+          let asset = await (new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync());
+          //await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+          asset = await asset.sync();
+        } catch(e) {
+          console.log(e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+
         break
       case "SAVE_SMARTMETER_READ_CONSUMING":
-        console.log("save smart meter reading")
+        console.log("-----------------------------------------------------------")
+
+        conf.blockchainProperties.activeUser = {
+          address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
+        };
+
+        try {
+          let asset = await (new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync());
+          //await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+          asset = await asset.sync();
+        } catch(e) {
+          console.log(e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+
         break
       default:
         console.log("Default Case")

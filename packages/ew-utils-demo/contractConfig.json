@@ -1,7 +1,7 @@
 {
-	"userContractLookup": "0x543a8EeA6BCeAdB2A6066b89E63dfBF08DB9f95B",
-	"assetContractLookup": "0x9CE62EEaD7e86f2b26cCB56e99d9d15931B2bACa",
-	"userLogic": "0xA0290a44EBAa9964e8178b46C3A6C90211246898",
-	"assetConsumingRegistryLogic": "0xE8cdD0a6b03929dBa517F05B5d45e92B1B924a01",
-	"assetProducingRegistryLogic": "0xfd6b456868dc4A080c57AFEBb0c05582B8b4eFE9"
+	"userContractLookup": "0x05505B96715743EDfc7Fda426bd509B9be2768d1",
+	"assetContractLookup": "0x8EA9103c3F9A9771928A3EA8B20d7B3d1d49FfF3",
+	"userLogic": "0x22cedfFB45F18aC8219653C8B2a4FC1a9c3a9cd1",
+	"assetConsumingRegistryLogic": "0x3507B7b2ac7E4BC5eD952a97339d1baFE2631969",
+	"assetProducingRegistryLogic": "0xf6Ecdd1a5CfCEC5079a8A1474dC2aBC398Ca0ed9"
 }
