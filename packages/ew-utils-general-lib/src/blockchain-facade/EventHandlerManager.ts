@@ -1,4 +1,3 @@
-import Web3Type from '../types/web3';
 import { ContractEventHandler } from './ContractEventHandler';
 import * as Configuration from './Configuration';
 

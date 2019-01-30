@@ -1,10 +1,11 @@
 import * as Configuration from './Configuration';
+import Contract from 'web3/eth/contract';
 
 export class ContractEventHandler {
 
     lastBlockChecked: number;
     unhandledEvents: any[];
-    contractInstance: any;
+    contractInstance: Contract;
 
     onEventRegistry: any[];
     onAnyContractEventRegistry: any[];

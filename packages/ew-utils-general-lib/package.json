@@ -8,40 +8,31 @@
     "test": "test"
   },
   "scripts": {
-    "parity-docker": "docker pull docker.slock.it/build-images/parity:v1.11.8-tobalaba && docker run --name 'parityDocker' -p 8180:8180 -p 8545:8545 -p 8546:8546 -p 8090:8091 docker.slock.it/build-images/parity:v1.11.8-tobalaba",
-    "dockerstop": "docker kill 'parityDocker' && docker container rm 'parityDocker'",
-    "start-test-backend": "node node_modules/ewf-coo-test-backend/index.js",
-    "test": "npm run prepare-wrapping && npm run build-ts && mocha dist/js/src/test/",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
-    "testlight": "npm run build-ts && mocha build/ts/test/",
-    "debug-light-test": "npm run build-ts && mocha --inspect-brk build/ts/test/",
-    "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
-    "deploy-contracts": "node dist/js/src/utils/deployment/startDeploy",
-    "prepare-wrapping": "rm -rf dist/ts/wrappedContracts && mkdir -p dist/ts/wrappedContracts && node wrapping.js",
-    "prebuild-ts": "rm -rf dist/js",
-    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc && cp src/types/*.d.ts dist/js/types/"
+    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib.git"
+    "url": "git+https://git.slock.it/ewf/origin/utils/ew-utils-general-lib.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib"
+    "url": "https://git.slock.it/ewf/origin/utils/ew-utils-general-lib"
   },
-  "homepage": "https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib#readme",
+  "homepage": "https://git.slock.it/ewf/origin/utils/ew-utils-general-lib#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "jsonschema": "^1.2.4",
     "precise-proofs": "0.0.1",
     "underscore": "^1.9.1",
+    "web3": "^1.0.0-beta.37",
     "winston": "^3.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/mocha": "^2.2.48",
     "@types/node": "^9.6.28",
+    "@types/web3": "^1.0.14",
     "chai": "^4.1.2",
     "ganache-cli": "^6.1.8",
     "mocha": "^5.2.0",
@@ -49,5 +40,6 @@
     "tslint": "^5.11.0",
     "typescript": "^2.9.2",
     "typescript-json-schema": "^0.31.0"
-  }
+  },
+  "postinstall": "rm -f node_modules/web3/index.d.ts"
 }

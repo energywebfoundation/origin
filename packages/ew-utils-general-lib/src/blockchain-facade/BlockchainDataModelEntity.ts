@@ -32,8 +32,16 @@ export abstract class Entity {
 
     abstract getUrl(): string;
 
-    prepareEntityCreation(onChainProperties: OnChainProperties, offChainProperties: any, schema: any, debug: boolean): OffChainProperties {
-        validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
+    prepareEntityCreation(
+        onChainProperties: OnChainProperties,
+        offChainProperties: any,
+        schema: any,
+        url?: string,
+        debug?: boolean,
+    ): OffChainProperties {
+        const axiosurl = url ? url : this.getUrl();
+
+        validateJson(offChainProperties, schema, axiosurl, this.configuration.logger);
 
         if (this.configuration.offChainDataSource) {
             if (onChainProperties.url) {
@@ -48,29 +56,34 @@ export abstract class Entity {
         return null;
     }
 
-    async putToOffChainStorage(properties: any, offChainStorageProperties: OffChainProperties) {
+    async putToOffChainStorage(properties: any, offChainStorageProperties: OffChainProperties, url?: string) {
 
         if (this.configuration.offChainDataSource) {
-            await axios.put(`${this.getUrl()}/${this.id}`, {
+
+            const axiosurl = url ? url : this.getUrl();
+
+            await axios.put(`${axiosurl}/${this.id}`, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema,
             });
             if (this.configuration.logger) {
-                this.configuration.logger.verbose(`Put off chain properties to ${this.getUrl()}/${this.id}`);
+                this.configuration.logger.verbose(`Put off chain properties to ${axiosurl}/${this.id}`);
             }
         }
     }
 
-    async getOffChainProperties(hash: string, debug?: boolean): Promise<any> {
+    async getOffChainProperties(hash: string, url?: string, debug?: boolean): Promise<any> {
         if (this.configuration.offChainDataSource) {
-            const data = (await axios.get(`${this.getUrl()}/${this.id}`)).data;
+
+            const axiosurl = url ? url : this.getUrl();
+            const data = (await axios.get(`${axiosurl}/${this.id}`)).data;
             const offChainProperties = data.properties;
             this.generateAndAddProofs(data.properties, debug, data.salts);
 
             this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);
             if (this.configuration.logger) {
-                this.configuration.logger.verbose(`Got off chain properties from ${this.getUrl()}/${this.id}`);
+                this.configuration.logger.verbose(`Got off chain properties from ${axiosurl}/${this.id}`);
             }
             return offChainProperties;
 
@@ -88,7 +101,6 @@ export abstract class Entity {
                 console.log('\nDEBUG verifyOffChainProperties');
                 console.log('rootHash: ' + rootHash);
                 console.log('properties: ' + properties);
-
 
             }
 
@@ -110,13 +122,13 @@ export abstract class Entity {
 
     protected generateAndAddProofs(properties: any, debug: boolean, salts?: string[]): OffChainProperties {
         this.proofs = [];
-        let leafs = salts ? PreciseProofs.createLeafs(properties, salts) : 
+        let leafs = salts ? PreciseProofs.createLeafs(properties, salts) :
             PreciseProofs.createLeafs(properties);
-       
+
         leafs = PreciseProofs.sortLeafsByKey(leafs);
 
         const merkleTree = PreciseProofs.createMerkleTree(leafs.map((leaf: PreciseProofs.Leaf) => leaf.hash));
-        
+
         leafs.forEach((leaf: PreciseProofs.Leaf) =>
             this.addProof(PreciseProofs.createProof(leaf.key, leafs, true, merkleTree)),
         );
@@ -134,7 +146,7 @@ export abstract class Entity {
             console.log(result);
             PreciseProofs.printTree(merkleTree, leafs, schema);
         }
-        
+
         return result;
 
     }

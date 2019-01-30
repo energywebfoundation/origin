@@ -1,5 +1,5 @@
-import Web3Type from '../types/web3';
 import * as Winston from 'winston';
+import Web3 = require('web3');
 
 export interface Entity {
     blockchainProperties: BlockchainProperties;
@@ -12,7 +12,7 @@ export interface OffChainDataSource {
     baseUrl: string;
 }
 export interface BlockchainProperties {
-    web3: Web3Type;
+    web3: Web3;
     demandLogicInstance?: any;
     producingAssetLogicInstance?: any;
     consumingAssetLogicInstance?: any;
