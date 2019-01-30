@@ -1,6 +1,0 @@
-{
-    "name": "Asset Regostry Contract",
-    "dependencies": {
-        "ew-utils-general-contracts": "https://git.slock.it/ewf/origin/utils/ew-utils-general-contracts"
-    }
-}

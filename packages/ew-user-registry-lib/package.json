@@ -2,22 +2,24 @@
   "name": "ew-user-registry-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "build/ts/index.js",
-  "types": "build/ts/index.d.ts",
+  "main": "dist/js/index.js",
+  "types": "dist/js/index.d.ts",
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "parity-docker": "docker pull docker.slock.it/build-images/parity:v1.11.8-tobalaba && docker run --name 'parityDocker' -p 8180:8180 -p 8545:8545 -p 8546:8546 -p 8090:8091 docker.slock.it/build-images/parity:v1.11.8-tobalaba",
+    "dockerstop": "docker kill 'parityDocker' && docker container rm 'parityDocker'",
     "start-test-backend": "node node_modules/ewf-coo-test-backend/index.js",
-    "test": "npm run build-ts && mocha dist/js/src/test/",
+    "test": "npm run build-ts && mocha dist/js/test/ --timeout 60000",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "testlight": "npm run build-ts && mocha build/ts/test/",
     "debug-light-test": "npm run build-ts && mocha --inspect-brk build/ts/test/",
     "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
     "deploy-contracts": "node dist/js/src/utils/deployment/startDeploy",
-    "precompile-contracts": "rm -rf build/contracts",
-    "prebuild-ts": "rm -rf build/ts",
-    "build-ts": "node_modules/typescript/bin/tsc && cp src/types/*.d.ts dist/js/src/types/"
+    "prepare-wrapping": "rm -rf dist/ts/wrappedContracts && mkdir -p dist/ts/wrappedContracts && node wrapping.js",
+    "prebuild-ts": "rm -rf dist/js",
+    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc && cp src/types/*.d.ts dist/js/types/"
   },
   "repository": {
     "type": "git",
@@ -33,9 +35,12 @@
     "axios": "^0.18.0",
     "curlrequest": "^1.0.1",
     "ethereumjs-tx": "^1.3.7",
+    "ew-user-registry-contracts": "0.0.6",
+    "ew-utils-general-lib": "0.0.1",
     "jsonschema": "^1.2.4",
-    "sloffle": "v1.1.2",
-    "web3": "^1.0.0-beta.34",
+    "precise-proofs": "0.0.1",
+    "sloffle": "v1.3.0-beta06",
+    "web3": "^1.0.0-beta.36",
     "winston": "^3.0.0",
     "write-json-file": "^2.3.0"
   },

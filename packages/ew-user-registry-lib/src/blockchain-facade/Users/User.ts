@@ -1,5 +1,4 @@
-import { Configuration } from '../Configuration';
-import { BlockchainDataModelEntity } from '../BlockchainDataModelEntity';
+import { Configuration, BlockchainDataModelEntity } from 'ew-utils-general-lib';
 
 export interface UserProperties {
     id: string;

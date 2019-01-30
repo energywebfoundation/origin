@@ -16,7 +16,7 @@
 
 import * as t from './types.d';
 
-export default class Web3Type {
+export class Web3Type {
 
   static providers: t.Providers;
   static givenProvider: t.Provider;
