@@ -36,9 +36,8 @@ import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as EwAsset from 'ew-asset-registry-lib'; 
 import * as EwUser from 'ew-user-registry-lib';
-import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic, AssetContractLookup } from 'ew-asset-registry-contracts';
-import {UserLogicJSON, UserContractLookupJSON  } from 'ew-user-registry-contracts';
-import {OriginContractLookup, CertificateLogic} from 'ew-origin-contracts';
+
+
 
 interface AppContainerProps extends StoreState {
     actions: Actions;
@@ -179,43 +178,12 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const originLookupContract: OriginContractLookup = new OriginContractLookup(
-            (web3 as any),
-            originIssuerContractLookupAddress
-        );
-
-        const assetLookupContractInstance: AssetContractLookup = new AssetContractLookup(
-            web3,
-            await originLookupContract.assetContractLookup());
-   
-        const userLookupAddress: string = await assetLookupContractInstance.userRegistry();
-
-        const userLookupContract: any = new web3.eth.Contract(
-            UserContractLookupJSON.abi,
-            userLookupAddress);
-
-        const userRegistryAddress: string = await userLookupContract.methods.userRegistry().call();
-
+        const blockchainProperties: General.Configuration.BlockchainProperties = await OriginIssuer
+            .createBlockchainProperties(null, web3, originIssuerContractLookupAddress) as any;
 
 
         return {
-            blockchainProperties: {
-                web3: web3,
-        
-                producingAssetLogicInstance: new AssetProducingRegistryLogic(
-                    web3,
-                    await assetLookupContractInstance.assetProducingRegistry()),
-                consumingAssetLogicInstance: new AssetConsumingRegistryLogic(
-                    web3,
-                    await assetLookupContractInstance.assetConsumingRegistry()),
-                certificateLogicInstance: new CertificateLogic(
-                    web3,
-                    await originLookupContract.originLogicRegistry()
-                ),
-                userLogicInstance: new web3.eth.Contract(
-                    UserLogicJSON.abi,
-                    userRegistryAddress)
-            },
+            blockchainProperties,
             offChainDataSource: {
                 baseUrl: 'http://localhost:3030'
             },
