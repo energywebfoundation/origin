@@ -16,6 +16,7 @@ const consumingAssets = []
 const demands = []
 const supplies = []
 const agreements = []
+const matcher = []
 
 app.use(bodyParser.json())
 
@@ -89,4 +90,17 @@ app.put('/Agreement/:id', cors(corsOptions), (req, res) => {
   res.send("success")
 })
 
+/**
+ * Matcher 
+ */
+app.get('/Matcher/:id', cors(corsOptions), (req, res) => {
+  console.log(`GET - Matcher ${req.params.id}`)
+  res.send(matcher[req.params.id])
+})
+
+app.put('/Matcher/:id', cors(corsOptions), (req, res) => {
+  console.log(`PUT - Matcher ${req.params.id}`)
+  matcher[req.params.id] = req.body
+  res.send("success")
+})
 app.listen(3030);
