@@ -18,11 +18,11 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
 import { Web3Type } from '../types/web3';
-import { UserLogic, UserContractLookup, migrateUserRegistryContracts } from 'ew-user-registry-contracts';
+import { UserLogic, UserContractLookup, migrateUserRegistryContracts, UserContractLookupJSON, UserLogicJSON} from 'ew-user-registry-contracts';
 import { UserProperties, UserPropertiesOffChain, User } from '../blockchain-facade/Users/User';
 import { Configuration } from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
-const Web3 = require('web3');
+import Web3 = require('web3');
 
 describe('UserLogic Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
@@ -47,27 +47,19 @@ describe('UserLogic Facade', () => {
 
     it('should deploy the contracts', async () => {
 
-        const contracts = await migrateUserRegistryContracts((web3 as any));
+        const contracts = await migrateUserRegistryContracts((web3 as any), privateKeyDeployment) as any;
+    
+        userContractLookup = new UserContractLookup((web3 as any), contracts.UserContractLookup);
+        userRegistry = new UserLogic((web3 as any), await userContractLookup.userRegistry());
 
-        userContractLookup = new UserContractLookup((web3 as any));
-        userRegistry = new UserLogic((web3 as any));
+  
 
-        let numberContracts = 0;
+        // const bytecodeUserContractLookup = await web3.eth.getCode(contracts.UserContractLookup);
+        // assert.isTrue(bytecodeUserContractLookup.length > 0);
+        // assert.equal(bytecodeUserContractLookup, '0x' + UserContractLookupJSON.bytecode);
 
-        Object.keys(contracts).forEach(async (key) => {
-            numberContracts += 1;
 
-            const deployedBytecode = await web3.eth.getCode(contracts[key]);
-            assert.isTrue(deployedBytecode.length > 0);
-
-            const contractInfo = JSON.parse(fs.readFileSync(key, 'utf8'));
-
-            const tempBytecode = contractInfo.deployedBytecode.startsWith('0x') ? contractInfo.deployedBytecode : '0x' + contractInfo.deployedBytecode;
-            assert.equal(deployedBytecode, tempBytecode);
-
-        });
-
-        assert.equal(numberContracts, 3);
+     
 
     });
 
