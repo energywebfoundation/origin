@@ -16,9 +16,8 @@
 
 import { assert } from 'chai';
 import * as fs from 'fs';
-
+import Web3 = require('web3');
 import 'mocha';
-import { Web3Type } from '../types/web3';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
 import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-contracts';
@@ -28,8 +27,7 @@ import * as Asset from '..';
 describe('AssetConsumingLogic Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
 
-    const Web3 = require('web3');
-    const web3: Web3Type = new Web3(configFile.develop.web3);
+    const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
         configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
@@ -62,11 +60,11 @@ describe('AssetConsumingLogic Facade', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy user-registry contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts((web3 as any), privateKeyDeployment);
+        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
         userContractLookupAddr =
             (userContracts as any).UserContractLookup;
         userLogic =
-            new UserLogic((web3 as any), (userContracts as any).UserLogic);
+            new UserLogic(web3, (userContracts as any).UserLogic);
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
@@ -78,8 +76,8 @@ describe('AssetConsumingLogic Facade', () => {
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr, privateKeyDeployment);
-        assetConsumingLogic = new AssetConsumingRegistryLogic((web3 as any), (deployedContracts as any).AssetConsumingRegistryLogic);
+        const deployedContracts = await migrateAssetRegistryContracts(web3, userContractLookupAddr, privateKeyDeployment);
+        assetConsumingLogic = new AssetConsumingRegistryLogic(web3, (deployedContracts as any).AssetConsumingRegistryLogic);
     });
 
     it('should onboard tests-users', async () => {
@@ -119,14 +117,14 @@ describe('AssetConsumingLogic Facade', () => {
         const assetPropsOffChain: Asset.Asset.OffChainProperties = {
             operationalSince: 10,
             capacityWh: 10,
-            country: 'bla',
-            region: 'bla',
-            zip: 'bla',
-            city: 'bla',
-            street: 'bla',
-            houseNumber: 'bla',
-            gpsLatitude: 'bla',
-            gpsLongitude: 'bla',
+            country: 'USA',
+            region: 'AnyState',
+            zip: '012345',
+            city: 'Anytown',
+            street: 'Main-Street',
+            houseNumber: '42',
+            gpsLatitude: '0.0123123',
+            gpsLongitude: '31.1231',
         };
 
         assert.equal(await Asset.ConsumingAsset.getAssetListLength(conf), 0);
@@ -187,6 +185,48 @@ describe('AssetConsumingLogic Facade', () => {
             assert.include(e.message, 'smartmeter does already exist');
         }
         assert.equal(await Asset.ConsumingAsset.getAssetListLength(conf), 1);
+
+    });
+
+    it('should log a new meterreading', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: assetSmartmeter, privateKey: assetSmartmeterPK,
+        };
+        let asset = await (new Asset.ConsumingAsset.Entity('0', conf).sync());
+
+        await asset.saveSmartMeterRead(100, 'newFileHash');
+
+        asset = await asset.sync();
+
+        delete asset.proofs;
+        delete asset.configuration;
+
+        delete asset.propertiesDocumentHash;
+
+        assert.deepEqual((asset) as any, {
+            id: '0',
+            initialized: true,
+            smartMeter: { address: assetSmartmeter },
+            owner: { address: assetOwnerAddress },
+            lastSmartMeterReadWh: '100',
+            active: true,
+            lastSmartMeterReadFileHash: 'newFileHash',
+            matcher: [{ address: [matcher] }],
+            url: 'http://localhost:3030/ConsumingAsset',
+            offChainProperties:
+            {
+                operationalSince: 10,
+                capacityWh: 10,
+                country: 'USA',
+                region: 'AnyState',
+                zip: '012345',
+                city: 'Anytown',
+                street: 'Main-Street',
+                houseNumber: '42',
+                gpsLatitude: '0.0123123',
+                gpsLongitude: '31.1231',
+            },
+        });
 
     });
 });

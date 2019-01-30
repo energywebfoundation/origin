@@ -15,9 +15,8 @@
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 import { assert } from 'chai';
 import * as fs from 'fs';
-
+import Web3 = require('web3');
 import 'mocha';
-import { Web3Type } from '../types/web3';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
 import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-contracts';
@@ -27,8 +26,7 @@ import * as Asset from '..';
 describe('AssetProducing Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
 
-    const Web3 = require('web3');
-    const web3: Web3Type = new Web3(configFile.develop.web3);
+    const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
         configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
@@ -61,24 +59,24 @@ describe('AssetProducing Facade', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy user-registry contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts((web3 as any), privateKeyDeployment);
+        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
         userContractLookupAddr =
             (userContracts as any).UserContractLookup;
         userLogic =
-            new UserLogic((web3 as any), (userContracts as any).UserLogic);
+            new UserLogic(web3, (userContracts as any).UserLogic);
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
         await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
 
-        userContractLookup = new UserContractLookup((web3 as any),
+        userContractLookup = new UserContractLookup(web3,
                                                     userContractLookupAddr);
 
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr, privateKeyDeployment);
-        assetProducingLogic = new AssetProducingRegistryLogic((web3 as any), (deployedContracts as any).AssetProducingRegistryLogic);
+        const deployedContracts = await migrateAssetRegistryContracts(web3, userContractLookupAddr, privateKeyDeployment);
+        assetProducingLogic = new AssetProducingRegistryLogic(web3, (deployedContracts as any).AssetProducingRegistryLogic);
     });
 
     it('should onboard tests-users', async () => {
@@ -201,6 +199,53 @@ describe('AssetProducing Facade', () => {
             assert.include(ex.message, 'smartmeter does already exist');
         }
         assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 1);
+
+    });
+
+    it('should log a new meterreading', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: assetSmartmeter, privateKey: assetSmartmeterPK,
+        };
+        let asset = await (new Asset.ProducingAsset.Entity('0', conf).sync());
+
+        await asset.saveSmartMeterRead(100, 'newFileHash');
+
+        asset = await asset.sync();
+
+        delete asset.proofs;
+        delete asset.configuration;
+
+        delete asset.propertiesDocumentHash;
+
+        assert.deepEqual((asset) as any, {
+            id: '0',
+            initialized: true,
+            smartMeter: { address: assetSmartmeter },
+            owner: { address: assetOwnerAddress },
+            lastSmartMeterReadWh: '100',
+            active: true,
+            lastSmartMeterReadFileHash: 'newFileHash',
+            matcher: [{ address: [matcher] }],
+            url: 'http://localhost:3030/ProducingAsset',
+            maxOwnerChanges: '3',
+            offChainProperties:
+            {
+                operationalSince: 0,
+                capacityWh: 10,
+                country: 'USA',
+                region: 'AnyState',
+                zip: '012345',
+                city: 'Anytown',
+                street: 'Main-Street',
+                houseNumber: '42',
+                gpsLatitude: '0.0123123',
+                gpsLongitude: '31.1231',
+                assetType: 0,
+                complianceRegistry: 2,
+                otherGreenAttributes: '',
+                typeOfPublicSupport: '',
+            },
+        });
 
     });
 

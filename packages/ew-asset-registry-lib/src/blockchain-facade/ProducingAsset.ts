@@ -1,6 +1,7 @@
 import * as GeneralLib from 'ew-utils-general-lib';
 import * as Asset from './Asset';
-import * as ProducingAssetOffChainPropertiesSchema from '../../schemas/ProducingAssetPropertiesOffChain.schema.json';
+import { ProducingAssetPropertiesOffchainSchema } from '..';
+import { TransactionReceipt } from 'web3/types';
 
 export enum Type {
     Wind,
@@ -57,7 +58,7 @@ export const createAsset =
            configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
         const producingAsset = new Entity(null, configuration);
         const offChainStorageProperties =
-            producingAsset.prepareEntityCreation(assetPropertiesOnChain, assetPropertiesOffChain, ProducingAssetOffChainPropertiesSchema);
+            producingAsset.prepareEntityCreation(assetPropertiesOnChain, assetPropertiesOffChain, ProducingAssetPropertiesOffchainSchema, false);
 
         if (configuration.offChainDataSource) {
             assetPropertiesOnChain.url = producingAsset.getUrl();
@@ -77,20 +78,7 @@ export const createAsset =
                 privateKey: configuration.blockchainProperties.activeUser.privateKey,
             },
         );
-        /*
-        const tx = await configuration.blockchainProperties.producingAssetLogicInstance.createAsset(
-            assetPropertiesOnChain.smartMeter.address,
-            assetPropertiesOnChain.owner.address,
-            assetPropertiesOnChain.maxOwnerChanges,
-            addressArray,
-            assetPropertiesOnChain.active,
-            assetPropertiesOnChain.propertiesDocumentHash,
-            assetPropertiesOnChain.url,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            });
-*/
+
         producingAsset.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
 
         await producingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
@@ -137,6 +125,25 @@ export class Entity extends Asset.Entity implements OnChainProperties {
 
         }
         return this;
+    }
+
+    async saveSmartMeterRead(meterReading: number, filehash: string): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
+                this.id,
+                meterReading,
+                filehash,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
+            );
+        }
+        else {
+            return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
+                this.id,
+                meterReading,
+                filehash,
+                { from: this.configuration.blockchainProperties.activeUser.address },
+            );
+        }
     }
 
 }

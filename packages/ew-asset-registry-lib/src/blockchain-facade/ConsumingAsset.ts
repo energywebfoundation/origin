@@ -1,6 +1,7 @@
 import * as GeneralLib from 'ew-utils-general-lib';
 import * as Asset from './Asset';
-import * as AssetOffChainPropertiesSchema from '../../schemas/AssetPropertiesOffChain.schema.json';
+import { AssetPropertiesOffchainSchema } from '..';
+import { TransactionReceipt } from 'web3/types';
 
 export interface OnChainProperties extends Asset.OnChainProperties {
     // GeneralInformation
@@ -14,7 +15,7 @@ export const createAsset =
            configuration: GeneralLib.Configuration.Entity): Promise<Asset.Entity> => {
         const consumingAsset = new Entity(null, configuration);
         const offChainStorageProperties =
-            consumingAsset.prepareEntityCreation(assetProperties, assetPropertiesOffChain, AssetOffChainPropertiesSchema);
+            consumingAsset.prepareEntityCreation(assetProperties, assetPropertiesOffChain, AssetPropertiesOffchainSchema, false);
 
         if (configuration.offChainDataSource) {
             assetProperties.url = consumingAsset.getUrl();
@@ -93,6 +94,26 @@ export class Entity extends Asset.Entity implements OnChainProperties {
         }
 
         return this;
+    }
+
+    async saveSmartMeterRead(newMeterReading: number, fileHash: string): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.consumingAssetLogicInstance.saveSmartMeterRead(
+                this.id,
+                newMeterReading,
+                fileHash,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
+            );
+        }
+        else {
+            return this.configuration.blockchainProperties.consumingAssetLogicInstance.saveSmartMeterRead(
+                this.id,
+                newMeterReading,
+                fileHash,
+                { privateKey: this.configuration.blockchainProperties.activeUser.address },
+            );
+        }
+
     }
 
 } 
