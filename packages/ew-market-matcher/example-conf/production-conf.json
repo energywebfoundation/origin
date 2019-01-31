@@ -1,0 +1,11 @@
+{
+    "dataSource": {
+        "type": "BLOCKCHAIN",
+        "contractAddress": "0x1234"
+    },
+    "matcherSpecification": {
+        "type": "CONFIGURABLE_REFERENCE",
+        "matcherConfigFile": "./ahp-rule.json"
+    }
+    
+}

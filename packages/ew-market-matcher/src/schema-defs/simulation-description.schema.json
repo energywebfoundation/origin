@@ -1,0 +1,843 @@
+{
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "properties": {
+      "matcherAddress": {
+        "$id": "/properties/matcherAddress",
+        "type": "string",
+        "title": "The Matcheraddress Schema ",
+        "default": "",
+        "examples": [
+          "0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"
+        ]
+      },
+      "flow": {
+        "$id": "/properties/flow",
+        "type": "array",
+        "items": {
+            "oneOf": [
+                {
+                    "$id": "/properties/flow/items/register-certificate",
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                      "type": {
+                        "$id": "/properties/type",
+                        "type": "string",
+                        "title": "The Type Schema ",
+                        "default": "REGISTER_CERTIFICATE",
+                        "enum": [
+                            "REGISTER_CERTIFICATE"
+                          ],
+                        "examples": [
+                          "REGISTER_CERTIFICATE"
+                        ]
+                      },
+                      "data": {
+                        "$id": "/properties/flow/items/register-certificate/properties/data",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/id",
+                            "type": "integer",
+                            "title": "The Id Schema ",
+                            "default": 0
+                          },
+                          "assetId": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/assetId",
+                            "type": "integer",
+                            "title": "The Assetid Schema ",
+                            "default": 0,
+                            "examples": [
+                              1
+                            ]
+                          },
+                          "owner": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/owner",
+                            "type": "string",
+                            "title": "The Owner Schema ",
+                            "default": "",
+                            "examples": [
+                              "0xbc42c835f32f13462a53cd6c624010c5274febda"
+                            ]
+                          },
+                          "powerInW": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/powerInW",
+                            "type": "integer",
+                            "title": "The Powerinw Schema ",
+                            "default": 0,
+                            "examples": [
+                              90
+                            ]
+                          },
+                          "retired": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/retired",
+                            "type": "boolean",
+                            "title": "The Retired Schema ",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "dataLog": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/dataLog",
+                            "type": "string",
+                            "title": "The Datalog Schema ",
+                            "default": "",
+                            "examples": [
+                              "0x0"
+                            ]
+                          },
+                          "coSaved": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/coSaved",
+                            "type": "integer",
+                            "title": "The Cosaved Schema ",
+                            "default": 0,
+                            "examples": [
+                              90
+                            ]
+                          },
+                          "creationTime": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/creationTime",
+                            "type": "integer",
+                            "title": "The Creationtime Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "escrow": {
+                            "$id": "/properties/flow/items/register-certificate/properties/data/properties/escrow",
+                            "type": "string",
+                            "title": "The Escrow Schema ",
+                            "default": "",
+                            "examples": [
+                              "0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"
+                            ]
+                          }
+                        },
+                        "required": [
+                            "id",
+                            "assetId",
+                            "owner",
+                            "powerInW",
+                            "retired",
+                            "dataLog",
+                            "coSaved",
+                            "creationTime",
+                            "escrow"
+                        ]
+                      }
+                    }
+                  },
+                {
+                    "$id": "/properties/flow/items/register-producing-asset",
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                      "type": {
+                        "$id": "/properties/flow/items/register-producing-asset/properties/type",
+                        "type": "string",
+                        "title": "The Type Schema ",
+                        "default": "REGISTER_PRODUCING_ASSET",
+                        "enum": [
+                            "REGISTER_PRODUCING_ASSET"
+                          ],
+                        "examples": [
+                          "REGISTER_PRODUCING_ASSET"
+                        ]
+                      },
+                      "data": {
+                        "$id": "/properties/flow/items/register-producing-asset/properties/data",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/id",
+                            "type": "integer",
+                            "title": "The Id Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "smartMeter": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/smartMeter",
+                            "type": "string",
+                            "title": "The Smartmeter Schema ",
+                            "default": "",
+                            "examples": [
+                              "0x0000000000000000000000000000000000000009"
+                            ]
+                          },
+                          "owner": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/owner",
+                            "type": "string",
+                            "title": "The Owner Schema ",
+                            "default": "",
+                            "examples": [
+                              "0xbc42c835f32f13462a53cd6c624010c5274febd9"
+                            ]
+                          },
+                          "operationalSince": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/operationalSince",
+                            "type": "integer",
+                            "title": "The Operationalsince Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "capacityWh": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/capacityWh",
+                            "type": "integer",
+                            "title": "The Capacitywh Schema ",
+                            "default": 0,
+                            "examples": [
+                              10
+                            ]
+                          },
+                          "lastSmartMeterReadWh": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/lastSmartMeterReadWh",
+                            "type": "integer",
+                            "title": "The Lastsmartmeterreadwh Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "active": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/active",
+                            "type": "boolean",
+                            "title": "The Active Schema ",
+                            "default": false,
+                            "examples": [
+                              true
+                            ]
+                          },
+                          "lastSmartMeterReadFileHash": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/lastSmartMeterReadFileHash",
+                            "type": "string",
+                            "title": "The Lastsmartmeterreadfilehash Schema ",
+                            "default": "",
+                            "examples": [
+                              "0x0"
+                            ]
+                          },
+                          "country": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/country",
+                            "type": "string",
+                            "title": "The Country Schema ",
+                            "default": "",
+                            "examples": [
+                              "Germany"
+                            ]
+                          },
+                          "region": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/region",
+                            "type": "string",
+                            "title": "The Region Schema ",
+                            "default": "",
+                            "examples": [
+                              "Berlin"
+                            ]
+                          },
+                          "zip": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/zip",
+                            "type": "string",
+                            "title": "The Zip Schema ",
+                            "default": "",
+                            "examples": [
+                              "123456"
+                            ]
+                          },
+                          "city": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/city",
+                            "type": "string",
+                            "title": "The City Schema ",
+                            "default": "",
+                            "examples": [
+                              "Berlin"
+                            ]
+                          },
+                          "street": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/street",
+                            "type": "string",
+                            "title": "The Street Schema ",
+                            "default": "",
+                            "examples": [
+                              "Schoenleinstrasse"
+                            ]
+                          },
+                          "houseNumber": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/houseNumber",
+                            "type": "integer",
+                            "title": "The Housenumber Schema ",
+                            "default": 0,
+                            "examples": [
+                              12
+                            ]
+                          },
+                          "gpsLatitude": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/gpsLatitude",
+                            "type": "string",
+                            "title": "The Gpslatitude Schema ",
+                            "default": "",
+                            "examples": [
+                              "0"
+                            ]
+                          },
+                          "gpsLongitude": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/gpsLongitude",
+                            "type": "string",
+                            "title": "The Gpslongitude Schema ",
+                            "default": "",
+                            "examples": [
+                              "0"
+                            ]
+                          },
+                          "assetType": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/assetType",
+                            "type": "integer",
+                            "title": "The Assettype Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "certificatesCreatedForWh": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/certificatesCreatedForWh",
+                            "type": "integer",
+                            "title": "The Certificatescreatedforwh Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "lastSmartMeterCO2OffsetRead": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/lastSmartMeterCO2OffsetRead",
+                            "type": "integer",
+                            "title": "The Lastsmartmeterco2offsetread Schema ",
+                            "default": 0,
+                            "examples": [
+                              10
+                            ]
+                          },
+                          "cO2UsedForCertificate": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/cO2UsedForCertificate",
+                            "type": "integer",
+                            "title": "The Co2usedforcertificate Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "complianceRegistry": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/complianceRegistry",
+                            "type": "integer",
+                            "title": "The Complianceregistry Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "otherGreenAttributes": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/otherGreenAttributes",
+                            "type": "string",
+                            "title": "The Othergreenattributes Schema ",
+                            "default": "",
+                            "examples": [
+                              "none"
+                            ]
+                          },
+                          "typeOfPublicSupport": {
+                            "$id": "/properties/flow/items/register-producing-asset/properties/data/properties/typeOfPublicSupport",
+                            "type": "string",
+                            "title": "The Typeofpublicsupport Schema ",
+                            "default": "",
+                            "examples": [
+                              "none"
+                            ]
+                          }
+                        },
+                        "required": [
+                            "id",
+                            "smartMeter",
+                            "owner",
+                            "operationalSince",
+                            "capacityWh",
+                            "lastSmartMeterReadWh",
+                            "active",
+                            "lastSmartMeterReadFileHash",
+                            "country",
+                            "region",
+                            "zip",
+                            "city",
+                            "street",
+                            "houseNumber",
+                            "gpsLatitude",
+                            "gpsLongitude",
+                            "assetType",
+                            "certificatesCreatedForWh",
+                            "lastSmartMeterCO2OffsetRead",
+                            "cO2UsedForCertificate",
+                            "complianceRegistry",
+                            "otherGreenAttributes",
+                            "typeOfPublicSupport"
+                        ]
+                      }
+                    }
+                  },
+                {
+                    "$id": "/properties/flow/items/register-demand",
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                      "type": {
+                        "$id": "/properties/flow/items/register-demand/properties/type",
+                        "type": "string",
+                        "title": "The Type Schema ",
+                        "default": "REGISTER_DEMAND",
+                        "enum": [
+                            "REGISTER_DEMAND"
+                        ],
+                        "examples": [
+                          "REGISTER_DEMAND"
+                        ]
+                      },
+                      "data": {
+                        "$id": "/properties/flow/items/register-demand/properties/data",
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/id",
+                            "type": "integer",
+                            "title": "The Id Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "demandMask": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/demandMask",
+                            "type": "integer",
+                            "title": "The Demandmask Schema ",
+                            "default": 0,
+                            "examples": [
+                              127
+                            ]
+                          },
+                          "enabledProperties": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/enabledProperties",
+                            "type": "boolean",
+                            "title": "The Enabledproperties Schema ",
+                            "default": false,
+                            "examples": [
+                              true
+                            ]
+                          },
+                          "originator": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/originator",
+                            "type": "string",
+                            "title": "The Originator Schema ",
+                            "default": "",
+                            "examples": [
+                              "0xbc42c835f32f13462a53cd6c624010c5274febd9"
+                            ]
+                          },
+                          "buyer": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/buyer",
+                            "type": "string",
+                            "title": "The Buyer Schema ",
+                            "default": "",
+                            "examples": [
+                              "0x18b4ddadd3b0e136eb7004b264867146b8c9680c"
+                            ]
+                          },
+                          "startTime": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/startTime",
+                            "type": "integer",
+                            "title": "The Starttime Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "endTime": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/endTime",
+                            "type": "integer",
+                            "title": "The Endtime Schema ",
+                            "default": 0,
+                            "examples": [
+                              2528704355
+                            ]
+                          },
+                          "timeframe": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/timeframe",
+                            "type": "integer",
+                            "title": "The Timeframe Schema ",
+                            "default": 0,
+                            "examples": [
+                              2
+                            ]
+                          },
+                          "pricePerCertifiedWh": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/pricePerCertifiedWh",
+                            "type": "integer",
+                            "title": "The Pricepercertifiedwh Schema ",
+                            "default": 0,
+                            "examples": [
+                              2
+                            ]
+                          },
+                          "currency": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/currency",
+                            "type": "integer",
+                            "title": "The Currency Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "productingAsset": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/productingAsset",
+                            "type": "integer",
+                            "title": "The Productingasset Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "consumingAsset": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/consumingAsset",
+                            "type": "integer",
+                            "title": "The Consumingasset Schema ",
+                            "default": 0,
+                            "examples": [
+                              1
+                            ]
+                          },
+                          "locationCountry": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/locationCountry",
+                            "type": "string",
+                            "title": "The Locationcountry Schema ",
+                            "default": "",
+                            "examples": [
+                              "Germany"
+                            ]
+                          },
+                          "locationRegion": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/locationRegion",
+                            "type": "string",
+                            "title": "The Locationregion Schema ",
+                            "default": "",
+                            "examples": [
+                              "Berlin"
+                            ]
+                          },
+                          "assettype": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/assettype",
+                            "type": "integer",
+                            "title": "The Assettype Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "minCO2Offset": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/minCO2Offset",
+                            "type": "integer",
+                            "title": "The Minco2offset Schema ",
+                            "default": 0,
+                            "examples": [
+                              100
+                            ]
+                          },
+                          "otherGreenAttributes": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/otherGreenAttributes",
+                            "type": "string",
+                            "title": "The Othergreenattributes Schema ",
+                            "default": "",
+                            "examples": [
+                              "none"
+                            ]
+                          },
+                          "typeOfPublicSupport": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/typeOfPublicSupport",
+                            "type": "string",
+                            "title": "The Typeofpublicsupport Schema ",
+                            "default": "",
+                            "examples": [
+                              "none"
+                            ]
+                          },
+                          "targetWhPerPeriod": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/targetWhPerPeriod",
+                            "type": "integer",
+                            "title": "The Targetwhperperiod Schema ",
+                            "default": 0,
+                            "examples": [
+                              100
+                            ]
+                          },
+                          "matcher": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/matcher",
+                            "type": "string",
+                            "title": "The Matcher Schema ",
+                            "default": "",
+                            "examples": [
+                              "0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"
+                            ]
+                          },
+                          "registryCompliance": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/registryCompliance",
+                            "type": "integer",
+                            "title": "The Registrycompliance Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "productionLastSetInPeriod": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/productionLastSetInPeriod",
+                            "type": "integer",
+                            "title": "The Productionlastsetinperiod Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "currentWhPerPeriod": {
+                            "$id": "/properties/flow/items/register-demand/properties/data/properties/currentWhPerPeriod",
+                            "type": "integer",
+                            "title": "The Currentwhperperiod Schema ",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          }
+                        },
+                        "required": [
+                            "id",
+                            "demandMask",
+                            "enabledProperties",
+                            "originator",
+                            "buyer",
+                            "startTime",
+                            "endTime",
+                            "timeframe",
+                            "pricePerCertifiedWh",
+                            "currency",
+                            "productingAsset",
+                            "consumingAsset",
+                            "locationCountry",
+                            "locationRegion",
+                            "assettype",
+                            "minCO2Offset",
+                            "otherGreenAttributes",  
+                            "typeOfPublicSupport",
+                            "targetWhPerPeriod",
+                            "matcher",
+                            "registryCompliance",
+                            "productionLastSetInPeriod",
+                            "currentWhPerPeriod"
+                        ]
+                      }
+                    }
+                  },
+                {
+                    "$id": "/properties/flow/items/sleep",
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                        "type": {
+                            "$id": "/properties/flow/items/sleep/properties/type",
+                            "type": "string",
+                            "title": "The Type Schema ",
+                            "default": "SLEEP",
+                            "enum": ["SLEEP"],
+                            "examples": ["SLEEP"]
+                        },
+                        "data": {
+                            "$id": "/properties/flow/items/sleep/properties/data",
+                            "type": "object",
+                            "properties": {
+                                "ms": {
+                                    "$id": "/properties/flow/items/sleep/properties/data/properties/ms",
+                                    "type": "integer",
+                                    "title": "The Ms Schema ",
+                                    "default": 0,
+                                    "examples": [1000]
+                                }
+                            },
+                            "required": [
+                                "ms"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "$id": "/properties/flow/items/set-date",
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                      "type": {
+                        "$id": "/properties/flow/items/set-date/properties/type",
+                        "type": "string",
+                        "title": "The Type Schema ",
+                        "default": "SET_DATE",
+                        "enum": ["SET_DATE"],
+                        "examples": [
+                          "SET_DATE"
+                        ]
+                      },
+                      "data": {
+                        "$id": "/properties/flow/items/set-date/properties/data",
+                        "type": "object",
+                        "properties": {
+                          "year": {
+                            "$id": "/properties/flow/items/set-date/properties/data/properties/year",
+                            "type": "integer",
+                            "title": "The Year Schema ",
+                            "default": 0,
+                            "examples": [
+                              2018
+                            ]
+                          },
+                          "month": {
+                            "$id": "/properties/flow/items/set-date/properties/data/properties/month",
+                            "type": "integer",
+                            "title": "The Month Schema ",
+                            "default": 0,
+                            "examples": [
+                              2
+                            ]
+                          },
+                          "day": {
+                            "$id": "/properties/flow/items/set-date/properties/data/properties/day",
+                            "type": "integer",
+                            "title": "The Day Schema ",
+                            "default": 0,
+                            "examples": [
+                              10
+                            ]
+                          },
+                          "hour": {
+                            "$id": "/properties/flow/items/set-date/properties/data/properties/hour",
+                            "type": "integer",
+                            "title": "The Hour Schema ",
+                            "default": 0,
+                            "examples": [
+                              18
+                            ]
+                          },
+                          "minute": {
+                            "$id": "/properties/flow/items/set-date/properties/data/properties/minute",
+                            "type": "integer",
+                            "title": "The Minute Schema ",
+                            "default": 0,
+                            "examples": [
+                              1
+                            ]
+                          },
+                          "second": {
+                            "$id": "/properties/flow/items/set-date/properties/data/properties/second",
+                            "type": "integer",
+                            "title": "The Second Schema ",
+                            "default": 0,
+                            "examples": [
+                              2
+                            ]
+                          }
+                        },
+                        "required": [
+                            "year",
+                            "month",
+                            "day",
+                            "hour",
+                            "minute",
+                            "second" 
+                        ]
+                        
+                      }
+                    }
+                  }
+            ]
+        }
+      },
+      "expectedResult": {
+        "$id": "/properties/expectedResult",
+        "type": "array",
+        "items": {
+          "$id": "/properties/expectedResult/items",
+          "type": "object",
+          "properties": {
+            "certificateId": {
+              "$id": "/properties/expectedResult/items/properties/certificateId",
+              "type": "integer",
+              "title": "The Certificateid Schema ",
+              "default": 0,
+              "examples": [
+                0
+              ]
+            },
+            "demandId": {
+                "oneOf": [
+                    {
+                        "$id": "/properties/expectedResult/items/properties/demandId",
+                        "type": "integer",
+                        "title": "The Demandid Schema ",
+                        "default": 0,
+                        "examples": [
+                            3
+                        ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                ]
+            },
+            "powerInW": {
+              "$id": "/properties/expectedResult/items/properties/powerInW",
+              "type": "integer",
+              "title": "The Powerinw Schema ",
+              "default": 0,
+              "examples": [
+                10
+              ]
+            },
+            "coSaved": {
+              "$id": "/properties/expectedResult/items/properties/coSaved",
+              "type": "integer",
+              "title": "The Cosaved Schema ",
+              "default": 0,
+              "examples": [
+                10
+              ]
+            }
+          }
+        }
+      }
+    },
+    "required": [
+        "matcherAddress",
+        "flow"
+    ]
+  }
+  
