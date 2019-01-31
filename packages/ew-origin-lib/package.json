@@ -36,9 +36,8 @@
     "curlrequest": "^1.0.1",
     "ethereumjs-tx": "^1.3.7",
     "ew-asset-registry-contracts": "v0.1.9",
-    "ew-asset-registry-lib": "0.0.12-beta06",
+    "ew-asset-registry-lib": "0.0.12-beta13",
     "ew-origin-contracts": "0.0.5-beta02",
-    "ew-user-registry-contracts": "0.0.9",
     "ew-utils-general-lib": "v0.0.9-beta01",
     "ew-utils-testbackend": "0.0.3",
     "jsonschema": "^1.2.4",
@@ -55,13 +54,14 @@
     "@types/node": "^9.6.28",
     "@types/web3": "^1.0.14",
     "chai": "^4.1.2",
+    "ew-erc-test-contracts": "0.0.2",
+    "ew-user-registry-contracts": "0.0.9",
     "ganache-cli": "^6.1.8",
     "mocha": "^5.2.0",
     "solc": "^0.4.23",
     "tslint": "^5.11.0",
     "typescript": "^2.9.2",
-    "typescript-json-schema": "^0.31.0",
-    "ew-erc-test-contracts": "0.0.2"
+    "typescript-json-schema": "^0.31.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts"
 }
