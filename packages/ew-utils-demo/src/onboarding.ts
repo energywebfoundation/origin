@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Web3Type } from './types/web3';
+import Web3 = require('web3');
 import { deployEmptyContracts } from './deployEmpty'
 import { UserContractLookup, UserLogic } from 'ew-user-registry-contracts';
 import * as User from 'ew-user-registry-lib'
@@ -20,8 +20,7 @@ export const onboard = async() => {
   const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/demo-config.json', 'utf8').toString());
   const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
 
-  const Web3 = require('web3');
-  const web3: Web3Type = new Web3(connectionConfig.develop.web3);
+  const web3 = new Web3(connectionConfig.develop.web3);
 
   const adminPK = demoConfig.topAdminPrivateKey.startsWith('0x') ?
       demoConfig.topAdminPrivateKey : '0x' + demoConfig.topAdminPrivateKey;
@@ -33,9 +32,9 @@ export const onboard = async() => {
   const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK)
 
   //create logic instances
-  const userLogic = new UserLogic((web3 as any), contractConfig.userLogic)
-  const assetProducingRegistryLogic = new AssetProducingRegistryLogic((web3 as any), contractConfig.assetProducingRegistryLogic)
-  const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic((web3 as any), contractConfig.assetConsumingRegistryLogic)
+  const userLogic = new UserLogic(web3, contractConfig.userLogic)
+  const assetProducingRegistryLogic = new AssetProducingRegistryLogic(web3, contractConfig.assetProducingRegistryLogic)
+  const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(web3, contractConfig.assetConsumingRegistryLogic)
 
   //set the admin account as an asset admin
   await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
