@@ -2,8 +2,8 @@
   "name": "ew-market-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/js/index.js",
-  "types": "dist/js/index.d.ts",
+  "main": "dist/js/src/index.js",
+  "types": "dist/js/src/index.d.ts",
   "directories": {
     "test": "test"
   },
