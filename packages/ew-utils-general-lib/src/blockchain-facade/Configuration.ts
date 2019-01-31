@@ -13,7 +13,7 @@ export interface OffChainDataSource {
 }
 export interface BlockchainProperties {
     web3: Web3;
-    demandLogicInstance?: any;
+    marketLogicInstance?: any;
     producingAssetLogicInstance?: any;
     consumingAssetLogicInstance?: any;
     certificateLogicInstance?: any;
