@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { Web3Type } from './types/web3';
 import { migrateUserRegistryContracts } from 'ew-user-registry-contracts';
 import { migrateAssetRegistryContracts } from 'ew-asset-registry-contracts';
+import { migrateCertificateRegistryContracts } from 'ew-origin-contracts';
 
 export const deployEmptyContracts = async() => {
 
@@ -27,20 +28,23 @@ export const deployEmptyContracts = async() => {
   const assetConsumingRegistryLogic = assetContracts["AssetConsumingRegistryLogic"]
   console.log("Asset Contract Deployed: " + assetContractLookup)
 
+  const originContracts = await migrateCertificateRegistryContracts((web3 as any), assetContractLookup, adminPK);
+  const originContractLookup = originContracts["OriginContractLookup"]
+  const certificateLogic = originContracts["CertificateLogic"]
+  console.log("Origin Contract Deployed: " + originContractLookup)
+
   console.log("-----------------------------------------------------------\n")
 
-  //initialise all contracts
-  //migrateContracts already intializes the contracts
-
+  //save addresses ina config file
   let deployResult = {} as any
   deployResult.userContractLookup = userContractLookup
   deployResult.assetContractLookup = assetContractLookup
+  deployResult.originContractLookup = originContractLookup
   deployResult.userLogic = userLogic
   deployResult.assetConsumingRegistryLogic = assetConsumingRegistryLogic
   deployResult.assetProducingRegistryLogic = assetProducingRegistryLogic
+  deployResult.certificateLogic = certificateLogic
 
   const writeJsonFile = require('write-json-file')
   await writeJsonFile('contractConfig.json', deployResult)
 }
-
-//deployEmptyContracts()

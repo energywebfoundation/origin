@@ -67,7 +67,7 @@
                 "state": "Anystate",
                 "address": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
                 "privateKey": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
-                "rights": 8
+                "rights": 24
             }
         },
         {
@@ -84,7 +84,7 @@
                 "state": "Anystate",
                 "address": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
                 "privateKey": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
-                "rights": 8
+                "rights": 24
             }
         },
         {
@@ -292,6 +292,30 @@
             "data": 2000
         },
         {
+            "type": "INITIALIZE_CERTIFICATES",
+            "data": {
+                "assetId": 0,
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
+            }
+        },
+        {
+            "type": "INITIALIZE_CERTIFICATES",
+            "data": {
+                "assetId": 1,
+                "assetOwner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
+                "assetOwnerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec"
+            }
+        },
+        {
+            "type": "INITIALIZE_CERTIFICATES",
+            "data": {
+                "assetId": 2,
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
+            }
+        },
+        {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
                 "assetId": 0,
@@ -310,6 +334,66 @@
                 "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
                 "smartMeterPK": "0x50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
                 "filehash": "newMeterRead"
+            }
+        },
+        {
+            "type": "TRANSFER_CERTIFICATE",
+            "data": {
+                "certId": 0,
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+                "addressTo": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 120000,
+                "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
+                "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
+                "filehash": "newMeterRead",
+                "co2Offset": 10
+            }
+        },
+        {
+            "type": "SPLIT_CERTIFICATE",
+            "data": {
+                "certId":1,
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+                "splitValue": 15000
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 140000,
+                "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
+                "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
+                "filehash": "newMeterRead",
+                "co2Offset": 10
+            }
+        },
+        {
+            "type": "SET_ERC20_CERTIFICATE",
+            "data": {
+                "certId":4,
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+                "price": 1000,
+                "testAccount": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360"
+            }
+        },
+        {
+            "type": "BUY_CERTIFICATE",
+            "data": {
+                "certId": 4,
+                "price": 1000,
+                "buyer": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360",
+                "buyerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d"
             }
         }
     ]

@@ -1,16 +1,22 @@
 import * as fs from 'fs';
 import Web3 = require('web3');
 import { deployEmptyContracts } from './deployEmpty'
-import { UserContractLookup, UserLogic } from 'ew-user-registry-contracts';
-import * as User from 'ew-user-registry-lib'
-import { AssetContractLookup, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
-import * as Asset from 'ew-asset-registry-lib'
 import { logger } from './Logger';
+
+import * as User from 'ew-user-registry-lib'
+import * as Asset from 'ew-asset-registry-lib'
 import * as GeneralLib from 'ew-utils-general-lib';
+
+import { UserContractLookup, UserLogic } from 'ew-user-registry-contracts';
+import { AssetContractLookup, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
+
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+
 
 export const onboard = async() => {
 
@@ -185,58 +191,15 @@ export const onboard = async() => {
 
         console.log("-----------------------------------------------------------\n")
         break
-      case "CREATE_DEMAND":
-        console.log("create demand")
-        break
+
       case "SLEEP":
         console.log("sleep")
-        await sleep(2000);
+        await sleep(action.data);
         break
-      case "SAVE_SMARTMETER_READ_PRODUCING":
 
-        console.log("-----------------------------------------------------------")
-
-        conf.blockchainProperties.activeUser = {
-          address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
-        };
-
-        try {
-          let asset = await (new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync());
-          await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
-          asset = await asset.sync();
-          console.log("Producing smart meter reading saved")
-        } catch(e) {
-          console.log(e)
-        }
-
-        console.log("-----------------------------------------------------------\n")
-
-        break
-      case "SAVE_SMARTMETER_READ_CONSUMING":
-        console.log("-----------------------------------------------------------")
-
-        conf.blockchainProperties.activeUser = {
-          address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
-        };
-
-        try {
-          let asset = await (new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync());
-          await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
-          asset = await asset.sync();
-          console.log("Consuming meter reading saved")
-        } catch(e) {
-          console.log(e)
-        }
-
-        console.log("-----------------------------------------------------------\n")
-
-        break
       default:
-        console.log("Default Case")
+        continue
     }
   }
 
-  //off chain storage
 }
-
-onboard()
