@@ -5,7 +5,7 @@ import { CertificateData } from "../schemas/simulation-flow/RegisterCertificate"
 
 export namespace Filter {
 
-    export const filterDemands = async (controller: Controller, demands: DemandData[], certificate: CertificateData): Promise<DemandData[]> => {
+    export const filterAgreements = async (controller: Controller, demands: DemandData[], certificate: CertificateData): Promise<DemandData[]> => {
 
         const filteredDemands = []
 

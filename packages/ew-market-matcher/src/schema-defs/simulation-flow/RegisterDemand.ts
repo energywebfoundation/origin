@@ -1,4 +1,4 @@
-import * as EwfCoo from 'ewf-coo'
+
 import { IdentifiableEntity } from './index';
 
 export interface DemandData extends EwfCoo.FullDemandProperties, IdentifiableEntity {

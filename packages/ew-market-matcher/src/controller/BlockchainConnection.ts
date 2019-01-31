@@ -41,8 +41,8 @@ export const initMatchingManager = async (
         controller.registerConsumingAsset(asset as EwAsset.ConsumingAsset.Entity),
     );
     
-    // TODO: Get all Supplys, Demands and Aggreements
-    // conf.logger.verbose('* Getting all active demands');
+    conf.logger.verbose('* Getting all active demands');
+    const agreementList = (await EwMarket.Agreement. .getAllAssets(conf));
   
 };
 
