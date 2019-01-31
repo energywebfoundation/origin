@@ -6,12 +6,12 @@ export interface DemandOnChainProperties extends GeneralLib.BlockchainDataModelE
 
 export const getDemandListLength = async (configuration: GeneralLib.Configuration.Entity) => {
 
-    return parseInt(await configuration.blockchainProperties.demandLogicInstance.getAllDemandListLength(), 10);
+    return parseInt(await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(), 10);
 };
 
 export const createDemand =
     async (demandPropertiesOnChain: DemandOnChainProperties,
-           configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
+        configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
         const demand = new Entity(null, configuration);
 
         /*
@@ -23,7 +23,7 @@ export const createDemand =
             demandPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
         }*/
 
-        const tx = await configuration.blockchainProperties.demandLogicInstance.createDemand(
+        const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
             demandPropertiesOnChain.propertiesDocumentHash,
             demandPropertiesOnChain.url,
             {
@@ -36,7 +36,10 @@ export const createDemand =
 
         //    await demand.putToOffChainStorage(null, offChainStorageProperties);
 
-        configuration.logger.info(`Demand ${demand.id} created`);
+        if (configuration.logger) {
+            configuration.logger.info(`Demand ${demand.id} created`);
+        } 
+        
 
         return demand.sync();
 
@@ -64,13 +67,16 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const demand = await this.configuration.blockchainProperties.demandLogicInstance.getDemand(this.id);
+            const demand = await this.configuration.blockchainProperties.marketLogicInstance.getDemand(this.id);
 
             this.propertiesDocumentHash = demand._propertiesDocumentHash;
             this.url = demand._documentDBURL;
             this.demandOwner = demand._owner;
             this.initialized = true;
-            this.configuration.logger.verbose(`Demand ${this.id} synced`);
+            if (this.configuration.logger) {
+                this.configuration.logger.verbose(`Demand ${this.id} synced`);
+            }
+            
 
         }
         return this;

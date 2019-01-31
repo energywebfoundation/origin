@@ -6,7 +6,7 @@ export interface SupplyOnChainProperties extends GeneralLib.BlockchainDataModelE
 
 export const getSupplyListLength = async (configuration: GeneralLib.Configuration.Entity) => {
 
-    return parseInt(await configuration.blockchainProperties.demandLogicInstance.getAllDemandListLength(), 10);
+    return parseInt(await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(), 10);
 };
 
 export const createSupply =
@@ -23,7 +23,7 @@ export const createSupply =
             demandPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
         }*/
 
-        const tx = await configuration.blockchainProperties.demandLogicInstance.createSupply(
+        const tx = await configuration.blockchainProperties.marketLogicInstance.createSupply(
             supplyPropertiesOnChain.propertiesDocumentHash,
             supplyPropertiesOnChain.url,
             supplyPropertiesOnChain.assetId,
@@ -37,7 +37,11 @@ export const createSupply =
 
         //    await demand.putToOffChainStorage(null, offChainStorageProperties);
 
-        configuration.logger.info(`Supply ${demand.id} created`);
+        if (configuration.logger) {
+            configuration.logger.info(`Supply ${demand.id} created`);
+        }
+
+        
 
         return demand.sync();
 
@@ -65,13 +69,16 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const demand = await this.configuration.blockchainProperties.demandLogicInstance.getSupply(this.id);
+            const demand = await this.configuration.blockchainProperties.marketLogicInstance.getSupply(this.id);
 
             this.propertiesDocumentHash = demand._propertiesDocumentHash;
             this.url = demand._documentDBURL;
             this.assetId = demand._assetId;
             this.initialized = true;
-            this.configuration.logger.verbose(`Supply ${this.id} synced`);
+            if (this.configuration.logger) {
+                this.configuration.logger.verbose(`Supply ${this.id} synced`);
+            }
+            
 
         }
         return this;
