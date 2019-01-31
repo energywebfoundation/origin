@@ -44,6 +44,22 @@ export const onboard = async() => {
   //blockchain configuration
   let conf: GeneralLib.Configuration.Entity;
 
+  conf = {
+      blockchainProperties: {
+          activeUser: {
+              address: adminAccount.address, privateKey: adminPK,
+          },
+          producingAssetLogicInstance: assetProducingRegistryLogic,
+          consumingAssetLogicInstance: assetConsumingRegistryLogic,
+          userLogicInstance: userLogic,
+          web3,
+      },
+      offChainDataSource: {
+          baseUrl: 'http://localhost:3030',
+      },
+      logger,
+  };
+
   const actionsArray = demoConfig.flow
 
   for(const action of actionsArray){
@@ -61,20 +77,7 @@ export const onboard = async() => {
       case "CREATE_PRODUCING_ASSET":
 
         console.log("-----------------------------------------------------------")
-        conf = {
-            blockchainProperties: {
-                activeUser: {
-                    address: adminAccount.address, privateKey: adminPK,
-                },
-                producingAssetLogicInstance: assetProducingRegistryLogic,
-                userLogicInstance: userLogic,
-                web3,
-            },
-            offChainDataSource: {
-                baseUrl: 'http://localhost:3030',
-            },
-            logger,
-        };
+
 
         const assetProducingProps: Asset.ProducingAsset.OnChainProperties = {
             certificatesUsedForWh: action.data.certificatesCreatedForWh,
@@ -147,20 +150,6 @@ export const onboard = async() => {
       case "CREATE_CONSUMING_ASSET":
 
         console.log("-----------------------------------------------------------")
-        conf = {
-          blockchainProperties: {
-            activeUser: {
-              address: adminAccount.address, privateKey: adminPK,
-            },
-            consumingAssetLogicInstance: assetConsumingRegistryLogic,
-            userLogicInstance: userLogic,
-            web3,
-          },
-          offChainDataSource: {
-            baseUrl: 'http://localhost:3030',
-          },
-          logger,
-        };
 
         const assetConsumingProps: Asset.ConsumingAsset.OnChainProperties = {
           certificatesUsedForWh: action.data.certificatesCreatedForWh,
@@ -213,8 +202,9 @@ export const onboard = async() => {
 
         try {
           let asset = await (new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync());
-          //await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+          await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
           asset = await asset.sync();
+          console.log("Producing smart meter reading saved")
         } catch(e) {
           console.log(e)
         }
@@ -231,8 +221,9 @@ export const onboard = async() => {
 
         try {
           let asset = await (new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync());
-          //await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+          await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
           asset = await asset.sync();
+          console.log("Consuming meter reading saved")
         } catch(e) {
           console.log(e)
         }

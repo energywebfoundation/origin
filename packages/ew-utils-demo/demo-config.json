@@ -297,7 +297,7 @@
                 "assetId": 0,
                 "meterreading": 100000,
                 "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
-                "smartMeterPK": "12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
+                "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
                 "filehash": "newMeterRead",
                 "co2Offset": 10
             }
@@ -308,7 +308,7 @@
                 "assetId": 0,
                 "meterreading": 100000,
                 "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
-                "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
+                "smartMeterPK": "0x50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
                 "filehash": "newMeterRead"
             }
         }
