@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import Web3 = require('web3');
-import { onboard } from './onboarding'
+import { onboardDemo } from './onboarding'
 import { logger } from './Logger';
 
 import * as Certificate from 'ew-origin-lib';
@@ -23,7 +23,7 @@ function sleep(ms) {
 
 export const certificateDemo = async() => {
 
-  await onboard()
+  await onboardDemo()
 
   const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
   const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/demo-config.json', 'utf8').toString());
@@ -227,7 +227,6 @@ export const certificateDemo = async() => {
 
         try {
           console.log("Buyer Balance(BEFORE):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
-          console.log(await erc20TestToken.balanceOf(action.data.buyer, {privateKey: action.data.buyerPK}))
           const certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
           await certificate.buyCertificate();
           console.log("Certificate Bought")
@@ -244,5 +243,3 @@ export const certificateDemo = async() => {
     }
   }
 }
-
-certificateDemo()

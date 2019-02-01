@@ -3,6 +3,7 @@ import { Web3Type } from './types/web3';
 import { migrateUserRegistryContracts } from 'ew-user-registry-contracts';
 import { migrateAssetRegistryContracts } from 'ew-asset-registry-contracts';
 import { migrateCertificateRegistryContracts } from 'ew-origin-contracts';
+import { migrateMarketRegistryContracts } from 'ew-market-contracts';
 
 export const deployEmptyContracts = async() => {
 
@@ -33,6 +34,11 @@ export const deployEmptyContracts = async() => {
   const certificateLogic = originContracts["CertificateLogic"]
   console.log("Origin Contract Deployed: " + originContractLookup)
 
+  const marketContracts = await migrateMarketRegistryContracts((web3 as any), assetContractLookup, adminPK);
+  const marketContractLookup = marketContracts["MarketContractLookup"]
+  const marketLogic = marketContracts["MarketLogic"]
+  console.log("Market Contract Deployed: " + marketContractLookup)
+
   console.log("-----------------------------------------------------------\n")
 
   //save addresses ina config file
@@ -40,10 +46,12 @@ export const deployEmptyContracts = async() => {
   deployResult.userContractLookup = userContractLookup
   deployResult.assetContractLookup = assetContractLookup
   deployResult.originContractLookup = originContractLookup
+  deployResult.marketContractLookup = marketContractLookup
   deployResult.userLogic = userLogic
   deployResult.assetConsumingRegistryLogic = assetConsumingRegistryLogic
   deployResult.assetProducingRegistryLogic = assetProducingRegistryLogic
   deployResult.certificateLogic = certificateLogic
+  deployResult.marketLogic = marketLogic
 
   const writeJsonFile = require('write-json-file')
   await writeJsonFile('contractConfig.json', deployResult)

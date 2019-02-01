@@ -1,0 +1,223 @@
+import * as fs from 'fs';
+import Web3 = require('web3');
+import { certificateDemo } from './certificate'
+import { logger } from './Logger';
+
+import * as Certificate from 'ew-origin-lib';
+import * as User from 'ew-user-registry-lib'
+import * as Asset from 'ew-asset-registry-lib'
+import * as GeneralLib from 'ew-utils-general-lib';
+import * as Market from 'ew-market-lib';
+
+import { UserContractLookup, UserLogic } from 'ew-user-registry-contracts';
+import { AssetContractLookup, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
+import { OriginContractLookup, CertificateLogic, migrateCertificateRegistryContracts } from 'ew-origin-contracts';
+import { deployERC20TestToken, Erc20TestToken, TestReceiver, deployERC721TestReceiver } from 'ew-erc-test-contracts';
+import { MarketContractLookup, MarketLogic } from 'ew-market-contracts';
+
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+
+export const marketDemo = async() => {
+
+  await certificateDemo()
+
+  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
+  const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/demo-config.json', 'utf8').toString());
+  const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
+
+  const web3 = new Web3(connectionConfig.develop.web3);
+
+  const adminPK = demoConfig.topAdminPrivateKey.startsWith('0x') ?
+      demoConfig.topAdminPrivateKey : '0x' + demoConfig.topAdminPrivateKey;
+
+  const matcherPK = demoConfig.matcherPrivateKey.startsWith('0x') ?
+      demoConfig.matcherPrivateKey : '0x' + demoConfig.matcherPrivateKey;
+
+  const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPK);
+  const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK)
+
+  //create logic instances
+  const userLogic = new UserLogic(web3, contractConfig.userLogic)
+  const assetProducingRegistryLogic = new AssetProducingRegistryLogic(web3, contractConfig.assetProducingRegistryLogic)
+  const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(web3, contractConfig.assetConsumingRegistryLogic)
+  const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic)
+  const marketLogic = new MarketLogic(web3, contractConfig.marketLogic)
+
+  //set the admin account as an asset admin
+  await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
+  await userLogic.setRoles(adminAccount.address, 3, { privateKey: adminPK });
+
+  //initialize a token to handle demo erc20 trading
+  let erc20TestToken: Erc20TestToken
+
+  //blockchain configuration
+  let conf: GeneralLib.Configuration.Entity;
+
+  conf = {
+      blockchainProperties: {
+          activeUser: {
+              address: adminAccount.address, privateKey: adminPK,
+          },
+          producingAssetLogicInstance: assetProducingRegistryLogic,
+          consumingAssetLogicInstance: assetConsumingRegistryLogic,
+          certificateLogicInstance: certificateLogic,
+          userLogicInstance: userLogic,
+          marketLogicInstance: marketLogic,
+          web3,
+      },
+      offChainDataSource: {
+          baseUrl: 'http://localhost:3030',
+      },
+      logger,
+  };
+
+  const actionsArray = demoConfig.flow
+
+  for(const action of actionsArray) {
+    switch(action.type) {
+      case "CREATE_DEMAND":
+
+        console.log("-----------------------------------------------------------")
+
+        conf.blockchainProperties.activeUser = {
+          address: action.data.trader, privateKey: action.data.traderPK,
+        };
+
+        const demandProps: Market.Demand.DemandOnChainProperties = {
+          url: action.data.url,
+          propertiesDocumentHash: action.data.propDocHash,
+          demandOwner: action.data.trader,
+        };
+
+
+        try {
+          const demand = await Market.Demand.createDemand(demandProps, conf);
+          delete demand.proofs;
+          delete demand.configuration;
+          console.log(demand)
+          console.log("Demand Created with the above specifications")
+        } catch(e) {
+          console.log("Error creating a demand\n" + e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+
+        break
+      case "CREATE_SUPPLY":
+        console.log("-----------------------------------------------------------")
+
+        conf.blockchainProperties.activeUser = {
+          address: action.data.assetOwner, privateKey: action.data.assetOwnerPK,
+        };
+
+        const supplyProps: Market.Supply.SupplyOnChainProperties = {
+          url: action.data.url,
+          propertiesDocumentHash: action.data.propDocHash,
+          assetId: action.data.assetId,
+        };
+
+
+        try {
+          const supply = await Market.Supply.createSupply(supplyProps, conf);
+          delete supply.proofs;
+          delete supply.configuration;
+          console.log(supply)
+          console.log("Onboarded Supply with the above configuration")
+        } catch(e) {
+          console.log("Error onboarding supply\n" + e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+
+        break
+
+      case "MAKE_AGREEMENT":
+        console.log("-----------------------------------------------------------")
+
+        conf.blockchainProperties.activeUser = {
+          address: action.data.creator,
+          privateKey: action.data.creatorPK,
+        };
+
+        const agreementOffchainProps: Market.Agreement.AgreementOffChainProperties = {
+          start: action.data.startTime,
+          ende: action.data.endTime,
+          price: action.data.price,
+          currency: action.data.currency,
+          period: action.data.period,
+        };
+
+        const matcherOffchainProps: Market.Agreement.MatcherOffchainProperties = {
+          currentWh: action.data.currentWh,
+          currentPeriod: action.data.currentPeriod,
+        };
+
+        const agreementProps: Market.Agreement.AgreementOnChainProperties = {
+          propertiesDocumentHash: null,
+          url: null,
+          matcherDBURL: null,
+          matcherPropertiesDocumentHash: null,
+          demandId: action.data.demandId,
+          supplyId: action.data.supplyId,
+          allowedMatcher: [action.data.allowedMatcher],
+        };
+
+        try {
+          const agreement = await Market.Agreement.createAgreement(agreementProps, agreementOffchainProps, matcherOffchainProps, conf);
+          delete agreement.proofs;
+          delete agreement.configuration;
+          delete agreement.propertiesDocumentHash;
+          delete agreement.matcherPropertiesDocumentHash;
+          if(agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner){
+            console.log("Agreement Confirmed")
+          }
+          else if(!agreement.approvedByDemandOwner) {
+            console.log("Demand Owner did not approve yet")
+          }
+          else if(!agreement.approvedBySupplyOwner) {
+            console.log("Supply Owner did not approve yet")
+          }
+        } catch(e) {
+          console.log("Error making an agreement\n" + e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+        break
+      case "APPROVE_AGREEMENT":
+        console.log("-----------------------------------------------------------")
+
+        conf.blockchainProperties.activeUser = {
+          address: action.data.agree,
+          privateKey: action.data.agreePK,
+        };
+
+        try {
+          let agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity('0', conf)).sync();
+          await agreement.approveAgreementSupply();
+          agreement = await agreement.sync();
+          if(agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner){
+            console.log("Agreement Confirmed")
+          }
+          else if(!agreement.approvedByDemandOwner) {
+            console.log("Demand Owner did not approve yet")
+          }
+          else if(!agreement.approvedBySupplyOwner) {
+            console.log("Supply Owner did not approve yet")
+          }
+        } catch(e) {
+          console.log("Error on agreeing to the agreement\n" + e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+      default:
+        continue
+    }
+  }
+}
+
+marketDemo()

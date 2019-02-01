@@ -1,9 +1,11 @@
 {
-	"userContractLookup": "0xFf68d5B20e974C00f5acc7506768DdcA6B0D1328",
-	"assetContractLookup": "0x7F29a433b64dbCf12b57cc3564fE67B274BC5D69",
-	"originContractLookup": "0xC9CA185905EFaBaF34848B0E636a1dc638eFDF2A",
-	"userLogic": "0x3eee54f7a2Ca64e7AF80961Dae3f9052136c361a",
-	"assetConsumingRegistryLogic": "0xe61C4b2027f0AD447A1D23a15191bE8166d7035c",
-	"assetProducingRegistryLogic": "0x3c89669F111c9612caC3Be749c013d93cB4F17C2",
-	"certificateLogic": "0xF15237a6cA876058B633A1e54356061AD87c7402"
+	"userContractLookup": "0xABB24A5a0287A2810F9D27EA2eEdDF0D8E6f853F",
+	"assetContractLookup": "0xb5E09c9276f96d6282768371a04995A1772C2cdb",
+	"originContractLookup": "0x6E69eb1d79ceeE2DB896e20751BedF3B36a3f714",
+	"marketContractLookup": "0xB4ca8Cc9F7477e108e68B99745e3df6ff734Afe3",
+	"userLogic": "0x66dd660DEc117f0294F5679cBfd187DEc263F86a",
+	"assetConsumingRegistryLogic": "0xb9d57032D668A52EC99409dA9CF1d96E482D1AF1",
+	"assetProducingRegistryLogic": "0xD3fb9B2eE049d05e0CF592036DcB5dc0363D97C1",
+	"certificateLogic": "0xDb35B54F6cEe80F4046A4821D378c0222AD0Ef40",
+	"marketLogic": "0xac07252353Ff8Fee42E500b15aB6062d7E971103"
 }

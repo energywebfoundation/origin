@@ -18,7 +18,7 @@ function sleep(ms) {
 
 
 
-export const onboard = async() => {
+export const onboardDemo = async() => {
 
   await deployEmptyContracts()
 

@@ -253,41 +253,6 @@
             }
         },
         {
-            "type": "CREATE_DEMAND",
-            "data": {
-                "enabledProperties": [
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false
-                ],
-                "originator": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "buyer": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360",
-                "startTime": 1529928570,
-                "endTime": 1530403200,
-                "timeFrame": "daily",
-                "pricePerCertifiedWh": 1000,
-                "currency": "USD",
-                "producingAsset": 0,
-                "consumingAsset": 0,
-                "locationCountry": "USA",
-                "locationRegion": "Anystate",
-                "assettype": "Wind",
-                "minCO2Offset": 10,
-                "otherGreenAttributes": "N.A.",
-                "typeOfPublicSupport": "N.A",
-                "targetWhPerPeriod": 100000,
-                "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
-                "registryCompliance": "none"
-            }
-        },
-        {
             "type": "SLEEP",
             "data": 2000
         },
@@ -394,6 +359,53 @@
                 "buyer": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
                 "buyerPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
                 "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 1,
+                "meterreading": 140000,
+                "smartMeter": "0x84a2c086ffa013d06285cdd303556ec9be5a1ff7",
+                "smartMeterPK": "0xa05ddf7fe8302d117b516c0e401468a30c39a3e467ad3720381cf89500f0854b",
+                "filehash": "newMeterRead",
+                "co2Offset": 10
+            }
+        },
+        {
+            "type": "CREATE_DEMAND",
+            "data": {
+                "trader": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+                "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+                "url": "abc",
+                "propDocHash": "propDocHash"
+            }
+        },
+        {
+            "type": "CREATE_SUPPLY",
+            "data": {
+                "assetId": 1,
+                "assetOwner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
+                "assetOwnerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
+                "url": "abc",
+                "propDocHash": "propDocHash"
+            }
+        },
+        {
+            "type": "MAKE_AGREEMENT",
+            "data": {
+              "creator": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+              "creatorPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+              "startTime": 1549055441,
+              "endTime": 1549056441,
+              "price": 10,
+              "currency": "USD",
+              "period": 10,
+              "currentWh": 0,
+              "currentPeriod": 0,
+              "demandId": 0,
+              "supplyId": 0,
+              "allowedMatcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e"
             }
         }
     ]
