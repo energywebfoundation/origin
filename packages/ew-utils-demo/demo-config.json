@@ -99,8 +99,8 @@
                 "city": "Anytown",
                 "country": "USA",
                 "state": "Anystate",
-                "address": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360",
-                "privateKey": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
+                "address": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+                "privateKey": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
                 "rights": 16
             }
         },
@@ -342,7 +342,7 @@
                 "certId": 0,
                 "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
                 "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
-                "addressTo": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360"
+                "addressTo": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
             }
         },
         {
@@ -383,7 +383,7 @@
                 "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
                 "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
                 "price": 1000,
-                "testAccount": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360"
+                "testAccount": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
             }
         },
         {
@@ -391,10 +391,9 @@
             "data": {
                 "certId": 4,
                 "price": 1000,
-                "buyer": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360",
-                "buyerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
-                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "testAccount": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e"
+                "buyer": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+                "buyerPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d"
             }
         }
     ]

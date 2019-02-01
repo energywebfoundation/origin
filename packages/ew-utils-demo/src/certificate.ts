@@ -221,10 +221,8 @@ export const certificateDemo = async() => {
         };
 
 
-        await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: adminPK})
-        await erc20TestToken.approve(action.data.testAccount, action.data.price)
-        console.log(await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
-        console.log(await erc20TestToken.allowance(action.data.buyer, action.data.testAccount))
+        await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: action.data.buyerPK})
+        console.log("Allowance: " + await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
 
 
         try {
