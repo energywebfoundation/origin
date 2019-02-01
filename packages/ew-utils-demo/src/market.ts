@@ -55,6 +55,10 @@ export const marketDemo = async() => {
   //initialize a token to handle demo erc20 trading
   let erc20TestToken: Erc20TestToken
 
+  //initialize variables for storing timeframe and currency
+  let timeFrame
+  let currency
+
   //blockchain configuration
   let conf: GeneralLib.Configuration.Entity;
 
@@ -88,19 +92,89 @@ export const marketDemo = async() => {
           address: action.data.trader, privateKey: action.data.traderPK,
         };
 
+        let assetTypeConfig
+
+        switch (action.data.assettype) {
+            case 'Wind': assetTypeConfig = GeneralLib.AssetType.Wind
+                break
+            case 'Solar': assetTypeConfig = GeneralLib.AssetType.Solar
+                break
+            case 'RunRiverHydro': assetTypeConfig = GeneralLib.AssetType.RunRiverHydro
+                break
+            case 'BiomassGas': assetTypeConfig = GeneralLib.AssetType.BiomassGas
+        }
+
+        let assetCompliance
+
+        switch (action.data.registryCompliance) {
+            case 'IREC': assetCompliance = GeneralLib.Compliance.IREC
+                break
+            case 'EEC': assetCompliance = GeneralLib.Compliance.EEC
+                break
+            case 'TIGR': assetCompliance = GeneralLib.Compliance.TIGR
+                break
+            default:
+                assetCompliance = GeneralLib.Compliance.none
+                break
+        }
+
+        switch (action.data.timeframe) {
+          case 'yearly':
+            timeFrame = GeneralLib.TimeFrame.yearly
+            break
+          case 'monthly':
+            timeFrame = GeneralLib.TimeFrame.monthly
+            break
+          case 'daily':
+            timeFrame = GeneralLib.TimeFrame.daily
+            break
+          case 'hourly':
+            timeFrame = GeneralLib.TimeFrame.hourly
+            break
+        }
+
+        switch (action.data.currency) {
+          case 'Euro':
+            currency = GeneralLib.Currency.Euro
+            break
+          case 'USD':
+            currency = GeneralLib.Currency.USD
+            break
+          case 'Ether':
+            currency = GeneralLib.Currency.Ether
+            break
+          case 'SingaporeDollar':
+            currency = GeneralLib.Currency.SingaporeDollar
+            break
+        }
+
+        const demandOffchainProps: Market.Demand.DemandOffchainproperties = {
+            timeframe: timeFrame,
+            pricePerCertifiedWh: action.data.pricePerCertifiedWh,
+            currency: currency,
+            productingAsset: action.data.producingAsset,
+            consumingAsset: action.data.consumingAsset,
+            locationCountry: action.data.country,
+            locationRegion: action.data.region,
+            assettype: assetTypeConfig,
+            minCO2Offset: action.data.minCO2Offset,
+            otherGreenAttributes: action.data.otherGreenAttributes,
+            typeOfPublicSupport: action.data.typeOfPublicSupport,
+            targetWhPerPeriod: action.data.targetWhPerPeriod,
+            registryCompliance: assetCompliance,
+        };
+
         const demandProps: Market.Demand.DemandOnChainProperties = {
-          url: action.data.url,
-          propertiesDocumentHash: action.data.propDocHash,
+          url: null,
+          propertiesDocumentHash: null,
           demandOwner: action.data.trader,
         };
 
-
         try {
-          const demand = await Market.Demand.createDemand(demandProps, conf);
+          const demand = await Market.Demand.createDemand(demandProps, demandOffchainProps, conf);
           delete demand.proofs;
           delete demand.configuration;
-          console.log(demand)
-          console.log("Demand Created with the above specifications")
+          console.log("Demand Created, ID: " + demand.id)
         } catch(e) {
           console.log("Error creating a demand\n" + e)
         }
@@ -115,19 +189,55 @@ export const marketDemo = async() => {
           address: action.data.assetOwner, privateKey: action.data.assetOwnerPK,
         };
 
+        switch (action.data.timeframe) {
+          case 'yearly':
+            timeFrame = GeneralLib.TimeFrame.yearly
+            break
+          case 'monthly':
+            timeFrame = GeneralLib.TimeFrame.monthly
+            break
+          case 'daily':
+            timeFrame = GeneralLib.TimeFrame.daily
+            break
+          case 'hourly':
+            timeFrame = GeneralLib.TimeFrame.hourly
+            break
+        }
+
+        switch (action.data.currency) {
+          case 'Euro':
+            currency = GeneralLib.Currency.Euro
+            break
+          case 'USD':
+            currency = GeneralLib.Currency.USD
+            break
+          case 'Ether':
+            currency = GeneralLib.Currency.Ether
+            break
+          case 'SingaporeDollar':
+            currency = GeneralLib.Currency.SingaporeDollar
+            break
+        }
+
+        const supplyOffChainProperties: Market.Supply.SupplyOffchainProperties = {
+            price: action.data.price,
+            currency: currency,
+            availableWh: action.data.availableWh,
+            timeframe: timeFrame,
+        };
+
         const supplyProps: Market.Supply.SupplyOnChainProperties = {
-          url: action.data.url,
-          propertiesDocumentHash: action.data.propDocHash,
+          url: null,
+          propertiesDocumentHash: null,
           assetId: action.data.assetId,
         };
 
 
         try {
-          const supply = await Market.Supply.createSupply(supplyProps, conf);
+          const supply = await Market.Supply.createSupply(supplyProps, supplyOffChainProperties, conf);
           delete supply.proofs;
           delete supply.configuration;
-          console.log(supply)
-          console.log("Onboarded Supply with the above configuration")
+          console.log("Onboarded Supply ID: " + supply.id)
         } catch(e) {
           console.log("Error onboarding supply\n" + e)
         }
@@ -144,12 +254,43 @@ export const marketDemo = async() => {
           privateKey: action.data.creatorPK,
         };
 
+        switch (action.data.timeframe) {
+          case 'yearly':
+            timeFrame = GeneralLib.TimeFrame.yearly
+            break
+          case 'monthly':
+            timeFrame = GeneralLib.TimeFrame.monthly
+            break
+          case 'daily':
+            timeFrame = GeneralLib.TimeFrame.daily
+            break
+          case 'hourly':
+            timeFrame = GeneralLib.TimeFrame.hourly
+            break
+        }
+
+        switch (action.data.currency) {
+          case 'Euro':
+            currency = GeneralLib.Currency.Euro
+            break
+          case 'USD':
+            currency = GeneralLib.Currency.USD
+            break
+          case 'Ether':
+            currency = GeneralLib.Currency.Ether
+            break
+          case 'SingaporeDollar':
+            currency = GeneralLib.Currency.SingaporeDollar
+            break
+        }
+
         const agreementOffchainProps: Market.Agreement.AgreementOffChainProperties = {
           start: action.data.startTime,
           ende: action.data.endTime,
           price: action.data.price,
-          currency: action.data.currency,
+          currency: currency,
           period: action.data.period,
+          timeframe: timeFrame,
         };
 
         const matcherOffchainProps: Market.Agreement.MatcherOffchainProperties = {
@@ -210,7 +351,7 @@ export const marketDemo = async() => {
             console.log("Supply Owner did not approve yet")
           }
         } catch(e) {
-          console.log("Error on agreeing to the agreement\n" + e)
+          console.log("Could not approve agreement\n" + e)
         }
 
         console.log("-----------------------------------------------------------\n")

@@ -176,7 +176,7 @@
                 "owner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
                 "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
                 "operationalSince": 1483228800,
-                "capacityWh": 50000,
+                "capacityWh": 10,
                 "lastSmartMeterReadWh": 0,
                 "active": true,
                 "lastSmartMeterReadFileHash": "",
@@ -377,8 +377,19 @@
             "data": {
                 "trader": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
                 "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
-                "url": "abc",
-                "propDocHash": "propDocHash"
+                "timeframe": "hourly",
+                "pricePerCertifiedWh": 10,
+                "currency": "Ether",
+                "producingAsset": 0,
+                "consumingAsset": 0,
+                "country": "string",
+                "region": "string",
+                "assettype": "BiomassGas",
+                "minCO2Offset": 10,
+                "otherGreenAttributes": "string",
+                "typeOfPublicSupport": "string",
+                "targetWhPerPeriod": 10,
+                "registryCompliance": "EEC"
             }
         },
         {
@@ -387,8 +398,10 @@
                 "assetId": 1,
                 "assetOwner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
                 "assetOwnerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
-                "url": "abc",
-                "propDocHash": "propDocHash"
+                "price": 10,
+                "currency": "USD",
+                "availableWh": 10,
+                "timeframe": "hourly"
             }
         },
         {
@@ -400,12 +413,20 @@
               "endTime": 1549056441,
               "price": 10,
               "currency": "USD",
+              "timeframe": "hourly",
               "period": 10,
               "currentWh": 0,
               "currentPeriod": 0,
               "demandId": 0,
               "supplyId": 0,
               "allowedMatcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e"
+            }
+        },
+        {
+            "type": "APPROVE_AGREEMENT",
+            "data": {
+                "agree": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
+                "agreePK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec"
             }
         }
     ]
