@@ -1,9 +1,9 @@
 {
-	"userContractLookup": "0x0d31CedDdDA367EA79933537A2bF8aAEF45e0F9C",
-	"assetContractLookup": "0xD7608D10cC1b6451EaDa42843d8C21554e0943d0",
-	"originContractLookup": "0x0a3F0e22270040A8CbD698678f3c153971c7a470",
-	"userLogic": "0x371e80Fc008EEf6bc2BAC52D1fD9b58ba6268f9b",
-	"assetConsumingRegistryLogic": "0x09aA04E25C536f2cF079CF81d872B60B4491a9BD",
-	"assetProducingRegistryLogic": "0xe028f08523630066dD9E257DF2400eB801CEd16E",
-	"certificateLogic": "0x2F41116c931529f5C6c27F0af3b26CbccCfDA63a"
+	"userContractLookup": "0x1A1337304a0CEBD49ea40903505d142eEE5899b0",
+	"assetContractLookup": "0x5F83A042c94bb942B9CE0b618447aF9f35d0CD45",
+	"originContractLookup": "0x17Ece0F9b228965E5CD0871DBdBE42FE9095e09b",
+	"userLogic": "0x4019Dd91eFb2B411B5b6eaceB1A80CA86c86cc1E",
+	"assetConsumingRegistryLogic": "0xCBFc58a3269b6325116f42eA5B4f1A1C38A697ca",
+	"assetProducingRegistryLogic": "0x8fb908AB6C91ca8202520456eE619957AF0Ebe69",
+	"certificateLogic": "0xDc1afBD1559f7ec9CcdDAA4914a368927070aBe2"
 }

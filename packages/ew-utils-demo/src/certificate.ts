@@ -221,16 +221,19 @@ export const certificateDemo = async() => {
         };
 
 
-        await erc20TestToken.approve(action.data.assetOwner, action.data.price, { privateKey: action.data.buyerPK })
+        await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: adminPK})
+        await erc20TestToken.approve(action.data.testAccount, action.data.price)
+        console.log(await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
+        console.log(await erc20TestToken.allowance(action.data.buyer, action.data.testAccount))
+
 
         try {
-          //console.log("Buyer Balance(BEFORE):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
+          console.log("Buyer Balance(BEFORE):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
           console.log(await erc20TestToken.balanceOf(action.data.buyer, {privateKey: action.data.buyerPK}))
-          let certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
+          const certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
           await certificate.buyCertificate();
           console.log("Certificate Bought")
-          certificate = await certificate.sync();
-          //console.log("Buyer Balance(AFTER):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
+          console.log("Buyer Balance(AFTER):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
         } catch(e) {
           console.log("Error buying Certificates\n" + e)
         }
