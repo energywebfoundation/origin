@@ -1,11 +1,12 @@
 {
-	"userContractLookup": "0x6DCbD32b4044cEd5910bF91ea4a30F249BD249f1",
-	"assetContractLookup": "0x47a6FF5F2917Ebb85D4bf867a6616FF0AAD7e8bd",
-	"originContractLookup": "0xf5628a4415f072754B44e12B74787D1D5a89Fa4F",
-	"marketContractLookup": "0xce173c6A4bA5564399F25Ae8284c86cccb379A29",
-	"userLogic": "0x4450E7602C17D1f86848909153300d1C735B8056",
-	"assetConsumingRegistryLogic": "0xe96994B41CC5B045b2Bb959c3D0A4Cc655de9498",
-	"assetProducingRegistryLogic": "0xeb9CEfe04442d75f2369B0061afF7518E3E2b089",
-	"certificateLogic": "0xD9946aFbF8712fD5640adBbE5663d9713AF0E63e",
-	"marketLogic": "0xC2c49c3b586F378f858d938168596c7714c8d0f9"
+	"userContractLookup": "0x214A0dfD8578181a7211996006A6694DCc0B94Ea",
+	"assetContractLookup": "0x3BE794463876dBa81AAc0323eDe1903f7661c459",
+	"originContractLookup": "0x80ac3a5C82759ae78bc5e30CcBFEAF6A824f9925",
+	"marketContractLookup": "0x1c90B3407C085891610249f3A4D59B20CE980A4d",
+	"userLogic": "0x21559fCE278B24f2858Ce1329191B73a8B61313a",
+	"assetConsumingRegistryLogic": "0x7Ff7B5b607d5d63659f1776A890aAe3116a4bCF2",
+	"assetProducingRegistryLogic": "0xFe1453E54849eA11D1AFff2eF9bBcD2aEc9f581F",
+	"certificateLogic": "0x8bfa0EE8fededdECc97279a075C6Ec90A912Cd2a",
+	"marketLogic": "0x02dbD3792475CaEf63A970B552E84bbaCD211a7E",
+	"ERC20Address": "0x8ca1C1b1e3A1A28e2Db21523D5E850305912bfd8"
 }

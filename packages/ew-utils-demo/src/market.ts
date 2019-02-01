@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import Web3 = require('web3');
 import { certificateDemo } from './certificate'
+import { deployEmptyContracts } from './deployEmpty'
 import { logger } from './Logger';
 
 import * as Certificate from 'ew-origin-lib';
@@ -12,7 +13,6 @@ import * as Market from 'ew-market-lib';
 import { UserContractLookup, UserLogic } from 'ew-user-registry-contracts';
 import { AssetContractLookup, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
 import { OriginContractLookup, CertificateLogic, migrateCertificateRegistryContracts } from 'ew-origin-contracts';
-import { deployERC20TestToken, Erc20TestToken, TestReceiver, deployERC721TestReceiver } from 'ew-erc-test-contracts';
 import { MarketContractLookup, MarketLogic } from 'ew-market-contracts';
 
 
@@ -24,7 +24,7 @@ function sleep(ms) {
 
 export const marketDemo = async() => {
 
-  await certificateDemo()
+  await deployEmptyContracts()
 
   const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
   const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/demo-config.json', 'utf8').toString());
@@ -356,7 +356,8 @@ export const marketDemo = async() => {
 
         console.log("-----------------------------------------------------------\n")
       default:
-        continue
+        const passString = JSON.stringify(action)
+        await certificateDemo(passString, adminPK, confString)
     }
   }
 }
