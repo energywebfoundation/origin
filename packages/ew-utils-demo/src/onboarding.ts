@@ -17,52 +17,19 @@ function sleep(ms) {
 
 
 
-export const onboardDemo = async(actionString: string, adminPrivateKey: string) => {
+export const onboardDemo = async(actionString: string, conf: GeneralLib.Configuration.Entity, adminPrivateKey: string) => {
 
-  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
   const action = JSON.parse(actionString);
-  const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
-
-  const web3 = new Web3(connectionConfig.develop.web3);
 
   const adminPK = adminPrivateKey.startsWith('0x') ?
       adminPrivateKey : '0x' + adminPrivateKey;
 
-  const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPK);
-
-  //create logic instances
-  const userLogic = new UserLogic(web3, contractConfig.userLogic)
-  const assetProducingRegistryLogic = new AssetProducingRegistryLogic(web3, contractConfig.assetProducingRegistryLogic)
-  const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(web3, contractConfig.assetConsumingRegistryLogic)
-
-  //set the admin account as an asset admin
-  await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
-  await userLogic.setRoles(adminAccount.address, 3, { privateKey: adminPK });
-
-
-  //blockchain configuration
-  let conf: GeneralLib.Configuration.Entity;
-
-  conf = {
-      blockchainProperties: {
-          activeUser: {
-              address: adminAccount.address, privateKey: adminPK,
-          },
-          producingAssetLogicInstance: assetProducingRegistryLogic,
-          consumingAssetLogicInstance: assetConsumingRegistryLogic,
-          userLogicInstance: userLogic,
-          web3,
-      },
-      offChainDataSource: {
-          baseUrl: 'http://localhost:3030',
-      },
-      logger,
-  };
+  const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
   switch(action.type){
     case "CREATE_ACCOUNT":
-      await userLogic.setUser(action.data.address, action.data.organization, { privateKey: adminPK })
-      await userLogic.setRoles(action.data.address, action.data.rights, { privateKey: adminPK } )
+      await conf.blockchainProperties.userLogicInstance.setUser(action.data.address, action.data.organization, { privateKey: adminPK })
+      await conf.blockchainProperties.userLogicInstance.setRoles(action.data.address, action.data.rights, { privateKey: adminPK } )
 
       console.log("Onboarded a new user:", action.data.address)
       console.log("User Properties:", action.data.organization, action.data.rights)
@@ -187,6 +154,6 @@ export const onboardDemo = async(actionString: string, adminPrivateKey: string) 
       break
 
     default:
-      continue
+      console.log("Unidentified Command: " + action.type)
   }
 }

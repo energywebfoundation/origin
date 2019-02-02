@@ -18,42 +18,14 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const certificateDemo = async(actionString: string, adminPrivateKey: string) => {
+export const certificateDemo = async(actionString: string, conf: GeneralLib.Configuration.Entity, adminPrivateKey: string) => {
 
-  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
   const action = JSON.parse(actionString);
-  const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
-
-  const web3 = new Web3(connectionConfig.develop.web3);
 
   const adminPK = adminPrivateKey.startsWith('0x') ?
       adminPrivateKey : '0x' + adminPrivateKey;
 
-  const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPK);
-
-  const assetProducingRegistryLogic = new AssetProducingRegistryLogic(web3, contractConfig.assetProducingRegistryLogic)
-  const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(web3, contractConfig.assetConsumingRegistryLogic)
-  const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic)
-
-
-  //blockchain configuration
-  let conf: GeneralLib.Configuration.Entity;
-
-  conf = {
-      blockchainProperties: {
-          activeUser: {
-              address: adminAccount.address, privateKey: adminPK,
-          },
-          producingAssetLogicInstance: assetProducingRegistryLogic,
-          consumingAssetLogicInstance: assetConsumingRegistryLogic,
-          certificateLogicInstance: certificateLogic,
-          web3,
-      },
-      offChainDataSource: {
-          baseUrl: 'http://localhost:3030',
-      },
-      logger,
-  };
+  const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
   switch(action.type) {
     case "SAVE_SMARTMETER_READ_PRODUCING":
@@ -103,8 +75,10 @@ export const certificateDemo = async(actionString: string, adminPrivateKey: stri
         address: adminAccount.address, privateKey: adminPK,
       };
 
+      const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
+
       try {
-        await assetProducingRegistryLogic.setMarketLookupContract(action.data.assetId, contractConfig.originContractLookup, { privateKey: action.data.assetOwnerPK });
+        await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(action.data.assetId, contractConfig.originContractLookup, { privateKey: action.data.assetOwnerPK });
         console.log("Certificates for Asset #" + action.data.assetId + " initialized")
       } catch(e) {
         console.log("Error intializing certificates\n" + e)
@@ -175,20 +149,23 @@ export const certificateDemo = async(actionString: string, adminPrivateKey: stri
         certificate = await certificate.sync();
 
         const erc20TestAddress = (await deployERC20TestToken(
-            web3,
+            conf.blockchainProperties.web3,
             action.data.testAccount,
             adminPK,
         )).contractAddress;
 
-        let erc20TestToken = new Erc20TestToken(web3, erc20TestAddress);
+        let erc20TestToken = new Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
         await certificate.setTradableToken(erc20TestAddress);
         certificate = await certificate.sync();
         console.log("Demo ERC token created: " + erc20TestAddress)
 
         //save in global storage
-        contractConfig.ERC20Address = erc20TestAddress
+        let erc20Config = {} as any
+        erc20Config.ERC20Address = erc20TestAddress
+
         const writeJsonFile = require('write-json-file')
-        await writeJsonFile('contractConfig.json', contractConfig)
+        await writeJsonFile('erc20Config.json', erc20Config)
+
       } catch(e) {
         console.log("Error setting ERC20 for certificate trading\n", e)
       }
@@ -203,7 +180,9 @@ export const certificateDemo = async(actionString: string, adminPrivateKey: stri
         address: action.data.buyer , privateKey: action.data.buyerPK,
       };
 
-      let erc20TestToken = new Erc20TestToken(web3, contractConfig.ERC20Address)
+      const erc20Config = JSON.parse(fs.readFileSync(process.cwd() + '/erc20Config.json', 'utf8').toString());
+
+      let erc20TestToken = new Erc20TestToken(conf.blockchainProperties.web3, erc20Config.ERC20Address)
       await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: action.data.buyerPK})
       console.log("Allowance: " + await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
 
@@ -223,6 +202,6 @@ export const certificateDemo = async(actionString: string, adminPrivateKey: stri
 
     default:
       const passString = JSON.stringify(action)
-      await onboardDemo(passString, adminPK)
+      await onboardDemo(passString, conf, adminPK)
   }
 }

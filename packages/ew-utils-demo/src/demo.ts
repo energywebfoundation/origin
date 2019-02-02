@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import Web3 = require('web3');
-import { certificateDemo } from './certificate'
 import { deployEmptyContracts } from './deployEmpty'
 import { logger } from './Logger';
 
@@ -24,8 +23,6 @@ function sleep(ms) {
 
 
 export const marketDemo = async() => {
-
-  const startTime = Date.now()
 
   await deployEmptyContracts()
 
@@ -61,6 +58,8 @@ export const marketDemo = async() => {
   //initialize variables for storing timeframe and currency
   let timeFrame
   let currency
+  let assetTypeConfig
+  let assetCompliance
 
   //blockchain configuration
   let conf: GeneralLib.Configuration.Entity;
@@ -87,6 +86,289 @@ export const marketDemo = async() => {
 
   for(const action of actionsArray) {
     switch(action.type) {
+      case "CREATE_ACCOUNT":
+        await userLogic.setUser(action.data.address, action.data.organization, { privateKey: adminPK })
+        await userLogic.setRoles(action.data.address, action.data.rights, { privateKey: adminPK } )
+
+        console.log("Onboarded a new user:", action.data.address)
+        console.log("User Properties:", action.data.organization, action.data.rights)
+
+        break
+
+      case "CREATE_PRODUCING_ASSET":
+
+        console.log("-----------------------------------------------------------")
+
+
+        const assetProducingProps: Asset.ProducingAsset.OnChainProperties = {
+            certificatesUsedForWh: action.data.certificatesCreatedForWh,
+            smartMeter: { address: action.data.smartMeter },
+            owner: { address: action.data.owner },
+            lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
+            active: action.data.active,
+            lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
+            matcher: [{address: action.data.matcher}],
+            propertiesDocumentHash: null,
+            url: null,
+            certificatesCreatedForWh: action.data.certificatesCreatedForWh,
+            lastSmartMeterCO2OffsetRead: action.data.lastSmartMeterCO2OffsetRead,
+            maxOwnerChanges: action.data.maxOwnerChanges,
+        };
+
+        switch (action.data.assetType) {
+            case 'Wind': assetTypeConfig = Asset.ProducingAsset.Type.Wind
+                break
+            case 'Solar': assetTypeConfig = Asset.ProducingAsset.Type.Solar
+                break
+            case 'RunRiverHydro': assetTypeConfig = Asset.ProducingAsset.Type.RunRiverHydro
+                break
+            case 'BiomassGas': assetTypeConfig = Asset.ProducingAsset.Type.BiomassGas
+        }
+
+        switch (action.data.complianceRegistry) {
+            case 'IREC': assetCompliance = Asset.ProducingAsset.Compliance.IREC
+                break
+            case 'EEC': assetCompliance = Asset.ProducingAsset.Compliance.EEC
+                break
+            case 'TIGR': assetCompliance = Asset.ProducingAsset.Compliance.TIGR
+                break
+            default:
+                assetCompliance = Asset.ProducingAsset.Compliance.none
+                break
+        }
+
+        const assetProducingPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
+            operationalSince: action.data.operationalSince,
+            capacityWh: action.data.capacityWh,
+            country: action.data.country,
+            region: action.data.region,
+            zip: action.data.zip,
+            city: action.data.city,
+            street: action.data.street,
+            houseNumber: action.data.houseNumber,
+            gpsLatitude: action.data.gpsLatitude,
+            gpsLongitude: action.data.gpsLongitude,
+            assetType: assetTypeConfig,
+            complianceRegistry: assetCompliance,
+            otherGreenAttributes: action.data.otherGreenAttributes,
+            typeOfPublicSupport: action.data.typeOfPublicSupport,
+        };
+
+        try {
+          const asset = await Asset.ProducingAsset.createAsset(assetProducingProps, assetProducingPropsOffChain, conf);
+          console.log("Producing Asset Created: ", asset.id)
+        } catch(e) {
+          console.log("ERROR: " + e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+
+        break
+      case "CREATE_CONSUMING_ASSET":
+
+        console.log("-----------------------------------------------------------")
+
+        const assetConsumingProps: Asset.ConsumingAsset.OnChainProperties = {
+          certificatesUsedForWh: action.data.certificatesCreatedForWh,
+          smartMeter: { address: action.data.smartMeter },
+          owner: { address: action.data.owner },
+          lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
+          active: action.data.active,
+          lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
+          matcher: [{ address: action.data.matcher }],
+          propertiesDocumentHash: null,
+          url: null,
+        };
+
+        const assetConsumingPropsOffChain: Asset.Asset.OffChainProperties = {
+          capacityWh: action.data.capacityWh,
+          city: action.data.city,
+          country: action.data.country,
+          gpsLatitude: action.data.gpsLatitude,
+          gpsLongitude: action.data.gpsLongitude,
+          houseNumber: action.data.houseNumber,
+          operationalSince: action.data.operationalSince,
+          region: action.data.region,
+          street: action.data.street,
+          zip: action.data.zip,
+        };
+
+        try {
+          const asset = await Asset.ConsumingAsset.createAsset(assetConsumingProps, assetConsumingPropsOffChain, conf);
+          console.log("Consuming Asset Created:", asset.id)
+        } catch(e) {
+          console.log(e)
+        }
+
+        console.log("-----------------------------------------------------------\n")
+        break
+
+      case "SLEEP":
+        console.log("SLEEP: " + action.data)
+        await sleep(action.data);
+        break
+
+        case "SAVE_SMARTMETER_READ_PRODUCING":
+
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
+          };
+
+          try {
+            let asset = await (new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync());
+            await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+            asset = await asset.sync();
+            console.log("Producing smart meter reading saved")
+          } catch(e) {
+            console.log("Error saving smart meter read for producing asset\n" + e)
+          }
+
+          console.log("-----------------------------------------------------------\n")
+
+          break
+        case "SAVE_SMARTMETER_READ_CONSUMING":
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
+          };
+
+          try {
+            let asset = await (new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync());
+            await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+            asset = await asset.sync();
+            console.log("Consuming meter reading saved")
+          } catch(e) {
+            console.log("Error saving smart meter read for consuming asset\n" + e)
+          }
+
+          console.log("-----------------------------------------------------------\n")
+
+          break
+
+        case "INITIALIZE_CERTIFICATES":
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: adminAccount.address, privateKey: adminPK,
+          };
+
+          try {
+            await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(action.data.assetId, contractConfig.originContractLookup, { privateKey: action.data.assetOwnerPK });
+            console.log("Certificates for Asset #" + action.data.assetId + " initialized")
+          } catch(e) {
+            console.log("Error intializing certificates\n" + e)
+          }
+          console.log("-----------------------------------------------------------")
+          break
+
+        case "TRANSFER_CERTIFICATE":
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: action.data.assetOwner , privateKey: action.data.assetOwnerPK,
+          };
+
+          try {
+            console.log("Asset Owner Balance(BEFORE):",(await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf)))
+            console.log("Asset Owner Balance(BEFORE):",(await Certificate.TradableEntity.getBalance(action.data.addressTo, conf)))
+            const certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
+            await certificate.transferFrom(action.data.addressTo);
+            console.log("Certificate Transferred")
+            console.log("Asset Owner Balance(AFTER):",(await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf)))
+            console.log("Asset Owner Balance(AFTER):",(await Certificate.TradableEntity.getBalance(action.data.addressTo, conf)))
+          } catch(e) {
+            console.log("Error transferring certificates\n" + e)
+          }
+
+
+          console.log("-----------------------------------------------------------\n")
+          break
+
+        case "SPLIT_CERTIFICATE":
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: action.data.assetOwner , privateKey: action.data.assetOwnerPK,
+          };
+
+          try {
+            let certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
+            await certificate.splitCertificate(action.data.splitValue);
+            certificate = await certificate.sync()
+
+            console.log("Certificate Split into:", certificate.children)
+
+            for(const cId of certificate.children) {
+              const c = await(new Certificate.Certificate.Entity(cId.toString(), conf).sync());
+              console.log("Child Certificate #" + cId + " - PowerInW: " + c.powerInW)
+            }
+
+          } catch(e) {
+            console.log("Error transferring certificates\n" + e)
+          }
+
+
+          console.log("-----------------------------------------------------------\n")
+          break
+
+        case "SET_ERC20_CERTIFICATE":
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: action.data.assetOwner , privateKey: action.data.assetOwnerPK,
+          };
+
+          try{
+            let certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
+            await certificate.setOnChainDirectPurchasePrice(action.data.price);
+            certificate = await certificate.sync();
+
+            const erc20TestAddress = (await deployERC20TestToken(
+                web3,
+                action.data.testAccount,
+                adminPK,
+            )).contractAddress;
+
+            erc20TestToken = new Erc20TestToken(web3, erc20TestAddress);
+            await certificate.setTradableToken(erc20TestAddress);
+            certificate = await certificate.sync();
+            console.log("Demo ERC token created: " + erc20TestAddress)
+
+          } catch(e) {
+            console.log("Error setting ERC20 for certificate trading\n", e)
+          }
+
+          console.log("-----------------------------------------------------------\n")
+
+          break
+        case "BUY_CERTIFICATE":
+          console.log("-----------------------------------------------------------")
+
+          conf.blockchainProperties.activeUser = {
+            address: action.data.buyer , privateKey: action.data.buyerPK,
+          };
+
+
+          await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: action.data.buyerPK})
+          console.log("Allowance: " + await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
+
+
+          try {
+            console.log("Buyer Balance(BEFORE):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
+            const certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
+            await certificate.buyCertificate();
+            console.log("Certificate Bought")
+            console.log("Buyer Balance(AFTER):",(await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
+          } catch(e) {
+            console.log("Error buying Certificates\n" + e)
+          }
+
+          console.log("-----------------------------------------------------------\n")
+          break
+
       case "CREATE_DEMAND":
 
         console.log("-----------------------------------------------------------")
@@ -94,8 +376,6 @@ export const marketDemo = async() => {
         conf.blockchainProperties.activeUser = {
           address: action.data.trader, privateKey: action.data.traderPK,
         };
-
-        let assetTypeConfig
 
         switch (action.data.assettype) {
             case 'Wind': assetTypeConfig = GeneralLib.AssetType.Wind
@@ -106,8 +386,6 @@ export const marketDemo = async() => {
                 break
             case 'BiomassGas': assetTypeConfig = GeneralLib.AssetType.BiomassGas
         }
-
-        let assetCompliance
 
         switch (action.data.registryCompliance) {
             case 'IREC': assetCompliance = GeneralLib.Compliance.IREC
@@ -358,13 +636,10 @@ export const marketDemo = async() => {
         }
 
         console.log("-----------------------------------------------------------\n")
-        break
       default:
-        const passString = JSON.stringify(action)
-        await certificateDemo(passString, conf, adminPK)
+        continue
     }
   }
-  console.log("Total Time: " + ((Date.now()-startTime)/1000) + " seconds")
 }
 
 marketDemo()
