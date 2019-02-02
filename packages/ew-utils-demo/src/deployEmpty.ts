@@ -52,7 +52,6 @@ export const deployEmptyContracts = async() => {
   deployResult.assetProducingRegistryLogic = assetProducingRegistryLogic
   deployResult.certificateLogic = certificateLogic
   deployResult.marketLogic = marketLogic
-  deployResult.ERC20Address = ""
 
   const writeJsonFile = require('write-json-file')
   await writeJsonFile('contractConfig.json', deployResult)
