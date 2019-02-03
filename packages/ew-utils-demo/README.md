@@ -196,9 +196,9 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
 {
     type": "CREATE_PRODUCING_ASSET",
     data": {
-        smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
-        smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
-        owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
+        "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
+        "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
         "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
         "operationalSince": 1514764800,
         "capacityWh": 10000,
@@ -225,103 +225,153 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
 }
 </code>
 
-### CREATE_DEMAND
-usage: command to onboard a new demand
-<br>params:
-* <code>enabledProperties</code>: boolean array with 10 flags (depending on which demand properties should be enabled)
-* <code>originator</code>: the originator (if set) for producing energy (<code>enabledProperties[0]</code>). If false this value is ignored but there has to be a value
-* <code>assettype"</code>: assetTime which should have produced the certificate (<code>enabledProperties[1]</code>). If false this value is ignored but there has to be a value
-* <code>registryCompliance</code>: compliance that the certificate should have (<code>enabledProperties[2]</code>). If false this value is ignored but there has to be a value
-* <code>locationCountry</code>: country where the certificate should come from (<code>enabledProperties[3]</code>). If false this value is ignored but there has to be a value
-* <code>locationRegion</code>: state where the certificate should come from (<code>enabledProperties[4]</code>). If false this value is ignored but there has to be a value
-* <code>minCO2Offset</code>: minimum amount of CO2 offset (<code>enabledProperties[5]</code>). If false this value is ignored but there has to be a value
-* <code>producingAsset</code>: assetId of a producing asset (<code>enabledProperties[6]</code>). If false this value is ignored but there has to be a value
-* <code>consumingAsset</code>: assetID of a consuming asset (<code>enabledProperties[7]</code>). If false this value is ignored but there has to be a value
-* <code>otherGreenAttributes</code>: other green attributes that the certificate should posess (<code>enabledProperties[8]</code>). If false this value is ignored but there has to be a value
-* <code>typeOfPublicSupport</code>: type of public support that the certificate should posess (<code>enabledProperties[9]</code>). If false this value is ignored but there has to be a value
-* <code>buyer</code>: the buyer of certificates
-* <code>startTime</code>: UNIX-timestamp when the demand is enabled
-* <code>endTime</code>: UNIX-timestamp when the demand will be automatically disabled
-* <code>timeFrame</code>: timeframe for demands (yearly, monthly, daily) as string
-* <code>pricePerCertifiedWh</code>: agreed price
-* <code>currency</code>: used currency (Euro, USD, SingaporeDollar, Ether) as string
-* <code>targetWhPerPeriod</code>: amount of energy per period in Wh
-* <code>matcher</code>: ethereum-address of the matcher (matcher has to have to rights)
-
-#### example
-We want to create a new demand. This is the very basic one, so all demand Properties are disabled <code>enabledProperties": [false, false, false, false, false, false, false, false, false, false]</code>. This demand will accept energy from any originator, any assetType, any compliance, any country and region, any CO2-offset from any producing asset. It will also accept any kind of other green attribute and any type of publuc support. <br>
-The buyer will be <code>0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360 (John Doe Six from the Trader Organization)"</code> and the demand will be active between <code>1529928570 (25/06/2018)</code> and <code>1530403200 01/07/2018</code>. The buyer agrees to by certificates until he reaches <code>100000</code> Wh <code>daily</code>. The creator chose the matcher <code>0x585cc5c7829b1fd303ef5c019ed23815a205a59e</code>.
-
-<code>
- <br>{
-<br>"type": "CREATE_DEMAND",
-<br>"data": {
-<br>"enabledProperties": [false, false, false, false, false, false, false, false, false, false],
-<br>"originator": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-<br>"buyer": "0xfeebf1e463e39d09d5f8a40a6ed08d604ab01360",
-<br>"startTime": 1529928570,
-<br>"endTime": 1530403200,
-<br>"timeFrame": "daily",
-<br>"pricePerCertifiedWh": 1000,
-<br>"currency": "USD",
-<br>"producingAsset": 0,
-<br>"consumingAsset": 0,
-<br>"locationCountry": "USA",
-<br>"locationRegion": "Anystate",
-<br>"assettype": "Wind",
-<br>"minCO2Offset": 10,
-<br>"otherGreenAttributes": "N.A.",
-<br>"typeOfPublicSupport": "N.A",
-<br>"targetWhPerPeriod": 100000,
-<br>"matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
-<br>"registryCompliance": "none"
-<br>}
-<br>}
-</code>
-
 ### SAVE_SMARTMETER_READ_CONSUMING
 usage: command store a new meterreading of an consuming asset
 <br>params:
 * <code>assetId</code>: the assetID for the meterreading
+* <code>smartMeter</code>: the smartMeter address associated with the asset
+* <code>smartMeterPK</code>: the smartMeter private key associated with the asset
 * <code>meterreading</code>: the amount of energy to be logged (counter)
 * <code>filehash</code>: the filehash
 
 #### example
-We want to log a new meterreading for the consuming asset with id <code>1</code>. The new meterreading will be <code>100000</code> Wh with the filehash <code>newMeterRead</code>.
+We want to log a new meterreading for the consuming asset with id <code>0</code>. The transaction to do so must be signed with smartMeter's privatekey associated with the asset. The new meterreading will be <code>100000</code> Wh with the filehash <code>newMeterRead</code>.
 Keep in mind that the meterrading is not doing any addition, so the meterreading you pass here will be the new reading of the asset.
 <code>
-<br>{
-<br>"type": "SAVE_SMARTMETER_READ_CONSUMING",
-<br>"data": {
-<br>"assetId": 0,
-<br>"meterreading": 100000,
-<br>"filehash": "newMeterRead"
-<br>}
-<br>}
+{
+    "type": "SAVE_SMARTMETER_READ_CONSUMING",
+    "data": {
+        "assetId": 0,
+        "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
+        "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
+        "meterreading": 100000,
+        "filehash": "newMeterRead",
+    }
+}
 </code>
 
 ### SAVE_SMARTMETER_READ_PRODUCING
 usage: command store a new meterreading of an producing asset
 <br>params:
 * <code>assetId</code>: the assetID for the meterreading
+* <code>smartMeter</code>: the smartMeter address associated with the asset
+* <code>smartMeterPK</code>: the smartMeter private key associated with the asset
 * <code>meterreading</code>: the amount of energy to be logged (counter)
 * <code>filehash</code>: the filehash
-* <code>co2Offset</code>: the new CO2 meterreading
 
 #### example
-We want to log a new meterreading for the producing asset with id <code>1</code>. The new meterreading will be <code>100000</code> Wh with the filehash <code>newMeterRead</code>. The new CO2-Offset of the asset will be <code>10</code>.
+We want to log a new meterreading for the producing asset with id <code>0</code>. The transaction to do so must be signed with smartMeter's privatekey associated with the asset. The new meterreading will be <code>100000</code> Wh with the filehash <code>newMeterRead</code>.
 Keep in mind that the meterrading is not doing any addition, so the meterreading you pass here will be the new reading of the asset.
 
 <code>
-<br>{
-<br>"type": "SAVE_SMARTMETER_READ_CONSUMING",
-<br>"data": {
-<br>"assetId": 0,
-<br>"meterreading": 100000,
-<br>"filehash": "newMeterRead",
-<br>"co2Offset": 10
-<br>}
-<br>}
+{
+    "type": "SAVE_SMARTMETER_READ_PRODUCING",
+    "data": {
+        "assetId": 0,
+        "smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
+        "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
+        "meterreading": 100000,
+        "filehash": "newMeterRead",
+    }
+}
+</code>
+
+### TRANSFER_CERTIFICATE
+usage: command to transfer the ownership of a certificate
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>assetOwner</code>: address of the current owner of the certificate(must have trading rights)
+* <code>assetOwnerPK</code>: private key of the current owner of the certificate
+* <code>addressTo</code>: address of the trader account to whom the certificate is to be transferred(must having trading rights)
+
+#### example
+We want to transfer the certificate with id <code>0</code>. The transaction to do so must be signed by the assetOwner proving the current ownership of the certificate. Therefore the asset owner's address and private key are required. The certificate's ownership will be transferred to <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code><br>
+
+###### NOTE: The current owner of the asset and the future owner must both have trading rights.
+<code>
+{
+    "type": "TRANSFER_CERTIFICATE",
+    "data": {
+        "certId": 0,
+        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+        "addressTo": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
+    }
+}
+</code>
+
+### SPLIT_CERTIFICATE
+usage: command to split the certificate into two certificates carrying varying Wh readings
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>assetOwner</code>: address of the current owner of the certificate(must have trading rights)
+* <code>assetOwnerPK</code>: private key of the current owner of the certificate
+* <code>splitValue</code>: splitting of the certificate with respect to Wh readings(need not be 50% of the parent certificate)
+
+#### example
+We want to split the certificate with id <code>1</code>. The transaction to do so must be signed by the assetOwner proving the current ownership of the certificate. Therefore the asset owner's address and private key are required. The certificate will be broken into two, one containing <code>15000 Wh</code> worth readings and other containing the remaining <code>Wh</code> of the parent certificate.
+
+<code>
+{
+    "type": "SPLIT_CERTIFICATE",
+    "data": {
+        "certId":1,
+        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+        "splitValue": 15000
+    }
+}
+</code>
+
+### SET_ERC20_CERTIFICATE
+usage: command to deploy a test ERC20 token and the enable the certificate to use ERC20 tokens as a payment
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>assetOwner</code>: address of the current owner of the certificate(must have trading rights)
+* <code>assetOwnerPK</code>: private key of the current owner of the certificate
+* <code>price</code>: price of the certificate in unit of the ERC20 test token
+* <code>testAccount</code>: an account address that gets intial ERC20 funds
+
+#### example
+We want to enable ERC20 trading in certificate with id <code>4</code>. The transaction to do so must be signed by the assetOwner proving the current ownership of the certificate. Therefore the asset owner's address and private key are required. The price of the certificate would be <code>1000</code> ERC20 test tokens. The initial funds of ERC20 test tokens will go to the account with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code>(for demo: it is set equal to the trader's address who will buy the certificate)
+
+<code>
+{
+    "type": "SET_ERC20_CERTIFICATE",
+    "data": {
+        "certId":4,
+        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+        "price": 1000,
+        "testAccount": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
+    }
+}
+</code>
+
+### BUY_CERTIFICATE
+usage: command to transfer the ownership of a certificate
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>price</code>: price of the certificate in unit of the ERC20 test token
+* <code>buyer</code>: address of the trader who wants to buy the certificate
+* <code>buyerPK</code>: private key of the trader who wants to buy the certificate
+* <code>addressTo</code>: address of the trader account to whom the certificate is to be transferred(must having trading rights)
+
+#### example
+We want to buy the certificate with id <code>4</code> at the specified price of <code>1000</code>. The transaction to do so must be signed by the trader to prevent repudiation of fund transfer. Therefore the trader's address and private key are required. Before the certificate can be bought the trader must approve the asset owner (<code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code>) of the funds specified as price on the certificate.<br>
+
+###### NOTE: The current owner of the asset and the future owner must both have trading rights.
+<code>
+{
+    "type": "BUY_CERTIFICATE",
+    "data": {
+        "certId": 4,
+        "price": 1000,
+        "buyer": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+        "buyerPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d"
+    }
+}
 </code>
 
 #### SLEEP
@@ -336,4 +386,3 @@ We want to pause the flow for <code>2</code> secondss
 
 ## starting the demo
 Once all the actions are set within the config-file simply run <code>npm run start-demo</code>. It will freshly deploy all contracts and setup everything for you. After this is done, it will automatically run all the flow-actions. <br>
-<b>The demo application won't stop itself after the flowactions were finished.</b>
