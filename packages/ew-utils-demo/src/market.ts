@@ -29,20 +29,16 @@ export const marketDemo = async() => {
 
   await deployEmptyContracts()
 
-  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
-  const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/demo-config.json', 'utf8').toString());
-  const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
+  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/connection-config.json', 'utf8').toString());
+  const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/demo-config.json', 'utf8').toString());
+  const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/contractConfig.json', 'utf8').toString());
 
   const web3 = new Web3(connectionConfig.develop.web3);
 
   const adminPK = demoConfig.topAdminPrivateKey.startsWith('0x') ?
       demoConfig.topAdminPrivateKey : '0x' + demoConfig.topAdminPrivateKey;
 
-  const matcherPK = demoConfig.matcherPrivateKey.startsWith('0x') ?
-      demoConfig.matcherPrivateKey : '0x' + demoConfig.matcherPrivateKey;
-
   const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPK);
-  const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK)
 
   //create logic instances
   const userLogic = new UserLogic(web3, contractConfig.userLogic)

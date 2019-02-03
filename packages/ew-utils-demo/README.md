@@ -4,10 +4,11 @@
 
 This repo is for demonstration purposes and to show how the certificate of origin can work. This repo will:
 * deploy and setup all required smart contracts with the provided private key
-* start the example matcher automatically
 * onboard users, consuming- and producing assets
-* create demands
 * set meterreading of both consuming- and producing assets
+* trade certificates through transferring ownership and/or buying through ERC20 test tokens
+* split certificates
+* create demands, supplies and agreements
 
 Currently the repo will <b>not</b> start the ui. You still have to do this by yourself.
 
@@ -24,11 +25,10 @@ We strongly recommend to change the keys included in this repo when running on a
 
 ## Configuration
 
-The configuration and flow of actions is done with the file [ewf-config.json](config/ewf-config.json) in the config-folder.
+The configuration and flow of actions is done with the file [demo-config.json](config/demo-config.json) in the config-folder.
 
 The following keys are required:
 * topAdminPrivateKey: the private key of the topAdmin
-* matcherPrivateKey: the private key for the used matcher
 * flow: an array with flow actions. They will get executed in the ordering within the config-file
 
 ### flow actions
@@ -41,10 +41,17 @@ Currently the following action types are supported:
 * CREATE_ACCOUNT
 * CREATE_CONSUMING_ASSET
 * CREATE_PRODUCING_ASSET
-* CREATE_DEMAND
+* INITIALIZE_CERTIFICATES
 * SAVE_SMARTMETER_READ_PRODUCING
 * SAVE_SMARTMETER_READ_CONSUMING
-* SLEEP
+* TRANSFER_CERTIFICATE
+* SPLIT_CERTIFICATE
+* SET_ERC20_CERTIFICATE
+* BUY_CERTIFICATE
+* CREATE_DEMAND
+* CREATE_SUPPLY
+* MAKE_AGREEMENT
+* APPROVE_AGREEMENT
 
 #### CREATE_ACCOUNT
 usage: command to onboard a new user <br>
@@ -66,23 +73,23 @@ params:
 Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organization</code> which is located in <code>Main Street 1, 01234 Anytown, anstate, USA</code>
 
 <code>
-<br>{
-<br>"type": "CREATE_ACCOUNT",
-<br>"data": {
-<br>"firstName": "John",
-<br>"surname": "Doe",
-<br>"organization": "UserAdmin Organization",
-<br>"street": "Main Street",
-<br>"number": "1",
-<br>"zip": "01234",
-<br>"city": "Anytown",
-<br>"country": "USA",
-<br>"state": " anystate",
-<br>"address": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
-<br>"privateKey:" "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee7360ead486",
-<br>"rights": 2
-<br>}
-<br>}
+{
+    "type": "CREATE_ACCOUNT",
+    "data": {
+        "firstName": "John",
+        "surname": "Doe",
+        "organization": "UserAdmin Organization",
+        "street": "Main Street",
+        "number": "1",
+        "zip": "01234",
+        "city": "Anytown",
+        "country": "USA",
+        "state": " anystate",
+        "address": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
+        "privateKey:" "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee7360ead486",
+        "rights": 2
+    }
+}
 </code>
 
 ### CREATE_CONSUMING_ASSET

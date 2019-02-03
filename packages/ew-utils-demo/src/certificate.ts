@@ -75,7 +75,7 @@ export const certificateDemo = async(actionString: string, conf: GeneralLib.Conf
         address: adminAccount.address, privateKey: adminPK,
       };
 
-      const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/contractConfig.json', 'utf8').toString());
+      const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/contractConfig.json', 'utf8').toString());
 
       try {
         await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(action.data.assetId, contractConfig.originContractLookup, { privateKey: action.data.assetOwnerPK });
@@ -164,7 +164,7 @@ export const certificateDemo = async(actionString: string, conf: GeneralLib.Conf
         erc20Config.ERC20Address = erc20TestAddress
 
         const writeJsonFile = require('write-json-file')
-        await writeJsonFile('erc20Config.json', erc20Config)
+        await writeJsonFile('./config/erc20Config.json', erc20Config)
 
       } catch(e) {
         console.log("Error setting ERC20 for certificate trading\n", e)
@@ -180,7 +180,7 @@ export const certificateDemo = async(actionString: string, conf: GeneralLib.Conf
         address: action.data.buyer , privateKey: action.data.buyerPK,
       };
 
-      const erc20Config = JSON.parse(fs.readFileSync(process.cwd() + '/erc20Config.json', 'utf8').toString());
+      const erc20Config = JSON.parse(fs.readFileSync(process.cwd() + '/config/erc20Config.json', 'utf8').toString());
 
       let erc20TestToken = new Erc20TestToken(conf.blockchainProperties.web3, erc20Config.ERC20Address)
       await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: action.data.buyerPK})

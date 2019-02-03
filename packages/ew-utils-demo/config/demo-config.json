@@ -1,6 +1,5 @@
 {
     "topAdminPrivateKey": "d7410fb6e0c10ce73cc3179f73e7bb6adabbe8fb17570a47eb8195e17ed0c3f4",
-    "matcherPrivateKey": "e9a63e116f72c2e368376eb88c22fecf2a5e94a93464ff8802cf97caac657548",
     "flow": [
         {
             "type": "CREATE_ACCOUNT",
