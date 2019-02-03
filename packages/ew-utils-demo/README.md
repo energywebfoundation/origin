@@ -21,6 +21,9 @@ When the command is finished you have to start a blockchain:
 
 This demo is using raw-transactions, so you don't have to unlock your accounts in the blockchain-client. Because this demo was developed with Tobalaba in mind the current gasPrice is set to 0 thus enabling sending transaction from accounts without any balance.<br>
 Currently the demo is configured to use the port <code>8545</code>. In case you're using your own client please make sure that the client is listening to that port. <br>
+
+Apart from starting a blockchain you must also start a test backend server using the command <code>npm run start-test-backend</code>. This is because, with release B some of the non-vital data is stored off chain on a server. Hence the deployment of test backend is necessary for demo purposes.<br>
+
 We strongly recommend to change the keys included in this repo when running on a public chain (see configuration)
 
 ## Configuration
@@ -72,7 +75,7 @@ params:
 #### example:
 Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organization</code> which is located in <code>Main Street 1, 01234 Anytown, anstate, USA</code>
 
-''''json
+<code>
 {
     "type": "CREATE_ACCOUNT",
     "data": {
@@ -87,10 +90,10 @@ Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organizat
         "state": " anystate",
         "address": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
         "privateKey:" "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee7360ead486",
-        "rights": 2
+        "rights": 1
     }
 }
-''''
+</code>
 
 ### CREATE_CONSUMING_ASSET
 usage: command to onboard a new consuming asset
@@ -98,6 +101,7 @@ usage: command to onboard a new consuming asset
 * <code>smartMeter</code>: ethereum address of the used smart meter
 * <code>smartMeterPK</code>: the private Key of the smart meter (needed for simulating meterreadings)
 * <code>owner</code>: the owner of an asset (has to have the asset manager rights)
+* <code>matcher</code>: the matcher authorised for the asset (must have matcher rights)
 * <code>operationalSince</code>: the unix-timestamp when the asset went into operation mode
 * <code>capacityWh</code>: maximal capcity of an asset
 * <code>lastSmartMeterReadWh</code>: the last meterreading, should be 0
@@ -121,29 +125,30 @@ The smart meter is active since 06/28/2018 (<code>1529971200</code>), has the ca
 The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code>. If you're passing the some GPS coordinates, you will see the location of the asset within the webapplication in the consuming asset detail view.
 
 <code>
-<br>{
-<br>"type": "CREATE_CONSUMING_ASSET",
-<br>"data": {
-<br>"smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
-<br>"smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
-<br>"owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-<br>"operationalSince": "1529971200",
-<br>"capacityWh": 5000,
-<br>"lastSmartMeterReadWh": 0,
-<br>"active": true,
-<br>"lastSmartMeterReadFileHash": "",
-<br>"country": "USA",
-<br>"region": "AnyState",
-<br>"zip": "01234",
-<br>"city": "Anytown",
-<br>"street": "Main Street",
-<br>"houseNumber": "11",
-<br>"gpsLatitude": "0",
-<br>"gpsLongitude": "0",
-<br>"maxCapacitySet": true,
-<br>"certificatesUsedForWh": 0
-<br>}
-<br>}
+{
+    "type": "CREATE_CONSUMING_ASSET",
+    "data": {
+        "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
+        "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
+        "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
+        "operationalSince": "1529971200",
+        "capacityWh": 5000,
+        "lastSmartMeterReadWh": 0,
+        "active": true,
+        "lastSmartMeterReadFileHash": "",
+        "country": "USA",
+        "region": "AnyState",
+        "zip": "01234",
+        "city": "Anytown",
+        "street": "Main Street",
+        "houseNumber": "11",
+        "gpsLatitude": "0",
+        "gpsLongitude": "0",
+        "maxCapacitySet": true,
+        "certificatesUsedForWh": 0
+    }
+}
 </code>
 
 ### CREATE_PRODUCING_ASSET
@@ -152,6 +157,7 @@ usage: command to onboard a new producing asset
 * <code>smartMeter</code>: ethereum address of the smart meter
 * <code>smartMeterPK</code>: private key of the ethereum address (needed to simuate meterreading)
 * <code>owner</code>: ethereum address of the owner of the asset, has to have to asset manager rights
+* <code>matcher</code>: the matcher authorised for the asset (must have matcher rights)
 * <code>operationalSince</code>: UNIX-timestamp when the asset entered service
 * <code>capacityWh</code>: capacity of the asset
 * <code>lastSmartMeterReadWh</code>: last meterreading in Wh
@@ -178,42 +184,45 @@ usage: command to onboard a new producing asset
     TIGR)
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
+* <code>maxOwnerChanges</code>: specifies the maximum number of hands the certificates can change
 
 #### example
 Onboard a new energy producing asset for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the AssetManager Organization)
 </code>. The asset has a smart meter connected with the ethereum account <code>0x1112ec367b20d2bffd40ee11523c3d36d61adf1b</code>. We're also passing the private key <code>50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c</code> of that smart meter because we want to log new data within the demonstration.<br>
 The asset has a capacity of <code>10000</code> Wh and went into producition on <code>01/01/2018 (1514764800)</code>. It's some kind of BiomassGas-powerplant and is compliant to TIGR. In addition, it has the green Attributes of <code>N.A.</code> and also the <code>N.A.</code> type of public support. Because we're freshly deploying that asset, it does not have a meterreading thus no need for a filehash. <br>
-The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code>. If you're passing the some GPS coordinates, you will see the location of the asset within the webapplication in the consuming asset detail view.
+The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code>. If you're passing the some GPS coordinates, you will see the location of the asset within the webapplication in the consuming asset detail view. Also the certificate once created can only change owners upto 3 times
 
 <code>
-<br>{
-<br>type": "CREATE_PRODUCING_ASSET",
-<br>data": {
-<br>smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
-<br>smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
-<br>owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-<br>operationalSince": 1514764800,
-<br>capacityWh": 10000,
-<br>lastSmartMeterReadWh": 0,
-<br>active": true,
-<br>lastSmartMeterReadFileHash": "",
-<br>country": "USA",
-<br>region": "AnyState",
-<br>zip": "01234",
-<br>city": "Anytown",
-<br>street": "Main Street",
-<br>houseNumber": "10",
-<br>gpsLatitude": "0",
-<br>gpsLongitude": "0",
-<br>assetType": "BiomassGas",
-<br>certificatesCreatedForWh": 0,
-<br>lastSmartMeterCO2OffsetRead": 0,
-<br>cO2UsedForCertificate": 0,
-<br>complianceRegistry": "TIGR",
-<br>otherGreenAttributes": "N.A.",
-<br>typeOfPublicSupport": "N.A"
-<br>}
-<br>}
+{
+    type": "CREATE_PRODUCING_ASSET",
+    data": {
+        smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
+        smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
+        owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
+        "operationalSince": 1514764800,
+        "capacityWh": 10000,
+        "lastSmartMeterReadWh": 0,
+        "active": true,
+        "lastSmartMeterReadFileHash": "",
+        "country": "USA",
+        "region": "AnyState",
+        "zip": "01234",
+        "city": "Anytown",
+        "street": "Main Street",
+        "houseNumber": "10",
+        "gpsLatitude": "0",
+        "gpsLongitude": "0",
+        "assetType": "BiomassGas",
+        "certificatesCreatedForWh": 0,
+        "lastSmartMeterCO2OffsetRead": 0,
+        "cO2UsedForCertificate": 0,
+        "complianceRegistry": "TIGR",
+        "otherGreenAttributes": "N.A.",
+        "typeOfPublicSupport": "N.A",
+        "maxOwnerChanges": 3
+    }
+}
 </code>
 
 ### CREATE_DEMAND
