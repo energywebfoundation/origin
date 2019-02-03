@@ -237,6 +237,7 @@ usage: command store a new meterreading of an consuming asset
 #### example
 We want to log a new meterreading for the consuming asset with id <code>0</code>. The transaction to do so must be signed with smartMeter's privatekey associated with the asset. The new meterreading will be <code>100000</code> Wh with the filehash <code>newMeterRead</code>.
 Keep in mind that the meterrading is not doing any addition, so the meterreading you pass here will be the new reading of the asset.
+
 <code>
 {
     "type": "SAVE_SMARTMETER_READ_CONSUMING",
