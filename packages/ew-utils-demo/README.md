@@ -72,7 +72,7 @@ params:
 #### example:
 Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organization</code> which is located in <code>Main Street 1, 01234 Anytown, anstate, USA</code>
 
-<code>
+''''json
 {
     "type": "CREATE_ACCOUNT",
     "data": {
@@ -90,7 +90,7 @@ Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organizat
         "rights": 2
     }
 }
-</code>
+''''
 
 ### CREATE_CONSUMING_ASSET
 usage: command to onboard a new consuming asset
