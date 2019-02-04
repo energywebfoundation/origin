@@ -283,7 +283,7 @@
                 "meterreading": 100000,
                 "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
                 "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
-                "filehash": "newMeterRead",
+                "filehash": "newMeterRead"
             }
         },
         {
@@ -312,7 +312,7 @@
                 "meterreading": 120000,
                 "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
                 "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
-                "filehash": "newMeterRead",
+                "filehash": "newMeterRead"
             }
         },
         {
@@ -361,7 +361,7 @@
                 "meterreading": 140000,
                 "smartMeter": "0x84a2c086ffa013d06285cdd303556ec9be5a1ff7",
                 "smartMeterPK": "0xa05ddf7fe8302d117b516c0e401468a30c39a3e467ad3720381cf89500f0854b",
-                "filehash": "newMeterRead",
+                "filehash": "newMeterRead"
             }
         },
         {
@@ -417,6 +417,7 @@
         {
             "type": "APPROVE_AGREEMENT",
             "data": {
+                "agreementId": 0,
                 "agree": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
                 "agreePK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec"
             }

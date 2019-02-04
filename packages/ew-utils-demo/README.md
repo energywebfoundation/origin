@@ -375,6 +375,158 @@ We want to buy the certificate with id <code>4</code> at the specified price of 
 }
 </code>
 
+### CREATE_DEMAND
+usage: command to create a demand
+<br>params:
+* <code>trader</code>: address of the trader creating the demand
+* <code>traderPK</code>: private key of the trader creating the demand
+* <code>timeframe</code>: timeframe of contract
+* <code>pricePerCertifiedWh</code>: price bargain per certified Wh
+* <code>currency</code>: currency of exchange as string (USD,
+    Ether,
+    Euro,
+    SingaporeDollar)
+* <code>producingAsset</code>: <BLANK>
+* <code>consumingAsset</code>: <BLANK>
+* <code>country</code>: country where the asset is located
+* <code>region</code>: region where the asset is located
+* <code>assettype</code>: Type of asset as string (Wind,
+    Solar,
+    RunRiverHydro,
+    BiomassGas)
+* <code>minCO2Offset</code>: minimum amount of CO2 offset required
+* <code>otherGreenAttributes</code>: green attributes as string
+* <code>typeOfPublicSupport</code>: type of public support as string
+* <code>targetWhPerPeriod</code>: required watt-hour per period (timeframe)
+* <code>registryCompliance</code>: complaince as string (none,
+    IREC,
+    EEC,
+    TIGR)
+
+#### example
+We want to report a demand with target watt-hour per period(timeframe) as <code>10</code> and price per certified watt-hour as  <code>10</code>. The asset type required is <code>BiomassGas</code> which must comply with <code>EEC</code>. It is preferred to be a <code>hourly</code> contract with the currency of exchange set as <code>Ether</code>. Trader account <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is making the demand.
+
+<code>
+{
+    "type": "CREATE_DEMAND",
+    "data": {
+        "trader": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+        "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+        "timeframe": "hourly",
+        "pricePerCertifiedWh": 10,
+        "currency": "Ether",
+        "producingAsset": 0,
+        "consumingAsset": 0,
+        "country": "string",
+        "region": "string",
+        "assettype": "BiomassGas",
+        "minCO2Offset": 10,
+        "otherGreenAttributes": "string",
+        "typeOfPublicSupport": "string",
+        "targetWhPerPeriod": 10,
+        "registryCompliance": "EEC"
+    }
+}
+</code>
+
+### CREATE_SUPPLY
+usage: command to report a supply
+<br>params:
+* <code>assetId</code>: asset id of the asset which is creating the supply
+* <code>assetOwner</code>: asset owner's address
+* <code>assetOwnerPK</code>: asset owner's private key
+* <code>price</code>: price per certified Wh
+* <code>currency</code>: currency of exchange (USD,
+    Euro,
+    Ether,
+    SingaporeDollar)
+* <code>availableWh</code>: Available watt-hour per period
+* <code>timeframe</code>: period or the timeframe of the contract
+
+#### example
+We want to create a supply linked to asset id <code>1</code>. The supply reports the avilable watt-hour per period(timeframe <code>hourly</code>) to be <code>10</code>. The price per watt-hour is set at <code>10</code>in units of <code>USD</code>(i.e. 10 USD per certified watt-hour).
+
+<code>
+{
+    "type": "CREATE_SUPPLY",
+    "data": {
+        "assetId": 1,
+        "assetOwner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
+        "assetOwnerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
+        "price": 10,
+        "currency": "USD",
+        "availableWh": 10,
+        "timeframe": "hourly"
+    }
+}
+</code>
+
+### MAKE_AGREEMENT
+usage: command to make an agreement - pairing a demand with an appropriate supply.
+<br>params:
+* <code>creator</code>: (address) creator of the agreement (either the trader or the supplier)
+* <code>creatorPK</code>: private key of the creator
+* <code>startTime</code>: contract's start time (UNIX, UTC)
+* <code>endTime</code>: contract's end time (UNIX, UTC)
+* <code>price</code>: agreed price per certified watt-hour
+* <code>currency</code>: currency of exchange (USD,
+    Euro,
+    Ether,
+    SingaporeDollar)
+* <code>timeframe</code>: period or the timeframe of the contract
+* <code>period</code>: total period of the contract in units of timeframe
+* <code>currentWh</code>: current Wh reading of the asset
+* <code>currentPeriod</code>: current period of the contract
+* <code>demandId</code>: ID number of the demand that is being addressed
+* <code>supplyId</code>:ID number of the supply that is paired with the demand
+* <code>allowedMatcher</code>: address of the matcher allowed to pair the demand and supply
+
+#### example
+We want to make an agreement between the demand<code>0</code> and supply<code>0</code>. The agreed price between the two parties is set at <code>10 USD</code> with the timeframe of the contract being <code>hourly</code> for a period of <code>10</code>(hours). The current time and watt-hour readings are stored as <code>0</code> marking the genesis of the agreement. The trader with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is creating the agreement. Although the supplier must approve the agreement to actually confirm it.
+
+<code>
+{
+    "type": "MAKE_AGREEMENT",
+    "data": {
+      "creator": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
+      "creatorPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+      "startTime": 1549055441,
+      "endTime": 1549056441,
+      "price": 10,
+      "currency": "USD",
+      "timeframe": "hourly",
+      "period": 10,
+      "currentWh": 0,
+      "currentPeriod": 0,
+      "demandId": 0,
+      "supplyId": 0,
+      "allowedMatcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e"
+    }
+}
+</code>
+
+### APPROVE_AGREEMENT
+usage: command to approve an agreement
+<br>params:
+* <code>agreementId</code>: ID of the agreement you want to approve on
+* <code>assetOwner</code>: address of the supplier/trader who wants to approve the agreement
+* <code>assetOwnerPK</code>: approver's private key
+
+#### example
+We had created an agreement with id <code>0</code> signed by the traders account. Although to confirm the agreement the supplier must approve the agreement. Therefore the supplier with address <code>0x51ba6877a2c4580d50f7ceece02e2f24e78ef123</code> approves agreement id <code>0</code> in the below example.
+
+<code>
+{
+    "type": "APPROVE_AGREEMENT",
+    "data": {
+        "agreementId": 0,
+        "agree": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
+        "agreePK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec"
+    }
+}
+</code>
+
+
 #### SLEEP
 usage: command to pause the flow for a certain amount of time
 <br>params:

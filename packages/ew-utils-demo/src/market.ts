@@ -337,7 +337,7 @@ export const marketDemo = async() => {
         };
 
         try {
-          let agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity('0', conf)).sync();
+          let agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity(action.data.agreementId.toString(), conf)).sync();
           await agreement.approveAgreementSupply();
           agreement = await agreement.sync();
           if(agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner){
