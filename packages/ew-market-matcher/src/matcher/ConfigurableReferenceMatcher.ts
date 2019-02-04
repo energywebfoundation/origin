@@ -14,84 +14,81 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import { Matcher } from './Matcher'
-import { BlockchainProperties, Certificate   } from 'ewf-coo'
+import { Matcher } from './Matcher';
 import { Controller } from '../controller/Controller';
-import { ConfigurationFileInterpreter } from './ConfigurationFileInterpreter';
-import { RuleConf, SimpleHierarchyRule, SimpleHierarchyRelevantProperty } from '../schemas/RuleConf';
+import * as ConfigurationFileInterpreter from './ConfigurationFileInterpreter';
+import * as RuleConf from '../schema-defs/RuleConf';
 import { logger } from '..';
-import { DemandData } from '../schemas/simulation-flow/RegisterDemand';
-
+import * as EwOrigin from 'ew-origin-lib';
+import * as EwMarket from 'ew-market-lib';
+import * as EwGeneral from 'ew-utils-general-lib';
 
 export class ConfigurableReferenceMatcher extends Matcher {
 
-    private blockchainProperties: BlockchainProperties
-    private conf: RuleConf
-    private controller: Controller
-    private propertyRanking: string[]
+    private blockchainConf: EwGeneral.Configuration.Entity;
+    private conf: RuleConf.RuleConf;
+    private controller: Controller;
+    private propertyRanking: string[];
     
     constructor(conf: any) {
-        super()
-        this.conf = conf
-        this.propertyRanking = ConfigurationFileInterpreter.getRanking(this.conf)
+        super();
+        this.conf = conf;
+        this.propertyRanking = ConfigurationFileInterpreter.getRanking(this.conf);
         
- 
     }
 
     setController(controller: Controller) {
-        this.controller = controller
+        this.controller = controller;
     }
 
-
-    async match(certificate: Certificate, demands: DemandData[]) {
-        const sortedDemandList = demands.sort((a: DemandData, b: DemandData) => {
+    async match(certificate: EwOrigin.Certificate.Entity, aggrements: EwMarket.Agreement.Entity[]) {
+        const sortedAgreementList = aggrements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
             // TODO: change
-            const rule = (this.conf.rule as SimpleHierarchyRule)
+            const rule = (this.conf.rule as RuleConf.SimpleHierarchyRule);
 
             const unequalProperty = rule.relevantProperties
-                .find((property: SimpleHierarchyRelevantProperty) => a[property.name] !== b[property.name])
+                .find((property: RuleConf.SimpleHierarchyRelevantProperty) => a[property.name] !== b[property.name]);
             if (!unequalProperty) {
-                return 0
+                return 0;
             }
 
-            const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, a)
-            const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, b)
+            const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, a);
+            const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, b);
 
-            return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB
+            return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
             
-        })
+        });
 
-        logger.debug('Sorted demand list for certificate #' + certificate.id + ': '+ sortedDemandList
-            .reduce((accumulator: string, currentValue: DemandData) => 
-                accumulator += currentValue.id + ' ', ''))
+        logger.debug('Sorted agreement list for certificate #' + certificate.id + ': ' + sortedAgreementList
+            .reduce((accumulator: string, currentValue: EwMarket.Agreement.Entity) => 
+                accumulator += currentValue.id + ' ',
+                ''));
         
-        
-        const filteredDemandList = []
-        //TODO: split options
-        for(let i = 0; i < sortedDemandList.length; i++) {
-            const demand = sortedDemandList[i]
+        const filteredAgreementList = [];
+        // TODO: split options
+        for (const agreement of sortedAgreementList) {
+            
             const currentPeriod = await this.controller
-                .getCurrentPeriod(demand.startTime, demand.timeframe)
-            const neededWhForCurrentPeriod = demand.productionLastSetInPeriod === currentPeriod ? 
-                demand.targetWhPerPeriod - demand.currentWhPerPeriod : demand.targetWhPerPeriod
+                .getCurrentPeriod(agreement.startTime, agreement.timeframe);
+            const neededWhForCurrentPeriod = agreement.productionLastSetInPeriod === currentPeriod ? 
+                agreement.targetWhPerPeriod - agreement.currentWhPerPeriod : agreement.targetWhPerPeriod;
                 
-            if(certificate.powerInW > neededWhForCurrentPeriod) {
+            if (certificate.powerInW > neededWhForCurrentPeriod) {
                 
-                logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW}) for demand ${demand.id} (${neededWhForCurrentPeriod})` )
+                logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW}) for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
             } else {
-                filteredDemandList.push(demand)
+                filteredAgreementList.push(agreement);
             }
         }
 
-        if (filteredDemandList.length > 0) {
-            await this.controller.match(certificate, filteredDemandList[0])
+        if (filteredAgreementList.length > 0) {
+            await this.controller.match(certificate, filteredAgreementList[0]);
             
         } else {
-            await this.controller.handleUnmatchedCertificate(certificate)
-            logger.verbose('No match found for certificate ' + certificate.id)
+            await this.controller.handleUnmatchedCertificate(certificate);
+            logger.verbose('No match found for certificate ' + certificate.id);
         }
                
     }
-
 
 }

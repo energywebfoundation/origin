@@ -1,65 +1,64 @@
-import { RuleConf, RuleFormat, PriorityComparisonVectorElement, SimpleHierarchyRelevantProperty, SimpleHierarchyRule, MappingFormat, SimpleHierarchyRelecantPropertyMapping, MappedSimpleHierarchyRelevantProperty, DefaultValueType } from "../schemas/RuleConf";
-import { logger } from "..";
-import { DemandData } from "../schemas/simulation-flow/RegisterDemand";
+import * as RuleConf from '../schema-defs/RuleConf';
+import { logger } from '..';
+import * as EwMarket from 'ew-market-lib';
 
 
-export namespace ConfigurationFileInterpreter {
-  
+export const getRanking = (ruleConf: RuleConf.RuleConf): string[] => {
+    switch (ruleConf.ruleFormat) {
+        case RuleConf.RuleFormat.SimpleHierarchy:
+            return simpleRanking(ruleConf.rule as RuleConf.SimpleHierarchyRule);
 
-    export const getRanking = (ruleConf: RuleConf): string[] => {
-        switch (ruleConf.ruleFormat) {
-            case RuleFormat.SimpleHierarchy:
-                return simpleRanking(ruleConf.rule as SimpleHierarchyRule)
- 
-            default:
-                throw new Error("Unknown rule format " + ruleConf.ruleFormat)
-        }
+        default:
+            throw new Error('Unknown rule format ' + ruleConf.ruleFormat);
+    }
+};
+
+const simpleRanking = (rule: RuleConf.SimpleHierarchyRule): string[] => {
+    const propertyNames = [];
+
+    rule.relevantProperties.forEach((property: RuleConf.SimpleHierarchyRelevantProperty, index: number) => {
+        propertyNames.push(property.name);
+
+    });
+
+    let debugOutput = '';
+
+    propertyNames.forEach((name, index) => debugOutput += (index + 1) + '. ' + name + '  ');
+
+    logger.debug('Simple ranking ' + debugOutput);
+
+    return propertyNames;
+};
+
+export const getSimpleRankingMappedValue = (
+    simpleHierarchyRelevantProperty: RuleConf.SimpleHierarchyRelevantProperty,
+    agreement: EwMarket.Agreement.Entity,
+): number => {
+    switch (simpleHierarchyRelevantProperty.mappingFormat) {
+        case RuleConf.MappingFormat.Direct:
+            return agreement[simpleHierarchyRelevantProperty.name];
+        case RuleConf.MappingFormat.Defined:
+            const value = agreement[simpleHierarchyRelevantProperty.name];
+            const mapping = (simpleHierarchyRelevantProperty as RuleConf.MappedSimpleHierarchyRelevantProperty).mapping
+                .find((item: RuleConf.SimpleHierarchyRelecantPropertyMapping) => item.valueToMap === value);
+            return mapping ? mapping.mappedValue : getDefaultValue(simpleHierarchyRelevantProperty);
+
+        default:
+            throw new Error('Unknown mapping format ' + simpleHierarchyRelevantProperty.mappingFormat);
+    }
+};
+
+const getDefaultValue = (simpleHierarchyRelevantProperty: RuleConf.SimpleHierarchyRelevantProperty): number => {
+    switch (simpleHierarchyRelevantProperty.defaultValue.type) {
+        case RuleConf.DefaultValueType.Infinite:
+            return Infinity;
+        case RuleConf.DefaultValueType.MinusInfinite:
+            return -Infinity;
+        case RuleConf.DefaultValueType.Set:
+            return simpleHierarchyRelevantProperty.defaultValue.value;
+        default:
+            throw new Error('Unknown default value type ' + simpleHierarchyRelevantProperty.defaultValue.type);
+        
     }
 
-    const simpleRanking = (rule: SimpleHierarchyRule): string[] => {
-        const propertyNames = []
-   
-        rule.relevantProperties.forEach((property: SimpleHierarchyRelevantProperty, index: number) =>{
-            propertyNames.push(property.name)
-
-        })
-
-        let debugOutput = ''
-
-        propertyNames.forEach( (name, index) => debugOutput += (index + 1) + '. ' + name + '  ')
-
-        logger.debug('Simple ranking ' + debugOutput)
-
-        return propertyNames
-    }
-
-    export const getSimpleRankingMappedValue = (simpleHierarchyRelevantProperty: SimpleHierarchyRelevantProperty, demand: DemandData): number => {
-        switch (simpleHierarchyRelevantProperty.mappingFormat) {
-            case MappingFormat.Direct:
-                return demand[simpleHierarchyRelevantProperty.name]
-            case MappingFormat.Defined:
-                const value = demand[simpleHierarchyRelevantProperty.name]
-                const mapping = (simpleHierarchyRelevantProperty as MappedSimpleHierarchyRelevantProperty).mapping
-                    .find((item: SimpleHierarchyRelecantPropertyMapping) => item.valueToMap === value)
-                return mapping ? mapping.mappedValue : getDefaultValue(simpleHierarchyRelevantProperty)
-
-            default:
-                throw new Error("Unknown mapping format " + simpleHierarchyRelevantProperty.mappingFormat)
-        }
-    }
-
-    const getDefaultValue = (simpleHierarchyRelevantProperty: SimpleHierarchyRelevantProperty): number => {
-        switch (simpleHierarchyRelevantProperty.defaultValue.type) {
-            case DefaultValueType.Infinite:
-                return Infinity
-            case DefaultValueType.MinusInfinite:
-                return -Infinity
-            case DefaultValueType.Set:
-                return simpleHierarchyRelevantProperty.defaultValue.value
-            default:
-                throw new Error("Unknown default value type " + simpleHierarchyRelevantProperty.defaultValue.type)
-            
-        }
-
-    }
-}
+};

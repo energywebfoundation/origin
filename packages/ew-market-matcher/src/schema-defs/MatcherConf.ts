@@ -1,42 +1,39 @@
 
-
 export enum BlockchainDataSourceType {
 
-    Blockchain = "BLOCKCHAIN"
+    Blockchain = 'BLOCKCHAIN',
 }
 
 export enum SimulationDataSourceType {
-    Simulation = "SIMULATION"
+    Simulation = 'SIMULATION',
 }
 
 export enum MatcherType {
-    Simple = "SIMPLE",
-    ConfigurableReference = "CONFIGURABLE_REFERENCE"
+    Simple = 'SIMPLE',
+    ConfigurableReference = 'CONFIGURABLE_REFERENCE',
 }
 
 export interface BlockchainDataSource  {
-    type: BLockchainDataSourceType,
-    contractAddress: string
+    type: BlockchainDataSourceType;
+    contractAddress: string;
 }
 
 export interface SimulationDataSource  {
-    type: SimulationDataSourceType
-    simulationFlowFile: string
+    type: SimulationDataSourceType;
+    simulationFlowFile: string;
 }
 
 export interface SimulationMatcherSpecification {
-    type: MatcherType,
-    matcherConfigFile?: string
+    type: MatcherType;
+    matcherConfigFile?: string;
 }
 
 export interface BlockchainMatcherSpecification {
-    type: MatcherType,
-    matcherConfigFile?: string
+    type: MatcherType;
+    matcherConfigFile?: string;
 }
 
 export interface MatcherConf {
-    dataSource: SimulationDataSource | BlockchainDataSource,
-    matcherSpecification: SimulationMatcherSpecification | BlockchainMatcherSpecification
+    dataSource: SimulationDataSource | BlockchainDataSource;
+    matcherSpecification: SimulationMatcherSpecification | BlockchainMatcherSpecification;
 }
-
-

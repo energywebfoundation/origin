@@ -42,7 +42,7 @@ export const initMatchingManager = async (
     );
     
     conf.logger.verbose('* Getting all active demands');
-    const agreementList = (await EwMarket.Agreement. .getAllAssets(conf));
+    //const agreementList = (await EwMarket.Agreement. .getAllAssets(conf));
   
 };
 

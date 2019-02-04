@@ -14,11 +14,11 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
+import * as EwOrigin from 'ew-origin-lib';
+import * as EwMarket from 'ew-market-lib';
 import { Controller } from '../controller/Controller';
-import { DemandData } from '../schemas/simulation-flow/RegisterDemand';
-import { CertificateData } from '../schemas/simulation-flow/RegisterCertificate';
 
 export abstract class Matcher {
-    abstract match(certificate: CertificateData, demands: DemandData[])
-    abstract setController(controller: Controller)
+    abstract match(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity[]);
+    abstract setController(controller: Controller);
 }

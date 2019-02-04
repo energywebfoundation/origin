@@ -1,12 +1,12 @@
 export interface SleepAction {
-    type: SleepActionType,
-    data: SleepData
+    type: SleepActionType;
+    data: SleepData;
 }
 
 export enum SleepActionType {
-    Sleep = "SLEEP"
+    Sleep = 'SLEE',
 }
 
 export interface SleepData {
-    ms: number
+    ms: number;
 }

@@ -1,90 +1,130 @@
-import { Controller} from "../controller/Controller";
-import { logger } from "./../index"
-import { DemandData } from "../schemas/simulation-flow/RegisterDemand";
-import { CertificateData } from "../schemas/simulation-flow/RegisterCertificate";
+import { Controller} from '../controller/Controller';
+import { logger } from './../index';
+import * as EwOrigin from 'ew-origin-lib';
+import * as EwMarket from 'ew-market-lib';
+import * as EwGeneral from 'ew-utils-general-lib';
 
-export namespace Filter {
-
-    export const filterAgreements = async (controller: Controller, demands: DemandData[], certificate: CertificateData): Promise<DemandData[]> => {
-
-        const filteredDemands = []
-
-        for(let i = 0; i < demands.length; i++) {
-            if (await checkFit(controller, demands[i], certificate)) {
-                filteredDemands.push(demands[i])
-            }
-        }
-        
-        logger.verbose( filteredDemands.length + ' from ' + demands.length + ' are a possible fit for certificate #' + certificate.id)
-        return filteredDemands
-    }
-
-    const getBitFromDemandMask = (demand: DemandData, bitPosition: number): boolean => {
-
-        return ((2 ** bitPosition) & demand.demandMask) !== 0
-    }
-
-    const checkFit = async (controller: Controller, demand: DemandData, certificate: CertificateData): Promise<boolean> => {
-        const loggerPrefix = '[Filter/checkFit] Demand #' + demand.id + ' '
-        let fit = true
-        const currentTime = await controller.getCurrentDataSourceTime()
-        const asset = await controller.getProducingAsset(certificate.assetId)
-
-        logger.debug(loggerPrefix + 'property mask ' + demand.demandMask
-            + ' (originator: ' + getBitFromDemandMask(demand, 0) + ', '
-            + 'asset type: ' + getBitFromDemandMask(demand, 1) + ', '
-            + 'compliance: ' + getBitFromDemandMask(demand, 2) + ', '
-            + 'country ' + getBitFromDemandMask(demand, 3) + ', '
-            + 'region: ' + getBitFromDemandMask(demand, 4) + ', '
-            + 'co2 offset: ' + getBitFromDemandMask(demand, 5) + ', '
-            + 'producing asset: ' + getBitFromDemandMask(demand, 6) + ')'
-        )
-      
-        if (demand.endTime < currentTime || demand.startTime > currentTime) {
-            await controller.removeDemand(demand.id)
-            fit = false
-            logger.debug(loggerPrefix + 'is outdated. (current time: ' + currentTime + ', start time: ' + demand.startTime + ', end time: ' + demand.endTime)
-        }
-
-        if (getBitFromDemandMask(demand, 0) && demand.originator !== asset.owner) {
-            fit = false
-            logger.debug(loggerPrefix + 'demand originator (' + demand.originator + ') does not equal asset owner (' + asset.owner + ').' )
-        }
-
-        if (getBitFromDemandMask(demand, 1) && demand.assettype !== asset.assetType) {
-            fit = false
-            logger.debug(loggerPrefix + 'demand asset type (' + demand.assettype + ') does not equal asset type (' + asset.assetType + ').' )
-        }
-
-        if (getBitFromDemandMask(demand, 2) && demand.registryCompliance !== asset.complianceRegistry) {
-            fit = false
-            logger.debug(loggerPrefix + 'demand compliance (' + demand.productingAsset + ') does not equal asset compliance (' + asset.id + ').' )
-        }
-
-        if (getBitFromDemandMask(demand, 3) && demand.locationCountry !== asset.country) {
-            fit = false
-            logger.debug(loggerPrefix + 'demand country (' + demand.locationCountry + ') does not equal asset country (' + asset.country + ').' )
-        }
-
-        if (getBitFromDemandMask(demand, 4) && demand.locationRegion !== asset.region) {
-            fit = false
-            logger.debug(loggerPrefix + 'demand region (' + demand.locationRegion + ') does not equal asset region (' + asset.region + ').' )
-        }
-
-        if (getBitFromDemandMask(demand, 5) && demand.minCO2Offset > (certificate.coSaved / certificate.powerInW ) * 100){
-            fit = false
-            logger.debug(loggerPrefix + 'demand min co2 offset (' + demand.locationRegion + ') is larger than asset co2 offset (' + ((certificate.coSaved / certificate.powerInW ) * 100) + ').' )
-        }
-
-        if (getBitFromDemandMask(demand, 6) && demand.productingAsset !== asset.id) {
-            fit = false
-            logger.debug(loggerPrefix + 'demand producing asset (' + demand.productingAsset + ') does not equal asset id (' + asset.id + ').' )
-        }
-
-        logger.debug(loggerPrefix + (fit ? 'does' : 'does not') + ' fit with asset ' + asset.id + '.')
-
-        return fit
-
-    }
+export interface FilterSpec {
+        originator: string;
+        start: number;
+        end: number;
+        demand: EwMarket.Demand.Entity;
 
 }
+
+export const filterAgreements = async (
+    controller: Controller,
+    agreements: EwMarket.Agreement.Entity[],
+    certificate: EwOrigin.Certificate.Entity,
+): Promise<EwMarket.Agreement.Entity[]> => {
+
+    const filteredAgreements = [];
+
+    for (const agreement of agreements) {
+        const loggerPrefix = '[Filter/checkFit] Agreement #' + agreement.id + ' ';
+
+        const filterSpec: FilterSpec = {
+            demand: await controller.getDemand(agreement.demandId.toString()),
+            end: agreement.offChainProperties.ende,
+            // TODO: includ originator in demand
+            originator: null,
+            start: agreement.offChainProperties.start,
+        };
+   
+        if (await checkFit(controller, loggerPrefix, filterSpec, certificate)) {
+            filteredAgreements.push(agreement);
+        }
+    }
+    
+    logger.verbose(filteredAgreements.length + ' from ' + 
+        agreements.length + ' are a possible fit for certificate #' + certificate.id);
+    return filteredAgreements;
+};
+
+const checkProperty = (spec: any, real: any, loggerPrefix: string, propertyName: string): boolean => {
+
+    if (spec !== null && spec !== undefined) {
+        const output = spec === real;
+        logger.debug(loggerPrefix + propertyName + ' equals specification: ' + output + 
+            ' spec: ' + spec.toString() + ', asset: ' + real.toString());
+        return output;
+
+    } else {
+        logger.debug(loggerPrefix + propertyName + ' is not specified.');
+        return true;
+    }
+
+};
+
+const checkFit = async (
+    controller: Controller,
+    loggerPrefix: string,
+    filterSpec: FilterSpec ,
+    certificate: EwOrigin.Certificate.Entity,
+): Promise<boolean> => {
+    
+    let fit = true;
+    const currentTime = await controller.getCurrentDataSourceTime();
+    const asset = await controller.getProducingAsset(certificate.assetId.toString());
+
+    logger.debug(loggerPrefix 
+        + 'originator: ' + filterSpec.originator  + ', '
+        + 'asset type: ' + filterSpec.demand.offChainProperties.assettype + ', '
+        + 'compliance: ' + filterSpec.demand.offChainProperties.registryCompliance + ', '
+        + 'country ' + filterSpec.demand.offChainProperties.locationCountry + ', '
+        + 'region: ' + filterSpec.demand.offChainProperties.locationRegion + ', '
+        + 'producing asset: ' + filterSpec.demand.offChainProperties.productingAsset,
+    );
+
+    
+    
+    if (filterSpec.end < currentTime || filterSpec.start > currentTime) {
+
+        fit = false;
+        logger.debug(loggerPrefix + 'is outdated. (current time: ' + currentTime + ', start time: '
+            + filterSpec.start + ', end time: ' + filterSpec.end);
+    }
+
+    fit = fit &&
+        checkProperty(
+            filterSpec.originator,
+            asset.owner, 
+            loggerPrefix,
+            'originator',
+        ) &&
+        checkProperty(
+            filterSpec.demand.offChainProperties.assettype,
+            asset.offChainProperties.assetType,
+            loggerPrefix,
+            'asset type',
+        ) &&
+        checkProperty(
+            filterSpec.demand.offChainProperties.registryCompliance,
+            asset.offChainProperties.complianceRegistry,
+            loggerPrefix,
+            'compliance',
+        ) &&
+        checkProperty(
+            filterSpec.demand.offChainProperties.locationCountry,
+            asset.offChainProperties.country,
+            loggerPrefix,
+            'country',
+        ) &&
+        checkProperty(
+            filterSpec.demand.offChainProperties.locationRegion,
+            asset.offChainProperties.region,
+            loggerPrefix,
+            'region',
+        ) &&
+        checkProperty(
+            filterSpec.demand.offChainProperties.productingAsset,
+            asset.id,
+            loggerPrefix,
+            'producing asset id',
+        );
+
+    logger.debug(loggerPrefix + (fit ? 'does' : 'does not') + ' fit with asset ' + asset.id + '.');
+
+    return fit;
+
+};

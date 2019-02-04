@@ -14,30 +14,30 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import { Matcher } from './Matcher'
+import { Matcher } from './Matcher';
 import { Controller } from '../controller/Controller';
-import { DemandData } from '../schemas/simulation-flow/RegisterDemand';
-import { CertificateData } from '../schemas/simulation-flow/RegisterCertificate';
+import * as EwOrigin from 'ew-origin-lib';
+import * as EwMarket from 'ew-market-lib';
+import * as EwGeneral from 'ew-utils-general-lib';
 
 export class SimpleMatcher extends Matcher {
 
-
-    private controller: Controller
-    
-    constructor() {
-        super()
+    static SLEEP(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    static SLEEP(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    private controller: Controller;
+    
+    constructor() {
+        super();
     }
 
     setController(controller: Controller) {
-        this.controller = controller
+        this.controller = controller;
     }
 
-    match(certificate: CertificateData, demands: DemandData[]) {
-        throw new Error("Method not implemented.");
+    match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
+        throw new Error('Method not implemented.');
     }
 
 }

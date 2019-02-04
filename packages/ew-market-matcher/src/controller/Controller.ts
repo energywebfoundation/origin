@@ -18,10 +18,11 @@ import { Matcher } from './../Matcher/Matcher';
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
-import { Filter } from '../matcher/Filter';
+import * as Filter from '../matcher/Filter';
 import { logger } from '..';
 import * as Jsonschema from 'jsonschema';
 import * as LogSymbols from 'log-symbols';
+import * as EwGeneral from 'ew-utils-general-lib';
 
 export abstract class Controller {
 
@@ -42,7 +43,8 @@ export abstract class Controller {
 
     }
 
-    aggreements: EwMarket.Agreement.Entity[];
+    agreements: EwMarket.Agreement.Entity[];
+    demands: EwMarket.Demand.Entity[];
     producingAssets: EwAsset.ProducingAsset.Entity[];
     matcherAddress: string;
 
@@ -53,7 +55,7 @@ export abstract class Controller {
     }
 
     async matchTrigger(certificate: EwOrigin.Certificate.Entity) {
-        const filteredAgreements = await Filter.filterAgreements(this, this.aggreements, certificate);
+        const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
         await this.matcher.match(certificate, filteredAgreements);
     }
 
@@ -72,21 +74,25 @@ export abstract class Controller {
   
     abstract async registerConsumingAsset(newAsset: EwAsset.ConsumingAsset.Entity): Promise<void>; 
 
-    abstract async registerAgreement(aggreement: EwMarket.Agreement.Entity): Promise<void>; 
+    abstract async registerAgreement(aggreement: EwMarket.Agreement.Entity): Promise<void>;
 
-    abstract async removeProducingAsset(assetId: number): Promise<void>; 
+    abstract async registerDemand(demand: EwMarket.Demand.Entity): Promise<void>; 
 
-    abstract async removeConsumingAsset(assetId: number): Promise<void>;
+    abstract async removeProducingAsset(assetId: string): Promise<void>; 
 
-    abstract async removeAgreement(agreementId: number): Promise<void>; 
+    abstract async removeConsumingAsset(assetId: string): Promise<void>;
 
-    abstract async getProducingAsset(assetId: number): Promise<EwAsset.ProducingAsset.Entity>;
+    abstract async removeAgreement(agreementId: string): Promise<void>; 
 
-    abstract async getConsumingAsset(assetId: number): Promise<EwAsset.ConsumingAsset.Entity>;
+    abstract async getProducingAsset(assetId: string): Promise<EwAsset.ProducingAsset.Entity>;
 
-    abstract async createOrRefreshConsumingAsset(assetId: number): Promise<void>;
+    abstract async getConsumingAsset(assetId: string): Promise<EwAsset.ConsumingAsset.Entity>;
 
-    abstract async getCurrentPeriod(startDate: number, timeFrame: EwMarket.D): Promise<number>;
+    abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
+
+    abstract async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number>;
     
-    abstract getAgreement(agreementId: number): Promise<void>;
+    abstract getAgreement(agreementId: string): Promise<void>;
+
+    abstract getDemand(demandId: string): Promise<EwMarket.Demand.Entity>;
 }
