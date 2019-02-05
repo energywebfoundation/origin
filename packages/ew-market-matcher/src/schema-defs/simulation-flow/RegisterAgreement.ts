@@ -1,6 +1,4 @@
 import * as EwMarket from 'ew-market-lib';
-
-
 import { IdentifiableEntity } from './';
 
 export interface AgreementData extends IdentifiableEntity {

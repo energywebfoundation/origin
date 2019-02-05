@@ -69,9 +69,11 @@ export class ConfigurableReferenceMatcher extends Matcher {
         for (const agreement of sortedAgreementList) {
             
             const currentPeriod = await this.controller
-                .getCurrentPeriod(agreement.startTime, agreement.timeframe);
-            const neededWhForCurrentPeriod = agreement.productionLastSetInPeriod === currentPeriod ? 
-                agreement.targetWhPerPeriod - agreement.currentWhPerPeriod : agreement.targetWhPerPeriod;
+                .getCurrentPeriod(agreement.offChainProperties.start, agreement.offChainProperties.timeframe);
+            const demand = await this.controller.getDemand(agreement.demandId.toString());
+            const neededWhForCurrentPeriod = agreement.matcherOffChainProperties.currentPeriod === currentPeriod ? 
+                demand.offChainProperties.targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh :
+                demand.offChainProperties.targetWhPerPeriod;
                 
             if (certificate.powerInW > neededWhForCurrentPeriod) {
                 

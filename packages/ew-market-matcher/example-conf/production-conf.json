@@ -5,7 +5,6 @@
     },
     "matcherSpecification": {
         "type": "CONFIGURABLE_REFERENCE",
-        "matcherConfigFile": "./ahp-rule.json"
+        "matcherConfigFile": "example-conf/simple-hierarchy-rule.json"
     }
-    
 }

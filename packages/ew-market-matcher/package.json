@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -r ts-node/register src/test/*.ts",
-    "start": "node build/index.js",
+    "start": "node dist/js/src/index.js",
     "debug": "node --inspect build/index.js",
-    "build": "rm -rf build/ &&  tsc ",
+    "build": "rm -rf dist/ && npm run generate-schemas && tsc ",
     "generate-schemas": "rm -rf schemas/ && mkdir schemas/ && npm run generate-sim-flow-schema && npm run generate-rule-schema && npm run generate-conf-schema",
-    "generate-sim-flow-schema": "typescript-json-schema --required  tsconfig.json SimulationFlow > schemas/simulation-description.schema.json",
-    "generate-rule-schema": "typescript-json-schema --required  tsconfig.json RuleConf > schemas/rule.schema.json",
-    "generate-conf-schema": "typescript-json-schema --required  tsconfig.json MatcherConf > schemas/conf.schema.json"
+    "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json SimulationFlow > schemas/simulation-description.schema.json",
+    "generate-rule-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json RuleConf > schemas/rule.schema.json",
+    "generate-conf-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json MatcherConf > schemas/conf.schema.json"
   },
   "repository": {
     "type": "git",

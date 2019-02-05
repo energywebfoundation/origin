@@ -9,7 +9,10 @@ export const handleFlowAction = async (
         SimulationFlowDef.Agreement.RegisterAgreementAction | 
         SimulationFlowDef.Date.SetDateAction | 
         SimulationFlowDef.ProducingAsset.RegisterProducingAssetAction | 
-        SimulationFlowDef.Certificate.RegisterCertificateAction
+        SimulationFlowDef.Certificate.RegisterCertificateAction |
+        SimulationFlowDef.Demand.RegisterDemandAction |
+        SimulationFlowDef.Supply.RegisterSupplyAction 
+
     ),
 ) => {
     switch (simulationFlowAction.type) {
@@ -17,6 +20,20 @@ export const handleFlowAction = async (
             await simulationModeController.registerAgreement(
                 SimulationFlowDef.Agreement.agreementDataToEntity(
                     simulationFlowAction.data as SimulationFlowDef.Agreement.AgreementData,
+                ),
+            );
+            break;
+        case SimulationFlowDef.Demand.RegisterDemandActionType.RegisterDemand:
+            await simulationModeController.registerDemand(
+                SimulationFlowDef.Demand.demandDataToEntity(
+                    simulationFlowAction.data as SimulationFlowDef.Demand.DemandData,
+                ),
+            );
+            break;
+        case SimulationFlowDef.Supply.RegisterSupplyActionType.RegisterSupply:
+            await simulationModeController.registerSupply(
+                SimulationFlowDef.Supply.supplyDataToEntity(
+                    simulationFlowAction.data as SimulationFlowDef.Supply.SupplyData,
                 ),
             );
             break;

@@ -38,6 +38,7 @@ export class SimulationModeController extends Controller {
         this.matches = [];
         this.agreements = [];
         this.demands = [];
+        this.supplies = [];
         this.producingAssets = [];
         this.date = 0;
        
@@ -65,6 +66,16 @@ export class SimulationModeController extends Controller {
         if (!foundDemand) {
             this.demands.push(newDemand);
             logger.verbose('Registered new demand #' + newDemand.id);
+        }
+    }
+
+    async registerSupply(newSupply: EwMarket.Supply.Entity) {
+        const foundSupply = this.supplies
+            .find((supply: EwMarket.Supply.Entity) => supply.id === newSupply.id);
+
+        if (!foundSupply) {
+            this.supplies.push(newSupply);
+            logger.verbose('Registered new supply #' + newSupply.id);
         }
     }
 
@@ -99,6 +110,10 @@ export class SimulationModeController extends Controller {
 
     async getDemand(demandId: string) {
         return this.demands.find((demand: EwMarket.Demand.Entity) => demand.id === demandId);
+    }
+
+    async getSupply(supplyId: string) {
+        return this.supplies.find((supply: EwMarket.Supply.Entity) => supply.id === supplyId);
     }
 
     getConsumingAsset(assetId: string): Promise<EwAsset.ConsumingAsset.Entity> {

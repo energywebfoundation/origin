@@ -45,6 +45,7 @@ export abstract class Controller {
 
     agreements: EwMarket.Agreement.Entity[];
     demands: EwMarket.Demand.Entity[];
+    supplies: EwMarket.Supply.Entity[];
     producingAssets: EwAsset.ProducingAsset.Entity[];
     matcherAddress: string;
 
@@ -76,7 +77,9 @@ export abstract class Controller {
 
     abstract async registerAgreement(aggreement: EwMarket.Agreement.Entity): Promise<void>;
 
-    abstract async registerDemand(demand: EwMarket.Demand.Entity): Promise<void>; 
+    abstract async registerDemand(demand: EwMarket.Demand.Entity): Promise<void>;
+    
+    abstract async registerSupply(supply: EwMarket.Supply.Entity): Promise<void>; 
 
     abstract async removeProducingAsset(assetId: string): Promise<void>; 
 
@@ -95,4 +98,6 @@ export abstract class Controller {
     abstract getAgreement(agreementId: string): Promise<void>;
 
     abstract getDemand(demandId: string): Promise<EwMarket.Demand.Entity>;
+
+    abstract getSupply(supplyId: string): Promise<EwMarket.Supply.Entity>;
 }
