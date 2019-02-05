@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start-test-backend": "node node_modules/ew-utils-testbackend/index.js",
-    "test": "npm run build-ts && mocha dist/js/test/ --timeout 60000",
+    "test": "npm run build-ts && node dist/js/market",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "testlight": "npm run build-ts && mocha build/ts/test/",
     "debug-light-test": "npm run build-ts && mocha --inspect-brk build/ts/test/",
