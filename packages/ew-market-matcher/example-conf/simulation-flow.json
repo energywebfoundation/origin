@@ -23,10 +23,52 @@
                     "typeOfPublicSupport": "",
                     "operationalSince": 0,
                     "capacityWh": 100,
-                    "country": "",
+                    "country": "Iceland",
                     "region": "",
                     "zip": "",
-                    "city": "",
+                    "city": "Vik",
+                    "street": "",
+                    "houseNumber": "",
+                    "gpsLatitude": "",
+                    "gpsLongitude": ""
+     
+                },
+                "onChainProperties": {
+                    "propertiesDocumentHash": "",
+                    "url": "",
+                    "certificatesUsedForWh": 0,
+                    "smartMeter": {
+                        "address": "0x0"
+                    },
+                    "owner": {
+                        "address": "0x0"
+                    },
+                    "lastSmartMeterReadWh": 0,
+                    "active": true,
+                    "lastSmartMeterReadFileHash": "0x0",
+                    "matcher": [
+                        {
+                            "address": "0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "REGISTER_PRODUCING_ASSET",
+            "data": {
+                "id": "1",
+                "offChainProperties": {
+                    "assetType": 0,
+                    "complianceRegistry": 0,
+                    "otherGreenAttributes": "",
+                    "typeOfPublicSupport": "",
+                    "operationalSince": 0,
+                    "capacityWh": 100,
+                    "country": "France",
+                    "region": "",
+                    "zip": "",
+                    "city": "Springfield",
                     "street": "",
                     "houseNumber": "",
                     "gpsLatitude": "",
@@ -63,8 +105,8 @@
                     "pricePerCertifiedWh": 0,
                     "currency": 0,
                     "targetWhPerPeriod": 10,
-                    "assettype": 0
-     
+                    "assettype": 0,
+                    "locationCountry": "Iceland"
                 },
                 "onChainProperties": {
                     "demandOwner": "0x0",
@@ -76,7 +118,7 @@
         {
             "type": "REGISTER_SUPPLY",
             "data": {
-                "id": "0",
+                "id": "1",
                 "offChainProperties": {
                     "availableWh": 10,
                     "currency": 0,
@@ -134,6 +176,40 @@
                     "ownerChangerCounter": 0,
                     "propertiesDocumentHash": "",
                     "url": "",
+                    "assetId": 1,
+                    "owner": {
+                        "address": "0x0"
+                    },
+                    "powerInW": 10,
+            
+                    "onCHainDirectPurchasePrice": 0,
+                    "escrow": [
+                        {
+                            "address": ""
+                        }
+                    ],
+                    "approvedAddress": {
+                        "address": ""
+                    }
+                    
+                }
+            }
+        },
+        {
+            "type": "REGISTER_CERTIFICATE",
+            "data": {
+                "id": "1",
+
+                "onChainProperties": {
+                    "retired": false,
+                    "dataLog": "",
+                    "creationTime": 0,
+                    "parentId": 0,
+                    "children": [],
+                    "maxOwnerChanges": 5,
+                    "ownerChangerCounter": 0,
+                    "propertiesDocumentHash": "",
+                    "url": "",
                     "assetId": 0,
                     "owner": {
                         "address": "0x0"
@@ -159,6 +235,12 @@
     "expectedResult": [
         {
             "certificateId": "0",
+            "agreementId": "-1",
+            "powerInW": 10
+
+        },
+        {
+            "certificateId": "1",
             "agreementId": "0",
             "powerInW": 10
 

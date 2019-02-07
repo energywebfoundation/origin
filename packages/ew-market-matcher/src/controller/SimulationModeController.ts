@@ -152,7 +152,6 @@ export class SimulationModeController extends Controller {
     async handleUnmatchedCertificate(certificate: EwOrigin.Certificate.Entity) {
         this.matches.push({
             certificateId: certificate.id,
-
             agreementId: '-1',
             powerInW: certificate.powerInW,
             
