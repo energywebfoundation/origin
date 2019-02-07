@@ -75,8 +75,6 @@ const checkFit = async (
         + 'region: ' + filterSpec.demand.offChainProperties.locationRegion + ', '
         + 'producing asset: ' + filterSpec.demand.offChainProperties.productingAsset,
     );
-
-    
     
     if (filterSpec.end < currentTime || filterSpec.start > currentTime) {
 

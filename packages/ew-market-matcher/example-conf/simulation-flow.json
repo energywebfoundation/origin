@@ -13,14 +13,57 @@
             }
         },
         {
+            "type": "REGISTER_PRODUCING_ASSET",
+            "data": {
+                "id": "0",
+                "offChainProperties": {
+                    "assetType": 0,
+                    "complianceRegistry": 0,
+                    "otherGreenAttributes": "",
+                    "typeOfPublicSupport": "",
+                    "operationalSince": 0,
+                    "capacityWh": 100,
+                    "country": "",
+                    "region": "",
+                    "zip": "",
+                    "city": "",
+                    "street": "",
+                    "houseNumber": "",
+                    "gpsLatitude": "",
+                    "gpsLongitude": ""
+     
+                },
+                "onChainProperties": {
+                    "propertiesDocumentHash": "",
+                    "url": "",
+                    "certificatesUsedForWh": 0,
+                    "smartMeter": {
+                        "address": "0x0"
+                    },
+                    "owner": {
+                        "address": "0x0"
+                    },
+                    "lastSmartMeterReadWh": 0,
+                    "active": true,
+                    "lastSmartMeterReadFileHash": "0x0",
+                    "matcher": [
+                        {
+                            "address": "0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "type": "REGISTER_DEMAND",
             "data": {
-                "id": "99",
+                "id": "0",
                 "offChainProperties": {
                     "timeframe": 0,
                     "pricePerCertifiedWh": 0,
                     "currency": 0,
-                    "targetWhPerPeriod": 10
+                    "targetWhPerPeriod": 10,
+                    "assettype": 0
      
                 },
                 "onChainProperties": {
@@ -29,11 +72,97 @@
                     "url": "test"
                 }
             }
+        },
+        {
+            "type": "REGISTER_SUPPLY",
+            "data": {
+                "id": "0",
+                "offChainProperties": {
+                    "availableWh": 10,
+                    "currency": 0,
+                    "price": 10,
+                    "timeframe": 0
+                },
+                "onChainProperties": {
+                    "assetId": 0,
+                    "propertiesDocumentHash": "",
+                    "url": ""
+                    
+                }
+            }
+        },
+        {
+            "type": "REGISTER_AGREEMENT",
+            "data": {
+                "id": "0",
+                "offChainProperties": {
+                    "start": 0,
+                    "ende": 2518285662,
+                    "price": 10,
+                    "currency": 0,
+                    "period": 0,
+                    "timeframe": 0
+                },
+                "onChainProperties": {
+                    "matcherPropertiesDocumentHash": "",
+                    "matcherDBURL": "",
+                    "demandId": 0,
+                    "supplyId": 0,
+                    "allowedMatcher": ["0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"],
+                    "propertiesDocumentHash": "",
+                    "url": ""
+                    
+                },
+                "matcherOffChainProperties": {
+                    "currentWh": 0,
+                    "currentPeriod": 0
+                }
+            }
+        },
+        {
+            "type": "REGISTER_CERTIFICATE",
+            "data": {
+                "id": "0",
+
+                "onChainProperties": {
+                    "retired": false,
+                    "dataLog": "",
+                    "creationTime": 0,
+                    "parentId": 0,
+                    "children": [],
+                    "maxOwnerChanges": 5,
+                    "ownerChangerCounter": 0,
+                    "propertiesDocumentHash": "",
+                    "url": "",
+                    "assetId": 0,
+                    "owner": {
+                        "address": "0x0"
+                    },
+                    "powerInW": 10,
+            
+                    "onCHainDirectPurchasePrice": 0,
+                    "escrow": [
+                        {
+                            "address": ""
+                        }
+                    ],
+                    "approvedAddress": {
+                        "address": ""
+                    }
+                    
+                }
+            }
         }
+        
         
     ],
     "expectedResult": [
-        
+        {
+            "certificateId": "0",
+            "agreementId": "0",
+            "powerInW": 10
+
+        }
     
     ]
 

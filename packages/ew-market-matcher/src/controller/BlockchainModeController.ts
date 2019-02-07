@@ -17,23 +17,23 @@
 import { Controller} from './Controller';
 import { SimulationDataSource} from '../schema-defs/MatcherConf';
 import { logger } from '..';
-import * as fs from 'fs';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
-import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
-import * as LogSymbols from 'log-symbols';
-import * as SimulationDescriptionSchema from '../../schemas/simulation-description.schema.json';
+import * as SimulationFlowDef from '../schema-defs/simulation-flow';
+
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
+import { initMatchingManager } from './BlockchainConnection';
 
-export class SimulationModeController extends Controller {
+export class BlockchainModeController extends Controller {
 
     private simulationFlow: SimulationFlowDef.SimulationFlow;
     private matches: SimulationFlowDef.Match[];
     private date: number;
+    private conf: EwGeneral.Configuration.Entity;
 
-    constructor(simulationDataSource: SimulationDataSource) {
+    constructor(conf: EwGeneral.Configuration.Entity, matcherAddress: string) {
         super();
         this.matches = [];
         this.agreements = [];
@@ -41,11 +41,9 @@ export class SimulationModeController extends Controller {
         this.supplies = [];
         this.producingAssets = [];
         this.date = 0;
+        this.conf = conf;
+        this.matcherAddress = matcherAddress;
        
-        this.simulationFlow = JSON.parse(fs.readFileSync(simulationDataSource.simulationFlowFile, 'utf-8'));
-        Controller.validateJson(this.simulationFlow, SimulationDescriptionSchema, 'Simulation flow');
-        this.matcherAddress = this.simulationFlow.matcherAddress;
-        logger.verbose('Loaded simulation flow file containing ' + this.simulationFlow.flow.length + ' actions');
         logger.verbose('Set matcher address to ' + this.matcherAddress);
     }
 
@@ -84,8 +82,11 @@ export class SimulationModeController extends Controller {
     }
 
     async registerAgreement(newAggreement: EwMarket.Agreement.Entity) {
-        const allowed = newAggreement.allowedMatcher
-            .find((matcherAddress: string) => matcherAddress === this.matcherAddress) ? true : false;
+        // const allowed = newAggreement.allowedMatcher
+        //     .find((matcherAddress: string) => matcherAddress === this.matcherAddress) ? true : false;
+
+        const allowed = true;
+
         if (allowed) {
             if (!this.agreements.find((aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id)) {
                 this.agreements.push(newAggreement);
@@ -160,27 +161,9 @@ export class SimulationModeController extends Controller {
     }
 
     async match(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
-       
-        this.matches.push({
-            agreementId: agreement.id,
-            certificateId: certificate.id,
-            powerInW: certificate.powerInW,
-        });
-
-        const currentPeriod = await this.getCurrentPeriod(
-            agreement.offChainProperties.start,
-            agreement.offChainProperties.timeframe,
-        );
-
-        if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
-            agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
-            agreement.matcherOffChainProperties.currentPeriod = certificate.powerInW;
-        } else {
-            agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
-        }
-         
+        
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
-        logger.debug(`Set Wh for Agreement ${agreement.id} in period ${agreement.matcherOffChainProperties.currentPeriod} to ${agreement.matcherOffChainProperties.currentWh} Wh`);
+      
     }
 
     async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame) : Promise<number> {
@@ -200,64 +183,8 @@ export class SimulationModeController extends Controller {
 
     async start() {
         
-        for (const action of this.simulationFlow.flow) {    
-            await SimulationFlowHandler.handleFlowAction(this, action as any);
-        }
+        await initMatchingManager(this, this.conf);
 
-        this.compareWithExpectedResults();
-
-    }
-
-    compareExpectedResultField(
-        expectedMatch: SimulationFlowDef.Match,
-        match: SimulationFlowDef.Match,
-        key: string,
-        expectedMatchIndex: number,
-    ): boolean {
-
-        if (expectedMatch[key] !== match[key]) {                     
-            logger.debug(`Match #${expectedMatchIndex}: ${key} (${match[key]}) does not equal expected ${key} (${expectedMatch[key]}) ${LogSymbols.error}`);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    compareWithExpectedResults() {
-        let expectedResultFits = true;
-
-        logger.info('Comparing results with expected results');
-
-        this.matches.forEach((match: SimulationFlowDef.Match, index: number) => {
-            if (this.simulationFlow.expectedResult[index]) {
-                const expectedResult = this.simulationFlow.expectedResult[index];
-                const matchFits = this.compareExpectedResultField(expectedResult, match, 'powerInW', index)
-                    && this.compareExpectedResultField(expectedResult, match, 'certificateId', index)
-                    && this.compareExpectedResultField(expectedResult, match, 'agreementId', index);
-
-                if (matchFits) {
-                    logger.verbose('Match #' + index + ' as expected ' + LogSymbols.success);
-                } else {
-                    expectedResultFits = false;
-                    logger.verbose('Match #' + index + ' is different than expected ' + LogSymbols.error);
-                }
-
-            } else {
-                expectedResultFits = false;
-                logger.verbose('Match was not expected ' + LogSymbols.error);
-            }
-        });
-
-        if (this.simulationFlow.expectedResult.length > this.matches.length) {
-            expectedResultFits = false;
-            logger.verbose('Expexted more matches ' + LogSymbols.error);
-        }
-
-        if (expectedResultFits) {
-            logger.info('Complete match between expected results and actual results '  + LogSymbols.success);
-        } else {
-            logger.info('At least one result does not macht an expected result ' + LogSymbols.error);
-        }
     }
 
 }

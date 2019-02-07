@@ -42,5 +42,5 @@ export {
     Supply,
     Match,
     IdentifiableEntity, 
-    SimulationFlow
+    SimulationFlow,
 };

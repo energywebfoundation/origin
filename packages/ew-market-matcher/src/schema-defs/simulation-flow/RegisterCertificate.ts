@@ -22,3 +22,33 @@ export const certificateDataToEntity = (certificateData: CertificateData): EwOri
     return certificate;
 
 };
+
+const test: CertificateData = {
+    id: '0',
+
+    onChainProperties: {
+        retired: false,
+        dataLog: '',
+        creationTime: 0,
+        parentId: 0,
+        children: [],
+        maxOwnerChanges: 5,
+        ownerChangerCounter: 0,
+        assetId: 0,
+        owner: {
+            address: '',
+        },
+        powerInW: 0,
+   
+        onCHainDirectPurchasePrice: 0,
+        escrow: [
+            {
+                address: '',
+            },
+        ],
+        approvedAddress: {
+            address: '',
+        },
+
+    },
+};

@@ -28,7 +28,7 @@
     "@types/mathjs": "^3.21.0",
     "ethereumjs-tx": "^1.3.4",
     "ew-asset-registry-lib": "0.0.12-beta14",
-    "ew-market-lib": "0.0.6-beta02",
+    "ew-market-lib": "0.0.6-beta04",
     "ew-origin-lib": "0.0.2-beta7",
     "ew-utils-general-lib": "0.0.9-beta04",
     "jsonschema": "^1.2.4",

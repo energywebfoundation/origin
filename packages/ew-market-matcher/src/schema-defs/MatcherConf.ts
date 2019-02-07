@@ -15,7 +15,12 @@ export enum MatcherType {
 
 export interface BlockchainDataSource  {
     type: BlockchainDataSourceType;
-    contractAddress: string;
+    web3Url: string;
+    offChainDataSourceUrl: string;
+    marketContractLookupAddress: string;
+    originContractLookupAddress: string;
+    matcherAddress: string;
+    
 }
 
 export interface SimulationDataSource  {

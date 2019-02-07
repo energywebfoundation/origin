@@ -24,6 +24,8 @@ import { SimulationModeController } from './controller/SimulationModeController'
 import * as Winston from 'winston';
 import * as ConfSchema from '../schemas/conf.schema.json';
 import * as RuleSchema from '../schemas/rule.schema.json';
+import { BlockchainModeController } from './controller/BlockchainModeController';
+import { createBlockchainConf } from './controller/BlockchainConnection';
 
 export const logger = Winston.createLogger({
   format: Winston.format.combine(
@@ -54,12 +56,20 @@ const buildMatcher = (
     }
 };
 
-const buildController = (dataSource: SchemaDefs.BlockchainDataSource | SchemaDefs.SimulationDataSource): Controller => {
+
+
+const buildController = async (
+    dataSource: SchemaDefs.BlockchainDataSource | SchemaDefs.SimulationDataSource,
+): Promise<Controller> => {
     logger.verbose('Data source type is ' + dataSource.type);
     switch (dataSource.type) {
 
         case SchemaDefs.BlockchainDataSourceType.Blockchain:
-            // return new BlockchainModeController()
+            const blockchainDataSource = dataSource as SchemaDefs.BlockchainDataSource;
+            return new BlockchainModeController(
+                await createBlockchainConf(blockchainDataSource),
+                blockchainDataSource.matcherAddress,
+            );
             throw new Error('Not implemented yet.');
     
         case SchemaDefs.SimulationDataSourceType.Simulation:
@@ -77,12 +87,12 @@ const main = async () => {
     try {
         if (process.argv[2]) {
 
-            fs.readFile(process.argv[2], 'utf-8', (error, data) => {
+            fs.readFile(process.argv[2], 'utf-8', async (error, data) => {
                 try {
                     const conf: SchemaDefs.MatcherConf = JSON.parse(data);
                     Controller.validateJson(conf, ConfSchema, 'Config file');
                     const matcher = buildMatcher(conf.matcherSpecification);
-                    const controller = buildController(conf.dataSource);
+                    const controller = await buildController(conf.dataSource);
                     matcher.setController(controller);
                     controller.setMatcher(matcher);
                     controller.start();

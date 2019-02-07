@@ -22,11 +22,15 @@ import * as Winston from 'winston';
 import { Controller } from './Controller';
 import Web3 = require('web3');
 import * as Conf from '../../conf.json';
+import { logger } from '..';
+import { BlockchainDataSourceType, BlockchainDataSource } from '../schema-defs/MatcherConf';
+import { SimpleMatcher } from '../matcher/SimpleMatcher';
+
+
 
 export const initMatchingManager = async (
     controller: Controller,
     conf: EwGeneral.Configuration.Entity,
-    escrowAddress: string,
 ) => {
 
     conf.logger.verbose('* Getting all porducing assets');
@@ -35,22 +39,63 @@ export const initMatchingManager = async (
         controller.registerProducingAsset(asset),
     );
 
-    conf.logger.verbose('* Getting all consuming assets');
-    const consumingAssetList = (await EwAsset.ConsumingAsset.getAllAssets(conf));
-    consumingAssetList.forEach(async (asset: EwAsset.ConsumingAsset.Entity) => 
-        controller.registerConsumingAsset(asset as EwAsset.ConsumingAsset.Entity),
-    );
+    // conf.logger.verbose('* Getting all consuming assets');
+    // const consumingAssetList = (await EwAsset.ConsumingAsset.getAllAssets(conf));
+    // consumingAssetList.forEach(async (asset: EwAsset.ConsumingAsset.Entity) => 
+    //     controller.registerConsumingAsset(asset as EwAsset.ConsumingAsset.Entity),
+    // );
+
+
     
     conf.logger.verbose('* Getting all active demands');
-    //const agreementList = (await EwMarket.Agreement. .getAllAssets(conf));
+    const agreementListLength = (await EwMarket.Agreement.getAgreementListLength(conf));
+    for (let i = 0; i < agreementListLength; i++) {
+        controller.registerAgreement(await new EwMarket.Agreement.Entity(i.toString(), conf).sync());
+    }
+
+    const demandListLength = (await EwMarket.Demand.getDemandListLength(conf));
+    for (let i = 0; i < demandListLength; i++) {
+        controller.registerDemand(await new EwMarket.Demand.Entity(i.toString(), conf).sync());
+    }
+
+    const supplyListLength = (await EwMarket.Supply.getSupplyListLength(conf));
+    for (let i = 0; i < supplyListLength; i++) {
+        controller.registerSupply(await new EwMarket.Supply.Entity(i.toString(), conf).sync());
+    }
   
+};
+
+export const createBlockchainConf = async (
+    blockchainSectionConfFile: BlockchainDataSource,
+): Promise<EwGeneral.Configuration.Entity> => {
+    const web3 = new Web3(blockchainSectionConfFile.web3Url);
+    const marketConf = await EwMarket.createBlockchainProperties(
+        logger,
+        web3,
+        blockchainSectionConfFile.marketContractLookupAddress,
+    );
+    const originConf = await  EwOrigin.createBlockchainProperties(
+        logger,
+        web3,
+        blockchainSectionConfFile.originContractLookupAddress,
+    );
+    marketConf.certificateLogicInstance = originConf.certificateLogicInstance;
+    
+    return {
+        
+        blockchainProperties: marketConf,
+        logger,
+        offChainDataSource: {
+            baseUrl: blockchainSectionConfFile.offChainDataSourceUrl,
+        },
+    };
+
 };
 
 export const startMatcher = async (
     controller: Controller,
     originContractLookupAddress: string,
     marketContractLookupAddress: string,
-    logger: Winston.Logger,
     matcherAddress: string,
 ) => {
 

@@ -12,7 +12,7 @@ export interface RegisterSupplyAction {
 }
 
 export enum RegisterSupplyActionType {
-    RegisterSupply = 'REGISTER_DEMAND',
+    RegisterSupply = 'REGISTER_SUPPLY',
 }
 
 export const supplyDataToEntity = (supplyData: SupplyData): EwMarket.Supply.Entity => {
