@@ -41,8 +41,9 @@ export class ConfigurableReferenceMatcher extends Matcher {
         this.controller = controller;
     }
 
-    async match(certificate: EwOrigin.Certificate.Entity, aggrements: EwMarket.Agreement.Entity[]) {
-        const sortedAgreementList = aggrements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
+    async match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
+  
+        const sortedAgreementList = agreements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
             // TODO: change
             const rule = (this.conf.rule as RuleConf.SimpleHierarchyRule);
 

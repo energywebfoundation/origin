@@ -18,11 +18,11 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
 import * as EwMarket from 'ew-market-lib';
+import { logger } from '..';
 import * as Winston from 'winston';
 import { Controller } from './Controller';
 import Web3 = require('web3');
 import * as Conf from '../../conf.json';
-import { logger } from '..';
 import { BlockchainDataSourceType, BlockchainDataSource } from '../schema-defs/MatcherConf';
 import { SimpleMatcher } from '../matcher/SimpleMatcher';
 
@@ -47,17 +47,19 @@ export const initMatchingManager = async (
 
 
     
-    conf.logger.verbose('* Getting all active demands');
+    conf.logger.verbose('* Getting all active agreements');
     const agreementListLength = (await EwMarket.Agreement.getAgreementListLength(conf));
     for (let i = 0; i < agreementListLength; i++) {
         controller.registerAgreement(await new EwMarket.Agreement.Entity(i.toString(), conf).sync());
     }
 
+    conf.logger.verbose('* Getting all active demands');
     const demandListLength = (await EwMarket.Demand.getDemandListLength(conf));
     for (let i = 0; i < demandListLength; i++) {
         controller.registerDemand(await new EwMarket.Demand.Entity(i.toString(), conf).sync());
     }
 
+    conf.logger.verbose('* Getting all active supplies');
     const supplyListLength = (await EwMarket.Supply.getSupplyListLength(conf));
     for (let i = 0; i < supplyListLength; i++) {
         controller.registerSupply(await new EwMarket.Supply.Entity(i.toString(), conf).sync());
@@ -92,44 +94,27 @@ export const createBlockchainConf = async (
 
 };
 
-export const startMatcher = async (
-    controller: Controller,
-    originContractLookupAddress: string,
-    marketContractLookupAddress: string,
-    matcherAddress: string,
-) => {
-
-    const web3 = new Web3(Conf.web3Url);
-    const blockchainProperties: EwGeneral.Configuration.BlockchainProperties = await EwOrigin
-        .createBlockchainProperties(logger, web3, originContractLookupAddress);
-    blockchainProperties.marketLogicInstance = (await EwMarket.createBlockchainProperties(
-        logger,
-        web3,
-        marketContractLookupAddress)
-    ).marketLogicInstance;
-
-    const conf: EwGeneral.Configuration.Entity = {logger, blockchainProperties};
-
-    await initEventHandling(controller, conf, matcherAddress);
-};
-
 export const initEventHandling = async (
     controller: Controller,
     conf: EwGeneral.Configuration.Entity,
-    matcherAddress: string,
 ) => {
-    // const currentBlockNumber = await blockchainProperties.web3.eth.getBlockNumber();
+    const currentBlockNumber = await conf.blockchainProperties.web3.eth.getBlockNumber();
+    const certificateContractEventHandler = new EwGeneral.ContractEventHandler(
+        conf.blockchainProperties.certificateLogicInstance,
+        currentBlockNumber,
+    );
 
-    // const certificateContractEventHandler = new EwfCoo.ContractEventHandler(blockchainProperties.certificateLogicInstance, currentBlockNumber);
-    // certificateContractEventHandler.onEvent('LogCreatedCertificate' , async (event) => {
-        
-    //     if (matcherAddress === event.returnValues.escrow) {
-    //         console.log('\n* Event: LogCreatedCertificate certificate hold in trust id: ' + event.returnValues._certificateId);
-    //         const newCertificate = await new EwfCoo.Certificate(event.returnValues._certificateId, blockchainProperties).syncWithBlockchain();
-    //         // cobntroller.registerCertificate(newCertificate)   
-    //     }
-        
-    // });
+    certificateContractEventHandler.onEvent('LogCreatedCertificate' , async (event: any) => {
+
+        logger.verbose('Event: LogCreatedCertificate certificate #' + event.returnValues._certificateId);
+        const newCertificate = await new EwOrigin.Certificate.Entity(
+            event.returnValues._certificateId,
+            conf,
+        ).sync();
+
+        controller.matchTrigger(newCertificate);
+
+    });
 
     // certificateContractEventHandler.onEvent('LogCertificateOwnerChanged' , async (event) => {
         
@@ -216,10 +201,10 @@ export const initEventHandling = async (
         
     // });
     
-    // const eventHandlerManager = new EwfCoo.EventHandlerManager(4000, blockchainProperties);
+    const eventHandlerManager = new EwGeneral.EventHandlerManager(4000, conf);
     // eventHandlerManager.registerEventHandler(consumingAssetContractEventHandler);
     // eventHandlerManager.registerEventHandler(demandContractEventHandler);
     // eventHandlerManager.registerEventHandler(assetContractEventHandler);
-    // eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-    // eventHandlerManager.start();
+    eventHandlerManager.registerEventHandler(certificateContractEventHandler);
+    eventHandlerManager.start();
 };

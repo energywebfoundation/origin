@@ -104,19 +104,19 @@ export class SimulationModeController extends Controller {
         throw new Error('Method not implemented.');
     }
 
-    async getProducingAsset(assetId: string) {
+    getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity {
         return this.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId);
     }
 
-    async getDemand(demandId: string) {
+    getDemand(demandId: string): EwMarket.Demand.Entity {
         return this.demands.find((demand: EwMarket.Demand.Entity) => demand.id === demandId);
     }
 
-    async getSupply(supplyId: string) {
+    getSupply(supplyId: string): EwMarket.Supply.Entity {
         return this.supplies.find((supply: EwMarket.Supply.Entity) => supply.id === supplyId);
     }
 
-    getConsumingAsset(assetId: string): Promise<EwAsset.ConsumingAsset.Entity> {
+    getConsumingAsset(assetId: string): EwAsset.ConsumingAsset.Entity {
         throw new Error('Method not implemented.');
     }
 
@@ -124,7 +124,7 @@ export class SimulationModeController extends Controller {
         throw new Error('Method not implemented.');
     }
 
-    async getAgreement(agreementId: string) {
+    getAgreement(agreementId: string): EwMarket.Agreement.Entity {
         throw new Error('Method not implemented.');
     }
   

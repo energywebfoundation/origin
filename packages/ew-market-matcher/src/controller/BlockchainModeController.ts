@@ -24,7 +24,7 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
-import { initMatchingManager } from './BlockchainConnection';
+import { initMatchingManager, initEventHandling } from './BlockchainConnection';
 
 export class BlockchainModeController extends Controller {
 
@@ -82,10 +82,9 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerAgreement(newAggreement: EwMarket.Agreement.Entity) {
-        // const allowed = newAggreement.allowedMatcher
-        //     .find((matcherAddress: string) => matcherAddress === this.matcherAddress) ? true : false;
-
-        const allowed = true;
+        const allowed = newAggreement.allowedMatcher
+            .find((matcherAddress: string) => 
+                matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()) ? true : false;
 
         if (allowed) {
             if (!this.agreements.find((aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id)) {
@@ -93,7 +92,7 @@ export class BlockchainModeController extends Controller {
                 logger.verbose('Registered new agreement #' + newAggreement.id);
             }
         } else {
-            throw new Error('Agreement does not allow this matcher.');
+            logger.verbose('This instance is not an machter for agreement #' + newAggreement.id);
         }
     }
 
@@ -105,19 +104,19 @@ export class BlockchainModeController extends Controller {
         throw new Error('Method not implemented.');
     }
 
-    async getProducingAsset(assetId: string) {
+    getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity {
         return this.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId);
     }
 
-    async getDemand(demandId: string) {
+    getDemand(demandId: string): EwMarket.Demand.Entity {
         return this.demands.find((demand: EwMarket.Demand.Entity) => demand.id === demandId);
     }
 
-    async getSupply(supplyId: string) {
+    getSupply(supplyId: string): EwMarket.Supply.Entity {
         return this.supplies.find((supply: EwMarket.Supply.Entity) => supply.id === supplyId);
     }
 
-    getConsumingAsset(assetId: string): Promise<EwAsset.ConsumingAsset.Entity> {
+    getConsumingAsset(assetId: string): EwAsset.ConsumingAsset.Entity {
         throw new Error('Method not implemented.');
     }
 
@@ -125,7 +124,7 @@ export class BlockchainModeController extends Controller {
         throw new Error('Method not implemented.');
     }
 
-    async getAgreement(agreementId: string) {
+    getAgreement(agreementId: string): EwMarket.Agreement.Entity {
         throw new Error('Method not implemented.');
     }
   
@@ -184,6 +183,7 @@ export class BlockchainModeController extends Controller {
     async start() {
         
         await initMatchingManager(this, this.conf);
+        initEventHandling(this, this.conf);
 
     }
 

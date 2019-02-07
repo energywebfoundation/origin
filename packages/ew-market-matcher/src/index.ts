@@ -70,7 +70,7 @@ const buildController = async (
                 await createBlockchainConf(blockchainDataSource),
                 blockchainDataSource.matcherAddress,
             );
-            throw new Error('Not implemented yet.');
+
     
         case SchemaDefs.SimulationDataSourceType.Simulation:
             return new SimulationModeController(dataSource as SchemaDefs.SimulationDataSource);

@@ -56,8 +56,8 @@ export abstract class Controller {
     }
 
     async matchTrigger(certificate: EwOrigin.Certificate.Entity) {
-        const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
-        await this.matcher.match(certificate, filteredAgreements);
+        //const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
+        await this.matcher.match(certificate, this.agreements);
     }
 
     abstract async match(
@@ -87,17 +87,17 @@ export abstract class Controller {
 
     abstract async removeAgreement(agreementId: string): Promise<void>; 
 
-    abstract async getProducingAsset(assetId: string): Promise<EwAsset.ProducingAsset.Entity>;
+    abstract getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity;
 
-    abstract async getConsumingAsset(assetId: string): Promise<EwAsset.ConsumingAsset.Entity>;
+    abstract getConsumingAsset(assetId: string): EwAsset.ConsumingAsset.Entity;
 
     abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
 
     abstract async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number>;
     
-    abstract getAgreement(agreementId: string): Promise<void>;
+    abstract getAgreement(agreementId: string): EwMarket.Agreement.Entity;
 
-    abstract getDemand(demandId: string): Promise<EwMarket.Demand.Entity>;
+    abstract getDemand(demandId: string): EwMarket.Demand.Entity;
 
-    abstract getSupply(supplyId: string): Promise<EwMarket.Supply.Entity>;
+    abstract getSupply(supplyId: string): EwMarket.Supply.Entity;
 }

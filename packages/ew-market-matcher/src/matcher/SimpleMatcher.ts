@@ -19,6 +19,7 @@ import { Controller } from '../controller/Controller';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
+import { logger } from '..';
 
 export class SimpleMatcher extends Matcher {
 
@@ -37,7 +38,28 @@ export class SimpleMatcher extends Matcher {
     }
 
     match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
-        throw new Error('Method not implemented.');
+        const matcherAccount = certificate.escrow.find((escrow: any) => 
+            escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
+        );
+
+        if (matcherAccount) {
+            logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+            const matchingAgreement = agreements.find((agreement: EwMarket.Agreement.Entity) => 
+            this.controller.getSupply(agreement.supplyId.toString()).assetId.toString() === 
+                certificate.assetId.toString(),
+            ); 
+
+            if (matchingAgreement) {
+                logger.info('Found matching agreement for certificate #' + certificate.id);
+            } else {
+                logger.info('Found no matching agreement for certificate #' + certificate.id);
+                //TODO: demand matching
+            }
+            
+        } else {
+            logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
+        }
+          
     }
 
 }
