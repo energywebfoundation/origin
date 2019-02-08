@@ -117,81 +117,82 @@ export class ConfigurableReferenceMatcher extends Matcher {
         throw new Error('Method not implemented.');
     }
 
-    async match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
-        console.log(certificate.escrow)
-        const matcherAccount = certificate.escrow.find((escrow: any) => 
-            escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
-        );
+    // async match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
+ 
+    //     const matcherAccount = certificate.escrow.find((escrow: any) => 
+    //         escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
+    //     );
 
-        if (matcherAccount) {
-            logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+    //     if (matcherAccount) {
+    //         logger.verbose('This instance is an escrow for certificate #' + certificate.id);
        
-        } else {
-            logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
-            return null;
-        }
-        const matchingAgreement = agreements.find((agreement: EwMarket.Agreement.Entity) => {
-            const supply = this.controller.getSupply(agreement.supplyId.toString());
-            return supply && supply.assetId.toString() === certificate.assetId.toString();
-        }); 
+    //     } else {
+    //         logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
+    //         return null;
+    //     }
+    //     const matchingAgreement = agreements.find((agreement: EwMarket.Agreement.Entity) => {
+    //         const supply = this.controller.getSupply(agreement.supplyId.toString());
+    //         return supply && supply.assetId.toString() === certificate.assetId.toString();
+    //     }); 
 
-        if (matchingAgreement) {
-            logger.info('Found matching agreement for certificate #' + certificate.id);
-        } else {
-            logger.info('Found no matching agreement for certificate #' + certificate.id);
-            //TODO: demand matching
-            return null;
-        }
+    //     if (matchingAgreement) {
+    //         logger.info('Found matching agreement for certificate #' + certificate.id);
+    //     } else {
+    //         logger.info('Found no matching agreement for certificate #' + certificate.id);
+    //         //TODO: demand matching
+    //         return null;
+    //     }
   
-        const sortedAgreementList = agreements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
-            // TODO: change
-            const rule = (this.conf.rule as RuleConf.SimpleHierarchyRule);
+    //     const sortedAgreementList = agreements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
+    //         // TODO: change
+    //         const rule = (this.conf.rule as RuleConf.SimpleHierarchyRule);
 
-            const unequalProperty = rule.relevantProperties
-                .find((property: RuleConf.SimpleHierarchyRelevantProperty) => a[property.name] !== b[property.name]);
-            if (!unequalProperty) {
-                return 0;
-            }
+    //         const unequalProperty = rule.relevantProperties
+    //             .find((property: RuleConf.SimpleHierarchyRelevantProperty) => a[property.name] !== b[property.name]);
+    //         if (!unequalProperty) {
+    //             return 0;
+    //         }
 
-            const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, a);
-            const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, b);
+    //         const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, a);
+    //         const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, b);
 
-            return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
+    //         return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
             
-        });
+    //     });
 
-        logger.debug('Sorted agreement list for certificate #' + certificate.id + ': ' + sortedAgreementList
-            .reduce((accumulator: string, currentValue: EwMarket.Agreement.Entity) => 
-                accumulator += currentValue.id + ' ',
-                ''));
+    //     logger.debug('Sorted agreement list for certificate #' + certificate.id + ': ' + sortedAgreementList
+    //         .reduce((accumulator: string, currentValue: EwMarket.Agreement.Entity) => 
+    //             accumulator += currentValue.id + ' ',
+    //             ''));
         
-        const filteredAgreementList = [];
-        // TODO: split options
-        for (const agreement of sortedAgreementList) {
+    //     const filteredAgreementList = [];
+    //     // TODO: split options
+    //     for (const agreement of sortedAgreementList) {
             
-            const currentPeriod = await this.controller
-                .getCurrentPeriod(agreement.offChainProperties.start, agreement.offChainProperties.timeframe);
-            const demand = await this.controller.getDemand(agreement.demandId.toString());
-            const neededWhForCurrentPeriod = agreement.matcherOffChainProperties.currentPeriod === currentPeriod ? 
-                demand.offChainProperties.targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh :
-                demand.offChainProperties.targetWhPerPeriod;
+    //         const currentPeriod = await this.controller
+    //             .getCurrentPeriod(agreement.offChainProperties.start, agreement.offChainProperties.timeframe);
+    //         const demand = await this.controller.getDemand(agreement.demandId.toString());
+    //         const neededWhForCurrentPeriod = agreement.matcherOffChainProperties.currentPeriod === currentPeriod ? 
+    //             demand.offChainProperties.targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh :
+    //             demand.offChainProperties.targetWhPerPeriod;
                 
-            if (certificate.powerInW > neededWhForCurrentPeriod) {
+    //         if (certificate.powerInW > neededWhForCurrentPeriod) {
                 
-                logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW}) for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
-            } else {
-                filteredAgreementList.push(agreement);
-            }
-        }
+    //             logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW}) for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
+    //         } else {
+    //             filteredAgreementList.push(agreement);
+    //         }
+    //     }
 
-        if (filteredAgreementList.length > 0) {
-            await this.controller.matchAggrement(certificate, filteredAgreementList[0]);
+    //     if (filteredAgreementList.length > 0) {
+    //         await this.controller.matchAggrement(certificate, filteredAgreementList[0]);
             
-        } else {
-            await this.controller.handleUnmatchedCertificate(certificate);
-            logger.verbose('No match found for certificate ' + certificate.id);
-        }
+    //     } else {
+            
+    //         logger.verbose('Found no matching agreement for certificate ' + certificate.id);
+    //         return null;
+    //     }
                
-    }
+    // }
 
 }

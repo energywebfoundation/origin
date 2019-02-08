@@ -118,7 +118,7 @@
         {
             "type": "REGISTER_SUPPLY",
             "data": {
-                "id": "1",
+                "id": "0",
                 "offChainProperties": {
                     "availableWh": 10,
                     "currency": 0,

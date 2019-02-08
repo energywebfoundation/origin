@@ -207,7 +207,7 @@ export class SimulationModeController extends Controller {
         for (const action of this.simulationFlow.flow) {    
             await SimulationFlowHandler.handleFlowAction(this, action as any);
         }
-
+        
         this.compareWithExpectedResults();
 
     }
