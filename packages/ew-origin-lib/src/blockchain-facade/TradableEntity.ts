@@ -3,12 +3,12 @@ import { TransactionReceipt } from 'web3/types';
 
 export interface OnChainProperties {
     assetId: number;
-    owner: GeneralLib.Configuration.EthAccount;
+    owner: string;
     powerInW: number;
     acceptedToken?: number;
     onCHainDirectPurchasePrice: number;
-    escrow: GeneralLib.Configuration.EthAccount[];
-    approvedAddress: GeneralLib.Configuration.EthAccount;
+    escrow: string[];
+    approvedAddress: string;
 }
 
 export const getBalance = async (owner: string, configuration: GeneralLib.Configuration.Entity): Promise<number> => {
@@ -65,12 +65,12 @@ export const setApprovalForAll = async (
 };
 export abstract class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements OnChainProperties {
     assetId: number;
-    owner: GeneralLib.Configuration.EthAccount;
+    owner: string;
     powerInW: number;
     acceptedToken?: number;
     onCHainDirectPurchasePrice: number;
-    escrow: GeneralLib.Configuration.EthAccount[];
-    approvedAddress: GeneralLib.Configuration.EthAccount;
+    escrow: string[];
+    approvedAddress: string;
 
     initialized: boolean;
 
