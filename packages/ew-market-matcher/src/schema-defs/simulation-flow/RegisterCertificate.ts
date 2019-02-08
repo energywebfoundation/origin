@@ -35,20 +35,12 @@ const test: CertificateData = {
         maxOwnerChanges: 5,
         ownerChangerCounter: 0,
         assetId: 0,
-        owner: {
-            address: '',
-        },
+        owner: '',
         powerInW: 0,
    
         onCHainDirectPurchasePrice: 0,
-        escrow: [
-            {
-                address: '',
-            },
-        ],
-        approvedAddress: {
-            address: '',
-        },
+        escrow: [''],
+        approvedAddress: '',
 
     },
 };

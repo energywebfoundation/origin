@@ -159,9 +159,15 @@ export class BlockchainModeController extends Controller {
         });
     }
 
-    async match(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
+    async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
         
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
+      
+    }
+
+    async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
+        
+        logger.info('Matched certificate #' + certificate.id + ' to demand #' + demand.id);
       
     }
 

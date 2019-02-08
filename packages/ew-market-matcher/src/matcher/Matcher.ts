@@ -17,8 +17,50 @@
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import { Controller } from '../controller/Controller';
+import { logger } from '..';
 
 export abstract class Matcher {
-    abstract match(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity[]);
-    abstract setController(controller: Controller);
+    protected controller: Controller;
+
+    abstract async findMatchingAgreement(
+        certificate: EwOrigin.Certificate.Entity,
+        agreements: EwMarket.Agreement.Entity[],
+    ): Promise<EwMarket.Agreement.Entity>;
+
+    abstract async findMatchingDemand(
+        certificate: EwOrigin.Certificate.Entity,
+        demands: EwMarket.Demand.Entity[],
+    ): Promise<EwMarket.Demand.Entity>;
+
+    async match(
+        certificate: EwOrigin.Certificate.Entity,
+        agreements: EwMarket.Agreement.Entity[],
+        demands: EwMarket.Demand.Entity[],
+    ): Promise<boolean> {
+        const matcherAccount = certificate.escrow.find((escrow: any) => 
+            escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
+        );
+
+        if (!matcherAccount) {
+            logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
+            return false;
+        } 
+
+        logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+
+        const agreement = await this.findMatchingAgreement(certificate, agreements);
+        if (agreement) {
+            await this.controller.matchAggrement(certificate, agreement);
+            return true;
+
+        } 
+        
+        const demand = await this.findMatchingDemand(certificate, demands);
+        if (demand) {
+            await this.controller.matchDemand(certificate, demand);
+        } 
+               
+    }
+
+    abstract setController(controller: Controller): void;
 }

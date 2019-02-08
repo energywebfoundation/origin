@@ -177,20 +177,12 @@
                     "propertiesDocumentHash": "",
                     "url": "",
                     "assetId": 1,
-                    "owner": {
-                        "address": "0x0"
-                    },
+                    "owner": "0x0",
                     "powerInW": 10,
             
                     "onCHainDirectPurchasePrice": 0,
-                    "escrow": [
-                        {
-                            "address": ""
-                        }
-                    ],
-                    "approvedAddress": {
-                        "address": ""
-                    }
+                    "escrow": ["0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"],
+                    "approvedAddress": ""
                     
                 }
             }
@@ -211,20 +203,11 @@
                     "propertiesDocumentHash": "",
                     "url": "",
                     "assetId": 0,
-                    "owner": {
-                        "address": "0x0"
-                    },
+                    "owner": "0x0",
                     "powerInW": 10,
-            
                     "onCHainDirectPurchasePrice": 0,
-                    "escrow": [
-                        {
-                            "address": ""
-                        }
-                    ],
-                    "approvedAddress": {
-                        "address": ""
-                    }
+                    "escrow": ["0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"],
+                    "approvedAddress": ""
                     
                 }
             }

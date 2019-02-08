@@ -71,7 +71,6 @@ const buildController = async (
                 blockchainDataSource.matcherAddress,
             );
 
-    
         case SchemaDefs.SimulationDataSourceType.Simulation:
             return new SimulationModeController(dataSource as SchemaDefs.SimulationDataSource);
   

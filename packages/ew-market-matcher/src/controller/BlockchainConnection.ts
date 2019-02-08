@@ -24,7 +24,7 @@ import { Controller } from './Controller';
 import Web3 = require('web3');
 import * as Conf from '../../conf.json';
 import { BlockchainDataSourceType, BlockchainDataSource } from '../schema-defs/MatcherConf';
-import { SimpleMatcher } from '../matcher/SimpleMatcher';
+
 
 
 

@@ -8,7 +8,6 @@
     "start": "node dist/js/src/index.js",
     "debug": "node --inspect-brk dist/js/src/index.js",
     "build": "rm -rf dist/ && npm run generate-schemas && tsc ",
-
     "generate-schemas": "rm -rf schemas/ && mkdir schemas/ && npm run generate-sim-flow-schema && npm run generate-rule-schema && npm run generate-conf-schema",
     "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json SimulationFlow > schemas/simulation-description.schema.json",
     "generate-rule-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json RuleConf > schemas/rule.schema.json",
@@ -30,7 +29,7 @@
     "ethereumjs-tx": "^1.3.4",
     "ew-asset-registry-lib": "0.0.12-beta14",
     "ew-market-lib": "0.0.6-beta04",
-    "ew-origin-lib": "0.0.2-beta7",
+    "ew-origin-lib": "0.0.3",
     "ew-utils-general-lib": "0.0.9-beta05",
     "jsonschema": "^1.2.4",
     "log-symbols": "^2.2.0",

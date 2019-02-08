@@ -57,12 +57,17 @@ export abstract class Controller {
 
     async matchTrigger(certificate: EwOrigin.Certificate.Entity) {
         //const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
-        await this.matcher.match(certificate, this.agreements);
+        await this.matcher.match(certificate, this.agreements, this.demands);
     }
 
-    abstract async match(
+    abstract async matchAggrement(
         certificate: EwOrigin.Certificate.Entity,
         aggreement: EwMarket.Agreement.Entity,
+    ): Promise<void>;
+
+    abstract async matchDemand(
+        certificate: EwOrigin.Certificate.Entity,
+        demand: EwMarket.Demand.Entity,
     ): Promise<void>;
 
     abstract async getCurrentDataSourceTime(): Promise<number>;

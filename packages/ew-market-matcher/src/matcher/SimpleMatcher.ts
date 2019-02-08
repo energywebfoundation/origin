@@ -27,38 +27,36 @@ export class SimpleMatcher extends Matcher {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    private controller: Controller;
     
     constructor() {
         super();
     }
 
-    setController(controller: Controller) {
+    setController(controller: Controller): void {
         this.controller = controller;
     }
 
-    match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
-        const matcherAccount = certificate.escrow.find((escrow: any) => 
-            escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
-        );
+    async findMatchingAgreement(
+        certificate: EwOrigin.Certificate.Entity,
+        agreements: EwMarket.Agreement.Entity[],
+    ): Promise<EwMarket.Agreement.Entity> {
+        throw new Error('Method not implemented.');
+    }
 
-        if (matcherAccount) {
-            logger.verbose('This instance is an escrow for certificate #' + certificate.id);
-            const matchingAgreement = agreements.find((agreement: EwMarket.Agreement.Entity) => 
-            this.controller.getSupply(agreement.supplyId.toString()).assetId.toString() === 
-                certificate.assetId.toString(),
-            ); 
+    async findMatchingDemand(
+        certificate: EwOrigin.Certificate.Entity,
+        demands: EwMarket.Demand.Entity[],
+    ): Promise<EwMarket.Demand.Entity> {
+        throw new Error('Method not implemented.');
+    }
 
-            if (matchingAgreement) {
-                logger.info('Found matching agreement for certificate #' + certificate.id);
-            } else {
-                logger.info('Found no matching agreement for certificate #' + certificate.id);
-                //TODO: demand matching
-            }
-            
-        } else {
-            logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
-        }
+    matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity[]) {
+        throw new Error('Method not implemented.');
+          
+    }
+
+    matchAgreement(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
+        throw new Error('Method not implemented.');
           
     }
 

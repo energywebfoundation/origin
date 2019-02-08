@@ -27,7 +27,6 @@ export class ConfigurableReferenceMatcher extends Matcher {
 
     private blockchainConf: EwGeneral.Configuration.Entity;
     private conf: RuleConf.RuleConf;
-    private controller: Controller;
     private propertyRanking: string[];
     
     constructor(conf: any) {
@@ -41,7 +40,108 @@ export class ConfigurableReferenceMatcher extends Matcher {
         this.controller = controller;
     }
 
+    async findMatchingAgreement(
+        certificate: EwOrigin.Certificate.Entity,
+        agreements: EwMarket.Agreement.Entity[],
+    ): Promise<EwMarket.Agreement.Entity> {
+        
+        const matchingAgreement = agreements.filter((agreement: EwMarket.Agreement.Entity) => 
+            this.controller.getSupply(agreement.supplyId.toString()).assetId.toString() === 
+            certificate.assetId.toString(),
+        ); 
+
+        if (matchingAgreement.length === 0) {
+            logger.info('Found matching agreement for certificate #' + certificate.id);
+            return null;
+        } 
+  
+        const sortedAgreementList = matchingAgreement
+            .sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
+                // TODO: change
+                const rule = (this.conf.rule as RuleConf.SimpleHierarchyRule);
+
+                const unequalProperty = rule.relevantProperties
+                    .find((property: RuleConf.SimpleHierarchyRelevantProperty) => 
+                        a[property.name] !== b[property.name]
+                    );
+                if (!unequalProperty) {
+                    return 0;
+                }
+
+                const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, a);
+                const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, b);
+
+                return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
+                
+            });
+
+        logger.debug('Sorted agreement list for certificate #' + certificate.id + ': ' + sortedAgreementList
+            .reduce((accumulator: string, currentValue: EwMarket.Agreement.Entity) => 
+                accumulator += currentValue.id + ' ', ''));
+        
+        const filteredAgreementList = [];
+        // TODO: split options
+        for (const agreement of sortedAgreementList) {
+            
+            const currentPeriod = await this.controller
+                .getCurrentPeriod(agreement.offChainProperties.start, agreement.offChainProperties.timeframe);
+            const demand = await this.controller.getDemand(agreement.demandId.toString());
+            const neededWhForCurrentPeriod = agreement.matcherOffChainProperties.currentPeriod === currentPeriod ? 
+                demand.offChainProperties.targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh :
+                demand.offChainProperties.targetWhPerPeriod;
+                
+            if (certificate.powerInW > neededWhForCurrentPeriod) {
+                logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW}) 
+                    for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
+            } else {
+                filteredAgreementList.push(agreement);
+            }
+        }
+
+        if (filteredAgreementList.length > 0) {
+            return filteredAgreementList[0];
+
+        } else {
+            
+            logger.verbose('No matching agreement found for certificate ' + certificate.id);
+            return null;
+
+        }
+               
+    }
+
+    async findMatchingDemand(
+        certificate: EwOrigin.Certificate.Entity,
+        demands: EwMarket.Demand.Entity[],
+    ): Promise<EwMarket.Demand.Entity> {
+        throw new Error('Method not implemented.');
+    }
+
     async match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
+        console.log(certificate.escrow)
+        const matcherAccount = certificate.escrow.find((escrow: any) => 
+            escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
+        );
+
+        if (matcherAccount) {
+            logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+       
+        } else {
+            logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
+            return null;
+        }
+        const matchingAgreement = agreements.find((agreement: EwMarket.Agreement.Entity) => {
+            const supply = this.controller.getSupply(agreement.supplyId.toString());
+            return supply && supply.assetId.toString() === certificate.assetId.toString();
+        }); 
+
+        if (matchingAgreement) {
+            logger.info('Found matching agreement for certificate #' + certificate.id);
+        } else {
+            logger.info('Found no matching agreement for certificate #' + certificate.id);
+            //TODO: demand matching
+            return null;
+        }
   
         const sortedAgreementList = agreements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
             // TODO: change
@@ -85,7 +185,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
         }
 
         if (filteredAgreementList.length > 0) {
-            await this.controller.match(certificate, filteredAgreementList[0]);
+            await this.controller.matchAggrement(certificate, filteredAgreementList[0]);
             
         } else {
             await this.controller.handleUnmatchedCertificate(certificate);

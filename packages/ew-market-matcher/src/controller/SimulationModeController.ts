@@ -158,7 +158,7 @@ export class SimulationModeController extends Controller {
         });
     }
 
-    async match(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
+    async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
        
         this.matches.push({
             agreementId: agreement.id,
@@ -180,6 +180,11 @@ export class SimulationModeController extends Controller {
          
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
         logger.debug(`Set Wh for Agreement ${agreement.id} in period ${agreement.matcherOffChainProperties.currentPeriod} to ${agreement.matcherOffChainProperties.currentWh} Wh`);
+    }
+
+    async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
+       
+        throw new Error('Method not implemented.');
     }
 
     async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame) : Promise<number> {
