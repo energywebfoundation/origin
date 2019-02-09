@@ -150,19 +150,17 @@ export class BlockchainModeController extends Controller {
     }
 
     async handleUnmatchedCertificate(certificate: EwOrigin.Certificate.Entity) {
-        this.matches.push({
-            certificateId: certificate.id,
-
-            agreementId: '-1',
-            powerInW: certificate.powerInW,
-            
-        });
+        // TODO 
     }
 
     async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
         
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
       
+    }
+
+    async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChils: number): Promise<void> {
+        throw new Error('Method not implemented.');
     }
 
     async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {

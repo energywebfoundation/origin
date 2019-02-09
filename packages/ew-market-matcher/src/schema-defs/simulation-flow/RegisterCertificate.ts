@@ -16,31 +16,7 @@ export interface CertificateData extends IdentifiableEntity {
 
 export const certificateDataToEntity = (certificateData: CertificateData): EwOrigin.Certificate.Entity => {
     const certificate = new EwOrigin.Certificate.Entity(certificateData.id, null);
-
-    Object.keys(certificateData.onChainProperties)
-        .forEach((key: string) => certificate[key] = certificateData.onChainProperties[key]);
+    Object.assign(certificate, certificateData.onChainProperties);
     return certificate;
 
-};
-
-const test: CertificateData = {
-    id: '0',
-
-    onChainProperties: {
-        retired: false,
-        dataLog: '',
-        creationTime: 0,
-        parentId: 0,
-        children: [],
-        maxOwnerChanges: 5,
-        ownerChangerCounter: 0,
-        assetId: 0,
-        owner: '',
-        powerInW: 0,
-   
-        onCHainDirectPurchasePrice: 0,
-        escrow: [''],
-        approvedAddress: '',
-
-    },
 };

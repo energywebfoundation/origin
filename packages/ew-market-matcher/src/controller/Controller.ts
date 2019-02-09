@@ -97,6 +97,8 @@ export abstract class Controller {
     abstract getConsumingAsset(assetId: string): EwAsset.ConsumingAsset.Entity;
 
     abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
+    
+    abstract async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChils: number): Promise<void>;
 
     abstract async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number>;
     

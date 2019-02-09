@@ -39,7 +39,7 @@ export class SimpleMatcher extends Matcher {
     async findMatchingAgreement(
         certificate: EwOrigin.Certificate.Entity,
         agreements: EwMarket.Agreement.Entity[],
-    ): Promise<EwMarket.Agreement.Entity> {
+    ): Promise<{split: boolean, agreement: EwMarket.Agreement.Entity}> {
         throw new Error('Method not implemented.');
     }
 

@@ -25,7 +25,7 @@ export abstract class Matcher {
     abstract async findMatchingAgreement(
         certificate: EwOrigin.Certificate.Entity,
         agreements: EwMarket.Agreement.Entity[],
-    ): Promise<EwMarket.Agreement.Entity>;
+    ): Promise<{split: boolean, agreement: EwMarket.Agreement.Entity}>;
 
     abstract async findMatchingDemand(
         certificate: EwOrigin.Certificate.Entity,
@@ -42,18 +42,22 @@ export abstract class Matcher {
             escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
         );
 
+        
+
         if (!matcherAccount) {
             logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
             
         } else {
             logger.verbose('This instance is an escrow for certificate #' + certificate.id);
-
-            const agreement = await this.findMatchingAgreement(certificate, agreements);
-            if (agreement) {
-                await this.controller.matchAggrement(certificate, agreement);
+ 
+            const result = await this.findMatchingAgreement(certificate, agreements);
+            if (result.agreement) {
+                await this.controller.matchAggrement(certificate, result.agreement);
                 return true;
 
-            } 
+            } else if (!result.split) {
+                await this.controller.handleUnmatchedCertificate(certificate);
+            }
             
             // const demand = await this.findMatchingDemand(certificate, demands);
             // if (demand) {
@@ -62,7 +66,7 @@ export abstract class Matcher {
             // }
         }
 
-        await this.controller.handleUnmatchedCertificate(certificate);
+        
         return false;
                
     }

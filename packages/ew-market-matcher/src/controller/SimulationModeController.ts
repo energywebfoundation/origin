@@ -159,7 +159,7 @@ export class SimulationModeController extends Controller {
     }
 
     async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
-       
+
         this.matches.push({
             agreementId: agreement.id,
             certificateId: certificate.id,
@@ -173,7 +173,7 @@ export class SimulationModeController extends Controller {
 
         if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
             agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
-            agreement.matcherOffChainProperties.currentPeriod = certificate.powerInW;
+            agreement.matcherOffChainProperties.currentWh = certificate.powerInW;
         } else {
             agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
         }
@@ -225,6 +225,39 @@ export class SimulationModeController extends Controller {
         } else {
             return true;
         }
+    }
+
+    async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChild: number): Promise<void> {
+
+        if (certificate.powerInW < whForFirstChild) {
+            throw Error('whForFirstChild can not be smaller than powerInWh');
+        }
+
+        const firstChildId = parseInt(certificate.id) + 1;
+        const secondChildId = parseInt(certificate.id) + 2;
+
+        const firstChild = Object.assign(
+            new EwOrigin.Certificate.Entity(null, certificate.configuration), 
+            certificate,
+        );
+        firstChild.id = firstChildId.toString();
+        firstChild.powerInW = whForFirstChild;
+
+        const secondChild = Object.assign(
+            new EwOrigin.Certificate.Entity(null, certificate.configuration), 
+            certificate,
+        );
+        secondChild.id = secondChildId.toString();
+        secondChild.powerInW = certificate.powerInW - firstChild.powerInW;
+
+        certificate.children = [firstChildId, secondChildId];
+        logger.debug('Splitting certificate #' + certificate.id + ' with ' + certificate.powerInW + 'wh');
+        logger.debug('First child #' + firstChild.id + ' with ' + firstChild.powerInW + 'wh');
+        logger.debug('Second child #' + secondChild.id + ' with ' + secondChild.powerInW + 'wh');
+
+        await this.matchTrigger(firstChild);
+        await this.matchTrigger(secondChild);
+
     }
 
     compareWithExpectedResults() {

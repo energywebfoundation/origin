@@ -43,7 +43,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
     async findMatchingAgreement(
         certificate: EwOrigin.Certificate.Entity,
         agreements: EwMarket.Agreement.Entity[],
-    ): Promise<EwMarket.Agreement.Entity> {
+    ): Promise<{split: boolean, agreement: EwMarket.Agreement.Entity}> {
         
         const matchingAgreement = agreements.filter((agreement: EwMarket.Agreement.Entity) => 
             this.controller.getSupply(agreement.supplyId.toString()).assetId.toString() === 
@@ -52,7 +52,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
 
         if (matchingAgreement.length === 0) {
             logger.info('Found matching agreement for certificate #' + certificate.id);
-            return null;
+            return {split: false, agreement: null};
         } 
   
         const sortedAgreementList = matchingAgreement
@@ -80,7 +80,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 accumulator += currentValue.id + ' ', ''));
         
         const filteredAgreementList = [];
-        // TODO: split options
+
         for (const agreement of sortedAgreementList) {
             
             const currentPeriod = await this.controller
@@ -91,20 +91,25 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 demand.offChainProperties.targetWhPerPeriod;
                 
             if (certificate.powerInW > neededWhForCurrentPeriod) {
-                logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW}) 
-                    for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
+                logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW})` +
+                    `for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
+                if (neededWhForCurrentPeriod > 0) {
+                    await this.controller.splitCertificate(certificate, neededWhForCurrentPeriod);
+                    return {split: true, agreement: null};
+                }
+                
             } else {
                 filteredAgreementList.push(agreement);
             }
         }
 
         if (filteredAgreementList.length > 0) {
-            return filteredAgreementList[0];
+            return {split: false, agreement: filteredAgreementList[0]};
 
         } else {
             
             logger.verbose('No matching agreement found for certificate ' + certificate.id);
-            return null;
+            return {split: false, agreement: null};
 
         }
                
