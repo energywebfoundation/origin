@@ -79,7 +79,7 @@ push-to-github:
     GITHUB_REPO_NAME: ew-market-lib
     GIT_STRATEGY: clone
   only:
-    - '/^v[0-9]*\.[0-9]*\.[0-9]*$/'
+    - '/^v\d+\.\d+\.\d+\-release$/'
   tags:
     - short-jobs
   script:
@@ -88,7 +88,7 @@ push-to-github:
     - export GIT_SSH_COMMAND="/usr/bin/ssh -o StrictHostKeyChecking=no -i /gitkey"
     - git remote add external git@github.com:energywebfoundation/${GITHUB_REPO_NAME}.git
     - git push --force external HEAD:refs/heads/master
-    - git tag | grep '-' | xargs git tag --delete 
+    - git tag | grep -v '\-release' | xargs git tag --delete 
     - git push --force external --tag $CI_COMMIT_TAG
     - rm /gitkey
 
