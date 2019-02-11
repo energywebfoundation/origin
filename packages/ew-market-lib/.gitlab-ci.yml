@@ -72,3 +72,23 @@ push-to-registry:
     - sh /prepare.sh
     - npm --no-git-tag-version -f version $CI_COMMIT_TAG
     - npm publish
+
+push-to-github:
+  stage: deploy
+  variables:
+    GITHUB_REPO_NAME: ew-market-lib
+    GIT_STRATEGY: clone
+  only:
+    - '/^v[0-9]*\.[0-9]*\.[0-9]*$/'
+  tags:
+    - short-jobs
+  script:
+    - echo -e "$CI_SSH_KEY" > /gitkey
+    - chmod 0400 /gitkey
+    - export GIT_SSH_COMMAND="/usr/bin/ssh -o StrictHostKeyChecking=no -i /gitkey"
+    - git remote add external git@github.com:energywebfoundation/${GITHUB_REPO_NAME}.git
+    - git push --force external HEAD:refs/heads/master
+    - git tag | grep '-' | xargs git tag --delete 
+    - git push --force external --tag $CI_COMMIT_TAG
+    - rm /gitkey
+
