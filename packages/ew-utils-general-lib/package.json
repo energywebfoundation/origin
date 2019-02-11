@@ -25,7 +25,7 @@
     "jsonschema": "^1.2.4",
     "precise-proofs": "0.0.1",
     "underscore": "^1.9.1",
-    "web3": "^1.0.0-beta.37",
+    "web3": "1.0.0-beta.37",
     "winston": "^3.1.0"
   },
   "devDependencies": {
