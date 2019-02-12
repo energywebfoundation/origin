@@ -24,20 +24,12 @@
     "axios": "^0.18.0",
     "jsonschema": "^1.2.4",
     "precise-proofs": "0.0.1",
-    "underscore": "^1.9.1",
     "web3": "1.0.0-beta.37",
-    "winston": "^3.1.0"
+    "winston": "3.2.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^2.2.48",
     "@types/node": "^9.6.28",
-    "@types/web3": "^1.0.14",
-    "chai": "^4.1.2",
-    "ganache-cli": "^6.1.8",
-    "mocha": "^5.2.0",
-    "solc": "^0.4.23",
-    "tslint": "^5.11.0",
+    "@types/web3": "1.0.14",
     "typescript": "^2.9.2",
     "typescript-json-schema": "^0.31.0"
   },
