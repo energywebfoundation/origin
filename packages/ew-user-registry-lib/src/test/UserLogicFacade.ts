@@ -17,7 +17,6 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import { Web3Type } from '../types/web3';
 import { UserLogic, UserContractLookup, migrateUserRegistryContracts, UserContractLookupJSON, UserLogicJSON} from 'ew-user-registry-contracts';
 import { UserProperties, UserPropertiesOffChain, User } from '../blockchain-facade/Users/User';
 import { Configuration } from 'ew-utils-general-lib';
@@ -27,8 +26,7 @@ import Web3 from 'web3';
 describe('UserLogic Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
 
-    const Web3 = require('web3');
-    const web3: Web3Type = new Web3(configFile.develop.web3);
+    const web3 = new Web3(configFile.develop.web3);
 
     let userContractLookup: UserContractLookup;
     let userRegistry: UserLogic;
@@ -37,7 +35,7 @@ describe('UserLogic Facade', () => {
         configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
-    let conf: Configuration;
+    let conf: Configuration.Entity;
 
     const user1PK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const user1 = web3.eth.accounts.privateKeyToAccount(user1PK).address;

@@ -36,12 +36,14 @@ export interface UserPropertiesOffChain {
 
 }
 
-export class User extends BlockchainDataModelEntity implements UserProperties {
+export class User extends BlockchainDataModelEntity.Entity implements UserProperties {
+
+    id: string;
 
     static async CREATE_USER(
         userProperties: UserProperties,
         userPropertiesOffChain: UserPropertiesOffChain,
-        configuration: Configuration,
+        configuration: Configuration.Entity,
     ): Promise<User> {
 
         await configuration.blockchainProperties.userLogicInstance.setUser(
@@ -69,10 +71,14 @@ export class User extends BlockchainDataModelEntity implements UserProperties {
     roles: number;
     active: boolean;
 
-    configuration: Configuration;
+    configuration: Configuration.Entity;
 
-    constructor(accountAddress: string, configuration: Configuration) {
+    constructor(accountAddress: string, configuration: Configuration.Entity) {
         super(accountAddress, configuration);
+    }
+
+    getUrl(): string {
+      return "http://localhost:3000/"
     }
 
     async sync(): Promise<User> {

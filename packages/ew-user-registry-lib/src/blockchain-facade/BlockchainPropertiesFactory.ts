@@ -23,7 +23,7 @@ export const createBlockchainProperties = async (
     logger: Winston.Logger,
     web3: Web3,
     userLookupContractAddress: string,
-): Promise<EwGeneralLib.BlockchainProperties> => {
+): Promise<EwGeneralLib.Configuration.BlockchainProperties> => {
 
     const userLookupContractInstance: any = new UserContractLookup(web3, userLookupContractAddress);
     const userRegistryLogicAddress: string = await userLookupContractInstance.userRegistry();

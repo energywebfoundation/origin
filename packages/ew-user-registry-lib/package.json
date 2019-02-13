@@ -19,7 +19,7 @@
     "deploy-contracts": "node dist/js/src/utils/deployment/startDeploy",
     "prepare-wrapping": "rm -rf dist/ts/wrappedContracts && mkdir -p dist/ts/wrappedContracts && node wrapping.js",
     "prebuild-ts": "rm -rf dist/js",
-    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc && cp src/types/*.d.ts dist/js/types/"
+    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc"
   },
   "repository": {
     "type": "git",
@@ -32,9 +32,8 @@
   },
   "homepage": "https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib#readme",
   "dependencies": {
-    "@types/web3": "^1.0.18",
     "ew-user-registry-contracts": "0.1.0",
-    "ew-utils-general-lib": "0.0.1",
+    "ew-utils-general-lib": "0.0.21",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
