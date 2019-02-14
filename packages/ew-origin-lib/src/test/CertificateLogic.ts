@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
+// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
 import { assert } from 'chai';
 import * as fs from 'fs';
@@ -25,6 +25,7 @@ import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
 import * as Asset from 'ew-asset-registry-lib';
 import { deployERC20TestToken, Erc20TestToken, TestReceiver, deployERC721TestReceiver } from 'ew-erc-test-contracts';
+import Web3 from 'web3';
 
 describe('CertificateLogic-Facade', () => {
 
@@ -40,7 +41,6 @@ describe('CertificateLogic-Facade', () => {
 
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
 
-    const Web3 = require('web3');
     const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
@@ -140,7 +140,6 @@ describe('CertificateLogic-Facade', () => {
     it('should onboard a new asset', async () => {
 
         const assetProps: Asset.ProducingAsset.OnChainProperties = {
-            certificatesUsedForWh: 0,
             smartMeter: { address: assetSmartmeter },
             owner: { address: accountAssetOwner },
             lastSmartMeterReadWh: 0,
@@ -149,8 +148,6 @@ describe('CertificateLogic-Facade', () => {
             matcher: [{ address: matcherAccount }],
             propertiesDocumentHash: null,
             url: null,
-            certificatesCreatedForWh: 0,
-            lastSmartMeterCO2OffsetRead: 0,
             maxOwnerChanges: 3,
         };
 
