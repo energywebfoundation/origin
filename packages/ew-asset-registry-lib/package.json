@@ -39,7 +39,7 @@
   "dependencies": {
     "ew-asset-registry-contracts": "0.2.0",
     "ew-user-registry-contracts": "0.1.0",
-    "ew-user-registry-lib": "0.1.0",
+    "ew-user-registry-lib": "0.1.1",
     "ew-utils-general-lib": "0.0.21",
     "ew-utils-testbackend": "v0.0.8-release",
     "web3": "1.0.0-beta.37",
