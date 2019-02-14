@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -162,7 +162,6 @@ describe('Market-Facade', () => {
             };
 
             const assetProps: Asset.ProducingAsset.OnChainProperties = {
-                certificatesUsedForWh: 0,
                 smartMeter: { address: assetSmartmeter },
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
@@ -171,8 +170,6 @@ describe('Market-Facade', () => {
                 matcher: [{ address: matcher }],
                 propertiesDocumentHash: null,
                 url: null,
-                certificatesCreatedForWh: 0,
-                lastSmartMeterCO2OffsetRead: 0,
                 maxOwnerChanges: 3,
             };
 
