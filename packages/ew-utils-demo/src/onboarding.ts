@@ -1,5 +1,19 @@
-import * as fs from 'fs';
-import Web3 = require('web3');
+// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
+
 import { logger } from './Logger';
 
 import * as User from 'ew-user-registry-lib'
@@ -42,7 +56,6 @@ export const onboardDemo = async(actionString: string, conf: GeneralLib.Configur
 
 
       const assetProducingProps: Asset.ProducingAsset.OnChainProperties = {
-          certificatesUsedForWh: action.data.certificatesCreatedForWh,
           smartMeter: { address: action.data.smartMeter },
           owner: { address: action.data.owner },
           lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
@@ -51,8 +64,6 @@ export const onboardDemo = async(actionString: string, conf: GeneralLib.Configur
           matcher: [{address: action.data.matcher}],
           propertiesDocumentHash: null,
           url: null,
-          certificatesCreatedForWh: action.data.certificatesCreatedForWh,
-          lastSmartMeterCO2OffsetRead: action.data.lastSmartMeterCO2OffsetRead,
           maxOwnerChanges: action.data.maxOwnerChanges,
       };
 

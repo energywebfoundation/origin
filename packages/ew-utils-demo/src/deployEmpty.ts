@@ -1,5 +1,21 @@
+// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
+
 import * as fs from 'fs';
-import { Web3Type } from './types/web3';
+import Web3 from 'web3';
 import { migrateUserRegistryContracts } from 'ew-user-registry-contracts';
 import { migrateAssetRegistryContracts } from 'ew-asset-registry-contracts';
 import { migrateCertificateRegistryContracts } from 'ew-origin-contracts';
@@ -9,7 +25,6 @@ export const deployEmptyContracts = async() => {
 
   const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/connection-config.json', 'utf8').toString());
 
-  const Web3 = require('web3');
   const web3 = new Web3(connectionConfig.develop.web3);
 
   const adminPK = connectionConfig.develop.deployKey.startsWith('0x') ?
@@ -18,23 +33,23 @@ export const deployEmptyContracts = async() => {
   console.log("-----------------------------------------------------------")
 
   //deploy user, asset and market contracts and store instances of lookup contracts
-  const userContracts = await migrateUserRegistryContracts((web3 as any), adminPK)
+  const userContracts = await migrateUserRegistryContracts(web3, adminPK)
   const userContractLookup = userContracts["UserContractLookup"]
   const userLogic = userContracts["UserLogic"]
   console.log("User Contract Deployed: " + userContractLookup)
 
-  const assetContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookup, adminPK)
+  const assetContracts = await migrateAssetRegistryContracts(web3, userContractLookup, adminPK)
   const assetContractLookup = assetContracts["AssetContractLookup"]
   const assetProducingRegistryLogic = assetContracts["AssetProducingRegistryLogic"]
   const assetConsumingRegistryLogic = assetContracts["AssetConsumingRegistryLogic"]
   console.log("Asset Contract Deployed: " + assetContractLookup)
 
-  const originContracts = await migrateCertificateRegistryContracts((web3 as any), assetContractLookup, adminPK);
+  const originContracts = await migrateCertificateRegistryContracts(web3, assetContractLookup, adminPK);
   const originContractLookup = originContracts["OriginContractLookup"]
   const certificateLogic = originContracts["CertificateLogic"]
   console.log("Origin Contract Deployed: " + originContractLookup)
 
-  const marketContracts = await migrateMarketRegistryContracts((web3 as any), assetContractLookup, adminPK);
+  const marketContracts = await migrateMarketRegistryContracts(web3, assetContractLookup, adminPK);
   const marketContractLookup = marketContracts["MarketContractLookup"]
   const marketLogic = marketContracts["MarketLogic"]
   console.log("Market Contract Deployed: " + marketContractLookup)
@@ -56,3 +71,5 @@ export const deployEmptyContracts = async() => {
   const writeJsonFile = require('write-json-file')
   await writeJsonFile('./config/contractConfig.json', deployResult)
 }
+
+deployEmptyContracts()

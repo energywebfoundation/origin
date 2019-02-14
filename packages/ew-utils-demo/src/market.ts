@@ -1,5 +1,21 @@
+// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
+
 import * as fs from 'fs';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import { certificateDemo } from './certificate'
 import { deployEmptyContracts } from './deployEmpty'
 import { logger } from './Logger';
@@ -91,78 +107,6 @@ export const marketDemo = async() => {
           address: action.data.trader, privateKey: action.data.traderPK,
         };
 
-        let assetTypeConfig
-
-        switch (action.data.assettype) {
-            case 'Wind': assetTypeConfig = GeneralLib.AssetType.Wind
-                break
-            case 'Solar': assetTypeConfig = GeneralLib.AssetType.Solar
-                break
-            case 'RunRiverHydro': assetTypeConfig = GeneralLib.AssetType.RunRiverHydro
-                break
-            case 'BiomassGas': assetTypeConfig = GeneralLib.AssetType.BiomassGas
-        }
-
-        let assetCompliance
-
-        switch (action.data.registryCompliance) {
-            case 'IREC': assetCompliance = GeneralLib.Compliance.IREC
-                break
-            case 'EEC': assetCompliance = GeneralLib.Compliance.EEC
-                break
-            case 'TIGR': assetCompliance = GeneralLib.Compliance.TIGR
-                break
-            default:
-                assetCompliance = GeneralLib.Compliance.none
-                break
-        }
-
-        switch (action.data.timeframe) {
-          case 'yearly':
-            timeFrame = GeneralLib.TimeFrame.yearly
-            break
-          case 'monthly':
-            timeFrame = GeneralLib.TimeFrame.monthly
-            break
-          case 'daily':
-            timeFrame = GeneralLib.TimeFrame.daily
-            break
-          case 'hourly':
-            timeFrame = GeneralLib.TimeFrame.hourly
-            break
-        }
-
-        switch (action.data.currency) {
-          case 'Euro':
-            currency = GeneralLib.Currency.Euro
-            break
-          case 'USD':
-            currency = GeneralLib.Currency.USD
-            break
-          case 'Ether':
-            currency = GeneralLib.Currency.Ether
-            break
-          case 'SingaporeDollar':
-            currency = GeneralLib.Currency.SingaporeDollar
-            break
-        }
-
-        const demandOffchainProps: Market.Demand.DemandOffchainproperties = {
-            timeframe: timeFrame,
-            pricePerCertifiedWh: action.data.pricePerCertifiedWh,
-            currency: currency,
-            productingAsset: action.data.producingAsset,
-            consumingAsset: action.data.consumingAsset,
-            locationCountry: action.data.country,
-            locationRegion: action.data.region,
-            assettype: assetTypeConfig,
-            minCO2Offset: action.data.minCO2Offset,
-            otherGreenAttributes: action.data.otherGreenAttributes,
-            typeOfPublicSupport: action.data.typeOfPublicSupport,
-            targetWhPerPeriod: action.data.targetWhPerPeriod,
-            registryCompliance: assetCompliance,
-        };
-
         const demandProps: Market.Demand.DemandOnChainProperties = {
           url: null,
           propertiesDocumentHash: null,
@@ -170,7 +114,7 @@ export const marketDemo = async() => {
         };
 
         try {
-          const demand = await Market.Demand.createDemand(demandProps, demandOffchainProps, conf);
+          const demand = await Market.Demand.createDemand(demandProps, conf);
           delete demand.proofs;
           delete demand.configuration;
           console.log("Demand Created, ID: " + demand.id)
@@ -188,43 +132,6 @@ export const marketDemo = async() => {
           address: action.data.assetOwner, privateKey: action.data.assetOwnerPK,
         };
 
-        switch (action.data.timeframe) {
-          case 'yearly':
-            timeFrame = GeneralLib.TimeFrame.yearly
-            break
-          case 'monthly':
-            timeFrame = GeneralLib.TimeFrame.monthly
-            break
-          case 'daily':
-            timeFrame = GeneralLib.TimeFrame.daily
-            break
-          case 'hourly':
-            timeFrame = GeneralLib.TimeFrame.hourly
-            break
-        }
-
-        switch (action.data.currency) {
-          case 'Euro':
-            currency = GeneralLib.Currency.Euro
-            break
-          case 'USD':
-            currency = GeneralLib.Currency.USD
-            break
-          case 'Ether':
-            currency = GeneralLib.Currency.Ether
-            break
-          case 'SingaporeDollar':
-            currency = GeneralLib.Currency.SingaporeDollar
-            break
-        }
-
-        const supplyOffChainProperties: Market.Supply.SupplyOffchainProperties = {
-            price: action.data.price,
-            currency: currency,
-            availableWh: action.data.availableWh,
-            timeframe: timeFrame,
-        };
-
         const supplyProps: Market.Supply.SupplyOnChainProperties = {
           url: null,
           propertiesDocumentHash: null,
@@ -233,7 +140,7 @@ export const marketDemo = async() => {
 
 
         try {
-          const supply = await Market.Supply.createSupply(supplyProps, supplyOffChainProperties, conf);
+          const supply = await Market.Supply.createSupply(supplyProps, conf);
           delete supply.proofs;
           delete supply.configuration;
           console.log("Onboarded Supply ID: " + supply.id)
@@ -253,43 +160,12 @@ export const marketDemo = async() => {
           privateKey: action.data.creatorPK,
         };
 
-        switch (action.data.timeframe) {
-          case 'yearly':
-            timeFrame = GeneralLib.TimeFrame.yearly
-            break
-          case 'monthly':
-            timeFrame = GeneralLib.TimeFrame.monthly
-            break
-          case 'daily':
-            timeFrame = GeneralLib.TimeFrame.daily
-            break
-          case 'hourly':
-            timeFrame = GeneralLib.TimeFrame.hourly
-            break
-        }
-
-        switch (action.data.currency) {
-          case 'Euro':
-            currency = GeneralLib.Currency.Euro
-            break
-          case 'USD':
-            currency = GeneralLib.Currency.USD
-            break
-          case 'Ether':
-            currency = GeneralLib.Currency.Ether
-            break
-          case 'SingaporeDollar':
-            currency = GeneralLib.Currency.SingaporeDollar
-            break
-        }
-
         const agreementOffchainProps: Market.Agreement.AgreementOffChainProperties = {
           start: action.data.startTime,
           ende: action.data.endTime,
           price: action.data.price,
-          currency: currency,
+          currency: action.data.currency,
           period: action.data.period,
-          timeframe: timeFrame,
         };
 
         const matcherOffchainProps: Market.Agreement.MatcherOffchainProperties = {
