@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -12,10 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+
 import { assert } from 'chai';
 import * as fs from 'fs';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import 'mocha';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
@@ -102,7 +103,6 @@ describe('AssetProducing Facade', () => {
         };
 
         const assetProps: Asset.ProducingAsset.OnChainProperties = {
-            certificatesUsedForWh: 0,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
@@ -111,8 +111,6 @@ describe('AssetProducing Facade', () => {
             matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null,
-            certificatesCreatedForWh: 0,
-            lastSmartMeterCO2OffsetRead: 0,
             maxOwnerChanges: 3,
         };
 
@@ -160,7 +158,6 @@ describe('AssetProducing Facade', () => {
     it('should fail when trying to onboard the same asset again', async () => {
 
         const assetProps: Asset.ProducingAsset.OnChainProperties = {
-            certificatesUsedForWh: 0,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
@@ -169,8 +166,6 @@ describe('AssetProducing Facade', () => {
             matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null,
-            certificatesCreatedForWh: 0,
-            lastSmartMeterCO2OffsetRead: 0,
             maxOwnerChanges: 3,
         };
 

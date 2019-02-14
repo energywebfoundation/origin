@@ -1,8 +1,27 @@
+// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+
 import * as GeneralLib from 'ew-utils-general-lib';
 import * as Asset from './Asset';
 import { ProducingAssetPropertiesOffchainSchema } from '..';
 import { TransactionReceipt } from 'web3/types';
 
+/**
+ * TODO: in generalLib
+ */
 export enum Type {
     Wind,
     Solar,
@@ -18,9 +37,6 @@ export enum Compliance {
 }
 
 export interface OnChainProperties extends Asset.OnChainProperties {
-
-    certificatesCreatedForWh?: number;
-    lastSmartMeterCO2OffsetRead?: number;
     maxOwnerChanges?: number;
 }
 
@@ -54,11 +70,11 @@ export const getAllAssetsOwnedBy = async (owner: string, configuration: GeneralL
 
 export const createAsset =
     async (assetPropertiesOnChain: OnChainProperties,
-           assetPropertiesOffChain: OffChainProperties,
-           configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
+        assetPropertiesOffChain: OffChainProperties,
+        configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
         const producingAsset = new Entity(null, configuration);
         const offChainStorageProperties =
-            producingAsset.prepareEntityCreation(assetPropertiesOnChain, assetPropertiesOffChain, ProducingAssetPropertiesOffchainSchema, false);
+            producingAsset.prepareEntityCreation(assetPropertiesOnChain, assetPropertiesOffChain, ProducingAssetPropertiesOffchainSchema);
 
         if (configuration.offChainDataSource) {
             assetPropertiesOnChain.url = producingAsset.getUrl();
