@@ -71,5 +71,3 @@ export const deployEmptyContracts = async() => {
   const writeJsonFile = require('write-json-file')
   await writeJsonFile('./config/contractConfig.json', deployResult)
 }
-
-deployEmptyContracts()

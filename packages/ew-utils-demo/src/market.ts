@@ -108,8 +108,8 @@ export const marketDemo = async() => {
         };
 
         const demandProps: Market.Demand.DemandOnChainProperties = {
-          url: null,
-          propertiesDocumentHash: null,
+          url: "",
+          propertiesDocumentHash: "",
           demandOwner: action.data.trader,
         };
 
@@ -133,8 +133,8 @@ export const marketDemo = async() => {
         };
 
         const supplyProps: Market.Supply.SupplyOnChainProperties = {
-          url: null,
-          propertiesDocumentHash: null,
+          url: "",
+          propertiesDocumentHash: "",
           assetId: action.data.assetId,
         };
 

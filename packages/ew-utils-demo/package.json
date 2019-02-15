@@ -39,19 +39,20 @@
   },
   "homepage": "https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib#readme",
   "dependencies": {
-    "ew-user-registry-contracts": "0.1.0",
     "ew-asset-registry-contracts": "0.2.0",
-    "ew-origin-contracts": "0.1.0",
-    "ew-market-contracts": "0.1.1",
-    "ew-user-registry-lib": "0.1.1",
     "ew-asset-registry-lib": "0.1.1",
-    "ew-origin-lib": "0.1.1",
+    "ew-erc-test-contracts": "0.0.2",
+    "ew-market-contracts": "0.1.1",
     "ew-market-lib": "0.1.0",
+    "ew-origin-contracts": "0.1.0",
+    "ew-origin-lib": "0.1.1",
+    "ew-user-registry-contracts": "0.1.0",
+    "ew-user-registry-lib": "0.1.1",
     "ew-utils-general-lib": "0.0.21",
     "ew-utils-testbackend": "0.0.8-release",
-    "ew-erc-test-contracts": "0.0.2",
     "web3": "1.0.0-beta.37",
-    "winston": "3.2.1"
+    "winston": "3.2.1",
+    "write-json-file": "3.1.0"
   },
   "devDependencies": {
     "@types/node": "^9.6.41",
