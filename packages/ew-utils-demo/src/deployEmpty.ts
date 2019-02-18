@@ -24,7 +24,7 @@ import { migrateMarketRegistryContracts } from 'ew-market-contracts';
 
 export const deployEmptyContracts = async() => {
 
-  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/connection-config.json', 'utf8').toString());
+  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
 
   const web3 = new Web3(connectionConfig.develop.web3);
 

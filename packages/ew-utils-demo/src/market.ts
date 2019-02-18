@@ -45,7 +45,7 @@ export const marketDemo = async() => {
 
   await deployEmptyContracts()
 
-  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/connection-config.json', 'utf8').toString());
+  const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
   const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/demo-config.json', 'utf8').toString());
   const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/contractConfig.json', 'utf8').toString());
 
