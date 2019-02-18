@@ -26,7 +26,7 @@ push-to-public-registry:
   dependencies:
     - build-pkg
   script:
-    - sh /prepare.sh
+    - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
     - npm --no-git-tag-version -f version $CI_COMMIT_TAG --allow-same-version
     - npm publish --registry=https://registry.npmjs.org
 
