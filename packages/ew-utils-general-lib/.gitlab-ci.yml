@@ -64,5 +64,6 @@ push-to-github:
     - git remote add external git@github.com:energywebfoundation/${GITHUB_REPO_NAME}.git
     - git push --force external HEAD:refs/heads/master
     - git tag | grep -v '\-release' | xargs git tag --delete 
+    - git tag $CLEAN_VERSION
     - git push --force external --tag $CLEAN_VERSION
     - rm /gitkey
