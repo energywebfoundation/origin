@@ -1,5 +1,5 @@
 {
-  "name": "ew-deployment",
+  "name": "ew-utils-deployment",
   "version": "1.0.0",
   "description": "",
   "main": "build/ts/index.js",
@@ -9,12 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.slock.it/ewf/origin/utils/ew-deployment.git"
+    "url": "https://github.com/energywebfoundation/ew-utils-deployment.git"
   },
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://github.com/energywebfoundation/ew-utils-deployment#readme",
+  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
+  "license": "GPL-3.0",
   "dependencies": {
-    "web3": "^1.0.0-beta.34"
+    "web3": "1.0.0-beta.37"
   },
   "devDependencies": {
     "@types/node": "^9.6.28",
