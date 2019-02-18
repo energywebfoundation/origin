@@ -14,7 +14,23 @@ build-pkg:
     name: build-js
     paths:
       - dist/
-push-to-registry:
+
+push-to-public-registry:
+  stage: deploy
+  tags:
+    - short-jobs
+  only:
+    - '/^v\d+\.\d+\.\d+\-release$/'
+  except:
+    - branches
+  dependencies:
+    - build-pkg
+  script:
+    - sh /prepare.sh
+    - npm --no-git-tag-version -f version $CI_COMMIT_TAG --allow-same-version
+    - npm publish --registry=https://registry.npmjs.org
+
+push-to-slockit-registry:
   stage: deploy
   tags:
     - short-jobs
