@@ -19,33 +19,33 @@ build-pkg:
     paths:
       - dist/
 
-# test-parity:
-#   tags:
-#     - short-jobs
-#   stage: test
-#   services:
-#     - name: docker.slock.it/build-images/parity:v1.11.8-tobalaba
-#       alias: parity
-#   script:
-#     - sh /prepare.sh
-#     - cp ci.connection-config.json connection-config.json
-#     - npm install
-#     - npm run start-test-backend > /dev/null 2>&1 &
-#     - npm test
-#
-# test-parity-POA:
-#   tags:
-#     - long-jobs
-#   stage: test
-#   services:
-#     - name: docker.slock.it/build-images/parity:v1.11.8-tobalaba-poa
-#       alias: parity
-#   script:
-#     - sh /prepare.sh
-#     - cp ci.connection-config.json connection-config.json
-#     - npm install
-#     - npm run start-test-backend > /dev/null 2>&1 &
-#     - npm test
+test-parity:
+  tags:
+    - short-jobs
+  stage: test
+  services:
+    - name: docker.slock.it/build-images/parity:v1.11.8-tobalaba
+      alias: parity
+  script:
+    - sh /prepare.sh
+    - cp ci.connection-config.json connection-config.json
+    - npm install
+    - npm run start-test-backend > /dev/null 2>&1 &
+    - npm test
+
+test-parity-POA:
+  tags:
+    - long-jobs
+  stage: test
+  services:
+    - name: docker.slock.it/build-images/parity:v1.11.8-tobalaba-poa
+      alias: parity
+  script:
+    - sh /prepare.sh
+    - cp ci.connection-config.json connection-config.json
+    - npm install
+    - npm run start-test-backend > /dev/null 2>&1 &
+    - npm test
 
 test-ganache:
   tags:

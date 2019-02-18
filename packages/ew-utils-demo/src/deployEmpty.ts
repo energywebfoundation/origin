@@ -16,6 +16,7 @@
 
 import * as fs from 'fs';
 import Web3 from 'web3';
+import { logger } from './Logger';
 import { migrateUserRegistryContracts } from 'ew-user-registry-contracts';
 import { migrateAssetRegistryContracts } from 'ew-asset-registry-contracts';
 import { migrateCertificateRegistryContracts } from 'ew-origin-contracts';
@@ -36,23 +37,23 @@ export const deployEmptyContracts = async() => {
   const userContracts = await migrateUserRegistryContracts(web3, adminPK)
   const userContractLookup = userContracts["UserContractLookup"]
   const userLogic = userContracts["UserLogic"]
-  console.log("User Contract Deployed: " + userContractLookup)
+  logger.info("User Contract Deployed: " + userContractLookup)
 
   const assetContracts = await migrateAssetRegistryContracts(web3, userContractLookup, adminPK)
   const assetContractLookup = assetContracts["AssetContractLookup"]
   const assetProducingRegistryLogic = assetContracts["AssetProducingRegistryLogic"]
   const assetConsumingRegistryLogic = assetContracts["AssetConsumingRegistryLogic"]
-  console.log("Asset Contract Deployed: " + assetContractLookup)
+  logger.info("Asset Contract Deployed: " + assetContractLookup)
 
   const originContracts = await migrateCertificateRegistryContracts(web3, assetContractLookup, adminPK);
   const originContractLookup = originContracts["OriginContractLookup"]
   const certificateLogic = originContracts["CertificateLogic"]
-  console.log("Origin Contract Deployed: " + originContractLookup)
+  logger.info("Origin Contract Deployed: " + originContractLookup)
 
   const marketContracts = await migrateMarketRegistryContracts(web3, assetContractLookup, adminPK);
   const marketContractLookup = marketContracts["MarketContractLookup"]
   const marketLogic = marketContracts["MarketLogic"]
-  console.log("Market Contract Deployed: " + marketContractLookup)
+  logger.info("Market Contract Deployed: " + marketContractLookup)
 
   console.log("-----------------------------------------------------------\n")
 

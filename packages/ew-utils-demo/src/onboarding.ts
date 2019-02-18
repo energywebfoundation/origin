@@ -14,8 +14,6 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
 
-import { logger } from './Logger';
-
 import * as User from 'ew-user-registry-lib'
 import * as Asset from 'ew-asset-registry-lib'
 import * as GeneralLib from 'ew-utils-general-lib';
@@ -45,8 +43,8 @@ export const onboardDemo = async(actionString: string, conf: GeneralLib.Configur
       await conf.blockchainProperties.userLogicInstance.setUser(action.data.address, action.data.organization, { privateKey: adminPK })
       await conf.blockchainProperties.userLogicInstance.setRoles(action.data.address, action.data.rights, { privateKey: adminPK } )
 
-      console.log("Onboarded a new user:", action.data.address)
-      console.log("User Properties:", action.data.organization, action.data.rights)
+      conf.logger.info("Onboarded a new user: " + action.data.address)
+      conf.logger.verbose("User Properties: " + action.data.organization + ", " + action.data.rights)
 
       break
 
@@ -112,9 +110,8 @@ export const onboardDemo = async(actionString: string, conf: GeneralLib.Configur
 
       try {
         const asset = await Asset.ProducingAsset.createAsset(assetProducingProps, assetProducingPropsOffChain, conf);
-        console.log("Producing Asset Created: ", asset.id)
       } catch(e) {
-        console.log("ERROR: " + e)
+        conf.logger.error("ERROR: " + e)
       }
 
       console.log("-----------------------------------------------------------\n")
@@ -151,9 +148,8 @@ export const onboardDemo = async(actionString: string, conf: GeneralLib.Configur
 
       try {
         const asset = await Asset.ConsumingAsset.createAsset(assetConsumingProps, assetConsumingPropsOffChain, conf);
-        console.log("Consuming Asset Created:", asset.id)
       } catch(e) {
-        console.log(e)
+        conf.logger.error(e)
       }
 
       console.log("-----------------------------------------------------------\n")
@@ -165,6 +161,6 @@ export const onboardDemo = async(actionString: string, conf: GeneralLib.Configur
       break
 
     default:
-      console.log("Unidentified Command: " + action.type)
+      conf.logger.warn("Unidentified Command: " + action.type)
   }
 }

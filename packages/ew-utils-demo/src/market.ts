@@ -117,9 +117,9 @@ export const marketDemo = async() => {
           const demand = await Market.Demand.createDemand(demandProps, conf);
           delete demand.proofs;
           delete demand.configuration;
-          console.log("Demand Created, ID: " + demand.id)
+          conf.logger.info("Demand Created, ID: " + demand.id)
         } catch(e) {
-          console.log("Error creating a demand\n" + e)
+          conf.logger.error("Demand could not be created\n" + e)
         }
 
         console.log("-----------------------------------------------------------\n")
@@ -143,9 +143,9 @@ export const marketDemo = async() => {
           const supply = await Market.Supply.createSupply(supplyProps, conf);
           delete supply.proofs;
           delete supply.configuration;
-          console.log("Onboarded Supply ID: " + supply.id)
+          conf.logger.info("Onboarded Supply ID: " + supply.id)
         } catch(e) {
-          console.log("Error onboarding supply\n" + e)
+          conf.logger.error("Could not onboard a supply\n" + e)
         }
 
         console.log("-----------------------------------------------------------\n")
@@ -190,16 +190,16 @@ export const marketDemo = async() => {
           delete agreement.propertiesDocumentHash;
           delete agreement.matcherPropertiesDocumentHash;
           if(agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner){
-            console.log("Agreement Confirmed")
+            conf.logger.info("Agreement Confirmed")
           }
           else if(!agreement.approvedByDemandOwner) {
-            console.log("Demand Owner did not approve yet")
+            conf.logger.info("Demand Owner did not approve yet")
           }
           else if(!agreement.approvedBySupplyOwner) {
-            console.log("Supply Owner did not approve yet")
+            conf.logger.info("Supply Owner did not approve yet")
           }
         } catch(e) {
-          console.log("Error making an agreement\n" + e)
+          conf.logger.error("Error making an agreement\n" + e)
         }
 
         console.log("-----------------------------------------------------------\n")
@@ -217,16 +217,16 @@ export const marketDemo = async() => {
           await agreement.approveAgreementSupply();
           agreement = await agreement.sync();
           if(agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner){
-            console.log("Agreement Confirmed")
+            conf.logger.info("Agreement Confirmed")
           }
           else if(!agreement.approvedByDemandOwner) {
-            console.log("Demand Owner did not approve yet")
+            conf.logger.info("Demand Owner did not approve yet")
           }
           else if(!agreement.approvedBySupplyOwner) {
-            console.log("Supply Owner did not approve yet")
+            conf.logger.info("Supply Owner did not approve yet")
           }
         } catch(e) {
-          console.log("Could not approve agreement\n" + e)
+          conf.logger.error("Could not approve agreement\n" + e)
         }
 
         console.log("-----------------------------------------------------------\n")
@@ -236,7 +236,7 @@ export const marketDemo = async() => {
         await certificateDemo(passString, conf, adminPK)
     }
   }
-  console.log("Total Time: " + ((Date.now()-startTime)/1000) + " seconds")
+  conf.logger.info("Total Time: " + ((Date.now()-startTime)/1000) + " seconds")
 }
 
 marketDemo()
