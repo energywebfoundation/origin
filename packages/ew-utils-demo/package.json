@@ -14,7 +14,7 @@
     "start-demo": "npm run build-ts && node dist/js/market",
     "deploy-empty": "npm run build-ts && node dist/js/deployEmpty",
     "prebuild-ts": "rm -rf build/ts",
-    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc",
+    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc"
   },
   "repository": {
     "type": "git",
