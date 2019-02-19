@@ -102,7 +102,6 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
       }
     }
  
-
   }
 
   render(): JSX.Element {
@@ -124,8 +123,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
           {
             label: 'Meter Read' + getOffChainText('lastSmartMeterReadWh', selectedAsset.offChainProperties),
             data: (selectedAsset.lastSmartMeterReadWh / 1000).toFixed(3),
-            tip: 'kWh',
-            isAdditionalInformation: true
+            tip: 'kWh'
           },
 
           {
