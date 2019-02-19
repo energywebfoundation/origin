@@ -58,20 +58,38 @@ test-ganache:
     - npm run start-ganache > /dev/null 2>&1 &
     - npm test
 
-push-to-registry:
+push-to-public-registry:
   stage: deploy
   tags:
     - short-jobs
-  only: # deploy only on  semantic versions tags
-    - /^v[0-9]*\.[0-9]*\.[0-9]*-?.*$/
+  only:
+    - '/^v\d+\.\d+\.\d+\-release$/'
+  except:
+    - branches
+  dependencies:
+    - build-pkg
+  script:
+    - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+    - CLEAN_VERSION=`echo "$CI_COMMIT_TAG"|sed s/-release//`
+    - echo "using $CLEAN_VERSION as version"
+    - npm --no-git-tag-version -f version $CLEAN_VERSION --allow-same-version
+    - npm publish --registry=https://registry.npmjs.org
+
+push-to-slockit-registry:
+  stage: deploy
+  tags:
+    - short-jobs
+  only:
+    - '/^v[0-9]*\.[0-9]*\.[0-9]*-?.*$/'
   except:
     - branches
   dependencies:
     - build-pkg
   script:
     - sh /prepare.sh
-    - npm --no-git-tag-version -f version $CI_COMMIT_TAG
+    - npm --no-git-tag-version -f version $CI_COMMIT_TAG --allow-same-version
     - npm publish
+
 
 push-to-github:
   stage: deploy
@@ -83,12 +101,16 @@ push-to-github:
   tags:
     - short-jobs
   script:
+    - CLEAN_VERSION=`echo "$CI_COMMIT_TAG"|sed s/-release//`
+    - echo "using $CLEAN_VERSION as version"
     - echo -e "$CI_SSH_KEY" > /gitkey
     - chmod 0400 /gitkey
     - export GIT_SSH_COMMAND="/usr/bin/ssh -o StrictHostKeyChecking=no -i /gitkey"
     - git remote add external git@github.com:energywebfoundation/${GITHUB_REPO_NAME}.git
     - git push --force external HEAD:refs/heads/master
     - git tag | grep -v '\-release' | xargs git tag --delete 
-    - git push --force external --tag $CI_COMMIT_TAG
+    - git tag $CLEAN_VERSION
+    - git push --force external --tag $CLEAN_VERSION
     - rm /gitkey
+
 

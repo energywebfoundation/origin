@@ -28,21 +28,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib"
+    "url": "git+https://github.com/energywebfoundation/ew-market-lib.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
+  "license": "GPL-3.0",
   "bugs": {
-    "url": "https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib/issues"
+    "url": "https://github.com/energywebfoundation/ew-market-lib/issues"
   },
-  "homepage": "https://git.slock.it/ewf/origin/asset-registry/ew-asset-registry-lib#readme",
+  "homepage": "https://github.com/energywebfoundation/ew-market-lib#readme",
   "dependencies": {
-    "ew-asset-registry-contracts": "0.2.0",
-    "ew-asset-registry-lib": "0.1.1",
-    "ew-market-contracts": "0.1.1",
-    "ew-user-registry-contracts": "0.1.0",
-    "ew-utils-general-lib": "0.0.21",
-    "ew-utils-testbackend": "0.0.8-release",
+    "ew-asset-registry-contracts": "0.0.99",
+    "ew-asset-registry-lib": "0.0.99",
+    "ew-market-contracts": "0.0.99",
+    "ew-user-registry-contracts": "0.0.99",
+    "ew-utils-general-lib": "0.0.100",
+    "ew-utils-testbackend": "v0.0.99",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
