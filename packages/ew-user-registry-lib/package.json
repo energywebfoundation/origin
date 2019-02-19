@@ -23,17 +23,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib.git"
+    "url": "git+https://github.com/energywebfoundation/ew-user-registry-lib.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib"
   },
-  "homepage": "https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib#readme",
+  "homepage": "https://github.com/energywebfoundation/ew-user-registry-lib#readme",
   "dependencies": {
-    "ew-user-registry-contracts": "0.1.0",
-    "ew-utils-general-lib": "0.0.21",
+    "ew-user-registry-contracts": "0.0.99",
+    "ew-utils-general-lib": "0.0.100",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
