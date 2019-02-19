@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/slockit/ewf-coo-test-backend.git"
+    "url": "git+https://github.com/energywebfoundation/ew-utils-testbackend.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
+  "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/slockit/ewf-coo-test-backend/issues"
+    "url": "https://github.com/energywebfoundation/ew-utils-testbackend/issues"
   },
-  "homepage": "https://github.com/slockit/ewf-coo-test-backend#readme",
+  "homepage": "hhttps://github.com/energywebfoundation/ew-utils-testbackend#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
