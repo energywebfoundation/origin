@@ -12,18 +12,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://git.slock.it/ewf/origin/utils/ew-utils-general-lib.git"
+    "url": "git+https://github.com/energywebfoundation/ew-utils-general-lib.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
+  "license": "GPL-3.0",
   "bugs": {
-    "url": "https://git.slock.it/ewf/origin/utils/ew-utils-general-lib"
+    "url": "https://github.com/energywebfoundation/ew-utils-general-lib"
   },
-  "homepage": "https://git.slock.it/ewf/origin/utils/ew-utils-general-lib#readme",
+  "homepage": "https://github.com/energywebfoundation/ew-utils-general-lib#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "jsonschema": "^1.2.4",
-    "precise-proofs": "0.0.1",
+    "ew-utils-general-precise-proofs": "0.0.103",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
