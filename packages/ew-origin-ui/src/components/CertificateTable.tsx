@@ -90,15 +90,16 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             ({
                 certificate: certificate,
                 producingAsset: this.props.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === certificate.assetId.toString()),
-                certificateOwner: (await (new EwUser.User(certificate.owner.address, props.conf as any)).sync())
+                certificateOwner: (await (new EwUser.User(certificate.owner as any, props.conf as any)).sync())
             })
         );
 
-        Promise.all(promieses).then((enrichedCertificateData) =>
+        Promise.all(promieses).then((enrichedCertificateData) => {
+           
             this.setState({
                 enrichedCertificateData: enrichedCertificateData
-            })
-        );
+            });
+        });
 
     }
 
@@ -230,7 +231,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 9
+                colspan: 8
             },
             generateFooter('Certified Energy (kWh)', true)
         ];
@@ -263,7 +264,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
 
         const data = filteredEnrichedCertificateData.map((enrichedCertificateData: EnrichedCertificateData) => {
             const certificate = enrichedCertificateData.certificate;
-
+       
             return [
                 certificate.id,
                 enrichedCertificateData.certificateOwner.organization,
@@ -273,10 +274,10 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
                     ' ' + enrichedCertificateData.producingAsset.offChainProperties.gpsLatitude,
                 enrichedCertificateData.producingAsset.offChainProperties.city + 
                     ', ' + enrichedCertificateData.producingAsset.offChainProperties.country,
-                enrichedCertificateData.producingAsset.offChainProperties.capacityWh / 1000,
+                
                 EwAsset.ProducingAsset.Compliance[enrichedCertificateData.producingAsset.offChainProperties.complianceRegistry],
                 new Date(enrichedCertificateData.certificate.creationTime * 1000).toDateString(),
-                // ˚
+                
                 (enrichedCertificateData.certificate.powerInW / 1000).toFixed(3)
             ];
 
@@ -292,7 +293,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             // generateHeader('Max Capacity (kWh)', defaultWidth, true),
             generateHeader('Compliance'),
             generateHeader('Certification Date'),
-            generateHeader('CO2 saved (kg)'),
+       
             generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
         ];
 
@@ -305,7 +306,16 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
         }
 
         return <div className='ForSaleWrapper'>
-            <Table operationClicked={this.operationClicked} classNames={['bare-font', 'bare-padding']} header={TableHeader} footer={TableFooter} actions={true} data={data} actionWidth={55.39} operations={operations} />
+            <Table 
+                operationClicked={this.operationClicked} 
+                classNames={['bare-font', 'bare-padding']} 
+                header={TableHeader} 
+                footer={TableFooter} 
+                actions={true} 
+                data={data} 
+                actionWidth={55.39} 
+                operations={operations} 
+            />
         </div>;
 
     }
