@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as Configuration from './Configuration';
-import { PreciseProofs } from 'precise-proofs';
+import { PreciseProofs } from 'ew-utils-general-precise-proofs';
 import axios from 'axios';
 import { validateJson } from '../off-chain-data/json-validator';
 
