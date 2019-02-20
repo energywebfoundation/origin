@@ -22,3 +22,4 @@ export { EventHandlerManager } from './blockchain-facade/EventHandlerManager';
 export { BlockchainDataModelEntity };
 export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
+export { TimeFrame, Currency, AssetType, Compliance } from './blockchain-facade/EnumExports';
