@@ -18,14 +18,14 @@ import * as GeneralLib from 'ew-utils-general-lib';
 import AgreementOffchainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 import MatcherOffchainPropertiesSchema from '../../schemas/MatcherOffchainProperties.schema.json';
 import { TransactionReceipt } from 'web3/types';
-import { timingSafeEqual } from 'crypto';
 
 export interface AgreementOffChainProperties {
     start: number;
     ende: number;
     price: number;
-    currency: string;
+    currency: GeneralLib.Currency;
     period: number;
+    timeframe: GeneralLib.TimeFrame;
 }
 
 export interface MatcherOffchainProperties {
@@ -92,11 +92,15 @@ export const createAgreement =
             configuration.logger.info(`Agreement ${agreement.id} created`);
         }
 
-
-
         return agreement.sync();
 
     };
+
+export const getAgreementListLength = async (configuration: GeneralLib.Configuration.Entity): Promise<number> => {
+
+    return configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength();
+
+};
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements AgreementOnChainProperties {
 

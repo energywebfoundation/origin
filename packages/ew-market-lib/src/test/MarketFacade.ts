@@ -28,6 +28,7 @@ import * as Market from '..';
 import * as Asset from 'ew-asset-registry-lib';
 import { deepEqual } from 'assert';
 import { AgreementOffChainProperties, MatcherOffchainProperties } from '../blockchain-facade/Agreement';
+import { timingSafeEqual } from 'crypto';
 
 describe('Market-Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
@@ -113,24 +114,58 @@ describe('Market-Facade', () => {
                 logger,
             };
 
+            const demandOffchainProps: Market.Demand.DemandOffchainproperties = {
+                timeframe: GeneralLib.TimeFrame.hourly,
+                pricePerCertifiedWh: 10,
+                currency: GeneralLib.Currency.Ether,
+                productingAsset: 0,
+                consumingAsset: 0,
+                locationCountry: 'string',
+                locationRegion: 'string',
+                assettype: GeneralLib.AssetType.BiomassGas,
+                minCO2Offset: 10,
+                otherGreenAttributes: 'string',
+                typeOfPublicSupport: 'string',
+                targetWhPerPeriod: 10,
+                registryCompliance: GeneralLib.Compliance.EEC,
+            };
+
             const demandProps: Market.Demand.DemandOnChainProperties = {
-                url: 'abc',
-                propertiesDocumentHash: 'propDocHash',
+                url: null,
+                propertiesDocumentHash: null,
                 demandOwner: conf.blockchainProperties.activeUser.address,
 
             };
+            assert.equal(await Market.Demand.getDemandListLength(conf), 0);
 
-            const demand = await Market.Demand.createDemand(demandProps, conf);
+            const demand = await Market.Demand.createDemand(demandProps, demandOffchainProps, conf);
+            assert.equal(await Market.Demand.getDemandListLength(conf), 1);
 
             delete demand.proofs;
             delete demand.configuration;
+            delete demand.propertiesDocumentHash;
 
-            assert.deepEqual(demand, {
+            assert.deepEqual((demand as any), {
                 id: '0',
                 initialized: true,
-                propertiesDocumentHash: 'propDocHash',
-                url: 'abc',
+                url: 'http://localhost:3030/Demand',
                 demandOwner: accountTrader,
+                offChainProperties: {
+                    assettype: 3,
+                    consumingAsset: 0,
+                    currency: 3,
+                    locationCountry: 'string',
+                    locationRegion: 'string',
+                    minCO2Offset: 10,
+                    otherGreenAttributes: 'string',
+                    pricePerCertifiedWh: 10,
+                    productingAsset: 0,
+                    registryCompliance: 2,
+                    targetWhPerPeriod: 10,
+                    timeframe: 3,
+                    typeOfPublicSupport: 'string',
+
+                },
             });
 
         });
@@ -141,13 +176,29 @@ describe('Market-Facade', () => {
 
             delete demand.proofs;
             delete demand.configuration;
+            delete demand.propertiesDocumentHash;
 
-            assert.deepEqual(demand, {
+            assert.deepEqual((demand as any), {
                 id: '0',
                 initialized: true,
-                propertiesDocumentHash: 'propDocHash',
-                url: 'abc',
+                url: 'http://localhost:3030/Demand',
                 demandOwner: accountTrader,
+                offChainProperties: {
+                    assettype: 3,
+                    consumingAsset: 0,
+                    currency: 3,
+                    locationCountry: 'string',
+                    locationRegion: 'string',
+                    minCO2Offset: 10,
+                    otherGreenAttributes: 'string',
+                    pricePerCertifiedWh: 10,
+                    productingAsset: 0,
+                    registryCompliance: 2,
+                    targetWhPerPeriod: 10,
+                    timeframe: 3,
+                    typeOfPublicSupport: 'string',
+
+                },
             });
 
         });
@@ -202,22 +253,39 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK,
             };
 
+            const supplyOffChainProperties: Market.Supply.SupplyOffchainProperties = {
+                price: 10,
+                currency: GeneralLib.Currency.USD,
+                availableWh: 10,
+                timeframe: GeneralLib.TimeFrame.hourly,
+            };
+
             const supplyProps: Market.Supply.SupplyOnChainProperties = {
-                url: 'abc',
-                propertiesDocumentHash: 'propDocHash',
+                url: null,
+                propertiesDocumentHash: null,
                 assetId: 0,
             };
 
-            const supply = await Market.Supply.createSupply(supplyProps, conf);
+            assert.equal(await Market.Supply.getSupplyListLength(conf), 0);
+
+            const supply = await Market.Supply.createSupply(supplyProps, supplyOffChainProperties, conf);
+
+            assert.equal(await Market.Supply.getSupplyListLength(conf), 1);
             delete supply.proofs;
             delete supply.configuration;
+            delete supply.propertiesDocumentHash;
 
             assert.deepEqual(supply as any, {
                 id: '0',
                 initialized: true,
-                propertiesDocumentHash: 'propDocHash',
-                url: 'abc',
+                url: 'http://localhost:3030/Supply',
                 assetId: '0',
+                offChainProperties: {
+                    availableWh: 10,
+                    currency: 1,
+                    price: 10,
+                    timeframe: 3,
+                },
             });
         });
 
@@ -227,14 +295,19 @@ describe('Market-Facade', () => {
 
             delete supply.proofs;
             delete supply.configuration;
+            delete supply.propertiesDocumentHash;
 
             assert.deepEqual(supply as any, {
                 id: '0',
                 initialized: true,
-                propertiesDocumentHash: 'propDocHash',
-                url: 'abc',
+                url: 'http://localhost:3030/Supply',
                 assetId: '0',
-
+                offChainProperties: {
+                    availableWh: 10,
+                    currency: 1,
+                    price: 10,
+                    timeframe: 3,
+                },
             });
         });
     });
@@ -255,8 +328,9 @@ describe('Market-Facade', () => {
                 start: startTime,
                 ende: startTime + 1000,
                 price: 10,
-                currency: 'USD',
+                currency: GeneralLib.Currency.USD,
                 period: 10,
+                timeframe: GeneralLib.TimeFrame.hourly,
             };
 
             const matcherOffchainProps: MatcherOffchainProperties = {
@@ -297,11 +371,12 @@ describe('Market-Facade', () => {
                     currentWh: 0,
                 },
                 offChainProperties: {
-                    currency: 'USD',
+                    currency: 1,
                     ende: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
+                    timeframe: 3,
                 },
             });
         });
@@ -330,11 +405,12 @@ describe('Market-Facade', () => {
                     currentWh: 0,
                 },
                 offChainProperties: {
-                    currency: 'USD',
+                    currency: GeneralLib.Currency.USD,
                     ende: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
+                    timeframe: 3,
                 },
             });
         });
@@ -371,11 +447,12 @@ describe('Market-Facade', () => {
                     currentWh: 0,
                 },
                 offChainProperties: {
-                    currency: 'USD',
+                    currency: 1,
                     ende: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
+                    timeframe: 3,
                 },
             });
         });
@@ -393,8 +470,10 @@ describe('Market-Facade', () => {
                 start: startTime,
                 ende: startTime + 1000,
                 price: 10,
-                currency: 'USD',
+                currency: GeneralLib.Currency.USD,
                 period: 10,
+                timeframe: GeneralLib.TimeFrame.hourly,
+
             };
 
             const matcherOffchainProps: MatcherOffchainProperties = {
@@ -435,11 +514,12 @@ describe('Market-Facade', () => {
                     currentWh: 0,
                 },
                 offChainProperties: {
-                    currency: 'USD',
+                    currency: 1,
                     ende: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
+                    timeframe: 3,
                 },
 
             });
@@ -477,11 +557,12 @@ describe('Market-Facade', () => {
                     currentWh: 0,
                 },
                 offChainProperties: {
-                    currency: 'USD',
+                    currency: 1,
                     ende: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
+                    timeframe: 3,
                 },
 
             });
@@ -524,11 +605,12 @@ describe('Market-Facade', () => {
                     currentWh: 100,
                 },
                 offChainProperties: {
-                    currency: 'USD',
+                    currency: 1,
                     ende: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
+                    timeframe: 3,
                 },
 
             });
