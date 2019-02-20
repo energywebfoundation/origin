@@ -24,6 +24,7 @@ import { Controller } from './Controller';
 import Web3 = require('web3');
 import * as Conf from '../../conf.json';
 import { BlockchainDataSourceType, BlockchainDataSource } from '../schema-defs/MatcherConf';
+import { EthAccount } from 'ew-utils-general-lib/dist/js/blockchain-facade/Configuration';
 
 
 
@@ -69,6 +70,7 @@ export const initMatchingManager = async (
 
 export const createBlockchainConf = async (
     blockchainSectionConfFile: BlockchainDataSource,
+    matcherAccount: EthAccount,
 ): Promise<EwGeneral.Configuration.Entity> => {
     const web3 = new Web3(blockchainSectionConfFile.web3Url);
     const marketConf = await EwMarket.createBlockchainProperties(
@@ -82,6 +84,7 @@ export const createBlockchainConf = async (
         blockchainSectionConfFile.originContractLookupAddress,
     );
     marketConf.certificateLogicInstance = originConf.certificateLogicInstance;
+    marketConf.activeUser = matcherAccount;
 
     return {
 

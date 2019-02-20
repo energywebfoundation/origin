@@ -44,14 +44,26 @@ export class ConfigurableReferenceMatcher extends Matcher {
         certificate: EwOrigin.Certificate.Entity,
         agreements: EwMarket.Agreement.Entity[],
     ): Promise<{split: boolean, agreement: EwMarket.Agreement.Entity}> {
+
+        logger.debug('Scanning ' + agreements.length + ' agreements for a match.');
+        const matchingAgreement = agreements.filter((agreement: EwMarket.Agreement.Entity) => {
+            const supply = this.controller.getSupply(agreement.supplyId.toString());
+            const match = supply.assetId.toString() === certificate.assetId.toString();
+            if (match) {
+                logger.debug('Agreement #' + agreement.id + ' and certifacte #' 
+                    + certificate.id + ' have the same associated asset ID: ' + supply.assetId);
+                return true;
+            } else {
+                logger.debug('Agreement #' + agreement.id + ' (asset #' + supply.assetId + ') and certifacte #' 
+                    + certificate.id + ' ( asset #' + certificate.assetId + ') have different associated asset IDs.');
+
+                return false;
+            }
         
-        const matchingAgreement = agreements.filter((agreement: EwMarket.Agreement.Entity) => 
-            this.controller.getSupply(agreement.supplyId.toString()).assetId.toString() === 
-            certificate.assetId.toString(),
-        ); 
+        }); 
 
         if (matchingAgreement.length === 0) {
-            logger.info('Found matching agreement for certificate #' + certificate.id);
+            logger.info('Found no matching agreement for certificate #' + certificate.id);
             return {split: false, agreement: null};
         } 
   

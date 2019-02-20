@@ -67,8 +67,9 @@ const buildController = async (
         case SchemaDefs.BlockchainDataSourceType.Blockchain:
             const blockchainDataSource = dataSource as SchemaDefs.BlockchainDataSource;
             return new BlockchainModeController(
-                await createBlockchainConf(blockchainDataSource),
-                blockchainDataSource.matcherAddress,
+                await createBlockchainConf(blockchainDataSource, blockchainDataSource.matcherAccount),
+                blockchainDataSource.matcherAccount.address,
+
             );
 
         case SchemaDefs.SimulationDataSourceType.Simulation:

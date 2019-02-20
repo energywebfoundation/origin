@@ -154,6 +154,13 @@ export class BlockchainModeController extends Controller {
     }
 
     async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
+        const demand = this.getDemand(agreement.demandId.toString());
+        logger.debug('Transfering certificate to ' + demand.demandOwner
+            + ' with account ' + this.conf.blockchainProperties.activeUser.address);
+        await certificate.transferFrom(demand.demandOwner);
+
+        //TODO: set matcher props
+
 
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
 

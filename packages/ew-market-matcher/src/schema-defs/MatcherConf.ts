@@ -1,3 +1,4 @@
+import { EthAccount } from "ew-utils-general-lib/dist/js/blockchain-facade/Configuration";
 
 export enum BlockchainDataSourceType {
 
@@ -19,7 +20,8 @@ export interface BlockchainDataSource  {
     offChainDataSourceUrl: string;
     marketContractLookupAddress: string;
     originContractLookupAddress: string;
-    matcherAddress: string;
+    matcherAccount: EthAccount;
+
 }
 
 export interface SimulationDataSource  {

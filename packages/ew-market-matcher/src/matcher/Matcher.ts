@@ -42,8 +42,6 @@ export abstract class Matcher {
             escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
         );
 
-        
-
         if (!matcherAccount) {
             logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
             
