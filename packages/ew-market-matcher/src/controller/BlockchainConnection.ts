@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -41,12 +41,12 @@ export const initMatchingManager = async (
 
     // conf.logger.verbose('* Getting all consuming assets');
     // const consumingAssetList = (await EwAsset.ConsumingAsset.getAllAssets(conf));
-    // consumingAssetList.forEach(async (asset: EwAsset.ConsumingAsset.Entity) => 
+    // consumingAssetList.forEach(async (asset: EwAsset.ConsumingAsset.Entity) =>
     //     controller.registerConsumingAsset(asset as EwAsset.ConsumingAsset.Entity),
     // );
 
 
-    
+
     conf.logger.verbose('* Getting all active agreements');
     const agreementListLength = (await EwMarket.Agreement.getAgreementListLength(conf));
     for (let i = 0; i < agreementListLength; i++) {
@@ -64,7 +64,7 @@ export const initMatchingManager = async (
     for (let i = 0; i < supplyListLength; i++) {
         controller.registerSupply(await new EwMarket.Supply.Entity(i.toString(), conf).sync());
     }
-  
+
 };
 
 export const createBlockchainConf = async (
@@ -82,9 +82,9 @@ export const createBlockchainConf = async (
         blockchainSectionConfFile.originContractLookupAddress,
     );
     marketConf.certificateLogicInstance = originConf.certificateLogicInstance;
-    
+
     return {
-        
+
         blockchainProperties: marketConf,
         logger,
         offChainDataSource: {
@@ -117,90 +117,90 @@ export const initEventHandling = async (
     });
 
     // certificateContractEventHandler.onEvent('LogCertificateOwnerChanged' , async (event) => {
-        
+    //
     //     if (matcherAddress === event.returnValues._oldEscrow && matcherAddress !== event.returnValues._newEscrow) {
     //         console.log('\n* Event: LogCertificateOwnerChanged certificate escrow changed certificate id: ' + event.returnValues._certificateId);
-            
+    //
     //         // cobntroller.removeCertificate(parseInt(event.returnValues._certificateId, 10))
     //     }
-        
+    //
     // });
 
-    // const demandContractEventHandler = new EwfCoo.ContractEventHandler(blockchainProperties.demandLogicInstance, currentBlockNumber);
+    const demandContractEventHandler = new EwGeneral.ContractEventHandler(conf.blockchainProperties.marketLogicInstance, currentBlockNumber);
 
-    // demandContractEventHandler.onEvent('LogDemandFullyCreated', async (event) => {
-    //     console.log('\n* Event: LogDemandFullyCreated demand: ' + event.returnValues._demandId);
-    //     const newDemand = await new EwfCoo.Demand(event.returnValues._demandId, blockchainProperties).syncWithBlockchain();
-    //     await cobntroller.registerDemand(newDemand);
-    //     // matchingManager.matchDemandWithCertificatesHoldInTrust(newDemand)
+    demandContractEventHandler.onEvent('LogDemandFullyCreated', async (event) => {
+        console.log('\n* Event: LogDemandFullyCreated demand: ' + event.returnValues._demandId);
+        const newDemand = await new EwMarket.Demand.Entity(event.returnValues._demandId, conf).sync();
+        await controller.registerDemand(newDemand);
+        // matchingManager.matchDemandWithCertificatesHoldInTrust(newDemand)
 
-    // });
+    });
 
     // demandContractEventHandler.onEvent('LogDemandExpired', async (event) => {
     //     console.log('\n* Event: LogDemandExpired demand: ' + event.returnValues._demandId);
-    //     cobntroller.removeDemand(parseInt(event.returnValues._demandId, 10));
-
+    //     controller.removeDemand(parseInt(event.returnValues._demandId, 10));
+    //
     // });
 
-    // const assetContractEventHandler = new EwfCoo.ContractEventHandler(blockchainProperties.producingAssetLogicInstance, currentBlockNumber);
+    const assetContractEventHandler = new EwGeneral.ContractEventHandler(conf.blockchainProperties.producingAssetLogicInstance, currentBlockNumber);
 
-    // // assetContractEventHandler.onEvent('LogNewMeterRead', (event) => 
-    // //     cobntroller.match()
-    // // )
+    // assetContractEventHandler.onEvent('LogNewMeterRead', (event) =>
+    //     controller.match()
+    // )
 
-    // assetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) => {
-    //     console.log('\n* Event: LogAssetFullyInitialized asset: ' + event.returnValues._assetId);
-    //     const newAsset = await new EwfCoo.ProducingAsset(event.returnValues._assetId, blockchainProperties).syncWithBlockchain();
-    //     cobntroller.registerProducingAsset(newAsset);
+    assetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) => {
+        console.log('\n* Event: LogAssetFullyInitialized asset: ' + event.returnValues._assetId);
+        const newAsset = await new EwAsset.ProducingAsset.Entity(event.returnValues._assetId, conf).sync();
+        controller.registerProducingAsset(newAsset);
 
-    // });
+    });
 
-    // assetContractEventHandler.onEvent('LogAssetSetActive' , async (event) => {
-    //     console.log('\n* Event: LogAssetSetActive  asset: ' + event.returnValues._assetId);
-    
-    //     const asset = await (new EwfCoo.ProducingAsset(event.returnValues._assetId, blockchainProperties)).syncWithBlockchain();
-    //     cobntroller.registerProducingAsset(asset);
+    assetContractEventHandler.onEvent('LogAssetSetActive' , async (event) => {
+        console.log('\n* Event: LogAssetSetActive  asset: ' + event.returnValues._assetId);
 
-    // });
+        const asset = await new EwAsset.ProducingAsset.Entity(event.returnValues._assetId, conf).sync();
+        controller.registerProducingAsset(asset);
 
-    // assetContractEventHandler.onEvent('LogAssetSetInactive' , async (event) => {
-    //     console.log('\n* Event: LogAssetSetInactive asset: ' + event.returnValues._assetId);
+    });
 
-    //     cobntroller.removeProducingAsset(parseInt(event.returnValues._assetId, 10));
-        
-    // });
+    assetContractEventHandler.onEvent('LogAssetSetInactive' , async (event) => {
+        console.log('\n* Event: LogAssetSetInactive asset: ' + event.returnValues._assetId);
 
-    // const consumingAssetContractEventHandler = new EwfCoo.ContractEventHandler(blockchainProperties.consumingAssetLogicInstance, currentBlockNumber);
+        controller.removeProducingAsset(event.returnValues._assetId);
+
+    });
+
+    const consumingAssetContractEventHandler = new EwGeneral.ContractEventHandler(conf.blockchainProperties.consumingAssetLogicInstance, currentBlockNumber);
 
     // consumingAssetContractEventHandler.onEvent('LogNewMeterRead', async (event) => {
     //     console.log('\n* Event: LogNewMeterRead consuming asset: ' + event.returnValues._assetId);
-    //     const asset = await cobntroller.createOrRefreshConsumingAsset(event.returnValues._assetId);
+    //     const asset = await controller.createOrRefreshConsumingAsset(event.returnValues._assetId);
     //     console.log('*> Meter read: '  + asset.lastSmartMeterReadWh + ' Wh');
-
+    //
     // });
 
-    // consumingAssetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) => {
-    //     console.log('\n* Event: LogAssetFullyInitialized consuming asset: ' + event.returnValues._assetId);
-    //     const newAsset = await new EwfCoo.ConsumingAsset(event.returnValues._assetId , blockchainProperties).syncWithBlockchain();
-    //     cobntroller.registerConsumingAsset(newAsset);
+    consumingAssetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) => {
+        console.log('\n* Event: LogAssetFullyInitialized consuming asset: ' + event.returnValues._assetId);
+        const newAsset = await new EwAsset.ConsumingAsset.Entity(event.returnValues._assetId , conf).sync();
+        controller.registerConsumingAsset(newAsset);
 
-    // });
+    });
 
-    // consumingAssetContractEventHandler.onEvent('LogAssetSetActive' , async (event) => {
-    //     console.log('\n* Event: LogAssetSetActive consuming asset: ' + event.returnValues._assetId);
-    
-    //     const asset = await (new EwfCoo.ConsumingAsset(event.returnValues._assetId, blockchainProperties)).syncWithBlockchain();
-    //     cobntroller.registerConsumingAsset(asset);
+    consumingAssetContractEventHandler.onEvent('LogAssetSetActive' , async (event) => {
+        console.log('\n* Event: LogAssetSetActive consuming asset: ' + event.returnValues._assetId);
 
-    // });
+        const asset = await new EwAsset.ConsumingAsset.Entity(event.returnValues._assetId, conf).sync();
+        controller.registerConsumingAsset(asset);
 
-    // consumingAssetContractEventHandler.onEvent('LogAssetSetInactive' , async (event) => {
-    //     console.log('\n* Event: LogAssetSetInactive consuming asset: ' + event.returnValues._assetId);
+    });
 
-    //     cobntroller.removeConsumingAsset(parseInt(event.returnValues._assetId, 10));
-        
-    // });
-    
+    consumingAssetContractEventHandler.onEvent('LogAssetSetInactive' , async (event) => {
+        console.log('\n* Event: LogAssetSetInactive consuming asset: ' + event.returnValues._assetId);
+
+        controller.removeConsumingAsset(event.returnValues._assetId);
+
+    });
+
     const eventHandlerManager = new EwGeneral.EventHandlerManager(4000, conf);
     // eventHandlerManager.registerEventHandler(consumingAssetContractEventHandler);
     // eventHandlerManager.registerEventHandler(demandContractEventHandler);

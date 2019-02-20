@@ -20,7 +20,6 @@ export interface BlockchainDataSource  {
     marketContractLookupAddress: string;
     originContractLookupAddress: string;
     matcherAddress: string;
-    
 }
 
 export interface SimulationDataSource  {

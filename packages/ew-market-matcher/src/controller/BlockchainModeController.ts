@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ export class BlockchainModeController extends Controller {
         this.date = 0;
         this.conf = conf;
         this.matcherAddress = matcherAddress;
-       
+
         logger.verbose('Set matcher address to ' + this.matcherAddress);
     }
 
@@ -83,7 +83,7 @@ export class BlockchainModeController extends Controller {
 
     async registerAgreement(newAggreement: EwMarket.Agreement.Entity) {
         const allowed = newAggreement.allowedMatcher
-            .find((matcherAddress: string) => 
+            .find((matcherAddress: string) =>
                 matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()) ? true : false;
 
         if (allowed) {
@@ -127,7 +127,7 @@ export class BlockchainModeController extends Controller {
     getAgreement(agreementId: string): EwMarket.Agreement.Entity {
         throw new Error('Method not implemented.');
     }
-  
+
     async removeAgreement(agreementId: string) {
         throw new Error('Method not implemented.');
     }
@@ -150,23 +150,33 @@ export class BlockchainModeController extends Controller {
     }
 
     async handleUnmatchedCertificate(certificate: EwOrigin.Certificate.Entity) {
-        // TODO 
+        // TODO
     }
 
     async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
-        
+
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
-      
+
     }
 
-    async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChils: number): Promise<void> {
-        throw new Error('Method not implemented.');
+    async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChild: number): Promise<void> {
+
+        const result = await certificate.splitCertificate(whForFirstChild);
+        certificate = await certificate.sync()
+
+        this.conf.blockchainProperties.activeUser = {
+            address: this.matcherAddress, privateKey: "0xe9a63e116f72c2e368376eb88c22fecf2a5e94a93464ff8802cf97caac657548",
+        }
+
+        let childCertificateId = certificate.children["0"]
+        const childCertificate = await new EwOrigin.Certificate.Entity(childCertificateId, this.conf).sync()
+        if(childCertificate.powerInW != whForFirstChild) throw new Error("Certificate didn't split")
     }
 
     async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
-        
+
         logger.info('Matched certificate #' + certificate.id + ' to demand #' + demand.id);
-      
+
     }
 
     async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame) : Promise<number> {
@@ -181,11 +191,11 @@ export class BlockchainModeController extends Controller {
                 return Math.floor((this.date - startDate) / (24 * 60 * 60));
             default:
                 throw new Error('Unknown time frame' + timeFrame);
-        } 
+        }
     }
 
     async start() {
-        
+
         await initMatchingManager(this, this.conf);
         initEventHandling(this, this.conf);
 
