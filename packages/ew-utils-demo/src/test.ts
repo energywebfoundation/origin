@@ -6,7 +6,7 @@ async function main() {
     const contractConfig = await deployEmptyContracts()
     console.log(contractConfig)
 
-    const demoFile = fs.readFileSync(process.cwd() + "/config/demo-config-2.json", 'utf8').toString()
+    const demoFile = fs.readFileSync("./config/demo-config-2.json", 'utf8').toString()
     await marketDemo(demoFile)
 }
 

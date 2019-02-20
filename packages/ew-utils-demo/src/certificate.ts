@@ -89,7 +89,7 @@ export const certificateDemo = async(actionString: string, conf: GeneralLib.Conf
         address: adminAccount.address, privateKey: adminPK,
       };
 
-      const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/contractConfig.json', 'utf8').toString());
+      const contractConfig = JSON.parse(fs.readFileSync('./config/contractConfig.json', 'utf8').toString());
 
       try {
         await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(action.data.assetId, contractConfig.originContractLookup, { privateKey: action.data.assetOwnerPK });
@@ -194,7 +194,7 @@ export const certificateDemo = async(actionString: string, conf: GeneralLib.Conf
         address: action.data.buyer , privateKey: action.data.buyerPK,
       };
 
-      const erc20Config = JSON.parse(fs.readFileSync(process.cwd() + '/config/erc20Config.json', 'utf8').toString());
+      const erc20Config = JSON.parse(fs.readFileSync('./config/erc20Config.json', 'utf8').toString());
 
       let erc20TestToken = new Erc20TestToken(conf.blockchainProperties.web3, erc20Config.ERC20Address)
       await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: action.data.buyerPK})
