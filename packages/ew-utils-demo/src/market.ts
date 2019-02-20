@@ -39,12 +39,16 @@ function sleep(ms) {
 
 
 
-export const marketDemo = async() => {
+export const marketDemo = async(demoFile?: string) => {
 
   const startTime = Date.now()
 
   const connectionConfig = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8').toString());
-  const demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/demo-config.json', 'utf8').toString());
+
+  let demoConfig;
+  if(!demoFile) demoConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/demo-config.json', 'utf8').toString());
+  else demoConfig = JSON.parse(demoFile)
+
   const contractConfig = JSON.parse(fs.readFileSync(process.cwd() + '/config/contractConfig.json', 'utf8').toString());
 
   const web3 = new Web3(connectionConfig.develop.web3);
