@@ -8,7 +8,7 @@
     "test": "mocha -r ts-node/register src/test/*.ts",
     "start": "npm run build && node dist/js/src/index.js",
     "debug": "node --inspect-brk dist/js/src/index.js",
-    "build": "rm -rf dist/ && npm run generate-schemas && tsc ",
+    "build": "rm -rf dist/ && npm run generate-schemas && tsc && cp -R schemas dist/js/schemas",
     "generate-schemas": "rm -rf schemas/ && mkdir schemas/ && npm run generate-sim-flow-schema && npm run generate-rule-schema && npm run generate-conf-schema",
     "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json SimulationFlow > schemas/simulation-description.schema.json",
     "generate-rule-schema": "typescript-json-schema --required --ignoreErrors  tsconfig.json RuleConf > schemas/rule.schema.json",
