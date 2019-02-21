@@ -171,9 +171,11 @@ export class BlockchainModeController extends Controller {
         const result = await certificate.splitCertificate(whForFirstChild);
         certificate = await certificate.sync()
 
-        let childCertificateId = certificate.children["0"]
-        const childCertificate = await new EwOrigin.Certificate.Entity(childCertificateId, this.conf).sync()
-        if(childCertificate.powerInW != whForFirstChild) throw new Error("Certificate didn't split")
+        const childCertificate1 = await new EwOrigin.Certificate.Entity(certificate.children["0"], this.conf).sync()
+        const childCertificate2 = await new EwOrigin.Certificate.Entity(certificate.children["1"], this.conf).sync()
+        await this.matchTrigger(childCertificate1)
+        await this.matchTrigger(childCertificate2)
+
     }
 
     async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {

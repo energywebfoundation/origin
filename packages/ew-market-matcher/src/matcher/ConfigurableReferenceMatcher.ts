@@ -110,7 +110,11 @@ export class ConfigurableReferenceMatcher extends Matcher {
                     return {split: true, agreement: null};
                 }
 
-            } else {
+            } else if (certificate.creationTime < agreement.offChainProperties.start || certificate.creationTime > agreement.offChainProperties.ende) {
+                logger.debug(`Certificate ${certificate.id} matches with agreement ${agreement.id}` +
+                    ` but was created before or after the agreements timeperiod`)
+            }
+            else {
                 filteredAgreementList.push(agreement);
             }
         }

@@ -66,6 +66,13 @@ export const initMatchingManager = async (
         controller.registerSupply(await new EwMarket.Supply.Entity(i.toString(), conf).sync());
     }
 
+    conf.logger.verbose('* Getting all certificates');
+    const certificateListLength = (await EwOrigin.Certificate.getCertificateListLength(conf));
+    for (let i = 0; i < certificateListLength; i++) {
+        const newCertificate = await new EwOrigin.Certificate.Entity(i.toString(),conf,).sync();
+        await controller.matchTrigger(newCertificate);
+    }
+
 };
 
 export const createBlockchainConf = async (
@@ -115,7 +122,7 @@ export const initEventHandling = async (
             conf,
         ).sync();
 
-        controller.matchTrigger(newCertificate);
+        await controller.matchTrigger(newCertificate);
 
     });
 
@@ -171,7 +178,7 @@ export const initEventHandling = async (
     assetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) => {
         console.log('\n* Event: LogAssetFullyInitialized asset: ' + event.returnValues._assetId);
         const newAsset = await new EwAsset.ProducingAsset.Entity(event.returnValues._assetId, conf).sync();
-        controller.registerProducingAsset(newAsset);
+        await controller.registerProducingAsset(newAsset);
 
     });
 
@@ -179,14 +186,14 @@ export const initEventHandling = async (
         console.log('\n* Event: LogAssetSetActive  asset: ' + event.returnValues._assetId);
 
         const asset = await new EwAsset.ProducingAsset.Entity(event.returnValues._assetId, conf).sync();
-        controller.registerProducingAsset(asset);
+        await controller.registerProducingAsset(asset);
 
     });
 
     assetContractEventHandler.onEvent('LogAssetSetInactive' , async (event) => {
         console.log('\n* Event: LogAssetSetInactive asset: ' + event.returnValues._assetId);
 
-        controller.removeProducingAsset(event.returnValues._assetId);
+        await controller.removeProducingAsset(event.returnValues._assetId);
 
     });
 
@@ -202,7 +209,7 @@ export const initEventHandling = async (
     consumingAssetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event) => {
         console.log('\n* Event: LogAssetFullyInitialized consuming asset: ' + event.returnValues._assetId);
         const newAsset = await new EwAsset.ConsumingAsset.Entity(event.returnValues._assetId , conf).sync();
-        controller.registerConsumingAsset(newAsset);
+        await controller.registerConsumingAsset(newAsset);
 
     });
 
@@ -210,14 +217,14 @@ export const initEventHandling = async (
         console.log('\n* Event: LogAssetSetActive consuming asset: ' + event.returnValues._assetId);
 
         const asset = await new EwAsset.ConsumingAsset.Entity(event.returnValues._assetId, conf).sync();
-        controller.registerConsumingAsset(asset);
+        await controller.registerConsumingAsset(asset);
 
     });
 
     consumingAssetContractEventHandler.onEvent('LogAssetSetInactive' , async (event) => {
         console.log('\n* Event: LogAssetSetInactive consuming asset: ' + event.returnValues._assetId);
 
-        controller.removeConsumingAsset(event.returnValues._assetId);
+        await controller.removeConsumingAsset(event.returnValues._assetId);
 
     });
 
