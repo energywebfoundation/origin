@@ -18,7 +18,7 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
 import * as EwMarket from 'ew-market-lib';
-import { logger } from '..';
+import { logger } from '../Logger';
 import * as Winston from 'winston';
 import { Controller } from './Controller';
 import Web3 = require('web3');

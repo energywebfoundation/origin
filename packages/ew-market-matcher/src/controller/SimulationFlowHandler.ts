@@ -1,17 +1,17 @@
 import { SimulationModeController } from './SimulationModeController';
-import { logger } from '..';
+import { logger } from '../Logger';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
-    
+
 export const handleFlowAction = async (
     simulationModeController: SimulationModeController,
     simulationFlowAction: (
-        SimulationFlowDef.Sleep.SleepAction | 
-        SimulationFlowDef.Agreement.RegisterAgreementAction | 
-        SimulationFlowDef.Date.SetDateAction | 
-        SimulationFlowDef.ProducingAsset.RegisterProducingAssetAction | 
+        SimulationFlowDef.Sleep.SleepAction |
+        SimulationFlowDef.Agreement.RegisterAgreementAction |
+        SimulationFlowDef.Date.SetDateAction |
+        SimulationFlowDef.ProducingAsset.RegisterProducingAssetAction |
         SimulationFlowDef.Certificate.RegisterCertificateAction |
         SimulationFlowDef.Demand.RegisterDemandAction |
-        SimulationFlowDef.Supply.RegisterSupplyAction 
+        SimulationFlowDef.Supply.RegisterSupplyAction
 
     ),
 ) => {
@@ -49,7 +49,7 @@ export const handleFlowAction = async (
                 SimulationFlowDef.Certificate.certificateDataToEntity(
                     simulationFlowAction.data as SimulationFlowDef.Certificate.CertificateData,
                 ),
-            );  
+            );
             break;
         case SimulationFlowDef.Sleep.SleepActionType.Sleep:
             await sleep(simulationFlowAction.data.ms);

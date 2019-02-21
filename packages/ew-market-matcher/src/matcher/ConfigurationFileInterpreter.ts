@@ -1,5 +1,5 @@
 import * as RuleConf from '../schema-defs/RuleConf';
-import { logger } from '..';
+import { logger } from '../Logger';
 import * as EwMarket from 'ew-market-lib';
 
 
@@ -58,7 +58,7 @@ const getDefaultValue = (simpleHierarchyRelevantProperty: RuleConf.SimpleHierarc
             return simpleHierarchyRelevantProperty.defaultValue.value;
         default:
             throw new Error('Unknown default value type ' + simpleHierarchyRelevantProperty.defaultValue.type);
-        
+
     }
 
 };

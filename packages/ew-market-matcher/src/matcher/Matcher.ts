@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import { Controller } from '../controller/Controller';
-import { logger } from '..';
+import { logger } from '../Logger';
 
 export abstract class Matcher {
     protected controller: Controller;
@@ -38,16 +38,16 @@ export abstract class Matcher {
         demands: EwMarket.Demand.Entity[],
     ): Promise<boolean> {
 
-        const matcherAccount = certificate.escrow.find((escrow: any) => 
+        const matcherAccount = certificate.escrow.find((escrow: any) =>
             escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase(),
         );
 
         if (!matcherAccount) {
             logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
-            
+
         } else {
             logger.verbose('This instance is an escrow for certificate #' + certificate.id);
- 
+
             const result = await this.findMatchingAgreement(certificate, agreements);
             if (result.agreement) {
                 await this.controller.matchAggrement(certificate, result.agreement);
@@ -56,7 +56,7 @@ export abstract class Matcher {
             } else if (!result.split) {
                 await this.controller.handleUnmatchedCertificate(certificate);
             }
-            
+
             // const demand = await this.findMatchingDemand(certificate, demands);
             // if (demand) {
             //     await this.controller.matchDemand(certificate, demand);
@@ -64,9 +64,9 @@ export abstract class Matcher {
             // }
         }
 
-        
+
         return false;
-               
+
     }
 
     abstract setController(controller: Controller): void;

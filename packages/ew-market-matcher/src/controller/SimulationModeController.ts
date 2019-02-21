@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 
 import { Controller} from './Controller';
 import { SimulationDataSource} from '../schema-defs/MatcherConf';
-import { logger } from '..';
+import { logger } from '../Logger';
 import * as fs from 'fs';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
@@ -41,7 +41,7 @@ export class SimulationModeController extends Controller {
         this.supplies = [];
         this.producingAssets = [];
         this.date = 0;
-       
+
         this.simulationFlow = JSON.parse(fs.readFileSync(simulationDataSource.simulationFlowFile, 'utf-8'));
         Controller.validateJson(this.simulationFlow, SimulationDescriptionSchema, 'Simulation flow');
         this.matcherAddress = this.simulationFlow.matcherAddress;
@@ -127,7 +127,7 @@ export class SimulationModeController extends Controller {
     getAgreement(agreementId: string): EwMarket.Agreement.Entity {
         throw new Error('Method not implemented.');
     }
-  
+
     async removeAgreement(agreementId: string) {
         throw new Error('Method not implemented.');
     }
@@ -154,7 +154,7 @@ export class SimulationModeController extends Controller {
             certificateId: certificate.id,
             agreementId: '-1',
             powerInW: certificate.powerInW,
-            
+
         });
     }
 
@@ -177,13 +177,13 @@ export class SimulationModeController extends Controller {
         } else {
             agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
         }
-         
+
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
         logger.debug(`Set Wh for Agreement ${agreement.id} in period ${agreement.matcherOffChainProperties.currentPeriod} to ${agreement.matcherOffChainProperties.currentWh} Wh`);
     }
 
     async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
-       
+
         throw new Error('Method not implemented.');
     }
 
@@ -199,15 +199,15 @@ export class SimulationModeController extends Controller {
                 return Math.floor((this.date - startDate) / (24 * 60 * 60));
             default:
                 throw new Error('Unknown time frame' + timeFrame);
-        } 
+        }
     }
 
     async start() {
-        
-        for (const action of this.simulationFlow.flow) {    
+
+        for (const action of this.simulationFlow.flow) {
             await SimulationFlowHandler.handleFlowAction(this, action as any);
         }
-        
+
         this.compareWithExpectedResults();
 
     }
@@ -219,7 +219,7 @@ export class SimulationModeController extends Controller {
         expectedMatchIndex: number,
     ): boolean {
 
-        if (expectedMatch[key] !== match[key]) {                     
+        if (expectedMatch[key] !== match[key]) {
             logger.debug(`Match #${expectedMatchIndex}: ${key} (${match[key]}) does not equal expected ${key} (${expectedMatch[key]}) ${LogSymbols.error}`);
             return false;
         } else {
@@ -237,14 +237,14 @@ export class SimulationModeController extends Controller {
         const secondChildId = parseInt(certificate.id) + 2;
 
         const firstChild = Object.assign(
-            new EwOrigin.Certificate.Entity(null, certificate.configuration), 
+            new EwOrigin.Certificate.Entity(null, certificate.configuration),
             certificate,
         );
         firstChild.id = firstChildId.toString();
         firstChild.powerInW = whForFirstChild;
 
         const secondChild = Object.assign(
-            new EwOrigin.Certificate.Entity(null, certificate.configuration), 
+            new EwOrigin.Certificate.Entity(null, certificate.configuration),
             certificate,
         );
         secondChild.id = secondChildId.toString();

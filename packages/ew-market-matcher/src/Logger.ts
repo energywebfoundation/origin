@@ -14,17 +14,15 @@
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as fs from 'fs';
-import * as SchemaDefs from './schema-defs/MatcherConf';
-import { startMatcher } from './exports'
-import { logger } from './Logger'
+import * as Winston from 'winston';
 
-const main = async () => {
-
-    if(process.argv[2]) {
-        const conf:SchemaDefs.MatcherConf = JSON.parse(fs.readFileSync(process.argv[2], 'utf8').toString())
-        await startMatcher(conf)
-    }
-};
-
-main()
+export const logger = Winston.createLogger({
+  format: Winston.format.combine(
+    Winston.format.colorize(),
+    Winston.format.simple(),
+  ),
+  level: 'debug',
+  transports: [
+    new Winston.transports.Console({ level: 'silly' }),
+  ],
+});

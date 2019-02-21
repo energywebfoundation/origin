@@ -16,7 +16,7 @@
 
 import { Controller} from './Controller';
 import { SimulationDataSource} from '../schema-defs/MatcherConf';
-import { logger } from '..';
+import { logger } from '../Logger';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow';
 

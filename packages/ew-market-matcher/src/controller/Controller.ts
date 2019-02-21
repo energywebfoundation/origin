@@ -1,6 +1,6 @@
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@ import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import * as Filter from '../matcher/Filter';
-import { logger } from '..';
+import { logger } from '../Logger';
 import * as Jsonschema from 'jsonschema';
 import * as LogSymbols from 'log-symbols';
 import * as EwGeneral from 'ew-utils-general-lib';

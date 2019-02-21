@@ -1,5 +1,5 @@
 import { Controller} from '../controller/Controller';
-import { logger } from './../index';
+import { logger } from '../Logger';
 import * as EwOrigin from 'ew-origin-lib';
 import * as EwMarket from 'ew-market-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
@@ -30,13 +30,13 @@ export const filterAgreements = async (
             originator: null,
             start: agreement.offChainProperties.start,
         };
-   
+
         if (await checkFit(controller, loggerPrefix, filterSpec, certificate)) {
             filteredAgreements.push(agreement);
         }
     }
-    
-    logger.verbose(filteredAgreements.length + ' from ' + 
+
+    logger.verbose(filteredAgreements.length + ' from ' +
         agreements.length + ' are a possible fit for certificate #' + certificate.id);
     return filteredAgreements;
 };
@@ -45,7 +45,7 @@ const checkProperty = (spec: any, real: any, loggerPrefix: string, propertyName:
 
     if (spec !== null && spec !== undefined) {
         const output = spec === real;
-        logger.debug(loggerPrefix + propertyName + ' equals specification: ' + output + 
+        logger.debug(loggerPrefix + propertyName + ' equals specification: ' + output +
             ' spec: ' + spec.toString() + ', asset: ' + real.toString());
         return output;
 
@@ -62,12 +62,12 @@ const checkFit = async (
     filterSpec: FilterSpec ,
     certificate: EwOrigin.Certificate.Entity,
 ): Promise<boolean> => {
-    
+
     let fit = true;
     const currentTime = await controller.getCurrentDataSourceTime();
     const asset = await controller.getProducingAsset(certificate.assetId.toString());
 
-    logger.debug(loggerPrefix 
+    logger.debug(loggerPrefix
         + 'originator: ' + filterSpec.originator  + ', '
         + 'asset type: ' + filterSpec.demand.offChainProperties.assettype + ', '
         + 'compliance: ' + filterSpec.demand.offChainProperties.registryCompliance + ', '
@@ -75,7 +75,7 @@ const checkFit = async (
         + 'region: ' + filterSpec.demand.offChainProperties.locationRegion + ', '
         + 'producing asset: ' + filterSpec.demand.offChainProperties.productingAsset,
     );
-    
+
     if (filterSpec.end < currentTime || filterSpec.start > currentTime) {
 
         fit = false;
@@ -86,7 +86,7 @@ const checkFit = async (
     fit = fit &&
         checkProperty(
             filterSpec.originator,
-            asset.owner, 
+            asset.owner,
             loggerPrefix,
             'originator',
         ) &&
