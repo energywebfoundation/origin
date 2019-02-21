@@ -2,7 +2,8 @@
   "name": "ewf-coo-matcher",
   "version": "1.0.0",
   "description": "",
-  "main": "/dist/js/src/exports.js",
+  "main": "dist/js/src/exports.js",
+  "types": "dist/js/src/exports.d.ts",
   "scripts": {
     "test": "mocha -r ts-node/register src/test/*.ts",
     "start": "npm run build && node dist/js/src/index.js",
