@@ -12,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwOrigin from 'ew-origin-lib';
@@ -21,7 +21,7 @@ import * as EwMarket from 'ew-market-lib';
 import { logger } from '../Logger';
 import * as Winston from 'winston';
 import { Controller } from './Controller';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import * as Conf from '../../conf.json';
 import { BlockchainDataSourceType, BlockchainDataSource } from '../schema-defs/MatcherConf';
 import { EthAccount } from 'ew-utils-general-lib/dist/js/blockchain-facade/Configuration';

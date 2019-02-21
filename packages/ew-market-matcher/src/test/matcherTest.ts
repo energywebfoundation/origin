@@ -1,10 +1,25 @@
+// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 // import Web3Type from '../types/web3'
 // import { Demand, CoOTruffleBuild, DemandLogicTruffleBuild, AssetProducingLogicTruffleBuild, AssetConsumingLogicTruffleBuild, CertificateLogicTruffleBuild, ContractEventHandler, Asset, EventHandlerManager, BlockchainProperties, Certificate, ProducingAsset, ConsumingAsset } from 'ewf-coo'
 // import { PrivateKeys } from '../test-accounts'
 // import { expect } from 'chai';
 
-// const Web3 = require('web3')
+// const Web3 from 'web3'
 
 // let currenctCreatedDevice = 0
 // let currentCreatedDemand = -1
@@ -160,7 +175,7 @@
 //            console.log(generatedProducingAssets[currentCreatedDemand % 9].country)
 //            console.log(generatedProducingAssets[currentCreatedDemand % 9].region)
 //            console.log(generatedProducingAssets[currentCreatedDemand % 9].registryCompliance)
-   
+
 //    */
 //         testamount++
 //         let currentDemand = await Demand.CREATE_DEMAND(demandProps, blockchainProperties, topAdminAccount)
@@ -209,19 +224,19 @@
 //     }).timeout(7500);
 //     /*   for (let i = 0; i < 256; i++) {
 //            it('should create new demand #' + i, async () => {
-   
+
 //                let matchingPossible = true
 //                let createdDemand: Demand = await initDemands(topAdminAccount.address, blockchainProperties)
 //                if (!createdDemand) return true
-   
+
 //                const asset = generatedProducingAssets.find((a: ProducingAsset) => a.id === createdDemand.productingAsset)
-   
+
 //                for (let j = 0; j < 8; j++) {
 //                    console.log(namedProps[j] + ' ' + createdDemand.getBitFromDemandMask(j))
 //                }
-   
+
 //                if (createdDemand.getBitFromDemandMask(6)) {
-   
+
 //                    if (createdDemand.getBitFromDemandMask(0)) {
 //                        if (createdDemand.originator !== asset.owner) {
 //                            console.log("should not have matched because of originator")
@@ -231,12 +246,12 @@
 //                            console.log("owner fits")
 //                        }
 //                    }
-   
+
 //                    if (createdDemand.getBitFromDemandMask(1)) {
 //                        if (createdDemand.assettype !== asset.assetType) {
 //                            console.log("should not have matched because of assetType")
 //                            matchingPossible = false
-   
+
 //                        }
 //                        else {
 //                            console.log("assetType fits")
@@ -246,7 +261,7 @@
 //                        if (createdDemand.registryCompliance !== asset.compliance) {
 //                            console.log("should not have matched because of compliance")
 //                            matchingPossible = false
-   
+
 //                        }
 //                        else {
 //                            console.log("compliance fits")
@@ -256,7 +271,7 @@
 //                        if (createdDemand.locationCountry !== asset.country) {
 //                            console.log("should not have matched because of country")
 //                            matchingPossible = false
-   
+
 //                        }
 //                        else {
 //                            console.log("country fits")
@@ -266,7 +281,7 @@
 //                        if (createdDemand.locationRegion !== asset.region) {
 //                            console.log("should not have matched because of region")
 //                            matchingPossible = false
-   
+
 //                        }
 //                        else {
 //                            console.log("region fits")
@@ -276,7 +291,7 @@
 //                        if (createdDemand.minCO2Offset !== asset.minCO2Offset) {
 //                            console.log("should not have matched because of minCO2Offset")
 //                            matchingPossible = false
-   
+
 //                        }
 //                        else {
 //                            console.log("minCO2Offset fits")
@@ -284,8 +299,8 @@
 //                    }
 //                }
 //                if (matchingPossible) console.log("should have matched")
-   
-   
+
+
 //            }).timeout(5000);
 
 // }   */
