@@ -171,10 +171,6 @@ export class BlockchainModeController extends Controller {
         const result = await certificate.splitCertificate(whForFirstChild);
         certificate = await certificate.sync()
 
-        this.conf.blockchainProperties.activeUser = {
-            address: this.matcherAddress, privateKey: "0xe9a63e116f72c2e368376eb88c22fecf2a5e94a93464ff8802cf97caac657548",
-        }
-
         let childCertificateId = certificate.children["0"]
         const childCertificate = await new EwOrigin.Certificate.Entity(childCertificateId, this.conf).sync()
         if(childCertificate.powerInW != whForFirstChild) throw new Error("Certificate didn't split")

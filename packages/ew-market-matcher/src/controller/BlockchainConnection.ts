@@ -129,14 +129,31 @@ export const initEventHandling = async (
     //
     // });
 
-    const demandContractEventHandler = new EwGeneral.ContractEventHandler(conf.blockchainProperties.marketLogicInstance, currentBlockNumber);
+    const marketContractEventHandler = new EwGeneral.ContractEventHandler(conf.blockchainProperties.marketLogicInstance, currentBlockNumber);
 
-    demandContractEventHandler.onEvent('LogDemandFullyCreated', async (event) => {
-        console.log('\n* Event: LogDemandFullyCreated demand: ' + event.returnValues._demandId);
+    marketContractEventHandler.onEvent('createdNewDemand', async (event) => {
+        console.log('\n* Event: createdNewDemand demand: ' + event.returnValues._demandId);
         const newDemand = await new EwMarket.Demand.Entity(event.returnValues._demandId, conf).sync();
         await controller.registerDemand(newDemand);
         // matchingManager.matchDemandWithCertificatesHoldInTrust(newDemand)
 
+    });
+
+    marketContractEventHandler.onEvent('createdNewSupply', async (event) => {
+        console.log("\n* Event: createdNewSupply supply: " + event.returnValues._supplyId);
+        const newSupply = await new EwMarket.Supply.Entity(event.returnValues._supplyId, conf).sync();
+        await controller.registerSupply(newSupply)
+    })
+
+    marketContractEventHandler.onEvent("LogAgreementFullySigned", async (event) => {
+        console.log('\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (' +
+            event.returnValues._agreementId + ", " +
+            event.returnValues._demandId + ", " +
+            event.returnValues._supplyId + ")"
+        )
+
+        const newAgreement = await new EwMarket.Agreement.Entity(event.returnValues._agreementId, conf).sync()
+        await controller.registerAgreement(newAgreement);
     });
 
     // demandContractEventHandler.onEvent('LogDemandExpired', async (event) => {
@@ -205,9 +222,9 @@ export const initEventHandling = async (
     });
 
     const eventHandlerManager = new EwGeneral.EventHandlerManager(4000, conf);
-    // eventHandlerManager.registerEventHandler(consumingAssetContractEventHandler);
-    // eventHandlerManager.registerEventHandler(demandContractEventHandler);
-    // eventHandlerManager.registerEventHandler(assetContractEventHandler);
+    eventHandlerManager.registerEventHandler(consumingAssetContractEventHandler);
+    eventHandlerManager.registerEventHandler(marketContractEventHandler);
+    eventHandlerManager.registerEventHandler(assetContractEventHandler);
     eventHandlerManager.registerEventHandler(certificateContractEventHandler);
     eventHandlerManager.start();
 };
