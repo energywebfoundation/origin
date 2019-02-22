@@ -185,6 +185,7 @@ export class BlockchainModeController extends Controller {
     }
 
     async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame) : Promise<number> {
+        this.date = (await this.conf.blockchainProperties.web3.eth.getBlock('latest')).timestamp
         switch (timeFrame) {
             case EwGeneral.TimeFrame.yearly:
                 return Math.floor((this.date - startDate) / (365 * 24 * 60 * 60));
