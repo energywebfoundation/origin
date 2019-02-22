@@ -159,8 +159,17 @@ export class BlockchainModeController extends Controller {
             + ' with account ' + this.conf.blockchainProperties.activeUser.address);
         await certificate.transferFrom(demand.demandOwner);
 
-        //TODO: set matcher props
+        const currentPeriod = await this.getCurrentPeriod(
+            agreement.offChainProperties.start,
+            agreement.offChainProperties.timeframe,
+        );
 
+        if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
+            agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
+            agreement.matcherOffChainProperties.currentWh = certificate.powerInW;
+        } else {
+            agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
+        }
 
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
 

@@ -99,10 +99,15 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 .getCurrentPeriod(agreement.offChainProperties.start, agreement.offChainProperties.timeframe);
             const demand = await this.controller.getDemand(agreement.demandId.toString());
             const neededWhForCurrentPeriod = agreement.matcherOffChainProperties.currentPeriod === currentPeriod ?
-                demand.offChainProperties.targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh :
+                (demand.offChainProperties.targetWhPerPeriod > agreement.matcherOffChainProperties.currentWh ?
+                    demand.offChainProperties.targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh: 0) :
                 demand.offChainProperties.targetWhPerPeriod;
 
-            if (certificate.powerInW > neededWhForCurrentPeriod) {
+            if (certificate.creationTime < agreement.offChainProperties.start || certificate.creationTime > agreement.offChainProperties.ende) {
+                logger.debug(`Certificate ${certificate.id} matches with agreement ${agreement.id}` +
+                    ` but was created before or after the agreements timeperiod`)
+            }
+            else if (certificate.powerInW > neededWhForCurrentPeriod) {
                 logger.debug(`Certificate ${certificate.id} to large (${certificate.powerInW})` +
                     `for agreement ${agreement.id} (${neededWhForCurrentPeriod})`);
                 if (neededWhForCurrentPeriod > 0) {
@@ -110,9 +115,6 @@ export class ConfigurableReferenceMatcher extends Matcher {
                     return {split: true, agreement: null};
                 }
 
-            } else if (certificate.creationTime < agreement.offChainProperties.start || certificate.creationTime > agreement.offChainProperties.ende) {
-                logger.debug(`Certificate ${certificate.id} matches with agreement ${agreement.id}` +
-                    ` but was created before or after the agreements timeperiod`)
             }
             else {
                 filteredAgreementList.push(agreement);
