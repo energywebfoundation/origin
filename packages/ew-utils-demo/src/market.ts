@@ -300,6 +300,13 @@ export const marketDemo = async (demoFile?: string) => {
             break;
         }
 
+        if(action.data.startTime === -1){
+            action.data.startTime = Math.floor(Date.now()/1000);
+            action.data.endTime += action.data.startTime;
+            logger.verbose("Agreement starts at " + action.data.startTime +
+            " and ends at " + action.data.endTime)
+        }
+
         const agreementOffchainProps: Market.Agreement.AgreementOffChainProperties = {
           start: action.data.startTime,
           ende: action.data.endTime,

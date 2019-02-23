@@ -384,8 +384,8 @@
             "data": {
               "creator": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
               "creatorPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
-              "startTime": 1550785956,
-              "endTime": 1550786956,
+              "startTime": -1,
+              "endTime": 3600,
               "price": 10,
               "currency": "USD",
               "timeframe": "hourly",

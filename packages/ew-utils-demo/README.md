@@ -482,7 +482,7 @@ usage: command to make an agreement - pairing a demand with an appropriate suppl
 * <code>allowedMatcher</code>: address of the matcher allowed to pair the demand and supply
 
 #### example
-We want to make an agreement between the demand<code>0</code> and supply<code>0</code>. The agreed price between the two parties is set at <code>10 USD</code> with the timeframe of the contract being <code>hourly</code> for a period of <code>10</code>(hours). The current time and watt-hour readings are stored as <code>0</code> marking the genesis of the agreement. The trader with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is creating the agreement. Although the supplier must approve the agreement to actually confirm it.
+We want to make an agreement between the demand<code>0</code> and supply<code>0</code>. The agreed price between the two parties is set at <code>10 USD</code> with the timeframe of the contract being <code>hourly</code> for a period of <code>10</code>(hours). The current period and watt-hour readings are stored as <code>0</code> marking the genesis of the agreement. The trader with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is creating the agreement. Although the supplier must approve the agreement to actually confirm it.
 
 <code>
 {
@@ -504,6 +504,16 @@ We want to make an agreement between the demand<code>0</code> and supply<code>0<
     }
 }
 </code>
+
+##### Sidenote:
+If you set the <code>startTime</code> as <code>-1</code> it would be automatically set to the latest block timestamp. Accordingly, <code>endTime<code> would be set as <code>startTime</code> + <code>endTime</code>.
+
+<code>
+    "startTime": -1,
+    "endTime": 3600,
+</code>
+
+for the above code block <code>startTime</code> would be the latest block timestamp and <code>endTime</code> would be latest block timestamp + 3600 seconds (one hour).
 
 ### APPROVE_AGREEMENT
 usage: command to approve an agreement
