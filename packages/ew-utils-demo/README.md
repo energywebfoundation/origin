@@ -28,7 +28,9 @@ We strongly recommend to change the keys included in this repo when running on a
 
 ## Configuration
 
-The configuration and flow of actions is done with the file [demo-config.json](config/demo-config.json) in the config-folder.
+The configuration and flow of actions is done "by default" with the file [demo-config.json](config/demo-config.json) in the config-folder.
+
+*NOTE: you could also pass a customized demo file into the <code>marketDemo()</code> function in the test script(<code>/src/test.ts</code>)*
 
 The following keys are required:
 * topAdminPrivateKey: the private key of the topAdmin
@@ -548,4 +550,4 @@ We want to pause the flow for <code>2</code> secondss
 <code>{"type": "SLEEP", "data": 2000}</code>
 
 ## starting the demo
-Once all the actions are set within the config-file simply run <code>npm run start-demo</code>. It will freshly deploy all contracts and setup everything for you. After this is done, it will automatically run all the flow-actions. <br>
+Once all the actions are set within the config-file simply run <code>npm run start</code>. It will freshly deploy all contracts and setup everything for you. After this is done, it will automatically run all the flow-actions. <br>
