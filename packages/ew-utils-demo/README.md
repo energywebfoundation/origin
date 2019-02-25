@@ -550,4 +550,4 @@ We want to pause the flow for <code>2</code> secondss
 <code>{"type": "SLEEP", "data": 2000}</code>
 
 ## starting the demo
-Once all the actions are set within the config-file simply run <code>npm run start</code>. It will freshly deploy all contracts and setup everything for you. After this is done, it will automatically run all the flow-actions. <br>
+Once all the actions are set within the config-file simply run <code>npm start</code>. It will freshly deploy all contracts and setup everything for you. After this is done, it will automatically run all the flow-actions. <br>
