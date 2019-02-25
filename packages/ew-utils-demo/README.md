@@ -506,7 +506,7 @@ We want to make an agreement between the demand<code>0</code> and supply<code>0<
 </code>
 
 ##### Sidenote:
-If you set the <code>startTime</code> as <code>-1</code> it would be automatically set to the latest block timestamp. Accordingly, <code>endTime<code> would be set as <code>startTime</code> + <code>endTime</code>.
+If you set the <code>startTime</code> as <code>-1</code> it would be automatically set to the latest block timestamp. Accordingly, <code>endTime</code> would be set as <code>startTime</code> + <code>endTime</code>.
 
 <code>
     "startTime": -1,
