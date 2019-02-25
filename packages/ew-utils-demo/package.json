@@ -11,7 +11,7 @@
     "start-test-backend": "node node_modules/ew-utils-testbackend/index.js",
     "test": "npm run build-ts && node dist/js/test",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
-    "start-demo": "npm run build-ts && node dist/js/test",
+    "start": "npm run build-ts && node dist/js/test",
     "deploy-empty": "npm run build-ts && node dist/js/deployEmpty",
     "prebuild-ts": "rm -rf build/ts",
     "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc"
