@@ -16,7 +16,6 @@ After you clone this repo you have to run the command <code>npm install</code>. 
 
 When the command is finished you have to start a blockchain:
 * ganache / testrpc: to run this testchain simply run the command <code>npm run start-ganache</code>
-* parity: if you're using docker you can run the command <code>npm run parity-docker</code>
 * your own blockchain client connected to any ethereum-like chain (e.g. Tobalaba)
 
 This demo is using raw-transactions, so you don't have to unlock your accounts in the blockchain-client. Because this demo was developed with Tobalaba in mind the current gasPrice is set to 0 thus enabling sending transaction from accounts without any balance.<br>
