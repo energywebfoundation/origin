@@ -31,7 +31,7 @@
     "ew-asset-registry-lib": "0.0.99",
     "ew-erc-test-contracts": "0.0.99",
     "ew-market-contracts": "0.0.99",
-    "ew-market-lib": "v0.3.0",
+    "ew-market-lib": "v0.3.1",
     "ew-origin-contracts": "0.0.99",
     "ew-origin-lib": "0.0.99",
     "ew-user-registry-contracts": "0.0.99",
