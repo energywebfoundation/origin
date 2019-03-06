@@ -1,7 +1,6 @@
 // Copyright 2018 Energy Web Foundation
-//
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -13,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
 import FadeIn from 'react-fade-in';
@@ -29,7 +28,7 @@ import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 
 import './DetailView.scss'
@@ -74,20 +73,20 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
 
   }
 
-  async componentWillReceiveProps(newProps: DetailViewProps): Promise<void>  {
+  async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
     await this.getOwner(newProps);
   }
 
-  async getOwner(props: DetailViewProps): Promise<void>  {
-    const selectedAsset: EwAsset.ConsumingAsset.Entity  = props.consumingAssets
-        .find((c: EwAsset.ConsumingAsset.Entity) => c.id === props.id.toString());
+  async getOwner(props: DetailViewProps): Promise<void> {
+    const selectedAsset: EwAsset.ConsumingAsset.Entity = props.consumingAssets
+      .find((c: EwAsset.ConsumingAsset.Entity) => c.id === props.id.toString());
     if (selectedAsset) {
       if (this.props.certificates.length > 0) {
         this.setState({
           notSoldCertificates: this.props.certificates
-            .map((certificate: OriginIssuer.Certificate.Entity) => 
-                certificate.owner === selectedAsset.owner && certificate.assetId.toString() === selectedAsset.id ?
-                certificate.powerInW : 
+            .map((certificate: OriginIssuer.Certificate.Entity) =>
+              certificate.owner === selectedAsset.owner.address && certificate.assetId.toString() === selectedAsset.id ?
+                certificate.powerInW :
                 0
             ).reduce((a, b) => a + b)
         });
@@ -102,13 +101,13 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
   }
 
   render(): JSX.Element {
-    
+
     const selectedAsset: EwAsset.ConsumingAsset.Entity = this.props.id !== null && this.props.id !== undefined ? this.props.consumingAssets
-    .find((p: EwAsset.ConsumingAsset.Entity) => p.id === this.props.id.toString()) : null;
-    
+      .find((p: EwAsset.ConsumingAsset.Entity) => p.id === this.props.id.toString()) : null;
+
     let data
     if (selectedAsset) {
-     
+
       data = [
         [
           {
@@ -139,7 +138,7 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
 
 
           {
-            label: 'Nameplate Capacity'  + getOffChainText('capacityWh', selectedAsset.offChainProperties),
+            label: 'Nameplate Capacity' + getOffChainText('capacityWh', selectedAsset.offChainProperties),
             data: (selectedAsset.offChainProperties.capacityWh ? (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3) : '-'),
             tip: 'kW'
           }
@@ -167,10 +166,10 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
                 <tbody>
                   {data.map((row: any) => (
                     <tr key={row.key} >
-                    
+
                       {row.map((col) => (
                         <td key={col.key} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
-                        
+
                           <div className='Label'>{col.label}</div>
                           <div className='Data'>{col.data} {col.tip && (<span>{col.tip}</span>)}</div>
                           {col.image && (

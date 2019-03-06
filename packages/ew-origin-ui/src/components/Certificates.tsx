@@ -1,7 +1,6 @@
 // Copyright 2018 Energy Web Foundation
-//
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -13,11 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as General from 'ew-utils-general-lib';
 import { OrganizationFilter } from './OrganizationFilter';
@@ -105,12 +104,12 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
 
     ForSaleCertificates() {
         return this.CertificateTable(SelectedState.ForSale);
-    
+
     }
 
     ClaimedCertificates() {
         return this.CertificateTable(SelectedState.Claimed);
-    
+
     }
 
     render() {
@@ -168,7 +167,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                 <Nav className='NavMenu'>
                     {
                         CertificatesMenu.map((menu) => {
-                            
+
                             return (<li key={menu.key}><NavLink to={`/${this.props.baseUrl}/certificates/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>);
                         })
 
@@ -184,7 +183,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                 });
                 if (matches.length > 0 && key === 'detail_view') {
                     matches[0].component = () => this.CertificateDetailView(id ? parseInt(id, 10) : id);
-                } 
+                }
                 return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/certificates'} />);
             }} />
             <Route exact path={'/' + this.props.baseUrl + '/certificates'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/certificates/${CertificatesMenu[0].key}` }} />)} />

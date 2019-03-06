@@ -1,7 +1,6 @@
 // Copyright 2018 Energy Web Foundation
-//
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -13,7 +12,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
 
@@ -21,7 +20,7 @@ import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 import { OrganizationFilter } from './OrganizationFilter';
 import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
@@ -79,22 +78,22 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
 
     }
 
-    async componentWillReceiveProps(newProps: ProducingAssetTableProps): Promise<void>  {
+    async componentWillReceiveProps(newProps: ProducingAssetTableProps): Promise<void> {
         await this.getOrganizationNames(newProps);
     }
 
-    async getOrganizationNames(props: ProducingAssetTableProps): Promise<void>  {
+    async getOrganizationNames(props: ProducingAssetTableProps): Promise<void> {
 
         const promieses = props.producingAssets.map(async (producingAsset: EwAsset.ProducingAsset.Entity, index: number) =>
             ({
                 producingAsset: producingAsset,
                 notSoldCertificates: this.props.certificates
-                    .filter((certificate: OriginIssuer.Certificate.Entity) => 
-                        certificate.owner === producingAsset.owner && certificate.assetId.toString() === producingAsset.id
+                    .filter((certificate: OriginIssuer.Certificate.Entity) =>
+                        certificate.owner === producingAsset.owner.address && certificate.assetId.toString() === producingAsset.id
                     ),
                 organizationName: (await (new EwUser.User(producingAsset.owner.address, props.conf as any))
-                        .sync()
-                    ).organization
+                    .sync()
+                ).organization
             })
         );
 
@@ -141,7 +140,7 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 colspan: 5
             },
             generateFooter('Meter Read (kWh)')
-         
+
         ];
 
         const assets = null;
@@ -155,7 +154,7 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         const filteredEnrichedAssetData = this.state.enrichedProducingAssetData
             .filter((enrichedProducingAssetData: EnrichedProducingAssetData) => {
 
-                return !this.props.switchedToOrganization 
+                return !this.props.switchedToOrganization
                     || enrichedProducingAssetData.producingAsset.owner.address === this.props.currentUser.id;
 
             });
@@ -164,7 +163,7 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         data = filteredEnrichedAssetData.map((enrichedProducingAssetData: EnrichedProducingAssetData) => {
             const producingAsset = enrichedProducingAssetData.producingAsset;
             const generatedKWh = producingAsset.certificatesCreatedForWh / 1000;
-            const kWhForSale = enrichedProducingAssetData.notSoldCertificates.length < 1 ? 
+            const kWhForSale = enrichedProducingAssetData.notSoldCertificates.length < 1 ?
                 0 : enrichedProducingAssetData.notSoldCertificates
                     .map((certificate: OriginIssuer.Certificate.Entity) => certificate.powerInW)
                     .reduce(accumulatorCb) / 1000;
@@ -178,8 +177,8 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 (producingAsset.offChainProperties.city + ', ' + producingAsset.offChainProperties.country),
                 EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
                 (producingAsset.offChainProperties.capacityWh / 1000).toFixed(3),
-                (producingAsset.lastSmartMeterReadWh / 1000).toFixed(3) 
-                
+                (producingAsset.lastSmartMeterReadWh / 1000).toFixed(3)
+
             ]);
 
         });
@@ -187,13 +186,13 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         const operations = ['Show Details'];
 
         return <div className='ProductionWrapper'>
-            <Table 
+            <Table
                 header={TableHeader}
                 footer={TableFooter}
                 operationClicked={this.operationClicked}
                 actions={true}
                 data={data}
-                operations={operations} 
+                operations={operations}
             />
         </div>;
 

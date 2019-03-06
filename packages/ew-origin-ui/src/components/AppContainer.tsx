@@ -1,7 +1,6 @@
 // Copyright 2018 Energy Web Foundation
-//
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -13,11 +12,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
 
-import Web3 = require('web3');
+import Web3 from 'web3';
 
 import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
@@ -34,7 +33,7 @@ import './AppContainer.scss';
 import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
 
 
@@ -47,7 +46,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
     constructor(props: AppContainerProps) {
         super(props);
-        
+
         this.CertificateTable = this.CertificateTable.bind(this);
         // this.DemandTable = this.DemandTable.bind(this);
         // this.Admin = this.Admin.bind(this);
@@ -68,7 +67,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                     this.props.configuration).sync()
                 )
             )
-            
+
         );
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) =>
@@ -90,7 +89,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         );
 
         const demandContractEventHandler: General.ContractEventHandler = new General.ContractEventHandler(
-            conf.blockchainProperties.demandLogicInstance,
+            conf.blockchainProperties.marketLogicInstance,
             currentBlockNumber
         );
 
@@ -198,7 +197,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         const conf: General.Configuration.Entity = await this.initConf((this.props as any).match.params.contractAddress);
         this.props.actions.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
-        
+
         const currentUser: EwUser.User = accounts.length > 0 ?
             await (new EwUser.User(accounts[0], conf as any)).sync() :
             null;
@@ -207,7 +206,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             .forEach((p: EwAsset.ProducingAsset.Entity) =>
                 this.props.actions.producingAssetCreatedOrUpdated(p)
             );
-    
+
         (await EwAsset.ConsumingAsset.getAllAssets(conf))
             .forEach((c: EwAsset.ConsumingAsset.Entity) =>
                 this.props.actions.consumingAssetCreatedOrUpdated(c)
@@ -221,7 +220,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             .forEach((certificate: OriginIssuer.Certificate.Entity) =>
                 this.props.actions.certificateCreatedOrUpdated(certificate)
             );
-            
+
         this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
 
 
@@ -283,9 +282,9 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/assets/'} component={this.Asset} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/certificates'} component={this.CertificateTable} />
                 {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
-                
+
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} />
-          
+
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/about'} component={About} /> */}
                 <Route path={'/' + (this.props as any).match.params.contractAddress} component={this.Asset} />
