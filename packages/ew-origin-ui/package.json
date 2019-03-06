@@ -41,7 +41,7 @@
     "@types/underscore": "^1.8.5",
     "@types/web3": "1.0.14",
     "ew-asset-registry-lib": "0.0.99",
-    "ew-market-lib": "v0.3.0",
+    "ew-market-lib": "v0.3.1",
     "ew-origin-lib": "0.0.99",
     "ew-user-registry-lib": "0.0.99",
     "ew-utils-general-lib": "0.3.1",
