@@ -1,3 +1,19 @@
+// Copyright 2018 Energy Web Foundation
+// This file is part of the Origin Application brought to you by the Energy Web Foundation,
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
+// incorporated in Zug, Switzerland.
+//
+// The Origin Application is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// This is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY and without an implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
+//
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+
 import * as React from 'react';
 import {
   Button,
@@ -12,7 +28,7 @@ import renderHTML  from 'react-render-html';
 import moment from 'moment';
 import action from '../../../assets/action.svg';
 import { PeriodToSeconds } from '../../components/DemandTable';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 
 import './toggle.scss';
 import './Table.scss';
@@ -38,7 +54,7 @@ export class Table extends React.Component<any, any> {
     this.state = {
       ...toggles,
       inputs: {enabledProperties: [false, false, false, false, false, false, false, false, false, false]},
-      totalEnergy: 0, 
+      totalEnergy: 0,
       date: new Date()
     };
   }
@@ -61,7 +77,7 @@ export class Table extends React.Component<any, any> {
 
   handleDropdown = (key, itemInput) => {
     return ((value) => {
-      
+
       const { data } = this.props;
       if (itemInput.labelKey) {
         const items = data[itemInput.data];
@@ -82,7 +98,7 @@ export class Table extends React.Component<any, any> {
   }
 
   handleToggle = (key, index) => {
-  
+
     const stateKey = 'toggle_' + key;
     return (() => {
       const { state } = this;
@@ -95,7 +111,7 @@ export class Table extends React.Component<any, any> {
 
         this.setState({ inputs: newInputs});
       }
-      
+
     }).bind(this);
   }
 
@@ -105,7 +121,7 @@ export class Table extends React.Component<any, any> {
       const newInputs = {...this.state.inputs};
       newInputs[key] = e.target.value;
 
-      this.setState({ 
+      this.setState({
         inputs: newInputs
       },            this.saveTotalEnergy);
     }).bind(this);
@@ -120,30 +136,30 @@ export class Table extends React.Component<any, any> {
       const newInputs = {...this.state.inputs};
       newInputs[key] = moment(date).unix();
 
-      this.setState({ 
+      this.setState({
         inputs: newInputs
       },            this.saveTotalEnergy);
     }).bind(this);
   }
 
   saveTotalEnergy() {
-    this.setState({ 
+    this.setState({
 
-      totalEnergy: this.calculateTotalEnergy() 
+      totalEnergy: this.calculateTotalEnergy()
     });
   }
 
   calculateTotalEnergy(): number {
 
-    if (this.state.inputs.targetWhPerPeriod 
+    if (this.state.inputs.targetWhPerPeriod
       && this.state.inputs.timeframe
       && this.state.inputs.startTime
       && this.state.inputs.endTime) {
 
         //TODO Timeframe?
-    
-        return (Math.ceil((parseInt(this.state.inputs.endTime, 10) - parseInt(this.state.inputs.startTime, 10)) / PeriodToSeconds[1])) * parseInt(this.state.inputs.targetWhPerPeriod, 10); 
-        
+
+        return (Math.ceil((parseInt(this.state.inputs.endTime, 10) - parseInt(this.state.inputs.startTime, 10)) / PeriodToSeconds[1])) * parseInt(this.state.inputs.targetWhPerPeriod, 10);
+
     } else {
       return 0;
     }
@@ -180,7 +196,7 @@ export class Table extends React.Component<any, any> {
               <tr>
                 {
                   header.map((item) => {
-                
+
                     return (<th  style={ item.style || {}} key={item.key}>{renderHTML(renderText(item.label))}</th>);
                   })
                 }
@@ -191,7 +207,7 @@ export class Table extends React.Component<any, any> {
               <tr>
                 {
                   footer.map((item) => {
-              
+
                     return (<td colSpan={item.colspan || 1} className={`Total ${item.hide ? 'Hide' : 'Show'}`} style={item.style || {}} key={item.key}>{renderHTML(renderText(item.label || total[item.key].toFixed(3)))}</td>);
                   })
                 }
@@ -201,12 +217,12 @@ export class Table extends React.Component<any, any> {
             <tbody>
               {
                 data.map((row, rowIndex) => {
-                  
+
                   return (
                     <tr key={row[0]}>
                       {
                         header.map((item, colIndex) => {
-                         
+
                           return (
                             <td key={item.key} style={{ ...item.style, ...item.styleBody } || {}} className={`${item.styleBody.opacity ? 'Active' : ''}`}>{renderHTML(renderText(row[colIndex]))}</td>
                           );
@@ -249,7 +265,7 @@ export class Table extends React.Component<any, any> {
                       ?
                       <tr key={item.key} className={`${item.footer ? 'TableFooter' : 'TableHeader'}`}>
                         <th colSpan={5} className='Actions'>
-                        
+
                           {
                             item.footer
                               ?
@@ -262,7 +278,7 @@ export class Table extends React.Component<any, any> {
                       :
                       item.data.map((item) => (
                         <tr key={item.key}>
-                        
+
                           <td className='Actions Label'>{renderHTML(renderText(item.label.length ? item.label + ':' : ''))}</td>
                           <td className={`Actions ToggleLabel ${state['toggle_' + item.key] || (item.toggle.ref && state['toggle_' + item.toggle.ref]) ? 'Disabled' : 'Active'}`}>{renderHTML(renderText(item.toggle.hide ? '' : item.toggle.label))}</td>
                           <td className={`Actions Toggle`}>

@@ -1,7 +1,6 @@
 // Copyright 2018 Energy Web Foundation
-//
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -13,13 +12,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import { APIKEY } from './GoogleApiKey';
 import './DetailView.scss';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 export interface MapDetailProps {
     asset: EwAsset.Asset.Entity;
 }
@@ -29,10 +28,10 @@ const MyMapComponent = withScriptjs(withGoogleMap((props: any) =>
 
 
         defaultZoom={13}
-        defaultCenter={{ lat: parseFloat(props.asset.gpsLatitude), lng: parseFloat(props.asset.gpsLongitude) }}
+        defaultCenter={{ lat: parseFloat(props.asset.offChainProperties.gpsLatitude), lng: parseFloat(props.asset.offChainProperties.gpsLongitude) }}
     >
         <Marker
-            position={{ lat: parseFloat(props.asset.gpsLatitude), lng: parseFloat(props.asset.gpsLongitude) }} />
+            position={{ lat: parseFloat(props.asset.offChainProperties.gpsLatitude), lng: parseFloat(props.asset.offChainProperties.gpsLongitude) }} />
     </GoogleMap>
 ))
 

@@ -1,7 +1,6 @@
 // Copyright 2018 Energy Web Foundation
-//
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
+// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
 // incorporated in Zug, Switzerland.
 //
 // The Origin Application is free software: you can redistribute it and/or modify
@@ -13,14 +12,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
+// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react'
 import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib'; 
+import * as EwAsset from 'ew-asset-registry-lib';
 import { OrganizationFilter } from './OrganizationFilter';
 import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
 import FadeIn from 'react-fade-in';
@@ -103,9 +102,9 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         this.setState({
             detailViewForAssetId: id
         });
-    
+
       }
-    
+
       render(): JSX.Element {
         if (this.state.detailViewForAssetId !== null) {
             return <Redirect push to={'/' + this.props.baseUrl + '/assets/consuming_detail_view/' + this.state.detailViewForAssetId} />;
@@ -137,7 +136,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
 
         const filteredEnrichedAssetData = this.state.enrichedConsumingAssetData
-            .filter((enrichedConsumingAssetData: EnrichedConsumingAssetData) => 
+            .filter((enrichedConsumingAssetData: EnrichedConsumingAssetData) =>
 
                 !this.props.switchedToOrganization ||
                 enrichedConsumingAssetData.consumingAsset.owner.address === this.props.currentUser.id
@@ -158,23 +157,23 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
                 consumingAsset.id,
                 enrichedConsumingAssetData.organizationName,
                 consumingAsset.offChainProperties.city + ', ' + consumingAsset.offChainProperties.country,
-                consumingAsset.offChainProperties.capacityWh ? 
+                consumingAsset.offChainProperties.capacityWh ?
                 (consumingAsset.offChainProperties.capacityWh / 1000).toFixed(3) : '-',
                 (consumingAsset.lastSmartMeterReadWh / 1000).toFixed(3),
                 (consumingAsset.certificatesUsedForWh / 1000).toFixed(3)
             ];
         });
 
-      
+
 
         return <div className='ConsumptionWrapper'>
-            <Table 
+            <Table
                 header={TableHeader}
                 footer={TableFooter}
                 actions={true}
                 operationClicked={this.operationClicked}
                 data={data}
-                operations={operations} 
+                operations={operations}
             />
         </div>;
 
