@@ -94,7 +94,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
         );
 
         Promise.all(promieses).then((enrichedCertificateData) => {
-           
+
             this.setState({
                 enrichedCertificateData: enrichedCertificateData
             });
@@ -263,7 +263,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
 
         const data = filteredEnrichedCertificateData.map((enrichedCertificateData: EnrichedCertificateData) => {
             const certificate = enrichedCertificateData.certificate;
-       
+
             return [
                 certificate.id,
                 enrichedCertificateData.certificateOwner.organization,
@@ -273,10 +273,12 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
                 ' ' + enrichedCertificateData.producingAsset.offChainProperties.gpsLatitude,
                 enrichedCertificateData.producingAsset.offChainProperties.city +
                 ', ' + enrichedCertificateData.producingAsset.offChainProperties.country,
-                enrichedCertificateData.producingAsset.offChainProperties.capacityWh / 1000,
                 EwAsset.ProducingAsset.Compliance[enrichedCertificateData.producingAsset.offChainProperties.complianceRegistry],
                 new Date(enrichedCertificateData.certificate.creationTime * 1000).toDateString(),
-                
+
+                enrichedCertificateData.producingAsset.offChainProperties.capacityWh / 1000,
+
+
                 (enrichedCertificateData.certificate.powerInW / 1000).toFixed(3)
             ];
 
@@ -292,7 +294,7 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             // generateHeader('Max Capacity (kWh)', defaultWidth, true),
             generateHeader('Compliance'),
             generateHeader('Certification Date'),
-       
+
             generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
         ];
 
@@ -305,15 +307,15 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
         }
 
         return <div className='ForSaleWrapper'>
-            <Table 
-                operationClicked={this.operationClicked} 
-                classNames={['bare-font', 'bare-padding']} 
-                header={TableHeader} 
-                footer={TableFooter} 
-                actions={true} 
-                data={data} 
-                actionWidth={55.39} 
-                operations={operations} 
+            <Table
+                operationClicked={this.operationClicked}
+                classNames={['bare-font', 'bare-padding']}
+                header={TableHeader}
+                footer={TableFooter}
+                actions={true}
+                data={data}
+                actionWidth={55.39}
+                operations={operations}
             />
         </div>;
 
