@@ -28,14 +28,15 @@ export interface RegisterSupplyAction {
 }
 
 export enum RegisterSupplyActionType {
-    RegisterSupply = 'REGISTER_SUPPLY',
+    RegisterSupply = 'REGISTER_SUPPLY'
 }
 
 export const supplyDataToEntity = (supplyData: SupplyData): EwMarket.Supply.Entity => {
     const supply = new EwMarket.Supply.Entity(supplyData.id, null);
     supply.offChainProperties = supplyData.offChainProperties;
-    Object.keys(supplyData.onChainProperties)
-        .forEach((key: string) => supply[key] = supplyData.onChainProperties[key]);
-    return supply;
+    Object.keys(supplyData.onChainProperties).forEach(
+        (key: string) => (supply[key] = supplyData.onChainProperties[key])
+    );
 
+    return supply;
 };

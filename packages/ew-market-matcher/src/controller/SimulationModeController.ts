@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Controller} from './Controller';
-import { SimulationDataSource} from '../schema-defs/MatcherConf';
+import { Controller } from './Controller';
+import { SimulationDataSource } from '../schema-defs/MatcherConf';
 import { logger } from '../Logger';
 import * as fs from 'fs';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
@@ -28,7 +28,6 @@ import * as EwMarket from 'ew-market-lib';
 import * as EwGeneral from 'ew-utils-general-lib';
 
 export class SimulationModeController extends Controller {
-
     private simulationFlow: SimulationFlowDef.SimulationFlow;
     private matches: SimulationFlowDef.Match[];
     private date: number;
@@ -42,16 +41,25 @@ export class SimulationModeController extends Controller {
         this.producingAssets = [];
         this.date = 0;
 
-        this.simulationFlow = JSON.parse(fs.readFileSync(simulationDataSource.simulationFlowFile, 'utf-8'));
-        Controller.validateJson(this.simulationFlow, SimulationDescriptionSchema, 'Simulation flow');
+        this.simulationFlow = JSON.parse(
+            fs.readFileSync(simulationDataSource.simulationFlowFile, 'utf-8')
+        );
+        Controller.validateJson(
+            this.simulationFlow,
+            SimulationDescriptionSchema,
+            'Simulation flow'
+        );
         this.matcherAddress = this.simulationFlow.matcherAddress;
-        logger.verbose('Loaded simulation flow file containing ' + this.simulationFlow.flow.length + ' actions');
+        logger.verbose(
+            'Loaded simulation flow file containing ' + this.simulationFlow.flow.length + ' actions'
+        );
         logger.verbose('Set matcher address to ' + this.matcherAddress);
     }
 
     async registerProducingAsset(newAsset: EwAsset.ProducingAsset.Entity) {
-        const producingAsset = this.producingAssets
-            .find((asset: EwAsset.ProducingAsset.Entity) => asset.id === newAsset.id);
+        const producingAsset = this.producingAssets.find(
+            (asset: EwAsset.ProducingAsset.Entity) => asset.id === newAsset.id
+        );
 
         if (!producingAsset) {
             this.producingAssets.push(newAsset);
@@ -60,8 +68,9 @@ export class SimulationModeController extends Controller {
     }
 
     async registerDemand(newDemand: EwMarket.Demand.Entity) {
-        const foundDemand = this.demands
-            .find((demand: EwMarket.Demand.Entity) => demand.id === newDemand.id);
+        const foundDemand = this.demands.find(
+            (demand: EwMarket.Demand.Entity) => demand.id === newDemand.id
+        );
 
         if (!foundDemand) {
             this.demands.push(newDemand);
@@ -70,8 +79,9 @@ export class SimulationModeController extends Controller {
     }
 
     async registerSupply(newSupply: EwMarket.Supply.Entity) {
-        const foundSupply = this.supplies
-            .find((supply: EwMarket.Supply.Entity) => supply.id === newSupply.id);
+        const foundSupply = this.supplies.find(
+            (supply: EwMarket.Supply.Entity) => supply.id === newSupply.id
+        );
 
         if (!foundSupply) {
             this.supplies.push(newSupply);
@@ -84,10 +94,17 @@ export class SimulationModeController extends Controller {
     }
 
     async registerAgreement(newAggreement: EwMarket.Agreement.Entity) {
-        const allowed = newAggreement.allowedMatcher
-            .find((matcherAddress: string) => matcherAddress === this.matcherAddress) ? true : false;
+        const allowed = newAggreement.allowedMatcher.find(
+            (matcherAddress: string) => matcherAddress === this.matcherAddress
+        )
+            ? true
+            : false;
         if (allowed) {
-            if (!this.agreements.find((aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id)) {
+            if (
+                !this.agreements.find(
+                    (aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id
+                )
+            ) {
                 this.agreements.push(newAggreement);
                 logger.verbose('Registered new agreement #' + newAggreement.id);
             }
@@ -105,7 +122,9 @@ export class SimulationModeController extends Controller {
     }
 
     getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity {
-        return this.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId);
+        return this.producingAssets.find(
+            (asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId
+        );
     }
 
     getDemand(demandId: string): EwMarket.Demand.Entity {
@@ -143,7 +162,7 @@ export class SimulationModeController extends Controller {
             dateData.day,
             dateData.hour,
             dateData.minute,
-            dateData.second,
+            dateData.second
         );
         this.date = new Date(theDate).getTime() / 1000;
         logger.verbose('Set simulation time to ' + new Date(this.date * 1000).toUTCString());
@@ -153,22 +172,23 @@ export class SimulationModeController extends Controller {
         this.matches.push({
             certificateId: certificate.id,
             agreementId: '-1',
-            powerInW: certificate.powerInW,
-
+            powerInW: certificate.powerInW
         });
     }
 
-    async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
-
+    async matchAggrement(
+        certificate: EwOrigin.Certificate.Entity,
+        agreement: EwMarket.Agreement.Entity
+    ) {
         this.matches.push({
             agreementId: agreement.id,
             certificateId: certificate.id,
-            powerInW: certificate.powerInW,
+            powerInW: certificate.powerInW
         });
 
         const currentPeriod = await this.getCurrentPeriod(
             agreement.offChainProperties.start,
-            agreement.offChainProperties.timeframe,
+            agreement.offChainProperties.timeframe
         );
 
         if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
@@ -179,15 +199,18 @@ export class SimulationModeController extends Controller {
         }
 
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
-        logger.debug(`Set Wh for Agreement ${agreement.id} in period ${agreement.matcherOffChainProperties.currentPeriod} to ${agreement.matcherOffChainProperties.currentWh} Wh`);
+        logger.debug(
+            `Set Wh for Agreement ${agreement.id} in period ${
+                agreement.matcherOffChainProperties.currentPeriod
+            } to ${agreement.matcherOffChainProperties.currentWh} Wh`
+        );
     }
 
     async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
-
         throw new Error('Method not implemented.');
     }
 
-    async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame) : Promise<number> {
+    async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number> {
         switch (timeFrame) {
             case EwGeneral.TimeFrame.yearly:
                 return Math.floor((this.date - startDate) / (365 * 24 * 60 * 60));
@@ -203,32 +226,36 @@ export class SimulationModeController extends Controller {
     }
 
     async start() {
-
         for (const action of this.simulationFlow.flow) {
             await SimulationFlowHandler.handleFlowAction(this, action as any);
         }
 
         this.compareWithExpectedResults();
-
     }
 
     compareExpectedResultField(
         expectedMatch: SimulationFlowDef.Match,
         match: SimulationFlowDef.Match,
         key: string,
-        expectedMatchIndex: number,
+        expectedMatchIndex: number
     ): boolean {
-
         if (expectedMatch[key] !== match[key]) {
-            logger.debug(`Match #${expectedMatchIndex}: ${key} (${match[key]}) does not equal expected ${key} (${expectedMatch[key]}) ${LogSymbols.error}`);
+            logger.debug(
+                `Match #${expectedMatchIndex}: ${key} (${
+                    match[key]
+                }) does not equal expected ${key} (${expectedMatch[key]}) ${LogSymbols.error}`
+            );
+
             return false;
         } else {
             return true;
         }
     }
 
-    async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChild: number): Promise<void> {
-
+    async splitCertificate(
+        certificate: EwOrigin.Certificate.Entity,
+        whForFirstChild: number
+    ): Promise<void> {
         if (certificate.powerInW < whForFirstChild) {
             throw Error('whForFirstChild can not be smaller than powerInWh');
         }
@@ -238,26 +265,27 @@ export class SimulationModeController extends Controller {
 
         const firstChild = Object.assign(
             new EwOrigin.Certificate.Entity(null, certificate.configuration),
-            certificate,
+            certificate
         );
         firstChild.id = firstChildId.toString();
         firstChild.powerInW = whForFirstChild;
 
         const secondChild = Object.assign(
             new EwOrigin.Certificate.Entity(null, certificate.configuration),
-            certificate,
+            certificate
         );
         secondChild.id = secondChildId.toString();
         secondChild.powerInW = certificate.powerInW - firstChild.powerInW;
 
         certificate.children = [firstChildId, secondChildId];
-        logger.debug('Splitting certificate #' + certificate.id + ' with ' + certificate.powerInW + 'wh');
+        logger.debug(
+            'Splitting certificate #' + certificate.id + ' with ' + certificate.powerInW + 'wh'
+        );
         logger.debug('First child #' + firstChild.id + ' with ' + firstChild.powerInW + 'wh');
         logger.debug('Second child #' + secondChild.id + ' with ' + secondChild.powerInW + 'wh');
 
         await this.matchTrigger(firstChild);
         await this.matchTrigger(secondChild);
-
     }
 
     compareWithExpectedResults() {
@@ -268,17 +296,24 @@ export class SimulationModeController extends Controller {
         this.matches.forEach((match: SimulationFlowDef.Match, index: number) => {
             if (this.simulationFlow.expectedResult[index]) {
                 const expectedResult = this.simulationFlow.expectedResult[index];
-                const matchFits = this.compareExpectedResultField(expectedResult, match, 'powerInW', index)
-                    && this.compareExpectedResultField(expectedResult, match, 'certificateId', index)
-                    && this.compareExpectedResultField(expectedResult, match, 'agreementId', index);
+                const matchFits =
+                    this.compareExpectedResultField(expectedResult, match, 'powerInW', index) &&
+                    this.compareExpectedResultField(
+                        expectedResult,
+                        match,
+                        'certificateId',
+                        index
+                    ) &&
+                    this.compareExpectedResultField(expectedResult, match, 'agreementId', index);
 
                 if (matchFits) {
                     logger.verbose('Match #' + index + ' as expected ' + LogSymbols.success);
                 } else {
                     expectedResultFits = false;
-                    logger.verbose('Match #' + index + ' is different than expected ' + LogSymbols.error);
+                    logger.verbose(
+                        'Match #' + index + ' is different than expected ' + LogSymbols.error
+                    );
                 }
-
             } else {
                 expectedResultFits = false;
                 logger.verbose('Match was not expected ' + LogSymbols.error);
@@ -291,10 +326,13 @@ export class SimulationModeController extends Controller {
         }
 
         if (expectedResultFits) {
-            logger.info('Complete match between expected results and actual results '  + LogSymbols.success);
+            logger.info(
+                'Complete match between expected results and actual results ' + LogSymbols.success
+            );
         } else {
-            logger.info('At least one result does not macht an expected result ' + LogSymbols.error);
+            logger.info(
+                'At least one result does not macht an expected result ' + LogSymbols.error
+            );
         }
     }
-
 }

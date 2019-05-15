@@ -25,40 +25,44 @@ import * as ConfSchema from '../schemas/conf.schema.json';
 import * as RuleSchema from '../schemas/rule.schema.json';
 import { BlockchainModeController } from './controller/BlockchainModeController';
 import { createBlockchainConf } from './controller/BlockchainConnection';
-import { logger } from './Logger'
+import { logger } from './Logger';
 
 const buildMatcher = (
-    matcherSpecification: SchemaDefs.BlockchainMatcherSpecification | SchemaDefs.SimulationMatcherSpecification,
+    matcherSpecification:
+        | SchemaDefs.BlockchainMatcherSpecification
+        | SchemaDefs.SimulationMatcherSpecification
 ): Matcher => {
     switch (matcherSpecification.type) {
-
         case SchemaDefs.MatcherType.ConfigurableReference:
-            const matcherConfig = JSON.parse(fs.readFileSync(matcherSpecification.matcherConfigFile, 'utf-8'));
+            const matcherConfig = JSON.parse(
+                fs.readFileSync(matcherSpecification.matcherConfigFile, 'utf-8')
+            );
             Controller.validateJson(matcherConfig, RuleSchema, 'Rule file');
+
             return new ConfigurableReferenceMatcher(matcherConfig);
 
         case SchemaDefs.MatcherType.Simple:
             return new SimpleMatcher();
 
-        default :
+        default:
             throw new Error('Unknown matcher type.');
     }
 };
 
-
-
 const buildController = async (
-    dataSource: SchemaDefs.BlockchainDataSource | SchemaDefs.SimulationDataSource,
+    dataSource: SchemaDefs.BlockchainDataSource | SchemaDefs.SimulationDataSource
 ): Promise<Controller> => {
     logger.verbose('Data source type is ' + dataSource.type);
     switch (dataSource.type) {
-
         case SchemaDefs.BlockchainDataSourceType.Blockchain:
             const blockchainDataSource = dataSource as SchemaDefs.BlockchainDataSource;
-            return new BlockchainModeController(
-                await createBlockchainConf(blockchainDataSource, blockchainDataSource.matcherAccount),
-                blockchainDataSource.matcherAccount.address,
 
+            return new BlockchainModeController(
+                await createBlockchainConf(
+                    blockchainDataSource,
+                    blockchainDataSource.matcherAccount
+                ),
+                blockchainDataSource.matcherAccount.address
             );
 
         case SchemaDefs.SimulationDataSourceType.Simulation:
@@ -70,11 +74,10 @@ const buildController = async (
 };
 
 export const startMatcher = async (_config: SchemaDefs.MatcherConf) => {
-
     logger.info('Matcher application started.');
 
-    if(_config){
-        const conf: SchemaDefs.MatcherConf = _config
+    if (_config) {
+        const conf: SchemaDefs.MatcherConf = _config;
         try {
             Controller.validateJson(conf, ConfSchema, 'Config file');
             const matcher = buildMatcher(conf.matcherSpecification);
@@ -85,9 +88,7 @@ export const startMatcher = async (_config: SchemaDefs.MatcherConf) => {
         } catch (e) {
             logger.error(e.message);
         }
+    } else {
+        throw new Error('No config specified');
     }
-    else {
-        throw new Error('No config specified')
-    }
-
 };

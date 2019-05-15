@@ -29,15 +29,16 @@ export interface RegisterAgreementAction {
 }
 
 export enum RegisterAgreementActionType {
-    RegisterAgreement = 'REGISTER_AGREEMENT',
+    RegisterAgreement = 'REGISTER_AGREEMENT'
 }
 
 export const agreementDataToEntity = (agreementData: AgreementData): EwMarket.Agreement.Entity => {
     const agreement = new EwMarket.Agreement.Entity(agreementData.id, null);
     agreement.offChainProperties = agreementData.offChainProperties;
     agreement.matcherOffChainProperties = agreementData.matcherOffChainProperties;
-    Object.keys(agreementData.onChainProperties)
-        .forEach((key: string) => agreement[key] = agreementData.onChainProperties[key]);
-    return agreement;
+    Object.keys(agreementData.onChainProperties).forEach(
+        (key: string) => (agreement[key] = agreementData.onChainProperties[key])
+    );
 
+    return agreement;
 };

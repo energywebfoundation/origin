@@ -22,17 +22,15 @@ import * as Certificate from './RegisterCertificate';
 import * as Demand from './RegisterDemand';
 import * as Supply from './RegisterSupply';
 
-
-
 interface SimulationFlow {
     flow: Array<
-        Sleep.SleepAction |
-        Agreement.RegisterAgreementAction |
-        Date.SetDateAction |
-        ProducingAsset.RegisterProducingAssetAction |
-        Certificate.RegisterCertificateAction |
-        Supply.RegisterSupplyAction |
-        Demand.RegisterDemandAction
+        | Sleep.SleepAction
+        | Agreement.RegisterAgreementAction
+        | Date.SetDateAction
+        | ProducingAsset.RegisterProducingAssetAction
+        | Certificate.RegisterCertificateAction
+        | Supply.RegisterSupplyAction
+        | Demand.RegisterDemandAction
     >;
     matcherAddress: string;
     expectedResult: Match[];
@@ -58,5 +56,5 @@ export {
     Supply,
     Match,
     IdentifiableEntity,
-    SimulationFlow,
+    SimulationFlow
 };

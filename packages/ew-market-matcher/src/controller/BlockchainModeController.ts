@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Controller} from './Controller';
-import { SimulationDataSource} from '../schema-defs/MatcherConf';
+import { Controller } from './Controller';
+import { SimulationDataSource } from '../schema-defs/MatcherConf';
 import { logger } from '../Logger';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow';
@@ -27,7 +27,6 @@ import * as EwGeneral from 'ew-utils-general-lib';
 import { initMatchingManager, initEventHandling } from './BlockchainConnection';
 
 export class BlockchainModeController extends Controller {
-
     private simulationFlow: SimulationFlowDef.SimulationFlow;
     private matches: SimulationFlowDef.Match[];
     private date: number;
@@ -48,8 +47,9 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerProducingAsset(newAsset: EwAsset.ProducingAsset.Entity) {
-        const producingAsset = this.producingAssets
-            .find((asset: EwAsset.ProducingAsset.Entity) => asset.id === newAsset.id);
+        const producingAsset = this.producingAssets.find(
+            (asset: EwAsset.ProducingAsset.Entity) => asset.id === newAsset.id
+        );
 
         if (!producingAsset) {
             this.producingAssets.push(newAsset);
@@ -58,8 +58,9 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerDemand(newDemand: EwMarket.Demand.Entity) {
-        const foundDemand = this.demands
-            .find((demand: EwMarket.Demand.Entity) => demand.id === newDemand.id);
+        const foundDemand = this.demands.find(
+            (demand: EwMarket.Demand.Entity) => demand.id === newDemand.id
+        );
 
         if (!foundDemand) {
             this.demands.push(newDemand);
@@ -68,8 +69,9 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerSupply(newSupply: EwMarket.Supply.Entity) {
-        const foundSupply = this.supplies
-            .find((supply: EwMarket.Supply.Entity) => supply.id === newSupply.id);
+        const foundSupply = this.supplies.find(
+            (supply: EwMarket.Supply.Entity) => supply.id === newSupply.id
+        );
 
         if (!foundSupply) {
             this.supplies.push(newSupply);
@@ -82,12 +84,19 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerAgreement(newAggreement: EwMarket.Agreement.Entity) {
-        const allowed = newAggreement.allowedMatcher
-            .find((matcherAddress: string) =>
-                matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()) ? true : false;
+        const allowed = newAggreement.allowedMatcher.find(
+            (matcherAddress: string) =>
+                matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()
+        )
+            ? true
+            : false;
 
         if (allowed) {
-            if (!this.agreements.find((aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id)) {
+            if (
+                !this.agreements.find(
+                    (aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id
+                )
+            ) {
                 this.agreements.push(newAggreement);
                 logger.verbose('Registered new agreement #' + newAggreement.id);
             }
@@ -105,7 +114,9 @@ export class BlockchainModeController extends Controller {
     }
 
     getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity {
-        return this.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId);
+        return this.producingAssets.find(
+            (asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId
+        );
     }
 
     getDemand(demandId: string): EwMarket.Demand.Entity {
@@ -143,7 +154,7 @@ export class BlockchainModeController extends Controller {
             dateData.day,
             dateData.hour,
             dateData.minute,
-            dateData.second,
+            dateData.second
         );
         this.date = new Date(theDate).getTime() / 1000;
         logger.verbose('Set simulation time to ' + new Date(this.date * 1000).toUTCString());
@@ -153,15 +164,22 @@ export class BlockchainModeController extends Controller {
         // TODO
     }
 
-    async matchAggrement(certificate: EwOrigin.Certificate.Entity, agreement: EwMarket.Agreement.Entity) {
+    async matchAggrement(
+        certificate: EwOrigin.Certificate.Entity,
+        agreement: EwMarket.Agreement.Entity
+    ) {
         const demand = this.getDemand(agreement.demandId.toString());
-        logger.debug('Transfering certificate to ' + demand.demandOwner
-            + ' with account ' + this.conf.blockchainProperties.activeUser.address);
+        logger.debug(
+            'Transfering certificate to ' +
+                demand.demandOwner +
+                ' with account ' +
+                this.conf.blockchainProperties.activeUser.address
+        );
         await certificate.transferFrom(demand.demandOwner);
 
         const currentPeriod = await this.getCurrentPeriod(
             agreement.offChainProperties.start,
-            agreement.offChainProperties.timeframe,
+            agreement.offChainProperties.timeframe
         );
 
         if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
@@ -172,29 +190,33 @@ export class BlockchainModeController extends Controller {
         }
 
         logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
-
     }
 
-    async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChild: number): Promise<void> {
-
+    async splitCertificate(
+        certificate: EwOrigin.Certificate.Entity,
+        whForFirstChild: number
+    ): Promise<void> {
         const result = await certificate.splitCertificate(whForFirstChild);
-        certificate = await certificate.sync()
+        certificate = await certificate.sync();
 
-        const childCertificate1 = await new EwOrigin.Certificate.Entity(certificate.children["0"], this.conf).sync()
-        const childCertificate2 = await new EwOrigin.Certificate.Entity(certificate.children["1"], this.conf).sync()
-        await this.matchTrigger(childCertificate1)
-        await this.matchTrigger(childCertificate2)
-
+        const childCertificate1 = await new EwOrigin.Certificate.Entity(
+            certificate.children['0'],
+            this.conf
+        ).sync();
+        const childCertificate2 = await new EwOrigin.Certificate.Entity(
+            certificate.children['1'],
+            this.conf
+        ).sync();
+        await this.matchTrigger(childCertificate1);
+        await this.matchTrigger(childCertificate2);
     }
 
     async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
-
         logger.info('Matched certificate #' + certificate.id + ' to demand #' + demand.id);
-
     }
 
-    async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame) : Promise<number> {
-        this.date = (await this.conf.blockchainProperties.web3.eth.getBlock('latest')).timestamp
+    async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number> {
+        this.date = (await this.conf.blockchainProperties.web3.eth.getBlock('latest')).timestamp;
         switch (timeFrame) {
             case EwGeneral.TimeFrame.yearly:
                 return Math.floor((this.date - startDate) / (365 * 24 * 60 * 60));
@@ -210,10 +232,7 @@ export class BlockchainModeController extends Controller {
     }
 
     async start() {
-
         await initMatchingManager(this, this.conf);
         initEventHandling(this, this.conf);
-
     }
-
 }

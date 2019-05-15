@@ -15,19 +15,18 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 export enum RuleFormat {
-    SimpleHierarchy = 'SIMPLE_HIERARCHY',
+    SimpleHierarchy = 'SIMPLE_HIERARCHY'
 }
 
 export enum MappingFormat {
     Direct = 'DIRECT',
-    Defined = 'DEFINED',
+    Defined = 'DEFINED'
 }
 
 export enum DefaultValueType {
     Infinite = 'INFINITE',
     MinusInfinite = 'MINUS_INFINITE',
-    Set = 'SET',
-
+    Set = 'SET'
 }
 
 export interface RuleConf {

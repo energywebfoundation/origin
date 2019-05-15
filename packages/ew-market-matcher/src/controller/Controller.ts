@@ -25,7 +25,6 @@ import * as LogSymbols from 'log-symbols';
 import * as EwGeneral from 'ew-utils-general-lib';
 
 export abstract class Controller {
-
     static validateJson(input: any, schema: any, description: string) {
         const validationResult = Jsonschema.validate(input, schema);
         if (validationResult.valid) {
@@ -33,14 +32,14 @@ export abstract class Controller {
         } else {
             const error = new Error();
             const errorAt = validationResult.errors
-                .map((validationError: Jsonschema.ValidationError, index: number) =>
-                    `\n${index}. error at ${JSON.stringify(validationError.instance)}`)
-                .reduce((previous: string, current: string) => previous += current);
+                .map(
+                    (validationError: Jsonschema.ValidationError, index: number) =>
+                        `\n${index}. error at ${JSON.stringify(validationError.instance)}`
+                )
+                .reduce((previous: string, current: string) => (previous += current));
             error.message = `${description} file is invalid ${LogSymbols.error} ${errorAt}`;
             throw error;
-
         }
-
     }
 
     agreements: EwMarket.Agreement.Entity[];
@@ -62,19 +61,21 @@ export abstract class Controller {
 
     abstract async matchAggrement(
         certificate: EwOrigin.Certificate.Entity,
-        aggreement: EwMarket.Agreement.Entity,
+        aggreement: EwMarket.Agreement.Entity
     ): Promise<void>;
 
     abstract async matchDemand(
         certificate: EwOrigin.Certificate.Entity,
-        demand: EwMarket.Demand.Entity,
+        demand: EwMarket.Demand.Entity
     ): Promise<void>;
 
     abstract async getCurrentDataSourceTime(): Promise<number>;
 
     abstract start(): void;
 
-    abstract async handleUnmatchedCertificate(certificate: EwOrigin.Certificate.Entity): Promise<void>;
+    abstract async handleUnmatchedCertificate(
+        certificate: EwOrigin.Certificate.Entity
+    ): Promise<void>;
 
     abstract async registerProducingAsset(newAsset: EwAsset.ProducingAsset.Entity): Promise<void>;
 
@@ -98,9 +99,15 @@ export abstract class Controller {
 
     abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
 
-    abstract async splitCertificate(certificate: EwOrigin.Certificate.Entity, whForFirstChils: number): Promise<void>;
+    abstract async splitCertificate(
+        certificate: EwOrigin.Certificate.Entity,
+        whForFirstChils: number
+    ): Promise<void>;
 
-    abstract async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number>;
+    abstract async getCurrentPeriod(
+        startDate: number,
+        timeFrame: EwGeneral.TimeFrame
+    ): Promise<number>;
 
     abstract getAgreement(agreementId: string): EwMarket.Agreement.Entity;
 

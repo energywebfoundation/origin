@@ -17,12 +17,7 @@
 import * as Winston from 'winston';
 
 export const logger = Winston.createLogger({
-  format: Winston.format.combine(
-    Winston.format.colorize(),
-    Winston.format.simple(),
-  ),
-  level: 'debug',
-  transports: [
-    new Winston.transports.Console({ level: 'silly' }),
-  ],
+    format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
+    level: 'debug',
+    transports: [new Winston.transports.Console({ level: 'silly' })]
 });

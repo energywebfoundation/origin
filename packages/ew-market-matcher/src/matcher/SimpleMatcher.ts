@@ -22,11 +22,9 @@ import * as EwGeneral from 'ew-utils-general-lib';
 import { logger } from '../Logger';
 
 export class SimpleMatcher extends Matcher {
-
     static SLEEP(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
-
 
     constructor() {
         super();
@@ -38,26 +36,26 @@ export class SimpleMatcher extends Matcher {
 
     async findMatchingAgreement(
         certificate: EwOrigin.Certificate.Entity,
-        agreements: EwMarket.Agreement.Entity[],
-    ): Promise<{split: boolean, agreement: EwMarket.Agreement.Entity}> {
+        agreements: EwMarket.Agreement.Entity[]
+    ): Promise<{ split: boolean; agreement: EwMarket.Agreement.Entity }> {
         throw new Error('Method not implemented.');
     }
 
     async findMatchingDemand(
         certificate: EwOrigin.Certificate.Entity,
-        demands: EwMarket.Demand.Entity[],
+        demands: EwMarket.Demand.Entity[]
     ): Promise<EwMarket.Demand.Entity> {
         throw new Error('Method not implemented.');
     }
 
     matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity[]) {
         throw new Error('Method not implemented.');
-
     }
 
-    matchAgreement(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
+    matchAgreement(
+        certificate: EwOrigin.Certificate.Entity,
+        agreements: EwMarket.Agreement.Entity[]
+    ) {
         throw new Error('Method not implemented.');
-
     }
-
 }

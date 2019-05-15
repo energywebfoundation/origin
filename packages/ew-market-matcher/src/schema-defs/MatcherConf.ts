@@ -1,30 +1,28 @@
-import { EthAccount } from "ew-utils-general-lib/dist/js/blockchain-facade/Configuration";
+import { EthAccount } from 'ew-utils-general-lib/dist/js/blockchain-facade/Configuration';
 
 export enum BlockchainDataSourceType {
-
-    Blockchain = 'BLOCKCHAIN',
+    Blockchain = 'BLOCKCHAIN'
 }
 
 export enum SimulationDataSourceType {
-    Simulation = 'SIMULATION',
+    Simulation = 'SIMULATION'
 }
 
 export enum MatcherType {
     Simple = 'SIMPLE',
-    ConfigurableReference = 'CONFIGURABLE_REFERENCE',
+    ConfigurableReference = 'CONFIGURABLE_REFERENCE'
 }
 
-export interface BlockchainDataSource  {
+export interface BlockchainDataSource {
     type: BlockchainDataSourceType;
     web3Url: string;
     offChainDataSourceUrl: string;
     marketContractLookupAddress: string;
     originContractLookupAddress: string;
     matcherAccount: EthAccount;
-
 }
 
-export interface SimulationDataSource  {
+export interface SimulationDataSource {
     type: SimulationDataSourceType;
     simulationFlowFile: string;
 }

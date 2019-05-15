@@ -18,7 +18,6 @@
 // import {  Demand, TimeFrame, Currency, ProducingAsset, ProducingAssetProperties, Asset, AssetProperties, AssetType, Compliance, Certificate, BlockchainProperties, CertificateLogicTruffleBuild, AssetProducingLogicTruffleBuild, AssetConsumingLogicTruffleBuild, DemandLogicTruffleBuild } from 'ewf-coo'
 // import { PrivateKeys } from './test-accounts'
 
-
 // const Web3 import 'web3'
 
 // const getInstanceFromTruffleBuild = (truffleBuild: any, web3: Web3Type) => {
@@ -31,7 +30,6 @@
 //     const assetAdminAccount = await web3.eth.accounts.wallet.add(PrivateKeys[2])
 //     const topAdminAccount = await web3.eth.accounts.wallet.add(PrivateKeys[0])
 //     const agreementAdminAccount = await web3.eth.accounts.wallet.add("0xa05ddf7fe8302d117b516c0e401468a30c39a3e467ad3720381cf89500f0854b")
-
 
 //     const blockchainProperties: BlockchainProperties = {
 //         web3: web3,
@@ -85,7 +83,6 @@
 //         otherGreenAttributes: 'none',
 //         typeOfPublicSupport: 'none',
 
-
 //         // Location
 //         country: 'DE',
 //         region: 'Saxony',
@@ -107,7 +104,6 @@
 //     //console.log((await Certificate.GET_ALL_CERTIFICATES_OWNED_BY('0x84A2C086Ffa013D06285cdD303556EC9bE5a1Ff7', blockchainProperties)).length)
 
 //     console.log(await Certificate.GET_ALL_CERTIFICATES_WITH_ESCROW('0x343854A430653571B4De6bF2b8C475F828036C30', blockchainProperties))
-
 
 // }
 

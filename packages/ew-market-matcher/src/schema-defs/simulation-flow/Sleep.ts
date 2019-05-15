@@ -20,7 +20,7 @@ export interface SleepAction {
 }
 
 export enum SleepActionType {
-    Sleep = 'SLEE',
+    Sleep = 'SLEE'
 }
 
 export interface SleepData {

@@ -20,7 +20,7 @@ export interface SetDateAction {
 }
 
 export enum SetDateActionType {
-    SetDate = 'SET_DATE',
+    SetDate = 'SET_DATE'
 }
 
 export interface DateData {

@@ -16,15 +16,16 @@
 
 import * as fs from 'fs';
 import * as SchemaDefs from './schema-defs/MatcherConf';
-import { startMatcher } from './exports'
-import { logger } from './Logger'
+import { startMatcher } from './exports';
+import { logger } from './Logger';
 
 const main = async () => {
-
-    if(process.argv[2]) {
-        const conf:SchemaDefs.MatcherConf = JSON.parse(fs.readFileSync(process.argv[2], 'utf8').toString())
-        await startMatcher(conf)
+    if (process.argv[2]) {
+        const conf: SchemaDefs.MatcherConf = JSON.parse(
+            fs.readFileSync(process.argv[2], 'utf8').toString()
+        );
+        await startMatcher(conf);
     }
 };
 
-main()
+main();

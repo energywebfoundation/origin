@@ -43,7 +43,6 @@
 //     return new web3.eth.Contract(truffleBuild.abi, address)
 // }
 
-
 // const initDevices = async (topAdminAccount, blockchainProperties) => {
 
 //     currenctCreatedDevice++
@@ -53,12 +52,9 @@
 
 //     const possibleRegion = ["Saxony", "Berlin", "Hessen", "Maine", "Texas", "California", "Quebec", "Ontario", "British Columbia"]
 
-
-
 //     for (let i = 0; i < 3; i++) {
 //         const assetOwner = possibleOwner[i]
 //         const assetCountry = possibleCountry[i]
-
 
 //         for (let j = 0; j < 3; j++) {
 //             const assetRegion = possibleRegion[i * 3 + j]
@@ -146,7 +142,6 @@
 //     if (mod7 != 0) enabledProps[6] = true
 //     if (mod8 != 0) enabledProps[7] = true
 
-
 //     const demandProps = {
 //         enabledProperties: enabledProps,
 //         originator: possibleOwner[currentCreatedDemand % 3],
@@ -184,10 +179,7 @@
 
 // }
 
-
-
 // describe('Test Matcher', async () => {
-
 
 //     let topAdminAccount
 //     let blockchainProperties: BlockchainProperties
@@ -299,7 +291,6 @@
 //                    }
 //                }
 //                if (matchingPossible) console.log("should have matched")
-
 
 //            }).timeout(5000);
 
