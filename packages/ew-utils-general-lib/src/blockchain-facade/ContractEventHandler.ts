@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as Configuration from "./Configuration";
+import * as Configuration from './Configuration';
 export class ContractEventHandler {
   lastBlockChecked: number;
   unhandledEvents: any[];
@@ -36,7 +36,7 @@ export class ContractEventHandler {
     const blockNumber = await configuration.blockchainProperties.web3.eth.getBlockNumber();
     const events = await this.contractInstance
       .getWeb3Contract()
-      .getPastEvents("allEvents", {
+      .getPastEvents('allEvents', {
         fromBlock: this.lastBlockChecked + 1,
         toBlock: blockNumber
       });

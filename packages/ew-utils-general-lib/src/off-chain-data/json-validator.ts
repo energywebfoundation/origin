@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as Jsonschema from "jsonschema";
-import * as Winston from "winston";
+import * as Jsonschema from 'jsonschema';
+import * as Winston from 'winston';
 
 export const validateJson = (
   input: any,

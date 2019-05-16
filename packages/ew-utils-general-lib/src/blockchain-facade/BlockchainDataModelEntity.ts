@@ -14,10 +14,10 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as Configuration from "./Configuration";
-import { PreciseProofs } from "ew-utils-general-precise-proofs";
-import axios from "axios";
-import { validateJson } from "../off-chain-data/json-validator";
+import * as Configuration from './Configuration';
+import { PreciseProofs } from 'ew-utils-general-precise-proofs';
+import axios from 'axios';
+import { validateJson } from '../off-chain-data/json-validator';
 
 export interface OffChainProperties {
   rootHash: string;
@@ -65,14 +65,15 @@ export abstract class Entity {
 
     if (this.configuration.offChainDataSource) {
       if (onChainProperties.url) {
-        throw new Error("URL should not be set");
+        throw new Error('URL should not be set');
       }
       if (onChainProperties.propertiesDocumentHash) {
-        throw new Error("Hash should not be set");
+        throw new Error('Hash should not be set');
       }
 
       return this.generateAndAddProofs(offChainProperties, debug);
     }
+
     return null;
   }
 
@@ -119,8 +120,10 @@ export abstract class Entity {
           `Got off chain properties from ${axiosurl}/${this.id}`
         );
       }
+
       return offChainProperties;
     }
+
     return null;
   }
 
@@ -136,9 +139,9 @@ export abstract class Entity {
       );
 
       if (debug) {
-        console.log("\nDEBUG verifyOffChainProperties");
-        console.log("rootHash: " + rootHash);
-        console.log("properties: " + properties);
+        console.log('\nDEBUG verifyOffChainProperties');
+        console.log('rootHash: ' + rootHash);
+        console.log('properties: ' + properties);
       }
 
       if (theProof) {
@@ -187,7 +190,7 @@ export abstract class Entity {
     };
 
     if (debug) {
-      console.log("\nDEBUG generateAndAddProofs");
+      console.log('\nDEBUG generateAndAddProofs');
       console.log(result);
       PreciseProofs.printTree(merkleTree, leafs, schema);
     }

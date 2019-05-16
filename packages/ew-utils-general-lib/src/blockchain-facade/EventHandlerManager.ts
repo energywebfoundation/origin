@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { ContractEventHandler } from "./ContractEventHandler";
-import * as Configuration from "./Configuration";
+import { ContractEventHandler } from './ContractEventHandler';
+import * as Configuration from './Configuration';
 
 export class EventHandlerManager {
   private contractEventHandlers: ContractEventHandler[];

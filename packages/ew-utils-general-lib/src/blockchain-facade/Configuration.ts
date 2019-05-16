@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as Winston from "winston";
-import Web3 from "web3";
+import * as Winston from 'winston';
+import Web3 from 'web3';
 
 export interface Entity {
   blockchainProperties: BlockchainProperties;
