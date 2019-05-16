@@ -16,8 +16,8 @@
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "lint": "tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
+    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "solium -d contracts && tslint --fix 'src/**/*{.ts,.tsx}'",
     "prepublish": "npm run compile && npm run build-ts"
   },
   "repository": {
@@ -44,6 +44,7 @@
     "@types/node": "9.6.28",
     "@types/web3": "1.0.14",
     "chai": "4.1.2",
+    "ethlint": "^1.2.4",
     "ganache-cli": "6.1.8",
     "lint-staged": "8.1.7",
     "mocha": "5.2.0",
