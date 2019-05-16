@@ -17,22 +17,31 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import { UserLogic, UserContractLookup, migrateUserRegistryContracts, UserContractLookupJSON, UserLogicJSON} from 'ew-user-registry-contracts';
+import {
+    UserLogic,
+    UserContractLookup,
+    UserContractLookupJSON,
+    UserLogicJSON
+} from '..';
+import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { UserProperties, UserPropertiesOffChain, User } from '../blockchain-facade/Users/User';
 import { Configuration } from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
 import Web3 from 'web3';
 
 describe('UserLogic Facade', () => {
-    const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
+    const configFile = JSON.parse(
+        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+    );
 
     const web3 = new Web3(configFile.develop.web3);
 
     let userContractLookup: UserContractLookup;
     let userRegistry: UserLogic;
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
-        configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
+        ? configFile.develop.deployKey
+        : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
@@ -44,34 +53,28 @@ describe('UserLogic Facade', () => {
     const user2 = web3.eth.accounts.privateKeyToAccount(user2PK).address;
 
     it('should deploy the contracts', async () => {
+        const contracts = (await migrateUserRegistryContracts(
+            web3 as any,
+            privateKeyDeployment
+        )) as any;
 
-        const contracts = await migrateUserRegistryContracts((web3 as any), privateKeyDeployment) as any;
-
-        userContractLookup = new UserContractLookup((web3 as any), contracts.UserContractLookup);
-        userRegistry = new UserLogic((web3 as any), await userContractLookup.userRegistry());
-
-
+        userContractLookup = new UserContractLookup(web3 as any, contracts.UserContractLookup);
+        userRegistry = new UserLogic(web3 as any, await userContractLookup.userRegistry());
 
         // const bytecodeUserContractLookup = await web3.eth.getCode(contracts.UserContractLookup);
         // assert.isTrue(bytecodeUserContractLookup.length > 0);
         // assert.equal(bytecodeUserContractLookup, '0x' + UserContractLookupJSON.bytecode);
-
-
-
-
     });
 
     it('should create a user', async () => {
-
         const userProps: UserProperties = {
             id: user1,
             active: true,
             roles: 27,
-            organization: 'Testorganization',
+            organization: 'Testorganization'
         };
 
         const userPropsOffchain: UserPropertiesOffChain = {
-
             firstName: 'John',
             surname: 'Doe',
             street: 'Evergreen Terrace',
@@ -79,8 +82,7 @@ describe('UserLogic Facade', () => {
             zip: '14789',
             city: 'Shelbyville',
             country: 'US',
-            state: 'FL',
-
+            state: 'FL'
         };
 
         conf = {
@@ -88,11 +90,11 @@ describe('UserLogic Facade', () => {
                 web3,
                 userLogicInstance: userRegistry,
                 activeUser: {
-                    address: accountDeployment, privateKey: privateKeyDeployment,
-                },
+                    address: accountDeployment,
+                    privateKey: privateKeyDeployment
+                }
             },
-            logger,
-
+            logger
         };
 
         const user = await User.CREATE_USER(userProps, userPropsOffchain, conf);
@@ -100,17 +102,19 @@ describe('UserLogic Facade', () => {
         delete user.configuration;
         delete user.proofs;
 
-        assert.deepEqual({
-            id: user1,
-            organization: 'Testorganization',
-            roles: 27,
-            active: true,
-        } as any,        user);
+        assert.deepEqual(
+            {
+                id: user1,
+                organization: 'Testorganization',
+                roles: 27,
+                active: true
+            } as any,
+            user
+        );
     });
 
     it('should return correct user', async () => {
-
-        const user = await (new User(user1, conf)).sync();
+        const user = await new User(user1, conf).sync();
 
         delete user.configuration;
 
@@ -119,10 +123,10 @@ describe('UserLogic Facade', () => {
             proofs: [],
             organization: 'Testorganization',
             roles: 27,
-            active: true,
+            active: true
         });
 
-        const emptyAccount = await (new User(user2, conf)).sync();
+        const emptyAccount = await new User(user2, conf).sync();
         delete emptyAccount.configuration;
 
         assert.deepEqual(emptyAccount, {
@@ -130,10 +134,10 @@ describe('UserLogic Facade', () => {
             proofs: [],
             organization: '',
             roles: 0,
-            active: false,
+            active: false
         });
 
-        const adminAccount = await (new User(accountDeployment, conf)).sync();
+        const adminAccount = await new User(accountDeployment, conf).sync();
         delete adminAccount.configuration;
 
         assert.deepEqual(adminAccount, {
@@ -141,9 +145,7 @@ describe('UserLogic Facade', () => {
             proofs: [],
             organization: '',
             roles: 1,
-            active: false,
+            active: false
         });
-
     });
-
 });

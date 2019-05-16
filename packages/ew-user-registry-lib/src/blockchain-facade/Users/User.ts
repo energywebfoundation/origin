@@ -24,7 +24,6 @@ export interface UserProperties {
 }
 
 export interface UserPropertiesOffChain {
-
     firstName: string;
     surname: string;
     street: string;
@@ -33,39 +32,38 @@ export interface UserPropertiesOffChain {
     city: string;
     country: string;
     state: string;
-
 }
 
 export class User extends BlockchainDataModelEntity.Entity implements UserProperties {
 
-    id: string;
-
     static async CREATE_USER(
         userProperties: UserProperties,
         userPropertiesOffChain: UserPropertiesOffChain,
-        configuration: Configuration.Entity,
+        configuration: Configuration.Entity
     ): Promise<User> {
-
         await configuration.blockchainProperties.userLogicInstance.setUser(
             userProperties.id,
             userProperties.organization,
             {
                 from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            });
+                privateKey: configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
         await configuration.blockchainProperties.userLogicInstance.setRoles(
             userProperties.id,
             userProperties.roles,
             {
                 from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            });
+                privateKey: configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
         if (configuration.logger) {
             configuration.logger.info(`User ${userProperties.id} synced`);
         }
 
-        return (new User(userProperties.id, configuration)).sync();
+        return new User(userProperties.id, configuration).sync();
     }
+    id: string;
 
     organization: string;
     roles: number;
@@ -78,13 +76,14 @@ export class User extends BlockchainDataModelEntity.Entity implements UserProper
     }
 
     getUrl(): string {
-      return "http://localhost:3000/"
+        return 'http://localhost:3000/';
     }
 
     async sync(): Promise<User> {
         if (this.id) {
-
-            const userData = await this.configuration.blockchainProperties.userLogicInstance.getFullUser(this.id);
+            const userData = await this.configuration.blockchainProperties.userLogicInstance.getFullUser(
+                this.id
+            );
 
             this.organization = userData._organization;
             this.roles = parseInt(userData._roles, 10);
@@ -92,10 +91,8 @@ export class User extends BlockchainDataModelEntity.Entity implements UserProper
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`User ${this.id} synced`);
             }
-
-
         }
+
         return this;
     }
-
 }

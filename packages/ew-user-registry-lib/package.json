@@ -1,6 +1,6 @@
 {
   "name": "ew-user-registry-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/js/index.js",
   "types": "dist/js/index.d.ts",
@@ -8,18 +8,17 @@
     "test": "test"
   },
   "scripts": {
-    "parity-docker": "docker pull docker.slock.it/build-images/parity:v1.11.8-tobalaba && docker run --name 'parityDocker' -p 8180:8180 -p 8545:8545 -p 8546:8546 -p 8090:8091 docker.slock.it/build-images/parity:v1.11.8-tobalaba",
-    "dockerstop": "docker kill 'parityDocker' && docker container rm 'parityDocker'",
-    "start-test-backend": "node node_modules/ewf-coo-test-backend/index.js",
-    "test": "npm run build-ts && mocha dist/js/test/ --timeout 60000",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
-    "testlight": "npm run build-ts && mocha build/ts/test/",
-    "debug-light-test": "npm run build-ts && mocha --inspect-brk build/ts/test/",
-    "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
-    "deploy-contracts": "node dist/js/src/utils/deployment/startDeploy",
-    "prepare-wrapping": "rm -rf dist/ts/wrappedContracts && mkdir -p dist/ts/wrappedContracts && node wrapping.js",
+    "compile": "truffle compile",
+    "deploy-contracts": "truffle migrate",
     "prebuild-ts": "rm -rf dist/js",
-    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc"
+    "build-ts": "rm -rf dist/js && tsc",
+    "test": "npm run build-ts && mocha dist/js/src/test/ --timeout 60000",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "lint": "tslint 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
+    "prepublish": "npm run compile && npm run build-ts"
   },
   "repository": {
     "type": "git",
@@ -32,21 +31,37 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-user-registry-lib#readme",
   "dependencies": {
-    "ew-user-registry-contracts": "0.0.99",
-    "ew-utils-general-lib": "0.0.100",
+    "ew-utils-deployment": "^0.3.0",
+    "ew-utils-general-lib": "1.0.1",
+    "typedarray-to-buffer": "3.1.5",
     "web3": "1.0.0-beta.37",
-    "winston": "3.2.1"
+    "winston": "3.2.1",
+    "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^2.2.48",
-    "@types/node": "^9.6.28",
+    "@types/chai": "4.1.4",
+    "@types/mocha": "2.2.48",
+    "@types/node": "9.6.28",
     "@types/web3": "1.0.14",
-    "chai": "^4.1.2",
-    "ganache-cli": "^6.1.8",
-    "mocha": "^5.2.0",
-    "typescript": "^2.9.2",
-    "typescript-json-schema": "^0.31.0"
+    "chai": "4.1.2",
+    "ganache-cli": "6.1.8",
+    "lint-staged": "8.1.7",
+    "mocha": "5.2.0",
+    "prettier": "1.17.1",
+    "truffle": "^5.0.18",
+    "tslint": "5.16.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-lines-between-class-members": "1.3.1",
+    "tslint-sonarts": "1.9.0",
+    "typescript": "2.9.2",
+    "typescript-json-schema": "0.31.0"
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "tslint --fix",
+      "prettier --write --config ./.prettierrc --config-precedence file-override",
+      "git add"
+    ]
+  }
 }

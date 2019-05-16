@@ -12,12 +12,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as Winston from 'winston';
+pragma solidity ^0.5.0;
 
-export const logger = Winston.createLogger({
-    level: 'debug',
-    format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-    transports: [new Winston.transports.Console({ level: 'silly' })]
-});
+/// @title this interface defines functions for defining functions of the user-logic in order to call them in different contracts
+interface UserContractLookupInterface {
+
+    /// @notice function that returns the address of the UserLogic.sol contracts registered in the UserContractLookup-contract
+    /// @return the address of the UserLogic-contract
+    function userRegistry() external view returns (address);
+
+}
