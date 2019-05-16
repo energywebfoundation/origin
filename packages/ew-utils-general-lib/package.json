@@ -14,7 +14,8 @@
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'"
+    "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
+    "prepublish": "npm run compile"
   },
   "repository": {
     "type": "git",
