@@ -17,7 +17,7 @@
     "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "solium -d contracts && tslint --fix 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
     "prepublish": "npm run compile && npm run build-ts"
   },
   "repository": {
