@@ -1,27 +1,27 @@
 export enum TimeFrame {
-    yearly,
-    monthly,
-    daily,
-    hourly,
+  yearly,
+  monthly,
+  daily,
+  hourly
 }
 
 export enum Currency {
-    Euro,
-    USD,
-    SingaporeDollar,
-    Ether,
+  Euro,
+  USD,
+  SingaporeDollar,
+  Ether
 }
 
 export enum AssetType {
-    Wind,
-    Solar,
-    RunRiverHydro,
-    BiomassGas,
+  Wind,
+  Solar,
+  RunRiverHydro,
+  BiomassGas
 }
 
 export enum Compliance {
-    none,
-    IREC,
-    EEC,
-    TIGR,
+  none,
+  IREC,
+  EEC,
+  TIGR
 }

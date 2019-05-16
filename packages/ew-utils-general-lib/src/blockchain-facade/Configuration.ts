@@ -14,32 +14,31 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as Winston from 'winston';
-import Web3 from 'web3';
+import * as Winston from "winston";
+import Web3 from "web3";
 
 export interface Entity {
-    blockchainProperties: BlockchainProperties;
-    offChainDataSource?: OffChainDataSource;
-    logger: Winston.Logger;
-
+  blockchainProperties: BlockchainProperties;
+  offChainDataSource?: OffChainDataSource;
+  logger: Winston.Logger;
 }
 
 export interface OffChainDataSource {
-    baseUrl: string;
+  baseUrl: string;
 }
 export interface BlockchainProperties {
-    web3: Web3;
-    marketLogicInstance?: any;
-    producingAssetLogicInstance?: any;
-    consumingAssetLogicInstance?: any;
-    certificateLogicInstance?: any;
-    userLogicInstance?: any;
-    activeUser?: EthAccount;
-    matcherAccount?: EthAccount;
-    privateKey?: string;
+  web3: Web3;
+  marketLogicInstance?: any;
+  producingAssetLogicInstance?: any;
+  consumingAssetLogicInstance?: any;
+  certificateLogicInstance?: any;
+  userLogicInstance?: any;
+  activeUser?: EthAccount;
+  matcherAccount?: EthAccount;
+  privateKey?: string;
 }
 
 export interface EthAccount {
-    address: string;
-    privateKey?: string;
+  address: string;
+  privateKey?: string;
 }
