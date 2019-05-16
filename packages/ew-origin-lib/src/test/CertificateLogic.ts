@@ -17,18 +17,34 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import { migrateUserRegistryContracts, UserLogic, UserContractLookup } from 'ew-user-registry-contracts';
-import { migrateAssetRegistryContracts, AssetContractLookup, AssetProducingRegistryLogic } from 'ew-asset-registry-contracts';
-import { OriginContractLookup, CertificateLogic, migrateCertificateRegistryContracts } from 'ew-origin-contracts';
+import {
+    migrateUserRegistryContracts,
+    UserLogic,
+    UserContractLookup
+} from 'ew-user-registry-contracts';
+import {
+    migrateAssetRegistryContracts,
+    AssetContractLookup,
+    AssetProducingRegistryLogic
+} from 'ew-asset-registry-contracts';
+import {
+    OriginContractLookup,
+    CertificateLogic,
+    migrateCertificateRegistryContracts
+} from 'ew-origin-contracts';
 import * as Certificate from '..';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
 import * as Asset from 'ew-asset-registry-lib';
-import { deployERC20TestToken, Erc20TestToken, TestReceiver, deployERC721TestReceiver } from 'ew-erc-test-contracts';
+import {
+    deployERC20TestToken,
+    Erc20TestToken,
+    TestReceiver,
+    deployERC721TestReceiver
+} from 'ew-erc-test-contracts';
 import Web3 from 'web3';
 
 describe('CertificateLogic-Facade', () => {
-
     let userLogic: UserLogic;
     let certificateLogic: CertificateLogic;
     let assetRegistry: AssetProducingRegistryLogic;
@@ -39,12 +55,15 @@ describe('CertificateLogic-Facade', () => {
     let erc20TestToken: Erc20TestToken;
     let testReceiver: TestReceiver;
 
-    const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
+    const configFile = JSON.parse(
+        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+    );
 
     const web3 = new Web3(configFile.develop.web3);
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
-        configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
+        ? configFile.develop.deployKey
+        : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
@@ -68,9 +87,8 @@ describe('CertificateLogic-Facade', () => {
     let blockceationTime;
 
     it('should deploy the contracts', async () => {
-
-        const userContracts = await migrateUserRegistryContracts((web3 as any), privateKeyDeployment);
-        userLogic = new UserLogic((web3 as any), (userContracts as any).UserLogic);
+        const userContracts = await migrateUserRegistryContracts(web3 as any, privateKeyDeployment);
+        userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
@@ -78,58 +96,66 @@ describe('CertificateLogic-Facade', () => {
 
         const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
-        userRegistryContract = new UserContractLookup((web3 as any), userContractLookupAddr);
-        const assetContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr, privateKeyDeployment);
+        userRegistryContract = new UserContractLookup(web3 as any, userContractLookupAddr);
+        const assetContracts = await migrateAssetRegistryContracts(
+            web3 as any,
+            userContractLookupAddr,
+            privateKeyDeployment
+        );
 
         const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
         const assetProducingAddr = (assetContracts as any).AssetProducingRegistryLogic;
-        const originContracts = await migrateCertificateRegistryContracts((web3 as any), assetRegistryLookupAddr, privateKeyDeployment);
+        const originContracts = await migrateCertificateRegistryContracts(
+            web3 as any,
+            assetRegistryLookupAddr,
+            privateKeyDeployment
+        );
 
-        assetRegistryContract = new AssetContractLookup((web3 as any), assetRegistryLookupAddr);
-        assetRegistry = new AssetProducingRegistryLogic((web3 as any), assetProducingAddr);
+        assetRegistryContract = new AssetContractLookup(web3 as any, assetRegistryLookupAddr);
+        assetRegistry = new AssetProducingRegistryLogic(web3 as any, assetProducingAddr);
 
-        Object.keys(originContracts).forEach(async (key) => {
-
+        Object.keys(originContracts).forEach(async key => {
             if (key.includes('OriginContractLookup')) {
-                originRegistryContract = new OriginContractLookup((web3 as any), originContracts[key]);
+                originRegistryContract = new OriginContractLookup(
+                    web3 as any,
+                    originContracts[key]
+                );
             }
 
             if (key.includes('CertificateLogic')) {
-                certificateLogic = new CertificateLogic((web3 as any), originContracts[key]);
+                certificateLogic = new CertificateLogic(web3 as any, originContracts[key]);
             }
-
         });
 
         conf = {
             blockchainProperties: {
                 activeUser: {
-                    address: accountDeployment, privateKey: privateKeyDeployment,
+                    address: accountDeployment,
+                    privateKey: privateKeyDeployment
                 },
                 producingAssetLogicInstance: assetRegistry,
                 userLogicInstance: userLogic,
                 certificateLogicInstance: certificateLogic,
-                web3,
+                web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030',
+                baseUrl: 'http://localhost:3030'
             },
-            logger,
+            logger
         };
-
     });
 
     it('should return correct balances', async () => {
-
         assert.equal(await Certificate.Certificate.getCertificateListLength(conf), 0);
         assert.equal(await Certificate.TradableEntity.getBalance(accountAssetOwner, conf), 0);
         assert.equal(await Certificate.TradableEntity.getBalance(accountTrader, conf), 0);
-
     });
 
     it('should onboard tests-users', async () => {
-
-        await userLogic.setUser(accountAssetOwner, 'assetOwner', { privateKey: privateKeyDeployment });
+        await userLogic.setUser(accountAssetOwner, 'assetOwner', {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
 
@@ -138,7 +164,6 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should onboard a new asset', async () => {
-
         const assetProps: Asset.ProducingAsset.OnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: accountAssetOwner },
@@ -148,7 +173,7 @@ describe('CertificateLogic-Facade', () => {
             matcher: [{ address: matcherAccount }],
             propertiesDocumentHash: null,
             url: null,
-            maxOwnerChanges: 3,
+            maxOwnerChanges: 3
         };
 
         const assetPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
@@ -165,7 +190,7 @@ describe('CertificateLogic-Facade', () => {
             assetType: Asset.ProducingAsset.Type.Wind,
             complianceRegistry: Asset.ProducingAsset.Compliance.EEC,
             otherGreenAttributes: '',
-            typeOfPublicSupport: '',
+            typeOfPublicSupport: ''
         };
 
         assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 0);
@@ -174,28 +199,25 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should set marketcontract in asset + log a new meterreading ', async () => {
-
-        await assetRegistry.setMarketLookupContract(0, originRegistryContract.web3Contract._address,
-                                                    { privateKey: assetOwnerPK });
-
-        await assetRegistry.saveSmartMeterRead(
+        await assetRegistry.setMarketLookupContract(
             0,
-            100,
-            'lastSmartMeterReadFileHash',
-            { privateKey: assetSmartmeterPK });
+            originRegistryContract.web3Contract._address,
+            { privateKey: assetOwnerPK }
+        );
 
+        await assetRegistry.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', {
+            privateKey: assetSmartmeterPK
+        });
     });
 
     it('should return correct balances', async () => {
         assert.equal(await Certificate.Certificate.getCertificateListLength(conf), 1);
         assert.equal(await Certificate.TradableEntity.getBalance(accountAssetOwner, conf), 1);
         assert.equal(await Certificate.TradableEntity.getBalance(accountTrader, conf), 0);
-
     });
 
     it('should return certificate', async () => {
-
-        const certificate = await (new Certificate.Certificate.Entity('0', conf).sync());
+        const certificate = await new Certificate.Certificate.Entity('0', conf).sync();
         assert.equal(await certificate.getOwner(), accountAssetOwner);
 
         delete certificate.configuration;
@@ -218,21 +240,20 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '0',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should transfer certificate', async () => {
-
         conf.blockchainProperties.activeUser = {
-            address: accountAssetOwner, privateKey: assetOwnerPK,
+            address: accountAssetOwner,
+            privateKey: assetOwnerPK
         };
-        let certificate = await (new Certificate.Certificate.Entity('0', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('0', conf).sync();
 
         await certificate.transferFrom(accountTrader);
 
-        certificate = await (new Certificate.Certificate.Entity('0', conf).sync());
+        certificate = await new Certificate.Certificate.Entity('0', conf).sync();
 
         assert.equal(await Certificate.Certificate.getCertificateListLength(conf), 1);
         assert.equal(await Certificate.TradableEntity.getBalance(accountAssetOwner, conf), 0);
@@ -257,19 +278,15 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '0',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '1'
         });
-
     });
 
     it('create a new certificate (#1)', async () => {
-
-        await assetRegistry.saveSmartMeterRead(
-            0,
-            200,
-            'lastSmartMeterReadFileHash',
-            { privateKey: assetSmartmeterPK });
-        const certificate = await (new Certificate.Certificate.Entity('1', conf).sync());
+        await assetRegistry.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', {
+            privateKey: assetSmartmeterPK
+        });
+        const certificate = await new Certificate.Certificate.Entity('1', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -291,13 +308,12 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '1',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should approve', async () => {
-        let certificate = await (new Certificate.Certificate.Entity('1', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('1', conf).sync();
 
         assert.equal(await certificate.getApproved(), '0x0000000000000000000000000000000000000000');
 
@@ -323,13 +339,12 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '1',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
     });
 
     it('should set erc20-token and price for a certificate', async () => {
-
-        let certificate = await (new Certificate.Certificate.Entity('1', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('1', conf).sync();
 
         await certificate.setOnChainDirectPurchasePrice(100);
 
@@ -342,7 +357,7 @@ describe('CertificateLogic-Facade', () => {
         const erc20TestAddress = (await deployERC20TestToken(
             web3,
             accountTrader,
-            privateKeyDeployment,
+            privateKeyDeployment
         )).contractAddress;
 
         erc20TestToken = new Erc20TestToken(web3, erc20TestAddress);
@@ -371,38 +386,34 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '1',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should fail buying a certificate when not enough erc20 tokens approved', async () => {
-
         conf.blockchainProperties.activeUser = {
-            address: accountTrader, privateKey: traderPK,
+            address: accountTrader,
+            privateKey: traderPK
         };
 
-        const certificate = await (new Certificate.Certificate.Entity('1', conf).sync());
+        const certificate = await new Certificate.Certificate.Entity('1', conf).sync();
 
         let failed = false;
 
         try {
             await certificate.buyCertificate();
-        }
-        catch (ex) {
+        } catch (ex) {
             failed = true;
             assert.include(ex.message, 'erc20 transfer failed');
         }
 
         assert.isTrue(failed);
-
     });
 
     it('should buying a certificate when enough erc20 tokens are approved', async () => {
-
         await erc20TestToken.approve(accountAssetOwner, 100, { privateKey: traderPK });
 
-        let certificate = await (new Certificate.Certificate.Entity('1', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('1', conf).sync();
 
         await certificate.buyCertificate();
         certificate = await certificate.sync();
@@ -426,19 +437,15 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '1',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '1'
         });
-
     });
 
     it('should create a new certificate (#2)', async () => {
-
-        await assetRegistry.saveSmartMeterRead(
-            0,
-            300,
-            'lastSmartMeterReadFileHash#3',
-            { privateKey: assetSmartmeterPK });
-        const certificate = await (new Certificate.Certificate.Entity('2', conf).sync());
+        await assetRegistry.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', {
+            privateKey: assetSmartmeterPK
+        });
+        const certificate = await new Certificate.Certificate.Entity('2', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -460,18 +467,17 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should split a certificate', async () => {
-
         conf.blockchainProperties.activeUser = {
-            address: accountAssetOwner, privateKey: assetOwnerPK,
+            address: accountAssetOwner,
+            privateKey: assetOwnerPK
         };
 
-        let certificate = await (new Certificate.Certificate.Entity('2', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('2', conf).sync();
 
         await certificate.splitCertificate(60);
 
@@ -495,18 +501,18 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
 
-        const c1 = await (new Certificate.Certificate.Entity('3', conf).sync());
+        const c1 = await new Certificate.Certificate.Entity('3', conf).sync();
         delete c1.configuration;
         delete c1.proofs;
 
-        const c2 = await (new Certificate.Certificate.Entity('4', conf).sync());
+        const c2 = await new Certificate.Certificate.Entity('4', conf).sync();
         delete c2.configuration;
         delete c2.proofs;
 
-        assert.deepEqual((c1) as any, {
+        assert.deepEqual(c1 as any, {
             id: '3',
             initialized: true,
             assetId: '0',
@@ -522,10 +528,10 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
 
-        assert.deepEqual((c2) as any, {
+        assert.deepEqual(c2 as any, {
             id: '4',
             initialized: true,
             assetId: '0',
@@ -541,13 +547,12 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
     });
 
     it('should retire a certificate', async () => {
-
-        let certificate = await (new Certificate.Certificate.Entity('3', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('3', conf).sync();
 
         await certificate.retireCertificate();
 
@@ -559,7 +564,7 @@ describe('CertificateLogic-Facade', () => {
         delete certificate.configuration;
         delete certificate.proofs;
 
-        assert.deepEqual((certificate) as any, {
+        assert.deepEqual(certificate as any, {
             id: '3',
             initialized: true,
             assetId: '0',
@@ -575,18 +580,16 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should fail when trying to remove a non-existing matcher of a certificate', async () => {
-        let certificate = await (new Certificate.Certificate.Entity('4', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('4', conf).sync();
 
         let failed = false;
         try {
             await certificate.removeEscrow(accountTrader);
-
         } catch (ex) {
             assert.include(ex.message, 'escrow address not in array');
             failed = true;
@@ -597,7 +600,7 @@ describe('CertificateLogic-Facade', () => {
         delete certificate.configuration;
         delete certificate.proofs;
 
-        assert.deepEqual((certificate) as any, {
+        assert.deepEqual(certificate as any, {
             id: '4',
             initialized: true,
             assetId: '0',
@@ -613,12 +616,12 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
     });
 
     it('should remove matcher of a certificate', async () => {
-        let certificate = await (new Certificate.Certificate.Entity('4', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('4', conf).sync();
 
         await certificate.removeEscrow(matcherAccount);
 
@@ -626,7 +629,7 @@ describe('CertificateLogic-Facade', () => {
         delete certificate.configuration;
         delete certificate.proofs;
 
-        assert.deepEqual((certificate) as any, {
+        assert.deepEqual(certificate as any, {
             id: '4',
             initialized: true,
             assetId: '0',
@@ -642,12 +645,12 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
     });
 
     it('should add a matcher to a certificate', async () => {
-        let certificate = await (new Certificate.Certificate.Entity('4', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('4', conf).sync();
 
         await certificate.addEscrowForEntity(matcherAccount);
 
@@ -655,7 +658,7 @@ describe('CertificateLogic-Facade', () => {
         delete certificate.configuration;
         delete certificate.proofs;
 
-        assert.deepEqual((certificate) as any, {
+        assert.deepEqual(certificate as any, {
             id: '4',
             initialized: true,
             assetId: '0',
@@ -671,18 +674,15 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '2',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
     });
 
     it('should create a new certificate (#5)', async () => {
-
-        await assetRegistry.saveSmartMeterRead(
-            0,
-            400,
-            'lastSmartMeterReadFileHash#4',
-            { privateKey: assetSmartmeterPK });
-        const certificate = await (new Certificate.Certificate.Entity('5', conf).sync());
+        await assetRegistry.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', {
+            privateKey: assetSmartmeterPK
+        });
+        const certificate = await new Certificate.Certificate.Entity('5', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -704,43 +704,40 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '5',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should fail using safeTransferFrom without calldata to an address', async () => {
-
-        const certificate = await (new Certificate.Certificate.Entity('5', conf).sync());
+        const certificate = await new Certificate.Certificate.Entity('5', conf).sync();
 
         let failed = false;
 
         try {
             await certificate.safeTransferFrom(accountTrader);
-
         } catch (ex) {
-
             assert.include(ex.message, '_to is not a contract');
             failed = true;
         }
 
         assert.isTrue(failed);
-
     });
 
     it('should be able to use safeTransferFrom without calldata', async () => {
-
         const testReceiverAddress = (await deployERC721TestReceiver(
             web3,
             certificateLogic.web3Contract.options.address,
-            privateKeyDeployment)).contractAddress;
+            privateKeyDeployment
+        )).contractAddress;
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
-        await userLogic.setUser(testReceiverAddress, 'testReceiverAddress', { privateKey: privateKeyDeployment });
+        await userLogic.setUser(testReceiverAddress, 'testReceiverAddress', {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(testReceiverAddress, 24, { privateKey: privateKeyDeployment });
-        let certificate = await (new Certificate.Certificate.Entity('5', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('5', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress);
 
@@ -764,19 +761,15 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '5',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '1'
         });
-
     });
 
     it('should create a new certificate (#6)', async () => {
-
-        await assetRegistry.saveSmartMeterRead(
-            0,
-            500,
-            'lastSmartMeterReadFileHash#5',
-            { privateKey: assetSmartmeterPK });
-        const certificate = await (new Certificate.Certificate.Entity('6', conf).sync());
+        await assetRegistry.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', {
+            privateKey: assetSmartmeterPK
+        });
+        const certificate = await new Certificate.Certificate.Entity('6', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -798,43 +791,40 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '6',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            ownerChangerCounter: '0'
         });
-
     });
 
     it('should fail using safeTransferFrom calldata to an address', async () => {
-
-        const certificate = await (new Certificate.Certificate.Entity('6', conf).sync());
+        const certificate = await new Certificate.Certificate.Entity('6', conf).sync();
 
         let failed = false;
 
         try {
             await certificate.safeTransferFrom(accountTrader, '0x001');
-
         } catch (ex) {
-
             assert.include(ex.message, '_to is not a contract');
             failed = true;
         }
 
         assert.isTrue(failed);
-
     });
 
     it('should be able to use safeTransferFrom', async () => {
-
         const testReceiverAddress = (await deployERC721TestReceiver(
             web3,
             certificateLogic.web3Contract.options.address,
-            privateKeyDeployment)).contractAddress;
+            privateKeyDeployment
+        )).contractAddress;
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
-        await userLogic.setUser(testReceiverAddress, 'testReceiverAddress', { privateKey: privateKeyDeployment });
+        await userLogic.setUser(testReceiverAddress, 'testReceiverAddress', {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(testReceiverAddress, 24, { privateKey: privateKeyDeployment });
-        let certificate = await (new Certificate.Certificate.Entity('6', conf).sync());
+        let certificate = await new Certificate.Certificate.Entity('6', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress, '0x001');
 
@@ -858,7 +848,7 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockceationTime,
             parentId: '6',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '1'
         });
 
         let allEvents = await Certificate.Certificate.getAllCertificateEvents(0, conf);
@@ -944,5 +934,4 @@ describe('CertificateLogic-Facade', () => {
         }*/
         //        console.log(allEvents);
     });
-
 });

@@ -19,7 +19,9 @@
     "deploy-contracts": "node dist/js/src/utils/deployment/startDeploy",
     "prepare-wrapping": "rm -rf dist/ts/wrappedContracts && mkdir -p dist/ts/wrappedContracts && node wrapping.js",
     "prebuild-ts": "rm -rf dist/js",
-    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc"
+    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "lint": "./node_modules/.bin/tslint --fix  'src/**/*{.ts,.tsx}'"
   },
   "repository": {
     "type": "git",
@@ -49,8 +51,21 @@
     "chai": "^4.1.2",
     "ew-erc-test-contracts": "0.0.99",
     "ganache-cli": "^6.1.8",
+    "lint-staged": "^8.1.7",
     "mocha": "^5.2.0",
+    "prettier": "^1.17.1",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-lines-between-class-members": "^1.3.1",
+    "tslint-sonarts": "^1.9.0",
     "typescript": "^2.9.2"
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "tslint --fix",
+      "prettier --write --config ./.prettierrc --config-precedence file-override",
+      "git add"
+    ]
+  }
 }
