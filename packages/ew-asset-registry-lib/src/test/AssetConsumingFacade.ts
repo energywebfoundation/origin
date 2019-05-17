@@ -20,8 +20,8 @@ import Web3 from 'web3';
 import 'mocha';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
-import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-contracts';
-import { migrateAssetRegistryContracts, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
+import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-lib';
+import { migrateAssetRegistryContracts, AssetConsumingRegistryLogic } from '..';
 import * as Asset from '..';
 
 describe('AssetConsumingLogic Facade', () => {

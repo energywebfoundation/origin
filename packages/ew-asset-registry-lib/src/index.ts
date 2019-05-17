@@ -21,6 +21,17 @@ import AssetPropertiesOffchainSchema from '../schemas/AssetPropertiesOffChain.sc
 import ProducingAssetPropertiesOffchainSchema from '../schemas/ProducingAssetPropertiesOffChain.schema.json';
 import {createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 
+export { AssetConsumingRegistryLogic } from './wrappedContracts/AssetConsumingRegistryLogic';
+export { AssetProducingRegistryLogic } from './wrappedContracts/AssetProducingRegistryLogic';
+export { AssetContractLookup } from './wrappedContracts/AssetContractLookup';
+export { migrateAssetRegistryContracts } from './utils/migrateContracts';
+
+import AssetConsumingDBJSON from '../build/contracts/AssetConsumingDB.json';
+import AssetConsumingRegistryLogicJSON from '../build/contracts/AssetConsumingRegistryLogic.json';
+import AssetProducingDBJSON from '../build/contracts/AssetProducingDB.json';
+import AssetProducingRegistryLogicJSON from '../build/contracts/AssetProducingRegistryLogic.json';
+import AssetContractLookupJSON from '../build/contracts/AssetContractLookup.json';
+
 export {
     ProducingAsset,
     ConsumingAsset,
@@ -28,4 +39,9 @@ export {
     AssetPropertiesOffchainSchema,
     ProducingAssetPropertiesOffchainSchema,
     createBlockchainProperties,
+    AssetConsumingDBJSON,
+    AssetConsumingRegistryLogicJSON,
+    AssetProducingDBJSON,
+    AssetProducingRegistryLogicJSON,
+    AssetContractLookupJSON
 };

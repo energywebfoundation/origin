@@ -70,8 +70,8 @@ export const getAllAssetsOwnedBy = async (owner: string, configuration: GeneralL
 
 export const createAsset =
     async (assetPropertiesOnChain: OnChainProperties,
-        assetPropertiesOffChain: OffChainProperties,
-        configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
+           assetPropertiesOffChain: OffChainProperties,
+           configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
         const producingAsset = new Entity(null, configuration);
         const offChainStorageProperties =
             producingAsset.prepareEntityCreation(assetPropertiesOnChain, assetPropertiesOffChain, ProducingAssetPropertiesOffchainSchema);
@@ -140,6 +140,7 @@ export class Entity extends Asset.Entity implements OnChainProperties {
             }
 
         }
+
         return this;
     }
 
