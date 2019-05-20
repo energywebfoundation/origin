@@ -47,27 +47,25 @@ describe('UserContractLookup', () => {
 
         let numberContracts = 0;
 
-        Object.keys(contracts).forEach(async key => {
+        for (const key of Object.keys(contracts)) {
             numberContracts += 1;
 
             let tempBytecode;
             if (key.includes('UserContractLookup')) {
                 userContractLookup = new UserContractLookup(web3 as any, contracts[key]);
-                tempBytecode = '0x' + (UserContractLookupJSON as any).deployedBytecode;
-            }
-            if (key.includes('UserLogic')) {
+                tempBytecode = (UserContractLookupJSON as any).deployedBytecode;
+            } else if (key.includes('UserLogic')) {
                 userRegistry = new UserLogic(web3 as any, contracts[key]);
-                tempBytecode = '0x' + (UserLogicJSON as any).deployedBytecode;
-            }
-            if (key.includes('UserDB')) {
+                tempBytecode = (UserLogicJSON as any).deployedBytecode;
+            } else if (key.includes('UserDB')) {
                 userDB = new UserDB(web3 as any, contracts[key]);
-                tempBytecode = '0x' + (UserDBJSON as any).deployedBytecode;
+                tempBytecode = (UserDBJSON as any).deployedBytecode;
             }
             const deployedBytecode = await web3.eth.getCode(contracts[key]);
             assert.isTrue(deployedBytecode.length > 0);
 
             assert.equal(deployedBytecode, tempBytecode);
-        });
+        };
 
         assert.equal(numberContracts, 3);
     });
