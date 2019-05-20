@@ -19,9 +19,7 @@ import * as fs from 'fs';
 import 'mocha';
 import {
     UserLogic,
-    UserContractLookup,
-    UserContractLookupJSON,
-    UserLogicJSON
+    UserContractLookup
 } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { UserProperties, UserPropertiesOffChain, User } from '../blockchain-facade/Users/User';

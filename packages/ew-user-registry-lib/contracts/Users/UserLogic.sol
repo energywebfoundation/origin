@@ -44,7 +44,6 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         require(
             !isRole(RoleManagement.Role.UserAdmin,_user)
             && !isRole(RoleManagement.Role.AssetAdmin,_user)
-            && !isRole(RoleManagement.Role.AgreementAdmin,_user)
             ,"user has an admin role at the moment"
         );
 

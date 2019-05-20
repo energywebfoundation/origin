@@ -20,22 +20,20 @@ import "../../contracts/Interfaces/RolesInterface.sol";
 import "ew-utils-general-lib/contracts/Msc/Owned.sol";
 
 /// @notice contract for managing the rights and roles
-contract RoleManagement is Owned{
+contract RoleManagement is Owned {
 
     /// @notice all possible available roles
     /*
-    no role:        0x0...0000000
+    no role:        0x0...-----0 = 0
     UserAdmin:      0x0...-----1 = 1
     AssetAdmin:     0x0...----1- = 2
-    AgreementAdmin: 0x0...---1-- = 4
-    AssetManager:   0x0...--1--- = 8
-    Tader:          0x0...-1---- = 16
-    Matcher:        0x0...1----- = 32
+    AssetManager:   0x0...---1-- = 4
+    Trader:         0x0...--1--- = 8
+    Matcher:        0x0...-1---- = 16
     */
-    enum Role{
+    enum Role {
         UserAdmin,
         AssetAdmin,
-        AgreementAdmin, //TODO: remove agreement-Admin
         AssetManager,
         Trader,
         Matcher
@@ -80,12 +78,11 @@ contract RoleManagement is Owned{
         userContractLookup = _userContractLookup;
     }
 
-    /// @notice funciton for comparing the role and the needed rights of an user
+    /// @notice function for comparing the role and the needed rights of an user
     /// @param _role role of a user
     /// @param _caller the user trying to call the action
     /// @return whether the user has the corresponding rights for the intended action
     function isRole(RoleManagement.Role _role, address _caller) public view returns (bool) {
-
         /// @dev reading the rights for the user from the userDB-contract
         uint rights = RolesInterface(userContractLookup.userRegistry()).getRolesRights(_caller);
         /// @dev converting the used enum to the corresponding bitmask

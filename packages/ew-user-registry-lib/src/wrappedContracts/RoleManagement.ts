@@ -7,6 +7,24 @@ import { TransactionReceipt, Logs } from 'web3/types';
 import { JsonRPCResponse } from 'web3/providers';
 import RoleManagementJSON from '../../build/contracts/RoleManagement.json';
 
+export enum Role {
+    UserAdmin,
+    AssetAdmin,
+    AssetManager,
+    Trader,
+    Matcher
+}
+
+export function buildRights(roles: Role[]): number {
+    if (!roles) {
+        return 0;
+    }
+
+    return roles.reduce((a, b) => {
+        return a | Math.pow(2, b);
+    },                  0);
+}
+
 export class RoleManagement extends GeneralFunctions {
     web3: Web3;
     buildFile = RoleManagementJSON;

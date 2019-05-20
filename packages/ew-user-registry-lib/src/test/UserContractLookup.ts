@@ -65,7 +65,7 @@ describe('UserContractLookup', () => {
             assert.isTrue(deployedBytecode.length > 0);
 
             assert.equal(deployedBytecode, tempBytecode);
-        };
+        }
 
         assert.equal(numberContracts, 3);
     });

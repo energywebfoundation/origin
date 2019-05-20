@@ -23,6 +23,7 @@ import { UserContractLookup } from '../wrappedContracts/UserContractLookup';
 import { UserLogic } from '../wrappedContracts/UserLogic';
 import { UserDB } from '../wrappedContracts/UserDB';
 import { UserContractLookupJSON, UserLogicJSON, UserDBJSON } from '..';
+import { Role, buildRights } from '../wrappedContracts/RoleManagement';
 
 describe('UserLogic', () => {
     const configFile = JSON.parse(
@@ -94,8 +95,14 @@ describe('UserLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should gave the topAdmin rights to the deployer account', async () => {
+    it('should gave the UserAdmin rights to the deployer account', async () => {
         assert.equal(await userLogic.getRolesRights(accountDeployment), 1);
+
+        assert.equal(await userLogic.isRole(Role.UserAdmin, accountDeployment), true);
+        assert.equal(await userLogic.isRole(Role.AssetAdmin, accountDeployment), false);
+        assert.equal(await userLogic.isRole(Role.AssetManager, accountDeployment), false);
+        assert.equal(await userLogic.isRole(Role.Matcher, accountDeployment), false);
+        assert.equal(await userLogic.isRole(Role.Trader, accountDeployment), false);
     });
 
     it('should return 0 rights for random accounts', async () => {
@@ -213,5 +220,30 @@ describe('UserLogic', () => {
             privateKey: privateKeyDeployment
         });
         assert.isFalse(await userLogic.doesUserExist('0x1000000000000000000000000000000000000005'));
+    });
+
+    it('should correctly grant AssetManager and Trader roles when mixed together as rights', async () => {
+        const TEST_ACCOUNT = '0x1000000000000000000000000000000000000006';
+
+        const rights = buildRights([Role.AssetManager, Role.Trader]);
+
+        await userLogic.setUser(TEST_ACCOUNT, 'TestOrganization', {
+            privateKey: privateKeyDeployment
+        });
+
+        await userLogic.setRoles(TEST_ACCOUNT, rights, {
+            privateKey: privateKeyDeployment
+        });
+
+        assert.equal(
+            await userLogic.getRolesRights(TEST_ACCOUNT),
+            rights
+        );
+
+        assert.equal(await userLogic.isRole(Role.UserAdmin, TEST_ACCOUNT), false);
+        assert.equal(await userLogic.isRole(Role.AssetAdmin, TEST_ACCOUNT), false);
+        assert.equal(await userLogic.isRole(Role.AssetManager, TEST_ACCOUNT), true);
+        assert.equal(await userLogic.isRole(Role.Matcher, TEST_ACCOUNT), false);
+        assert.equal(await userLogic.isRole(Role.Trader, TEST_ACCOUNT), true);
     });
 });
