@@ -21,17 +21,17 @@ import {
     migrateUserRegistryContracts,
     UserLogic,
     UserContractLookup
-} from 'ew-user-registry-contracts';
+} from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetContractLookup,
     AssetProducingRegistryLogic
-} from 'ew-asset-registry-contracts';
+} from 'ew-asset-registry-lib';
 import {
     OriginContractLookup,
     CertificateLogic,
     migrateCertificateRegistryContracts
-} from 'ew-origin-contracts';
+} from '..';
 import * as Certificate from '..';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';

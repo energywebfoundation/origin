@@ -16,7 +16,7 @@
 
 import * as GeneralLib from 'ew-utils-general-lib';
 import * as TradableEntity from '..';
-import { CertificateLogic } from 'ew-origin-contracts';
+import { CertificateLogic } from '..';
 import { logger } from './Logger';
 import { TransactionReceipt, Log } from 'web3/types';
 

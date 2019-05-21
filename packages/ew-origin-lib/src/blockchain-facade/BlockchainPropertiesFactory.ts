@@ -18,7 +18,7 @@ import * as EwGeneralLib from 'ew-utils-general-lib';
 import * as Winston from 'winston';
 import Web3 from 'web3';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from 'ew-asset-registry-lib';
-import { CertificateLogic, OriginContractLookup } from 'ew-origin-contracts';
+import { CertificateLogic, OriginContractLookup } from '..';
 
 export const createBlockchainProperties = async (
     logger: Winston.Logger,

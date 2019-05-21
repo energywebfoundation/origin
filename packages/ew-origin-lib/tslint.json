@@ -87,7 +87,7 @@
     ],
     "underscore-consistent-invocation": false,
     "typedef-whitespace": [
-      false,
+      true,
       {
         "call-signature": "nospace",
         "index-signature": "nospace",
