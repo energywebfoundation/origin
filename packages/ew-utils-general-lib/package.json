@@ -28,17 +28,14 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-utils-general-lib#readme",
   "dependencies": {
-    "axios": "0.18.0",
-    "jsonschema": "1.2.4",
-    "ew-utils-general-precise-proofs": "0.3.0",
-    "web3": "1.0.0-beta.37",
-    "winston": "3.2.1"
-  },
-  "devDependencies": {
     "@types/node": "9.6.28",
     "@types/web3": "1.0.14",
-    "ethlint": "^1.2.4",
+    "axios": "0.18.0",
+    "ethlint": "1.2.4",
+    "ew-utils-general-precise-proofs": "0.3.0",
+    "fs-extra": "8.0.1",
     "ganache-cli": "6.1.8",
+    "jsonschema": "1.2.4",
     "lint-staged": "8.1.7",
     "prettier": "1.17.1",
     "truffle": "5.0.17",
@@ -47,7 +44,9 @@
     "tslint-lines-between-class-members": "1.3.1",
     "tslint-sonarts": "1.9.0",
     "typescript": "2.9.2",
-    "typescript-json-schema": "0.31.0"
+    "typescript-json-schema": "0.31.0",
+    "web3": "1.0.0-beta.37",
+    "winston": "3.2.1"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "lint-staged": {
@@ -56,5 +55,8 @@
       "prettier --write --config ./.prettierrc --config-precedence file-override",
       "git add"
     ]
+  },
+  "bin": {
+    "ew-utils-general-lib-build": "./scripts/build.js"
   }
 }

@@ -37,7 +37,7 @@ export class ContractEventHandler {
     const events = await this.contractInstance
       .getWeb3Contract()
       .getPastEvents('allEvents', {
-        fromBlock: this.lastBlockChecked + 1,
+        fromBlock: Math.min(this.lastBlockChecked + 1, blockNumber),
         toBlock: blockNumber
       });
     this.unhandledEvents = events.reverse().concat(this.unhandledEvents);
