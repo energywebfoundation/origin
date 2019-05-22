@@ -7,7 +7,8 @@
     "start": "node dist/js/src/index.js",
     "build": "rm -rf dist/js && tsc",
     "lint": "tslint --fix  'src/**/*{.ts,.tsx}'",
-    "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,9 +25,10 @@
     "cors": "2.8.5",
     "express": "4.16.4",
     "fs-extra": "8.0.1",
-    "js-beautify": "1.10.0",
+    "js-beautify": "1.10.0"
+  },
+  "devDependencies": {
     "lint-staged": "8.1.7",
-    "mongoose": "5.5.8",
     "prettier": "1.17.1",
     "tslint": "5.16.0",
     "tslint-config-prettier": "1.18.0",
@@ -41,7 +43,7 @@
       "git add"
     ]
   },
-  "bin": {
-    "ew-utils-testbackend-build": "./scripts/build.js"
-  }
+  "files": [
+    "dist"
+  ]
 }
