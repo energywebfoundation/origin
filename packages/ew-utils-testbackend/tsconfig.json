@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "rootDir": "./",
         "outDir": "./dist/js",
         "sourceMap": true,
         "noImplicitAny": false,
@@ -16,6 +17,7 @@
         ]
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*",
+        "./env.json"
     ]
 }
