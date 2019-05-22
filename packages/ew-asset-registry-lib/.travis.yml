@@ -6,14 +6,16 @@ node_js:
 
 install:
   - npm install
+  - npx ew-user-registry-lib-build
+  - npx ew-utils-testbackend-build
   - npm run compile
-  - npm run build-schemas
+  - npm run build
 
 before_script:
   - npm run start-ganache > /dev/null &
+  - npm run start-test-backend > /dev/null &
   - sleep 5
  
 script:
   # - npm run lint
-  - npm run deploy-contracts
-  - npm run build-ts
+  - npm run test

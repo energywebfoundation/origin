@@ -115,7 +115,9 @@ export class Entity extends Asset.Entity implements OnChainProperties {
     offChainProperties: OffChainProperties;
 
     getUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset`;
+        const producingAssetLogicAddress = this.configuration.blockchainProperties.producingAssetLogicInstance.web3Contract._address;
+    
+        return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset/${producingAssetLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {

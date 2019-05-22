@@ -1,0 +1,6 @@
+{
+    "develop": {
+        "web3": "http://localhost:8545",
+        "deployKey": "d7410fb6e0c10ce73cc3179f73e7bb6adabbe8fb17570a47eb8195e17ed0c3f4"
+    }
+}

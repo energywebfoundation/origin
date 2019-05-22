@@ -20,7 +20,7 @@ import Web3 from 'web3';
 import 'mocha';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
-import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-lib';
+import { UserContractLookup, UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
 import { migrateAssetRegistryContracts, AssetConsumingRegistryLogic } from '..';
 import * as Asset from '..';
 
@@ -68,11 +68,10 @@ describe('AssetConsumingLogic Facade', () => {
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountDeployment, buildRights([Role.UserAdmin, Role.AssetAdmin]), { privateKey: privateKeyDeployment });
 
         userContractLookup = new UserContractLookup((web3 as any),
                                                     userContractLookupAddr);
-
     });
 
     it('should deploy asset-registry contracts', async () => {
@@ -81,9 +80,8 @@ describe('AssetConsumingLogic Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-
         await userLogic.setUser(assetOwnerAddress, 'assetOwner', { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(assetOwnerAddress, 8, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager, Role.AssetAdmin]), { privateKey: privateKeyDeployment });
     });
 
     it('should onboard a new asset', async () => {

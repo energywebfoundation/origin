@@ -21,7 +21,9 @@ import Web3 from 'web3';
 import {
     UserContractLookup,
     UserLogic,
-    migrateUserRegistryContracts
+    migrateUserRegistryContracts,
+    buildRights,
+    Role
 } from 'ew-user-registry-lib';
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 import { AssetContractLookup } from '../wrappedContracts/AssetContractLookup';
@@ -79,7 +81,7 @@ describe('AssetConsumingLogic', () => {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setRoles(accountDeployment, 3, {
+        await userLogic.setRoles(accountDeployment, buildRights([Role.UserAdmin, Role.AssetAdmin]), {
             privateKey: privateKeyDeployment
         });
 
@@ -97,12 +99,12 @@ describe('AssetConsumingLogic', () => {
             let tempBytecode;
             if (key.includes('AssetContractLookup')) {
                 assetContractLookup = new AssetContractLookup(web3 as any, deployedContracts[key]);
-                tempBytecode = '0x' + (AssetContractLookupJSON as any).deployedBytecode;
+                tempBytecode = (AssetContractLookupJSON as any).deployedBytecode;
             }
 
             if (key.includes('AssetConsumingDB')) {
                 assetConsumingDB = new AssetConsumingDB(web3 as any, deployedContracts[key]);
-                tempBytecode = '0x' + (AssetConsumingDBJSON as any).deployedBytecode;
+                tempBytecode = (AssetConsumingDBJSON as any).deployedBytecode;
             }
 
             if (key.includes('AssetConsumingRegistryLogic')) {
@@ -110,12 +112,12 @@ describe('AssetConsumingLogic', () => {
                     web3 as any,
                     deployedContracts[key]
                 );
-                tempBytecode = '0x' + (AssetConsumingRegistryLogicJSON as any).deployedBytecode;
+                tempBytecode = (AssetConsumingRegistryLogicJSON as any).deployedBytecode;
             }
 
             if (key.includes('AssetProducingDB')) {
                 assetProducingDB = new AssetProducingDB(web3 as any, deployedContracts[key]);
-                tempBytecode = '0x' + (AssetProducingDBJSON as any).deployedBytecode;
+                tempBytecode = (AssetProducingDBJSON as any).deployedBytecode;
             }
 
             if (key.includes('AssetProducingRegistryLogic')) {
@@ -123,13 +125,13 @@ describe('AssetConsumingLogic', () => {
                     web3 as any,
                     deployedContracts[key]
                 );
-                tempBytecode = '0x' + (AssetProducingRegistryLogicJSON as any).deployedBytecode;
+                tempBytecode = (AssetProducingRegistryLogicJSON as any).deployedBytecode;
             }
 
             const deployedBytecode = await web3.eth.getCode(deployedContracts[key]);
             assert.isTrue(deployedBytecode.length > 0);
 
-            // const tempBytecode = '0x' + contractInfo.deployedBytecode;
+            // const tempBytecode = contractInfo.deployedBytecode;
             assert.equal(deployedBytecode, tempBytecode);
         });
     });
@@ -200,7 +202,7 @@ describe('AssetConsumingLogic', () => {
         await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(assetOwnerAddress, 8, {
+        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager, Role.AssetAdmin]), {
             privateKey: privateKeyDeployment
         });
     });
