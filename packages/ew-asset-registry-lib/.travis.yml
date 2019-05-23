@@ -6,8 +6,6 @@ node_js:
 
 install:
   - npm install
-  - npx ew-user-registry-lib-build
-  - npx ew-utils-testbackend-build
   - npm run compile
   - npm run build
 

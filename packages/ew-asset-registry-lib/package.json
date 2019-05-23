@@ -24,7 +24,7 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
-    "prepublishOnly": "npm run compile && npm run build"
+    "prepare": "node scripts/build.js"
   },
   "repository": {
     "type": "git",
@@ -37,15 +37,19 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-asset-registry-lib#readme",
   "dependencies": {
+    "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib.git#5a41bd1197b73aa70db2f9a33b5332c04c505c3d",
+    "ew-utils-general-lib": "1.0.1",
+    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#f4448692bebfe5019570533114557a943319ff2d",
+    "web3": "1.0.0-beta.37",
+    "winston": "3.2.1"
+  },
+  "devDependencies": {
     "@types/chai": "4.1.4",
     "@types/mocha": "2.2.48",
     "@types/node": "9.6.28",
     "@types/web3": "1.0.14",
     "chai": "4.1.2",
     "ethlint": "1.2.4",
-    "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib.git#0f097833300677bc3b562cdcf9b7ca7588ffd762",
-    "ew-utils-general-lib": "1.0.1",
-    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#f9984fb1b373c3092b1766e5e270f7610e3a5d5f",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.1.8",
     "lint-staged": "8.1.7",
@@ -57,12 +61,11 @@
     "tslint-lines-between-class-members": "1.3.1",
     "tslint-sonarts": "1.9.0",
     "typescript": "2.9.2",
-    "typescript-json-schema": "0.31.0",
-    "web3": "1.0.0-beta.37",
-    "winston": "3.2.1"
+    "typescript-json-schema": "0.31.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
-  "bin": {
-    "ew-asset-registry-lib-build": "./scripts/build.js"
-  }
+  "files": [
+    "contracts",
+    "dist"
+  ]
 }
