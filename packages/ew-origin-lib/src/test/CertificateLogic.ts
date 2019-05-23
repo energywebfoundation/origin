@@ -560,6 +560,13 @@ describe('CertificateLogic-Facade', () => {
             maxOwnerChanges: '3',
             ownerChangerCounter: '0'
         });
+
+        const activeCerts = await Certificate.getActiveCertificates(conf);
+        const activeIndices = activeCerts.map(cert => cert.id);
+
+        assert.equal(activeIndices.indexOf(certificate.id), -1);
+        assert.notEqual(activeIndices.indexOf(c1.id), -1);
+        assert.notEqual(activeIndices.indexOf(c2.id), -1);
     });
 
     it('should retire a certificate', async () => {
