@@ -69,28 +69,28 @@ describe('OriginContractLookup', () => {
 
         assetRegistryContract = new AssetContractLookup(web3, assetRegistryLookupAddr);
 
-        Object.keys(originContracts).forEach(async key => {
+        for (let key of Object.keys(originContracts)) {
             let tempBytecode;
 
             if (key.includes('OriginContractLookup')) {
                 originRegistryContract = new OriginContractLookup(web3, originContracts[key]);
-                tempBytecode = '0x' + OriginContractLookupJSON.deployedBytecode;
+                tempBytecode = OriginContractLookupJSON.deployedBytecode;
             }
 
             if (key.includes('CertificateLogic')) {
                 certificateLogic = new CertificateLogic(web3, originContracts[key]);
-                tempBytecode = '0x' + CertificateLogicJSON.deployedBytecode;
+                tempBytecode = CertificateLogicJSON.deployedBytecode;
             }
 
             if (key.includes('CertificateDB')) {
                 certificateDB = new CertificateDB(web3, originContracts[key]);
-                tempBytecode = '0x' + CertificateDBJSON.deployedBytecode;
+                tempBytecode = CertificateDBJSON.deployedBytecode;
             }
 
             const deployedBytecode = await web3.eth.getCode(originContracts[key]);
             assert.isTrue(deployedBytecode.length > 0);
             assert.equal(deployedBytecode, tempBytecode);
-        });
+        }
     });
 
     it('should have the right owner', async () => {

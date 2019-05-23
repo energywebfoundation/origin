@@ -14,10 +14,7 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
-import * as fs from 'fs';
-import * as path from 'path';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
-import { AssetContractLookup } from 'ew-asset-registry-lib';
 import Web3 from 'web3';
 import { deploy } from 'ew-utils-deployment';
 import {
@@ -35,16 +32,10 @@ export async function migrateCertificateRegistryContracts(
 ): Promise<JSON> {
     return new Promise<any>(async (resolve, reject) => {
         const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
-        const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment)
-            .address;
 
         const originContractLookupAddress = (await deploy(web3, OriginContractLookupJSON.bytecode, {
             privateKey: privateKeyDeployment
         })).contractAddress;
-        console.log({
-            assetContractLookupAddress,
-            originContractLookupAddress
-        });
 
         const test = web3.eth.abi
             .encodeParameters(
@@ -52,10 +43,6 @@ export async function migrateCertificateRegistryContracts(
                 [assetContractLookupAddress, originContractLookupAddress]
             )
             .substr(2);
-        console.log({
-            first: OriginContractLookupJSON.bytecode.length,
-            second: (CertificateLogicJSON.bytecode + test).length
-        });
 
         const certificateLogicAddress = (await deploy(
             web3,
@@ -68,7 +55,6 @@ export async function migrateCertificateRegistryContracts(
                     .substr(2),
             { privateKey: privateKeyDeployment }
         )).contractAddress;
-        console.log({ certificateLogicAddress });
 
         const certificateDBAddress = (await deploy(
             web3,
@@ -76,13 +62,11 @@ export async function migrateCertificateRegistryContracts(
                 web3.eth.abi.encodeParameter('address', certificateLogicAddress).substr(2),
             { privateKey: privateKeyDeployment }
         )).contractAddress;
-        console.log({ certificateDBAddress });
 
         const originContractLookup: OriginContractLookup = new OriginContractLookup(
             web3,
             originContractLookupAddress
         );
-        console.log({ originContractLookup });
 
         await originContractLookup.init(
             assetContractLookupAddress,
@@ -95,7 +79,6 @@ export async function migrateCertificateRegistryContracts(
         resultMapping.OriginContractLookup = originContractLookupAddress;
         resultMapping.CertificateLogic = certificateLogicAddress;
         resultMapping.CertificateDB = certificateDBAddress;
-        console.log({ resultMapping });
 
         resolve(resultMapping);
     });
@@ -108,8 +91,6 @@ export async function migrateEnergyBundleContracts(
 ): Promise<JSON> {
     return new Promise<any>(async (resolve, reject) => {
         const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
-        const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment)
-            .address;
 
         const originContractLookupAddress = (await deploy(web3, OriginContractLookupJSON.bytecode, {
             privateKey: privateKeyDeployment

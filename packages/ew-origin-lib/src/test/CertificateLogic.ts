@@ -20,7 +20,9 @@ import 'mocha';
 import {
     migrateUserRegistryContracts,
     UserLogic,
-    UserContractLookup
+    UserContractLookup,
+    Role,
+    buildRights
 } from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
@@ -92,7 +94,10 @@ describe('CertificateLogic-Facade', () => {
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountDeployment, buildRights([
+            Role.UserAdmin,
+            Role.AssetAdmin
+        ]), { privateKey: privateKeyDeployment });
 
         const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -115,7 +120,7 @@ describe('CertificateLogic-Facade', () => {
         assetRegistryContract = new AssetContractLookup(web3 as any, assetRegistryLookupAddr);
         assetRegistry = new AssetProducingRegistryLogic(web3 as any, assetProducingAddr);
 
-        Object.keys(originContracts).forEach(async key => {
+        for (let key of Object.keys(originContracts)) {
             if (key.includes('OriginContractLookup')) {
                 originRegistryContract = new OriginContractLookup(
                     web3 as any,
@@ -126,7 +131,7 @@ describe('CertificateLogic-Facade', () => {
             if (key.includes('CertificateLogic')) {
                 certificateLogic = new CertificateLogic(web3 as any, originContracts[key]);
             }
-        });
+        }
 
         conf = {
             blockchainProperties: {
@@ -159,8 +164,13 @@ describe('CertificateLogic-Facade', () => {
 
         await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountTrader, 24, { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(accountAssetOwner, 24, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountTrader, buildRights([
+            Role.Trader
+        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountAssetOwner, buildRights([
+            Role.AssetManager,
+            Role.Trader
+        ]), { privateKey: privateKeyDeployment });
     });
 
     it('should onboard a new asset', async () => {
@@ -736,7 +746,9 @@ describe('CertificateLogic-Facade', () => {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setRoles(testReceiverAddress, 24, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(testReceiverAddress, buildRights([
+            Role.AssetManager
+        ]), { privateKey: privateKeyDeployment });
         let certificate = await new Certificate.Certificate.Entity('5', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress);
@@ -823,7 +835,9 @@ describe('CertificateLogic-Facade', () => {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setRoles(testReceiverAddress, 24, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(testReceiverAddress, buildRights([
+            Role.AssetManager
+        ]), { privateKey: privateKeyDeployment });
         let certificate = await new Certificate.Certificate.Entity('6', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress, '0x001');

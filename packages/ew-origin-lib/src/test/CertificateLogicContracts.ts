@@ -17,7 +17,7 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import { migrateUserRegistryContracts, UserLogic, UserContractLookup } from 'ew-user-registry-lib';
+import { migrateUserRegistryContracts, UserLogic, UserContractLookup, buildRights, Role } from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetContractLookup,
@@ -88,7 +88,10 @@ describe('CertificateLogic', () => {
                 privateKey: privateKeyDeployment
             });
 
-            await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(accountDeployment, buildRights([
+                Role.UserAdmin,
+                Role.AssetAdmin
+            ]), { privateKey: privateKeyDeployment });
 
             const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -111,33 +114,28 @@ describe('CertificateLogic', () => {
             assetRegistryContract = new AssetContractLookup(web3, assetRegistryLookupAddr);
             assetRegistry = new AssetProducingRegistryLogic(web3, assetProducingAddr);
 
-            // originRegistryContract = new OriginContractLookup((web3 as any));
-            // certificateLogic = new CertificateLogic((web3 as any));
-            // certificateDB = new CertificateDB((web3 as any));
-            // assetRegistry = new AssetProducingRegistryLogic((web3 as any), assetProducingAddr);
-
-            Object.keys(originContracts).forEach(async key => {
+            for (let key of Object.keys(originContracts)) {
                 let tempBytecode;
 
                 if (key.includes('OriginContractLookup')) {
                     originRegistryContract = new OriginContractLookup(web3, originContracts[key]);
-                    tempBytecode = '0x' + OriginContractLookupJSON.deployedBytecode;
+                    tempBytecode = OriginContractLookupJSON.deployedBytecode;
                 }
 
                 if (key.includes('CertificateLogic')) {
                     certificateLogic = new CertificateLogic(web3, originContracts[key]);
-                    tempBytecode = '0x' + CertificateLogicJSON.deployedBytecode;
+                    tempBytecode = CertificateLogicJSON.deployedBytecode;
                 }
 
                 if (key.includes('CertificateDB')) {
                     certificateDB = new CertificateDB(web3, originContracts[key]);
-                    tempBytecode = '0x' + CertificateDBJSON.deployedBytecode;
+                    tempBytecode = CertificateDBJSON.deployedBytecode;
                 }
 
                 const deployedBytecode = await web3.eth.getCode(originContracts[key]);
                 assert.isTrue(deployedBytecode.length > 0);
                 assert.equal(deployedBytecode, tempBytecode);
-            });
+            }
         });
 
         it('should deploy a testtoken contracts', async () => {
@@ -281,11 +279,18 @@ describe('CertificateLogic', () => {
                 privateKey: privateKeyDeployment
             });
 
-            await userLogic.setRoles(testreceiver.web3Contract._address, 16, {
+            await userLogic.setRoles(testreceiver.web3Contract._address, buildRights([
+                Role.Trader
+            ]), {
                 privateKey: privateKeyDeployment
             });
-            await userLogic.setRoles(accountTrader, 16, { privateKey: privateKeyDeployment });
-            await userLogic.setRoles(accountAssetOwner, 24, { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(accountTrader, buildRights([
+                Role.Trader
+            ]), { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(accountAssetOwner, buildRights([
+                Role.AssetManager,
+                Role.Trader
+            ]), { privateKey: privateKeyDeployment });
         });
 
         it('should onboard an asset', async () => {
@@ -1829,7 +1834,9 @@ describe('CertificateLogic', () => {
                 await userLogic.setUser(matcherAccount, 'matcherAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(matcherAccount, 16, { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(matcherAccount, buildRights([
+                    Role.Trader
+                ]), { privateKey: privateKeyDeployment });
             });
 
             it('should transfer certificate #5 as matcher', async () => {
@@ -2187,7 +2194,9 @@ describe('CertificateLogic', () => {
                 await userLogic.setUser(approvedAccount, 'approvedAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(approvedAccount, 16, { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(approvedAccount, buildRights([
+                    Role.Trader
+                ]), { privateKey: privateKeyDeployment });
             });
 
             it('should transfer certificate#8 with approved account', async () => {
