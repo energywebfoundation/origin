@@ -33,7 +33,8 @@ export interface MatcherOffchainProperties {
     currentPeriod: number;
 }
 
-export interface AgreementOnChainProperties extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
+export interface AgreementOnChainProperties
+    extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
     matcherPropertiesDocumentHash: string;
     matcherDBURL: string;
     demandId: number;
@@ -41,69 +42,80 @@ export interface AgreementOnChainProperties extends GeneralLib.BlockchainDataMod
     allowedMatcher: string[];
 }
 
-export const createAgreement =
-    async (agreementPropertiesOnChain: AgreementOnChainProperties,
-           agreementPropertiesOffchain: AgreementOffChainProperties,
-           matcherPropertiesOffchain: MatcherOffchainProperties,
-           configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
+export const createAgreement = async (
+    agreementPropertiesOnChain: AgreementOnChainProperties,
+    agreementPropertiesOffchain: AgreementOffChainProperties,
+    matcherPropertiesOffchain: MatcherOffchainProperties,
+    configuration: GeneralLib.Configuration.Entity
+): Promise<Entity> => {
+    const agreement = new Entity(null, configuration);
 
-        const agreement = new Entity(null, configuration);
+    const agreementOffChainStorageProperties = agreement.prepareEntityCreation(
+        agreementPropertiesOnChain,
+        agreementPropertiesOffchain,
+        AgreementOffchainPropertiesSchema,
+        agreement.getUrl()
+    );
 
-        const agreementOffChainStorageProperties = agreement.prepareEntityCreation(
-            agreementPropertiesOnChain,
-            agreementPropertiesOffchain,
-            AgreementOffchainPropertiesSchema,
-            agreement.getUrl(),
-        );
+    const matcherOffchainStorageProperties = agreement.prepareEntityCreation(
+        agreementPropertiesOnChain,
+        matcherPropertiesOffchain,
+        MatcherOffchainPropertiesSchema,
+        agreement.getMatcherURL()
+    );
 
-        const matcherOffchainStorageProperties = agreement.prepareEntityCreation(
-            agreementPropertiesOnChain,
-            matcherPropertiesOffchain,
-            MatcherOffchainPropertiesSchema,
-            agreement.getMatcherURL());
+    if (configuration.offChainDataSource) {
+        agreementPropertiesOnChain.url = agreement.getUrl();
+        agreementPropertiesOnChain.propertiesDocumentHash =
+            agreementOffChainStorageProperties.rootHash;
 
-        if (configuration.offChainDataSource) {
-            agreementPropertiesOnChain.url = agreement.getUrl();
-            agreementPropertiesOnChain.propertiesDocumentHash = agreementOffChainStorageProperties.rootHash;
+        agreementPropertiesOnChain.matcherDBURL = agreement.getMatcherURL();
+        agreementPropertiesOnChain.matcherPropertiesDocumentHash =
+            matcherOffchainStorageProperties.rootHash;
+    }
 
-            agreementPropertiesOnChain.matcherDBURL = agreement.getMatcherURL();
-            agreementPropertiesOnChain.matcherPropertiesDocumentHash = matcherOffchainStorageProperties.rootHash;
+    const tx = await configuration.blockchainProperties.marketLogicInstance.createAgreement(
+        agreementPropertiesOnChain.propertiesDocumentHash,
+        agreementPropertiesOnChain.url,
+        agreementPropertiesOnChain.matcherPropertiesDocumentHash,
+        agreementPropertiesOnChain.matcherDBURL,
+        agreementPropertiesOnChain.demandId,
+        agreementPropertiesOnChain.supplyId,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
         }
+    );
 
-        const tx = await configuration.blockchainProperties.marketLogicInstance.createAgreement(
-            agreementPropertiesOnChain.propertiesDocumentHash,
-            agreementPropertiesOnChain.url,
-            agreementPropertiesOnChain.matcherPropertiesDocumentHash,
-            agreementPropertiesOnChain.matcherDBURL,
-            agreementPropertiesOnChain.demandId,
-            agreementPropertiesOnChain.supplyId,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            },
-        );
+    agreement.id = configuration.blockchainProperties.web3.utils
+        .hexToNumber(tx.logs[0].topics[1])
+        .toString();
 
-        agreement.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
+    await agreement.putToOffChainStorage(
+        agreementPropertiesOffchain,
+        agreementOffChainStorageProperties
+    );
+    await agreement.putToOffChainStorage(
+        matcherPropertiesOffchain,
+        matcherOffchainStorageProperties,
+        agreement.getMatcherURL()
+    );
 
-        await agreement.putToOffChainStorage(agreementPropertiesOffchain, agreementOffChainStorageProperties);
-        await agreement.putToOffChainStorage(matcherPropertiesOffchain, matcherOffchainStorageProperties, agreement.getMatcherURL());
+    if (configuration.logger) {
+        configuration.logger.info(`Agreement ${agreement.id} created`);
+    }
 
-        if (configuration.logger) {
-            configuration.logger.info(`Agreement ${agreement.id} created`);
-        }
-
-        return agreement.sync();
-
-    };
-
-export const getAgreementListLength = async (configuration: GeneralLib.Configuration.Entity): Promise<number> => {
-
-    return configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength();
-
+    return agreement.sync();
 };
 
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements AgreementOnChainProperties {
+export const getAgreementListLength = async (
+    configuration: GeneralLib.Configuration.Entity
+): Promise<number> => {
+    return configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength();
+};
 
+export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
+    implements AgreementOnChainProperties {
     matcherOffChainProperties: MatcherOffchainProperties;
     offChainProperties: AgreementOffChainProperties;
     propertiesDocumentHash: string;
@@ -120,7 +132,6 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     configuration: GeneralLib.Configuration.Entity;
 
     constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
-
         super(id, configuration);
         this.initialized = true;
     }
@@ -135,7 +146,9 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const agreement = await this.configuration.blockchainProperties.marketLogicInstance.getAgreement(this.id);
+            const agreement = await this.configuration.blockchainProperties.marketLogicInstance.getAgreement(
+                this.id
+            );
 
             this.propertiesDocumentHash = agreement._propertiesDocumentHash;
             this.url = agreement._documentDBURL;
@@ -146,10 +159,15 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             this.approvedBySupplyOwner = agreement._approvedBySupplyOwner;
             this.approvedByDemandOwner = agreement._approvedByDemandOwner;
             this.allowedMatcher = agreement._allowedMatcher;
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash, this.getUrl());
+            this.offChainProperties = await this.getOffChainProperties(
+                this.propertiesDocumentHash,
+                this.getUrl()
+            );
 
-            this.matcherOffChainProperties =
-                await this.getOffChainProperties(this.matcherPropertiesDocumentHash, this.getMatcherURL());
+            this.matcherOffChainProperties = await this.getOffChainProperties(
+                this.matcherPropertiesDocumentHash,
+                this.getMatcherURL()
+            );
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Agreement with ${this.id} synced`);
@@ -157,6 +175,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
             this.initialized = true;
         }
+
         return this;
     }
 
@@ -164,12 +183,12 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.marketLogicInstance.approveAgreementDemand(
                 this.id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey });
-        }
-        else {
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+            );
+        } else {
             return this.configuration.blockchainProperties.marketLogicInstance.approveAgreementDemand(
                 this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address },
+                { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
     }
@@ -178,17 +197,19 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.marketLogicInstance.approveAgreementSupply(
                 this.id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey });
-        }
-        else {
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+            );
+        } else {
             return this.configuration.blockchainProperties.marketLogicInstance.approveAgreementSupply(
                 this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address });
+                { from: this.configuration.blockchainProperties.activeUser.address }
+            );
         }
     }
 
-    async setMatcherProperties(matcherOffchainProperties: MatcherOffchainProperties): Promise<TransactionReceipt> {
-
+    async setMatcherProperties(
+        matcherOffchainProperties: MatcherOffchainProperties
+    ): Promise<TransactionReceipt> {
         const agreementPropsOnChain: AgreementOnChainProperties = {
             matcherPropertiesDocumentHash: null,
             matcherDBURL: null,
@@ -196,14 +217,15 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             supplyId: this.supplyId,
             allowedMatcher: this.allowedMatcher,
             propertiesDocumentHash: null,
-            url: null,
+            url: null
         };
 
         const matcherOffchainStorageProperties = this.prepareEntityCreation(
             agreementPropsOnChain,
             matcherOffchainProperties,
             MatcherOffchainPropertiesSchema,
-            this.getMatcherURL());
+            this.getMatcherURL()
+        );
 
         let tx;
 
@@ -212,25 +234,23 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
                 this.id,
                 matcherOffchainStorageProperties.rootHash,
                 this.matcherDBURL,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-
-        }
-        else {
+        } else {
             tx = await this.configuration.blockchainProperties.marketLogicInstance.setMatcherProperties(
                 this.id,
                 matcherOffchainStorageProperties.rootHash,
                 this.matcherDBURL,
-                { from: this.configuration.blockchainProperties.activeUser.address });
+                { from: this.configuration.blockchainProperties.activeUser.address }
+            );
         }
 
         await this.putToOffChainStorage(
             matcherOffchainProperties,
             matcherOffchainStorageProperties,
-            this.getMatcherURL());
+            this.getMatcherURL()
+        );
 
         return tx;
-
     }
-
 }

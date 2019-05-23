@@ -1,0 +1,21 @@
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+  - '10.0.0'
+
+install:
+  - npm install
+  - npm run compile
+
+before_script:
+  - npm run start-ganache > /dev/null &
+  - sleep 1
+  - npm run start-test-backend > /dev/null &
+  - sleep 1
+ 
+script:
+  # - npm run lint
+  - npm run deploy-contracts
+  - npm run build
+  - npm test

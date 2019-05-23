@@ -14,10 +14,17 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as Winston from 'winston';
+pragma solidity ^0.5.2;
+pragma experimental ABIEncoderV2;
 
-export const logger = Winston.createLogger({
-    level: 'debug',
-    format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-    transports: [new Winston.transports.Console({ level: 'silly' })]
-});
+/// @title this interface defines the functions of the AssetContractLookup-Contract
+interface MarketContractLookupInterface {
+
+	/// @notice gets the market logic registry
+	/// @return the marketlogic registry
+    function marketLogicRegistry() external view returns (address);
+
+	/// @notice gets the asset contract lookup
+	/// @return the assetlogic registry
+    function assetContractLookup() external view returns (address);
+}

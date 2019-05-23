@@ -1,6 +1,6 @@
 {
   "name": "ew-market-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/js/src/index.js",
   "types": "dist/js/src/index.d.ts",
@@ -8,56 +8,70 @@
     "test": "test"
   },
   "scripts": {
-    "start-test-backend": "node node_modules/ew-utils-testbackend/index.js",
-    "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
-    "testlight": "npm run build-ts && mocha build/ts/test/",
-    "debug-light-test": "npm run build-ts && mocha --inspect-brk build/ts/test/",
-    "setup-SS": "npm run build-ts && node build/ts/utils/deployment/secretStore",
-    "build-and-deploy": "npm run build && npm run deploy-contracts",
-    "deploy-contracts": "node build/ts/utils/deployment/startMigrate",
+    "compile": "truffle compile",
+    "deploy-contracts": "truffle migrate",
     "build": "npm run build-schemas && npm run build-ts",
-    "precompile-contracts": "rm -rf build/contracts",
-    "compile-contracts": "node build/ts/utils/deployment/compile",
-    "prebuild-ts": "rm -rf build/ts",
-    "build-ts": "rm -rf dist/js && node_modules/typescript/bin/tsc",
+    "build-ts": "rm -rf dist/js && tsc",
+    "start-test-backend": "node node_modules/ew-utils-testbackend/dist/js/src/index.js",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run build-schema:AgreementPropertiesOffChain && npm run build-schema:MatcherPropertiesOffChain && npm run build-schema:DemandPropertiesOffChain && npm run build-schema:SupplyPropertiesOffChain && cp -R schemas dist/schemas",
     "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts DemandOffchainproperties > schemas/DemandOffchainProperties.schema.json",
     "build-schema:SupplyPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Supply.ts SupplyOffchainProperties > schemas/SupplyOffchainProperties.schema.json",
     "build-schema:AgreementPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts AgreementOffChainProperties > schemas/AgreementOffChainProperties.schema.json",
-    "build-schema:MatcherPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts MatcherOffchainProperties > schemas/MatcherOffchainProperties.schema.json"
+    "build-schema:MatcherPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts MatcherOffchainProperties > schemas/MatcherOffchainProperties.schema.json",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
+    "prepare": "node scripts/build.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/ew-market-lib.git"
   },
-  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
-  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/energywebfoundation/ew-market-lib/issues"
   },
   "homepage": "https://github.com/energywebfoundation/ew-market-lib#readme",
   "dependencies": {
-    "ew-asset-registry-contracts": "0.0.99",
-    "ew-asset-registry-lib": "0.0.99",
-    "ew-market-contracts": "0.0.99",
-    "ew-user-registry-contracts": "0.0.99",
-    "ew-utils-general-lib": "0.3.1",
-    "ew-utils-testbackend": "v0.0.99",
+    "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#71637c384a2d1075001ff44a26d9926e96674167",
+    "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib#5a41bd1197b73aa70db2f9a33b5332c04c505c3d",
+    "ew-utils-general-lib": "energywebfoundation/ew-utils-general-lib#3a0cb9e58c2f18776b59771d39981a44d6640d96",
+    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#f4448692bebfe5019570533114557a943319ff2d",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^2.2.48",
-    "@types/node": "^9.6.28",
+    "@types/chai": "4.1.7",
+    "@types/mocha": "2.2.48",
+    "@types/node": "9.6.48",
     "@types/web3": "1.0.14",
-    "chai": "^4.1.2",
-    "ganache-cli": "^6.1.8",
-    "mocha": "^5.2.0",
-    "typescript": "^2.9.2",
-    "typescript-json-schema": "^0.31.0"
+    "chai": "4.2.0",
+    "ethlint": "1.2.4",
+    "fs-extra": "8.0.1",
+    "ganache-cli": "6.4.3",
+    "lint-staged": "8.1.7",
+    "mocha": "5.2.0",
+    "prettier": "1.17.1",
+    "truffle": "5.0.18",
+    "tslint": "5.16.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-lines-between-class-members": "1.3.1",
+    "tslint-sonarts": "1.9.0",
+    "typescript": "2.9.2",
+    "typescript-json-schema": "0.31.0"
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "tslint --fix",
+      "prettier --write --config ./.prettierrc --config-precedence file-override",
+      "git add"
+    ]
+  },
+  "files": [
+    "contracts",
+    "dist"
+  ]
 }

@@ -21,22 +21,33 @@ import 'mocha';
 import Web3 = require('web3');
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
-import { UserContractLookup, UserLogic, migrateUserRegistryContracts } from 'ew-user-registry-contracts';
-import { migrateAssetRegistryContracts, AssetConsumingRegistryLogic, AssetProducingRegistryLogic } from 'ew-asset-registry-contracts';
-import { migrateMarketRegistryContracts, MarketLogic } from 'ew-market-contracts';
+import { UserContractLookup, UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    migrateAssetRegistryContracts,
+    AssetConsumingRegistryLogic,
+    AssetProducingRegistryLogic
+} from 'ew-asset-registry-lib';
+import { MarketLogic } from '..';
+import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import * as Market from '..';
 import * as Asset from 'ew-asset-registry-lib';
 import { deepEqual } from 'assert';
-import { AgreementOffChainProperties, MatcherOffchainProperties } from '../blockchain-facade/Agreement';
+import {
+    AgreementOffChainProperties,
+    MatcherOffchainProperties
+} from '../blockchain-facade/Agreement';
 import { timingSafeEqual } from 'crypto';
 
 describe('Market-Facade', () => {
-    const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
+    const configFile = JSON.parse(
+        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+    );
 
     const web3 = new Web3(configFile.develop.web3);
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
-        configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
+        ? configFile.develop.deployKey
+        : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
@@ -69,49 +80,69 @@ describe('Market-Facade', () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
         userContractLookupAddr = (userContracts as any).UserContractLookup;
 
-        userLogic = new UserLogic((web3 as any), (userContracts as any).UserLogic);
+        userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, 63, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountDeployment, buildRights([
+            Role.UserAdmin,
+            Role.AssetAdmin,
+            Role.AssetManager,
+            Role.Trader,
+            Role.Matcher
+        ]), { privateKey: privateKeyDeployment });
 
         await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(accountTrader, 16, { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountTrader, buildRights([
+            Role.Trader
+        ]), { privateKey: privateKeyDeployment });
 
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(assetOwnerAddress, 24, { privateKey: privateKeyDeployment });
-
+        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
+            privateKey: privateKeyDeployment
+        });
+        await userLogic.setRoles(assetOwnerAddress, buildRights([
+            Role.AssetManager
+        ]), { privateKey: privateKeyDeployment });
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts((web3 as any), userContractLookupAddr, privateKeyDeployment);
-        assetProducingRegistry = new AssetProducingRegistryLogic((web3 as any), (deployedContracts as any).AssetProducingRegistryLogic);
+        const deployedContracts = await migrateAssetRegistryContracts(
+            web3 as any,
+            userContractLookupAddr,
+            privateKeyDeployment
+        );
+        assetProducingRegistry = new AssetProducingRegistryLogic(
+            web3 as any,
+            (deployedContracts as any).AssetProducingRegistryLogic
+        );
         assetContractLookupAddr = (deployedContracts as any).AssetContractLookup;
     });
 
     it('should deploy market-registry contracts', async () => {
-        const deployedContracts = await migrateMarketRegistryContracts((web3 as any), assetContractLookupAddr, privateKeyDeployment);
-        marketLogic = new MarketLogic((web3 as any), (deployedContracts as any).MarketLogic);
-
+        const deployedContracts = await migrateMarketRegistryContracts(
+            web3 as any,
+            assetContractLookupAddr,
+            privateKeyDeployment
+        );
+        marketLogic = new MarketLogic(web3 as any, (deployedContracts as any).MarketLogic);
     });
 
     describe('Demand-Facade', () => {
-
         it('should create a demand', async () => {
-
             conf = {
                 blockchainProperties: {
                     activeUser: {
-                        address: accountTrader, privateKey: traderPK,
+                        address: accountTrader,
+                        privateKey: traderPK
                     },
                     userLogicInstance: userLogic,
                     producingAssetLogicInstance: assetProducingRegistry,
                     marketLogicInstance: marketLogic,
-                    web3,
+                    web3
                 },
                 offChainDataSource: {
-                    baseUrl: 'http://localhost:3030',
+                    baseUrl: 'http://localhost:3030'
                 },
-                logger,
+                logger
             };
 
             const demandOffchainProps: Market.Demand.DemandOffchainproperties = {
@@ -127,14 +158,13 @@ describe('Market-Facade', () => {
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
                 targetWhPerPeriod: 10,
-                registryCompliance: GeneralLib.Compliance.EEC,
+                registryCompliance: GeneralLib.Compliance.EEC
             };
 
             const demandProps: Market.Demand.DemandOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
-                demandOwner: conf.blockchainProperties.activeUser.address,
-
+                demandOwner: conf.blockchainProperties.activeUser.address
             };
             assert.equal(await Market.Demand.getDemandListLength(conf), 0);
 
@@ -145,7 +175,7 @@ describe('Market-Facade', () => {
             delete demand.configuration;
             delete demand.propertiesDocumentHash;
 
-            assert.deepEqual((demand as any), {
+            assert.deepEqual(demand as any, {
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Demand',
@@ -163,22 +193,19 @@ describe('Market-Facade', () => {
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
                     timeframe: 3,
-                    typeOfPublicSupport: 'string',
-
-                },
+                    typeOfPublicSupport: 'string'
+                }
             });
-
         });
 
         it('should return demand', async () => {
-
-            const demand: Market.Demand.Entity = await (new Market.Demand.Entity('0', conf)).sync();
+            const demand: Market.Demand.Entity = await new Market.Demand.Entity('0', conf).sync();
 
             delete demand.proofs;
             delete demand.configuration;
             delete demand.propertiesDocumentHash;
 
-            assert.deepEqual((demand as any), {
+            assert.deepEqual(demand as any, {
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Demand',
@@ -196,20 +223,17 @@ describe('Market-Facade', () => {
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
                     timeframe: 3,
-                    typeOfPublicSupport: 'string',
-
-                },
+                    typeOfPublicSupport: 'string'
+                }
             });
-
         });
     });
 
     describe('Supply-Facade', () => {
         it('should onboard an asset', async () => {
-
             conf.blockchainProperties.activeUser = {
                 address: accountDeployment,
-                privateKey: privateKeyDeployment,
+                privateKey: privateKeyDeployment
             };
 
             const assetProps: Asset.ProducingAsset.OnChainProperties = {
@@ -221,7 +245,7 @@ describe('Market-Facade', () => {
                 matcher: [{ address: matcher }],
                 propertiesDocumentHash: null,
                 url: null,
-                maxOwnerChanges: 3,
+                maxOwnerChanges: 3
             };
 
             const assetPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
@@ -238,37 +262,44 @@ describe('Market-Facade', () => {
                 assetType: Asset.ProducingAsset.Type.Wind,
                 complianceRegistry: Asset.ProducingAsset.Compliance.EEC,
                 otherGreenAttributes: '',
-                typeOfPublicSupport: '',
+                typeOfPublicSupport: ''
             };
 
             assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 0);
 
-            const asset = await Asset.ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+            const asset = await Asset.ProducingAsset.createAsset(
+                assetProps,
+                assetPropsOffChain,
+                conf
+            );
         });
 
         it('should onboard an supply', async () => {
-
             conf.blockchainProperties.activeUser = {
                 address: assetOwnerAddress,
-                privateKey: assetOwnerPK,
+                privateKey: assetOwnerPK
             };
 
             const supplyOffChainProperties: Market.Supply.SupplyOffchainProperties = {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 availableWh: 10,
-                timeframe: GeneralLib.TimeFrame.hourly,
+                timeframe: GeneralLib.TimeFrame.hourly
             };
 
             const supplyProps: Market.Supply.SupplyOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
-                assetId: 0,
+                assetId: 0
             };
 
             assert.equal(await Market.Supply.getSupplyListLength(conf), 0);
 
-            const supply = await Market.Supply.createSupply(supplyProps, supplyOffChainProperties, conf);
+            const supply = await Market.Supply.createSupply(
+                supplyProps,
+                supplyOffChainProperties,
+                conf
+            );
 
             assert.equal(await Market.Supply.getSupplyListLength(conf), 1);
             delete supply.proofs;
@@ -284,14 +315,13 @@ describe('Market-Facade', () => {
                     availableWh: 10,
                     currency: 1,
                     price: 10,
-                    timeframe: 3,
-                },
+                    timeframe: 3
+                }
             });
         });
 
         it('should return supply', async () => {
-
-            const supply: Market.Supply.Entity = await (new Market.Supply.Entity('0', conf)).sync();
+            const supply: Market.Supply.Entity = await new Market.Supply.Entity('0', conf).sync();
 
             delete supply.proofs;
             delete supply.configuration;
@@ -306,20 +336,18 @@ describe('Market-Facade', () => {
                     availableWh: 10,
                     currency: 1,
                     price: 10,
-                    timeframe: 3,
-                },
+                    timeframe: 3
+                }
             });
         });
     });
 
     describe('Agreement-Facade', () => {
-
         let startTime;
         it('should create an agreement', async () => {
-
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
-                privateKey: traderPK,
+                privateKey: traderPK
             };
 
             startTime = Date.now();
@@ -330,12 +358,12 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly,
+                timeframe: GeneralLib.TimeFrame.hourly
             };
 
             const matcherOffchainProps: MatcherOffchainProperties = {
                 currentWh: 0,
-                currentPeriod: 0,
+                currentPeriod: 0
             };
 
             const agreementProps: Market.Agreement.AgreementOnChainProperties = {
@@ -345,12 +373,15 @@ describe('Market-Facade', () => {
                 matcherPropertiesDocumentHash: null,
                 demandId: 0,
                 supplyId: 0,
-                allowedMatcher: [],
-
+                allowedMatcher: []
             };
 
             const agreement = await Market.Agreement.createAgreement(
-                agreementProps, agreementOffchainProps, matcherOffchainProps, conf);
+                agreementProps,
+                agreementOffchainProps,
+                matcherOffchainProps,
+                conf
+            );
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
@@ -368,7 +399,7 @@ describe('Market-Facade', () => {
                 matcherDBURL: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
-                    currentWh: 0,
+                    currentWh: 0
                 },
                 offChainProperties: {
                     currency: 1,
@@ -376,14 +407,16 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: 3,
-                },
+                    timeframe: 3
+                }
             });
         });
 
         it('should return an agreement', async () => {
-
-            const agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity('0', conf)).sync();
+            const agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
+                '0',
+                conf
+            ).sync();
 
             delete agreement.proofs;
             delete agreement.configuration;
@@ -402,7 +435,7 @@ describe('Market-Facade', () => {
                 matcherDBURL: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
-                    currentWh: 0,
+                    currentWh: 0
                 },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
@@ -410,19 +443,21 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: 3,
-                },
+                    timeframe: 3
+                }
             });
         });
 
         it('should agree to an agreement as supply', async () => {
-
             conf.blockchainProperties.activeUser = {
                 address: assetOwnerAddress,
-                privateKey: assetOwnerPK,
+                privateKey: assetOwnerPK
             };
 
-            let agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity('0', conf)).sync();
+            let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
+                '0',
+                conf
+            ).sync();
 
             await agreement.approveAgreementSupply();
 
@@ -444,7 +479,7 @@ describe('Market-Facade', () => {
                 matcherDBURL: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
-                    currentWh: 0,
+                    currentWh: 0
                 },
                 offChainProperties: {
                     currency: 1,
@@ -452,16 +487,15 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: 3,
-                },
+                    timeframe: 3
+                }
             });
         });
 
         it('should create a 2nd agreement', async () => {
-
             conf.blockchainProperties.activeUser = {
                 address: assetOwnerAddress,
-                privateKey: assetOwnerPK,
+                privateKey: assetOwnerPK
             };
 
             startTime = Date.now();
@@ -472,13 +506,12 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly,
-
+                timeframe: GeneralLib.TimeFrame.hourly
             };
 
             const matcherOffchainProps: MatcherOffchainProperties = {
                 currentWh: 0,
-                currentPeriod: 0,
+                currentPeriod: 0
             };
 
             const agreementProps: Market.Agreement.AgreementOnChainProperties = {
@@ -488,12 +521,15 @@ describe('Market-Facade', () => {
                 matcherPropertiesDocumentHash: null,
                 demandId: 0,
                 supplyId: 0,
-                allowedMatcher: [],
-
+                allowedMatcher: []
             };
 
             const agreement = await Market.Agreement.createAgreement(
-                agreementProps, agreementOffchainProps, matcherOffchainProps, conf);
+                agreementProps,
+                agreementOffchainProps,
+                matcherOffchainProps,
+                conf
+            );
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
@@ -511,7 +547,7 @@ describe('Market-Facade', () => {
                 matcherDBURL: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
-                    currentWh: 0,
+                    currentWh: 0
                 },
                 offChainProperties: {
                     currency: 1,
@@ -519,20 +555,21 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: 3,
-                },
-
+                    timeframe: 3
+                }
             });
         });
 
         it('should agree to an agreement as demand', async () => {
-
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
-                privateKey: traderPK,
+                privateKey: traderPK
             };
 
-            let agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity('1', conf)).sync();
+            let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
+                '1',
+                conf
+            ).sync();
 
             await agreement.approveAgreementDemand();
 
@@ -554,7 +591,7 @@ describe('Market-Facade', () => {
                 matcherDBURL: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
-                    currentWh: 0,
+                    currentWh: 0
                 },
                 offChainProperties: {
                     currency: 1,
@@ -562,24 +599,25 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: 3,
-                },
-
+                    timeframe: 3
+                }
             });
-
         });
 
         it('should change matcherProperties', async () => {
             conf.blockchainProperties.activeUser = {
                 address: matcher,
-                privateKey: matcherPK,
+                privateKey: matcherPK
             };
 
-            let agreement: Market.Agreement.Entity = await (new Market.Agreement.Entity('1', conf)).sync();
+            let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
+                '1',
+                conf
+            ).sync();
 
             const matcherOffchainProps: MatcherOffchainProperties = {
                 currentWh: 100,
-                currentPeriod: 0,
+                currentPeriod: 0
             };
 
             await agreement.setMatcherProperties(matcherOffchainProps);
@@ -602,7 +640,7 @@ describe('Market-Facade', () => {
                 matcherDBURL: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
-                    currentWh: 100,
+                    currentWh: 100
                 },
                 offChainProperties: {
                     currency: 1,
@@ -610,11 +648,9 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: 3,
-                },
-
+                    timeframe: 3
+                }
             });
-
         });
     });
 });

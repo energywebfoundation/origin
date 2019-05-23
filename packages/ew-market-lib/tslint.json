@@ -1,8 +1,12 @@
 {
-  "extends": [
-    "tslint:latest"
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-sonarts"],
+  "rulesDirectory": [
+    "node_modules/tslint-lines-between-class-members"
   ],
   "rules": {
+    "no-unused-expression": true,
+    "no-unused-variable": true,
     "class-name": true,
     "comment-format": [
       true,
@@ -10,44 +14,48 @@
     ],
     "indent": [
       true,
-      "spaces"
+      "spaces",
+      4
     ],
+    "no-console": false,
+    "max-line-length": false,
     "radix": false,
     "ordered-imports": false,
-    "no-trailing-whitespace": false,
-    "prefer-template": false,
-    "no-import-side-effect": false,
-    "no-require-imports": false,
-    "eofline": false,
-    "import-spacing": false,
-    "typedef": [
-      false
+    "no-trailing-whitespace": true,
+    "prefer-template": [
+      true,
+      "allow-single-concat"
     ],
+    "no-import-side-effect": false,
+    "no-require-imports": true,
+    "eofline": true,
+    "import-spacing": true,
+    "typedef": true,
     "react-unused-props-and-state": false,
     "interface-name": [
-      false
+      true,
+      "always-prefix"
     ],
-    "member-access": [
-      false
-    ],
+    "member-access": false,
     "react-tsx-curly-spacing": [
       false
     ],
-    "curly": false,
+    "lines-between-class-members": true,
+    "curly": true,
     "export-name": false,
     "import-name": false,
-    "no-any": false,
+    "no-any": true,
     "prefer-type-cast": false,
-    "no-unsafe-any": false,
-    "no-default-export": false,
+    "no-default-export": true,
     "no-relative-imports": false,
     "no-duplicate-variable": true,
+    "no-consecutive-blank-lines": true,
     "no-eval": true,
     "no-increment-decrement": false,
     "no-internal-module": true,
     "no-unsafe-finally": true,
     "no-var-keyword": true,
-    "newline-before-return": false,
+    "newline-before-return": true,
     "strict-boolean-expressions": false,
     "react-a11y-anchors": false,
     "react-a11y-role-has-required-aria-props": false,
@@ -79,7 +87,7 @@
     ],
     "underscore-consistent-invocation": false,
     "typedef-whitespace": [
-      false,
+      true,
       {
         "call-signature": "nospace",
         "index-signature": "nospace",

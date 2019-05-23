@@ -33,58 +33,60 @@ export interface DemandOffchainproperties {
     registryCompliance?: GeneralLib.Compliance;
 }
 
-export interface DemandOnChainProperties extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
+export interface DemandOnChainProperties
+    extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
     demandOwner: string;
 }
 
-export const getDemandListLength = async (configuration: GeneralLib.Configuration.Entity): Promise<number> => {
-
+export const getDemandListLength = async (
+    configuration: GeneralLib.Configuration.Entity
+): Promise<number> => {
     return configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength();
-
 };
 
-export const createDemand =
-    async (demandPropertiesOnChain: DemandOnChainProperties,
-           demandPropertiesOffChain: DemandOffchainproperties,
-           configuration: GeneralLib.Configuration.Entity): Promise<Entity> => {
-        const demand = new Entity(null, configuration);
+export const createDemand = async (
+    demandPropertiesOnChain: DemandOnChainProperties,
+    demandPropertiesOffChain: DemandOffchainproperties,
+    configuration: GeneralLib.Configuration.Entity
+): Promise<Entity> => {
+    const demand = new Entity(null, configuration);
 
-        const offChainStorageProperties =
-            demand.prepareEntityCreation(
-                demandPropertiesOnChain,
-                demandPropertiesOffChain,
-                DemandOffchainpropertiesSchema,
-                demand.getUrl());
+    const offChainStorageProperties = demand.prepareEntityCreation(
+        demandPropertiesOnChain,
+        demandPropertiesOffChain,
+        DemandOffchainpropertiesSchema,
+        demand.getUrl()
+    );
 
-        if (configuration.offChainDataSource) {
-            demandPropertiesOnChain.url = demand.getUrl();
-            demandPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    if (configuration.offChainDataSource) {
+        demandPropertiesOnChain.url = demand.getUrl();
+        demandPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    }
+
+    const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
+        demandPropertiesOnChain.propertiesDocumentHash,
+        demandPropertiesOnChain.url,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
         }
+    );
 
-        const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
-            demandPropertiesOnChain.propertiesDocumentHash,
-            demandPropertiesOnChain.url,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            },
-        );
+    demand.id = configuration.blockchainProperties.web3.utils
+        .hexToNumber(tx.logs[0].topics[1])
+        .toString();
 
-        demand.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
+    await demand.putToOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
 
-        await demand.putToOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    if (configuration.logger) {
+        configuration.logger.info(`Demand ${demand.id} created`);
+    }
 
-        if (configuration.logger) {
-            configuration.logger.info(`Demand ${demand.id} created`);
-        }
+    return demand.sync();
+};
 
-
-        return demand.sync();
-
-    };
-
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements DemandOnChainProperties {
-
+export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
+    implements DemandOnChainProperties {
     offChainProperties: DemandOffchainproperties;
     propertiesDocumentHash: string;
     url: string;
@@ -106,7 +108,9 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const demand = await this.configuration.blockchainProperties.marketLogicInstance.getDemand(this.id);
+            const demand = await this.configuration.blockchainProperties.marketLogicInstance.getDemand(
+                this.id
+            );
 
             this.propertiesDocumentHash = demand._propertiesDocumentHash;
             this.url = demand._documentDBURL;
@@ -117,10 +121,8 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Demand ${this.id} synced`);
             }
-
-
         }
-        return this;
 
+        return this;
     }
 }

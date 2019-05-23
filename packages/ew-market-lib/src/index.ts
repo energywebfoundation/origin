@@ -17,5 +17,16 @@
 import * as Demand from './blockchain-facade/Demand';
 import * as Supply from './blockchain-facade/Supply';
 import * as Agreement from './blockchain-facade/Agreement';
-import {createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
+import { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
+
+import MarketContractLookupJSON from '../build/contracts/MarketContractLookup.json';
+import MarketDBJSON from '../build/contracts/MarketDB.json';
+import MarketLogicJSON from '../build/contracts/MarketLogic.json';
+import AgreementLogicJSON from '../build/contracts/AgreementLogic.json';
+
+export { MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON };
+export { MarketLogic } from './wrappedContracts/MarketLogic';
+export { MarketContractLookup } from './wrappedContracts/MarketContractLookup';
+export { migrateMarketRegistryContracts } from './utils/migrateContracts';
+
 export { Demand, Supply, Agreement, createBlockchainProperties };
