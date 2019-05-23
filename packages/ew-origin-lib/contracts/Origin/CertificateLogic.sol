@@ -34,13 +34,13 @@ import "../../contracts/Interfaces/TradableEntityDBInterface.sol";
 import "ew-asset-registry-lib/contracts/Asset/AssetProducingDB.sol";
 
 import "../../contracts/Origin/CertificateSpecificDB.sol";
-
+import "../../contracts/Origin/CertificateSpecificContract.sol";
 
 contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntityLogic, TradableEntityContract {
 
     /// @notice Logs the creation of an event
     event LogCreatedCertificate(uint indexed _certificateId, uint powerInW, address owner);
-    event LogCertificateRetired(uint indexed _certificateId, bool _retire);
+    event LogCertificateRetired(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
 
     /// @notice constructor
@@ -50,7 +50,7 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         AssetContractLookupInterface _assetContractLookup,
         OriginContractLookupInterface _originContractLookup
     )
-        TradableEntityLogic(_assetContractLookup, _originContractLookup)  public { }
+    TradableEntityLogic(_assetContractLookup, _originContractLookup)  public { }
 
     /**
         ERC721 functions to overwrite
@@ -146,29 +146,42 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         external
     {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
-        require(cert.tradableEntity.owner == msg.sender);
-        require(cert.certificateSpecific.children.length == 0);
-        if (!cert.certificateSpecific.retired) {
-            retireCertificateAuto( _certificateId);
+        require(cert.tradableEntity.owner == msg.sender, "You have to be the owner of the contract.");
+        require(
+            cert.certificateSpecific.children.length == 0,
+            "Unable to split certificates that have already been split"
+        );
+
+        if (cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired)) {
+            retireCertificateAuto(_certificateId);
         }
     }
 
     /// @notice Splits a certificate into two smaller ones, where (total - _power = 2ndCertificate)
     /// @param _certificateId The id of the certificate
-    /// @param _certificateId The amount of power in W for the 1st certificate
-    function splitCertificate(uint _certificateId, uint _power) external
-    {
+    /// @param _power The amount of power in W for the 1st certificate
+    function splitCertificate(uint _certificateId, uint _power) external {
         CertificateDB.Certificate memory parent = CertificateDB(address(db)).getCertificate(_certificateId);
-        require (msg.sender == parent.tradableEntity.owner || checkMatcher(parent.tradableEntity.escrow));
-        require(parent.tradableEntity.powerInW > _power);
-        require(!parent.certificateSpecific.retired);
-        require(parent.certificateSpecific.children.length == 0);
+        require(
+            msg.sender == parent.tradableEntity.owner || checkMatcher(parent.tradableEntity.escrow),
+            "You are not the owner of the certificate"
+        );
+        require(parent.tradableEntity.powerInW > _power, "The certificate doesn't have enough power to be split.");
+        require(
+            parent.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
+            "Unable to split certificate. You can only split Active certificates."
+        );
+        require(
+            parent.certificateSpecific.children.length == 0,
+            "This certificate has already been split."
+        );
 
-        (uint childIdOne,uint childIdTwo) = CertificateDB(address(db)).createChildCertificate(_certificateId, _power);
+        (uint childIdOne, uint childIdTwo) = CertificateDB(address(db)).createChildCertificate(_certificateId, _power);
         emit Transfer(address(0), parent.tradableEntity.owner, childIdOne);
         emit Transfer(address(0), parent.tradableEntity.owner, childIdTwo);
-        emit LogCertificateSplit(_certificateId, childIdOne,childIdTwo);
 
+        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Split);
+        emit LogCertificateSplit(_certificateId, childIdOne, childIdTwo);
     }
 
     /// @notice gets the certificate
@@ -196,9 +209,11 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
     /// @param _certificateId The id of the requested certificate
     /// @return flag whether the certificate is retired
     function isRetired(uint _certificateId) external view returns (bool) {
-        return CertificateDB(address(db)).getCertificate(_certificateId).certificateSpecific.retired;
+        return CertificateDB(address(db))
+            .getCertificate(_certificateId)
+            .certificateSpecific.status == uint(CertificateSpecificContract.Status.Retired);
     }
-
+    
     /**
         internal functions
     */
@@ -206,8 +221,8 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
 	/// @param _certificateId The id of the requested certificate
     function retireCertificateAuto(uint _certificateId) internal {
         db.setTradableEntityEscrowExternal(_certificateId, new address[](0));
-        CertificateSpecificDB(address(db)).setRetired(_certificateId, true);
-        emit LogCertificateRetired(_certificateId, true);
+        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
+        emit LogCertificateRetired(_certificateId);
     }
 
     /// @notice Creates a certificate of origin. Checks in the AssetRegistry if requested wh are available.
@@ -255,16 +270,22 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
     )
         internal
     {
-        require(_certificate.certificateSpecific.children.length == 0);
-        require(!_certificate.certificateSpecific.retired);
-        require(_certificate.certificateSpecific.ownerChangeCounter < _certificate.certificateSpecific.maxOwnerChanges);
+        require(
+            _certificate.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
+            "You can only change owners for active contracts."
+        );
+        require(_certificate.certificateSpecific.children.length == 0, "This certificates has children and it's owner cannot be changed.");
+        require(
+            _certificate.certificateSpecific.ownerChangeCounter < _certificate.certificateSpecific.maxOwnerChanges,
+            "Maximum number of owner changes is surpassed."
+        );
         uint ownerChangeCounter = _certificate.certificateSpecific.ownerChangeCounter + 1;
 
         CertificateDB(address(db)).setOwnerChangeCounterResetEscrow(_certificateId,ownerChangeCounter);
 
         if(_certificate.certificateSpecific.maxOwnerChanges <= ownerChangeCounter){
-            CertificateSpecificDB(address(db)).setRetired(_certificateId, true);
-            emit LogCertificateRetired(_certificateId, true);
+            CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
+            emit LogCertificateRetired(_certificateId);
         }
     }
 }

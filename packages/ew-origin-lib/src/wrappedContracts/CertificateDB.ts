@@ -406,10 +406,10 @@ export class CertificateDB extends GeneralFunctions {
         }
     }
 
-    async getRetired(_certificateId: number, txParams?: SpecialTx) {
+    async isRetired(_certificateId: number, txParams?: SpecialTx) {
         let transactionParams;
 
-        const txData = await this.web3Contract.methods.getRetired(_certificateId).encodeABI();
+        const txData = await this.web3Contract.methods.isRetired(_certificateId).encodeABI();
 
         let gas;
 
@@ -426,7 +426,7 @@ export class CertificateDB extends GeneralFunctions {
 
             if (!txParams.gas) {
                 try {
-                    gas = await this.web3Contract.methods.getRetired(_certificateId).estimateGas({
+                    gas = await this.web3Contract.methods.isRetired(_certificateId).estimateGas({
                         from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
                     });
                 } catch (ex) {
@@ -478,7 +478,7 @@ export class CertificateDB extends GeneralFunctions {
             return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
         } else {
             return await this.web3Contract.methods
-                .getRetired(_certificateId)
+                .isRetired(_certificateId)
                 .send({ from: transactionParams.from, gas: transactionParams.gas });
         }
     }
@@ -1116,11 +1116,11 @@ export class CertificateDB extends GeneralFunctions {
         return await this.web3Contract.methods.getBalanceOf(_owner).call(txParams);
     }
 
-    async setRetired(_certificateId: number, _retired: boolean, txParams?: SpecialTx) {
+    async retire(_certificateId: number, txParams?: SpecialTx) {
         let transactionParams;
 
         const txData = await this.web3Contract.methods
-            .setRetired(_certificateId, _retired)
+            .setStatus(_certificateId, 1)
             .encodeABI();
 
         let gas;
@@ -1139,7 +1139,7 @@ export class CertificateDB extends GeneralFunctions {
             if (!txParams.gas) {
                 try {
                     gas = await this.web3Contract.methods
-                        .setRetired(_certificateId, _retired)
+                        .setStatus(_certificateId, 1)
                         .estimateGas({
                             from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
                         });
@@ -1192,7 +1192,7 @@ export class CertificateDB extends GeneralFunctions {
             return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
         } else {
             return await this.web3Contract.methods
-                .setRetired(_certificateId, _retired)
+                .setStatus(_certificateId, 1)
                 .send({ from: transactionParams.from, gas: transactionParams.gas });
         }
     }

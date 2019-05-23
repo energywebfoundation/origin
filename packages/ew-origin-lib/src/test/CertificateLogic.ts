@@ -34,7 +34,8 @@ import {
     CertificateLogic,
     migrateCertificateRegistryContracts
 } from '..';
-import * as Certificate from '..';
+import * as Certificate from '../blockchain-facade/Certificate';
+import * as TradableEntity from '../blockchain-facade/TradableEntity';
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
 import * as Asset from 'ew-asset-registry-lib';
@@ -152,9 +153,9 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should return correct balances', async () => {
-        assert.equal(await Certificate.Certificate.getCertificateListLength(conf), 0);
-        assert.equal(await Certificate.TradableEntity.getBalance(accountAssetOwner, conf), 0);
-        assert.equal(await Certificate.TradableEntity.getBalance(accountTrader, conf), 0);
+        assert.equal(await Certificate.getCertificateListLength(conf), 0);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 0);
+        assert.equal(await TradableEntity.getBalance(accountTrader, conf), 0);
     });
 
     it('should onboard tests-users', async () => {
@@ -221,13 +222,13 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should return correct balances', async () => {
-        assert.equal(await Certificate.Certificate.getCertificateListLength(conf), 1);
-        assert.equal(await Certificate.TradableEntity.getBalance(accountAssetOwner, conf), 1);
-        assert.equal(await Certificate.TradableEntity.getBalance(accountTrader, conf), 0);
+        assert.equal(await Certificate.getCertificateListLength(conf), 1);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 1);
+        assert.equal(await TradableEntity.getBalance(accountTrader, conf), 0);
     });
 
     it('should return certificate', async () => {
-        const certificate = await new Certificate.Certificate.Entity('0', conf).sync();
+        const certificate = await new Certificate.Entity('0', conf).sync();
         assert.equal(await certificate.getOwner(), accountAssetOwner);
 
         delete certificate.configuration;
@@ -245,7 +246,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockceationTime,
             parentId: '0',
@@ -259,15 +260,15 @@ describe('CertificateLogic-Facade', () => {
             address: accountAssetOwner,
             privateKey: assetOwnerPK
         };
-        let certificate = await new Certificate.Certificate.Entity('0', conf).sync();
+        let certificate = await new Certificate.Entity('0', conf).sync();
 
         await certificate.transferFrom(accountTrader);
 
-        certificate = await new Certificate.Certificate.Entity('0', conf).sync();
+        certificate = await new Certificate.Entity('0', conf).sync();
 
-        assert.equal(await Certificate.Certificate.getCertificateListLength(conf), 1);
-        assert.equal(await Certificate.TradableEntity.getBalance(accountAssetOwner, conf), 0);
-        assert.equal(await Certificate.TradableEntity.getBalance(accountTrader, conf), 1);
+        assert.equal(await Certificate.getCertificateListLength(conf), 1);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 0);
+        assert.equal(await TradableEntity.getBalance(accountTrader, conf), 1);
         assert.equal(await certificate.getOwner(), accountTrader);
         delete certificate.configuration;
         delete certificate.proofs;
@@ -283,7 +284,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockceationTime,
             parentId: '0',
@@ -296,7 +297,7 @@ describe('CertificateLogic-Facade', () => {
         await assetRegistry.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', {
             privateKey: assetSmartmeterPK
         });
-        const certificate = await new Certificate.Certificate.Entity('1', conf).sync();
+        const certificate = await new Certificate.Entity('1', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -313,7 +314,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockceationTime,
             parentId: '1',
@@ -323,7 +324,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should approve', async () => {
-        let certificate = await new Certificate.Certificate.Entity('1', conf).sync();
+        let certificate = await new Certificate.Entity('1', conf).sync();
 
         assert.equal(await certificate.getApproved(), '0x0000000000000000000000000000000000000000');
 
@@ -344,7 +345,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockceationTime,
             parentId: '1',
@@ -354,7 +355,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should set erc20-token and price for a certificate', async () => {
-        let certificate = await new Certificate.Certificate.Entity('1', conf).sync();
+        let certificate = await new Certificate.Entity('1', conf).sync();
 
         await certificate.setOnChainDirectPurchasePrice(100);
 
@@ -391,7 +392,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '100',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockceationTime,
             parentId: '1',
@@ -406,7 +407,7 @@ describe('CertificateLogic-Facade', () => {
             privateKey: traderPK
         };
 
-        const certificate = await new Certificate.Certificate.Entity('1', conf).sync();
+        const certificate = await new Certificate.Entity('1', conf).sync();
 
         let failed = false;
 
@@ -423,7 +424,7 @@ describe('CertificateLogic-Facade', () => {
     it('should buying a certificate when enough erc20 tokens are approved', async () => {
         await erc20TestToken.approve(accountAssetOwner, 100, { privateKey: traderPK });
 
-        let certificate = await new Certificate.Certificate.Entity('1', conf).sync();
+        let certificate = await new Certificate.Entity('1', conf).sync();
 
         await certificate.buyCertificate();
         certificate = await certificate.sync();
@@ -442,7 +443,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockceationTime,
             parentId: '1',
@@ -455,7 +456,7 @@ describe('CertificateLogic-Facade', () => {
         await assetRegistry.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', {
             privateKey: assetSmartmeterPK
         });
-        const certificate = await new Certificate.Certificate.Entity('2', conf).sync();
+        const certificate = await new Certificate.Entity('2', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -472,7 +473,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -487,7 +488,7 @@ describe('CertificateLogic-Facade', () => {
             privateKey: assetOwnerPK
         };
 
-        let certificate = await new Certificate.Certificate.Entity('2', conf).sync();
+        let certificate = await new Certificate.Entity('2', conf).sync();
 
         await certificate.splitCertificate(60);
 
@@ -506,7 +507,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Split.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -514,11 +515,11 @@ describe('CertificateLogic-Facade', () => {
             ownerChangerCounter: '0'
         });
 
-        const c1 = await new Certificate.Certificate.Entity('3', conf).sync();
+        const c1 = await new Certificate.Entity('3', conf).sync();
         delete c1.configuration;
         delete c1.proofs;
 
-        const c2 = await new Certificate.Certificate.Entity('4', conf).sync();
+        const c2 = await new Certificate.Entity('4', conf).sync();
         delete c2.configuration;
         delete c2.proofs;
 
@@ -533,7 +534,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -552,7 +553,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -562,7 +563,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should retire a certificate', async () => {
-        let certificate = await new Certificate.Certificate.Entity('3', conf).sync();
+        let certificate = await new Certificate.Entity('3', conf).sync();
 
         await certificate.retireCertificate();
 
@@ -585,7 +586,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: true,
+            status: Certificate.Status.Retired.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -595,7 +596,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should fail when trying to remove a non-existing matcher of a certificate', async () => {
-        let certificate = await new Certificate.Certificate.Entity('4', conf).sync();
+        let certificate = await new Certificate.Entity('4', conf).sync();
 
         let failed = false;
         try {
@@ -621,7 +622,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -631,7 +632,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should remove matcher of a certificate', async () => {
-        let certificate = await new Certificate.Certificate.Entity('4', conf).sync();
+        let certificate = await new Certificate.Entity('4', conf).sync();
 
         await certificate.removeEscrow(matcherAccount);
 
@@ -650,7 +651,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -660,7 +661,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should add a matcher to a certificate', async () => {
-        let certificate = await new Certificate.Certificate.Entity('4', conf).sync();
+        let certificate = await new Certificate.Entity('4', conf).sync();
 
         await certificate.addEscrowForEntity(matcherAccount);
 
@@ -679,7 +680,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockceationTime,
             parentId: '2',
@@ -692,7 +693,7 @@ describe('CertificateLogic-Facade', () => {
         await assetRegistry.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', {
             privateKey: assetSmartmeterPK
         });
-        const certificate = await new Certificate.Certificate.Entity('5', conf).sync();
+        const certificate = await new Certificate.Entity('5', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -709,7 +710,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockceationTime,
             parentId: '5',
@@ -719,7 +720,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should fail using safeTransferFrom without calldata to an address', async () => {
-        const certificate = await new Certificate.Certificate.Entity('5', conf).sync();
+        const certificate = await new Certificate.Entity('5', conf).sync();
 
         let failed = false;
 
@@ -749,7 +750,7 @@ describe('CertificateLogic-Facade', () => {
         await userLogic.setRoles(testReceiverAddress, buildRights([
             Role.AssetManager
         ]), { privateKey: privateKeyDeployment });
-        let certificate = await new Certificate.Certificate.Entity('5', conf).sync();
+        let certificate = await new Certificate.Entity('5', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress);
 
@@ -768,7 +769,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockceationTime,
             parentId: '5',
@@ -781,7 +782,7 @@ describe('CertificateLogic-Facade', () => {
         await assetRegistry.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', {
             privateKey: assetSmartmeterPK
         });
-        const certificate = await new Certificate.Certificate.Entity('6', conf).sync();
+        const certificate = await new Certificate.Entity('6', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -798,7 +799,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockceationTime,
             parentId: '6',
@@ -808,7 +809,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should fail using safeTransferFrom calldata to an address', async () => {
-        const certificate = await new Certificate.Certificate.Entity('6', conf).sync();
+        const certificate = await new Certificate.Entity('6', conf).sync();
 
         let failed = false;
 
@@ -838,7 +839,7 @@ describe('CertificateLogic-Facade', () => {
         await userLogic.setRoles(testReceiverAddress, buildRights([
             Role.AssetManager
         ]), { privateKey: privateKeyDeployment });
-        let certificate = await new Certificate.Certificate.Entity('6', conf).sync();
+        let certificate = await new Certificate.Entity('6', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress, '0x001');
 
@@ -857,7 +858,7 @@ describe('CertificateLogic-Facade', () => {
             onCHainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            retired: false,
+            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockceationTime,
             parentId: '6',
@@ -865,7 +866,7 @@ describe('CertificateLogic-Facade', () => {
             ownerChangerCounter: '1'
         });
 
-        let allEvents = await Certificate.Certificate.getAllCertificateEvents(0, conf);
+        let allEvents = await Certificate.getAllCertificateEvents(0, conf);
 
         /*
         for (let i = 0; i < allEvents.length; i++) {
@@ -877,7 +878,7 @@ describe('CertificateLogic-Facade', () => {
         }
         console.log('-----------------');
        */
-        allEvents = await Certificate.Certificate.getAllCertificateEvents(1, conf);
+        allEvents = await Certificate.getAllCertificateEvents(1, conf);
 
         /*
         for (let i = 0; i < allEvents.length; i++) {
@@ -889,7 +890,7 @@ describe('CertificateLogic-Facade', () => {
         }
         console.log('-----------------');
         */
-        allEvents = await Certificate.Certificate.getAllCertificateEvents(2, conf);
+        allEvents = await Certificate.getAllCertificateEvents(2, conf);
 
         /*
         for (let i = 0; i < allEvents.length; i++) {
@@ -901,7 +902,7 @@ describe('CertificateLogic-Facade', () => {
         }
         console.log('-----------------');
         */
-        allEvents = await Certificate.Certificate.getAllCertificateEvents(3, conf);
+        allEvents = await Certificate.getAllCertificateEvents(3, conf);
         /*
         for (let i = 0; i < allEvents.length; i++) {
             console.log('');
@@ -912,7 +913,7 @@ describe('CertificateLogic-Facade', () => {
         }
         console.log('-----------------');
         */
-        allEvents = await Certificate.Certificate.getAllCertificateEvents(4, conf);
+        allEvents = await Certificate.getAllCertificateEvents(4, conf);
 
         /*
         for (let i = 0; i < allEvents.length; i++) {
@@ -924,7 +925,7 @@ describe('CertificateLogic-Facade', () => {
         }
         console.log('-----------------');
         */
-        allEvents = await Certificate.Certificate.getAllCertificateEvents(5, conf);
+        allEvents = await Certificate.getAllCertificateEvents(5, conf);
 
         /*
         for (let i = 0; i < allEvents.length; i++) {
@@ -936,7 +937,7 @@ describe('CertificateLogic-Facade', () => {
         }
         console.log('-----------------');
         */
-        allEvents = await Certificate.Certificate.getAllCertificateEvents(6, conf);
+        allEvents = await Certificate.getAllCertificateEvents(6, conf);
 
         /*
         for (let i = 0; i < allEvents.length; i++) {

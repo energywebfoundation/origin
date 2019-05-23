@@ -249,7 +249,7 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
         view
         returns (TradableEntityContract.TradableEntity storage _entity)
     {
-        require(msg.sender == owner || msg.sender == address(this));
+        require(msg.sender == owner || msg.sender == address(this), "Not the owner.");
         return energyList[_entityId].tradableEntity;
     }
 }

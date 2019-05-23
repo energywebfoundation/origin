@@ -261,7 +261,7 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
     /// @param _old owner of an entity before transfer
     /// @param _new owner of an entity after the transfer
     function changeCertOwner(address _old, address _new) internal {
-        require(tokenAmountMapping[_old] > 0);
+        require(tokenAmountMapping[_old] > 0, "Token amount is 0.");
         tokenAmountMapping[_old]--;
         tokenAmountMapping[_new]++;
     }

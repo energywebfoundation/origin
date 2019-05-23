@@ -35,12 +35,13 @@ import "../../contracts/Origin/CertificateSpecificContract.sol";
 
 
 
-contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleManagement, TradableEntityLogic, TradableEntityContract, CertificateSpecificContract {
+contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface,
+    RoleManagement, TradableEntityLogic, TradableEntityContract, CertificateSpecificContract {
 
     /// @notice Logs the creation of an event
     event LogCreatedBundle(uint indexed _bundleId, uint powerInW, address owner);
     /// @notice Logs the request of an retirement of a bundle
-    event LogBundleRetired(uint indexed _bundleId, bool _retire);
+    event LogBundleRetired(uint indexed _bundleId);
     /// @notice Logs when the ownership of a bundle has changed
     event LogBundleOwnerChanged(uint indexed _bundleId, address _oldOwner, address _newOwner, address _oldEscrow);
     /// @notice Logs when an escrow for a bunlde gets removed
@@ -57,8 +58,7 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
     )
         TradableEntityLogic(_assetContractLookup, _originContractLookup)
         public
-    {
-    }
+    {}
 
     /**
         ERC721 functions to overwrite
@@ -128,8 +128,11 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
         external
     {
         EnergyCertificateBundleDB.EnergyCertificateBundle memory bundle = EnergyCertificateBundleDB(address(db)).getBundle(_bundleId);
-        require(bundle.tradableEntity.owner == msg.sender);
-        require(bundle.tradableEntity.escrow.length < OriginContractLookupInterface(owner).maxMatcherPerCertificate());
+        require(bundle.tradableEntity.owner == msg.sender, "You are not the owner of the bundle.");
+        require(
+            bundle.tradableEntity.escrow.length < OriginContractLookupInterface(owner).maxMatcherPerCertificate(),
+            "Already has a maximum number of escrows."
+        );
         TradableEntityDBInterface(address(db)).addEscrowForEntity(_bundleId, _escrow);
         emit LogEscrowAdded(_bundleId, _escrow);
     }
@@ -152,19 +155,27 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
     /// @param _bundleId The id of the bundle
     function retireBundle(uint _bundleId) external {
         EnergyCertificateBundleDB.EnergyCertificateBundle memory bundle = EnergyCertificateBundleDB(address(db)).getBundle(_bundleId);
-        require(bundle.tradableEntity.owner == msg.sender);
-        require(bundle.certificateSpecific.children.length == 0);
-        if (!bundle.certificateSpecific.retired) {
-            retireBundleAuto(_bundleId);
-        }
+        require(bundle.tradableEntity.owner == msg.sender, "You are not the owner of the bundle.");
+        require(bundle.certificateSpecific.children.length == 0, "Bundles with children cannot be retired.");
+        require(
+            bundle.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
+            "Can only retire Active certificates"
+        );
+        retireBundleAuto(_bundleId);
     }
 
     /// @notice Removes an escrow-address of a bundle
     /// @param _bundleId The id of the bundle
     /// @param _escrow The address to be removed
     function removeEscrow(uint _bundleId, address _escrow) external {
-        require(EnergyCertificateBundleDB(address(db)).getBundle(_bundleId).tradableEntity.owner == msg.sender);
-        require(EnergyCertificateBundleDB(address(db)).removeEscrow(_bundleId, _escrow));
+        require(
+            EnergyCertificateBundleDB(address(db)).getBundle(_bundleId).tradableEntity.owner == msg.sender,
+            "You are not the owner of the bundle."
+        );
+        require(
+            EnergyCertificateBundleDB(address(db)).removeEscrow(_bundleId, _escrow),
+            "Unable to remove escrow."
+        );
         emit LogEscrowRemoved(_bundleId, _escrow);
     }
 
@@ -196,7 +207,9 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
     /// @param _bundleId The id of the requested bundle
     /// @return the retired flag
     function isRetired(uint _bundleId) external view returns (bool) {
-        return EnergyCertificateBundleDB(address(db)).getBundle(_bundleId).certificateSpecific.retired;
+        return EnergyCertificateBundleDB(address(db))
+            .getBundle(_bundleId)
+            .certificateSpecific.status == uint(CertificateSpecificContract.Status.Retired);
     }
 
     /**
@@ -211,7 +224,8 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
         internal
         returns (uint)
     {
-        AssetProducingDB.Asset memory asset =  AssetProducingInterface(address(assetContractLookup.assetProducingRegistry())).getAssetById(_assetId);
+        AssetProducingDB.Asset memory asset = AssetProducingInterface(address(assetContractLookup.assetProducingRegistry()))
+            .getAssetById(_assetId);
 
         TradableEntityContract.TradableEntity memory tradableEntity = TradableEntityContract.TradableEntity({
             assetId: _assetId,
@@ -225,7 +239,7 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
         });
 
         CertificateSpecific memory certificateSpecific = CertificateSpecific({
-            retired: false,
+            status: uint(CertificateSpecificContract.Status.Active),
             dataLog: asset.assetGeneral.lastSmartMeterReadFileHash,
             creationTime: block.timestamp,
             parentId: EnergyCertificateBundleDB(address(db)).getBundleListLength(),
@@ -246,13 +260,12 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
 
     }
 
-    /// @notice automaticly retires a bundle
+    /// @notice automatically retires a bundle
     /// @param _bundleId The id of the requested bundle
     function retireBundleAuto(uint _bundleId) internal{
-
         db.setTradableEntityEscrowExternal(_bundleId, new address[](0));
-        EnergyCertificateBundleDB(address(db)).setRetired(_bundleId, true);
-        emit LogBundleRetired(_bundleId, true);
+        EnergyCertificateBundleDB(address(db)).setStatus(_bundleId, CertificateSpecificContract.Status.Retired);
+        emit LogBundleRetired(_bundleId);
     }
 
     /// @notice calls the safe-transfer checks
@@ -284,9 +297,15 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
     )
         internal
     {
-        require(_bundle.certificateSpecific.children.length == 0);
-        require(!_bundle.certificateSpecific.retired);
-        require(_bundle.certificateSpecific.ownerChangeCounter < _bundle.certificateSpecific.maxOwnerChanges);
+        require(_bundle.certificateSpecific.children.length == 0, "Bundles with children cannot be transferred.");
+        require(
+            _bundle.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
+            "Bundle has to be active to be transferred."
+        );
+        require(
+            _bundle.certificateSpecific.ownerChangeCounter < _bundle.certificateSpecific.maxOwnerChanges,
+            "Bundle has already changed too many owners."
+        );
         uint ownerChangeCounter = _bundle.certificateSpecific.ownerChangeCounter + 1;
 
         EnergyCertificateBundleDB(address(db)).setOwnerChangeCounter(_bundleId, ownerChangeCounter);
@@ -294,8 +313,8 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface, RoleM
 
         if(_bundle.certificateSpecific.maxOwnerChanges <= ownerChangeCounter){
          //   EnergyCertificateBundleDB(db).setBundleEscrow(_bundleId, empty);
-            EnergyCertificateBundleDB(address(db)).setRetired(_bundleId, true);
-            emit LogBundleRetired(_bundleId, true);
+            EnergyCertificateBundleDB(address(db)).setStatus(_bundleId, CertificateSpecificContract.Status.Retired);
+            emit LogBundleRetired(_bundleId);
         }
     }
 }

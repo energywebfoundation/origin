@@ -20,13 +20,19 @@ pragma experimental ABIEncoderV2;
 contract CertificateSpecificContract {
 
     struct CertificateSpecific {
-        bool retired;
+        uint status;
         string dataLog;
         uint creationTime;
         uint parentId;
         uint[] children;
         uint maxOwnerChanges;
         uint ownerChangeCounter;
+    }
+
+    enum Status {
+        Active,
+        Retired,
+        Split
     }
 
 }

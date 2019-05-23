@@ -34,6 +34,7 @@ import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
 import Erc721TestReceiverJSON from '../../build/contracts/TestReceiver.json';
 import { deploy } from 'ew-utils-deployment';
 import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '..';
+import * as Certificate from '../blockchain-facade/Certificate';
 
 describe('CertificateLogic', () => {
     let assetRegistryContract: AssetContractLookup;
@@ -382,7 +383,7 @@ describe('CertificateLogic', () => {
                 const cert = await certificateLogic.getCertificate(0);
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 0);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -444,7 +445,7 @@ describe('CertificateLogic', () => {
                 const certParent = await certificateLogic.getCertificate(0);
                 const certificateSpecificParent = certParent.certificateSpecific;
 
-                assert.isFalse(certificateSpecificParent.retired);
+                assert.equal(certificateSpecificParent.status, Certificate.Status.Split);
                 assert.equal(certificateSpecificParent.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecificParent.parentId, 0);
                 assert.equal(certificateSpecificParent.children.length, 2);
@@ -471,7 +472,7 @@ describe('CertificateLogic', () => {
                 // child 1
                 const certChildOne = await certificateLogic.getCertificate(1);
                 const certificateSpecificChildOne = certChildOne.certificateSpecific;
-                assert.isFalse(certificateSpecificChildOne.retired);
+                assert.equal(certificateSpecificChildOne.status, Certificate.Status.Active);
                 assert.equal(certificateSpecificChildOne.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecificChildOne.parentId, 0);
                 assert.equal(certificateSpecificChildOne.children.length, 0);
@@ -498,7 +499,7 @@ describe('CertificateLogic', () => {
                 // child 2
                 const certChildTwo = await certificateLogic.getCertificate(2);
                 const certificateSpecificChildTwo = certChildTwo.certificateSpecific;
-                assert.isFalse(certificateSpecificChildTwo.retired);
+                assert.equal(certificateSpecificChildTwo.status, Certificate.Status.Active);
                 assert.equal(certificateSpecificChildTwo.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecificChildTwo.parentId, 0);
                 assert.equal(certificateSpecificChildTwo.children.length, 0);
@@ -689,7 +690,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 0);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -713,7 +714,7 @@ describe('CertificateLogic', () => {
                 );
             });
 
-            it('should be able to transfer the certiificate a 2nd time ', async () => {
+            it('should be able to transfer the certificate a 2nd time ', async () => {
                 //       await certificateLogic.approve(accountAssetOwner, 1, { privateKey: assetOwnerPK });
 
                 const tx = await certificateLogic.transferFrom(accountTrader, accountTrader, 1, {
@@ -750,9 +751,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retireEvent[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retireEvent[0].returnValues, {
                     0: '1',
-                    1: true,
                     _certificateId: '1',
-                    _retire: true
                 });
             });
 
@@ -761,7 +760,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isTrue(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 0);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -893,7 +892,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 3);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -1091,7 +1090,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 3);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -1156,9 +1155,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retireEvent[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retireEvent[0].returnValues, {
                     0: '3',
-                    1: true,
                     _certificateId: '3',
-                    _retire: true
                 });
 
                 assert.equal(await certificateLogic.getCertificateListLength(), 4);
@@ -1175,7 +1172,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isTrue(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 3);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -1258,7 +1255,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 4);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -1411,7 +1408,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 4);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -1475,9 +1472,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retireEvent[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retireEvent[0].returnValues, {
                     0: '4',
-                    1: true,
                     _certificateId: '4',
-                    _retire: true
                 });
 
                 assert.equal(await certificateLogic.getCertificateListLength(), 5);
@@ -1494,7 +1489,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isTrue(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 4);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -1756,7 +1751,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 5);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -2946,9 +2941,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retiredEvents[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retiredEvents[0].returnValues, {
                     0: '14',
-                    1: true,
                     _certificateId: '14',
-                    _retire: true
                 });
             });
 
@@ -3060,7 +3053,7 @@ describe('CertificateLogic', () => {
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3075,7 +3068,7 @@ describe('CertificateLogic', () => {
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3113,7 +3106,7 @@ describe('CertificateLogic', () => {
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3128,7 +3121,7 @@ describe('CertificateLogic', () => {
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3148,7 +3141,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 15);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -3271,7 +3264,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 15);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -3378,7 +3371,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3394,7 +3387,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3426,7 +3419,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3442,7 +3435,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3479,7 +3472,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 16);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -3532,7 +3525,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 16);
                 assert.equal(certificateSpecific.children.length, 0);
@@ -3566,7 +3559,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3582,7 +3575,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'not the enitity-owner');
+                    assert.include(ex.message, 'not the entity-owner');
                 }
 
                 assert.isTrue(failed);
@@ -3640,7 +3633,7 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.isFalse(certificateSpecific.retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 16);
                 assert.equal(certificateSpecific.children.length, 0);

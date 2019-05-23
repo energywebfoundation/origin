@@ -142,7 +142,6 @@ contract EnergyCertificateBundleDB is TradableEntityDB, TradableEntityContract, 
         view
         returns (TradableEntityContract.TradableEntity memory _entity)
     {
-
         return bundleList[_entityId].tradableEntity;
     }
 

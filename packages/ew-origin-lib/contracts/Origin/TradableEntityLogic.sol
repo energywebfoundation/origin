@@ -50,7 +50,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     event LogEscrowAdded(uint indexed _certificateId, address _escrow);
 
     modifier onlyEntityOwner(uint _entityId) {
-        require(db.getTradableEntityOwner(_entityId) == msg.sender,"not the enitity-owner");
+        require(db.getTradableEntityOwner(_entityId) == msg.sender,"not the entity-owner");
         _;
     }
 
@@ -185,7 +185,10 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         external
         onlyEntityOwner(_certificateId)
     {
-        require(db.getTradableEntityEscrowLength(_certificateId) < OriginContractLookupInterface(owner).maxMatcherPerCertificate(),"maximum amount of escrows reached");
+        require(
+            db.getTradableEntityEscrowLength(_certificateId) < OriginContractLookupInterface(owner).maxMatcherPerCertificate(),
+            "maximum amount of escrows reached"
+        );
         db.addEscrowForEntity(_certificateId, _escrow);
         emit LogEscrowAdded(_certificateId, _escrow);
     }
@@ -193,7 +196,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice initializes the contract by binding it to a logic contract
     /// @param _database Sets the logic contract
     function init(address _database, address _admin) external onlyOwner {
-        require(db == TradableEntityDBInterface(0x0));
+        require(db == TradableEntityDBInterface(0x0), "TradableEntity already initialized.");
         db = TradableEntityDBInterface(_database);
     }
 

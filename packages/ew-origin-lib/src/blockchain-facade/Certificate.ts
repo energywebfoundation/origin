@@ -20,8 +20,14 @@ import { CertificateLogic } from '..';
 import { logger } from './Logger';
 import { TransactionReceipt, Log } from 'web3/types';
 
+export enum Status {
+    Active,
+    Retired,
+    Split
+}
+
 export interface CertificateSpecific extends TradableEntity.TradableEntity.OnChainProperties {
-    retired: boolean;
+    status: number;
     dataLog: string;
     creationTime: number;
     parentId: number;
@@ -120,7 +126,7 @@ export const getAllCertificateEvents = async (
 };
 
 export class Entity extends TradableEntity.TradableEntity.Entity implements CertificateSpecific {
-    retired: boolean;
+    status: number;
     dataLog: string;
     creationTime: number;
     parentId: number;
@@ -147,7 +153,7 @@ export class Entity extends TradableEntity.TradableEntity.Entity implements Cert
             this.approvedAddress = cert.tradableEntity.approvedAddress;
 
             this.children = cert.certificateSpecific.children;
-            this.retired = cert.certificateSpecific.retired;
+            this.status = cert.certificateSpecific.status;
             this.dataLog = cert.certificateSpecific.dataLog;
             this.creationTime = cert.certificateSpecific.creationTime;
             this.parentId = cert.certificateSpecific.parentId;

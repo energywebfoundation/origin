@@ -33,7 +33,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
     }
 
     modifier onlyOwnerOrSelf {
-        require(msg.sender == owner || msg.sender == address(this),"not the contract itself or the owner");
+        require(msg.sender == owner || msg.sender == address(this), "not the contract itself or the owner");
         _;
     }
 
@@ -71,7 +71,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
         view
         returns (CertificateSpecificContract.CertificateSpecific memory _certificate)
     {
-        require(msg.sender == owner || msg.sender == address(this));
+        require(msg.sender == owner || msg.sender == address(this), "Unauthorized to get this certificate.");
         return certificateList[_certificateId].certificateSpecific;
     }
 
@@ -111,8 +111,8 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
         });
 
 
-        CertificateDB.CertificateSpecific memory certificateSpecific= CertificateSpecific({
-            retired: false,
+        CertificateDB.CertificateSpecific memory certificateSpecific = CertificateSpecific({
+            status: uint(CertificateSpecificContract.Status.Active),
             dataLog: _lastSmartMeterReadFileHash,
             creationTime: block.timestamp,
             parentId: getCertificateListLength(),
@@ -154,7 +154,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
         });
 
         CertificateDB.CertificateSpecific memory certificateSpecificOne = CertificateSpecific({
-            retired: false,
+            status: uint(CertificateSpecificContract.Status.Active),
             dataLog: parent.certificateSpecific.dataLog,
             creationTime: parent.certificateSpecific.creationTime,
             parentId: _parentId,
@@ -179,7 +179,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
         });
 
         CertificateSpecific memory certificateSpecificTwo = CertificateSpecific({
-            retired: false,
+            status: uint(CertificateSpecificContract.Status.Active),
             dataLog: parent.certificateSpecific.dataLog,
             creationTime: parent.certificateSpecific.creationTime,
             parentId: _parentId,
