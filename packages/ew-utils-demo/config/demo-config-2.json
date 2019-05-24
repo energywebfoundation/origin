@@ -253,7 +253,7 @@
             "data": 2000
         },
         {
-            "type": "INITIALIZE_CERTIFICATES",
+            "type": "SET_MARKET_CONTRACT",
             "data": {
                 "assetId": 0,
                 "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
@@ -261,7 +261,7 @@
             }
         },
         {
-            "type": "INITIALIZE_CERTIFICATES",
+            "type": "SET_MARKET_CONTRACT",
             "data": {
                 "assetId": 1,
                 "assetOwner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
@@ -269,7 +269,7 @@
             }
         },
         {
-            "type": "INITIALIZE_CERTIFICATES",
+            "type": "SET_MARKET_CONTRACT",
             "data": {
                 "assetId": 2,
                 "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",

@@ -15,207 +15,260 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
 
 import * as fs from 'fs';
-import { onboardDemo } from './onboarding'
+import { onboardDemo } from './onboarding';
 
 import * as Certificate from 'ew-origin-lib';
-import * as User from 'ew-user-registry-lib'
-import * as Asset from 'ew-asset-registry-lib'
+import * as User from 'ew-user-registry-lib';
+import * as Asset from 'ew-asset-registry-lib';
 import * as GeneralLib from 'ew-utils-general-lib';
 
-import { AssetContractLookup, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
-import { OriginContractLookup, CertificateLogic, migrateCertificateRegistryContracts } from 'ew-origin-contracts';
-import { deployERC20TestToken, Erc20TestToken, TestReceiver, deployERC721TestReceiver } from 'ew-erc-test-contracts';
-
-
+import {
+    deployERC20TestToken,
+    Erc20TestToken,
+    TestReceiver,
+    deployERC721TestReceiver
+} from 'ew-erc-test-contracts';
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const certificateDemo = async(actionString: string, conf: GeneralLib.Configuration.Entity, adminPrivateKey: string) => {
+export const certificateDemo = async (
+    actionString: string,
+    conf: GeneralLib.Configuration.Entity,
+    adminPrivateKey: string
+) => {
+    const action = JSON.parse(actionString);
 
-  const action = JSON.parse(actionString);
+    const adminPK = adminPrivateKey.startsWith('0x') ? adminPrivateKey : '0x' + adminPrivateKey;
 
-  const adminPK = adminPrivateKey.startsWith('0x') ?
-      adminPrivateKey : '0x' + adminPrivateKey;
+    const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
-  const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
+    switch (action.type) {
+        case 'SAVE_SMARTMETER_READ_PRODUCING':
+            console.log('-----------------------------------------------------------');
 
-  switch(action.type) {
-    case "SAVE_SMARTMETER_READ_PRODUCING":
+            conf.blockchainProperties.activeUser = {
+                address: action.data.smartMeter,
+                privateKey: action.data.smartMeterPK
+            };
 
-      console.log("-----------------------------------------------------------")
+            try {
+                let asset = await new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync();
+                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+                asset = await asset.sync();
+                conf.logger.verbose('Producing smart meter reading saved');
+            } catch (e) {
+                conf.logger.error('Could not save smart meter reading for producing asset\n' + e);
+            }
 
-      conf.blockchainProperties.activeUser = {
-        address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
-      };
+            console.log('-----------------------------------------------------------\n');
 
-      try {
-        let asset = await (new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync());
-        await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
-        asset = await asset.sync();
-        conf.logger.verbose("Producing smart meter reading saved")
-      } catch(e) {
-        conf.logger.error("Could not save smart meter reading for producing asset\n" + e)
-      }
+            break;
+        case 'SAVE_SMARTMETER_READ_CONSUMING':
+            console.log('-----------------------------------------------------------');
 
-      console.log("-----------------------------------------------------------\n")
+            conf.blockchainProperties.activeUser = {
+                address: action.data.smartMeter,
+                privateKey: action.data.smartMeterPK
+            };
 
-      break
-    case "SAVE_SMARTMETER_READ_CONSUMING":
-      console.log("-----------------------------------------------------------")
+            try {
+                let asset = await new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync();
+                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+                asset = await asset.sync();
+                conf.logger.verbose('Consuming meter reading saved');
+            } catch (e) {
+                conf.logger.error('Could not save smart meter reading for consuming asset\n' + e);
+            }
 
-      conf.blockchainProperties.activeUser = {
-        address: action.data.smartMeter, privateKey: action.data.smartMeterPK,
-      };
+            console.log('-----------------------------------------------------------\n');
 
-      try {
-        let asset = await (new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync());
-        await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
-        asset = await asset.sync();
-        conf.logger.verbose("Consuming meter reading saved")
-      } catch(e) {
-        conf.logger.error("Could not save smart meter reading for consuming asset\n" + e)
-      }
+            break;
 
-      console.log("-----------------------------------------------------------\n")
+        case 'SET_MARKET_CONTRACT':
+            console.log('-----------------------------------------------------------');
 
-      break
+            conf.blockchainProperties.activeUser = {
+                address: adminAccount.address,
+                privateKey: adminPK
+            };
 
-    case "INITIALIZE_CERTIFICATES":
-      console.log("-----------------------------------------------------------")
+            const contractConfig = JSON.parse(
+                fs.readFileSync('./config/contractConfig.json', 'utf8').toString()
+            );
 
-      conf.blockchainProperties.activeUser = {
-        address: adminAccount.address, privateKey: adminPK,
-      };
+            try {
+                await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(
+                    action.data.assetId,
+                    contractConfig.originContractLookup,
+                    { privateKey: action.data.assetOwnerPK }
+                );
+                conf.logger.info('Certificates for Asset #' + action.data.assetId + ' initialized');
+            } catch (e) {
+                conf.logger.error('Could not intialize certificates\n' + e);
+            }
+            console.log('-----------------------------------------------------------');
+            break;
 
-      const contractConfig = JSON.parse(fs.readFileSync('./config/contractConfig.json', 'utf8').toString());
+        case 'TRANSFER_CERTIFICATE':
+            console.log('-----------------------------------------------------------');
 
-      try {
-        await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(action.data.assetId, contractConfig.originContractLookup, { privateKey: action.data.assetOwnerPK });
-        conf.logger.info("Certificates for Asset #" + action.data.assetId + " initialized")
-      } catch(e) {
-        conf.logger.error("Could not intialize certificates\n" + e)
-      }
-      console.log("-----------------------------------------------------------")
-      break
+            conf.blockchainProperties.activeUser = {
+                address: action.data.assetOwner,
+                privateKey: action.data.assetOwnerPK
+            };
 
-    case "TRANSFER_CERTIFICATE":
-      console.log("-----------------------------------------------------------")
+            try {
+                conf.logger.verbose(
+                    'Asset Owner Balance(BEFORE): ' +
+                        (await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf))
+                );
+                conf.logger.verbose(
+                    'Asset Owner Balance(BEFORE): ' +
+                        (await Certificate.TradableEntity.getBalance(action.data.addressTo, conf))
+                );
+                const certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+                await certificate.transferFrom(action.data.addressTo);
+                conf.logger.info('Certificate Transferred');
+                conf.logger.verbose(
+                    'Asset Owner Balance(AFTER): ' +
+                        (await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf))
+                );
+                conf.logger.verbose(
+                    'Asset Owner Balance(AFTER): ' +
+                        (await Certificate.TradableEntity.getBalance(action.data.addressTo, conf))
+                );
+            } catch (e) {
+                conf.logger.error('Could not transfer certificates\n' + e);
+            }
 
-      conf.blockchainProperties.activeUser = {
-        address: action.data.assetOwner , privateKey: action.data.assetOwnerPK,
-      };
+            console.log('-----------------------------------------------------------\n');
+            break;
 
-      try {
-        conf.logger.verbose("Asset Owner Balance(BEFORE): " + (await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf)))
-        conf.logger.verbose("Asset Owner Balance(BEFORE): " + (await Certificate.TradableEntity.getBalance(action.data.addressTo, conf)))
-        const certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
-        await certificate.transferFrom(action.data.addressTo);
-        conf.logger.info("Certificate Transferred")
-        conf.logger.verbose("Asset Owner Balance(AFTER): " + (await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf)))
-        conf.logger.verbose("Asset Owner Balance(AFTER): " + (await Certificate.TradableEntity.getBalance(action.data.addressTo, conf)))
-      } catch(e) {
-        conf.logger.error("Could not transfer certificates\n" + e)
-      }
+        case 'SPLIT_CERTIFICATE':
+            console.log('-----------------------------------------------------------');
 
+            conf.blockchainProperties.activeUser = {
+                address: action.data.assetOwner,
+                privateKey: action.data.assetOwnerPK
+            };
 
-      console.log("-----------------------------------------------------------\n")
-      break
+            try {
+                let certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+                await certificate.splitCertificate(action.data.splitValue);
+                certificate = await certificate.sync();
 
-    case "SPLIT_CERTIFICATE":
-      console.log("-----------------------------------------------------------")
+                conf.logger.info('Certificate Split into:', certificate.children);
 
-      conf.blockchainProperties.activeUser = {
-        address: action.data.assetOwner , privateKey: action.data.assetOwnerPK,
-      };
+                for (const cId of certificate.children) {
+                    const c = await new Certificate.Certificate.Entity(cId.toString(), conf).sync();
+                    conf.logger.info('Child Certificate #' + cId + ' - PowerInW: ' + c.powerInW);
+                }
+            } catch (e) {
+                conf.logger.error('Could not split certificates\n' + e);
+            }
 
-      try {
-        let certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
-        await certificate.splitCertificate(action.data.splitValue);
-        certificate = await certificate.sync()
+            console.log('-----------------------------------------------------------\n');
+            break;
 
-        conf.logger.info("Certificate Split into:", certificate.children)
+        case 'SET_ERC20_CERTIFICATE':
+            console.log('-----------------------------------------------------------');
 
-        for(const cId of certificate.children) {
-          const c = await(new Certificate.Certificate.Entity(cId.toString(), conf).sync());
-          conf.logger.info("Child Certificate #" + cId + " - PowerInW: " + c.powerInW)
-        }
+            conf.blockchainProperties.activeUser = {
+                address: action.data.assetOwner,
+                privateKey: action.data.assetOwnerPK
+            };
 
-      } catch(e) {
-        conf.logger.error("Could not split certificates\n" + e)
-      }
+            try {
+                let certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+                await certificate.setOnChainDirectPurchasePrice(action.data.price);
+                certificate = await certificate.sync();
 
+                const erc20TestAddress = (await deployERC20TestToken(
+                    conf.blockchainProperties.web3,
+                    action.data.testAccount,
+                    adminPK
+                )).contractAddress;
 
-      console.log("-----------------------------------------------------------\n")
-      break
+                const erc20TestToken = new Erc20TestToken(
+                    conf.blockchainProperties.web3,
+                    erc20TestAddress
+                );
+                await certificate.setTradableToken(erc20TestAddress);
+                certificate = await certificate.sync();
+                conf.logger.info('Demo ERC token created: ' + erc20TestAddress);
 
-    case "SET_ERC20_CERTIFICATE":
-      console.log("-----------------------------------------------------------")
+                // save in global storage
+                const erc20Config = {} as any;
+                erc20Config.ERC20Address = erc20TestAddress;
 
-      conf.blockchainProperties.activeUser = {
-        address: action.data.assetOwner , privateKey: action.data.assetOwnerPK,
-      };
+                const writeJsonFile = require('write-json-file');
+                await writeJsonFile('./config/erc20Config.json', erc20Config);
+            } catch (e) {
+                conf.logger.error('Could not set ERC20 tokens for certificate trading\n', e);
+            }
 
-      try{
-        let certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
-        await certificate.setOnChainDirectPurchasePrice(action.data.price);
-        certificate = await certificate.sync();
+            console.log('-----------------------------------------------------------\n');
 
-        const erc20TestAddress = (await deployERC20TestToken(
-            conf.blockchainProperties.web3,
-            action.data.testAccount,
-            adminPK,
-        )).contractAddress;
+            break;
+        case 'BUY_CERTIFICATE':
+            console.log('-----------------------------------------------------------');
 
-        let erc20TestToken = new Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
-        await certificate.setTradableToken(erc20TestAddress);
-        certificate = await certificate.sync();
-        conf.logger.info("Demo ERC token created: " + erc20TestAddress)
+            conf.blockchainProperties.activeUser = {
+                address: action.data.buyer,
+                privateKey: action.data.buyerPK
+            };
 
-        //save in global storage
-        let erc20Config = {} as any
-        erc20Config.ERC20Address = erc20TestAddress
+            const erc20Config = JSON.parse(
+                fs.readFileSync('./config/erc20Config.json', 'utf8').toString()
+            );
 
-        const writeJsonFile = require('write-json-file')
-        await writeJsonFile('./config/erc20Config.json', erc20Config)
+            const erc20TestToken = new Erc20TestToken(
+                conf.blockchainProperties.web3,
+                erc20Config.ERC20Address
+            );
+            await erc20TestToken.approve(action.data.assetOwner, action.data.price, {
+                privateKey: action.data.buyerPK
+            });
+            conf.logger.verbose(
+                'Allowance: ' +
+                    (await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
+            );
 
-      } catch(e) {
-        conf.logger.error("Could not set ERC20 tokens for certificate trading\n", e)
-      }
+            try {
+                conf.logger.verbose(
+                    'Buyer Balance(BEFORE): ' +
+                        (await Certificate.TradableEntity.getBalance(action.data.buyer, conf))
+                );
+                const certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+                await certificate.buyCertificate();
+                conf.logger.info('Certificate Bought');
+                conf.logger.verbose(
+                    'Buyer Balance(AFTER): ' +
+                        (await Certificate.TradableEntity.getBalance(action.data.buyer, conf))
+                );
+            } catch (e) {
+                conf.logger.error('Could not buy Certificates\n' + e);
+            }
 
-      console.log("-----------------------------------------------------------\n")
+            console.log('-----------------------------------------------------------\n');
+            break;
 
-      break
-    case "BUY_CERTIFICATE":
-      console.log("-----------------------------------------------------------")
-
-      conf.blockchainProperties.activeUser = {
-        address: action.data.buyer , privateKey: action.data.buyerPK,
-      };
-
-      const erc20Config = JSON.parse(fs.readFileSync('./config/erc20Config.json', 'utf8').toString());
-
-      let erc20TestToken = new Erc20TestToken(conf.blockchainProperties.web3, erc20Config.ERC20Address)
-      await erc20TestToken.approve(action.data.assetOwner, action.data.price, {privateKey: action.data.buyerPK})
-      conf.logger.verbose("Allowance: " + await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
-
-
-      try {
-        conf.logger.verbose("Buyer Balance(BEFORE): " + (await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
-        const certificate = await (new Certificate.Certificate.Entity(action.data.certId, conf).sync());
-        await certificate.buyCertificate();
-        conf.logger.info("Certificate Bought")
-        conf.logger.verbose("Buyer Balance(AFTER): " + (await Certificate.TradableEntity.getBalance(action.data.buyer, conf)))
-      } catch(e) {
-        conf.logger.error("Could not buy Certificates\n" + e)
-      }
-
-      console.log("-----------------------------------------------------------\n")
-      break
-
-    default:
-      const passString = JSON.stringify(action)
-      await onboardDemo(passString, conf, adminPK)
-  }
-}
+        default:
+            const passString = JSON.stringify(action);
+            await onboardDemo(passString, conf, adminPK);
+    }
+};

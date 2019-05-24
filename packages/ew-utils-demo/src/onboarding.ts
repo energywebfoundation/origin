@@ -14,153 +14,169 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
 
-import * as User from 'ew-user-registry-lib'
-import * as Asset from 'ew-asset-registry-lib'
+import * as Asset from 'ew-asset-registry-lib';
 import * as GeneralLib from 'ew-utils-general-lib';
 
-import { UserContractLookup, UserLogic } from 'ew-user-registry-contracts';
-import { AssetContractLookup, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-contracts';
-
-
-
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export const onboardDemo = async (
+    actionString: string,
+    conf: GeneralLib.Configuration.Entity,
+    adminPrivateKey: string
+) => {
+    const action = JSON.parse(actionString);
 
+    const adminPK = adminPrivateKey.startsWith('0x') ? adminPrivateKey : '0x' + adminPrivateKey;
 
-export const onboardDemo = async(actionString: string, conf: GeneralLib.Configuration.Entity, adminPrivateKey: string) => {
+    const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
-  const action = JSON.parse(actionString);
+    switch (action.type) {
+        case 'CREATE_ACCOUNT':
+            await conf.blockchainProperties.userLogicInstance.setUser(
+                action.data.address,
+                action.data.organization,
+                { privateKey: adminPK }
+            );
+            await conf.blockchainProperties.userLogicInstance.setRoles(
+                action.data.address,
+                action.data.rights,
+                { privateKey: adminPK }
+            );
 
-  const adminPK = adminPrivateKey.startsWith('0x') ?
-      adminPrivateKey : '0x' + adminPrivateKey;
+            conf.logger.info('Onboarded a new user: ' + action.data.address);
+            conf.logger.verbose(
+                'User Properties: ' + action.data.organization + ', ' + action.data.rights
+            );
 
-  const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
+            break;
 
-  switch(action.type){
-    case "CREATE_ACCOUNT":
-      await conf.blockchainProperties.userLogicInstance.setUser(action.data.address, action.data.organization, { privateKey: adminPK })
-      await conf.blockchainProperties.userLogicInstance.setRoles(action.data.address, action.data.rights, { privateKey: adminPK } )
+        case 'CREATE_PRODUCING_ASSET':
+            console.log('-----------------------------------------------------------');
 
-      conf.logger.info("Onboarded a new user: " + action.data.address)
-      conf.logger.verbose("User Properties: " + action.data.organization + ", " + action.data.rights)
+            const assetProducingProps: Asset.ProducingAsset.OnChainProperties = {
+                smartMeter: { address: action.data.smartMeter },
+                owner: { address: action.data.owner },
+                lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
+                active: action.data.active,
+                lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
+                matcher: [{ address: action.data.matcher }],
+                propertiesDocumentHash: null,
+                url: null,
+                maxOwnerChanges: action.data.maxOwnerChanges
+            };
 
-      break
+            let assetTypeConfig;
 
-    case "CREATE_PRODUCING_ASSET":
+            switch (action.data.assetType) {
+                case 'Wind':
+                    assetTypeConfig = Asset.ProducingAsset.Type.Wind;
+                    break;
+                case 'Solar':
+                    assetTypeConfig = Asset.ProducingAsset.Type.Solar;
+                    break;
+                case 'RunRiverHydro':
+                    assetTypeConfig = Asset.ProducingAsset.Type.RunRiverHydro;
+                    break;
+                case 'BiomassGas':
+                    assetTypeConfig = Asset.ProducingAsset.Type.BiomassGas;
+            }
 
-      console.log("-----------------------------------------------------------")
+            let assetCompliance;
 
+            switch (action.data.complianceRegistry) {
+                case 'IREC':
+                    assetCompliance = Asset.ProducingAsset.Compliance.IREC;
+                    break;
+                case 'EEC':
+                    assetCompliance = Asset.ProducingAsset.Compliance.EEC;
+                    break;
+                case 'TIGR':
+                    assetCompliance = Asset.ProducingAsset.Compliance.TIGR;
+                    break;
+                default:
+                    assetCompliance = Asset.ProducingAsset.Compliance.none;
+                    break;
+            }
 
-      const assetProducingProps: Asset.ProducingAsset.OnChainProperties = {
-          smartMeter: { address: action.data.smartMeter },
-          owner: { address: action.data.owner },
-          lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
-          active: action.data.active,
-          lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
-          matcher: [{address: action.data.matcher}],
-          propertiesDocumentHash: null,
-          url: null,
-          maxOwnerChanges: action.data.maxOwnerChanges,
-      };
+            const assetProducingPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
+                operationalSince: action.data.operationalSince,
+                capacityWh: action.data.capacityWh,
+                country: action.data.country,
+                region: action.data.region,
+                zip: action.data.zip,
+                city: action.data.city,
+                street: action.data.street,
+                houseNumber: action.data.houseNumber,
+                gpsLatitude: action.data.gpsLatitude,
+                gpsLongitude: action.data.gpsLongitude,
+                assetType: assetTypeConfig,
+                complianceRegistry: assetCompliance,
+                otherGreenAttributes: action.data.otherGreenAttributes,
+                typeOfPublicSupport: action.data.typeOfPublicSupport
+            };
 
-      let assetTypeConfig
+            try {
+                await Asset.ProducingAsset.createAsset(
+                    assetProducingProps,
+                    assetProducingPropsOffChain,
+                    conf
+                );
+            } catch (e) {
+                conf.logger.error('ERROR: ' + e);
+            }
 
-      switch (action.data.assetType) {
-          case 'Wind': assetTypeConfig = Asset.ProducingAsset.Type.Wind
-              break
-          case 'Solar': assetTypeConfig = Asset.ProducingAsset.Type.Solar
-              break
-          case 'RunRiverHydro': assetTypeConfig = Asset.ProducingAsset.Type.RunRiverHydro
-              break
-          case 'BiomassGas': assetTypeConfig = Asset.ProducingAsset.Type.BiomassGas
-      }
+            console.log('-----------------------------------------------------------\n');
 
-      let assetCompliance
+            break;
+        case 'CREATE_CONSUMING_ASSET':
+            console.log('-----------------------------------------------------------');
 
-      switch (action.data.complianceRegistry) {
-          case 'IREC': assetCompliance = Asset.ProducingAsset.Compliance.IREC
-              break
-          case 'EEC': assetCompliance = Asset.ProducingAsset.Compliance.EEC
-              break
-          case 'TIGR': assetCompliance = Asset.ProducingAsset.Compliance.TIGR
-              break
-          default:
-              assetCompliance = Asset.ProducingAsset.Compliance.none
-              break
-      }
+            const assetConsumingProps: Asset.ConsumingAsset.OnChainProperties = {
+                certificatesUsedForWh: action.data.certificatesCreatedForWh,
+                smartMeter: { address: action.data.smartMeter },
+                owner: { address: action.data.owner },
+                lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
+                active: action.data.active,
+                lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
+                matcher: [{ address: action.data.matcher }],
+                propertiesDocumentHash: null,
+                url: null
+            };
 
-      const assetProducingPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
-          operationalSince: action.data.operationalSince,
-          capacityWh: action.data.capacityWh,
-          country: action.data.country,
-          region: action.data.region,
-          zip: action.data.zip,
-          city: action.data.city,
-          street: action.data.street,
-          houseNumber: action.data.houseNumber,
-          gpsLatitude: action.data.gpsLatitude,
-          gpsLongitude: action.data.gpsLongitude,
-          assetType: assetTypeConfig,
-          complianceRegistry: assetCompliance,
-          otherGreenAttributes: action.data.otherGreenAttributes,
-          typeOfPublicSupport: action.data.typeOfPublicSupport,
-      };
+            const assetConsumingPropsOffChain: Asset.Asset.OffChainProperties = {
+                capacityWh: action.data.capacityWh,
+                city: action.data.city,
+                country: action.data.country,
+                gpsLatitude: action.data.gpsLatitude,
+                gpsLongitude: action.data.gpsLongitude,
+                houseNumber: action.data.houseNumber,
+                operationalSince: action.data.operationalSince,
+                region: action.data.region,
+                street: action.data.street,
+                zip: action.data.zip
+            };
 
-      try {
-        const asset = await Asset.ProducingAsset.createAsset(assetProducingProps, assetProducingPropsOffChain, conf);
-      } catch(e) {
-        conf.logger.error("ERROR: " + e)
-      }
+            try {
+                await Asset.ConsumingAsset.createAsset(
+                    assetConsumingProps,
+                    assetConsumingPropsOffChain,
+                    conf
+                );
+            } catch (e) {
+                conf.logger.error(e);
+            }
 
-      console.log("-----------------------------------------------------------\n")
+            console.log('-----------------------------------------------------------\n');
+            break;
 
-      break
-    case "CREATE_CONSUMING_ASSET":
+        case 'SLEEP':
+            console.log('sleep');
+            await sleep(action.data);
+            break;
 
-      console.log("-----------------------------------------------------------")
-
-      const assetConsumingProps: Asset.ConsumingAsset.OnChainProperties = {
-        certificatesUsedForWh: action.data.certificatesCreatedForWh,
-        smartMeter: { address: action.data.smartMeter },
-        owner: { address: action.data.owner },
-        lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
-        active: action.data.active,
-        lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
-        matcher: [{ address: action.data.matcher }],
-        propertiesDocumentHash: null,
-        url: null,
-      };
-
-      const assetConsumingPropsOffChain: Asset.Asset.OffChainProperties = {
-        capacityWh: action.data.capacityWh,
-        city: action.data.city,
-        country: action.data.country,
-        gpsLatitude: action.data.gpsLatitude,
-        gpsLongitude: action.data.gpsLongitude,
-        houseNumber: action.data.houseNumber,
-        operationalSince: action.data.operationalSince,
-        region: action.data.region,
-        street: action.data.street,
-        zip: action.data.zip,
-      };
-
-      try {
-        const asset = await Asset.ConsumingAsset.createAsset(assetConsumingProps, assetConsumingPropsOffChain, conf);
-      } catch(e) {
-        conf.logger.error(e)
-      }
-
-      console.log("-----------------------------------------------------------\n")
-      break
-
-    case "SLEEP":
-      console.log("sleep")
-      await sleep(action.data);
-      break
-
-    default:
-      conf.logger.warn("Unidentified Command: " + action.type)
-  }
-}
+        default:
+            conf.logger.warn('Unidentified Command: ' + action.type);
+    }
+};
