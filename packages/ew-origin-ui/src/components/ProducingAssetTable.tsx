@@ -16,20 +16,16 @@
 
 import * as React from 'react';
 
-import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
-import { OrganizationFilter } from './OrganizationFilter';
-import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
-import FadeIn from 'react-fade-in';
+import { Redirect } from 'react-router-dom';
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
+import { Configuration } from 'ew-utils-general-lib';
 
 export interface ProducingAssetTableProps {
-    conf: General.Configuration.Entity;
+    conf: Configuration.Entity;
     certificates: OriginIssuer.Certificate.Entity[];
     producingAssets: EwAsset.ProducingAsset.Entity[];
     currentUser: EwUser.User;
@@ -176,8 +172,8 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 enrichedProducingAssetData.organizationName,
                 (producingAsset.offChainProperties.city + ', ' + producingAsset.offChainProperties.country),
                 EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                (producingAsset.offChainProperties.capacityWh / 1000).toFixed(3),
-                (producingAsset.lastSmartMeterReadWh / 1000).toFixed(3)
+                (producingAsset.offChainProperties.capacityWh / 1000),
+                (producingAsset.lastSmartMeterReadWh / 1000)
 
             ]);
 

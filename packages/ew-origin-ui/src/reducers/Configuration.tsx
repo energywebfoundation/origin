@@ -15,7 +15,6 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import { Actions } from '../actions/index';
-import * as General from 'ew-utils-general-lib';
 
 const defaultState = null;
 

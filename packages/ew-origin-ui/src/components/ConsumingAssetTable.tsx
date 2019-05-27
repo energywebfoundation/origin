@@ -15,21 +15,19 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react'
-import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
-import { OrganizationFilter } from './OrganizationFilter';
-import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom';
-import FadeIn from 'react-fade-in';
+import { Redirect } from 'react-router-dom';
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
+import { Configuration } from 'ew-utils-general-lib';
+import { Demand } from 'ew-market-lib';
 
 export interface ConsumingAssetTableProps {
-    conf: General.Configuration.Entity;
+    conf: Configuration.Entity;
     consumingAssets: EwAsset.ConsumingAsset.Entity[];
-    demands: Market.Demand.Entity[];
+    demands: Demand.Entity[];
     certificates: OriginIssuer.Certificate.Entity[];
     currentUser: EwUser.User;
     baseUrl: string;

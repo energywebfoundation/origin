@@ -15,29 +15,27 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
-import { OrganizationFilter } from './OrganizationFilter';
-import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
-import { Nav, NavItem } from 'react-bootstrap';
-import FadeIn from 'react-fade-in';
+import { Route, NavLink, Redirect } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
 import { ProducingAssetTable } from './ProducingAssetTable';
 import { ConsumingAssetTable } from './ConsumingAssetTable';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
+import { Configuration } from 'ew-utils-general-lib';
+import { Demand } from 'ew-market-lib';
 
 export interface AssetProps {
-    conf: General.Configuration.Entity;
+    conf: Configuration.Entity;
     certificates: OriginIssuer.Certificate.Entity[];
     producingAssets: EwAsset.ProducingAsset.Entity[];
     consumingAssets: EwAsset.ConsumingAsset.Entity[];
     currentUser: EwUser.User;
     baseUrl: string;
-    demands: Market.Demand.Entity[];
+    demands: Demand.Entity[];
 }
 
 export interface AssetState {

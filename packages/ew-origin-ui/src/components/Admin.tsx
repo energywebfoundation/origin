@@ -14,84 +14,86 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-// import * as React from 'react'
-// import { Nav } from 'react-bootstrap'
-// import FadeIn from 'react-fade-in'
+import * as React from 'react'
+import { Nav } from 'react-bootstrap'
 
-// import {
-//   NavLink,
-//   Redirect,
-//   Route,
-//   withRouter
-// } from 'react-router-dom'
+import {
+  NavLink,
+  Redirect,
+  Route} from 'react-router-dom'
 
-// import { PageContent } from '../elements/PageContent/PageContent'
-// import { OnboardDemand } from './OnboardDemand'
-// import { Web3Service } from '../utils/Web3Service'
-// import { User } from 'ewf-coo'
+import { PageContent } from '../elements/PageContent/PageContent'
+import { OnboardDemand } from './OnboardDemand'
+import { User } from 'ew-user-registry-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
+import { Configuration } from 'ew-utils-general-lib';
 
-// export interface AdminProps {
-//   web3Service: Web3Service,
-//   currentUser: User,
-//   baseUrl: string
-// }
 
-// export class Admin extends React.Component<AdminProps, {}> {
+export interface AdminProps {
+  conf: Configuration.Entity,
+  currentUser: User,
+  producingAssets: ProducingAsset.Entity[],
+  baseUrl: string
+}
 
-//   constructor(props) {
-//     super(props)
-//     this.OnboardDemand = this.OnboardDemand.bind(this)
+export class Admin extends React.Component<AdminProps, {}> {
 
-//   }
+  constructor(props) {
+    super(props)
+    this.OnboardDemand = this.OnboardDemand.bind(this)
 
-//   OnboardDemand() {
+  }
 
-//     return <OnboardDemand web3Service={this.props.web3Service} currentUser={this.props.currentUser} />
-//   }
+  OnboardDemand() {
+    return <OnboardDemand 
+        configuration={this.props.conf}
+        currentUser={this.props.currentUser}
+        producingAssets={this.props.producingAssets}
+      />
+  }
 
-//   render() {
+  render() {
 
-//     const AdminMenu = [
-//       {
-//         key: 'onboard_demand',
-//         label: 'Onboard demand',
-//         component: this.OnboardDemand
-//       }, {
-//         key: 'onboard_user',
-//         label: 'Onboard user',
-//         component: null
-//       }, {
-//         key: 'onborad_assets',
-//         label: 'Onboard assets',
-//         component: null
-//       }
-//     ]
+    const AdminMenu = [
+      {
+        key: 'onboard_demand',
+        label: 'Onboard demand',
+        component: this.OnboardDemand
+      }, {
+        key: 'onboard_user',
+        label: 'Onboard user',
+        component: null
+      }, {
+        key: 'onborad_assets',
+        label: 'Onboard assets',
+        component: null
+      }
+    ]
 
-//     const { match } = this.props as any
-//     const baseUrl = this.props.baseUrl
-//     return (
-//       <div className='PageWrapper'>
-//         <div className='PageNav'>
-//           <Nav className='NavMenu'>
-//             {
+    const baseUrl = this.props.baseUrl
+    return (
+      <div className='PageWrapper'>
+        <div className='PageNav'>
+          <Nav className='NavMenu'>
+            {
 
-//               AdminMenu.map(menu => {
-//                 return (<li><NavLink exact to={`/${baseUrl}/admin/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
-//               })
-//             }
-//           </Nav>
-//         </div>
+              AdminMenu.map(menu => {
+                return (<li><NavLink exact to={`/${baseUrl}/admin/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
+              })
+            }
+          </Nav>
+        </div>
 
-//         <Route path={`/${baseUrl}/admin/:key`} render={props => {
-//           const key = props.match.params.key
-//           const matches = AdminMenu.filter(item => {
-//             return item.key === key
-//           })
-//           return (<PageContent menu={matches.length > 0 ? matches[0] : null} redirectPath={`${baseUrl}/admin`} />)
-//         }} />
-//         <Route exact path={`/${baseUrl}/admin`} render={props => (<Redirect to={{ pathname: `/${baseUrl}/admin/${AdminMenu[0].key}` }} />)} />
+        <Route path={`/${baseUrl}/admin/:key`} render={props => {
+          const key = props.match.params.key
+          const matches = AdminMenu.filter(item => {
+            return item.key === key
+          })
+          return (<PageContent menu={matches.length > 0 ? matches[0] : null} redirectPath={`${baseUrl}/admin`} />)
+        }} />
+        <Route exact path={`/${baseUrl}/admin`} render={() => (<Redirect to={{ pathname: `/${baseUrl}/admin/${AdminMenu[0].key}` }} />)} />
 
-//       </div>
-//     )
-//   }
-// }
+      </div>
+    )
+  }
+}
