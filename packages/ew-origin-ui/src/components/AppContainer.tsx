@@ -20,23 +20,20 @@ import Web3 from 'web3';
 
 import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
-// import { Demands } from './Demands';
 import { StoreState, Actions } from '../types';
 import { Header } from './Header';
-import { Footer } from './Footer';
-// import { Legal } from './Legal';
-// import { About } from './About';
 import { Asset } from './Asset';
-// import { Admin } from './Admin';
+import { Admin } from './Admin';
 import * as queryString from 'query-string';
 import './AppContainer.scss';
-import * as General from 'ew-utils-general-lib';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as Market from 'ew-market-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
+import * as Winston from 'winston';
+import { Configuration, ContractEventHandler, EventHandlerManager } from 'ew-utils-general-lib';
+import { createBlockchainProperties as marketCreateBlockchainProperties } from 'ew-market-lib';
 
-
+export const API_BASE_URL = 'http://localhost:3030';
 
 interface AppContainerProps extends StoreState {
     actions: Actions;
@@ -49,28 +46,18 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
         this.CertificateTable = this.CertificateTable.bind(this);
         // this.DemandTable = this.DemandTable.bind(this);
-        // this.Admin = this.Admin.bind(this);
+        this.Admin = this.Admin.bind(this);
         this.Asset = this.Asset.bind(this);
     }
 
-    async initEventHandler(conf: General.Configuration.Entity): Promise<void> {
+    async initEventHandler(conf: Configuration.Entity): Promise<void> {
         const currentBlockNumber: number = await conf.blockchainProperties.web3.eth.getBlockNumber();
-        const certificateContractEventHandler: General.ContractEventHandler = new General.ContractEventHandler(
+        const certificateContractEventHandler: ContractEventHandler = new ContractEventHandler(
             conf.blockchainProperties.certificateLogicInstance,
             currentBlockNumber
         );
 
-        certificateContractEventHandler.onEvent('LogRetireRequest', async (event: any) =>
-            this.props.actions.certificateCreatedOrUpdated(
-                await (new OriginIssuer.Certificate.Entity(
-                    event.returnValues._certificateId,
-                    this.props.configuration).sync()
-                )
-            )
-
-        );
-
-        certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) =>
+        certificateContractEventHandler.onEvent('LogCertificateRetired', async (event: any) =>
             this.props.actions.certificateCreatedOrUpdated(
                 await (new OriginIssuer.Certificate.Entity(
                     event.returnValues._certificateId,
@@ -79,87 +66,33 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             )
         );
 
-        certificateContractEventHandler.onEvent('LogCertificateOwnerChanged', async (event: any) =>
+
+        certificateContractEventHandler.onEvent('Transfer', async (event: any) => {
             this.props.actions.certificateCreatedOrUpdated(
                 await (new OriginIssuer.Certificate.Entity(
-                    event.returnValues._certificateId,
+                    event.returnValues._tokenId,
                     this.props.configuration).sync()
                 )
             )
-        );
+                });
 
-        const demandContractEventHandler: General.ContractEventHandler = new General.ContractEventHandler(
-            conf.blockchainProperties.marketLogicInstance,
-            currentBlockNumber
-        );
 
-        // demandContractEventHandler.onEvent('LogMatcherPropertiesUpdate', async (event) => {
-        //     createOrUpdateDemand(event.returnValues._id)
-        // })
-
-        demandContractEventHandler.onEvent('LogDemandFullyCreated', async (event: any) =>
-            this.props.actions.demandCreatedOrUpdated(
-                await (new Market.Demand.Entity(
-                    event.returnValues._demandId,
-                    this.props.configuration).sync()
-                )
-            )
-        );
-
-        // demandContractEventHandler.onEvent('LogDemandExpired', async (event: any) => {
-        //     createOrUpdateDemand(event.returnValues._index)
-        // })
-
-        const assetContractEventHandler: General.ContractEventHandler = new General.ContractEventHandler(
-            conf.blockchainProperties.producingAssetLogicInstance,
-            currentBlockNumber
-        );
-
-        assetContractEventHandler.onEvent('LogNewMeterRead', async (event: any) =>
-            this.props.actions.producingAssetCreatedOrUpdated(
-                await (new EwAsset.ProducingAsset.Entity(
-                    event.returnValues._assetId,
-                    this.props.configuration
-                ).sync())
-            )
-
-        );
-
-        assetContractEventHandler.onEvent('LogAssetFullyInitialized', async (event: any) =>
-            this.props.actions.producingAssetCreatedOrUpdated(
-                await (new EwAsset.ProducingAsset.Entity(
-                    event.returnValues._assetId,
-                    this.props.configuration
-                ).sync())
-            )
-        );
-
-        assetContractEventHandler.onEvent('LogAssetSetActive', async (event: any) =>
-            this.props.actions.producingAssetCreatedOrUpdated(
-                await (new EwAsset.ProducingAsset.Entity(
-                    event.returnValues._assetId,
-                    this.props.configuration
-                ).sync())
-            )
-        );
-
-        assetContractEventHandler.onEvent('LogAssetSetInactive', async (event: any) =>
-            this.props.actions.producingAssetCreatedOrUpdated(
-                await (new EwAsset.ProducingAsset.Entity(
-                    event.returnValues._assetId,
-                    this.props.configuration
-                ).sync())
-            )
-        );
-
-        const eventHandlerManager: General.EventHandlerManager = new General.EventHandlerManager(4000, conf);
+        const eventHandlerManager: EventHandlerManager = new EventHandlerManager(4000, conf);
         eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-        eventHandlerManager.registerEventHandler(demandContractEventHandler);
-        eventHandlerManager.registerEventHandler(assetContractEventHandler);
         eventHandlerManager.start();
     }
 
-    async initConf(originIssuerContractLookupAddress: string): Promise<General.Configuration.Entity> {
+    async getMarketLogicInstance(originIssuerContractLookupAddress : string, web3 : Web3) {
+        const response = await fetch(`${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`)
+              
+        const json = await response.json();
+
+        const marketBlockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(null, web3, json.marketContractLookup) as any;
+
+        return marketBlockchainProperties.marketLogicInstance;
+    }
+
+    async initConf(originIssuerContractLookupAddress: string): Promise<Configuration.Entity> {
         let web3: any = null;
         const params: any = queryString.parse((this.props as any).location.search);
 
@@ -177,24 +110,33 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const blockchainProperties: General.Configuration.BlockchainProperties = await OriginIssuer
+        const blockchainProperties: Configuration.BlockchainProperties = await OriginIssuer
             .createBlockchainProperties(null, web3, originIssuerContractLookupAddress) as any;
 
+        blockchainProperties.marketLogicInstance = await this.getMarketLogicInstance(originIssuerContractLookupAddress, web3);
 
         return {
             blockchainProperties,
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030'
+                baseUrl: API_BASE_URL
             },
 
-            logger: null
+            logger: Winston.createLogger({
+                level: 'debug',
+                format: Winston.format.combine(
+                    Winston.format.colorize(),
+                    Winston.format.simple(),
+                ),
+                transports: [
+                    new Winston.transports.Console({ level: 'silly' }),
+                ],
+            })
         };
 
     }
 
     async componentDidMount(): Promise<void> {
-
-        const conf: General.Configuration.Entity = await this.initConf((this.props as any).match.params.contractAddress);
+        const conf: Configuration.Entity = await this.initConf((this.props as any).match.params.contractAddress);
         this.props.actions.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
 
@@ -216,7 +158,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         //     this.props.actions.demandCreatedOrUpdated(d)
         // );
 
-        (await OriginIssuer.Certificate.getAllCertificates(conf))
+        (await OriginIssuer.Certificate.getActiveCertificates(conf))
             .forEach((certificate: OriginIssuer.Certificate.Entity) =>
                 this.props.actions.certificateCreatedOrUpdated(certificate)
             );
@@ -224,7 +166,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         this.props.actions.currentUserUpdated(currentUser !== null && currentUser.active ? currentUser : null);
 
 
-        // this.initEventHandler(conf);
+        this.initEventHandler(conf);
 
     }
 
@@ -261,13 +203,14 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
     //     />;
     // }
 
-    // Admin() {
-    //     return <Admin
-    //         conf={this.props.conf}
-    //         currentUser={this.props.currentUser}
-    //         baseUrl={(this.props as any).match.params.contractAddress}
-    //     />;
-    // }
+    Admin() {
+        return <Admin
+            conf={this.props.configuration}
+            currentUser={this.props.currentUser}
+            producingAssets={this.props.producingAssets}
+            baseUrl={(this.props as any).match.params.contractAddress}
+        />;
+    }
 
     render(): JSX.Element {
 
@@ -281,11 +224,11 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/assets/'} component={this.Asset} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/certificates'} component={this.CertificateTable} />
-                {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
+                <Route path={'/' + (this.props as any).match.params.contractAddress + '/admin/'} component={this.Admin} />
 
-                <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} />
+                {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} /> */}
 
-                <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
+                {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
                 <Route path={'/' + (this.props as any).match.params.contractAddress + '/about'} component={About} /> */}
                 <Route path={'/' + (this.props as any).match.params.contractAddress} component={this.Asset} />
 

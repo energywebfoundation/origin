@@ -15,25 +15,18 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import FadeIn from 'react-fade-in';
-import * as General from 'ew-utils-general-lib';
-import * as marker from '../../assets/marker.svg';
-import * as map from '../../assets/map.svg';
-import * as wind from '../../assets/icon_wind.svg';
-import * as hydro from '../../assets/icon_hydro.svg';
-import * as solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
-import { MapContainer } from './MapContainer';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 
 import './DetailView.scss';
+import { Configuration } from 'ew-utils-general-lib';
 
 export interface DetailViewProps {
-  conf: General.Configuration.Entity;
+  conf: Configuration.Entity;
   id: number;
   baseUrl: string;
   certificates: OriginIssuer.Certificate.Entity[];
@@ -192,7 +185,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
           },
           {
             label: 'Claimed',
-            data: selectedCertificate.retired ? 'yes' : 'no'
+            data: selectedCertificate.status === OriginIssuer.Certificate.Status.Retired ? 'yes' : 'no'
           },
           {
             label: 'Producing Asset Id',
@@ -202,7 +195,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
 
           {
             label: 'Certified Energy (kWh)',
-            data: (selectedCertificate.powerInW / 1000).toFixed(3)
+            data: (selectedCertificate.powerInW / 1000).toLocaleString()
           },
           {
             label: 'Creation Date',

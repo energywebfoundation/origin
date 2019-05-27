@@ -18,20 +18,16 @@ import * as React from 'react';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
-import * as General from 'ew-utils-general-lib';
-import { OrganizationFilter } from './OrganizationFilter';
 
-import { Table } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
-import FadeIn from 'react-fade-in';
-import { Nav, NavItem } from 'react-bootstrap';
-import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
+import { Route, NavLink, Redirect } from 'react-router-dom';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
+import { Configuration } from 'ew-utils-general-lib';
 
 export interface CertificatesProps {
-    conf: General.Configuration.Entity;
+    conf: Configuration.Entity;
     certificates: OriginIssuer.Certificate.Entity[];
     producingAssets: EwAsset.ProducingAsset.Entity[];
     currentUser: EwUser.User;
@@ -60,6 +56,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
         this.CertificateTable = this.CertificateTable.bind(this);
         this.SoldCertificates = this.SoldCertificates.bind(this);
         this.ForSaleCertificates = this.ForSaleCertificates.bind(this);
+        this.ForSaleERC20Certificates = this.ForSaleERC20Certificates.bind(this);
         this.ClaimedCertificates = this.ClaimedCertificates.bind(this);
 
     }
@@ -104,7 +101,10 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
 
     ForSaleCertificates() {
         return this.CertificateTable(SelectedState.ForSale);
+    }
 
+    ForSaleERC20Certificates() {
+        return this.CertificateTable(SelectedState.ForSaleERC20);
     }
 
     ClaimedCertificates() {
@@ -131,7 +131,8 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                         content: organizations
                     }
                 ]
-            }, {
+            },
+            {
                 key: 'for_sale',
                 label: 'For Sale',
                 component: this.ForSaleCertificates,
@@ -143,7 +144,21 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                         content: organizations
                     }
                 ]
-            }, {
+            },
+            {
+                key: 'for_sale_erc',
+                label: 'For Sale (ERC20)',
+                component: this.ForSaleERC20Certificates,
+                buttons: [
+                    {
+                        type: 'dropdown',
+                        label: 'All Organizations',
+                        face: ['filter', 'icon'],
+                        content: organizations
+                    }
+                ]
+            },
+            {
                 key: 'bought_sold',
                 label: 'Bought / Sold',
                 component: this.SoldCertificates,

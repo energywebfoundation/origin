@@ -16,10 +16,10 @@
 
 // import { Certificate, Demand, ProducingAsset, ConsumingAsset, User } from 'ewf-coo'
 // import { Web3Service} from '../utils/Web3Service'
-import * as General from 'ew-utils-general-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as OriginIssuer from 'ew-origin-lib';
+import { Configuration } from 'ew-utils-general-lib';
 
 export enum Actions {
     certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
@@ -56,7 +56,7 @@ export const currentUserUpdated = (user: EwUser.User): any => ({
     user
 });
 
-export const configurationUpdated = (conf: General.Configuration.Entity): any => ({
+export const configurationUpdated = (conf: Configuration.Entity): any => ({
     type: Actions.configurationUpdated,
     conf
 });

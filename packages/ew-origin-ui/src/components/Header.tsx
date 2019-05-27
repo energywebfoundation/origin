@@ -50,8 +50,8 @@ export class Header extends React.Component<HeaderProps, {}> {
         <Nav className="NavMenu">
           <li><NavLink to={'/' + this.props.baseUrl + '/assets'} activeClassName='active'>Assets</NavLink></li>
           <li><NavLink to={'/' + this.props.baseUrl + '/certificates'} activeClassName='active'>Certificates</NavLink></li>
-          {/* <li><NavLink to={'/' + this.props.baseUrl + '/demands'} activeClassName='active'>Demands</NavLink></li>
-          <li><NavLink to={'/' + this.props.baseUrl + '/admin'} activeClassName='active'>Admin</NavLink></li> */}
+          {/* <li><NavLink to={'/' + this.props.baseUrl + '/demands'} activeClassName='active'>Demands</NavLink></li> */}
+          <li><NavLink to={'/' + this.props.baseUrl + '/admin'} activeClassName='active'>Admin</NavLink></li>
         </Nav>
         <div className="ViewProfile">
           <div>

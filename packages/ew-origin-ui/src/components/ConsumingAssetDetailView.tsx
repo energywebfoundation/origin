@@ -15,27 +15,22 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import FadeIn from 'react-fade-in';
 
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
-import wind from '../../assets/icon_wind.svg';
-import hydro from '../../assets/icon_hydro.svg';
-import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
-import * as General from 'ew-utils-general-lib';
+import { Link } from 'react-router-dom';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 
 import './DetailView.scss'
 import { getOffChainText } from '../utils/Helper';
+import { Configuration } from 'ew-utils-general-lib';
 
 export interface DetailViewProps {
-  conf: General.Configuration.Entity;
+  conf: Configuration.Entity;
   id: number;
   baseUrl: string;
   certificates: OriginIssuer.Certificate.Entity[];

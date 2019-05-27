@@ -208,7 +208,7 @@ export class Table extends React.Component<any, any> {
                 {
                   footer.map((item) => {
 
-                    return (<td colSpan={item.colspan || 1} className={`Total ${item.hide ? 'Hide' : 'Show'}`} style={item.style || {}} key={item.key}>{renderHTML(renderText(item.label || total[item.key].toFixed(3)))}</td>);
+                    return (<td colSpan={item.colspan || 1} className={`Total ${item.hide ? 'Hide' : 'Show'}`} style={item.style || {}} key={item.key}>{renderHTML(renderText(item.label || total[item.key]))}</td>);
                   })
                 }
                 {actions && <td className='Actions'></td>}

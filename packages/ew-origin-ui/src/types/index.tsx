@@ -16,18 +16,18 @@
 
 // import { Web3Service } from '../utils/Web3Service'
 // import { ProducingAsset, Certificate, Demand, User, EventHandlerManager, ContractEventHandler, ConsumingAsset } from 'ewf-coo'
-import * as General from 'ew-utils-general-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import * as OriginIssuer from 'ew-origin-lib';
-import * as Market from 'ew-market-lib';
 import * as EwUser from 'ew-user-registry-lib';
+import { Configuration } from 'ew-utils-general-lib';
+import { Demand } from 'ew-market-lib';
 
 export interface StoreState {
-    configuration: General.Configuration.Entity;
+    configuration: Configuration.Entity;
     producingAssets: EwAsset.ProducingAsset.Entity[];
     consumingAssets: EwAsset.ConsumingAsset.Entity[];
     certificates: OriginIssuer.Certificate.Entity[];
-    demands: Market.Demand.Entity[];
+    demands: Demand.Entity[];
     currentUser: EwUser.User;
 }
 
