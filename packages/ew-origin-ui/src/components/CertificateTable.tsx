@@ -32,14 +32,12 @@ export interface CertificateTableProps {
     baseUrl: string;
     selectedState: SelectedState;
     switchedToOrganization: boolean;
-
 }
 
 export interface EnrichedCertificateData {
     certificate: OriginIssuer.Certificate.Entity;
     certificateOwner: EwUser.User;
     producingAsset: EwAsset.ProducingAsset.Entity;
-
 }
 
 export interface CertificatesState {
@@ -56,7 +54,6 @@ export enum SelectedState {
 }
 
 export class CertificateTable extends React.Component<CertificateTableProps, CertificatesState> {
-
     constructor(props: CertificateTableProps) {
         super(props);
 
@@ -75,7 +72,6 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
 
     async componentDidMount() {
         await this.enrichData(this.props);
-
     }
 
     async componentWillReceiveProps(newProps: CertificateTableProps) {
@@ -83,53 +79,71 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     async enrichData(props: CertificateTableProps) {
-
-        const promieses = props.certificates.map(async (certificate: OriginIssuer.Certificate.Entity) =>
-            ({
-                certificate: certificate,
-                producingAsset: this.props.producingAssets.find((asset: EwAsset.ProducingAsset.Entity) => asset.id === certificate.assetId.toString()),
-                certificateOwner: (await (new EwUser.User(certificate.owner, props.conf as any)).sync())
+        const promieses = props.certificates.map(
+            async (certificate: OriginIssuer.Certificate.Entity) => ({
+                certificate,
+                producingAsset: this.props.producingAssets.find(
+                    (asset: EwAsset.ProducingAsset.Entity) =>
+                        asset.id === certificate.assetId.toString()
+                ),
+                certificateOwner: await new EwUser.User(certificate.owner, props.conf as any).sync()
             })
         );
 
-        Promise.all(promieses).then((enrichedCertificateData) => {
-
+        Promise.all(promieses).then(enrichedCertificateData => {
             this.setState({
-                enrichedCertificateData: enrichedCertificateData
+                enrichedCertificateData
             });
         });
-
     }
 
     async buyCertificate(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates
-            .find((cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString());
+        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
+            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        );
 
         if (certificate && this.props.currentUser) {
-            const erc20TestToken = new Erc20TestToken(this.props.conf.blockchainProperties.web3, certificate.acceptedToken as any as string)
-            await erc20TestToken.approve(certificate.owner, certificate.onCHainDirectPurchasePrice, {
-                from: this.props.currentUser.id,
-                privateKey: ''
-            });
-    
-            certificate.configuration.blockchainProperties.activeUser = { address: this.props.currentUser.id }; 
+            const erc20TestToken = new Erc20TestToken(
+                this.props.conf.blockchainProperties.web3,
+                (certificate.acceptedToken as any) as string
+            );
+            await erc20TestToken.approve(
+                certificate.owner,
+                certificate.onCHainDirectPurchasePrice,
+                {
+                    from: this.props.currentUser.id,
+                    privateKey: ''
+                }
+            );
+
+            certificate.configuration.blockchainProperties.activeUser = {
+                address: this.props.currentUser.id
+            };
             await certificate.buyCertificate();
         }
     }
 
     async claimCertificate(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates
-            .find((cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString());
-        if (certificate && this.props.currentUser && this.props.currentUser.id === certificate.owner) {
-            certificate.configuration.blockchainProperties.activeUser = { address: this.props.currentUser.id }; 
+        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
+            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        );
+        if (
+            certificate &&
+            this.props.currentUser &&
+            this.props.currentUser.id === certificate.owner
+        ) {
+            certificate.configuration.blockchainProperties.activeUser = {
+                address: this.props.currentUser.id
+            };
 
             await certificate.retireCertificate();
         }
     }
 
     async showTxClaimed(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates
-            .find((cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString());
+        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
+            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        );
         if (certificate) {
             // TODO:
             // const claimedEvent = (await certificate.getCertificateEvents()).find((e) => e.event === 'LogRetireRequest');
@@ -138,9 +152,9 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     async showCertCreated(certificateId: number) {
-
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates
-            .find((cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString());
+        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
+            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        );
 
         if (certificate) {
             // TODO
@@ -204,7 +218,6 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     async operationClicked(key: string, id: number) {
-
         switch (key) {
             case 'Claim':
                 this.claimCertificate(id);
@@ -219,24 +232,33 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
                 this.showCertCreated(id);
                 break;
             case 'Show Initial Logging Transaction':
-                //this.showInitialLoggingTx(id);
+                // this.showInitialLoggingTx(id);
                 break;
             case 'Show Certificate Details':
                 this.showCertificateDetails(id);
                 break;
             default:
-
         }
-
     }
 
     render() {
         if (this.state.detailViewForCertificateId !== null) {
-            return <Redirect push to={'/' + this.props.baseUrl + '/certificates/detail_view/' + this.state.detailViewForCertificateId} />;
+            return (
+                <Redirect
+                    push
+                    to={
+                        '/' +
+                        this.props.baseUrl +
+                        '/certificates/detail_view/' +
+                        this.state.detailViewForCertificateId
+                    }
+                />
+            );
         }
 
         const defaultWidth = 106;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) => (TableUtils.generateHeader(label, width, right, body));
+        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
+            TableUtils.generateHeader(label, width, right, body);
         const generateFooter = TableUtils.generateFooter;
 
         const TableFooter = [
@@ -248,46 +270,71 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             generateFooter('Certified Energy (kWh)', true)
         ];
 
-
-
-        const filteredEnrichedCertificateData = this.state.enrichedCertificateData
-            .filter((enrichedCertificateData: EnrichedCertificateData) => {
-                const claimed = enrichedCertificateData.certificate.status === OriginIssuer.Certificate.Status.Retired;
-                const forSale = enrichedCertificateData.certificate.owner === enrichedCertificateData.producingAsset.owner.address;
-                const forSaleERC20 = enrichedCertificateData.certificate.acceptedToken &&
-                    this.props.conf.blockchainProperties.web3.utils.toBN(enrichedCertificateData.certificate.acceptedToken).toString() !== '0' &&
+        const filteredEnrichedCertificateData = this.state.enrichedCertificateData.filter(
+            (enrichedCertificateData: EnrichedCertificateData) => {
+                const claimed =
+                    enrichedCertificateData.certificate.status ===
+                    OriginIssuer.Certificate.Status.Retired;
+                const forSale =
+                    enrichedCertificateData.certificate.owner ===
+                    enrichedCertificateData.producingAsset.owner.address;
+                const forSaleERC20 =
+                    enrichedCertificateData.certificate.acceptedToken &&
+                    this.props.conf.blockchainProperties.web3.utils
+                        .toBN(enrichedCertificateData.certificate.acceptedToken)
+                        .toString() !== '0' &&
                     enrichedCertificateData.certificate.onCHainDirectPurchasePrice > 0 &&
                     this.props.currentUser &&
                     enrichedCertificateData.certificateOwner.id !== this.props.currentUser.id;
 
-                if (this.props.switchedToOrganization
-                    && enrichedCertificateData.certificate.owner
-                    !== this.props.currentUser.id
+                if (
+                    this.props.switchedToOrganization &&
+                    enrichedCertificateData.certificate.owner !== this.props.currentUser.id
                 ) {
                     return false;
                 }
 
-                return (claimed && this.props.selectedState === SelectedState.Claimed)
-                    || (!claimed && forSale && this.props.selectedState === SelectedState.ForSale)
-                    || (!claimed && !forSale && this.props.selectedState === SelectedState.Sold)
-                    || (!claimed) && forSaleERC20 && this.props.selectedState === SelectedState.ForSaleERC20;
-            });
+                return (
+                    (claimed && this.props.selectedState === SelectedState.Claimed) ||
+                    (!claimed && forSale && this.props.selectedState === SelectedState.ForSale) ||
+                    (!claimed && !forSale && this.props.selectedState === SelectedState.Sold) ||
+                    (!claimed &&
+                        forSaleERC20 &&
+                        this.props.selectedState === SelectedState.ForSaleERC20)
+                );
+            }
+        );
 
-        const data = filteredEnrichedCertificateData.map((enrichedCertificateData: EnrichedCertificateData) => {
-            const certificate = enrichedCertificateData.certificate;
+        const data = filteredEnrichedCertificateData.map(
+            (enrichedCertificateData: EnrichedCertificateData) => {
+                const certificate = enrichedCertificateData.certificate;
 
-            return [
-                certificate.id,
-                enrichedCertificateData.certificateOwner.organization,
-                EwAsset.ProducingAsset.Type[enrichedCertificateData.producingAsset.offChainProperties.assetType],
-                new Date(enrichedCertificateData.producingAsset.offChainProperties.operationalSince * 1000).toDateString(),
-                `${enrichedCertificateData.producingAsset.offChainProperties.gpsLongitude} ${enrichedCertificateData.producingAsset.offChainProperties.gpsLatitude}`,
-                `${enrichedCertificateData.producingAsset.offChainProperties.city}, ${enrichedCertificateData.producingAsset.offChainProperties.country}`,
-                EwAsset.ProducingAsset.Compliance[enrichedCertificateData.producingAsset.offChainProperties.complianceRegistry],
-                new Date(enrichedCertificateData.certificate.creationTime * 1000).toDateString(),
-                (enrichedCertificateData.certificate.powerInW / 1000)
-            ];
-        });
+                return [
+                    certificate.id,
+                    enrichedCertificateData.certificateOwner.organization,
+                    EwAsset.ProducingAsset.Type[
+                        enrichedCertificateData.producingAsset.offChainProperties.assetType
+                    ],
+                    new Date(
+                        enrichedCertificateData.producingAsset.offChainProperties.operationalSince *
+                            1000
+                    ).toDateString(),
+                    `${enrichedCertificateData.producingAsset.offChainProperties.gpsLongitude} ${
+                        enrichedCertificateData.producingAsset.offChainProperties.gpsLatitude
+                    }`,
+                    `${enrichedCertificateData.producingAsset.offChainProperties.city}, ${
+                        enrichedCertificateData.producingAsset.offChainProperties.country
+                    }`,
+                    EwAsset.ProducingAsset.Compliance[
+                        enrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
+                    ],
+                    new Date(
+                        enrichedCertificateData.certificate.creationTime * 1000
+                    ).toDateString(),
+                    enrichedCertificateData.certificate.powerInW / 1000
+                ];
+            }
+        );
 
         const TableHeader = [
             generateHeader('#', 90.84),
@@ -303,27 +350,34 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
         ];
 
-        const operations = ['Show Certificate Creation Tx', 'Show Initial Logging Transaction', 'Show Certificate Details']
-            .concat(this.props.selectedState === SelectedState.Sold ?
-                ['Claim'] : this.props.selectedState === SelectedState.ForSaleERC20 ?
-                    ['Buy'] : []);
+        const operations = [
+            'Show Certificate Creation Tx',
+            'Show Initial Logging Transaction',
+            'Show Certificate Details'
+        ].concat(
+            this.props.selectedState === SelectedState.Sold
+                ? ['Claim']
+                : this.props.selectedState === SelectedState.ForSaleERC20
+                ? ['Buy']
+                : []
+        );
         if (this.props.selectedState === SelectedState.Claimed) {
             operations.concat(['Show Claiming Tx']);
         }
 
-        return <div className='ForSaleWrapper'>
-            <Table
-                operationClicked={this.operationClicked}
-                classNames={['bare-font', 'bare-padding']}
-                header={TableHeader}
-                footer={TableFooter}
-                actions={true}
-                data={data}
-                actionWidth={55.39}
-                operations={operations}
-            />
-        </div>;
-
+        return (
+            <div className="ForSaleWrapper">
+                <Table
+                    operationClicked={this.operationClicked}
+                    classNames={['bare-font', 'bare-padding']}
+                    header={TableHeader}
+                    footer={TableFooter}
+                    actions={true}
+                    data={data}
+                    actionWidth={55.39}
+                    operations={operations}
+                />
+            </div>
+        );
     }
-
 }

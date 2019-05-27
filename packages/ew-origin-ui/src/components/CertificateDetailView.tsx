@@ -26,255 +26,304 @@ import './DetailView.scss';
 import { Configuration } from 'ew-utils-general-lib';
 
 export interface DetailViewProps {
-  conf: Configuration.Entity;
-  id: number;
-  baseUrl: string;
-  certificates: OriginIssuer.Certificate.Entity[];
-  producingAssets: EwAsset.ProducingAsset.Entity[];
+    conf: Configuration.Entity;
+    id: number;
+    baseUrl: string;
+    certificates: OriginIssuer.Certificate.Entity[];
+    producingAssets: EwAsset.ProducingAsset.Entity[];
 }
 
 export interface DetailViewState {
-  newId: number;
-  owner: EwUser.User;
-  events: EnrichedEvent[];
-
+    newId: number;
+    owner: EwUser.User;
+    events: EnrichedEvent[];
 }
 
 export interface EnrichedEvent {
-  txHash: string;
-  lable: string;
-  description: string;
-  timestamp: number;
+    txHash: string;
+    lable: string;
+    description: string;
+    timestamp: number;
 }
 
 const TableWidth = [210, 210, 210, 210, 407];
 
 export class CertificateDetailView extends React.Component<DetailViewProps, DetailViewState> {
-  constructor(props: DetailViewProps) {
-    super(props);
-    this.state = {
-      newId: null,
-      owner: null,
-      events: []
-    };
-    this.onInputChange = this.onInputChange.bind(this);
-
-  }
-
-  onInputChange(e) {
-
-    this.setState({ newId: e.target.value });
-  }
-
-  componentDidMount() {
-    this.init(this.props);
-
-  }
-
-  componentWillReceiveProps(newProps: DetailViewProps) {
-    this.init(newProps);
-  }
-
-  init(props: DetailViewProps) {
-    if (props.id !== null && props.id !== undefined) {
-      const selectedCertificate: OriginIssuer.Certificate.Entity =
-        props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === props.id.toString());
-      if (selectedCertificate) {
-
-        this.getOwner(props, selectedCertificate, () => this.enrichEvent(props, selectedCertificate));
-      }
+    constructor(props: DetailViewProps) {
+        super(props);
+        this.state = {
+            newId: null,
+            owner: null,
+            events: []
+        };
+        this.onInputChange = this.onInputChange.bind(this);
     }
 
-  }
+    onInputChange(e) {
+        this.setState({ newId: e.target.value });
+    }
 
-  async getOwner(props: DetailViewProps, selectedCertificate: OriginIssuer.Certificate.Entity, cb) {
+    componentDidMount() {
+        this.init(this.props);
+    }
 
-    this.setState({
-      owner: await (new EwUser.User(selectedCertificate.owner, props.conf as any).sync())
+    componentWillReceiveProps(newProps: DetailViewProps) {
+        this.init(newProps);
+    }
 
-    }, cb);
-
-  }
-
-  async enrichEvent(props: DetailViewProps, selectedCertificate: OriginIssuer.Certificate.Entity) {
-    const asset = this.props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString());
-
-    const jointEvents = (await selectedCertificate.getAllCertificateEvents())
-      .map(async (event: any) => {
-        let lable;
-        let description;
-
-
-        switch (event.event) {
-          case 'LogNewMeterRead':
-            lable = 'Initial Logging';
-            description = 'Logging by Asset #' + event.returnValues._assetId;
-            break;
-          case 'LogCreatedCertificate':
-            const organization = (await (new EwUser.User(event.returnValues.owner, props.conf as any).sync())).organization;
-            lable = 'Certificate Created';
-            description = 'Certificate created by asset ' + selectedCertificate.assetId;
-            break;
-          case 'LogRetireRequest':
-            lable = 'Certificate Claimed';
-            description = 'Initiated by ' + this.state.owner.organization;
-            break;
-          case 'Transfer':
-            if ((event as any).returnValues._from === '0x0000000000000000000000000000000000000000') {
-              lable = 'Set Initial Owner';
-              description = (await (new EwUser.User((event as any).returnValues._to, props.conf as any).sync())).organization;
-            } else {
-              const newOwner = (await (new EwUser.User((event as any).returnValues._to, props.conf as any).sync())).organization;
-              const oldOwner = (await (new EwUser.User((event as any).returnValues._from, props.conf as any).sync())).organization;
-              lable = 'Certificate Owner Change';
-              description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
+    init(props: DetailViewProps) {
+        if (props.id !== null && props.id !== undefined) {
+            const selectedCertificate: OriginIssuer.Certificate.Entity = props.certificates.find(
+                (c: OriginIssuer.Certificate.Entity) => c.id === props.id.toString()
+            );
+            if (selectedCertificate) {
+                this.getOwner(props, selectedCertificate, () =>
+                    this.enrichEvent(props, selectedCertificate)
+                );
             }
-            break;
-       
-          default:
-            lable = event.event;
+        }
+    }
 
+    async getOwner(
+        props: DetailViewProps,
+        selectedCertificate: OriginIssuer.Certificate.Entity,
+        cb
+    ) {
+        this.setState(
+            {
+                owner: await new EwUser.User(selectedCertificate.owner, props.conf as any).sync()
+            },
+            cb
+        );
+    }
+
+    async enrichEvent(
+        props: DetailViewProps,
+        selectedCertificate: OriginIssuer.Certificate.Entity
+    ) {
+        const asset = this.props.producingAssets.find(
+            (p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
+        );
+
+        const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
+            async (event: any) => {
+                let lable;
+                let description;
+
+                switch (event.event) {
+                    case 'LogNewMeterRead':
+                        lable = 'Initial Logging';
+                        description = 'Logging by Asset #' + event.returnValues._assetId;
+                        break;
+                    case 'LogCreatedCertificate':
+                        const organization = (await new EwUser.User(
+                            event.returnValues.owner,
+                            props.conf as any
+                        ).sync()).organization;
+                        lable = 'Certificate Created';
+                        description = 'Certificate created by asset ' + selectedCertificate.assetId;
+                        break;
+                    case 'LogRetireRequest':
+                        lable = 'Certificate Claimed';
+                        description = 'Initiated by ' + this.state.owner.organization;
+                        break;
+                    case 'Transfer':
+                        if (
+                            (event as any).returnValues._from ===
+                            '0x0000000000000000000000000000000000000000'
+                        ) {
+                            lable = 'Set Initial Owner';
+                            description = (await new EwUser.User(
+                                (event as any).returnValues._to,
+                                props.conf as any
+                            ).sync()).organization;
+                        } else {
+                            const newOwner = (await new EwUser.User(
+                                (event as any).returnValues._to,
+                                props.conf as any
+                            ).sync()).organization;
+                            const oldOwner = (await new EwUser.User(
+                                (event as any).returnValues._from,
+                                props.conf as any
+                            ).sync()).organization;
+                            lable = 'Certificate Owner Change';
+                            description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
+                        }
+                        break;
+
+                    default:
+                        lable = event.event;
+                }
+
+                return {
+                    txHash: event.transactionHash,
+                    lable,
+                    description,
+                    timestamp: (await props.conf.blockchainProperties.web3.eth.getBlock(
+                        event.blockNumber
+                    )).timestamp
+                };
+            }
+        );
+
+        Promise.all(jointEvents).then(events => {
+            this.setState({
+                events: events as any
+            });
+        });
+    }
+
+    render() {
+        const selectedCertificate =
+            this.props.id !== null && this.props.id !== undefined
+                ? this.props.certificates.find(
+                      (c: OriginIssuer.Certificate.Entity) => c.id === this.props.id.toString()
+                  )
+                : null;
+
+        let data;
+        let events = [];
+        if (selectedCertificate) {
+            events = this.state.events.reverse().map((event: EnrichedEvent) => (
+                <p key={event.txHash}>
+                    <span className="timestamp text-muted">
+                        {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
+                        <a
+                            href={'https://tobalaba.etherscan.com/tx/' + event.txHash}
+                            className="text-muted"
+                            target="_blank"
+                        >
+                            {event.txHash}
+                        </a>
+                    </span>
+                    <br />
+                    {event.lable} - {event.description}
+                    <br />
+                </p>
+            ));
+
+            const asset = this.props.producingAssets.find(
+                (p: EwAsset.ProducingAsset.Entity) =>
+                    p.id === selectedCertificate.assetId.toString()
+            );
+
+            // const jointEvents = asset.getEventWithFileHash(selectedCertificate.dataLog);
+            data = [
+                [
+                    {
+                        label: 'Certificate Id',
+                        data: selectedCertificate.id
+                    },
+                    {
+                        label: 'Current Owner',
+                        data: this.state.owner ? this.state.owner.organization : ''
+                    },
+                    {
+                        label: 'Claimed',
+                        data:
+                            selectedCertificate.status === OriginIssuer.Certificate.Status.Retired
+                                ? 'yes'
+                                : 'no'
+                    },
+                    {
+                        label: 'Producing Asset Id',
+                        data: asset.id,
+                        link: `/${this.props.baseUrl}/assets/producing_detail_view/${asset.id}`
+                    },
+
+                    {
+                        label: 'Certified Energy (kWh)',
+                        data: (selectedCertificate.powerInW / 1000).toLocaleString()
+                    },
+                    {
+                        label: 'Creation Date',
+                        data: moment(selectedCertificate.creationTime * 1000).format('DD MMM YY')
+                    }
+                ]
+            ];
         }
 
-        return {
-          txHash: event.transactionHash,
-          lable: lable,
-          description: description,
-          timestamp: (await props.conf.blockchainProperties.web3.eth.getBlock(event.blockNumber)).timestamp
-        };
-      });
+        return (
+            <div className="DetailViewWrapper">
+                <div className="FindAsset">
+                    <input
+                        onChange={this.onInputChange}
+                        defaultValue={
+                            this.props.id || this.props.id === 0 ? this.props.id.toString() : ''
+                        }
+                    />
 
-    Promise.all(jointEvents).then((events) => {
-
-      this.setState({
-        events: events as any
-      });
-    });
-
-  }
-
-  render() {
-
-    const selectedCertificate = this.props.id !== null && this.props.id !== undefined ?
-      this.props.certificates.find((c: OriginIssuer.Certificate.Entity) => c.id === this.props.id.toString()) :
-      null;
-
-    let data;
-    let events = [];
-    if (selectedCertificate) {
-
-      events = this.state.events.reverse().map((event: EnrichedEvent) =>
-        <p key={event.txHash}>
-          <span className='timestamp text-muted'>{(new Date(event.timestamp * 1000)).toLocaleString()} - <a href={'https://tobalaba.etherscan.com/tx/' + event.txHash} className='text-muted' target='_blank'>{event.txHash}</a></span><br />
-          {event.lable} - {event.description}<br />
-
-        </p>);
-
-      const asset = this.props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString());
-
-      //const jointEvents = asset.getEventWithFileHash(selectedCertificate.dataLog);
-      data = [
-        [
-          {
-            label: 'Certificate Id',
-            data: selectedCertificate.id
-          },
-          {
-            label: 'Current Owner',
-            data: this.state.owner ? this.state.owner.organization : ''
-          },
-          {
-            label: 'Claimed',
-            data: selectedCertificate.status === OriginIssuer.Certificate.Status.Retired ? 'yes' : 'no'
-          },
-          {
-            label: 'Producing Asset Id',
-            data: asset.id,
-            link: `/${this.props.baseUrl}/assets/producing_detail_view/${asset.id}`
-          },
-
-          {
-            label: 'Certified Energy (kWh)',
-            data: (selectedCertificate.powerInW / 1000).toLocaleString()
-          },
-          {
-            label: 'Creation Date',
-            data: moment(selectedCertificate.creationTime * 1000).format('DD MMM YY')
-          }
-
-        ]
-      ];
-    }
-
-    return (
-
-      <div className='DetailViewWrapper' >
-        <div className='FindAsset'>
-          <input onChange={this.onInputChange} defaultValue={this.props.id || this.props.id === 0 ? this.props.id.toString() : ''} />
-
-          <Link className='btn btn-primary find-asset-button' to={`/${this.props.baseUrl}/certificates/detail_view/${this.state.newId}`}>Find Certificate</Link>
-
-        </div>
-        <div className='PageContentWrapper'>
-          {/* <div className='PageHeader'>
+                    <Link
+                        className="btn btn-primary find-asset-button"
+                        to={`/${this.props.baseUrl}/certificates/detail_view/${this.state.newId}`}
+                    >
+                        Find Certificate
+                    </Link>
+                </div>
+                <div className="PageContentWrapper">
+                    {/* <div className='PageHeader'>
               <div className='PageTitle'>Berlin II, <span>Berlin, Germany</span></div>
             </div> */}
-          <div className='PageBody'>
-            {!selectedCertificate ?
-              <div className='text-center'><strong>Certificate not found</strong></div> :
-              <div>
-                <table >
-                  <tbody>
-                    {data.map((row: any) => (
+                    <div className="PageBody">
+                        {!selectedCertificate ? (
+                            <div className="text-center">
+                                <strong>Certificate not found</strong>
+                            </div>
+                        ) : (
+                            <div>
+                                <table>
+                                    <tbody>
+                                        {data.map((row: any) => (
+                                            <tr key={row.label}>
+                                                {row.map(col => (
+                                                    <td
+                                                        key={col.label}
+                                                        rowSpan={col.rowspan || 1}
+                                                        colSpan={col.colspan || 1}
+                                                    >
+                                                        <div className="Label">{col.label}</div>
+                                                        <div className="Data">
+                                                            {col.data}{' '}
+                                                            {col.tip && <span>{col.tip}</span>}
+                                                        </div>
 
-                      <tr key={row.label} >
-
-                        {row.map((col) => (
-
-                          <td key={col.label} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
-
-                            <div className='Label'>{col.label}</div>
-                            <div className='Data'>{col.data} {col.tip && (<span>{col.tip}</span>)}</div>
-
-                            {col.description && (<div className='Description'>{col.description}</div>)}
-                          </td>
-                        ))
-                        }
-                      </tr>
-                    ))
-                    }
-                  </tbody>
-                </table>
-
-              </div>
-            }
-
-          </div>
-          {selectedCertificate ?
-            <ProducingAssetDetailView
-              id={selectedCertificate.assetId} baseUrl={this.props.baseUrl}
-              producingAssets={this.props.producingAssets}
-              conf={this.props.conf}
-              certificates={this.props.certificates}
-              addSearchField={false}
-            /> : null}
-          {selectedCertificate ?
-
-            <div className='PageBody'>
-              <div className='history'>
-
-                <div>{events}</div>
-              </div>
-
-            </div> : null}
-
-        </div>
-      </div>
-
-    );
-  }
+                                                        {col.description && (
+                                                            <div className="Description">
+                                                                {col.description}
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                    {selectedCertificate ? (
+                        <ProducingAssetDetailView
+                            id={selectedCertificate.assetId}
+                            baseUrl={this.props.baseUrl}
+                            producingAssets={this.props.producingAssets}
+                            conf={this.props.conf}
+                            certificates={this.props.certificates}
+                            addSearchField={false}
+                        />
+                    ) : null}
+                    {selectedCertificate ? (
+                        <div className="PageBody">
+                            <div className="history">
+                                <div>{events}</div>
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
+            </div>
+        );
+    }
 }
 
-const addCommas = (intNum) => {
-  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+const addCommas = intNum => {
+    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
 };

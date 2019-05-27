@@ -25,16 +25,31 @@ import reducer from './reducers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 // import {certificateCreatedOrUpdated, currentUserUpdated, consumingAssetCreatedOrUpdated, demandCreatedOrUpdated, producingAssetCreatedOrUpdated, web3ServiceUpdated} from './actions'
-import {currentUserUpdated, configurationUpdated, producingAssetCreatedOrUpdated, consumingAssetCreatedOrUpdated, certificateCreatedOrUpdated} from './actions';
+import {
+    currentUserUpdated,
+    configurationUpdated,
+    producingAssetCreatedOrUpdated,
+    consumingAssetCreatedOrUpdated,
+    certificateCreatedOrUpdated
+} from './actions';
 import './index.scss';
 
 const store = createStore<any>(reducer);
 
-const mapDispatchToProps = (dispatch) => ({
-        actions: bindActionCreators({currentUserUpdated, configurationUpdated, producingAssetCreatedOrUpdated, certificateCreatedOrUpdated, consumingAssetCreatedOrUpdated}, dispatch)
+const mapDispatchToProps = dispatch => ({
+    actions: bindActionCreators(
+        {
+            currentUserUpdated,
+            configurationUpdated,
+            producingAssetCreatedOrUpdated,
+            certificateCreatedOrUpdated,
+            consumingAssetCreatedOrUpdated
+        },
+        dispatch
+    )
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return state;
 };
 
@@ -44,8 +59,13 @@ const mapStateToProps = (state) => {
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
-
-            <Route path='/:contractAddress/' component={connect(mapStateToProps, mapDispatchToProps)(AppContainer)} />
+            <Route
+                path="/:contractAddress/"
+                component={connect(
+                    mapStateToProps,
+                    mapDispatchToProps
+                )(AppContainer)}
+            />
         </BrowserRouter>
     </Provider>,
     document.getElementById('root')

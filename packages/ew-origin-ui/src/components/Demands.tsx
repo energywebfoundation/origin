@@ -29,7 +29,6 @@
 
 // import '../../assets/common.scss'
 
-
 // export interface DemandsProps {
 //     web3Service: Web3Service,
 //     demands: Demand[],
@@ -45,7 +44,6 @@
 //     switchedToOrganization: boolean
 
 // }
-
 
 // export class Demands extends React.Component<DemandsProps, DemandState> {
 
@@ -68,7 +66,6 @@
 //         })
 //     }
 
-
 //     DemandTable() {
 //         return <DemandTable
 //             web3Service={this.props.web3Service}
@@ -80,7 +77,6 @@
 //             baseUrl={this.props.baseUrl}
 //         />
 //     }
-
 
 //     render() {
 
@@ -104,7 +100,6 @@
 //                 }
 //             ]
 //         }
-
 
 //         return <div className='PageWrapper'>
 //             <div className='PageNav'>

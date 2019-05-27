@@ -14,4 +14,4 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-export const APIKEY = 'AIzaSyC4IaYMJeSVKB2ML9kNP9rZjazuYNt37Fw'
+export const APIKEY = 'AIzaSyC4IaYMJeSVKB2ML9kNP9rZjazuYNt37Fw';

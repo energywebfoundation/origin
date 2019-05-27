@@ -33,205 +33,278 @@ import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
 
 export interface DetailViewProps {
-  conf: Configuration.Entity;
-  id: number;
-  baseUrl: string;
-  certificates: OriginIssuer.Certificate.Entity[];
-  producingAssets: EwAsset.ProducingAsset.Entity[];
-  addSearchField: boolean;
+    conf: Configuration.Entity;
+    id: number;
+    baseUrl: string;
+    certificates: OriginIssuer.Certificate.Entity[];
+    producingAssets: EwAsset.ProducingAsset.Entity[];
+    addSearchField: boolean;
 }
 
 export interface DetailViewState {
-  newId: number;
-  owner: EwUser.User;
-  notSoldCertificates: number;
-
+    newId: number;
+    owner: EwUser.User;
+    notSoldCertificates: number;
 }
 
 const TableWidth = [210, 210, 210, 210, 407];
 
 export class ProducingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
-  constructor(props: DetailViewProps) {
-    super(props);
-    this.state = {
-      newId: null,
-      owner: null,
-      notSoldCertificates: 0
-    };
-    this.onInputChange = this.onInputChange.bind(this);
-
-  }
-
-  onInputChange(e: any): void {
-
-    this.setState({ newId: e.target.value });
-  }
-
-  async componentDidMount(): Promise<void> {
-    await this.getOwner(this.props);
-
-  }
-
-  async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
-    await this.getOwner(newProps);
-  }
-
-  async getOwner(props: DetailViewProps): Promise<void> {
-    if (props.id !== null && props.id !== undefined) {
-      const selectedAsset = props.producingAssets.find((p: EwAsset.ProducingAsset.Entity) => p.id === props.id.toString());
-      if (selectedAsset) {
-        if (this.props.certificates.length > 0) {
-          this.setState({
-            notSoldCertificates: this.props.certificates
-              .map((certificate: OriginIssuer.Certificate.Entity) =>
-                certificate.owner === selectedAsset.owner.address
-                  && certificate.assetId.toString() === selectedAsset.id ?
-                  certificate.powerInW
-                  : 0)
-              .reduce((a, b) => a + b)
-          });
-        }
-        this.setState({
-          owner: await (new EwUser.User(selectedAsset.owner.address, props.conf as any).sync())
-
-        });
-
-      }
+    constructor(props: DetailViewProps) {
+        super(props);
+        this.state = {
+            newId: null,
+            owner: null,
+            notSoldCertificates: 0
+        };
+        this.onInputChange = this.onInputChange.bind(this);
     }
 
-
-  }
-
-  render(): JSX.Element {
-
-    const selectedAsset: EwAsset.ProducingAsset.Entity = this.props.id !== null && this.props.id !== undefined ? this.props.producingAssets
-      .find((p: EwAsset.ProducingAsset.Entity) => p.id === this.props.id.toString()) : null;
-    let data;
-    if (selectedAsset) {
-      data = [
-        [
-          {
-            label: 'Asset Owner',
-            data: this.state.owner ? this.state.owner.organization : ''
-          },
-          {
-            label: 'Certified by Registry' + getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
-            data: EwAsset.ProducingAsset.Compliance[selectedAsset.offChainProperties.complianceRegistry]
-          },
-          {
-            label: 'Meter Read' + getOffChainText('lastSmartMeterReadWh', selectedAsset.offChainProperties),
-            data: (selectedAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
-            tip: 'kWh'
-          },
-
-          {
-            label: 'Geo Location' + getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
-            data: selectedAsset.offChainProperties.gpsLatitude + ', ' + selectedAsset.offChainProperties.gpsLongitude,
-            image: map,
-            type: 'map',
-            rowspan: 3,
-            colspan: 2
-          }
-        ],
-        [
-          {
-            label: 'Asset Type' + getOffChainText('assetType', selectedAsset.offChainProperties),
-            data: EwAsset.ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
-            image: EwAsset.ProducingAsset.Type.Wind === selectedAsset.offChainProperties.assetType ? wind :
-              EwAsset.ProducingAsset.Type.Solar === selectedAsset.offChainProperties.assetType ? solar : hydro,
-            rowspan: 2
-          },
-          {
-            label: 'Other Green Attributes' + getOffChainText('otherGreenAttributes', selectedAsset.offChainProperties),
-            data: selectedAsset.offChainProperties.otherGreenAttributes
-          },
-          {
-            label: 'Commissioning Date' + getOffChainText('operationalSince', selectedAsset.offChainProperties),
-            data: moment(selectedAsset.offChainProperties.operationalSince * 1000).format('DD MMM YY')
-          }
-        ],
-        [
-          {
-            label: 'Public Support' + getOffChainText('typeOfPublicSupport', selectedAsset.offChainProperties),
-            data: selectedAsset.offChainProperties.typeOfPublicSupport,
-            description: ''
-          },
-          {
-            label: 'Nameplate Capacity' + getOffChainText('capacityWh', selectedAsset.offChainProperties),
-            data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
-            tip: 'kW'
-          }
-        ]
-      ];
+    onInputChange(e: any): void {
+        this.setState({ newId: e.target.value });
     }
 
-    const pageBody = <div className='PageBody'>
-      {!selectedAsset ?
-        <div className='text-center'><strong>Asset not found</strong></div> :
-        <table >
-          <tbody>
-            {data.map((row: any) => (
-              <tr key={row.key} >
-                {row.map((col, cIndex) => {
-                  if (col.isAdditionalInformation && !this.props.addSearchField) {
-                    return null;
-                  }
-                  return (
-                    <td key={col.key} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
-                      <div className='Label'>{col.label}</div>
-                      <div className='Data'>{col.data} {col.tip && (<span>{col.tip}</span>)}</div>
-                      {col.image && (
-                        col.type !== 'map'
-                          ?
-                          <div className={`Image`}>
-                            <img src={col.image} />
-                            {col.type === 'map' && (
-                              <img src={marker as any} className='Marker' />
-                            )}
-                          </div>
-                          :
-                          <div className={`Image Map`}>
-                            <MapContainer asset={selectedAsset} />
+    async componentDidMount(): Promise<void> {
+        await this.getOwner(this.props);
+    }
 
-                          </div>
-                      )}
-                      {col.description && (<div className='Description'>{col.description}</div>)}
-                    </td>
-                  );
-                })
+    async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
+        await this.getOwner(newProps);
+    }
+
+    async getOwner(props: DetailViewProps): Promise<void> {
+        if (props.id !== null && props.id !== undefined) {
+            const selectedAsset = props.producingAssets.find(
+                (p: EwAsset.ProducingAsset.Entity) => p.id === props.id.toString()
+            );
+            if (selectedAsset) {
+                if (this.props.certificates.length > 0) {
+                    this.setState({
+                        notSoldCertificates: this.props.certificates
+                            .map((certificate: OriginIssuer.Certificate.Entity) =>
+                                certificate.owner === selectedAsset.owner.address &&
+                                certificate.assetId.toString() === selectedAsset.id
+                                    ? certificate.powerInW
+                                    : 0
+                            )
+                            .reduce((a, b) => a + b)
+                    });
                 }
-              </tr>
-            ))
+                this.setState({
+                    owner: await new EwUser.User(
+                        selectedAsset.owner.address,
+                        props.conf as any
+                    ).sync()
+                });
             }
-          </tbody>
-        </table>
-      }
-    </div>;
+        }
+    }
 
-    return (
-      <div>
-        {this.props.addSearchField ?
-          <div className='DetailViewWrapper' >
-            <div className='FindAsset'>
-              <input onChange={this.onInputChange} defaultValue={this.props.id || this.props.id === 0 ? this.props.id.toString() : ''} />
+    render(): JSX.Element {
+        const selectedAsset: EwAsset.ProducingAsset.Entity =
+            this.props.id !== null && this.props.id !== undefined
+                ? this.props.producingAssets.find(
+                      (p: EwAsset.ProducingAsset.Entity) => p.id === this.props.id.toString()
+                  )
+                : null;
+        let data;
+        if (selectedAsset) {
+            data = [
+                [
+                    {
+                        label: 'Asset Owner',
+                        data: this.state.owner ? this.state.owner.organization : ''
+                    },
+                    {
+                        label:
+                            'Certified by Registry' +
+                            getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
+                        data:
+                            EwAsset.ProducingAsset.Compliance[
+                                selectedAsset.offChainProperties.complianceRegistry
+                            ]
+                    },
+                    {
+                        label:
+                            'Meter Read' +
+                            getOffChainText(
+                                'lastSmartMeterReadWh',
+                                selectedAsset.offChainProperties
+                            ),
+                        data: (selectedAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
+                        tip: 'kWh'
+                    },
 
-              <Link className='btn btn-primary find-asset-button' to={`/${this.props.baseUrl}/assets/producing_detail_view/${this.state.newId}`}>Find Asset</Link>
+                    {
+                        label:
+                            'Geo Location' +
+                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
+                        data:
+                            selectedAsset.offChainProperties.gpsLatitude +
+                            ', ' +
+                            selectedAsset.offChainProperties.gpsLongitude,
+                        image: map,
+                        type: 'map',
+                        rowspan: 3,
+                        colspan: 2
+                    }
+                ],
+                [
+                    {
+                        label:
+                            'Asset Type' +
+                            getOffChainText('assetType', selectedAsset.offChainProperties),
+                        data:
+                            EwAsset.ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
+                        image:
+                            EwAsset.ProducingAsset.Type.Wind ===
+                            selectedAsset.offChainProperties.assetType
+                                ? wind
+                                : EwAsset.ProducingAsset.Type.Solar ===
+                                  selectedAsset.offChainProperties.assetType
+                                ? solar
+                                : hydro,
+                        rowspan: 2
+                    },
+                    {
+                        label:
+                            'Other Green Attributes' +
+                            getOffChainText(
+                                'otherGreenAttributes',
+                                selectedAsset.offChainProperties
+                            ),
+                        data: selectedAsset.offChainProperties.otherGreenAttributes
+                    },
+                    {
+                        label:
+                            'Commissioning Date' +
+                            getOffChainText('operationalSince', selectedAsset.offChainProperties),
+                        data: moment(
+                            selectedAsset.offChainProperties.operationalSince * 1000
+                        ).format('DD MMM YY')
+                    }
+                ],
+                [
+                    {
+                        label:
+                            'Public Support' +
+                            getOffChainText(
+                                'typeOfPublicSupport',
+                                selectedAsset.offChainProperties
+                            ),
+                        data: selectedAsset.offChainProperties.typeOfPublicSupport,
+                        description: ''
+                    },
+                    {
+                        label:
+                            'Nameplate Capacity' +
+                            getOffChainText('capacityWh', selectedAsset.offChainProperties),
+                        data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
+                        tip: 'kW'
+                    }
+                ]
+            ];
+        }
 
+        const pageBody = (
+            <div className="PageBody">
+                {!selectedAsset ? (
+                    <div className="text-center">
+                        <strong>Asset not found</strong>
+                    </div>
+                ) : (
+                    <table>
+                        <tbody>
+                            {data.map((row: any) => (
+                                <tr key={row.key}>
+                                    {row.map((col, cIndex) => {
+                                        if (
+                                            col.isAdditionalInformation &&
+                                            !this.props.addSearchField
+                                        ) {
+                                            return null;
+                                        }
+
+                                        return (
+                                            <td
+                                                key={col.key}
+                                                rowSpan={col.rowspan || 1}
+                                                colSpan={col.colspan || 1}
+                                            >
+                                                <div className="Label">{col.label}</div>
+                                                <div className="Data">
+                                                    {col.data} {col.tip && <span>{col.tip}</span>}
+                                                </div>
+                                                {col.image &&
+                                                    (col.type !== 'map' ? (
+                                                        <div className={`Image`}>
+                                                            <img src={col.image} />
+                                                            {col.type === 'map' && (
+                                                                <img
+                                                                    src={marker as any}
+                                                                    className="Marker"
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`Image Map`}>
+                                                            <MapContainer asset={selectedAsset} />
+                                                        </div>
+                                                    ))}
+                                                {col.description && (
+                                                    <div className="Description">
+                                                        {col.description}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
-            <div className='PageContentWrapper'>
-              {/* <div className='PageHeader'>
+        );
+
+        return (
+            <div>
+                {this.props.addSearchField ? (
+                    <div className="DetailViewWrapper">
+                        <div className="FindAsset">
+                            <input
+                                onChange={this.onInputChange}
+                                defaultValue={
+                                    this.props.id || this.props.id === 0
+                                        ? this.props.id.toString()
+                                        : ''
+                                }
+                            />
+
+                            <Link
+                                className="btn btn-primary find-asset-button"
+                                to={`/${this.props.baseUrl}/assets/producing_detail_view/${
+                                    this.state.newId
+                                }`}
+                            >
+                                Find Asset
+                            </Link>
+                        </div>
+                        <div className="PageContentWrapper">
+                            {/* <div className='PageHeader'>
                 <div className='PageTitle'>Berlin II, <span>Berlin, Germany</span></div>
               </div> */}
-              {pageBody}
+                            {pageBody}
+                        </div>
+                    </div>
+                ) : (
+                    pageBody
+                )}
             </div>
-          </div> : pageBody}
-
-      </div>
-
-    );
-  }
+        );
+    }
 }
 
-const addCommas = (intNum) => {
-  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+const addCommas = intNum => {
+    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
 };

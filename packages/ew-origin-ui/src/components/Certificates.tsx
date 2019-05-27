@@ -32,22 +32,17 @@ export interface CertificatesProps {
     producingAssets: EwAsset.ProducingAsset.Entity[];
     currentUser: EwUser.User;
     baseUrl: string;
-
 }
 
 export interface CertificatesState {
-
     switchedToOrganization: boolean;
-
 }
 
 export class Certificates extends React.Component<CertificatesProps, CertificatesState> {
-
     constructor(props: CertificatesProps) {
         super(props);
 
         this.state = {
-
             switchedToOrganization: false
         };
 
@@ -58,26 +53,26 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
         this.ForSaleCertificates = this.ForSaleCertificates.bind(this);
         this.ForSaleERC20Certificates = this.ForSaleERC20Certificates.bind(this);
         this.ClaimedCertificates = this.ClaimedCertificates.bind(this);
-
     }
 
     switchToOrganization(switchedToOrganization: boolean) {
         this.setState({
-            switchedToOrganization: switchedToOrganization
+            switchedToOrganization
         });
     }
 
     CertificateTable(key) {
-        return <CertificateTable
-            conf={this.props.conf}
-            certificates={this.props.certificates}
-            producingAssets={this.props.producingAssets}
-            currentUser={this.props.currentUser}
-            baseUrl={this.props.baseUrl}
-            selectedState={key}
-            switchedToOrganization={this.state.switchedToOrganization}
-        />;
-
+        return (
+            <CertificateTable
+                conf={this.props.conf}
+                certificates={this.props.certificates}
+                producingAssets={this.props.producingAssets}
+                currentUser={this.props.currentUser}
+                baseUrl={this.props.baseUrl}
+                selectedState={key}
+                switchedToOrganization={this.state.switchedToOrganization}
+            />
+        );
     }
 
     onFilterOrganization(index: number) {
@@ -87,12 +82,15 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
     }
 
     CertificateDetailView(id: number) {
-        return <CertificateDetailView
-            id={id} baseUrl={this.props.baseUrl}
-            producingAssets={this.props.producingAssets}
-            conf={this.props.conf}
-            certificates={this.props.certificates}
-        />;
+        return (
+            <CertificateDetailView
+                id={id}
+                baseUrl={this.props.baseUrl}
+                producingAssets={this.props.producingAssets}
+                conf={this.props.conf}
+                certificates={this.props.certificates}
+            />
+        );
     }
 
     SoldCertificates() {
@@ -109,14 +107,12 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
 
     ClaimedCertificates() {
         return this.CertificateTable(SelectedState.Claimed);
-
     }
 
     render() {
-
-        const organizations = this.props.currentUser ?
-            ['All Organizations', this.props.currentUser.organization] :
-            ['All Organizations'];
+        const organizations = this.props.currentUser
+            ? ['All Organizations', this.props.currentUser.organization]
+            : ['All Organizations'];
 
         const CertificatesMenu = [
             {
@@ -170,42 +166,82 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                         content: organizations
                     }
                 ]
-            }, {
+            },
+            {
                 key: 'detail_view',
                 label: 'Detail View',
                 component: null
             }
         ];
 
-        return <div className='PageWrapper'>
-            <div className='PageNav'>
-                <Nav className='NavMenu'>
-                    {
-                        CertificatesMenu.map((menu) => {
+        return (
+            <div className="PageWrapper">
+                <div className="PageNav">
+                    <Nav className="NavMenu">
+                        {CertificatesMenu.map(menu => {
+                            return (
+                                <li key={menu.key}>
+                                    <NavLink
+                                        to={`/${this.props.baseUrl}/certificates/${menu.key}`}
+                                        activeClassName="active"
+                                    >
+                                        {menu.label}
+                                    </NavLink>
+                                </li>
+                            );
+                        })}
+                    </Nav>
+                </div>
 
-                            return (<li key={menu.key}><NavLink to={`/${this.props.baseUrl}/certificates/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>);
-                        })
+                <Route
+                    path={'/' + this.props.baseUrl + '/certificates/:key/:id?'}
+                    render={props => {
+                        const key = props.match.params.key;
+                        const id = props.match.params.id;
+                        const matches = CertificatesMenu.filter(item => {
+                            return item.key === key;
+                        });
+                        if (matches.length > 0 && key === 'detail_view') {
+                            matches[0].component = () =>
+                                this.CertificateDetailView(id ? parseInt(id, 10) : id);
+                        }
 
-                    }
-                </Nav>
+                        return (
+                            <PageContent
+                                onFilterOrganization={this.onFilterOrganization}
+                                menu={matches.length > 0 ? matches[0] : null}
+                                redirectPath={'/' + this.props.baseUrl + '/certificates'}
+                            />
+                        );
+                    }}
+                />
+                <Route
+                    exact
+                    path={'/' + this.props.baseUrl + '/certificates'}
+                    render={props => (
+                        <Redirect
+                            to={{
+                                pathname: `/${this.props.baseUrl}/certificates/${
+                                    CertificatesMenu[0].key
+                                }`
+                            }}
+                        />
+                    )}
+                />
+                <Route
+                    exact
+                    path={'/' + this.props.baseUrl + '/'}
+                    render={props => (
+                        <Redirect
+                            to={{
+                                pathname: `/${this.props.baseUrl}/certificates/${
+                                    CertificatesMenu[0].key
+                                }`
+                            }}
+                        />
+                    )}
+                />
             </div>
-
-            <Route path={'/' + this.props.baseUrl + '/certificates/:key/:id?'} render={props => {
-                const key = props.match.params.key;
-                const id = props.match.params.id;
-                const matches = CertificatesMenu.filter(item => {
-                    return item.key === key;
-                });
-                if (matches.length > 0 && key === 'detail_view') {
-                    matches[0].component = () => this.CertificateDetailView(id ? parseInt(id, 10) : id);
-                }
-                return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/certificates'} />);
-            }} />
-            <Route exact path={'/' + this.props.baseUrl + '/certificates'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/certificates/${CertificatesMenu[0].key}` }} />)} />
-            <Route exact path={'/' + this.props.baseUrl + '/'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/certificates/${CertificatesMenu[0].key}` }} />)} />
-
-        </div>;
-
+        );
     }
-
 }

@@ -14,50 +14,56 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react'
-import {
-  NavLink,
-  withRouter
-} from 'react-router-dom'
+import * as React from 'react';
+import { NavLink, withRouter } from 'react-router-dom';
 
-import outline from '../../assets/outline-o.svg'
-import ewfLogo from '../../assets/EWF.png'
-import './Footer.scss'
+import outline from '../../assets/outline-o.svg';
+import ewfLogo from '../../assets/EWF.png';
+import './Footer.scss';
 
 const FooterLinks = [
-  {
-    key: 'about',
-    label: 'About'
-  },
-  {
-    key: 'legal',
-    label: 'Legal'
-  },
-]
+    {
+        key: 'about',
+        label: 'About'
+    },
+    {
+        key: 'legal',
+        label: 'Legal'
+    }
+];
 
 interface FooterProps {
-  cooContractAddress: string
+    cooContractAddress: string;
 }
 
 export class Footer extends React.Component<FooterProps, {}> {
-  render() {
-
-    return <div className='FooterWrapper'>
-      <div className='FooterInfo'>
-        <div className='Footer Login'>
-        <img src={ewfLogo as any}/>&nbsp;
-          © 2018 // Energy Web Foundation&nbsp;
-            <a href='http://energyweb.org'><img src={outline as any} /></a>
-        </div>
-      </div>
-      <div className='FooterNav'>
-        {
-          FooterLinks.map(link => {
-            return (<div className='NavItem' key={link.key}><NavLink to={`/${this.props.cooContractAddress}/${link.key}`} activeClassName='active'>{link.label}</NavLink></div>)
-          })
-        }
-      </div>
-    </div>
-
-  }
+    render() {
+        return (
+            <div className="FooterWrapper">
+                <div className="FooterInfo">
+                    <div className="Footer Login">
+                        <img src={ewfLogo as any} />
+                        &nbsp; © 2018 // Energy Web Foundation&nbsp;
+                        <a href="http://energyweb.org">
+                            <img src={outline as any} />
+                        </a>
+                    </div>
+                </div>
+                <div className="FooterNav">
+                    {FooterLinks.map(link => {
+                        return (
+                            <div className="NavItem" key={link.key}>
+                                <NavLink
+                                    to={`/${this.props.cooContractAddress}/${link.key}`}
+                                    activeClassName="active"
+                                >
+                                    {link.label}
+                                </NavLink>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }
 }

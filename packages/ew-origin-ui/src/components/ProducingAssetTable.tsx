@@ -36,18 +36,15 @@ export interface ProducingAssetTableProps {
 export interface ProducingAssetTableState {
     enrichedProducingAssetData: EnrichedProducingAssetData[];
     detailViewForAssetId: number;
-
 }
 
 export interface EnrichedProducingAssetData {
     producingAsset: EwAsset.ProducingAsset.Entity;
     organizationName: string;
     notSoldCertificates: OriginIssuer.Certificate.Entity[];
-
 }
 
 export class ProducingAssetTable extends React.Component<ProducingAssetTableProps, {}> {
-
     state: ProducingAssetTableState;
 
     constructor(props: ProducingAssetTableProps) {
@@ -60,18 +57,16 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
-
     }
 
     switchToOrganization(switchedToOrganization: boolean): void {
         this.setState({
-            switchedToOrganization: switchedToOrganization
+            switchedToOrganization
         });
     }
 
     async componentDidMount(): Promise<void> {
         await this.getOrganizationNames(this.props);
-
     }
 
     async componentWillReceiveProps(newProps: ProducingAssetTableProps): Promise<void> {
@@ -79,44 +74,57 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
     }
 
     async getOrganizationNames(props: ProducingAssetTableProps): Promise<void> {
-
-        const promieses = props.producingAssets.map(async (producingAsset: EwAsset.ProducingAsset.Entity, index: number) =>
-            ({
-                producingAsset: producingAsset,
-                notSoldCertificates: this.props.certificates
-                    .filter((certificate: OriginIssuer.Certificate.Entity) =>
-                        certificate.owner === producingAsset.owner.address && certificate.assetId.toString() === producingAsset.id
-                    ),
-                organizationName: (await (new EwUser.User(producingAsset.owner.address, props.conf as any))
-                    .sync()
-                ).organization
+        const promieses = props.producingAssets.map(
+            async (producingAsset: EwAsset.ProducingAsset.Entity, index: number) => ({
+                producingAsset,
+                notSoldCertificates: this.props.certificates.filter(
+                    (certificate: OriginIssuer.Certificate.Entity) =>
+                        certificate.owner === producingAsset.owner.address &&
+                        certificate.assetId.toString() === producingAsset.id
+                ),
+                organizationName: (await new EwUser.User(
+                    producingAsset.owner.address,
+                    props.conf as any
+                ).sync()).organization
             })
         );
 
-        Promise.all(promieses).then((enrichedProducingAssetData) =>
+        Promise.all(promieses).then(enrichedProducingAssetData =>
             this.setState({
-                enrichedProducingAssetData: enrichedProducingAssetData
+                enrichedProducingAssetData
             })
         );
-
     }
 
     operationClicked(key: string, id: number): void {
         this.setState({
             detailViewForAssetId: id
         });
-
     }
 
     render(): JSX.Element {
         if (this.state.detailViewForAssetId !== null) {
-            return <Redirect push to={'/' + this.props.baseUrl + '/assets/producing_detail_view/' + this.state.detailViewForAssetId} />;
+            return (
+                <Redirect
+                    push
+                    to={
+                        '/' +
+                        this.props.baseUrl +
+                        '/assets/producing_detail_view/' +
+                        this.state.detailViewForAssetId
+                    }
+                />
+            );
         }
 
         const defaultWidth: number = 106;
         const getKey: any = TableUtils.getKey;
-        const generateHeader: Function = (label, width = defaultWidth, right = false, body = false) =>
-            (TableUtils.generateHeader(label, width, right, body));
+        const generateHeader: Function = (
+            label,
+            width = defaultWidth,
+            right = false,
+            body = false
+        ) => TableUtils.generateHeader(label, width, right, body);
         const generateFooter: any = TableUtils.generateFooter;
 
         const TableHeader: any[] = [
@@ -126,7 +134,6 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             generateHeader('Type', 72),
             generateHeader('Nameplate Capacity (kW)', 125.45, true),
             generateHeader('Meter Read (kWh)', 135.89, true)
-
         ];
 
         const TableFooter: any = [
@@ -136,7 +143,6 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 colspan: 5
             },
             generateFooter('Meter Read (kWh)')
-
         ];
 
         const assets = null;
@@ -147,51 +153,60 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
 
         const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
 
-        const filteredEnrichedAssetData = this.state.enrichedProducingAssetData
-            .filter((enrichedProducingAssetData: EnrichedProducingAssetData) => {
-
-                return !this.props.switchedToOrganization
-                    || enrichedProducingAssetData.producingAsset.owner.address === this.props.currentUser.id;
-
-            });
+        const filteredEnrichedAssetData = this.state.enrichedProducingAssetData.filter(
+            (enrichedProducingAssetData: EnrichedProducingAssetData) => {
+                return (
+                    !this.props.switchedToOrganization ||
+                    enrichedProducingAssetData.producingAsset.owner.address ===
+                        this.props.currentUser.id
+                );
+            }
+        );
 
         let data = [];
-        data = filteredEnrichedAssetData.map((enrichedProducingAssetData: EnrichedProducingAssetData) => {
-            const producingAsset = enrichedProducingAssetData.producingAsset;
-            const generatedKWh = producingAsset.certificatesCreatedForWh / 1000;
-            const kWhForSale = enrichedProducingAssetData.notSoldCertificates.length < 1 ?
-                0 : enrichedProducingAssetData.notSoldCertificates
-                    .map((certificate: OriginIssuer.Certificate.Entity) => certificate.powerInW)
-                    .reduce(accumulatorCb) / 1000;
+        data = filteredEnrichedAssetData.map(
+            (enrichedProducingAssetData: EnrichedProducingAssetData) => {
+                const producingAsset = enrichedProducingAssetData.producingAsset;
+                const generatedKWh = producingAsset.certificatesCreatedForWh / 1000;
+                const kWhForSale =
+                    enrichedProducingAssetData.notSoldCertificates.length < 1
+                        ? 0
+                        : enrichedProducingAssetData.notSoldCertificates
+                              .map(
+                                  (certificate: OriginIssuer.Certificate.Entity) =>
+                                      certificate.powerInW
+                              )
+                              .reduce(accumulatorCb) / 1000;
 
-            totalSold += generatedKWh - kWhForSale;
-            totalNotSold += kWhForSale;
+                totalSold += generatedKWh - kWhForSale;
+                totalNotSold += kWhForSale;
 
-            return ([
-                producingAsset.id,
-                enrichedProducingAssetData.organizationName,
-                (producingAsset.offChainProperties.city + ', ' + producingAsset.offChainProperties.country),
-                EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                (producingAsset.offChainProperties.capacityWh / 1000),
-                (producingAsset.lastSmartMeterReadWh / 1000)
-
-            ]);
-
-        });
+                return [
+                    producingAsset.id,
+                    enrichedProducingAssetData.organizationName,
+                    producingAsset.offChainProperties.city +
+                        ', ' +
+                        producingAsset.offChainProperties.country,
+                    EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
+                    producingAsset.offChainProperties.capacityWh / 1000,
+                    producingAsset.lastSmartMeterReadWh / 1000
+                ];
+            }
+        );
 
         const operations = ['Show Details'];
 
-        return <div className='ProductionWrapper'>
-            <Table
-                header={TableHeader}
-                footer={TableFooter}
-                operationClicked={this.operationClicked}
-                actions={true}
-                data={data}
-                operations={operations}
-            />
-        </div>;
-
+        return (
+            <div className="ProductionWrapper">
+                <Table
+                    header={TableHeader}
+                    footer={TableFooter}
+                    operationClicked={this.operationClicked}
+                    actions={true}
+                    data={data}
+                    operations={operations}
+                />
+            </div>
+        );
     }
-
 }

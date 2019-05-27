@@ -1,34 +1,34 @@
 .FooterWrapper {
-  height: 94px;
-  padding: 0 95px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #3C3C3C;
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.179659);
-
-  .FooterInfo {
-    .Footer {
-      margin: 0;
-      font-weight: 500;
-      font-size: 12px;
-      letter-spacing: .6px;
-      color: #FFFFFF;
-    }
-  }
-
-  .FooterNav {
+    height: 94px;
+    padding: 0 95px;
     display: flex;
-    .NavItem {
-      width: 85px;
-      text-align: right;
-      a {
-        font-weight: 500;
-        font-size: 12px;
-        letter-spacing: .6px;
-        color: #BA77FF;
-        text-decoration: none;
-      }
+    align-items: center;
+    justify-content: space-between;
+    background: #3c3c3c;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.179659);
+
+    .FooterInfo {
+        .Footer {
+            margin: 0;
+            font-weight: 500;
+            font-size: 12px;
+            letter-spacing: 0.6px;
+            color: #ffffff;
+        }
     }
-  }
+
+    .FooterNav {
+        display: flex;
+        .NavItem {
+            width: 85px;
+            text-align: right;
+            a {
+                font-weight: 500;
+                font-size: 12px;
+                letter-spacing: 0.6px;
+                color: #ba77ff;
+                text-decoration: none;
+            }
+        }
+    }
 }
