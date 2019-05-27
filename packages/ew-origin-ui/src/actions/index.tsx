@@ -28,7 +28,6 @@ export enum Actions {
     consumingAssetCreatedOrUpdated = 'CONSUMING_ASSET_CREATED_OR_UPDATED',
     currentUserUpdated = 'CURRENT_USER_UPDATED',
     configurationUpdated = 'CONFIGURATION_UPDATED'
-
 }
 
 export const certificateCreatedOrUpdated = (certificate: OriginIssuer.Certificate.Entity): any => ({
@@ -41,7 +40,9 @@ export const certificateCreatedOrUpdated = (certificate: OriginIssuer.Certificat
 //     demand
 // })
 
-export const producingAssetCreatedOrUpdated = (producingAsset: EwAsset.ProducingAsset.Entity): any => ({
+export const producingAssetCreatedOrUpdated = (
+    producingAsset: EwAsset.ProducingAsset.Entity
+): any => ({
     type: Actions.producingAssetCreatedOrUpdated,
     producingAsset
 });

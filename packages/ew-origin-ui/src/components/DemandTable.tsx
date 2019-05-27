@@ -48,12 +48,7 @@
 
 // }
 
-export const PeriodToSeconds = [
-    31536000,
-    2592000,
-    86400,
-    3600
-]
+export const PeriodToSeconds = [31536000, 2592000, 86400, 3600];
 
 // export class DemandTable extends React.Component<DemandTableProps, {}> {
 
@@ -97,8 +92,6 @@ export const PeriodToSeconds = [
 //             })
 //         )
 
-
-
 //         Promise.all(promieses).then((enrichedDemandData) =>
 //             this.setState({
 //                 enrichedDemandData: enrichedDemandData
@@ -122,8 +115,6 @@ export const PeriodToSeconds = [
 //         const getKey = TableUtils.getKey
 //         const generateHeader = (label, width = defaultWidth, right = false, body = false) => (TableUtils.generateHeader(label, width, right, body))
 //         const generateFooter = TableUtils.generateFooter
-
-
 
 //         const TableFooter = [
 //             {
@@ -177,8 +168,6 @@ export const PeriodToSeconds = [
 //         return <div className='ForSaleWrapper'>
 //             <Table classNames={['bare-font', 'bare-padding']} header={TableHeader} footer={TableFooter} actions={true} data={data} actionWidth={55.39} />
 //         </div>
-
-
 
 //     }
 

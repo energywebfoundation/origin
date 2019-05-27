@@ -1,68 +1,68 @@
 .BlockWrapper {
-  padding-top: 47px;
+    padding-top: 47px;
 
-  .BlockHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 9px;
-    border-bottom: 1px solid rgba(151, 151, 151, .14);
+    .BlockHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 9px;
+        border-bottom: 1px solid rgba(151, 151, 151, 0.14);
 
-    div {
-      font-weight: 300;
-      font-size: 22px;
-      letter-spacing: .471429px;
-      color: #FFFFFF;
-      mix-blend-mode: normal;
-      opacity: .26;
+        div {
+            font-weight: 300;
+            font-size: 22px;
+            letter-spacing: 0.471429px;
+            color: #ffffff;
+            mix-blend-mode: normal;
+            opacity: 0.26;
+        }
     }
-  }
 
-  .BlockItems {
-    min-height: 210px;
-    margin-top: 5px;
+    .BlockItems {
+        min-height: 210px;
+        margin-top: 5px;
 
-    .BlockItem {
-      padding-top: 15px;
+        .BlockItem {
+            padding-top: 15px;
 
-      &.--label {
-        .Label {
-          font-weight: 500;
-          line-height: 24px;
-          color: #989898;
+            &.--label {
+                .Label {
+                    font-weight: 500;
+                    line-height: 24px;
+                    color: #989898;
+                }
+
+                .Content {
+                    font-size: 16px;
+                    letter-spacing: 0.0888889px;
+                    color: #ffffff;
+                }
+            }
+
+            .Label {
+                font-weight: 500;
+                line-height: 24px;
+                font-size: 11px;
+                color: #ffffff;
+                mix-blend-mode: normal;
+                opacity: 0.7;
+            }
         }
+    }
 
-        .Content {
-          font-size: 16px;
-          letter-spacing: .0888889px;
-          color: #FFFFFF;
-        }
-      }
-
-      .Label {
+    .BlockButton {
+        width: 100%;
+        line-height: 40px;
+        text-transform: uppercase;
+        background: #393939;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.498188);
+        border-radius: 3px;
+        font-size: 12px;
         font-weight: 500;
-        line-height: 24px;
-        font-size: 11px;
-        color: #FFFFFF;
-        mix-blend-mode: normal;
-        opacity: .7;
-      }
+        text-align: center;
+        letter-spacing: 0.257143px;
+        cursor: pointer;
     }
-  }
-
-  .BlockButton {
-    width: 100%;
-    line-height: 40px;
-    text-transform: uppercase;
-    background: #393939;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.498188);
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    letter-spacing: .257143px;
-    cursor: pointer;
-  }
 }
 
 /**
@@ -70,79 +70,79 @@
 */
 
 .dropdown {
-  width: 100%;
-
-  .dropdown-toggle {
-    font-weight: 500;
-    font-size: 12px;
-    color: #DDDDDD;
-    background: #3C3C3C;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.0454031);
-    border-radius: 2px;
-    outline: none;
-    height: 40px;
     width: 100%;
-    border: none;
-    padding: 13px 14px 12px;
-    text-align: left;
 
-    &:after {
-      position: absolute;
-      right: 10px;
-      background-image: url('../../../assets/caret.svg');
-      width: 13px;
-      height: 8px;
-      border: none;
-      top: 16px;
-      transition: all .5s;
-    }
-  }
+    .dropdown-toggle {
+        font-weight: 500;
+        font-size: 12px;
+        color: #dddddd;
+        background: #3c3c3c;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.0454031);
+        border-radius: 2px;
+        outline: none;
+        height: 40px;
+        width: 100%;
+        border: none;
+        padding: 13px 14px 12px;
+        text-align: left;
 
-  &.open {
-    .dropdown-toggle:after {
-      transform: rotate(180deg);
+        &:after {
+            position: absolute;
+            right: 10px;
+            background-image: url('../../../assets/caret.svg');
+            width: 13px;
+            height: 8px;
+            border: none;
+            top: 16px;
+            transition: all 0.5s;
+        }
     }
-  }
+
+    &.open {
+        .dropdown-toggle:after {
+            transform: rotate(180deg);
+        }
+    }
 }
 
 .dropdown {
-  &.open {
-    .dropdown-menu {
-      display: block;
+    &.open {
+        .dropdown-menu {
+            display: block;
 
-      * {
-        cursor: pointer;
-      }
-    }
-  }
-
-  ul.dropdown-menu {
-    padding: 0;
-    border: none;
-    border-radius: 2px;
-    width: 100%;
-    background: #393939;
-
-    li {
-      padding: 0 14px;
-      border-top: 1px solid rgba(152, 152, 152, .14);
-
-      &:hover {
-        background: #2F2F2F;
-
-        a {
-          opacity: 1;
+            * {
+                cursor: pointer;
+            }
         }
-      }
-
-      a {
-        color: white;
-        font-size: 12px;
-        font-weight: 500;
-        opacity: .4;
-        text-decoration: none;
-        line-height: 35px;
-      }
     }
-  }
+
+    ul.dropdown-menu {
+        padding: 0;
+        border: none;
+        border-radius: 2px;
+        width: 100%;
+        background: #393939;
+
+        li {
+            padding: 0 14px;
+            border-top: 1px solid rgba(152, 152, 152, 0.14);
+
+            &:hover {
+                background: #2f2f2f;
+
+                a {
+                    opacity: 1;
+                }
+            }
+
+            a {
+                color: white;
+                font-size: 12px;
+                font-weight: 500;
+                opacity: 0.4;
+                text-decoration: none;
+                line-height: 35px;
+            }
+        }
+    }
 }

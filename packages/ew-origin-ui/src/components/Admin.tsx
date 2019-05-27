@@ -14,86 +14,105 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react'
-import { Nav } from 'react-bootstrap'
+import * as React from 'react';
+import { Nav } from 'react-bootstrap';
 
-import {
-  NavLink,
-  Redirect,
-  Route} from 'react-router-dom'
+import { NavLink, Redirect, Route } from 'react-router-dom';
 
-import { PageContent } from '../elements/PageContent/PageContent'
-import { OnboardDemand } from './OnboardDemand'
+import { PageContent } from '../elements/PageContent/PageContent';
+import { OnboardDemand } from './OnboardDemand';
 import { User } from 'ew-user-registry-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { Configuration } from 'ew-utils-general-lib';
 
-
 export interface AdminProps {
-  conf: Configuration.Entity,
-  currentUser: User,
-  producingAssets: ProducingAsset.Entity[],
-  baseUrl: string
+    conf: Configuration.Entity;
+    currentUser: User;
+    producingAssets: ProducingAsset.Entity[];
+    baseUrl: string;
 }
 
 export class Admin extends React.Component<AdminProps, {}> {
+    constructor(props) {
+        super(props);
+        this.OnboardDemand = this.OnboardDemand.bind(this);
+    }
 
-  constructor(props) {
-    super(props)
-    this.OnboardDemand = this.OnboardDemand.bind(this)
+    OnboardDemand() {
+        return (
+            <OnboardDemand
+                configuration={this.props.conf}
+                currentUser={this.props.currentUser}
+                producingAssets={this.props.producingAssets}
+            />
+        );
+    }
 
-  }
-
-  OnboardDemand() {
-    return <OnboardDemand 
-        configuration={this.props.conf}
-        currentUser={this.props.currentUser}
-        producingAssets={this.props.producingAssets}
-      />
-  }
-
-  render() {
-
-    const AdminMenu = [
-      {
-        key: 'onboard_demand',
-        label: 'Onboard demand',
-        component: this.OnboardDemand
-      }, {
-        key: 'onboard_user',
-        label: 'Onboard user',
-        component: null
-      }, {
-        key: 'onborad_assets',
-        label: 'Onboard assets',
-        component: null
-      }
-    ]
-
-    const baseUrl = this.props.baseUrl
-    return (
-      <div className='PageWrapper'>
-        <div className='PageNav'>
-          <Nav className='NavMenu'>
+    render() {
+        const AdminMenu = [
             {
-
-              AdminMenu.map(menu => {
-                return (<li><NavLink exact to={`/${baseUrl}/admin/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>)
-              })
+                key: 'onboard_demand',
+                label: 'Onboard demand',
+                component: this.OnboardDemand
+            },
+            {
+                key: 'onboard_user',
+                label: 'Onboard user',
+                component: null
+            },
+            {
+                key: 'onborad_assets',
+                label: 'Onboard assets',
+                component: null
             }
-          </Nav>
-        </div>
+        ];
 
-        <Route path={`/${baseUrl}/admin/:key`} render={props => {
-          const key = props.match.params.key
-          const matches = AdminMenu.filter(item => {
-            return item.key === key
-          })
-          return (<PageContent menu={matches.length > 0 ? matches[0] : null} redirectPath={`${baseUrl}/admin`} />)
-        }} />
-        <Route exact path={`/${baseUrl}/admin`} render={() => (<Redirect to={{ pathname: `/${baseUrl}/admin/${AdminMenu[0].key}` }} />)} />
+        const baseUrl = this.props.baseUrl;
 
-      </div>
-    )
-  }
+        return (
+            <div className="PageWrapper">
+                <div className="PageNav">
+                    <Nav className="NavMenu">
+                        {AdminMenu.map(menu => {
+                            return (
+                                <li>
+                                    <NavLink
+                                        exact
+                                        to={`/${baseUrl}/admin/${menu.key}`}
+                                        activeClassName="active"
+                                    >
+                                        {menu.label}
+                                    </NavLink>
+                                </li>
+                            );
+                        })}
+                    </Nav>
+                </div>
+
+                <Route
+                    path={`/${baseUrl}/admin/:key`}
+                    render={props => {
+                        const key = props.match.params.key;
+                        const matches = AdminMenu.filter(item => {
+                            return item.key === key;
+                        });
+
+                        return (
+                            <PageContent
+                                menu={matches.length > 0 ? matches[0] : null}
+                                redirectPath={`${baseUrl}/admin`}
+                            />
+                        );
+                    }}
+                />
+                <Route
+                    exact
+                    path={`/${baseUrl}/admin`}
+                    render={() => (
+                        <Redirect to={{ pathname: `/${baseUrl}/admin/${AdminMenu[0].key}` }} />
+                    )}
+                />
+            </div>
+        );
+    }
 }

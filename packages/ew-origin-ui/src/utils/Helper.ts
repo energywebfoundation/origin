@@ -15,13 +15,12 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 export const isOffChainProperty = (name: string, offChainProps: any): boolean => {
-
     for (const offChainPropName of Object.keys(offChainProps)) {
-
         if (offChainPropName === name) {
             return true;
         }
     }
+
     return false;
 };
 

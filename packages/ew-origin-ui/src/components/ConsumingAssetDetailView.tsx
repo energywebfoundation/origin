@@ -25,181 +25,212 @@ import * as EwUser from 'ew-user-registry-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 
-import './DetailView.scss'
+import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
 
 export interface DetailViewProps {
-  conf: Configuration.Entity;
-  id: number;
-  baseUrl: string;
-  certificates: OriginIssuer.Certificate.Entity[];
-  consumingAssets: EwAsset.ConsumingAsset.Entity[];
+    conf: Configuration.Entity;
+    id: number;
+    baseUrl: string;
+    certificates: OriginIssuer.Certificate.Entity[];
+    consumingAssets: EwAsset.ConsumingAsset.Entity[];
 }
 
 export interface DetailViewState {
-  newId: number;
-  owner: EwUser.User;
-  notSoldCertificates: number;
-
+    newId: number;
+    owner: EwUser.User;
+    notSoldCertificates: number;
 }
 
 const TableWidth: number[] = [210, 210, 210, 210, 407];
 
 export class ConsumingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
-  constructor(props: DetailViewProps) {
-    super(props);
-    this.state = {
-      newId: null,
-      owner: null,
-      notSoldCertificates: 0
-    };
-    this.onInputChange = this.onInputChange.bind(this);
-
-  }
-
-  onInputChange(e: any): void {
-
-    this.setState({ newId: e.target.value });
-  }
-
-  async componentDidMount(): Promise<void> {
-    await this.getOwner(this.props);
-
-  }
-
-  async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
-    await this.getOwner(newProps);
-  }
-
-  async getOwner(props: DetailViewProps): Promise<void> {
-    const selectedAsset: EwAsset.ConsumingAsset.Entity = props.consumingAssets
-      .find((c: EwAsset.ConsumingAsset.Entity) => c.id === props.id.toString());
-    if (selectedAsset) {
-      if (this.props.certificates.length > 0) {
-        this.setState({
-          notSoldCertificates: this.props.certificates
-            .map((certificate: OriginIssuer.Certificate.Entity) =>
-              certificate.owner === selectedAsset.owner.address && certificate.assetId.toString() === selectedAsset.id ?
-                certificate.powerInW :
-                0
-            ).reduce((a, b) => a + b)
-        });
-      }
-      this.setState({
-        owner: await (new EwUser.User(selectedAsset.owner.address, props.conf as any).sync())
-
-      });
-
+    constructor(props: DetailViewProps) {
+        super(props);
+        this.state = {
+            newId: null,
+            owner: null,
+            notSoldCertificates: 0
+        };
+        this.onInputChange = this.onInputChange.bind(this);
     }
 
-  }
-
-  render(): JSX.Element {
-
-    const selectedAsset: EwAsset.ConsumingAsset.Entity = this.props.id !== null && this.props.id !== undefined ? this.props.consumingAssets
-      .find((p: EwAsset.ConsumingAsset.Entity) => p.id === this.props.id.toString()) : null;
-
-    let data
-    if (selectedAsset) {
-
-      data = [
-        [
-          {
-            label: 'Owner' + getOffChainText('owner', selectedAsset.offChainProperties),
-            data: this.state.owner ? this.state.owner.organization : ''
-          },
-
-          {
-            label: 'Kind',
-            data: 'Consumption'
-          },
-
-          {
-            label: 'Geo Location' + getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
-            data: selectedAsset.offChainProperties.gpsLatitude + ', ' + selectedAsset.offChainProperties.gpsLongitude,
-            image: map,
-            type: 'map',
-            rowspan: 3,
-            colspan: 2
-          }
-        ],
-        [
-
-          {
-            label: 'Commissioning Date' + getOffChainText('operationalSince', selectedAsset.offChainProperties),
-            data: moment(selectedAsset.offChainProperties.operationalSince * 1000).format('DD MMM YY')
-          },
-
-
-          {
-            label: 'Nameplate Capacity' + getOffChainText('capacityWh', selectedAsset.offChainProperties),
-            data: (selectedAsset.offChainProperties.capacityWh ? (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3) : '-'),
-            tip: 'kW'
-          }
-        ]
-      ]
+    onInputChange(e: any): void {
+        this.setState({ newId: e.target.value });
     }
 
-    return (
+    async componentDidMount(): Promise<void> {
+        await this.getOwner(this.props);
+    }
 
-      <div className='DetailViewWrapper' >
-        <div className='FindAsset'>
-          <input onChange={this.onInputChange} defaultValue={this.props.id || this.props.id === 0 ? this.props.id.toString() : ''} />
+    async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
+        await this.getOwner(newProps);
+    }
 
-          <Link className='btn btn-primary find-asset-button' to={`/${this.props.baseUrl}/assets/consuming_detail_view/${this.state.newId}`}>Find Asset</Link>
+    async getOwner(props: DetailViewProps): Promise<void> {
+        const selectedAsset: EwAsset.ConsumingAsset.Entity = props.consumingAssets.find(
+            (c: EwAsset.ConsumingAsset.Entity) => c.id === props.id.toString()
+        );
+        if (selectedAsset) {
+            if (this.props.certificates.length > 0) {
+                this.setState({
+                    notSoldCertificates: this.props.certificates
+                        .map((certificate: OriginIssuer.Certificate.Entity) =>
+                            certificate.owner === selectedAsset.owner.address &&
+                            certificate.assetId.toString() === selectedAsset.id
+                                ? certificate.powerInW
+                                : 0
+                        )
+                        .reduce((a, b) => a + b)
+                });
+            }
+            this.setState({
+                owner: await new EwUser.User(selectedAsset.owner.address, props.conf as any).sync()
+            });
+        }
+    }
 
-        </div>
-        <div className='PageContentWrapper'>
-          {/* <div className='PageHeader'>
+    render(): JSX.Element {
+        const selectedAsset: EwAsset.ConsumingAsset.Entity =
+            this.props.id !== null && this.props.id !== undefined
+                ? this.props.consumingAssets.find(
+                      (p: EwAsset.ConsumingAsset.Entity) => p.id === this.props.id.toString()
+                  )
+                : null;
+
+        let data;
+        if (selectedAsset) {
+            data = [
+                [
+                    {
+                        label: 'Owner' + getOffChainText('owner', selectedAsset.offChainProperties),
+                        data: this.state.owner ? this.state.owner.organization : ''
+                    },
+
+                    {
+                        label: 'Kind',
+                        data: 'Consumption'
+                    },
+
+                    {
+                        label:
+                            'Geo Location' +
+                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
+                        data:
+                            selectedAsset.offChainProperties.gpsLatitude +
+                            ', ' +
+                            selectedAsset.offChainProperties.gpsLongitude,
+                        image: map,
+                        type: 'map',
+                        rowspan: 3,
+                        colspan: 2
+                    }
+                ],
+                [
+                    {
+                        label:
+                            'Commissioning Date' +
+                            getOffChainText('operationalSince', selectedAsset.offChainProperties),
+                        data: moment(
+                            selectedAsset.offChainProperties.operationalSince * 1000
+                        ).format('DD MMM YY')
+                    },
+
+                    {
+                        label:
+                            'Nameplate Capacity' +
+                            getOffChainText('capacityWh', selectedAsset.offChainProperties),
+                        data: selectedAsset.offChainProperties.capacityWh
+                            ? (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3)
+                            : '-',
+                        tip: 'kW'
+                    }
+                ]
+            ];
+        }
+
+        return (
+            <div className="DetailViewWrapper">
+                <div className="FindAsset">
+                    <input
+                        onChange={this.onInputChange}
+                        defaultValue={
+                            this.props.id || this.props.id === 0 ? this.props.id.toString() : ''
+                        }
+                    />
+
+                    <Link
+                        className="btn btn-primary find-asset-button"
+                        to={`/${this.props.baseUrl}/assets/consuming_detail_view/${
+                            this.state.newId
+                        }`}
+                    >
+                        Find Asset
+                    </Link>
+                </div>
+                <div className="PageContentWrapper">
+                    {/* <div className='PageHeader'>
               <div className='PageTitle'>Berlin II, <span>Berlin, Germany</span></div>
             </div> */}
-          <div className='PageBody'>
-            {!selectedAsset ?
-              <div className='text-center'><strong>Asset not found</strong></div> :
-              <table >
-                <tbody>
-                  {data.map((row: any) => (
-                    <tr key={row.key} >
-
-                      {row.map((col) => (
-                        <td key={col.key} rowSpan={col.rowspan || 1} colSpan={col.colspan || 1}>
-
-                          <div className='Label'>{col.label}</div>
-                          <div className='Data'>{col.data} {col.tip && (<span>{col.tip}</span>)}</div>
-                          {col.image && (
-                            col.type !== 'map'
-                              ?
-                              <div className={`Image`}>
-                                <img src={col.image} />
-                                {col.type === 'map' && (
-                                  <img src={marker as any} className='Marker' />
-                                )}
-                              </div>
-                              :
-                              <div className={`Image Map`}>
-                                <MapContainer asset={selectedAsset} />
-
-                              </div>
-                          )}
-                          {col.description && (<div className='Description'>{col.description}</div>)}
-                        </td>
-                      ))
-                      }
-                    </tr>
-                  ))
-                  }
-                </tbody>
-              </table>
-            }
-          </div>
-        </div>
-      </div>
-
-    )
-  }
+                    <div className="PageBody">
+                        {!selectedAsset ? (
+                            <div className="text-center">
+                                <strong>Asset not found</strong>
+                            </div>
+                        ) : (
+                            <table>
+                                <tbody>
+                                    {data.map((row: any) => (
+                                        <tr key={row.key}>
+                                            {row.map(col => (
+                                                <td
+                                                    key={col.key}
+                                                    rowSpan={col.rowspan || 1}
+                                                    colSpan={col.colspan || 1}
+                                                >
+                                                    <div className="Label">{col.label}</div>
+                                                    <div className="Data">
+                                                        {col.data}{' '}
+                                                        {col.tip && <span>{col.tip}</span>}
+                                                    </div>
+                                                    {col.image &&
+                                                        (col.type !== 'map' ? (
+                                                            <div className={`Image`}>
+                                                                <img src={col.image} />
+                                                                {col.type === 'map' && (
+                                                                    <img
+                                                                        src={marker as any}
+                                                                        className="Marker"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <div className={`Image Map`}>
+                                                                <MapContainer
+                                                                    asset={selectedAsset}
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    {col.description && (
+                                                        <div className="Description">
+                                                            {col.description}
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
-const addCommas = (intNum) => {
-  return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,')
-}
+const addCommas = intNum => {
+    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+};

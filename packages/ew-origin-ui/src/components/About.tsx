@@ -14,41 +14,56 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react'
-import { Nav } from 'react-bootstrap'
-import FadeIn from 'react-fade-in'
-import renderHTML from 'react-render-html'
+import * as React from 'react';
+import { Nav } from 'react-bootstrap';
+import FadeIn from 'react-fade-in';
+import renderHTML from 'react-render-html';
 
-import '../../assets/common.scss'
-import './About.scss'
+import '../../assets/common.scss';
+import './About.scss';
 
 export class About extends React.Component<any, {}> {
-  render() {
-    return (
-      <div className='PageWrapper'>
-        <div className='PageNav'></div>
+    render() {
+        return (
+            <div className="PageWrapper">
+                <div className="PageNav" />
 
-        <div className='PageContentWrapper'>
-          <div className='PageHeader'>
-            <div className='PageTitle'>About</div>
-          </div>
-          <div className='PageBody'>
-           <div className="Line">
+                <div className="PageContentWrapper">
+                    <div className="PageHeader">
+                        <div className="PageTitle">About</div>
+                    </div>
+                    <div className="PageBody">
+                        <div className="Line">
+                            <p>
+                                Origin, the first dApp running on the Energy Web, unlocks the
+                                beginning of a new era for the world’s renewable energy and carbon
+                                markets.
+                                <br />
+                                It records the provenance and automatically tracks the ownership of
+                                renewably generated electricity
+                                <br />
+                                with unprecedented transparency, integrity, and detail—including
+                                location, time, source type, and CO2 emissions
+                            </p>
 
-              <p>Origin, the first dApp running on the Energy Web, unlocks the beginning of a new era for the world’s renewable energy and carbon markets.<br />
-                 It records the provenance and automatically tracks the ownership of renewably generated electricity<br />
-                with unprecedented transparency, integrity, and detail—including location, time, source type, and CO2 emissions</p>
+                            <p>
+                                The result: lower costs and more enhanced transparency for
+                                transactions, <br />
+                                greater market access for buyers and generators of all sizes, and
+                                new services built with Origin that run on the Energy Web.
+                            </p>
 
-              <p>The result: lower costs and more enhanced transparency for transactions, <br />
-               greater market access for buyers and generators of all sizes, and new services built with Origin that run on the Energy Web.</p>
-
-              <p>Renewable energy generators and buyers can work with EWF over the course of 2018<br />
-               to run their own market demos showcasing how the Origin dApp works and providing input to ensure it meets business needs.</p>
-              </div>
+                            <p>
+                                Renewable energy generators and buyers can work with EWF over the
+                                course of 2018
+                                <br />
+                                to run their own market demos showcasing how the Origin dApp works
+                                and providing input to ensure it meets business needs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-      </div>
-    )
-  }
+        );
+    }
 }

@@ -14,14 +14,11 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { Nav } from 'react-bootstrap'
+import { Nav } from 'react-bootstrap';
 
-import {
-  NavLink,
-  withRouter
-} from 'react-router-dom'
+import { NavLink, withRouter } from 'react-router-dom';
 
 // import Profile from '../Profile/Profile'
 
@@ -32,36 +29,59 @@ import EwUser from 'ew-user-registry-lib';
 
 import './Header.scss';
 
-
 export interface HeaderProps {
-
-  currentUser: EwUser.User,
-  baseUrl: string,
-
+    currentUser: EwUser.User;
+    baseUrl: string;
 }
 
 export class Header extends React.Component<HeaderProps, {}> {
-  render() {
-
-
-    return <div className='HeaderWrapper'>
-      <div className='Header'>
-        <NavLink to='/assets' activeClassName='active'><img src={logo as any} /></NavLink>
-        <Nav className="NavMenu">
-          <li><NavLink to={'/' + this.props.baseUrl + '/assets'} activeClassName='active'>Assets</NavLink></li>
-          <li><NavLink to={'/' + this.props.baseUrl + '/certificates'} activeClassName='active'>Certificates</NavLink></li>
-          {/* <li><NavLink to={'/' + this.props.baseUrl + '/demands'} activeClassName='active'>Demands</NavLink></li> */}
-          <li><NavLink to={'/' + this.props.baseUrl + '/admin'} activeClassName='active'>Admin</NavLink></li>
-        </Nav>
-        <div className="ViewProfile">
-          <div>
-            <img src={avatar as any} />
-            {this.props.currentUser ? <span>{this.props.currentUser.organization}</span> : <span>Guest</span>}
-          </div>
-          <img src={view_profile} />
-        </div>
-      </div>
-      {/* <SlidingPane
+    render() {
+        return (
+            <div className="HeaderWrapper">
+                <div className="Header">
+                    <NavLink to="/assets" activeClassName="active">
+                        <img src={logo as any} />
+                    </NavLink>
+                    <Nav className="NavMenu">
+                        <li>
+                            <NavLink
+                                to={'/' + this.props.baseUrl + '/assets'}
+                                activeClassName="active"
+                            >
+                                Assets
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to={'/' + this.props.baseUrl + '/certificates'}
+                                activeClassName="active"
+                            >
+                                Certificates
+                            </NavLink>
+                        </li>
+                        {/* <li><NavLink to={'/' + this.props.baseUrl + '/demands'} activeClassName='active'>Demands</NavLink></li> */}
+                        <li>
+                            <NavLink
+                                to={'/' + this.props.baseUrl + '/admin'}
+                                activeClassName="active"
+                            >
+                                Admin
+                            </NavLink>
+                        </li>
+                    </Nav>
+                    <div className="ViewProfile">
+                        <div>
+                            <img src={avatar as any} />
+                            {this.props.currentUser ? (
+                                <span>{this.props.currentUser.organization}</span>
+                            ) : (
+                                <span>Guest</span>
+                            )}
+                        </div>
+                        <img src={view_profile} />
+                    </div>
+                </div>
+                {/* <SlidingPane
             className='ProfilePane'
             overlayClassName='ProfilePaneOverlay'
             width='292px'
@@ -69,7 +89,7 @@ export class Header extends React.Component<HeaderProps, {}> {
             onRequestClose={handleProfile.close}>
             <Profile fakeAuth={fakeAuth} handleProfile={handleProfile} />
           </SlidingPane> */}
-    </div>
-
-  }
+            </div>
+        );
+    }
 }

@@ -23,32 +23,41 @@ export interface MapDetailProps {
     asset: EwAsset.Asset.Entity;
 }
 
-const MyMapComponent = withScriptjs(withGoogleMap((props: any) =>
-    <GoogleMap
-
-
-        defaultZoom={13}
-        defaultCenter={{ lat: parseFloat(props.asset.offChainProperties.gpsLatitude), lng: parseFloat(props.asset.offChainProperties.gpsLongitude) }}
-    >
-        <Marker
-            position={{ lat: parseFloat(props.asset.offChainProperties.gpsLatitude), lng: parseFloat(props.asset.offChainProperties.gpsLongitude) }} />
-    </GoogleMap>
-))
+const MyMapComponent = withScriptjs(
+    withGoogleMap((props: any) => (
+        <GoogleMap
+            defaultZoom={13}
+            defaultCenter={{
+                lat: parseFloat(props.asset.offChainProperties.gpsLatitude),
+                lng: parseFloat(props.asset.offChainProperties.gpsLongitude)
+            }}
+        >
+            <Marker
+                position={{
+                    lat: parseFloat(props.asset.offChainProperties.gpsLatitude),
+                    lng: parseFloat(props.asset.offChainProperties.gpsLongitude)
+                }}
+            />
+        </GoogleMap>
+    ))
+);
 
 export class MapContainer extends React.Component<MapDetailProps, {}> {
-
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             producingAsset: null
-        }
-
+        };
     }
 
     render() {
-        const mapURL = 'https://maps.googleapis.com/maps/api/js?key=' + APIKEY + '&v=3.exp&libraries=geometry,drawing,places'
+        const mapURL =
+            'https://maps.googleapis.com/maps/api/js?key=' +
+            APIKEY +
+            '&v=3.exp&libraries=geometry,drawing,places';
+
         return (
-            <div >
+            <div>
                 <MyMapComponent
                     asset={this.props.asset}
                     googleMapURL={mapURL}
@@ -57,6 +66,6 @@ export class MapContainer extends React.Component<MapDetailProps, {}> {
                     mapElement={<div style={{ height: `100%` }} />}
                 />
             </div>
-        )
+        );
     }
 }

@@ -1,172 +1,172 @@
 .ButtonWrapper {
-  .dropdown {
-    .dropdown-toggle {
-      width: 197px;
-
-      &.dropdown-icon {
-        padding-left: 48px;
-
-        &:before {
-          content: '';
-          position: absolute;
-          left: 16px;
-          top: 0;
-          width: 16px;
-          height: 100%;
-        }
-
-        &.dropdown-filter:before {
-          background-image: url('../../../assets/filter.svg');
-          background-position: center;
-          background-repeat: no-repeat;
-        }
-      }
-    }
-  }
-
-  &.Button--date-range {
     .dropdown {
-      button {
-        &.DateRange {
-          &:after {
-            display: none;
-          }
-        }
+        .dropdown-toggle {
+            width: 197px;
 
-        .DateRangeTitle {
-          display: flex;
-          justify-content: space-between;
+            &.dropdown-icon {
+                padding-left: 48px;
 
-          .DateLabel {
-            width: 50%;
-            font-size: 11px;
-            color: #D3D3D3;
-            position: relative;
-
-            img {
-              position: absolute;
-            }
-
-            &.StartDate {
-              text-align: left;
-              padding-left: 25px;
-              border-right: 1px solid #6A6A6A;
-
-              img {
-                left: 0;
-              }
-            }
-
-            &.EndDate {
-              text-align: right;
-              padding-right: 25px;
-
-              img {
-                right: 0;
-              }
-            }
-          }
-        }
-      }
-
-      ul.dropdown-menu {
-        background: transparent;
-
-        .rdr-DateRange {
-          margin-top: 3px;
-          background-color: transparent !important;
-
-          .rdr-Calendar {
-            background: #464646 !important;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.381029);
-            padding: 20px 14px 10px !important;
-            width: 100% !important;
-
-            .rdr-MonthAndYear {
-              color: white;
-
-              .rdr-MonthAndYear-innerWrapper {
-                padding: 0 !important;
-                height: auto !important;
-
-                button.rdr-MonthAndYear-button {
-                  background: transparent !important;
-                  margin: 0 !important;
-
-                  &:after {
-                    content: '‹';
-                    color: #BA77FF;
-                  }
-
-                  &.next:after {
-                    content: '›';
-                  }
-
-                  > i {
-                    display: none !important;
-                  }
-                }
-              }
-            }
-
-            .rdr-WeekDays {
-              height: 25px;
-              margin-top: 16px;
-
-              span.rdr-WeekDay {
-                color: #787878;
-                font-size: 12px;
-                padding: 0 5px;
-                width: 14.282828% !important;
-              }
-            }
-
-            .rdr-Days {
-              span {
-                width: 14.282828% !important;
-                height: 25px !important;
-                color: white;
-                text-align: right;
-                padding: 0 !important;
-
-                .rdr-Day {
-                  &:not(.is-passive):not(.is-selected) {
-                    &:focus,
-                    &:hover {
-                      background: rgba(186, 119, 255, .17) !important;
-                      mix-blend-mode: normal;
-                    }
-                  }
-
-                  &.is-inRange {
-                    background: rgba(186, 119, 255, .17) !important;
-                  }
-
-                  &.is-selected {
-                    background: rgb(186, 119, 255) !important;
-                  }
-
-                  &.is-passive {
-                    opacity: 0;
-                  }
+                &:before {
+                    content: '';
+                    position: absolute;
+                    left: 16px;
+                    top: 0;
+                    width: 16px;
+                    height: 100%;
                 }
 
-                > span {
-                  width: 100% !important;
-                  display: flex !important;
-                  align-items: center;
-                  justify-content: center;
-                  padding: 0 5px !important;
+                &.dropdown-filter:before {
+                    background-image: url('../../../assets/filter.svg');
+                    background-position: center;
+                    background-repeat: no-repeat;
                 }
-              }
             }
-
-            &:first-child {
-              display: none !important;
-            }
-          }
         }
-      }
     }
-  }
+
+    &.Button--date-range {
+        .dropdown {
+            button {
+                &.DateRange {
+                    &:after {
+                        display: none;
+                    }
+                }
+
+                .DateRangeTitle {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .DateLabel {
+                        width: 50%;
+                        font-size: 11px;
+                        color: #d3d3d3;
+                        position: relative;
+
+                        img {
+                            position: absolute;
+                        }
+
+                        &.StartDate {
+                            text-align: left;
+                            padding-left: 25px;
+                            border-right: 1px solid #6a6a6a;
+
+                            img {
+                                left: 0;
+                            }
+                        }
+
+                        &.EndDate {
+                            text-align: right;
+                            padding-right: 25px;
+
+                            img {
+                                right: 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            ul.dropdown-menu {
+                background: transparent;
+
+                .rdr-DateRange {
+                    margin-top: 3px;
+                    background-color: transparent !important;
+
+                    .rdr-Calendar {
+                        background: #464646 !important;
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.381029);
+                        padding: 20px 14px 10px !important;
+                        width: 100% !important;
+
+                        .rdr-MonthAndYear {
+                            color: white;
+
+                            .rdr-MonthAndYear-innerWrapper {
+                                padding: 0 !important;
+                                height: auto !important;
+
+                                button.rdr-MonthAndYear-button {
+                                    background: transparent !important;
+                                    margin: 0 !important;
+
+                                    &:after {
+                                        content: '‹';
+                                        color: #ba77ff;
+                                    }
+
+                                    &.next:after {
+                                        content: '›';
+                                    }
+
+                                    > i {
+                                        display: none !important;
+                                    }
+                                }
+                            }
+                        }
+
+                        .rdr-WeekDays {
+                            height: 25px;
+                            margin-top: 16px;
+
+                            span.rdr-WeekDay {
+                                color: #787878;
+                                font-size: 12px;
+                                padding: 0 5px;
+                                width: 14.282828% !important;
+                            }
+                        }
+
+                        .rdr-Days {
+                            span {
+                                width: 14.282828% !important;
+                                height: 25px !important;
+                                color: white;
+                                text-align: right;
+                                padding: 0 !important;
+
+                                .rdr-Day {
+                                    &:not(.is-passive):not(.is-selected) {
+                                        &:focus,
+                                        &:hover {
+                                            background: rgba(186, 119, 255, 0.17) !important;
+                                            mix-blend-mode: normal;
+                                        }
+                                    }
+
+                                    &.is-inRange {
+                                        background: rgba(186, 119, 255, 0.17) !important;
+                                    }
+
+                                    &.is-selected {
+                                        background: rgb(186, 119, 255) !important;
+                                    }
+
+                                    &.is-passive {
+                                        opacity: 0;
+                                    }
+                                }
+
+                                > span {
+                                    width: 100% !important;
+                                    display: flex !important;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 0 5px !important;
+                                }
+                            }
+                        }
+
+                        &:first-child {
+                            display: none !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

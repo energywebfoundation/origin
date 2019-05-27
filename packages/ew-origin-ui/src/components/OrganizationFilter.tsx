@@ -14,31 +14,40 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import * as React from 'react';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 import * as EwUser from 'ew-user-registry-lib';
 
 export interface OrganizationFilterProps {
     currentUser: EwUser.User;
     switchedToOrganization: boolean;
     switchToOrganization: Function;
-
 }
 
 export class OrganizationFilter extends React.Component<OrganizationFilterProps, {}> {
-
     render() {
-
-        return <div className='org-filter btn-group btn-group-toggle' data-toggle='buttons'>
-            <label onClick={() => this.props.switchToOrganization(false)} className={'btn btn-secondary' + (!this.props.switchedToOrganization ? ' active' : '')}>
-                <input type='radio' name='options' /> All
-                    </label>
-            {this.props.currentUser ?
-                <label onClick={() => this.props.switchToOrganization(true)} className={'btn btn-secondary' + (this.props.switchedToOrganization ? ' active' : '')}>
-                    <input type='radio' name='options' /> {this.props.currentUser.organization}
+        return (
+            <div className="org-filter btn-group btn-group-toggle" data-toggle="buttons">
+                <label
+                    onClick={() => this.props.switchToOrganization(false)}
+                    className={
+                        'btn btn-secondary' + (!this.props.switchedToOrganization ? ' active' : '')
+                    }
+                >
+                    <input type="radio" name="options" /> All
                 </label>
-                : null}
-        </div>
+                {this.props.currentUser ? (
+                    <label
+                        onClick={() => this.props.switchToOrganization(true)}
+                        className={
+                            'btn btn-secondary' +
+                            (this.props.switchedToOrganization ? ' active' : '')
+                        }
+                    >
+                        <input type="radio" name="options" /> {this.props.currentUser.organization}
+                    </label>
+                ) : null}
+            </div>
+        );
     }
-
 }

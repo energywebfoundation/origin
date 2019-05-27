@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react'
+import * as React from 'react';
 import * as OriginIssuer from 'ew-origin-lib';
 import * as EwUser from 'ew-user-registry-lib';
 import * as EwAsset from 'ew-asset-registry-lib';
@@ -37,7 +37,6 @@ export interface ConsumingAssetTableProps {
 export interface ConsumingAssetTableState {
     enrichedConsumingAssetData: EnrichedConsumingAssetData[];
     detailViewForAssetId: number;
-
 }
 
 export interface EnrichedConsumingAssetData {
@@ -46,7 +45,6 @@ export interface EnrichedConsumingAssetData {
 }
 
 export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProps, {}> {
-
     state: ConsumingAssetTableState;
 
     constructor(props: ConsumingAssetTableProps) {
@@ -59,18 +57,16 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
-
     }
 
     switchToOrganization(switchedToOrganization: boolean): void {
         this.setState({
-            switchedToOrganization: switchedToOrganization
+            switchedToOrganization
         });
     }
 
     async componentDidMount(): Promise<void> {
         await this.getOrganizationNames(this.props);
-
     }
 
     async componentWillReceiveProps(newProps: ConsumingAssetTableProps): Promise<void> {
@@ -78,39 +74,50 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
     }
 
     async getOrganizationNames(props: ConsumingAssetTableProps): Promise<void> {
-
         const enrichedConsumingAssetData = [];
 
-        const promieses = props.consumingAssets.map(async (consumingAsset: EwAsset.ConsumingAsset.Entity, index: number) =>
-            ({
-                consumingAsset: consumingAsset,
-                organizationName: (await (new EwUser.User(consumingAsset.owner.address, props.conf as any)).sync()).organization
-            })
-        )
-
-        Promise.all(promieses).then((enrichedConsumingAssetData) =>
-            this.setState({
-                enrichedConsumingAssetData: enrichedConsumingAssetData
+        const promieses = props.consumingAssets.map(
+            async (consumingAsset: EwAsset.ConsumingAsset.Entity, index: number) => ({
+                consumingAsset,
+                organizationName: (await new EwUser.User(
+                    consumingAsset.owner.address,
+                    props.conf as any
+                ).sync()).organization
             })
         );
 
+        Promise.all(promieses).then(enrichedConsumingAssetData =>
+            this.setState({
+                enrichedConsumingAssetData
+            })
+        );
     }
 
     operationClicked(key: string, id: number): void {
         this.setState({
             detailViewForAssetId: id
         });
+    }
 
-      }
-
-      render(): JSX.Element {
+    render(): JSX.Element {
         if (this.state.detailViewForAssetId !== null) {
-            return <Redirect push to={'/' + this.props.baseUrl + '/assets/consuming_detail_view/' + this.state.detailViewForAssetId} />;
+            return (
+                <Redirect
+                    push
+                    to={
+                        '/' +
+                        this.props.baseUrl +
+                        '/assets/consuming_detail_view/' +
+                        this.state.detailViewForAssetId
+                    }
+                />
+            );
         }
 
         const defaultWidth = 106;
         const getKey = TableUtils.getKey;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) => (TableUtils.generateHeader(label, width, right, body));
+        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
+            TableUtils.generateHeader(label, width, right, body);
         const generateFooter = TableUtils.generateFooter;
 
         const TableHeader = [
@@ -133,48 +140,51 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         //  this.getCO2Offset()
         const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
 
-        const filteredEnrichedAssetData = this.state.enrichedConsumingAssetData
-            .filter((enrichedConsumingAssetData: EnrichedConsumingAssetData) =>
-
+        const filteredEnrichedAssetData = this.state.enrichedConsumingAssetData.filter(
+            (enrichedConsumingAssetData: EnrichedConsumingAssetData) =>
                 !this.props.switchedToOrganization ||
-                enrichedConsumingAssetData.consumingAsset.owner.address === this.props.currentUser.id
-
-            );
-        let assets = null;
+                enrichedConsumingAssetData.consumingAsset.owner.address ===
+                    this.props.currentUser.id
+        );
+        const assets = null;
         let total;
 
         const operations = ['Show Details'];
 
-        const data = filteredEnrichedAssetData.map((enrichedConsumingAssetData: EnrichedConsumingAssetData) => {
-            const consumingAsset: EwAsset.ConsumingAsset.Entity = enrichedConsumingAssetData.consumingAsset;
+        const data = filteredEnrichedAssetData.map(
+            (enrichedConsumingAssetData: EnrichedConsumingAssetData) => {
+                const consumingAsset: EwAsset.ConsumingAsset.Entity =
+                    enrichedConsumingAssetData.consumingAsset;
 
-            // const generatedKWh = consumingAsset.certificatesUsedForWh / 1000
-            const consumedKWh: number = consumingAsset.certificatesUsedForWh / 1000;
+                // const generatedKWh = consumingAsset.certificatesUsedForWh / 1000
+                const consumedKWh: number = consumingAsset.certificatesUsedForWh / 1000;
 
-            return [
-                consumingAsset.id,
-                enrichedConsumingAssetData.organizationName,
-                consumingAsset.offChainProperties.city + ', ' + consumingAsset.offChainProperties.country,
-                consumingAsset.offChainProperties.capacityWh ?
-                (consumingAsset.offChainProperties.capacityWh / 1000).toFixed(3) : '-',
-                (consumingAsset.lastSmartMeterReadWh / 1000).toFixed(3),
-                (consumingAsset.certificatesUsedForWh / 1000).toFixed(3)
-            ];
-        });
+                return [
+                    consumingAsset.id,
+                    enrichedConsumingAssetData.organizationName,
+                    consumingAsset.offChainProperties.city +
+                        ', ' +
+                        consumingAsset.offChainProperties.country,
+                    consumingAsset.offChainProperties.capacityWh
+                        ? (consumingAsset.offChainProperties.capacityWh / 1000).toFixed(3)
+                        : '-',
+                    (consumingAsset.lastSmartMeterReadWh / 1000).toFixed(3),
+                    (consumingAsset.certificatesUsedForWh / 1000).toFixed(3)
+                ];
+            }
+        );
 
-
-
-        return <div className='ConsumptionWrapper'>
-            <Table
-                header={TableHeader}
-                footer={TableFooter}
-                actions={true}
-                operationClicked={this.operationClicked}
-                data={data}
-                operations={operations}
-            />
-        </div>;
-
-
+        return (
+            <div className="ConsumptionWrapper">
+                <Table
+                    header={TableHeader}
+                    footer={TableFooter}
+                    actions={true}
+                    operationClicked={this.operationClicked}
+                    data={data}
+                    operations={operations}
+                />
+            </div>
+        );
     }
 }

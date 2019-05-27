@@ -39,18 +39,14 @@ export interface AssetProps {
 }
 
 export interface AssetState {
-
     switchedToOrganization: boolean;
-
 }
 
 export class Asset extends React.Component<AssetProps, AssetState> {
-
     constructor(props: AssetProps) {
         super(props);
 
         this.state = {
-
             switchedToOrganization: false
         };
 
@@ -58,55 +54,64 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this);
         this.ProducingAssetTable = this.ProducingAssetTable.bind(this);
         this.onFilterOrganization = this.onFilterOrganization.bind(this);
-
     }
 
-    switchToOrganization (switchedToOrganization: boolean): void {
+    switchToOrganization(switchedToOrganization: boolean): void {
         this.setState({
-            switchedToOrganization: switchedToOrganization
+            switchedToOrganization
         });
     }
 
-    ProducingAssetTable (): JSX.Element {
-        return <ProducingAssetTable
-            certificates={this.props.certificates}
-            producingAssets={this.props.producingAssets}
-            conf={this.props.conf}
-            currentUser={this.props.currentUser}
-            baseUrl={this.props.baseUrl}
-            switchedToOrganization={this.state.switchedToOrganization}
-        />;
+    ProducingAssetTable(): JSX.Element {
+        return (
+            <ProducingAssetTable
+                certificates={this.props.certificates}
+                producingAssets={this.props.producingAssets}
+                conf={this.props.conf}
+                currentUser={this.props.currentUser}
+                baseUrl={this.props.baseUrl}
+                switchedToOrganization={this.state.switchedToOrganization}
+            />
+        );
     }
 
-    ConsumingAssetTable(): JSX.Element  {
-        return <ConsumingAssetTable
-            certificates={this.props.certificates}
-            demands={this.props.demands}
-            consumingAssets={this.props.consumingAssets}
-            conf={this.props.conf}
-            currentUser={this.props.currentUser}
-            baseUrl={this.props.baseUrl}
-            switchedToOrganization={this.state.switchedToOrganization}
-        />;
+    ConsumingAssetTable(): JSX.Element {
+        return (
+            <ConsumingAssetTable
+                certificates={this.props.certificates}
+                demands={this.props.demands}
+                consumingAssets={this.props.consumingAssets}
+                conf={this.props.conf}
+                currentUser={this.props.currentUser}
+                baseUrl={this.props.baseUrl}
+                switchedToOrganization={this.state.switchedToOrganization}
+            />
+        );
     }
 
-    ProductionDetailView(id: number): JSX.Element  {
-        return <ProducingAssetDetailView
-            id={id} baseUrl={this.props.baseUrl}
-            producingAssets={this.props.producingAssets}
-            conf={this.props.conf}
-            certificates={this.props.certificates}
-            addSearchField={true}
-        />;
+    ProductionDetailView(id: number): JSX.Element {
+        return (
+            <ProducingAssetDetailView
+                id={id}
+                baseUrl={this.props.baseUrl}
+                producingAssets={this.props.producingAssets}
+                conf={this.props.conf}
+                certificates={this.props.certificates}
+                addSearchField={true}
+            />
+        );
     }
 
-    ConsumingDetailView(id: number): JSX.Element  {
-        return <ConsumingAssetDetailView
-            id={id} baseUrl={this.props.baseUrl}
-            consumingAssets={this.props.consumingAssets}
-            conf={this.props.conf}
-            certificates={this.props.certificates}
-        />;
+    ConsumingDetailView(id: number): JSX.Element {
+        return (
+            <ConsumingAssetDetailView
+                id={id}
+                baseUrl={this.props.baseUrl}
+                consumingAssets={this.props.consumingAssets}
+                conf={this.props.conf}
+                certificates={this.props.certificates}
+            />
+        );
     }
 
     onFilterOrganization(index: number): void {
@@ -115,11 +120,10 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         });
     }
 
-    render(): JSX.Element  {
-
-        const organizations = this.props.currentUser ?
-            ['All Organizations', this.props.currentUser.organization] :
-            ['All Organizations'];
+    render(): JSX.Element {
+        const organizations = this.props.currentUser
+            ? ['All Organizations', this.props.currentUser.organization]
+            : ['All Organizations'];
 
         const AssetsMenu = [
             {
@@ -134,7 +138,8 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                         content: organizations
                     }
                 ]
-            }, {
+            },
+            {
                 key: 'consumption',
                 label: 'Consumption List',
                 component: this.ConsumingAssetTable,
@@ -146,49 +151,82 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                         content: organizations
                     }
                 ]
-            }, {
+            },
+            {
                 key: 'producing_detail_view',
                 label: 'Production Detail',
                 component: null
-            }, {
+            },
+            {
                 key: 'consuming_detail_view',
                 label: 'Consumption Detail',
                 component: null
             }
         ];
 
-        return <div className='PageWrapper'>
-            <div className='PageNav'>
-                <Nav className='NavMenu'>
-                    {
+        return (
+            <div className="PageWrapper">
+                <div className="PageNav">
+                    <Nav className="NavMenu">
+                        {AssetsMenu.map(menu => {
+                            return (
+                                <li key={menu.key}>
+                                    <NavLink
+                                        to={`/${this.props.baseUrl}/assets/${menu.key}`}
+                                        activeClassName="active"
+                                    >
+                                        {menu.label}
+                                    </NavLink>
+                                </li>
+                            );
+                        })}
+                    </Nav>
+                </div>
 
-                        AssetsMenu.map((menu) => {
-                            return (<li key={menu.key}><NavLink  to={`/${this.props.baseUrl}/assets/${menu.key}`} activeClassName='active'>{menu.label}</NavLink></li>);
-                        })
+                <Route
+                    path={'/' + this.props.baseUrl + '/assets/:key/:id?'}
+                    render={props => {
+                        const key = props.match.params.key;
+                        const id = props.match.params.id;
+                        const matches = AssetsMenu.filter(item => {
+                            return item.key === key;
+                        });
+                        if (matches.length > 0 && key === 'producing_detail_view') {
+                            matches[0].component = () =>
+                                this.ProductionDetailView(id ? parseInt(id, 10) : id);
+                        } else if (matches.length > 0 && key === 'consuming_detail_view') {
+                            matches[0].component = () =>
+                                this.ConsumingDetailView(id ? parseInt(id, 10) : id);
+                        }
 
-                    }
-                </Nav>
+                        return (
+                            <PageContent
+                                onFilterOrganization={this.onFilterOrganization}
+                                menu={matches.length > 0 ? matches[0] : null}
+                                redirectPath={'/' + this.props.baseUrl + '/assets'}
+                            />
+                        );
+                    }}
+                />
+                <Route
+                    exact
+                    path={'/' + this.props.baseUrl + '/assets'}
+                    render={props => (
+                        <Redirect
+                            to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }}
+                        />
+                    )}
+                />
+                <Route
+                    exact
+                    path={'/' + this.props.baseUrl + '/'}
+                    render={props => (
+                        <Redirect
+                            to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }}
+                        />
+                    )}
+                />
             </div>
-
-            <Route path={'/' + this.props.baseUrl + '/assets/:key/:id?'} render={props => {
-                const key = props.match.params.key;
-                const id = props.match.params.id;
-                const matches = AssetsMenu.filter(item => {
-                    return item.key === key;
-                });
-                if (matches.length > 0 && key === 'producing_detail_view') {
-                    matches[0].component = () => this.ProductionDetailView(id ? parseInt(id, 10) : id);
-                }
-                else if (matches.length > 0 && key === 'consuming_detail_view') {
-                     matches[0].component = () => this.ConsumingDetailView(id ? parseInt(id, 10) : id);
-                }
-                return (<PageContent onFilterOrganization={this.onFilterOrganization} menu={matches.length > 0 ? matches[0] : null} redirectPath={'/' + this.props.baseUrl + '/assets'} />);
-            }} />
-            <Route exact path={'/' + this.props.baseUrl + '/assets'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }} />)} />
-            <Route exact path={'/' + this.props.baseUrl + '/'} render={props => (<Redirect to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }} />)} />
-
-        </div>;
-
+        );
     }
-
 }
