@@ -1,0 +1,14 @@
+version: '3'
+services:
+  backend:
+    build: .
+    command: npm run start
+    ports:
+      - 3030:3030
+    networks:
+      - app-network
+    volumes:
+      - ./db.json:/src/db.json
+networks:
+  app-network:
+    driver: bridge
