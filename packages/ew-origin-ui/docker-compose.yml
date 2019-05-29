@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    build: .
+    volumes:
+      - shared:/src
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - shared:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
+volumes:
+  shared:
+networks:
+  app-network:
+    driver: bridge
