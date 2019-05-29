@@ -145,7 +145,7 @@ describe('Market-Facade', () => {
                 logger
             };
 
-            const demandOffchainProps: Market.Demand.DemandOffchainproperties = {
+            const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
                 timeframe: GeneralLib.TimeFrame.hourly,
                 pricePerCertifiedWh: 10,
                 currency: GeneralLib.Currency.Ether,
@@ -161,7 +161,7 @@ describe('Market-Facade', () => {
                 registryCompliance: GeneralLib.Compliance.EEC
             };
 
-            const demandProps: Market.Demand.DemandOnChainProperties = {
+            const demandProps: Market.Demand.IDemandOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
                 demandOwner: conf.blockchainProperties.activeUser.address

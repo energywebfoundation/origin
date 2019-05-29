@@ -17,7 +17,7 @@
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run build-schema:AgreementPropertiesOffChain && npm run build-schema:MatcherPropertiesOffChain && npm run build-schema:DemandPropertiesOffChain && npm run build-schema:SupplyPropertiesOffChain && cp -R schemas dist/schemas",
-    "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts DemandOffchainproperties > schemas/DemandOffchainProperties.schema.json",
+    "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts IDemandOffChainProperties > schemas/DemandOffChainProperties.schema.json",
     "build-schema:SupplyPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Supply.ts SupplyOffchainProperties > schemas/SupplyOffchainProperties.schema.json",
     "build-schema:AgreementPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts AgreementOffChainProperties > schemas/AgreementOffChainProperties.schema.json",
     "build-schema:MatcherPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts MatcherOffchainProperties > schemas/MatcherOffchainProperties.schema.json",

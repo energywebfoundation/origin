@@ -15,9 +15,9 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as GeneralLib from 'ew-utils-general-lib';
-import DemandOffchainpropertiesSchema from '../../schemas/DemandOffchainProperties.schema.json';
+import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 
-export interface DemandOffchainproperties {
+export interface IDemandOffChainProperties {
     timeframe: GeneralLib.TimeFrame;
     pricePerCertifiedWh: number;
     currency: GeneralLib.Currency;
@@ -33,7 +33,7 @@ export interface DemandOffchainproperties {
     registryCompliance?: GeneralLib.Compliance;
 }
 
-export interface DemandOnChainProperties
+export interface IDemandOnChainProperties
     extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
     demandOwner: string;
 }
@@ -45,8 +45,8 @@ export const getDemandListLength = async (
 };
 
 export const createDemand = async (
-    demandPropertiesOnChain: DemandOnChainProperties,
-    demandPropertiesOffChain: DemandOffchainproperties,
+    demandPropertiesOnChain: IDemandOnChainProperties,
+    demandPropertiesOffChain: IDemandOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
     const demand = new Entity(null, configuration);
@@ -54,7 +54,7 @@ export const createDemand = async (
     const offChainStorageProperties = demand.prepareEntityCreation(
         demandPropertiesOnChain,
         demandPropertiesOffChain,
-        DemandOffchainpropertiesSchema,
+        DemandOffChainPropertiesSchema,
         demand.getUrl()
     );
 
@@ -86,8 +86,8 @@ export const createDemand = async (
 };
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements DemandOnChainProperties {
-    offChainProperties: DemandOffchainproperties;
+    implements IDemandOnChainProperties {
+    offChainProperties: IDemandOffChainProperties;
     propertiesDocumentHash: string;
     url: string;
 
@@ -126,3 +126,15 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
         return this;
     }
 }
+
+export const getAllDemandsListLength = async (configuration: GeneralLib.Configuration.Entity) => {
+    return parseInt(await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(), 10);
+};
+
+export const getAllDemands = async (configuration: GeneralLib.Configuration.Entity) => {
+    const assetsPromises = Array(await getAllDemandsListLength(configuration))
+        .fill(null)
+        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+
+    return Promise.all(assetsPromises);
+};
