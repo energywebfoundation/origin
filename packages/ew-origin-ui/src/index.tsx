@@ -41,6 +41,7 @@ const mapDispatchToProps = dispatch => ({
         {
             currentUserUpdated,
             configurationUpdated,
+            demandCreatedOrUpdated,
             producingAssetCreatedOrUpdated,
             certificateCreatedOrUpdated,
             consumingAssetCreatedOrUpdated
