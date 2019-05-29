@@ -14,161 +14,167 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-// import * as React from 'react'
-// import { ProducingAsset, Demand, DemandProperties, TimeFrame, User, ConsumingAsset, AssetType, Compliance } from 'ewf-coo'
-// import { Web3Service } from '../utils/Web3Service'
-// import { OrganizationFilter } from './OrganizationFilter'
-// import { Table } from '../elements/Table/Table'
-// import TableUtils from '../elements/utils/TableUtils'
-// import FadeIn from 'react-fade-in'
-// import {
-//     NavLink,
-//     withRouter
-// } from 'react-router-dom'
+import * as React from 'react';
+import FadeIn from 'react-fade-in';
+import { NavLink, withRouter } from 'react-router-dom';
 
-// export interface DemandTableProps {
-//     web3Service: Web3Service,
-//     demands: Demand[],
-//     producingAssets: ProducingAsset[],
-//     consumingAssets: ConsumingAsset[],
-//     currentUser: User,
-//     switchedToOrganization: boolean,
-//     baseUrl: string
+import { Configuration, TimeFrame, Compliance, AssetType } from 'ew-utils-general-lib';
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
+import { Demand } from 'ew-market-lib';
 
-// }
+import { OrganizationFilter } from './OrganizationFilter';
+import { Table } from '../elements/Table/Table';
+import TableUtils from '../elements/utils/TableUtils';
 
-// export interface DemandTableState {
-//     enrichedDemandData: EnrichedDemandData[]
-// }
+export interface IDemandTableProps {
+    conf: Configuration.Entity;
+    demands: Demand.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    consumingAssets: ConsumingAsset.Entity[];
+    currentUser: User;
+    switchedToOrganization: boolean;
+    baseUrl: string;
+}
 
-// export interface EnrichedDemandData {
-//     demand: Demand,
-//     buyer: User,
-//     originator: User
+export interface IDemandTableState {
+    enrichedDemandData: IEnrichedDemandData[];
+}
 
-// }
+export interface IEnrichedDemandData {
+    demand: Demand.Entity;
+    buyer: User;
+    originator: User;
+}
 
 export const PeriodToSeconds = [31536000, 2592000, 86400, 3600];
 
-// export class DemandTable extends React.Component<DemandTableProps, {}> {
+export class DemandTable extends React.Component<IDemandTableProps, {}> {
+    state: IDemandTableState;
 
-//     state: DemandTableState
+    constructor(props) {
+        super(props);
 
-//     constructor(props) {
-//         super(props)
+        this.state = {
+            enrichedDemandData: []
+        };
 
-//         this.state = {
-//             enrichedDemandData: []
-//         }
+        this.switchToOrganization = this.switchToOrganization.bind(this);
+    }
 
-//         this.switchToOrganization = this.switchToOrganization.bind(this)
+    switchToOrganization(switchedToOrganization: boolean) {
+        this.setState({
+            switchedToOrganization
+        });
+    }
 
-//     }
+    async componentDidMount() {
+        await this.enrichData(this.props);
+    }
 
-//     switchToOrganization(switchedToOrganization: boolean) {
-//         this.setState({
-//             switchedToOrganization: switchedToOrganization
-//         })
-//     }
+    async componentWillReceiveProps(newProps: IDemandTableProps) {
+        await this.enrichData(newProps);
+    }
 
-//     async componentDidMount() {
-//         await this.enrichData(this.props)
+    async enrichData(props: IDemandTableProps) {
+        const promises = props.demands.map(async (demand: Demand.Entity, index: number) => ({
+            demand,
+            producingAsset: this.props.producingAssets.find(
+                (asset: ProducingAsset.Entity) =>
+                    asset.id === demand.offChainProperties.productingAsset.toString()
+            ),
+            consumingAsset: this.props.consumingAssets.find(
+                (asset: ConsumingAsset.Entity) =>
+                    asset.id === demand.offChainProperties.consumingAsset.toString()
+            )
+            // buyer: await (new User(demand.offChainProperties.buyer, props.conf)).sync(),
+        }));
 
-//     }
+        Promise.all(promises).then(enrichedDemandData => this.setState({ enrichedDemandData }));
+    }
 
-//     async componentWillReceiveProps(newProps: DemandTableProps) {
-//         await this.enrichData(newProps)
-//     }
+    render() {
+        const total = null;
+        let totalDemand = 0;
 
-//     async enrichData(props: DemandTableProps) {
+        // const filteredEnrichedDemandData = this.state.enrichedDemandData.filter((enrichedDemandData: IEnrichedDemandData) => {
+        //     return !this.props.switchedToOrganization || enrichedDemandData.demand.offChainProperties.buyer === this.props.currentUser || (enrichedDemandData.demand.getBitFromDemandMask(DemandProperties.Originator) && enrichedDemandData.demand.offChainProperties.originator === this.props.currentUser);
+        // });
 
-//         const promieses = props.demands.map(async (demand: Demand, index: number) =>
-//             ({
-//                 demand: demand,
-//                 producingAsset: this.props.producingAssets.find((asset: ProducingAsset) => asset.id === demand.productingAsset),
-//                 consumingAsset: this.props.consumingAssets.find((asset: ConsumingAsset) => asset.id === demand.consumingAsset),
-//                 buyer: (await (new User(demand.buyer, props.web3Service.blockchainProperties)).syncWithBlockchain()),
-//                 originator: demand.getBitFromDemandMask(DemandProperties.Originator) ? (await (new User(demand.originator, props.web3Service.blockchainProperties)).syncWithBlockchain()) : '-'
-//             })
-//         )
+        const defaultWidth = 106;
+        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
+            TableUtils.generateHeader(label, width, right, body);
+        const generateFooter = TableUtils.generateFooter;
 
-//         Promise.all(promieses).then((enrichedDemandData) =>
-//             this.setState({
-//                 enrichedDemandData: enrichedDemandData
-//             })
-//         )
+        const TableFooter = [
+            {
+                label: 'Total',
+                key: 'total',
+                colspan: 10
+            },
+            generateFooter('Energy Demand (kWh)', true)
+        ];
 
-//     }
+        const data = this.state.enrichedDemandData.map(
+            (enrichedDemandData: IEnrichedDemandData) => {
+                const demand = enrichedDemandData.demand;
+                // const overallDemand =
+                //     Math.ceil(
+                //         (demand.offChainProperties.endTime - demand.offChainProperties.startTime) /
+                //             PeriodToSeconds[demand.offChainProperties.timeframe]
+                //     ) *
+                //     (demand.offChainProperties.targetWhPerPeriod / 1000);
+                // totalDemand += overallDemand;
 
-//     render() {
+                return [
+                    demand.id,
+                    enrichedDemandData.buyer.organization,
+                    enrichedDemandData.originator.organization,
+                    // `${new Date(demand.startTime * 1000).toDateString()} - ${new Date(
+                    //     demand.offChainProperties.endTime * 1000
+                    // ).toDateString()}`,
+                    `${demand.offChainProperties.locationCountry} ${
+                        demand.offChainProperties.locationRegion
+                    }`,
+                    AssetType[demand.offChainProperties.assettype],
+                    Compliance[demand.offChainProperties.registryCompliance],
+                    TimeFrame[demand.offChainProperties.timeframe],
+                    demand.offChainProperties.productingAsset,
+                    demand.offChainProperties.consumingAsset,
+                    demand.offChainProperties.minCO2Offset.toFixed(3),
+                    (demand.offChainProperties.targetWhPerPeriod / 1000).toFixed(3),
+                    // overallDemand.toFixed(3)
+                ];
+            }
+        );
 
-//         let total = null
-//         let totalDemand = 0
+        const TableHeader = [
+            generateHeader('#'),
+            generateHeader('Buyer'),
+            generateHeader('Originating Address'),
+            // generateHeader('Start/End-Date'),
+            generateHeader('Country,<br/>Region'),
+            generateHeader('Asset Type'),
+            generateHeader('Compliance'),
+            generateHeader('Coupling Timeframe'),
+            generateHeader('Production Coupling with Asset'),
+            generateHeader('Consumption Coupling with Asset'),
+            generateHeader('Min CO2 Offset'),
+            generateHeader('Coupling Cap per Timeframe (kWh)'),
+            // generateHeader('Energy Demand (kWh)', defaultWidth, true, true)
+        ];
 
-//         const filteredEnrichedDemandData = this.state.enrichedDemandData.filter((enrichedDemandData: EnrichedDemandData) => {
-
-//             return !this.props.switchedToOrganization || enrichedDemandData.demand.buyer === this.props.currentUser.accountAddress || (enrichedDemandData.demand.getBitFromDemandMask(DemandProperties.Originator) && enrichedDemandData.demand.originator === this.props.currentUser.accountAddress)
-
-//         })
-
-//         const defaultWidth = 106
-//         const getKey = TableUtils.getKey
-//         const generateHeader = (label, width = defaultWidth, right = false, body = false) => (TableUtils.generateHeader(label, width, right, body))
-//         const generateFooter = TableUtils.generateFooter
-
-//         const TableFooter = [
-//             {
-//                 label: 'Total',
-//                 key: 'total',
-//                 colspan: 12,
-//             },
-//             generateFooter('Energy Demand (kWh)', true)
-//         ]
-
-//         const data = filteredEnrichedDemandData.map((enrichedDemandData: EnrichedDemandData) => {
-//             const demand = enrichedDemandData.demand
-//             const overallDemand = Math.ceil((demand.endTime - demand.startTime) / PeriodToSeconds[demand.timeframe]) * (demand.targetWhPerPeriod / 1000)
-//             totalDemand += overallDemand
-
-//             return [
-//                 demand.id,
-//                 enrichedDemandData.buyer.organization,
-//                 demand.getBitFromDemandMask(DemandProperties.Originator) ? enrichedDemandData.originator.organization : '-',
-//                 (new Date(demand.startTime * 1000)).toDateString() + ' - ' + (new Date(demand.endTime * 1000)).toDateString(),
-//                 demand.getBitFromDemandMask(DemandProperties.Country) ? demand.locationCountry : '-' + ' ' +
-//                     demand.getBitFromDemandMask(DemandProperties.Region) ? demand.locationRegion : '-',
-//                 demand.getBitFromDemandMask(DemandProperties.AssetType) ? AssetType[demand.assettype] : '-',
-//                 demand.getBitFromDemandMask(DemandProperties.Compliance) ? Compliance[demand.registryCompliance] : '-',
-//                 TimeFrame[demand.timeframe],
-//                 demand.getBitFromDemandMask(DemandProperties.Producing) ? demand.productingAsset : '-',
-//                 demand.getBitFromDemandMask(DemandProperties.Consuming) ? demand.consumingAsset : '-',
-//                 demand.getBitFromDemandMask(DemandProperties.MinCO2) ? demand.minCO2Offset.toFixed(3) : '-',
-//                 (demand.targetWhPerPeriod / 1000).toFixed(3),
-//                 overallDemand.toFixed(3)
-//             ]
-//         })
-
-//         const TableHeader = [
-//             generateHeader('#'),
-//             generateHeader('Buyer'),
-//             generateHeader('Originating Address'),
-//             generateHeader('Start/End-Date'),
-//             generateHeader('Country,<br/>Region'),
-//             generateHeader('Asset Type'),
-//             generateHeader('Compliance'),
-//             generateHeader('Coupling Timeframe'),
-//             generateHeader('Production Coupling with Asset'),
-//             generateHeader('Consumption Coupling with Asset'),
-//             generateHeader('Min CO2 Offset'),
-//             generateHeader('Coupling Cap per Timeframe (kWh)'),
-//             generateHeader('Energy Demand (kWh)', defaultWidth, true, true),
-
-//         ]
-
-//         return <div className='ForSaleWrapper'>
-//             <Table classNames={['bare-font', 'bare-padding']} header={TableHeader} footer={TableFooter} actions={true} data={data} actionWidth={55.39} />
-//         </div>
-
-//     }
-
-// }
+        return (
+            <div className="ForSaleWrapper">
+                <Table
+                    classNames={['bare-font', 'bare-padding']}
+                    header={TableHeader}
+                    footer={TableFooter}
+                    actions={true}
+                    data={data}
+                    actionWidth={55.39}
+                />
+            </div>
+        );
+    }
+}

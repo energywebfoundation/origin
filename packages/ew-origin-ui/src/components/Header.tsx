@@ -15,37 +15,37 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-
 import { Nav } from 'react-bootstrap';
-
 import { NavLink, withRouter } from 'react-router-dom';
 
+import { User } from 'ew-user-registry-lib';
 // import Profile from '../Profile/Profile'
 
 import logo from '../../assets/logo.svg';
 import avatar from '../../assets/avatar.svg';
 import view_profile from '../../assets/view_profile.svg';
-import EwUser from 'ew-user-registry-lib';
 
 import './Header.scss';
 
-export interface HeaderProps {
-    currentUser: EwUser.User;
+export interface IHeaderProps {
+    currentUser: User;
     baseUrl: string;
 }
 
-export class Header extends React.Component<HeaderProps, {}> {
+export class Header extends React.Component<IHeaderProps, {}> {
     render() {
+        const { baseUrl, currentUser } = this.props;
+
         return (
             <div className="HeaderWrapper">
                 <div className="Header">
                     <NavLink to="/assets" activeClassName="active">
-                        <img src={logo as any} />
+                        <img src={logo} />
                     </NavLink>
                     <Nav className="NavMenu">
                         <li>
                             <NavLink
-                                to={'/' + this.props.baseUrl + '/assets'}
+                                to={`/${baseUrl}/assets`}
                                 activeClassName="active"
                             >
                                 Assets
@@ -53,16 +53,23 @@ export class Header extends React.Component<HeaderProps, {}> {
                         </li>
                         <li>
                             <NavLink
-                                to={'/' + this.props.baseUrl + '/certificates'}
+                                to={`/${baseUrl}/certificates`}
                                 activeClassName="active"
                             >
                                 Certificates
                             </NavLink>
                         </li>
-                        {/* <li><NavLink to={'/' + this.props.baseUrl + '/demands'} activeClassName='active'>Demands</NavLink></li> */}
                         <li>
                             <NavLink
-                                to={'/' + this.props.baseUrl + '/admin'}
+                                to={`/${baseUrl}/demands`}
+                                activeClassName="active"
+                            >
+                                Demands
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to={`/${baseUrl}/admin`}
                                 activeClassName="active"
                             >
                                 Admin
@@ -71,12 +78,8 @@ export class Header extends React.Component<HeaderProps, {}> {
                     </Nav>
                     <div className="ViewProfile">
                         <div>
-                            <img src={avatar as any} />
-                            {this.props.currentUser ? (
-                                <span>{this.props.currentUser.organization}</span>
-                            ) : (
-                                <span>Guest</span>
-                            )}
+                            <img src={avatar} />
+                            <span>{currentUser ? currentUser.organization : 'Guest'}</span>
                         </div>
                         <img src={view_profile} />
                     </div>

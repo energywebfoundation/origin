@@ -20,33 +20,33 @@ import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { User } from 'ew-user-registry-lib';
+import { ConsumingAsset } from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
 
-export interface DetailViewProps {
+export interface IDetailViewProps {
     conf: Configuration.Entity;
     id: number;
     baseUrl: string;
-    certificates: OriginIssuer.Certificate.Entity[];
-    consumingAssets: EwAsset.ConsumingAsset.Entity[];
+    certificates: Certificate.Entity[];
+    consumingAssets: ConsumingAsset.Entity[];
 }
 
-export interface DetailViewState {
+export interface IDetailViewState {
     newId: number;
-    owner: EwUser.User;
+    owner: User;
     notSoldCertificates: number;
 }
 
 const TableWidth: number[] = [210, 210, 210, 210, 407];
 
-export class ConsumingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
-    constructor(props: DetailViewProps) {
+export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, IDetailViewState> {
+    constructor(props: IDetailViewProps) {
         super(props);
         this.state = {
             newId: null,
@@ -64,19 +64,19 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
         await this.getOwner(this.props);
     }
 
-    async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
+    async componentWillReceiveProps(newProps: IDetailViewProps): Promise<void> {
         await this.getOwner(newProps);
     }
 
-    async getOwner(props: DetailViewProps): Promise<void> {
-        const selectedAsset: EwAsset.ConsumingAsset.Entity = props.consumingAssets.find(
-            (c: EwAsset.ConsumingAsset.Entity) => c.id === props.id.toString()
+    async getOwner(props: IDetailViewProps): Promise<void> {
+        const selectedAsset: ConsumingAsset.Entity = props.consumingAssets.find(
+            (c: ConsumingAsset.Entity) => c.id === props.id.toString()
         );
         if (selectedAsset) {
             if (this.props.certificates.length > 0) {
                 this.setState({
                     notSoldCertificates: this.props.certificates
-                        .map((certificate: OriginIssuer.Certificate.Entity) =>
+                        .map((certificate: Certificate.Entity) =>
                             certificate.owner === selectedAsset.owner.address &&
                             certificate.assetId.toString() === selectedAsset.id
                                 ? certificate.powerInW
@@ -86,16 +86,16 @@ export class ConsumingAssetDetailView extends React.Component<DetailViewProps, D
                 });
             }
             this.setState({
-                owner: await new EwUser.User(selectedAsset.owner.address, props.conf as any).sync()
+                owner: await new User(selectedAsset.owner.address, props.conf as any).sync()
             });
         }
     }
 
     render(): JSX.Element {
-        const selectedAsset: EwAsset.ConsumingAsset.Entity =
+        const selectedAsset: ConsumingAsset.Entity =
             this.props.id !== null && this.props.id !== undefined
                 ? this.props.consumingAssets.find(
-                      (p: EwAsset.ConsumingAsset.Entity) => p.id === this.props.id.toString()
+                      (p: ConsumingAsset.Entity) => p.id === this.props.id.toString()
                   )
                 : null;
 

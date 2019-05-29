@@ -20,17 +20,17 @@ import { BrowserRouter, Route, Link } from 'react-router-dom';
 import { AppContainer } from './components/AppContainer';
 import { Provider } from 'react-redux';
 import { createStore, Reducer } from 'redux';
-import { StoreState } from './types';
+import { IStoreState } from './types';
 import reducer from './reducers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import {certificateCreatedOrUpdated, currentUserUpdated, consumingAssetCreatedOrUpdated, demandCreatedOrUpdated, producingAssetCreatedOrUpdated, web3ServiceUpdated} from './actions'
 import {
+    certificateCreatedOrUpdated,
     currentUserUpdated,
-    configurationUpdated,
-    producingAssetCreatedOrUpdated,
     consumingAssetCreatedOrUpdated,
-    certificateCreatedOrUpdated
+    demandCreatedOrUpdated,
+    producingAssetCreatedOrUpdated,
+    configurationUpdated
 } from './actions';
 import './index.scss';
 

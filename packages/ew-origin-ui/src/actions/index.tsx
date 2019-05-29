@@ -14,11 +14,11 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-// import { Certificate, Demand, ProducingAsset, ConsumingAsset, User } from 'ewf-coo'
-// import { Web3Service} from '../utils/Web3Service'
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as OriginIssuer from 'ew-origin-lib';
+import { Certificate } from 'ew-origin-lib';
+import { Demand } from 'ew-market-lib';
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
+// import { Web3Service} from '../utils/Web3Service';
 import { Configuration } from 'ew-utils-general-lib';
 
 export enum Actions {
@@ -30,29 +30,27 @@ export enum Actions {
     configurationUpdated = 'CONFIGURATION_UPDATED'
 }
 
-export const certificateCreatedOrUpdated = (certificate: OriginIssuer.Certificate.Entity): any => ({
+export const certificateCreatedOrUpdated = (certificate: Certificate.Entity): any => ({
     type: Actions.certificateCreatedOrUpdated,
     certificate
 });
 
-// export const demandCreatedOrUpdated= (demand: Demand) => ({
-//     type: Actions.demandCreatedOrUpdated,
-//     demand
-// })
+export const demandCreatedOrUpdated = (demand: Demand.Entity) => ({
+    type: Actions.demandCreatedOrUpdated,
+    demand
+});
 
-export const producingAssetCreatedOrUpdated = (
-    producingAsset: EwAsset.ProducingAsset.Entity
-): any => ({
+export const producingAssetCreatedOrUpdated = (producingAsset: ProducingAsset.Entity): any => ({
     type: Actions.producingAssetCreatedOrUpdated,
     producingAsset
 });
 
-export const consumingAssetCreatedOrUpdated = (consumingAsset: EwAsset.ConsumingAsset.Entity) => ({
+export const consumingAssetCreatedOrUpdated = (consumingAsset: ConsumingAsset.Entity) => ({
     type: Actions.consumingAssetCreatedOrUpdated,
     consumingAsset
 });
 
-export const currentUserUpdated = (user: EwUser.User): any => ({
+export const currentUserUpdated = (user: User): any => ({
     type: Actions.currentUserUpdated,
     user
 });

@@ -15,23 +15,23 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 // import { Web3Service } from '../utils/Web3Service'
-// import { ProducingAsset, Certificate, Demand, User, EventHandlerManager, ContractEventHandler, ConsumingAsset } from 'ewf-coo'
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwUser from 'ew-user-registry-lib';
+// import { EventHandlerManager, ContractEventHandler } from 'ewf-coo';
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
+import { Certificate } from 'ew-origin-lib';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
 
-export interface StoreState {
+export interface IStoreState {
     configuration: Configuration.Entity;
-    producingAssets: EwAsset.ProducingAsset.Entity[];
-    consumingAssets: EwAsset.ConsumingAsset.Entity[];
-    certificates: OriginIssuer.Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    consumingAssets: ConsumingAsset.Entity[];
+    certificates: Certificate.Entity[];
     demands: Demand.Entity[];
-    currentUser: EwUser.User;
+    currentUser: User;
 }
 
-export interface Actions {
+export interface IActions {
     certificateCreatedOrUpdated: Function;
     currentUserUpdated: Function;
     consumingAssetCreatedOrUpdated: Function;

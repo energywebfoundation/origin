@@ -15,33 +15,36 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwUser from 'ew-user-registry-lib';
+import { Redirect } from 'react-router-dom';
+
+import { Certificate } from 'ew-origin-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
+import { Demand } from 'ew-market-lib';
+import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Configuration, TimeFrame, Currency } from 'ew-utils-general-lib';
+
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
-import { Redirect } from 'react-router-dom';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
-import { Configuration } from 'ew-utils-general-lib';
 
-export interface CertificateTableProps {
+export interface ICertificateTableProps {
     conf: Configuration.Entity;
-    certificates: OriginIssuer.Certificate.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
-    currentUser: EwUser.User;
+    certificates: Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    currentUser: User;
     baseUrl: string;
     selectedState: SelectedState;
     switchedToOrganization: boolean;
 }
 
-export interface EnrichedCertificateData {
-    certificate: OriginIssuer.Certificate.Entity;
-    certificateOwner: EwUser.User;
-    producingAsset: EwAsset.ProducingAsset.Entity;
+export interface IEnrichedCertificateData {
+    certificate: Certificate.Entity;
+    certificateOwner: User;
+    producingAsset: ProducingAsset.Entity;
 }
 
-export interface CertificatesState {
-    enrichedCertificateData: EnrichedCertificateData[];
+export interface ICertificatesState {
+    EnrichedCertificateData: IEnrichedCertificateData[];
     selectedState: SelectedState;
     detailViewForCertificateId: number;
 }
@@ -53,12 +56,12 @@ export enum SelectedState {
     ForSaleERC20
 }
 
-export class CertificateTable extends React.Component<CertificateTableProps, CertificatesState> {
-    constructor(props: CertificateTableProps) {
+export class CertificateTable extends React.Component<ICertificateTableProps, ICertificatesState> {
+    constructor(props: ICertificateTableProps) {
         super(props);
 
         this.state = {
-            enrichedCertificateData: [],
+            EnrichedCertificateData: [],
             selectedState: SelectedState.Claimed,
             detailViewForCertificateId: null
         };
@@ -74,32 +77,29 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
         await this.enrichData(this.props);
     }
 
-    async componentWillReceiveProps(newProps: CertificateTableProps) {
+    async componentWillReceiveProps(newProps: ICertificateTableProps) {
         await this.enrichData(newProps);
     }
 
-    async enrichData(props: CertificateTableProps) {
-        const promieses = props.certificates.map(
-            async (certificate: OriginIssuer.Certificate.Entity) => ({
-                certificate,
-                producingAsset: this.props.producingAssets.find(
-                    (asset: EwAsset.ProducingAsset.Entity) =>
-                        asset.id === certificate.assetId.toString()
-                ),
-                certificateOwner: await new EwUser.User(certificate.owner, props.conf as any).sync()
-            })
-        );
+    async enrichData(props: ICertificateTableProps) {
+        const promieses = props.certificates.map(async (certificate: Certificate.Entity) => ({
+            certificate,
+            producingAsset: this.props.producingAssets.find(
+                (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
+            ),
+            certificateOwner: await new User(certificate.owner, props.conf as any).sync()
+        }));
 
-        Promise.all(promieses).then(enrichedCertificateData => {
+        Promise.all(promieses).then(EnrichedCertificateData => {
             this.setState({
-                enrichedCertificateData
+                EnrichedCertificateData
             });
         });
     }
 
     async buyCertificate(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
-            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        const certificate: Certificate.Entity = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
 
         if (certificate && this.props.currentUser) {
@@ -124,8 +124,8 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     async claimCertificate(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
-            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        const certificate: Certificate.Entity = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
         if (
             certificate &&
@@ -141,8 +141,8 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     async showTxClaimed(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
-            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        const certificate: Certificate.Entity = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
         if (certificate) {
             // TODO:
@@ -152,8 +152,8 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
     }
 
     async showCertCreated(certificateId: number) {
-        const certificate: OriginIssuer.Certificate.Entity = this.props.certificates.find(
-            (cert: OriginIssuer.Certificate.Entity) => cert.id === certificateId.toString()
+        const certificate: Certificate.Entity = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
 
         if (certificate) {
@@ -163,53 +163,64 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
         }
     }
 
-    // async showInitialLoggingTx(certificateId: number) {
-    //     const certificate = this.props.certificates.find((cert: Certificate) => cert.id === certificateId);
-    //     if (certificate) {
-    //         const asset = this.props.producingAssets.find((a: ProducingAsset) => a.id === certificate.assetId);
-    //         const logEvent = (await asset.getEventWithFileHash(certificate.dataLog))[0];
-    //         console.log(logEvent);
-    //         window.open('https://tobalaba.etherscan.com/tx/' + logEvent.transactionHash, logEvent.transactionHash);
-    //     }
-    // }
+    async showInitialLoggingTx(certificateId: number) {
+        const certificate = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+        );
+        if (certificate) {
+            const asset = this.props.producingAssets.find(
+                (a: ProducingAsset.Entity) => a.id === certificate.assetId.toString()
+            );
+            // const logEvent = (await asset.getEventWithFileHash(certificate.dataLog))[0];
+            // console.log(logEvent);
+            // window.open('https://tobalaba.etherscan.com/tx/' + logEvent.transactionHash, logEvent.transactionHash);
+        }
+    }
 
-    // async createDemandForCertificate(certificateId: number) {
+    async createDemandForCertificate(certificateId: number) {
+        const certificate = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+        );
+        if (certificate) {
+            let asset = this.props.producingAssets.find(
+                (a: ProducingAsset.Entity) => a.id === certificate.assetId.toString()
+            );
+            if (!asset) {
+                asset = await new ProducingAsset.Entity(
+                    certificate.assetId.toString(),
+                    this.props.conf
+                ).sync();
+            }
 
-    //     const certificate = this.props.certificates.find((cert: Certificate) => cert.id === certificateId);
-    //     if (certificate) {
+            const offChainProperties: Demand.IDemandOffChainProperties = {
+                timeframe: TimeFrame.yearly,
+                pricePerCertifiedWh: 0,
+                currency: Currency.USD,
+                productingAsset: certificate.assetId,
+                consumingAsset: 0,
+                locationCountry: asset.offChainProperties.country,
+                locationRegion: asset.offChainProperties.region,
+                // assettype: asset.offChainProperties.assetType,
+                // minCO2Offset: ((certificate.offChainProperties.coSaved * 1000) / certificate.powerInW) / 10,
+                otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
+                typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
+                targetWhPerPeriod: certificate.powerInW,
+                registryCompliance: asset.offChainProperties.complianceRegistry
+            };
 
-    //         let asset = this.props.producingAssets.find((a: ProducingAsset) => a.id === certificate.assetId);
-    //         if (!asset) {
-    //             asset = await (new ProducingAsset(certificate.assetId, this.props.web3Service.blockchainProperties)).syncWithBlockchain();
-    //         }
+            const onChainProperties: Demand.IDemandOnChainProperties = {
+                demandOwner: asset.owner.address,
+                propertiesDocumentHash: '',
+                url: ''
+            };
 
-    //         const creationDemandProperties: FullDemandProperties = {
-    //             buyer: this.props.currentUser.accountAddress,
-    //             enabledProperties: [false, true, true, true, true, true, true, false, true, true],
-    //             originator: asset.owner,
-    //             locationCountry: asset.country,
-    //             locationRegion: asset.region,
-    //             minCO2Offset: ((certificate.coSaved * 1000) / certificate.powerInW) / 10,
-    //             otherGreenAttributes: asset.otherGreenAttributes,
-    //             typeOfPublicSupport: asset.typeOfPublicSupport,
-    //             productingAsset: certificate.assetId,
-    //             consumingAsset: 0,
-    //             targetWhPerPeriod: certificate.powerInW,
-    //             pricePerCertifiedWh: 0,
-    //             assettype: asset.assetType,
-    //             registryCompliance: asset.complianceRegistry,
-    //             timeframe: TimeFrame.yearly,
-    //             currency: Currency.USD,
-    //             startTime: (await this.props.web3Service.blockchainProperties.web3.eth.getBlock('latest')).timestamp,
-    //             endTime: (await this.props.web3Service.blockchainProperties.web3.eth.getBlock('latest')).timestamp + 30 * 86400,
-    //             matcher: certificate.escrow
-    //         };
-
-    //         const createdDemand: Demand = await Demand.CREATE_DEMAND(creationDemandProperties, this.props.web3Service.blockchainProperties, this.props.currentUser.accountAddress);
-
-    //     }
-
-    // }
+            const createdDemand: Demand.Entity = await Demand.createDemand(
+                onChainProperties,
+                offChainProperties,
+                this.props.conf
+            );
+        }
+    }
 
     showCertificateDetails(certificateId: number) {
         this.setState({
@@ -270,26 +281,25 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             generateFooter('Certified Energy (kWh)', true)
         ];
 
-        const filteredEnrichedCertificateData = this.state.enrichedCertificateData.filter(
-            (enrichedCertificateData: EnrichedCertificateData) => {
+        const filteredIEnrichedCertificateData = this.state.EnrichedCertificateData.filter(
+            (EnrichedCertificateData: IEnrichedCertificateData) => {
                 const claimed =
-                    enrichedCertificateData.certificate.status ===
-                    OriginIssuer.Certificate.Status.Retired;
+                    EnrichedCertificateData.certificate.status === Certificate.Status.Retired;
                 const forSale =
-                    enrichedCertificateData.certificate.owner ===
-                    enrichedCertificateData.producingAsset.owner.address;
+                    EnrichedCertificateData.certificate.owner ===
+                    EnrichedCertificateData.producingAsset.owner.address;
                 const forSaleERC20 =
-                    enrichedCertificateData.certificate.acceptedToken &&
+                    EnrichedCertificateData.certificate.acceptedToken &&
                     this.props.conf.blockchainProperties.web3.utils
-                        .toBN(enrichedCertificateData.certificate.acceptedToken)
+                        .toBN(EnrichedCertificateData.certificate.acceptedToken)
                         .toString() !== '0' &&
-                    enrichedCertificateData.certificate.onCHainDirectPurchasePrice > 0 &&
+                    EnrichedCertificateData.certificate.onCHainDirectPurchasePrice > 0 &&
                     this.props.currentUser &&
-                    enrichedCertificateData.certificateOwner.id !== this.props.currentUser.id;
+                    EnrichedCertificateData.certificateOwner.id !== this.props.currentUser.id;
 
                 if (
                     this.props.switchedToOrganization &&
-                    enrichedCertificateData.certificate.owner !== this.props.currentUser.id
+                    EnrichedCertificateData.certificate.owner !== this.props.currentUser.id
                 ) {
                     return false;
                 }
@@ -305,33 +315,33 @@ export class CertificateTable extends React.Component<CertificateTableProps, Cer
             }
         );
 
-        const data = filteredEnrichedCertificateData.map(
-            (enrichedCertificateData: EnrichedCertificateData) => {
-                const certificate = enrichedCertificateData.certificate;
+        const data = filteredIEnrichedCertificateData.map(
+            (EnrichedCertificateData: IEnrichedCertificateData) => {
+                const certificate = EnrichedCertificateData.certificate;
 
                 return [
                     certificate.id,
-                    enrichedCertificateData.certificateOwner.organization,
-                    EwAsset.ProducingAsset.Type[
-                        enrichedCertificateData.producingAsset.offChainProperties.assetType
+                    EnrichedCertificateData.certificateOwner.organization,
+                    ProducingAsset.Type[
+                        EnrichedCertificateData.producingAsset.offChainProperties.assetType
                     ],
                     new Date(
-                        enrichedCertificateData.producingAsset.offChainProperties.operationalSince *
+                        EnrichedCertificateData.producingAsset.offChainProperties.operationalSince *
                             1000
                     ).toDateString(),
-                    `${enrichedCertificateData.producingAsset.offChainProperties.gpsLongitude} ${
-                        enrichedCertificateData.producingAsset.offChainProperties.gpsLatitude
+                    `${EnrichedCertificateData.producingAsset.offChainProperties.gpsLongitude} ${
+                        EnrichedCertificateData.producingAsset.offChainProperties.gpsLatitude
                     }`,
-                    `${enrichedCertificateData.producingAsset.offChainProperties.city}, ${
-                        enrichedCertificateData.producingAsset.offChainProperties.country
+                    `${EnrichedCertificateData.producingAsset.offChainProperties.city}, ${
+                        EnrichedCertificateData.producingAsset.offChainProperties.country
                     }`,
-                    EwAsset.ProducingAsset.Compliance[
-                        enrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
+                    ProducingAsset.Compliance[
+                        EnrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
                     ],
                     new Date(
-                        enrichedCertificateData.certificate.creationTime * 1000
+                        EnrichedCertificateData.certificate.creationTime * 1000
                     ).toDateString(),
-                    enrichedCertificateData.certificate.powerInW / 1000
+                    EnrichedCertificateData.certificate.powerInW / 1000
                 ];
             }
         );
