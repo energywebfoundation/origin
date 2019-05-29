@@ -17,9 +17,9 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwUser from 'ew-user-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 
 import './DetailView.scss';
@@ -29,13 +29,13 @@ export interface DetailViewProps {
     conf: Configuration.Entity;
     id: number;
     baseUrl: string;
-    certificates: OriginIssuer.Certificate.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
+    certificates: Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
 }
 
 export interface DetailViewState {
     newId: number;
-    owner: EwUser.User;
+    owner: User;
     events: EnrichedEvent[];
 }
 
@@ -73,8 +73,8 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
 
     init(props: DetailViewProps) {
         if (props.id !== null && props.id !== undefined) {
-            const selectedCertificate: OriginIssuer.Certificate.Entity = props.certificates.find(
-                (c: OriginIssuer.Certificate.Entity) => c.id === props.id.toString()
+            const selectedCertificate: Certificate.Entity = props.certificates.find(
+                (c: Certificate.Entity) => c.id === props.id.toString()
             );
             if (selectedCertificate) {
                 this.getOwner(props, selectedCertificate, () =>
@@ -84,25 +84,18 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
         }
     }
 
-    async getOwner(
-        props: DetailViewProps,
-        selectedCertificate: OriginIssuer.Certificate.Entity,
-        cb
-    ) {
+    async getOwner(props: DetailViewProps, selectedCertificate: Certificate.Entity, cb) {
         this.setState(
             {
-                owner: await new EwUser.User(selectedCertificate.owner, props.conf as any).sync()
+                owner: await new User(selectedCertificate.owner, props.conf as any).sync()
             },
             cb
         );
     }
 
-    async enrichEvent(
-        props: DetailViewProps,
-        selectedCertificate: OriginIssuer.Certificate.Entity
-    ) {
+    async enrichEvent(props: DetailViewProps, selectedCertificate: Certificate.Entity) {
         const asset = this.props.producingAssets.find(
-            (p: EwAsset.ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
+            (p: ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
         );
 
         const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
@@ -116,7 +109,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                         description = 'Logging by Asset #' + event.returnValues._assetId;
                         break;
                     case 'LogCreatedCertificate':
-                        const organization = (await new EwUser.User(
+                        const organization = (await new User(
                             event.returnValues.owner,
                             props.conf as any
                         ).sync()).organization;
@@ -133,16 +126,16 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                             '0x0000000000000000000000000000000000000000'
                         ) {
                             lable = 'Set Initial Owner';
-                            description = (await new EwUser.User(
+                            description = (await new User(
                                 (event as any).returnValues._to,
                                 props.conf as any
                             ).sync()).organization;
                         } else {
-                            const newOwner = (await new EwUser.User(
+                            const newOwner = (await new User(
                                 (event as any).returnValues._to,
                                 props.conf as any
                             ).sync()).organization;
-                            const oldOwner = (await new EwUser.User(
+                            const oldOwner = (await new User(
                                 (event as any).returnValues._from,
                                 props.conf as any
                             ).sync()).organization;
@@ -177,7 +170,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
         const selectedCertificate =
             this.props.id !== null && this.props.id !== undefined
                 ? this.props.certificates.find(
-                      (c: OriginIssuer.Certificate.Entity) => c.id === this.props.id.toString()
+                      (c: Certificate.Entity) => c.id === this.props.id.toString()
                   )
                 : null;
 
@@ -203,11 +196,9 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
             ));
 
             const asset = this.props.producingAssets.find(
-                (p: EwAsset.ProducingAsset.Entity) =>
-                    p.id === selectedCertificate.assetId.toString()
+                (p: ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
             );
 
-            // const jointEvents = asset.getEventWithFileHash(selectedCertificate.dataLog);
             data = [
                 [
                     {
@@ -221,9 +212,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                     {
                         label: 'Claimed',
                         data:
-                            selectedCertificate.status === OriginIssuer.Certificate.Status.Retired
-                                ? 'yes'
-                                : 'no'
+                            selectedCertificate.status === Certificate.Status.Retired ? 'yes' : 'no'
                     },
                     {
                         label: 'Producing Asset Id',

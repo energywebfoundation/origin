@@ -1,10 +1,11 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-sonarts"],
+  "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-sonarts", "tslint-react"],
   "rulesDirectory": [
     "node_modules/tslint-lines-between-class-members"
   ],
   "rules": {
+    "object-literal-sort-keys": false,
     "no-unused-expression": true,
     "no-unused-variable": true,
     "class-name": true,
@@ -46,7 +47,6 @@
     "import-name": false,
     "no-any": true,
     "prefer-type-cast": false,
-    "no-default-export": true,
     "no-relative-imports": false,
     "no-duplicate-variable": true,
     "no-consecutive-blank-lines": true,
@@ -66,7 +66,8 @@
     ],
     "quotemark": [
       true,
-      "single"
+      "single",
+      "jsx-double"
     ],
     "align": [
       true,

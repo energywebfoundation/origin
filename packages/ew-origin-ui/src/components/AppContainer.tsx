@@ -15,36 +15,40 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-
 import Web3 from 'web3';
+import * as queryString from 'query-string';
+import * as Winston from 'winston';
+
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { Configuration, ContractEventHandler, EventHandlerManager } from 'ew-utils-general-lib';
+import {
+    Demand,
+    createBlockchainProperties as marketCreateBlockchainProperties
+} from 'ew-market-lib';
+import { Certificate, createBlockchainProperties } from 'ew-origin-lib';
+import { User } from 'ew-user-registry-lib';
 
 import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
-import { StoreState, Actions } from '../types';
+import { IStoreState, IActions } from '../types';
 import { Header } from './Header';
 import { Asset } from './Asset';
 import { Admin } from './Admin';
-import * as queryString from 'query-string';
 import './AppContainer.scss';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as Winston from 'winston';
-import { Configuration, ContractEventHandler, EventHandlerManager } from 'ew-utils-general-lib';
-import { createBlockchainProperties as marketCreateBlockchainProperties } from 'ew-market-lib';
+import { Demands } from './Demands';
 
 export const API_BASE_URL = 'http://localhost:3030';
 
-interface AppContainerProps extends StoreState {
-    actions: Actions;
+interface IAppContainerProps extends IStoreState {
+    actions: IActions;
 }
 
-export class AppContainer extends React.Component<AppContainerProps, {}> {
-    constructor(props: AppContainerProps) {
+export class AppContainer extends React.Component<IAppContainerProps, {}> {
+    constructor(props: IAppContainerProps) {
         super(props);
 
         this.CertificateTable = this.CertificateTable.bind(this);
-        // this.DemandTable = this.DemandTable.bind(this);
+        this.DemandTable = this.DemandTable.bind(this);
         this.Admin = this.Admin.bind(this);
         this.Asset = this.Asset.bind(this);
     }
@@ -58,7 +62,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
         certificateContractEventHandler.onEvent('LogCertificateRetired', async (event: any) =>
             this.props.actions.certificateCreatedOrUpdated(
-                await new OriginIssuer.Certificate.Entity(
+                await new Certificate.Entity(
                     event.returnValues._certificateId,
                     this.props.configuration
                 ).sync()
@@ -67,7 +71,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
 
         certificateContractEventHandler.onEvent('Transfer', async (event: any) => {
             this.props.actions.certificateCreatedOrUpdated(
-                await new OriginIssuer.Certificate.Entity(
+                await new Certificate.Entity(
                     event.returnValues._tokenId,
                     this.props.configuration
                 ).sync()
@@ -113,7 +117,7 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const blockchainProperties: Configuration.BlockchainProperties = (await OriginIssuer.createBlockchainProperties(
+        const blockchainProperties: Configuration.BlockchainProperties = (await createBlockchainProperties(
             null,
             web3,
             originIssuerContractLookupAddress
@@ -145,26 +149,23 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         this.props.actions.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
 
-        const currentUser: EwUser.User =
-            accounts.length > 0 ? await new EwUser.User(accounts[0], conf as any).sync() : null;
+        const currentUser: User =
+            accounts.length > 0 ? await new User(accounts[0], conf as any).sync() : null;
 
-        (await EwAsset.ProducingAsset.getAllAssets(conf)).forEach(
-            (p: EwAsset.ProducingAsset.Entity) =>
-                this.props.actions.producingAssetCreatedOrUpdated(p)
+        (await ProducingAsset.getAllAssets(conf)).forEach((p: ProducingAsset.Entity) =>
+            this.props.actions.producingAssetCreatedOrUpdated(p)
         );
 
-        (await EwAsset.ConsumingAsset.getAllAssets(conf)).forEach(
-            (c: EwAsset.ConsumingAsset.Entity) =>
-                this.props.actions.consumingAssetCreatedOrUpdated(c)
+        (await ConsumingAsset.getAllAssets(conf)).forEach((c: ConsumingAsset.Entity) =>
+            this.props.actions.consumingAssetCreatedOrUpdated(c)
         );
 
-        // (await Demand.GET_ALL_ACTIVE_DEMANDS(conf.blockchainProperties)).forEach((d: Demand) =>
-        //     this.props.actions.demandCreatedOrUpdated(d)
-        // );
+        (await Demand.getAllDemands(conf)).forEach((d: Demand.Entity) =>
+            this.props.actions.demandCreatedOrUpdated(d)
+        );
 
-        (await OriginIssuer.Certificate.getActiveCertificates(conf)).forEach(
-            (certificate: OriginIssuer.Certificate.Entity) =>
-                this.props.actions.certificateCreatedOrUpdated(certificate)
+        (await Certificate.getActiveCertificates(conf)).forEach((certificate: Certificate.Entity) =>
+            this.props.actions.certificateCreatedOrUpdated(certificate)
         );
 
         this.props.actions.currentUserUpdated(
@@ -200,16 +201,18 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
         );
     }
 
-    // DemandTable() {
-    //     return <Demands
-    //         conf={this.props.conf}
-    //         demands={this.props.demands}
-    //         consumingAssets={this.props.consumingAssets}
-    //         producingAssets={this.props.producingAssets}
-    //         currentUser={this.props.currentUser}
-    //         baseUrl={(this.props as any).match.params.contractAddress}
-    //     />;
-    // }
+    DemandTable() {
+        return (
+            <Demands
+                conf={this.props.configuration}
+                demands={this.props.demands}
+                consumingAssets={this.props.consumingAssets}
+                producingAssets={this.props.producingAssets}
+                currentUser={this.props.currentUser}
+                baseUrl={(this.props as any).match.params.contractAddress}
+            />
+        );
+    }
 
     Admin() {
         return (
@@ -231,38 +234,40 @@ export class AppContainer extends React.Component<AppContainerProps, {}> {
             );
         }
 
+        const contractAddress = (this.props as any).match.params.contractAddress;
+
         return (
             <div className={`AppWrapper ${false ? 'Profile--open' : ''}`}>
                 <Header
                     currentUser={this.props.currentUser}
-                    baseUrl={(this.props as any).match.params.contractAddress}
+                    baseUrl={contractAddress}
                 />
                 <Switch>
                     <Route
-                        path={'/' + (this.props as any).match.params.contractAddress + '/assets/'}
+                        path={`/${contractAddress}/assets/`}
                         component={this.Asset}
                     />
                     <Route
-                        path={
-                            '/' + (this.props as any).match.params.contractAddress + '/certificates'
-                        }
+                        path={`/${contractAddress}/certificates/`}
                         component={this.CertificateTable}
                     />
                     <Route
-                        path={'/' + (this.props as any).match.params.contractAddress + '/admin/'}
+                        path={`/${contractAddress}/admin/`}
                         component={this.Admin}
                     />
-
-                    {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/demands'} component={this.DemandTable} /> */}
-
-                    {/* <Route path={'/' + (this.props as any).match.params.contractAddress + '/legal'} component={Legal} />
-                <Route path={'/' + (this.props as any).match.params.contractAddress + '/about'} component={About} /> */}
                     <Route
-                        path={'/' + (this.props as any).match.params.contractAddress}
+                        path={`/${contractAddress}/demands/`}
+                        component={this.DemandTable}
+                    />
+
+                    {/* <Route path={`/${contractAddress}/legal/`'} component={Legal} />
+                    <Route path={`/${contractAddress}/about/`} component={About} /> */}
+                    <Route
+                        path={`/${contractAddress}`}
                         component={this.Asset}
                     />
                 </Switch>
-                {/* <Footer cooContractAddress={(this.props as any).match.params.contractAddress} /> */}
+                {/* <Footer cooContractAddress={contractAddress} /> */}
             </div>
         );
     }

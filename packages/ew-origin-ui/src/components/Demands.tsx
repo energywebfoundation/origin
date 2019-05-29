@@ -14,103 +14,101 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-// import * as React from 'react'
-// import { ProducingAsset, Certificate, ConsumingAsset, User, AssetType, Compliance, TimeFrame, Currency, Demand } from 'ewf-coo'
-// import { Web3Service } from '../utils/Web3Service'
-// import { OrganizationFilter } from './OrganizationFilter'
-// import { FullDemandProperties } from 'ewf-coo/build/ts/blockchain-facade/Demand'
-// import { Table } from '../elements/Table/Table'
-// import TableUtils from '../elements/utils/TableUtils'
-// import FadeIn from 'react-fade-in'
-// import { Nav, NavItem } from 'react-bootstrap'
-// import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom'
-// import { PageContent } from '../elements/PageContent/PageContent'
-// import { DemandTable } from './DemandTable'
+import * as React from 'react';
+import FadeIn from 'react-fade-in';
+import { Nav, NavItem } from 'react-bootstrap';
+import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
 
-// import '../../assets/common.scss'
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
+import { Demand } from 'ew-market-lib';
+import { Configuration } from 'ew-utils-general-lib';
 
-// export interface DemandsProps {
-//     web3Service: Web3Service,
-//     demands: Demand[],
-//     producingAssets: ProducingAsset[],
-//     consumingAssets: ConsumingAsset[],
-//     currentUser: User,
-//     baseUrl: string
+import { OrganizationFilter } from './OrganizationFilter';
+import { Table } from '../elements/Table/Table';
+import TableUtils from '../elements/utils/TableUtils';
+import { PageContent } from '../elements/PageContent/PageContent';
+import { DemandTable } from './DemandTable';
 
-// }
+import '../../assets/common.scss';
 
-// export interface DemandState {
+export interface IDemandsProps {
+    conf: Configuration.Entity;
+    demands: Demand.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    consumingAssets: ConsumingAsset.Entity[];
+    currentUser: User;
+    baseUrl: string;
+}
 
-//     switchedToOrganization: boolean
+export interface IDemandState {
+    switchedToOrganization: boolean;
+}
 
-// }
+export class Demands extends React.Component<IDemandsProps, IDemandState> {
+    constructor(props) {
+        super(props);
 
-// export class Demands extends React.Component<DemandsProps, DemandState> {
+        this.state = { switchedToOrganization: false };
 
-//     constructor(props) {
-//         super(props)
+        this.onFilterOrganization = this.onFilterOrganization.bind(this);
+        this.DemandTable = this.DemandTable.bind(this);
+    }
 
-//         this.state = {
+    onFilterOrganization(index: number) {
+        this.setState({
+            switchedToOrganization: index !== 0
+        });
+    }
 
-//             switchedToOrganization: false
-//         }
+    DemandTable() {
+        return (
+            <DemandTable
+                conf={this.props.conf}
+                producingAssets={this.props.producingAssets}
+                currentUser={this.props.currentUser}
+                demands={this.props.demands}
+                consumingAssets={this.props.consumingAssets}
+                switchedToOrganization={this.state.switchedToOrganization}
+                baseUrl={this.props.baseUrl}
+            />
+        );
+    }
 
-//         this.onFilterOrganization = this.onFilterOrganization.bind(this)
-//         this.DemandTable = this.DemandTable.bind(this)
+    render() {
+        const organizations = this.props.currentUser
+            ? ['All Organizations', this.props.currentUser.organization]
+            : ['All Organizations'];
 
-//     }
+        const DemandsMenu = {
+            key: 'demands',
+            label: 'Demands',
+            component: this.DemandTable,
+            buttons: [
+                // {
+                //     type: 'date-range',
+                // },
+                {
+                    type: 'dropdown',
+                    label: 'All Organizations',
+                    face: ['filter', 'icon'],
+                    content: organizations
+                }
+            ]
+        };
 
-//     onFilterOrganization(index: number) {
-//         this.setState({
-//             switchedToOrganization: index !== 0
-//         })
-//     }
+        return (
+            <div className="PageWrapper">
+                <div className="PageNav">
+                    <Nav className="NavMenu" />
+                </div>
 
-//     DemandTable() {
-//         return <DemandTable
-//             web3Service={this.props.web3Service}
-//             producingAssets={this.props.producingAssets}
-//             currentUser={this.props.currentUser}
-//             demands={this.props.demands}
-//             consumingAssets={this.props.consumingAssets}
-//             switchedToOrganization={this.state.switchedToOrganization}
-//             baseUrl={this.props.baseUrl}
-//         />
-//     }
-
-//     render() {
-
-//         const organizations = this.props.currentUser ?
-//             ['All Organizations', this.props.currentUser.organization] :
-//             ['All Organizations']
-
-//         const DemandsMenu = {
-//             key: 'demands',
-//             label: 'Demands',
-//             component: this.DemandTable,
-//             buttons: [
-//                 // {
-//                 //     type: 'date-range',
-//                 // },
-//                 {
-//                     type: 'dropdown',
-//                     label: 'All Organizations',
-//                     face: ['filter', 'icon'],
-//                     content: organizations
-//                 }
-//             ]
-//         }
-
-//         return <div className='PageWrapper'>
-//             <div className='PageNav'>
-//                 <Nav className='NavMenu'>
-
-//                 </Nav>
-//             </div>
-
-//             <PageContent onFilterOrganization={this.onFilterOrganization} menu={DemandsMenu} redirectPath={'/' + this.props.baseUrl + '/demands'} />
-//         </div>
-
-//     }
-
-// }
+                <PageContent
+                    onFilterOrganization={this.onFilterOrganization}
+                    menu={DemandsMenu}
+                    redirectPath={'/' + this.props.baseUrl + '/demands'}
+                />
+            </div>
+        );
+    }
+}

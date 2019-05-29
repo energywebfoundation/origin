@@ -15,9 +15,9 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwUser from 'ew-user-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
+import { User } from 'ew-user-registry-lib';
 
 import { Nav } from 'react-bootstrap';
 import { Route, NavLink, Redirect } from 'react-router-dom';
@@ -26,20 +26,20 @@ import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
 import { Configuration } from 'ew-utils-general-lib';
 
-export interface CertificatesProps {
+export interface ICertificatesProps {
     conf: Configuration.Entity;
-    certificates: OriginIssuer.Certificate.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
-    currentUser: EwUser.User;
+    certificates: Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    currentUser: User;
     baseUrl: string;
 }
 
-export interface CertificatesState {
+export interface ICertificatesState {
     switchedToOrganization: boolean;
 }
 
-export class Certificates extends React.Component<CertificatesProps, CertificatesState> {
-    constructor(props: CertificatesProps) {
+export class Certificates extends React.Component<ICertificatesProps, ICertificatesState> {
+    constructor(props: ICertificatesProps) {
         super(props);
 
         this.state = {
@@ -110,9 +110,11 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
     }
 
     render() {
+        const allOrganizationsText = 'All Organizations';
+
         const organizations = this.props.currentUser
-            ? ['All Organizations', this.props.currentUser.organization]
-            : ['All Organizations'];
+            ? [allOrganizationsText, this.props.currentUser.organization]
+            : [allOrganizationsText];
 
         const CertificatesMenu = [
             {
@@ -122,7 +124,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                 buttons: [
                     {
                         type: 'dropdown',
-                        label: 'All Organizations',
+                        label: allOrganizationsText,
                         face: ['filter', 'icon'],
                         content: organizations
                     }
@@ -135,7 +137,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                 buttons: [
                     {
                         type: 'dropdown',
-                        label: 'All Organizations',
+                        label: allOrganizationsText,
                         face: ['filter', 'icon'],
                         content: organizations
                     }
@@ -148,7 +150,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                 buttons: [
                     {
                         type: 'dropdown',
-                        label: 'All Organizations',
+                        label: allOrganizationsText,
                         face: ['filter', 'icon'],
                         content: organizations
                     }
@@ -161,7 +163,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                 buttons: [
                     {
                         type: 'dropdown',
-                        label: 'All Organizations',
+                        label: allOrganizationsText,
                         face: ['filter', 'icon'],
                         content: organizations
                     }
@@ -215,6 +217,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                         );
                     }}
                 />
+
                 <Route
                     exact
                     path={'/' + this.props.baseUrl + '/certificates'}
@@ -228,6 +231,7 @@ export class Certificates extends React.Component<CertificatesProps, Certificate
                         />
                     )}
                 />
+
                 <Route
                     exact
                     path={'/' + this.props.baseUrl + '/'}
