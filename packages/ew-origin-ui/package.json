@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@types/core-js": "0.9.46",
-    "@types/googlemaps": "3.36.0",
     "core-js": "2.6.5",
     "css-loader": "0.28.10",
     "node-sass": "4.12.0",
