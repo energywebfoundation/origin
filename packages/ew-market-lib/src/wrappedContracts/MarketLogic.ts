@@ -1,11 +1,16 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import * as fs from 'fs';
-import * as path from 'path';
 import Web3 = require('web3');
-import { Tx, BlockType } from 'web3/eth/types';
-import { TransactionReceipt, Logs } from 'web3/types';
-import { JsonRPCResponse } from 'web3/providers';
 import MarketLogicJSON from '../../build/contracts/MarketLogic.json';
+
+const SUPPORTED_EVENTS = [
+    'allEvents',
+    'createdNewDemand',
+    'createdNewSupply',
+    'deletedDemand',
+    'LogAgreementFullySigned',
+    'LogAgreementCreated',
+    'LogChangeOwner'
+];
 
 export class MarketLogic extends GeneralFunctions {
     web3: Web3;
@@ -25,107 +30,11 @@ export class MarketLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllcreatedNewDemandEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
+    async getEvents(event, eventFilter?: SearchLog) {
+        if (!SUPPORTED_EVENTS.includes(event)) {
+            throw new Error('This event does not exist.');
         }
 
-        return await this.web3Contract.getPastEvents('createdNewDemand', filterParams);
-    }
-
-    async getAllcreatedNewSupplyEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('createdNewSupply', filterParams);
-    }
-
-    async getAllLogAgreementFullySignedEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogAgreementFullySigned', filterParams);
-    }
-
-    async getAllLogAgreementCreatedEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogAgreementCreated', filterParams);
-    }
-
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
-    }
-
-    async getAllEvents(eventFilter?: SearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -141,7 +50,7 @@ export class MarketLogic extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return await this.web3Contract.getPastEvents(event, filterParams);
     }
 
     async createAgreement(
@@ -337,6 +246,88 @@ export class MarketLogic extends GeneralFunctions {
 
     async getDemand(_demandId: number, txParams?: SpecialTx) {
         return await this.web3Contract.methods.getDemand(_demandId).call(txParams);
+    }
+
+    async deleteDemand(
+        _demandId: number,
+        txParams?: SpecialTx
+    ) {
+        let transactionParams;
+
+        const txData = await this.web3Contract.methods
+            .deleteDemand(_demandId)
+            .encodeABI();
+
+        let gas;
+
+        if (txParams) {
+            if (txParams.privateKey) {
+                const privateKey = txParams.privateKey.startsWith('0x')
+                    ? txParams.privateKey
+                    : '0x' + txParams.privateKey;
+                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
+                txParams.nonce = txParams.nonce
+                    ? txParams.nonce
+                    : await this.web3.eth.getTransactionCount(txParams.from);
+            }
+
+            if (!txParams.gas) {
+                try {
+                    gas = await this.web3Contract.methods
+                        .deleteDemand(_demandId)
+                        .estimateGas({
+                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
+                        });
+                } catch (ex) {
+                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
+                        throw new Error(ex);
+                    }
+
+                    const errorResult = await this.getErrorMessage(this.web3, {
+                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
+                        to: this.web3Contract._address,
+                        data: txData,
+                        gas: this.web3.utils.toHex(7000000)
+                    });
+                    throw new Error(errorResult);
+                }
+                gas = Math.round(gas * 2);
+
+                txParams.gas = gas;
+            }
+
+            transactionParams = {
+                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
+                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
+                gasPrice: 0,
+                nonce: txParams.nonce
+                    ? txParams.nonce
+                    : await this.web3.eth.getTransactionCount(txParams.from),
+                data: txParams.data ? txParams.data : '',
+                to: this.web3Contract._address,
+                privateKey: txParams.privateKey ? txParams.privateKey : ''
+            };
+        } else {
+            transactionParams = {
+                from: (await this.web3.eth.getAccounts())[0],
+                gas: Math.round(gas * 1.1 + 21000),
+                gasPrice: 0,
+                nonce: await this.web3.eth.getTransactionCount(
+                    (await this.web3.eth.getAccounts())[0]
+                ),
+                data: '',
+                to: this.web3Contract._address,
+                privateKey: ''
+            };
+        }
+
+        transactionParams.data = txData;
+
+        if (transactionParams.privateKey === '') {
+            return await this.web3.eth.sendTransaction(transactionParams);
+        }
+
+        return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
     }
 
     async update(_newLogic: string, txParams?: SpecialTx) {

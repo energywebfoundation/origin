@@ -29,6 +29,9 @@ import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
+
+const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
+
 describe('MarketLogic', () => {
     const configFile = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
@@ -56,6 +59,9 @@ describe('MarketLogic', () => {
 
     const traderPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
+
+    const trader2PK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
+    const accountTrader2 = web3.eth.accounts.privateKeyToAccount(trader2PK).address;
 
     const matcherPK = '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c';
     const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
@@ -206,11 +212,15 @@ describe('MarketLogic', () => {
 
     it('should set right roles to users', async () => {
         await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
+        await userLogic.setUser(accountTrader2, 'trader', { privateKey: privateKeyDeployment });
         await userLogic.setUser(accountAssetOwner, 'assetOwner', {
             privateKey: privateKeyDeployment
         });
 
         await userLogic.setRoles(accountTrader, buildRights([
+            Role.Trader
+        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountTrader2, buildRights([
             Role.Trader
         ]), { privateKey: privateKeyDeployment });
         await userLogic.setRoles(accountAssetOwner, buildRights([
@@ -237,7 +247,7 @@ describe('MarketLogic', () => {
             privateKey: traderPK
         });
 
-        const allEvents = await marketLogic.getAllcreatedNewDemandEvents({
+        const allEvents = await marketLogic.getEvents('createdNewDemand', {
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         });
@@ -362,7 +372,7 @@ describe('MarketLogic', () => {
             privateKey: assetOwnerPK
         });
 
-        const allEvents = await marketLogic.getAllcreatedNewSupplyEvents({
+        const allEvents = await marketLogic.getEvents('createdNewSupply', {
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         });
@@ -601,7 +611,7 @@ describe('MarketLogic', () => {
         );
 
         if (isGanache) {
-            const allEvents = await marketLogic.getAllLogAgreementCreatedEvents({
+            const allEvents = await marketLogic.getEvents('LogAgreementCreated', {
                 fromBlock: tx.blockNumber,
                 toBlock: tx.blockNumber
             });
@@ -683,7 +693,7 @@ describe('MarketLogic', () => {
         const tx = await marketLogic.approveAgreementDemand(0, { privateKey: traderPK });
 
         if (isGanache) {
-            const allEvents = await marketLogic.getAllLogAgreementFullySignedEvents({
+            const allEvents = await marketLogic.getEvents('LogAgreementFullySigned', {
                 fromBlock: tx.blockNumber,
                 toBlock: tx.blockNumber
             });
@@ -780,7 +790,7 @@ describe('MarketLogic', () => {
             { privateKey: assetOwnerPK }
         );
 
-        const allEvents = await marketLogic.getAllcreatedNewSupplyEvents({
+        const allEvents = await marketLogic.getEvents('createdNewSupply', {
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         });
@@ -803,7 +813,7 @@ describe('MarketLogic', () => {
         });
 
         if (isGanache) {
-            const allEvents = await marketLogic.getAllcreatedNewDemandEvents({
+            const allEvents = await marketLogic.getEvents('createdNewDemand', {
                 fromBlock: tx.blockNumber,
                 toBlock: tx.blockNumber
             });
@@ -833,7 +843,7 @@ describe('MarketLogic', () => {
         );
 
         if (isGanache) {
-            const allEvents = await marketLogic.getAllLogAgreementCreatedEvents({
+            const allEvents = await marketLogic.getEvents('LogAgreementCreated', {
                 fromBlock: tx.blockNumber,
                 toBlock: tx.blockNumber
             });
@@ -911,7 +921,7 @@ describe('MarketLogic', () => {
         const tx = await marketLogic.approveAgreementSupply(1, { privateKey: assetOwnerPK });
 
         if (isGanache) {
-            const allEvents = await marketLogic.getAllLogAgreementFullySignedEvents({
+            const allEvents = await marketLogic.getEvents('LogAgreementFullySigned', {
                 fromBlock: tx.blockNumber,
                 toBlock: tx.blockNumber
             });
@@ -974,7 +984,7 @@ describe('MarketLogic', () => {
             { privateKey: traderPK }
         );
 
-        const allEvents = await marketLogic.getAllLogAgreementCreatedEvents({
+        const allEvents = await marketLogic.getEvents('LogAgreementCreated', {
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         });
@@ -1048,7 +1058,7 @@ describe('MarketLogic', () => {
             { privateKey: assetOwnerPK }
         );
 
-        const allEvents = await marketLogic.getAllLogAgreementCreatedEvents({
+        const allEvents = await marketLogic.getEvents('LogAgreementCreated', {
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         });
@@ -1078,5 +1088,65 @@ describe('MarketLogic', () => {
         }
 
         assert.isTrue(failed);
+    });
+
+    it('should be able to create a 3rd demand', async () => {
+        await marketLogic.createDemand('propertiesDocumentHash_deleted', 'documentDBURL_deleted', {
+            privateKey: traderPK
+        });
+        assert.equal(await marketLogic.getAllDemandListLength(), 3);
+    });
+
+    it('should fail to delete a demand as non-trader', async () => {
+        let failed = false;
+        try {
+            await marketLogic.deleteDemand(1, {
+                privateKey: assetOwnerPK
+            });
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'user does not have the required role');
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should not be able to delete a demand as trader non-owner', async () => {
+        let failed = false;
+        try {
+            await marketLogic.deleteDemand(1, {
+                privateKey: trader2PK
+            });
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'user is not the owner of this demand');
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should be able to delete a demand as trader owner', async () => {
+        const txDelete = await marketLogic.deleteDemand(1, {
+            privateKey: traderPK
+        });
+
+        const deletedDemandEvents = await marketLogic.getEvents('deletedDemand', {
+            fromBlock: txDelete.blockNumber,
+            toBlock: txDelete.blockNumber
+        });
+        assert.equal(deletedDemandEvents.length, 1);
+
+        const demandAfter = await marketLogic.getDemand(1);
+        assert.deepEqual(demandAfter, {
+            0: '',
+            1: '',
+            2: ZERO_ADDR,
+            _propertiesDocumentHash: '',
+            _documentDBURL: '',
+            _owner: ZERO_ADDR
+        });
+
+        // Demand list length should remain the same, because the elements in Solidity are not automatically shifted
+        assert.equal(await marketLogic.getAllDemandListLength(), 3);
     });
 });

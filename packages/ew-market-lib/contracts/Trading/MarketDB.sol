@@ -69,6 +69,15 @@ contract MarketDB is AgreementDB {
         _demandId = allDemands.length>0?allDemands.length-1:0;
     }
 
+    /// @notice Deletes a demand
+	/// @param _demandId the demand ID
+    function deleteDemand (uint _demandId)
+        external
+        onlyOwner
+    {
+        delete allDemands[_demandId];
+    }
+
 	/// @notice creates a supply
 	/// @param _propertiesDocumentHash the properties document hash
 	/// @param _documentDBURL the url of the document in a database
