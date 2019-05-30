@@ -19,13 +19,13 @@ import { PreciseProofs } from 'ew-utils-general-precise-proofs';
 import axios from 'axios';
 import { validateJson } from '../off-chain-data/json-validator';
 
-export interface OffChainProperties {
+export interface IOffChainProperties {
   rootHash: string;
   salts: string[];
   schema: string[];
 }
 
-export interface OnChainProperties {
+export interface IOnChainProperties {
   propertiesDocumentHash: string;
   url: string;
 }
@@ -48,12 +48,12 @@ export abstract class Entity {
   abstract getUrl(): string;
 
   prepareEntityCreation(
-    onChainProperties: OnChainProperties,
+    onChainProperties: IOnChainProperties,
     offChainProperties: any,
     schema: any,
     url?: string,
     debug?: boolean
-  ): OffChainProperties {
+  ): IOffChainProperties {
     const axiosurl = url ? url : this.getUrl();
 
     validateJson(
@@ -79,7 +79,7 @@ export abstract class Entity {
 
   async putToOffChainStorage(
     properties: any,
-    offChainStorageProperties: OffChainProperties,
+    offChainStorageProperties: IOffChainProperties,
     url?: string
   ) {
     if (this.configuration.offChainDataSource) {
@@ -93,6 +93,20 @@ export abstract class Entity {
       if (this.configuration.logger) {
         this.configuration.logger.verbose(
           `Put off chain properties to ${axiosurl}/${this.id}`
+        );
+      }
+    }
+  }
+
+  async deleteFromOffChainStorage(url?: string) {
+    if (this.configuration.offChainDataSource) {
+      const axiosurl = url ? url : this.getUrl();
+
+      await axios.delete(`${axiosurl}/${this.id}`);
+      
+      if (this.configuration.logger) {
+        this.configuration.logger.verbose(
+          `Deleted off chain properties of ${axiosurl}/${this.id}`
         );
       }
     }
@@ -160,7 +174,7 @@ export abstract class Entity {
     properties: any,
     debug: boolean,
     salts?: string[]
-  ): OffChainProperties {
+  ): IOffChainProperties {
     this.proofs = [];
     let leafs = salts
       ? PreciseProofs.createLeafs(properties, salts)
