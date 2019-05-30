@@ -177,7 +177,7 @@ export const marketDemo = async (demoFile?: string) => {
                         break;
                 }
 
-                const demandOffchainProps: Market.Demand.DemandOffchainproperties = {
+                const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
                     timeframe: timeFrame,
                     pricePerCertifiedWh: action.data.pricePerCertifiedWh,
                     currency,
@@ -193,7 +193,7 @@ export const marketDemo = async (demoFile?: string) => {
                     registryCompliance: assetCompliance
                 };
 
-                const demandProps: Market.Demand.DemandOnChainProperties = {
+                const demandProps: Market.Demand.IDemandOnChainProperties = {
                     url: '',
                     propertiesDocumentHash: '',
                     demandOwner: action.data.trader
