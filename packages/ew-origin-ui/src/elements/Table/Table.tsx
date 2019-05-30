@@ -22,7 +22,7 @@ import renderHTML from 'react-render-html';
 import moment from 'moment';
 import action from '../../../assets/action.svg';
 import { PeriodToSeconds } from '../../components/DemandTable';
-import * as EwAsset from 'ew-asset-registry-lib';
+import { TimeFrame } from 'ew-utils-general-lib';
 
 import './toggle.scss';
 import './Table.scss';
@@ -168,13 +168,11 @@ export class Table extends React.Component<any, any> {
             this.state.inputs.startTime &&
             this.state.inputs.endTime
         ) {
-            // TODO Timeframe?
-
             return (
                 Math.ceil(
                     (parseInt(this.state.inputs.endTime, 10) -
                         parseInt(this.state.inputs.startTime, 10)) /
-                        PeriodToSeconds[1]
+                        PeriodToSeconds[TimeFrame[this.state.inputs.timeframe]]
                 ) * parseInt(this.state.inputs.targetWhPerPeriod, 10)
             );
         } else {

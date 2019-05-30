@@ -15,15 +15,12 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import FadeIn from 'react-fade-in';
-import { NavLink, withRouter } from 'react-router-dom';
 
 import { Configuration, TimeFrame, Compliance, AssetType } from 'ew-utils-general-lib';
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
 
-import { OrganizationFilter } from './OrganizationFilter';
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
 
@@ -43,11 +40,14 @@ export interface IDemandTableState {
 
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
-    buyer: User;
-    originator: User;
+    demandOwner: User;
+    consumingAsset?: ConsumingAsset.Entity
+    producingAsset?: ProducingAsset.Entity
 }
 
 export const PeriodToSeconds = [31536000, 2592000, 86400, 3600];
+
+const NO_VALUE_TEXT = 'any';
 
 export class DemandTable extends React.Component<IDemandTableProps, {}> {
     state: IDemandTableState;
@@ -77,30 +77,50 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
     }
 
     async enrichData(props: IDemandTableProps) {
-        const promises = props.demands.map(async (demand: Demand.Entity, index: number) => ({
-            demand,
-            producingAsset: this.props.producingAssets.find(
-                (asset: ProducingAsset.Entity) =>
-                    asset.id === demand.offChainProperties.productingAsset.toString()
-            ),
-            consumingAsset: this.props.consumingAssets.find(
-                (asset: ConsumingAsset.Entity) =>
-                    asset.id === demand.offChainProperties.consumingAsset.toString()
-            )
-            // buyer: await (new User(demand.offChainProperties.buyer, props.conf)).sync(),
-        }));
+        const promises = props.demands.map(async (demand: Demand.Entity) => {
+            const result: IEnrichedDemandData = {
+                demand,
+                producingAsset: null,
+                consumingAsset: null,
+                demandOwner: await (new User(demand.demandOwner, props.conf)).sync()
+            };
+
+
+            if (typeof(demand.offChainProperties.productingAsset) !== 'undefined') {
+                result.producingAsset = this.props.producingAssets.find(
+                    (asset: ProducingAsset.Entity) =>
+                        asset.id === demand.offChainProperties.productingAsset.toString()
+                );
+            }
+
+            if (typeof(demand.offChainProperties.consumingAsset) !== 'undefined') {
+                result.consumingAsset = this.props.consumingAssets.find(
+                    (asset: ConsumingAsset.Entity) =>
+                        asset.id === demand.offChainProperties.consumingAsset.toString()
+                )
+            }
+
+            return result;
+        });
 
         Promise.all(promises).then(enrichedDemandData => this.setState({ enrichedDemandData }));
     }
 
+    getCountryRegionText(demand: Demand.Entity): string {
+        let text = '';
+
+        if (demand.offChainProperties.locationCountry) {
+            text += demand.offChainProperties.locationCountry;
+        }
+
+        if (demand.offChainProperties.locationRegion) {
+            text += `, ${demand.offChainProperties.locationRegion}`;
+        }
+
+        return text || NO_VALUE_TEXT;
+    }
+
     render() {
-        const total = null;
-        let totalDemand = 0;
-
-        // const filteredEnrichedDemandData = this.state.enrichedDemandData.filter((enrichedDemandData: IEnrichedDemandData) => {
-        //     return !this.props.switchedToOrganization || enrichedDemandData.demand.offChainProperties.buyer === this.props.currentUser || (enrichedDemandData.demand.getBitFromDemandMask(DemandProperties.Originator) && enrichedDemandData.demand.offChainProperties.originator === this.props.currentUser);
-        // });
-
         const defaultWidth = 106;
         const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
             TableUtils.generateHeader(label, width, right, body);
@@ -110,7 +130,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 10
+                colspan: 9
             },
             generateFooter('Energy Demand (kWh)', true)
         ];
@@ -118,32 +138,18 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         const data = this.state.enrichedDemandData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
                 const demand = enrichedDemandData.demand;
-                // const overallDemand =
-                //     Math.ceil(
-                //         (demand.offChainProperties.endTime - demand.offChainProperties.startTime) /
-                //             PeriodToSeconds[demand.offChainProperties.timeframe]
-                //     ) *
-                //     (demand.offChainProperties.targetWhPerPeriod / 1000);
-                // totalDemand += overallDemand;
 
                 return [
                     demand.id,
-                    enrichedDemandData.buyer.organization,
-                    enrichedDemandData.originator.organization,
-                    // `${new Date(demand.startTime * 1000).toDateString()} - ${new Date(
-                    //     demand.offChainProperties.endTime * 1000
-                    // ).toDateString()}`,
-                    `${demand.offChainProperties.locationCountry} ${
-                        demand.offChainProperties.locationRegion
-                    }`,
-                    AssetType[demand.offChainProperties.assettype],
-                    Compliance[demand.offChainProperties.registryCompliance],
-                    TimeFrame[demand.offChainProperties.timeframe],
-                    demand.offChainProperties.productingAsset,
-                    demand.offChainProperties.consumingAsset,
-                    demand.offChainProperties.minCO2Offset.toFixed(3),
-                    (demand.offChainProperties.targetWhPerPeriod / 1000).toFixed(3),
-                    // overallDemand.toFixed(3)
+                    enrichedDemandData.demandOwner.organization,
+                    this.getCountryRegionText(demand),
+                    typeof(demand.offChainProperties.assettype) !== 'undefined' ? AssetType[demand.offChainProperties.assettype] : NO_VALUE_TEXT,
+                    typeof(demand.offChainProperties.registryCompliance) !== 'undefined' ? Compliance[demand.offChainProperties.registryCompliance] : NO_VALUE_TEXT,
+                    typeof(demand.offChainProperties.timeframe) !== 'undefined' ? TimeFrame[demand.offChainProperties.timeframe] : NO_VALUE_TEXT,
+                    typeof(demand.offChainProperties.productingAsset) !== 'undefined' ? demand.offChainProperties.productingAsset : NO_VALUE_TEXT,
+                    typeof(demand.offChainProperties.consumingAsset) !== 'undefined' ? demand.offChainProperties.consumingAsset : NO_VALUE_TEXT,
+                    typeof(demand.offChainProperties.minCO2Offset) !== 'undefined' ? demand.offChainProperties.minCO2Offset.toLocaleString() : 0,
+                    (demand.offChainProperties.targetWhPerPeriod / 1000).toLocaleString()
                 ];
             }
         );
@@ -151,8 +157,6 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         const TableHeader = [
             generateHeader('#'),
             generateHeader('Buyer'),
-            generateHeader('Originating Address'),
-            // generateHeader('Start/End-Date'),
             generateHeader('Country,<br/>Region'),
             generateHeader('Asset Type'),
             generateHeader('Compliance'),
@@ -160,8 +164,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
             generateHeader('Production Coupling with Asset'),
             generateHeader('Consumption Coupling with Asset'),
             generateHeader('Min CO2 Offset'),
-            generateHeader('Coupling Cap per Timeframe (kWh)'),
-            // generateHeader('Energy Demand (kWh)', defaultWidth, true, true)
+            generateHeader('Coupling Cap per Timeframe (kWh)')
         ];
 
         return (
