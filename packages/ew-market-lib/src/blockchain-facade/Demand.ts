@@ -34,7 +34,7 @@ export interface IDemandOffChainProperties {
 }
 
 export interface IDemandOnChainProperties
-    extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
+    extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
     demandOwner: string;
 }
 
@@ -85,6 +85,35 @@ export const createDemand = async (
     return demand.sync();
 };
 
+export const deleteDemand = async (
+    demandId: number,
+    configuration: GeneralLib.Configuration.Entity
+): Promise<boolean> => {
+    let success = true;
+
+    const demand = await (new Entity(demandId.toString(), configuration)).sync();
+    await demand.deleteFromOffChainStorage();
+
+    try {
+        await configuration.blockchainProperties.marketLogicInstance.deleteDemand(
+            demandId,
+            {
+                from: configuration.blockchainProperties.activeUser.address,
+                privateKey: configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
+    } catch (e) {
+        success = false;
+        throw e;
+    }
+
+    if (configuration.logger) {
+        configuration.logger.info(`Demand ${demandId} deleted`);
+    }
+
+    return success;
+};
+
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     implements IDemandOnChainProperties {
     offChainProperties: IDemandOffChainProperties;
@@ -112,6 +141,10 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
                 this.id
             );
 
+            if (demand._owner === '0x0000000000000000000000000000000000000000') {
+                return this;
+            }
+
             this.propertiesDocumentHash = demand._propertiesDocumentHash;
             this.url = demand._documentDBURL;
             this.demandOwner = demand._owner;
@@ -136,5 +169,5 @@ export const getAllDemands = async (configuration: GeneralLib.Configuration.Enti
         .fill(null)
         .map((item, index) => (new Entity(index.toString(), configuration)).sync());
 
-    return Promise.all(assetsPromises);
+    return (await Promise.all(assetsPromises)).filter(promise => promise.initialized);
 };

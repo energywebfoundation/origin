@@ -17,15 +17,15 @@
 import * as GeneralLib from 'ew-utils-general-lib';
 import SupplyOffchainpropertiesSchema from '../../schemas/SupplyOffchainProperties.schema.json';
 
-export interface SupplyOffchainProperties {
+export interface ISupplyOffchainProperties {
     price: number;
     currency: GeneralLib.Currency;
     availableWh: number;
     timeframe: GeneralLib.TimeFrame;
 }
 
-export interface SupplyOnChainProperties
-    extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
+export interface ISupplyOnChainProperties
+    extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
     assetId: number;
 }
 
@@ -36,8 +36,8 @@ export const getSupplyListLength = async (
 };
 
 export const createSupply = async (
-    supplyPropertiesOnChain: SupplyOnChainProperties,
-    supplyPropertiesOffChain: SupplyOffchainProperties,
+    supplyPropertiesOnChain: ISupplyOnChainProperties,
+    supplyPropertiesOffChain: ISupplyOffchainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
     const supply = new Entity(null, configuration);
@@ -77,8 +77,8 @@ export const createSupply = async (
 };
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements SupplyOnChainProperties {
-    offChainProperties: SupplyOffchainProperties;
+    implements ISupplyOnChainProperties {
+    offChainProperties: ISupplyOffchainProperties;
     propertiesDocumentHash: string;
     url: string;
 

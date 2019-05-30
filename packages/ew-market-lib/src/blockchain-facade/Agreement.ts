@@ -19,7 +19,7 @@ import AgreementOffchainPropertiesSchema from '../../schemas/AgreementOffChainPr
 import MatcherOffchainPropertiesSchema from '../../schemas/MatcherOffchainProperties.schema.json';
 import { TransactionReceipt } from 'web3/types';
 
-export interface AgreementOffChainProperties {
+export interface IAgreementOffChainProperties {
     start: number;
     ende: number;
     price: number;
@@ -28,13 +28,13 @@ export interface AgreementOffChainProperties {
     timeframe: GeneralLib.TimeFrame;
 }
 
-export interface MatcherOffchainProperties {
+export interface IMatcherOffchainProperties {
     currentWh: number;
     currentPeriod: number;
 }
 
-export interface AgreementOnChainProperties
-    extends GeneralLib.BlockchainDataModelEntity.OnChainProperties {
+export interface IAgreementOnChainProperties
+    extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
     matcherPropertiesDocumentHash: string;
     matcherDBURL: string;
     demandId: number;
@@ -43,9 +43,9 @@ export interface AgreementOnChainProperties
 }
 
 export const createAgreement = async (
-    agreementPropertiesOnChain: AgreementOnChainProperties,
-    agreementPropertiesOffchain: AgreementOffChainProperties,
-    matcherPropertiesOffchain: MatcherOffchainProperties,
+    agreementPropertiesOnChain: IAgreementOnChainProperties,
+    agreementPropertiesOffchain: IAgreementOffChainProperties,
+    matcherPropertiesOffchain: IMatcherOffchainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
     const agreement = new Entity(null, configuration);
@@ -115,9 +115,9 @@ export const getAgreementListLength = async (
 };
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements AgreementOnChainProperties {
-    matcherOffChainProperties: MatcherOffchainProperties;
-    offChainProperties: AgreementOffChainProperties;
+    implements IAgreementOnChainProperties {
+    matcherOffChainProperties: IMatcherOffchainProperties;
+    offChainProperties: IAgreementOffChainProperties;
     propertiesDocumentHash: string;
     url: string;
     matcherPropertiesDocumentHash: string;
@@ -208,9 +208,9 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     }
 
     async setMatcherProperties(
-        matcherOffchainProperties: MatcherOffchainProperties
+        matcherOffchainProperties: IMatcherOffchainProperties
     ): Promise<TransactionReceipt> {
-        const agreementPropsOnChain: AgreementOnChainProperties = {
+        const agreementPropsOnChain: IAgreementOnChainProperties = {
             matcherPropertiesDocumentHash: null,
             matcherDBURL: null,
             demandId: this.demandId,

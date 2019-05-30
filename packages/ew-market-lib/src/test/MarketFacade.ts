@@ -30,11 +30,11 @@ import {
 import { MarketLogic } from '..';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import * as Market from '..';
-import * as Asset from 'ew-asset-registry-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
 import { deepEqual } from 'assert';
 import {
-    AgreementOffChainProperties,
-    MatcherOffchainProperties
+    IAgreementOffChainProperties,
+    IMatcherOffchainProperties
 } from '../blockchain-facade/Agreement';
 import { timingSafeEqual } from 'crypto';
 
@@ -198,6 +198,11 @@ describe('Market-Facade', () => {
             });
         });
 
+        it('should return 1 demand for getAllDemands', async () => {
+            const allDemands = await Market.Demand.getAllDemands(conf);
+            assert.equal(allDemands.length, 1);
+        });
+
         it('should return demand', async () => {
             const demand: Market.Demand.Entity = await new Market.Demand.Entity('0', conf).sync();
 
@@ -236,7 +241,7 @@ describe('Market-Facade', () => {
                 privateKey: privateKeyDeployment
             };
 
-            const assetProps: Asset.ProducingAsset.OnChainProperties = {
+            const assetProps: ProducingAsset.IOnChainProperties = {
                 smartMeter: { address: assetSmartmeter },
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
@@ -248,7 +253,7 @@ describe('Market-Facade', () => {
                 maxOwnerChanges: 3
             };
 
-            const assetPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
+            const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
                 operationalSince: 0,
                 capacityWh: 10,
                 country: 'USA',
@@ -259,15 +264,15 @@ describe('Market-Facade', () => {
                 houseNumber: '42',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
-                assetType: Asset.ProducingAsset.Type.Wind,
-                complianceRegistry: Asset.ProducingAsset.Compliance.EEC,
+                assetType: ProducingAsset.Type.Wind,
+                complianceRegistry: ProducingAsset.Compliance.EEC,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: ''
             };
 
-            assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 0);
+            assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
 
-            const asset = await Asset.ProducingAsset.createAsset(
+            const asset = await ProducingAsset.createAsset(
                 assetProps,
                 assetPropsOffChain,
                 conf
@@ -280,14 +285,14 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            const supplyOffChainProperties: Market.Supply.SupplyOffchainProperties = {
+            const supplyOffChainProperties: Market.Supply.ISupplyOffchainProperties = {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 availableWh: 10,
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const supplyProps: Market.Supply.SupplyOnChainProperties = {
+            const supplyProps: Market.Supply.ISupplyOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
                 assetId: 0
@@ -352,7 +357,7 @@ describe('Market-Facade', () => {
 
             startTime = Date.now();
 
-            const agreementOffchainProps: AgreementOffChainProperties = {
+            const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
                 ende: startTime + 1000,
                 price: 10,
@@ -361,12 +366,12 @@ describe('Market-Facade', () => {
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const matcherOffchainProps: MatcherOffchainProperties = {
+            const matcherOffchainProps: IMatcherOffchainProperties = {
                 currentWh: 0,
                 currentPeriod: 0
             };
 
-            const agreementProps: Market.Agreement.AgreementOnChainProperties = {
+            const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
                 matcherDBURL: null,
@@ -500,7 +505,7 @@ describe('Market-Facade', () => {
 
             startTime = Date.now();
 
-            const agreementOffchainProps: AgreementOffChainProperties = {
+            const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
                 ende: startTime + 1000,
                 price: 10,
@@ -509,12 +514,12 @@ describe('Market-Facade', () => {
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const matcherOffchainProps: MatcherOffchainProperties = {
+            const matcherOffchainProps: IMatcherOffchainProperties = {
                 currentWh: 0,
                 currentPeriod: 0
             };
 
-            const agreementProps: Market.Agreement.AgreementOnChainProperties = {
+            const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
                 matcherDBURL: null,
@@ -615,7 +620,7 @@ describe('Market-Facade', () => {
                 conf
             ).sync();
 
-            const matcherOffchainProps: MatcherOffchainProperties = {
+            const matcherOffchainProps: IMatcherOffchainProperties = {
                 currentWh: 100,
                 currentPeriod: 0
             };
@@ -651,6 +656,27 @@ describe('Market-Facade', () => {
                     timeframe: 3
                 }
             });
+        });
+
+        it('should delete a demand', async () => {
+            conf.blockchainProperties.activeUser = {
+                address: accountTrader,
+                privateKey: traderPK
+            };
+
+            assert.equal(await Market.Demand.getDemandListLength(conf), 1);
+
+            const deleted = await Market.Demand.deleteDemand(0, conf);
+
+            assert.isTrue(deleted);
+
+            // Should remain the same
+            assert.equal(await Market.Demand.getDemandListLength(conf), 1);
+        });
+
+        it('should get all demands even after a demand is deleted', async () => {
+            const allDemands = await Market.Demand.getAllDemands(conf);
+            assert.equal(allDemands.length, 0);
         });
     });
 });
