@@ -78,8 +78,23 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             );
         });
 
+        const demandContractEventHandler: ContractEventHandler = new ContractEventHandler(
+            conf.blockchainProperties.marketLogicInstance,
+            currentBlockNumber
+        );
+
+        demandContractEventHandler.onEvent('createdNewDemand', async (event: any) =>
+            this.props.actions.demandCreatedOrUpdated(
+                await (new Demand.Entity(
+                    event.returnValues._demandId,
+                    this.props.configuration).sync()
+                )
+            )
+        );
+
         const eventHandlerManager: EventHandlerManager = new EventHandlerManager(4000, conf);
         eventHandlerManager.registerEventHandler(certificateContractEventHandler);
+        eventHandlerManager.registerEventHandler(demandContractEventHandler);
         eventHandlerManager.start();
     }
 

@@ -47,27 +47,25 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
 
         const transformedInput = { ...input };
 
-        if (transformedInput.timeframe) {
+        if (typeof(transformedInput.timeframe) !== 'undefined') {
             transformedInput.timeframe = TimeFrame[transformedInput.timeframe];
         }
-        if (transformedInput.assettype) {
+
+        if (typeof(transformedInput.assettype) !== 'undefined') {
             transformedInput.assettype = AssetType[transformedInput.assettype];
         }
-        if (transformedInput.registryCompliance) {
-            transformedInput.registryCompliance = Compliance[transformedInput.registryCompliance];
-        }
 
-        if (transformedInput.consumingAsset) {
+        if (typeof(transformedInput.consumingAsset) !== 'undefined') {
             transformedInput.consumingAsset = parseInt(transformedInput.consumingAsset, 10);
         }
-        if (transformedInput.minCO2Offset) {
+        if (typeof(transformedInput.minCO2Offset) !== 'undefined') {
             transformedInput.minCO2Offset = parseInt(transformedInput.minCO2Offset, 10);
         }
-        if (transformedInput.productingAsset) {
+        if (typeof(transformedInput.productingAsset) !== 'undefined') {
             transformedInput.productingAsset = parseInt(transformedInput.productingAsset, 10);
         }
 
-        if (transformedInput.targetWhPerPeriod) {
+        if (typeof(transformedInput.targetWhPerPeriod) !== 'undefined') {
             transformedInput.targetWhPerPeriod = parseInt(transformedInput.targetWhPerPeriod, 10);
         }
 
@@ -105,6 +103,10 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
 
         if (typeof transformedInput.locationRegion !== 'undefined') {
             demandOffchainProps.locationRegion = transformedInput.locationRegion;
+        }
+
+        if (typeof(transformedInput.registryCompliance) !== 'undefined') {
+            demandOffchainProps.registryCompliance = Compliance[transformedInput.registryCompliance] as any as Compliance;
         }
 
         const demandProps: Demand.IDemandOnChainProperties = {
@@ -169,21 +171,6 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
             },
             {
                 header: 'Criteria'
-            },
-            {
-                data: [
-                    {
-                        label: 'Originator',
-                        key: 'originator',
-
-                        toggle: {
-                            label: 'All',
-                            index: 0,
-                            description: 'Only this originating address'
-                        },
-                        input: { type: 'text' }
-                    }
-                ]
             },
             {
                 data: [
