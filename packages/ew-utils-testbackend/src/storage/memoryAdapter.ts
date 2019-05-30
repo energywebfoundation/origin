@@ -1,4 +1,5 @@
 import { Adapter } from './adapter';
+import { STATUS_CODES } from '../enums/StatusCodes';
 
 export class MemoryAdapter extends Adapter {
     _storage = {};
@@ -9,5 +10,9 @@ export class MemoryAdapter extends Adapter {
 
     async set(key, value) {
         this._storage[key] = value;
+    }
+
+    async del(key) {
+        this._storage[key] = STATUS_CODES.GONE;
     }
 }
