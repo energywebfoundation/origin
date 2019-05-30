@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwGeneralLib from 'ew-utils-general-lib';
+import { Configuration } from 'ew-utils-general-lib';
 import * as Winston from 'winston';
 import Web3 from 'web3';
 import { createBlockchainProperties as userCreateBlockchainProperties} from 'ew-user-registry-lib';
@@ -24,13 +24,13 @@ export const createBlockchainProperties = async (
     logger: Winston.Logger,
     web3: Web3,
     assetContractLookupAddress: string,
-): Promise<EwGeneralLib.Configuration.BlockchainProperties> => {
+): Promise<Configuration.BlockchainProperties> => {
 
     const assetLookupContractInstance: AssetContractLookup = new AssetContractLookup(
         web3,
         assetContractLookupAddress);
 
-    const userBlockchainProperties: EwGeneralLib.Configuration.BlockchainProperties =
+    const userBlockchainProperties: Configuration.BlockchainProperties =
         await userCreateBlockchainProperties(
             logger,
             web3 as any,

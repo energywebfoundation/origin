@@ -19,8 +19,8 @@
     "build-ts": "rm -rf dist/js && tsc",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run build-schema:AssetPropertiesOffChain && npm run build-schema:ProducingAssetPropertiesOffChain && cp -R schemas dist/schemas",
-    "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts OffChainProperties > schemas/AssetPropertiesOffChain.schema.json ",
-    "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts OffChainProperties > schemas/ProducingAssetPropertiesOffChain.schema.json",
+    "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts IOffChainProperties > schemas/AssetPropertiesOffChain.schema.json ",
+    "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties > schemas/ProducingAssetPropertiesOffChain.schema.json",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
@@ -38,8 +38,8 @@
   "homepage": "https://github.com/energywebfoundation/ew-asset-registry-lib#readme",
   "dependencies": {
     "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib.git#5a41bd1197b73aa70db2f9a33b5332c04c505c3d",
-    "ew-utils-general-lib": "1.0.1",
-    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#f4448692bebfe5019570533114557a943319ff2d",
+    "ew-utils-general-lib": "energywebfoundation/ew-utils-general-lib#d54e4e2db3732554a9fe34c0f4c5b7dd17aae7cb",
+    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#eaeb4872711c5873d5e7dd7e397eb426898be784",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },

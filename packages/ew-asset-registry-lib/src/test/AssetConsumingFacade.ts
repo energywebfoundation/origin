@@ -18,11 +18,11 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
 import 'mocha';
-import * as GeneralLib from 'ew-utils-general-lib';
+import { Configuration } from 'ew-utils-general-lib';
 import { logger } from '../Logger';
 import { UserContractLookup, UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
 import { migrateAssetRegistryContracts, AssetConsumingRegistryLogic } from '..';
-import * as Asset from '..';
+import { Asset, ConsumingAsset } from '..';
 
 describe('AssetConsumingLogic Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
@@ -33,7 +33,7 @@ describe('AssetConsumingLogic Facade', () => {
         configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
-    let conf: GeneralLib.Configuration.Entity;
+    let conf: Configuration.Entity;
 
     let userContractLookup: UserContractLookup;
     let userContractLookupAddr: string;
@@ -100,7 +100,7 @@ describe('AssetConsumingLogic Facade', () => {
             logger,
         };
 
-        const assetProps: Asset.ConsumingAsset.OnChainProperties = {
+        const assetProps: ConsumingAsset.IOnChainProperties = {
             certificatesUsedForWh: 0,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
@@ -112,7 +112,7 @@ describe('AssetConsumingLogic Facade', () => {
             url: null,
         };
 
-        const assetPropsOffChain: Asset.Asset.OffChainProperties = {
+        const assetPropsOffChain: Asset.IOffChainProperties = {
             operationalSince: 10,
             capacityWh: 10,
             country: 'USA',
@@ -125,9 +125,9 @@ describe('AssetConsumingLogic Facade', () => {
             gpsLongitude: '31.1231',
         };
 
-        assert.equal(await Asset.ConsumingAsset.getAssetListLength(conf), 0);
+        assert.equal(await ConsumingAsset.getAssetListLength(conf), 0);
 
-        const asset = await Asset.ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        const asset = await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         delete asset.configuration;
         delete asset.proofs;
         delete asset.propertiesDocumentHash;
@@ -144,13 +144,13 @@ describe('AssetConsumingLogic Facade', () => {
             offChainProperties: assetPropsOffChain,
             url: 'http://localhost:3030/ConsumingAsset',
         } as any,        asset);
-        assert.equal(await Asset.ConsumingAsset.getAssetListLength(conf), 1);
+        assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
 
     });
 
     it('should fail when onboarding the same asset again', async () => {
 
-        const assetProps: Asset.ConsumingAsset.OnChainProperties = {
+        const assetProps: ConsumingAsset.IOnChainProperties = {
             certificatesUsedForWh: 0,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
@@ -162,7 +162,7 @@ describe('AssetConsumingLogic Facade', () => {
             url: null,
         };
 
-        const assetPropsOffChain: Asset.Asset.OffChainProperties = {
+        const assetPropsOffChain: Asset.IOffChainProperties = {
             operationalSince: 10,
             capacityWh: 10,
             country: 'USA',
@@ -175,14 +175,14 @@ describe('AssetConsumingLogic Facade', () => {
             gpsLongitude: '31.1231',
         };
 
-        assert.equal(await Asset.ConsumingAsset.getAssetListLength(conf), 1);
+        assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
 
         try {
-            const asset = await Asset.ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+            const asset = await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         } catch (e) {
             assert.include(e.message, 'smartmeter does already exist');
         }
-        assert.equal(await Asset.ConsumingAsset.getAssetListLength(conf), 1);
+        assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
 
     });
 
@@ -190,7 +190,7 @@ describe('AssetConsumingLogic Facade', () => {
         conf.blockchainProperties.activeUser = {
             address: assetSmartmeter, privateKey: assetSmartmeterPK,
         };
-        let asset = await (new Asset.ConsumingAsset.Entity('0', conf).sync());
+        let asset = await (new ConsumingAsset.Entity('0', conf).sync());
 
         await asset.saveSmartMeterRead(100, 'newFileHash');
 

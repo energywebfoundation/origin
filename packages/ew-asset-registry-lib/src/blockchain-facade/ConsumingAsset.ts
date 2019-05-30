@@ -14,19 +14,19 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as GeneralLib from 'ew-utils-general-lib';
+import { Configuration } from 'ew-utils-general-lib';
 import * as Asset from './Asset';
 import { AssetPropertiesOffchainSchema } from '..';
 import { TransactionReceipt } from 'web3/types';
 
-export interface OnChainProperties extends Asset.OnChainProperties {
+export interface IOnChainProperties extends Asset.IOnChainProperties {
     certificatesUsedForWh: number;
 }
 
 export const createAsset =
-    async (assetProperties: OnChainProperties,
-           assetPropertiesOffChain: Asset.OffChainProperties,
-           configuration: GeneralLib.Configuration.Entity): Promise<Asset.Entity> => {
+    async (assetProperties: IOnChainProperties,
+           assetPropertiesOffChain: Asset.IOffChainProperties,
+           configuration: Configuration.Entity): Promise<Asset.Entity> => {
         const consumingAsset = new Entity(null, configuration);
         const offChainStorageProperties =
             consumingAsset.prepareEntityCreation(assetProperties, assetPropertiesOffChain, AssetPropertiesOffchainSchema);
@@ -60,12 +60,12 @@ export const createAsset =
 
     };
 
-export const getAssetListLength = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAssetListLength = async (configuration: Configuration.Entity) => {
 
     return parseInt(await configuration.blockchainProperties.consumingAssetLogicInstance.getAssetListLength(), 10);
 };
 
-export const getAllAssets = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAllAssets = async (configuration: Configuration.Entity) => {
 
     const assetsPromises = Array(await getAssetListLength(configuration))
         .fill(null)
@@ -75,12 +75,12 @@ export const getAllAssets = async (configuration: GeneralLib.Configuration.Entit
 
 };
 
-export const getAllAssetsOwnedBy = async (owner: string, configuration: GeneralLib.Configuration.Entity) => {
+export const getAllAssetsOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
     return (await getAllAssets(configuration))
         .filter((asset: Entity) => asset.owner.address.toLowerCase() === owner.toLowerCase());
 };
 
-export class Entity extends Asset.Entity implements Asset.OnChainProperties {
+export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
 
     getUrl(): string {
 

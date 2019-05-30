@@ -5,6 +5,7 @@
     "node_modules/tslint-lines-between-class-members"
   ],
   "rules": {
+    "object-literal-sort-keys": false,
     "no-unused-expression": true,
     "no-unused-variable": true,
     "class-name": true,
