@@ -178,7 +178,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(demand as any, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Demand',
+                url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
                 offChainProperties: {
                     assettype: 3,
@@ -213,7 +213,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(demand as any, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Demand',
+                url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
                 offChainProperties: {
                     assettype: 3,

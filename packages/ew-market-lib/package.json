@@ -39,7 +39,7 @@
     "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#6421264",
     "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib#5a41bd1",
     "ew-utils-general-lib": "energywebfoundation/ew-utils-general-lib#d54e4e2",
-    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#75b9710",
+    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#c365e3c",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
