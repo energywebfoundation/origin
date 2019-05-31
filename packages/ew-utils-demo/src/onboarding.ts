@@ -55,7 +55,7 @@ export const onboardDemo = async (
         case 'CREATE_PRODUCING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetProducingProps: Asset.ProducingAsset.OnChainProperties = {
+            const assetProducingProps: Asset.ProducingAsset.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
@@ -100,7 +100,7 @@ export const onboardDemo = async (
                     break;
             }
 
-            const assetProducingPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
+            const assetProducingPropsOffChain: Asset.ProducingAsset.IOffChainProperties = {
                 operationalSince: action.data.operationalSince,
                 capacityWh: action.data.capacityWh,
                 country: action.data.country,
@@ -133,7 +133,7 @@ export const onboardDemo = async (
         case 'CREATE_CONSUMING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetConsumingProps: Asset.ConsumingAsset.OnChainProperties = {
+            const assetConsumingProps: Asset.ConsumingAsset.IOnChainProperties = {
                 certificatesUsedForWh: action.data.certificatesCreatedForWh,
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
@@ -145,7 +145,7 @@ export const onboardDemo = async (
                 url: null
             };
 
-            const assetConsumingPropsOffChain: Asset.Asset.OffChainProperties = {
+            const assetConsumingPropsOffChain: Asset.Asset.IOffChainProperties = {
                 capacityWh: action.data.capacityWh,
                 city: action.data.city,
                 country: action.data.country,

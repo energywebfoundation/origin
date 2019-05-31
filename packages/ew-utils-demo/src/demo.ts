@@ -255,14 +255,14 @@ export const marketDemo = async (demoFile?: string) => {
                         break;
                 }
 
-                const supplyOffChainProperties: Market.Supply.SupplyOffchainProperties = {
+                const supplyOffChainProperties: Market.Supply.ISupplyOffchainProperties = {
                     price: action.data.price,
                     currency,
                     availableWh: action.data.availableWh,
                     timeframe: timeFrame
                 };
 
-                const supplyProps: Market.Supply.SupplyOnChainProperties = {
+                const supplyProps: Market.Supply.ISupplyOnChainProperties = {
                     url: '',
                     propertiesDocumentHash: '',
                     assetId: action.data.assetId
@@ -323,7 +323,7 @@ export const marketDemo = async (demoFile?: string) => {
                         break;
                 }
 
-                const agreementOffchainProps: Market.Agreement.AgreementOffChainProperties = {
+                const agreementOffchainProps: Market.Agreement.IAgreementOffChainProperties = {
                     start: action.data.startTime,
                     ende: action.data.endTime,
                     price: action.data.price,
@@ -332,12 +332,12 @@ export const marketDemo = async (demoFile?: string) => {
                     timeframe: timeFrame
                 };
 
-                const matcherOffchainProps: Market.Agreement.MatcherOffchainProperties = {
+                const matcherOffchainProps: Market.Agreement.IMatcherOffchainProperties = {
                     currentWh: action.data.currentWh,
                     currentPeriod: action.data.currentPeriod
                 };
 
-                const agreementProps: Market.Agreement.AgreementOnChainProperties = {
+                const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                     propertiesDocumentHash: null,
                     url: null,
                     matcherDBURL: null,
