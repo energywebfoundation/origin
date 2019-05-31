@@ -21,6 +21,7 @@ import { AssetType, TimeFrame, Currency, Configuration } from 'ew-utils-general-
 import { Compliance } from 'ew-asset-registry-lib/dist/js/src/blockchain-facade/ProducingAsset';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { Demand } from 'ew-market-lib';
+import { showNotification, NotificationType } from '../utils/notifications';
 
 export interface IOnboardDemandProps {
     configuration: Configuration.Entity;
@@ -121,8 +122,11 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
             };
 
             await Demand.createDemand(demandProps, demandOffchainProps, this.props.configuration);
+
+            showNotification('Demand created', NotificationType.Success);
         } catch (error) {
             console.error('Error in OnboardDemand: ', error);
+            showNotification(`Can't create demand`, NotificationType.Error);
         }
     }
 

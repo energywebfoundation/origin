@@ -36,6 +36,7 @@ export interface IActions {
     currentUserUpdated: Function;
     consumingAssetCreatedOrUpdated: Function;
     demandCreatedOrUpdated: Function;
+    demandDeleted: Function;
     producingAssetCreatedOrUpdated: Function;
     configurationUpdated: Function;
 }

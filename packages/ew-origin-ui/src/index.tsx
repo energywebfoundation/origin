@@ -16,11 +16,10 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { AppContainer } from './components/AppContainer';
 import { Provider } from 'react-redux';
-import { createStore, Reducer } from 'redux';
-import { IStoreState } from './types';
+import { createStore } from 'redux';
 import reducer from './reducers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -30,7 +29,8 @@ import {
     consumingAssetCreatedOrUpdated,
     demandCreatedOrUpdated,
     producingAssetCreatedOrUpdated,
-    configurationUpdated
+    configurationUpdated,
+    demandDeleted
 } from './actions';
 import './index.scss';
 
@@ -42,6 +42,7 @@ const mapDispatchToProps = dispatch => ({
             currentUserUpdated,
             configurationUpdated,
             demandCreatedOrUpdated,
+            demandDeleted,
             producingAssetCreatedOrUpdated,
             certificateCreatedOrUpdated,
             consumingAssetCreatedOrUpdated
@@ -53,9 +54,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return state;
 };
-
-// const {whyDidYouUpdate} = require('why-did-you-update')
-// whyDidYouUpdate(React)
 
 ReactDOM.render(
     <Provider store={store}>
