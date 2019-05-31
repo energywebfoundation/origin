@@ -30,9 +30,7 @@ export class CustomStorage {
             throw new Error('Storage::get()::Too many arguments passed');
         }
 
-        const entity = this._adapter.get(type)[key];
-
-        return entity !== STATUS_CODES.GONE ? entity : STATUS_CODES.GONE;
+        return this._adapter.get(type)[key];
     }
 
     set(type: ENTITY, key: string, value: any) {
@@ -48,13 +46,5 @@ export class CustomStorage {
                 [key]: value
             })
         );
-    }
-
-    del(type: ENTITY, key: string) {
-        if (arguments.length > 2) {
-            throw new Error('Storage::del()::Too many arguments passed');
-        }
-
-        return this._adapter.del(type)[key];
     }
 }

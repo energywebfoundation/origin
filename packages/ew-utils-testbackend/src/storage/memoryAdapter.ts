@@ -11,8 +11,4 @@ export class MemoryAdapter extends Adapter {
     async set(key, value) {
         this._storage[key] = value;
     }
-
-    async del(key) {
-        this._storage[key] = STATUS_CODES.GONE;
-    }
 }

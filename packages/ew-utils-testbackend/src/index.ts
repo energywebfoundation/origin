@@ -31,38 +31,68 @@ app.use(cors());
 
 app.options('*', cors());
 
+function createRoutesForEntityBoundToContract(app, entity : ENTITY) {
+    app.get(`/${entity}/:contractAddress/:id`, (req, res) => {
+        const contractAddress = req.params.contractAddress.toLowerCase();
+    
+        console.log(`GET - ${entity} ${req.params.id} (contract ${contractAddress})`);
+    
+        const existingData = storage.get(entity, contractAddress);
+    
+        if (!existingData) {
+            return;
+        }
+
+        if (existingData in STATUS_CODES) {
+            res.status(STATUS_CODES[existingData]).end();
+    
+            return;
+        }
+
+        res.send(existingData[req.params.id]);
+    });
+    
+    app.put(`/${entity}/:contractAddress/:id`, (req, res) => {
+        const contractAddress = req.params.contractAddress.toLowerCase();
+        console.log(`PUT - ${entity} ${req.params.id} (contract ${contractAddress})`);
+    
+        let existingData = storage.get(entity, contractAddress);
+    
+        if (!existingData) {
+            existingData = {};
+        }
+    
+        storage.set(entity, contractAddress, Object.assign(existingData, {
+            [req.params.id]: req.body
+        }));
+    
+        res.send('success');
+    });
+
+    app.delete(`/${entity}/:contractAddress/:id`, (req, res) => {
+        const contractAddress = req.params.contractAddress.toLowerCase();
+        console.log(`DELETE - ${entity} ${req.params.id}`);
+
+        let existingData = storage.get(entity, contractAddress);
+    
+        if (!existingData) {
+            existingData = {};
+        }
+    
+        storage.set(entity, contractAddress, Object.assign(existingData, {
+            [req.params.id]: STATUS_CODES.GONE
+        }));
+    
+        res.send('success');
+    });
+}
+
+createRoutesForEntityBoundToContract(app, ENTITY.PRODUCING_ASSET);
+createRoutesForEntityBoundToContract(app, ENTITY.DEMAND);
+
 /**
  * Producing Asset
  */
-app.get('/ProducingAsset/:contractAddress/:id', (req, res) => {
-    const contractAddress = req.params.contractAddress.toLowerCase();
-
-    console.log(`GET - ProducingAsset ${req.params.id} (contract ${contractAddress})`);
-
-    const existingData = storage.get(ENTITY.PRODUCING_ASSET, contractAddress);
-
-    if (existingData) {
-        res.send(existingData[req.params.id]);
-    }
-});
-
-app.put('/ProducingAsset/:contractAddress/:id', (req, res) => {
-    const contractAddress = req.params.contractAddress.toLowerCase();
-    console.log(`PUT - ProducingAsset ${req.params.id} (contract ${contractAddress})`);
-
-    let existingData = storage.get(ENTITY.PRODUCING_ASSET, contractAddress);
-
-    if (!existingData) {
-        existingData = {};
-    }
-
-    storage.set(ENTITY.PRODUCING_ASSET, contractAddress, Object.assign(existingData, {
-        [req.params.id]: req.body
-    }));
-
-    res.send('success');
-});
-
 app.get('/ProducingAsset/:id', (req, res) => {
     console.log(`GET - ProducingAssetNotBound ${req.params.id}`);
     res.send(storage.get(ENTITY.PRODUCING_ASSET_NOT_BOUND, req.params.id));
@@ -88,39 +118,6 @@ app.put('/ConsumingAsset/:id', (req, res) => {
     console.log(`PUT - ConsumingAsset ${req.params.id}`);
 
     storage.set(ENTITY.CONSUMING_ASSET, req.params.id, req.body);
-
-    res.send('success');
-});
-
-/**
- * Demand
- */
-app.get('/Demand/:id', (req, res) => {
-    console.log(`GET - Demand ${req.params.id}`);
-
-    const demand = storage.get(ENTITY.DEMAND, req.params.id);
-
-    if (demand in STATUS_CODES) {
-        res.status(STATUS_CODES[demand]).end();
-
-        return;
-    }
-
-    res.send(demand);
-});
-
-app.put('/Demand/:id', (req, res) => {
-    console.log(`PUT - Demand ${req.params.id}`);
-
-    storage.set(ENTITY.DEMAND, req.params.id, req.body);
-
-    res.send('success');
-});
-
-app.delete('/Demand/:id', (req, res) => {
-    console.log(`DELETE - Demand ${req.params.id}`);
-
-    storage.del(ENTITY.DEMAND, req.params.id);
 
     res.send('success');
 });

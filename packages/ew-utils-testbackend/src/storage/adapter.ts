@@ -5,7 +5,6 @@ export interface IAdapter {
 
     get(key: string): Promise<any>;
     set(key: string, value: any): Promise<any>;
-    del(key: string): Promise<any>;
 }
 
 export class Adapter implements IAdapter {
@@ -14,10 +13,6 @@ export class Adapter implements IAdapter {
     }
 
     async set(key: string, value: any) {
-        throw new Error(NOT_IMPLEMENTED);
-    }
-
-    async del(key: string) {
         throw new Error(NOT_IMPLEMENTED);
     }
 
