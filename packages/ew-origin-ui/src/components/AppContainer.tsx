@@ -43,6 +43,10 @@ interface IAppContainerProps extends IStoreState {
     actions: IActions;
 }
 
+function isDemandDeleted(demand: Demand.Entity) {
+    return !demand || !demand.demandOwner;
+}
+
 export class AppContainer extends React.Component<IAppContainerProps, {}> {
     constructor(props: IAppContainerProps) {
         super(props);
@@ -83,8 +87,19 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             currentBlockNumber
         );
 
-        demandContractEventHandler.onEvent('createdNewDemand', async (event: any) =>
-            this.props.actions.demandCreatedOrUpdated(
+        demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            const demand = await (new Demand.Entity(
+                event.returnValues._demandId,
+                this.props.configuration).sync()
+            );
+
+            if (!isDemandDeleted(demand)) {
+                this.props.actions.demandCreatedOrUpdated(demand);
+            }
+        });
+
+        demandContractEventHandler.onEvent('deletedDemand', async (event: any) =>
+            this.props.actions.demandDeleted(
                 await (new Demand.Entity(
                     event.returnValues._demandId,
                     this.props.configuration).sync()
@@ -175,9 +190,11 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             this.props.actions.consumingAssetCreatedOrUpdated(c)
         );
 
-        (await Demand.getAllDemands(conf)).forEach((d: Demand.Entity) =>
-            this.props.actions.demandCreatedOrUpdated(d)
-        );
+        (await Demand.getAllDemands(conf)).forEach((d: Demand.Entity) => {
+            if (!isDemandDeleted(d)) {
+                this.props.actions.demandCreatedOrUpdated(d);
+            }
+        });
 
         (await Certificate.getActiveCertificates(conf)).forEach((certificate: Certificate.Entity) =>
             this.props.actions.certificateCreatedOrUpdated(certificate)

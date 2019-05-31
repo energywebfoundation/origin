@@ -24,6 +24,7 @@ import { Configuration } from 'ew-utils-general-lib';
 export enum Actions {
     certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
     demandCreatedOrUpdated = 'DEMAND_CREATED_OR_UPDATED',
+    demandDeleted = 'DEMAND_DELETED',
     producingAssetCreatedOrUpdated = 'PRODUCING_ASSET_CREATED_OR_UPDATED',
     consumingAssetCreatedOrUpdated = 'CONSUMING_ASSET_CREATED_OR_UPDATED',
     currentUserUpdated = 'CURRENT_USER_UPDATED',
@@ -37,6 +38,11 @@ export const certificateCreatedOrUpdated = (certificate: Certificate.Entity): an
 
 export const demandCreatedOrUpdated = (demand: Demand.Entity) => ({
     type: Actions.demandCreatedOrUpdated,
+    demand
+});
+
+export const demandDeleted = (demand: Demand.Entity) => ({
+    type: Actions.demandDeleted,
     demand
 });
 
