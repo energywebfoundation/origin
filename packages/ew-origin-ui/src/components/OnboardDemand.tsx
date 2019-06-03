@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Table } from '../elements/Table/Table';
+import { Table, ITableAdminHeaderData } from '../elements/Table/Table';
 import { User } from 'ew-user-registry-lib';
 import { AssetType, TimeFrame, Currency, Configuration } from 'ew-utils-general-lib';
 import { Compliance } from 'ew-asset-registry-lib/dist/js/src/blockchain-facade/ProducingAsset';
@@ -131,7 +131,7 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
     }
 
     render() {
-        const Tables = [
+        const Tables : ITableAdminHeaderData[] = [
             {
                 header: 'General'
             },

@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwAsset from 'ew-asset-registry-lib';
 import { Actions } from '../actions/index';
+import { ProducingAsset } from 'ew-asset-registry-lib';
 
 const defaultState = [];
 
@@ -23,7 +23,7 @@ export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case Actions.producingAssetCreatedOrUpdated:
             const index: number = state.findIndex(
-                (c: EwAsset.ProducingAsset.Entity) => c.id === action.producingAsset.id
+                (c: ProducingAsset.Entity) => c.id === action.producingAsset.id
             );
 
             return index === -1

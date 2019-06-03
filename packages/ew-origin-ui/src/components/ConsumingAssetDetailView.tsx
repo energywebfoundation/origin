@@ -16,14 +16,11 @@
 
 import * as React from 'react';
 
-import marker from '../../assets/marker.svg';
-import map from '../../assets/map.svg';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from 'ew-origin-lib';
 import { User } from 'ew-user-registry-lib';
 import { ConsumingAsset } from 'ew-asset-registry-lib';
-import { MapContainer } from './MapContainer';
 
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
@@ -104,6 +101,10 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
             data = [
                 [
                     {
+                        label: 'Facility Name',
+                        data: selectedAsset.offChainProperties.facilityName
+                    },
+                    {
                         label: 'Owner' + getOffChainText('owner', selectedAsset.offChainProperties),
                         data: this.state.owner ? this.state.owner.organization : ''
                     },
@@ -111,20 +112,6 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                     {
                         label: 'Kind',
                         data: 'Consumption'
-                    },
-
-                    {
-                        label:
-                            'Geo Location' +
-                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
-                        data:
-                            selectedAsset.offChainProperties.gpsLatitude +
-                            ', ' +
-                            selectedAsset.offChainProperties.gpsLongitude,
-                        image: map,
-                        type: 'map',
-                        rowspan: 3,
-                        colspan: 2
                     }
                 ],
                 [
@@ -170,9 +157,6 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                     </Link>
                 </div>
                 <div className="PageContentWrapper">
-                    {/* <div className='PageHeader'>
-              <div className='PageTitle'>Berlin II, <span>Berlin, Germany</span></div>
-            </div> */}
                     <div className="PageBody">
                         {!selectedAsset ? (
                             <div className="text-center">
@@ -194,24 +178,9 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                                                         {col.data}{' '}
                                                         {col.tip && <span>{col.tip}</span>}
                                                     </div>
-                                                    {col.image &&
-                                                        (col.type !== 'map' ? (
-                                                            <div className={`Image`}>
+                                                    {col.image && <div className={`Image`}>
                                                                 <img src={col.image} />
-                                                                {col.type === 'map' && (
-                                                                    <img
-                                                                        src={marker as any}
-                                                                        className="Marker"
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                        ) : (
-                                                            <div className={`Image Map`}>
-                                                                <MapContainer
-                                                                    asset={selectedAsset}
-                                                                />
-                                                            </div>
-                                                        ))}
+                                                            </div>}
                                                     {col.description && (
                                                         <div className="Description">
                                                             {col.description}

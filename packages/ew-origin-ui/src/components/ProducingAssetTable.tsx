@@ -16,19 +16,19 @@
 
 import * as React from 'react';
 
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { User } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
-import { Table } from '../elements/Table/Table';
+import { Table, ITableHeaderData } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
 
 export interface ProducingAssetTableProps {
     conf: Configuration.Entity;
-    certificates: OriginIssuer.Certificate.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
-    currentUser: EwUser.User;
+    certificates: Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    currentUser: User;
     baseUrl: string;
     switchedToOrganization: boolean;
 }
@@ -39,9 +39,9 @@ export interface ProducingAssetTableState {
 }
 
 export interface EnrichedProducingAssetData {
-    producingAsset: EwAsset.ProducingAsset.Entity;
+    producingAsset: ProducingAsset.Entity;
     organizationName: string;
-    notSoldCertificates: OriginIssuer.Certificate.Entity[];
+    notSoldCertificates: Certificate.Entity[];
 }
 
 export class ProducingAssetTable extends React.Component<ProducingAssetTableProps, {}> {
@@ -75,14 +75,14 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
 
     async getOrganizationNames(props: ProducingAssetTableProps): Promise<void> {
         const promieses = props.producingAssets.map(
-            async (producingAsset: EwAsset.ProducingAsset.Entity, index: number) => ({
+            async (producingAsset: ProducingAsset.Entity, index: number) => ({
                 producingAsset,
                 notSoldCertificates: this.props.certificates.filter(
-                    (certificate: OriginIssuer.Certificate.Entity) =>
+                    (certificate: Certificate.Entity) =>
                         certificate.owner === producingAsset.owner.address &&
                         certificate.assetId.toString() === producingAsset.id
                 ),
-                organizationName: (await new EwUser.User(
+                organizationName: (await new User(
                     producingAsset.owner.address,
                     props.conf as any
                 ).sync()).organization
@@ -117,21 +117,15 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             );
         }
 
-        const defaultWidth: number = 106;
-        const getKey: any = TableUtils.getKey;
-        const generateHeader: Function = (
-            label,
-            width = defaultWidth,
-            right = false,
-            body = false
-        ) => TableUtils.generateHeader(label, width, right, body);
+        const generateHeader = TableUtils.generateHeader;
         const generateFooter: any = TableUtils.generateFooter;
 
-        const TableHeader: any[] = [
-            generateHeader('#', 137.11),
-            generateHeader('Owner', 136),
-            generateHeader('Town, Country', 136),
-            generateHeader('Type', 72),
+        const TableHeader: ITableHeaderData[] = [
+            generateHeader('#', 60),
+            generateHeader('Owner'),
+            generateHeader('Facility Name'),
+            generateHeader('Town, Country'),
+            generateHeader('Type', 140),
             generateHeader('Nameplate Capacity (kW)', 125.45, true),
             generateHeader('Meter Read (kWh)', 135.89, true)
         ];
@@ -140,16 +134,10 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 5
+                colspan: 6
             },
             generateFooter('Meter Read (kWh)')
         ];
-
-        const assets = null;
-        const total = null;
-
-        let totalSold = 0;
-        let totalNotSold = 0;
 
         const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
 
@@ -167,27 +155,15 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         data = filteredEnrichedAssetData.map(
             (enrichedProducingAssetData: EnrichedProducingAssetData) => {
                 const producingAsset = enrichedProducingAssetData.producingAsset;
-                const generatedKWh = producingAsset.certificatesCreatedForWh / 1000;
-                const kWhForSale =
-                    enrichedProducingAssetData.notSoldCertificates.length < 1
-                        ? 0
-                        : enrichedProducingAssetData.notSoldCertificates
-                              .map(
-                                  (certificate: OriginIssuer.Certificate.Entity) =>
-                                      certificate.powerInW
-                              )
-                              .reduce(accumulatorCb) / 1000;
-
-                totalSold += generatedKWh - kWhForSale;
-                totalNotSold += kWhForSale;
 
                 return [
                     producingAsset.id,
                     enrichedProducingAssetData.organizationName,
+                    producingAsset.offChainProperties.facilityName,
                     producingAsset.offChainProperties.city +
                         ', ' +
                         producingAsset.offChainProperties.country,
-                    EwAsset.ProducingAsset.Type[producingAsset.offChainProperties.assetType],
+                    ProducingAsset.Type[producingAsset.offChainProperties.assetType],
                     producingAsset.offChainProperties.capacityWh / 1000,
                     producingAsset.lastSmartMeterReadWh / 1000
                 ];

@@ -118,19 +118,6 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
 
         const CertificatesMenu = [
             {
-                key: 'claims_report',
-                label: 'Claims Report',
-                component: this.ClaimedCertificates,
-                buttons: [
-                    {
-                        type: 'dropdown',
-                        label: allOrganizationsText,
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ]
-            },
-            {
                 key: 'for_sale',
                 label: 'For Sale',
                 component: this.ForSaleCertificates,
@@ -160,6 +147,19 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 key: 'bought_sold',
                 label: 'Bought / Sold',
                 component: this.SoldCertificates,
+                buttons: [
+                    {
+                        type: 'dropdown',
+                        label: allOrganizationsText,
+                        face: ['filter', 'icon'],
+                        content: organizations
+                    }
+                ]
+            },
+            {
+                key: 'claims_report',
+                label: 'Claims Report',
+                component: this.ClaimedCertificates,
                 buttons: [
                     {
                         type: 'dropdown',

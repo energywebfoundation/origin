@@ -14,6 +14,9 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
+import { CSSProperties } from 'react';
+import { ITableHeaderData } from '../Table/Table';
+
 const getKey = lbl => {
     const trimLabel = lbl
         .replace(/ \(.*\)/g, '')
@@ -24,12 +27,25 @@ const getKey = lbl => {
     return sp.join('_');
 };
 
-const generateHeader = (label, width = 0, right = false, body = false) => {
+const generateHeader = (label, width?: string | number, right = false, body = false) : ITableHeaderData => {
+    const style: CSSProperties = {};
+
+    if (right) {
+        style.textAlign = 'right';
+    }
+
+    if (typeof(width) !== 'undefined') {
+        if (typeof(width) === 'number') {
+            style.width = `${width}px`;
+        } else {
+            style.width = width;
+        }
+    }
+
     return {
         label,
         key: getKey(label),
-        width,
-        style: right ? { textAlign: 'right' } : null,
+        style,
         styleBody: body ? { opacity: 1, fontWeight: 900 } : {}
     };
 };

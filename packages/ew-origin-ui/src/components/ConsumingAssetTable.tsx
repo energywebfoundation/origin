@@ -15,21 +15,21 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { User } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
+import { ConsumingAsset } from 'ew-asset-registry-lib';
 
 export interface ConsumingAssetTableProps {
     conf: Configuration.Entity;
-    consumingAssets: EwAsset.ConsumingAsset.Entity[];
+    consumingAssets: ConsumingAsset.Entity[];
     demands: Demand.Entity[];
-    certificates: OriginIssuer.Certificate.Entity[];
-    currentUser: EwUser.User;
+    certificates: Certificate.Entity[];
+    currentUser: User;
     baseUrl: string;
     switchedToOrganization: boolean;
 }
@@ -40,7 +40,7 @@ export interface ConsumingAssetTableState {
 }
 
 export interface EnrichedConsumingAssetData {
-    consumingAsset: EwAsset.ConsumingAsset.Entity;
+    consumingAsset: ConsumingAsset.Entity;
     organizationName: string;
 }
 
@@ -77,9 +77,9 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         const enrichedConsumingAssetData = [];
 
         const promieses = props.consumingAssets.map(
-            async (consumingAsset: EwAsset.ConsumingAsset.Entity, index: number) => ({
+            async (consumingAsset: ConsumingAsset.Entity, index: number) => ({
                 consumingAsset,
-                organizationName: (await new EwUser.User(
+                organizationName: (await new User(
                     consumingAsset.owner.address,
                     props.conf as any
                 ).sync()).organization
@@ -115,14 +115,13 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         }
 
         const defaultWidth = 106;
-        const getKey = TableUtils.getKey;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body);
+        const generateHeader = TableUtils.generateHeader;
         const generateFooter = TableUtils.generateFooter;
 
         const TableHeader = [
-            generateHeader('#', 145.98),
+            generateHeader('#', 60),
             generateHeader('Owner'),
+            generateHeader('Facility Name'),
             generateHeader('Town, Country'),
             generateHeader('Nameplate Capacity (kW)', defaultWidth, true),
             generateHeader('Consumption (kWh)', defaultWidth, true)
@@ -132,13 +131,10 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 4
+                colspan: 5
             },
             generateFooter('Consumption (kWh)')
         ];
-
-        //  this.getCO2Offset()
-        const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
 
         const filteredEnrichedAssetData = this.state.enrichedConsumingAssetData.filter(
             (enrichedConsumingAssetData: EnrichedConsumingAssetData) =>
@@ -146,30 +142,26 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
                 enrichedConsumingAssetData.consumingAsset.owner.address ===
                     this.props.currentUser.id
         );
-        const assets = null;
-        let total;
 
         const operations = ['Show Details'];
 
         const data = filteredEnrichedAssetData.map(
             (enrichedConsumingAssetData: EnrichedConsumingAssetData) => {
-                const consumingAsset: EwAsset.ConsumingAsset.Entity =
+                const consumingAsset: ConsumingAsset.Entity =
                     enrichedConsumingAssetData.consumingAsset;
-
-                // const generatedKWh = consumingAsset.certificatesUsedForWh / 1000
-                const consumedKWh: number = consumingAsset.certificatesUsedForWh / 1000;
 
                 return [
                     consumingAsset.id,
                     enrichedConsumingAssetData.organizationName,
+                    consumingAsset.offChainProperties.facilityName,
                     consumingAsset.offChainProperties.city +
                         ', ' +
                         consumingAsset.offChainProperties.country,
                     consumingAsset.offChainProperties.capacityWh
-                        ? (consumingAsset.offChainProperties.capacityWh / 1000).toFixed(3)
+                        ? (consumingAsset.offChainProperties.capacityWh / 1000).toLocaleString()
                         : '-',
-                    (consumingAsset.lastSmartMeterReadWh / 1000).toFixed(3),
-                    (consumingAsset.certificatesUsedForWh / 1000).toFixed(3)
+                    (consumingAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
+                    (consumingAsset.certificatesUsedForWh / 1000).toLocaleString()
                 ];
             }
         );
