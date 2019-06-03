@@ -33,7 +33,6 @@ import {
 import { MarketLogic } from 'ew-market-lib';
 import { CONFIG } from './config';
 
-
 export const marketDemo = async (demoFile?: string) => {
     const startTime = Date.now();
 
@@ -76,7 +75,6 @@ export const marketDemo = async (demoFile?: string) => {
     // set the admin account as an asset admin
     await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
     await userLogic.setRoles(adminAccount.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), { privateKey: adminPK });
-
 
     // initialize variables for storing timeframe and currency
     let timeFrame;

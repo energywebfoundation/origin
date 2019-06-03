@@ -114,7 +114,8 @@ export const onboardDemo = async (
                 assetType: assetTypeConfig,
                 complianceRegistry: assetCompliance,
                 otherGreenAttributes: action.data.otherGreenAttributes,
-                typeOfPublicSupport: action.data.typeOfPublicSupport
+                typeOfPublicSupport: action.data.typeOfPublicSupport,
+                facilityName: action.data.facilityName
             };
 
             try {
@@ -155,7 +156,8 @@ export const onboardDemo = async (
                 operationalSince: action.data.operationalSince,
                 region: action.data.region,
                 street: action.data.street,
-                zip: action.data.zip
+                zip: action.data.zip,
+                facilityName: action.data.facilityName
             };
 
             try {

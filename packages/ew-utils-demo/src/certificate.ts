@@ -191,6 +191,7 @@ export const certificateDemo = async (
                     action.data.certId,
                     conf
                 ).sync();
+
                 await certificate.setOnChainDirectPurchasePrice(action.data.price);
                 certificate = await certificate.sync();
 

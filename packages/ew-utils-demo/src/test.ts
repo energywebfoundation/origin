@@ -18,7 +18,7 @@ async function main() {
            headers: {
                'Content-Type': 'application/json',
            }
-       })
+       });
    }
 }
 

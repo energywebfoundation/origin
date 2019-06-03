@@ -32,7 +32,6 @@ import {
 import { MarketLogic } from 'ew-market-lib';
 import { CONFIG } from './config';
 
-
 export const marketDemo = async (demoFile?: string) => {
     const startTime = Date.now();
 
