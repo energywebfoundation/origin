@@ -31,6 +31,8 @@ export interface IDemandOffChainProperties {
     typeOfPublicSupport?: string;
     targetWhPerPeriod: number;
     registryCompliance?: GeneralLib.Compliance;
+    startTime: string;
+    endTime: string;
 }
 
 export interface IDemandOnChainProperties

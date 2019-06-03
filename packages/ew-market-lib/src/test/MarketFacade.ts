@@ -127,6 +127,9 @@ describe('Market-Facade', () => {
     });
 
     describe('Demand-Facade', () => {
+        const START_TIME = '1559466472732';
+        const END_TIME = '1559466492732';
+        
         it('should create a demand', async () => {
             conf = {
                 blockchainProperties: {
@@ -158,7 +161,9 @@ describe('Market-Facade', () => {
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
                 targetWhPerPeriod: 10,
-                registryCompliance: GeneralLib.Compliance.EEC
+                registryCompliance: GeneralLib.Compliance.EEC,
+                startTime: START_TIME,
+                endTime: END_TIME
             };
 
             const demandProps: Market.Demand.IDemandOnChainProperties = {
@@ -193,7 +198,9 @@ describe('Market-Facade', () => {
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
                     timeframe: 3,
-                    typeOfPublicSupport: 'string'
+                    typeOfPublicSupport: 'string',
+                    startTime: START_TIME,
+                    endTime: END_TIME
                 }
             });
         });
@@ -228,7 +235,9 @@ describe('Market-Facade', () => {
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
                     timeframe: 3,
-                    typeOfPublicSupport: 'string'
+                    typeOfPublicSupport: 'string',
+                    startTime: START_TIME,
+                    endTime: END_TIME
                 }
             });
         });
