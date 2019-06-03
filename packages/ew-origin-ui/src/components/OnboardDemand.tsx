@@ -72,6 +72,14 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
 
         transformedInput.targetWhPerPeriod = transformedInput.targetWhPerPeriod * 1000;
 
+        if (typeof(transformedInput.startTime) !== 'undefined') {
+            transformedInput.startTime = (transformedInput.startTime * 1000).toString();
+        }
+
+        if (typeof(transformedInput.endTime) !== 'undefined') {
+            transformedInput.endTime = (transformedInput.endTime * 1000).toString();
+        }
+
         const demandOffchainProps: Demand.IDemandOffChainProperties = {
             timeframe: transformedInput.timeframe,
             pricePerCertifiedWh: creationDemandProperties.pricePerCertifiedWh,
@@ -79,7 +87,9 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
             otherGreenAttributes: creationDemandProperties.otherGreenAttributes,
             typeOfPublicSupport: creationDemandProperties.typeOfPublicSupport,
             targetWhPerPeriod: transformedInput.targetWhPerPeriod,
-            registryCompliance: creationDemandProperties.registryCompliance
+            registryCompliance: creationDemandProperties.registryCompliance,
+            startTime: transformedInput.startTime || '',
+            endTime: transformedInput.endTime || ''
         };
 
         if (typeof transformedInput.productingAsset !== 'undefined') {

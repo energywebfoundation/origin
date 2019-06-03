@@ -15,6 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
+import moment from 'moment';
 
 import { Configuration, TimeFrame, Compliance, AssetType } from 'ew-utils-general-lib';
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
@@ -158,7 +159,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 9
+                colspan: 11
             },
             generateFooter('Energy Demand (kWh)', true)
         ];
@@ -166,10 +167,15 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         const data = this.state.enrichedDemandData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
                 const demand = enrichedDemandData.demand;
+                const overallDemand = Math.ceil(
+                    (parseInt(demand.offChainProperties.endTime, 10) - parseInt(demand.offChainProperties.startTime, 10)) / PeriodToSeconds[demand.offChainProperties.timeframe] / 1000)
+                        * (demand.offChainProperties.targetWhPerPeriod / 1000)
 
                 return [
                     demand.id,
                     enrichedDemandData.demandOwner.organization,
+                    (moment(demand.offChainProperties.startTime, 'x')).format('DD MMM YY') + ' - ' +
+                        (moment(demand.offChainProperties.endTime, 'x')).format('DD MMM YY'),
                     this.getCountryRegionText(demand),
                     typeof(demand.offChainProperties.assettype) !== 'undefined' ? AssetType[demand.offChainProperties.assettype] : NO_VALUE_TEXT,
                     typeof(demand.offChainProperties.registryCompliance) !== 'undefined' ? Compliance[demand.offChainProperties.registryCompliance] : NO_VALUE_TEXT,
@@ -177,7 +183,8 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                     typeof(demand.offChainProperties.productingAsset) !== 'undefined' ? demand.offChainProperties.productingAsset : NO_VALUE_TEXT,
                     typeof(demand.offChainProperties.consumingAsset) !== 'undefined' ? demand.offChainProperties.consumingAsset : NO_VALUE_TEXT,
                     typeof(demand.offChainProperties.minCO2Offset) !== 'undefined' ? demand.offChainProperties.minCO2Offset.toLocaleString() : 0,
-                    (demand.offChainProperties.targetWhPerPeriod / 1000).toLocaleString()
+                    (demand.offChainProperties.targetWhPerPeriod / 1000).toLocaleString(),
+                    overallDemand
                 ];
             }
         );
@@ -185,6 +192,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         const TableHeader = [
             generateHeader('#'),
             generateHeader('Buyer'),
+            generateHeader('Start/End-Date'),
             generateHeader('Country,<br/>Region'),
             generateHeader('Asset Type'),
             generateHeader('Compliance'),
@@ -192,7 +200,8 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
             generateHeader('Production Coupling with Asset'),
             generateHeader('Consumption Coupling with Asset'),
             generateHeader('Min CO2 Offset'),
-            generateHeader('Coupling Cap per Timeframe (kWh)')
+            generateHeader('Coupling Cap per Timeframe (kWh)'),
+            generateHeader('Energy Demand (kWh)'),
         ];
 
         const operations = [

@@ -41,7 +41,7 @@
     "@types/web3": "1.0.14",
     "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#7acd085",
     "ew-erc-test-contracts": "0.3.0",
-    "ew-market-lib": "energywebfoundation/ew-market-lib#3907db6",
+    "ew-market-lib": "energywebfoundation/ew-market-lib#7f3459c",
     "ew-origin-lib": "energywebfoundation/ew-origin-lib#e4f04db",
     "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib#5a41bd1",
     "ew-utils-general-lib": "energywebfoundation/ew-utils-general-lib#d54e4e2",

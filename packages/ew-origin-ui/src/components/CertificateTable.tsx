@@ -206,7 +206,9 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 targetWhPerPeriod: certificate.powerInW,
-                registryCompliance: asset.offChainProperties.complianceRegistry
+                registryCompliance: asset.offChainProperties.complianceRegistry,
+                startTime: '',
+                endTime: ''
             };
 
             const onChainProperties: Demand.IDemandOnChainProperties = {
@@ -215,7 +217,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 url: ''
             };
 
-            const createdDemand: Demand.Entity = await Demand.createDemand(
+            await Demand.createDemand(
                 onChainProperties,
                 offChainProperties,
                 this.props.conf
