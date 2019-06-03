@@ -15,11 +15,10 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
-import * as EwUser from 'ew-user-registry-lib';
+import { User } from 'ew-user-registry-lib';
 
 export interface OrganizationFilterProps {
-    currentUser: EwUser.User;
+    currentUser: User;
     switchedToOrganization: boolean;
     switchToOrganization: Function;
 }

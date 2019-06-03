@@ -14,8 +14,6 @@
     "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'"
   },
   "devDependencies": {
-    "@types/core-js": "0.9.46",
-    "core-js": "2.6.5",
     "css-loader": "0.28.10",
     "node-sass": "4.12.0",
     "prettier": "1.17.1",
@@ -34,7 +32,6 @@
   },
   "dependencies": {
     "@types/bignumber.js": "4.0.3",
-    "@types/markerclustererplus": "2.1.33",
     "@types/moment": "2.13.0",
     "@types/react": "16.8.16",
     "@types/react-dom": "16.8.4",
@@ -42,7 +39,7 @@
     "@types/redux-actions": "2.6.0",
     "@types/underscore": "1.8.14",
     "@types/web3": "1.0.14",
-    "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#6421264",
+    "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#7acd085",
     "ew-erc-test-contracts": "0.3.0",
     "ew-market-lib": "energywebfoundation/ew-market-lib#3907db6",
     "ew-origin-lib": "energywebfoundation/ew-origin-lib#e4f04db",
@@ -58,8 +55,6 @@
     "react-date-range": "0.9.4",
     "react-dom": "16.8.6",
     "react-fade-in": "0.1.6",
-    "react-google-maps": "9.4.5",
-    "react-inlinesvg": "0.7.5",
     "react-redux": "5.1.1",
     "react-render-html": "0.6.0",
     "react-router-dom": "4.3.1",

@@ -28,10 +28,38 @@ import './toggle.scss';
 import './Table.scss';
 import './datepicker.scss';
 
-export class Table extends React.Component<any, any> {
+interface IProps {
+    header: (ITableHeaderData | ITableAdminHeaderData)[];
+    data: any;
+    footer?: any;
+    actions?: any | boolean;
+    actionWidth?: any;
+    classNames?: string[];
+    type?: any;
+    operations?: any[];
+    operationClicked?: Function;
+}
+
+export interface ITableHeaderData {
+    label: string;
+    key: string;
+    style: React.CSSProperties;
+    styleBody: React.CSSProperties;
+}
+
+export interface ITableAdminHeaderData {
+    header?: any;
+    footer?: any;
+    data?: any;
+    footerClick?: Function;
+    key?: string;
+}
+
+export class Table extends React.Component<IProps, any> {
     constructor(props) {
         super(props);
-        const { header, footer, data, actions, actionWidth, classNames, type = 'data' } = props;
+
+        const { header, type = 'data' } = props;
 
         const toggles = {};
         if (type === 'admin') {
@@ -217,9 +245,9 @@ export class Table extends React.Component<any, any> {
                     <table className={(classNames || []).join(' ')}>
                         <thead>
                             <tr>
-                                {header.map(item => {
+                                {header.map((item: ITableHeaderData) => {
                                     return (
-                                        <th style={item.style || {}} key={item.key}>
+                                        <th style={item.style} key={item.key}>
                                             {renderHTML(renderText(item.label))}
                                         </th>
                                     );
@@ -252,7 +280,7 @@ export class Table extends React.Component<any, any> {
                             {data.map((row, rowIndex) => {
                                 return (
                                     <tr key={row[0]}>
-                                        {header.map((item, colIndex) => {
+                                        {header.map((item: ITableHeaderData, colIndex) => {
                                             return (
                                                 <td
                                                     key={item.key}
@@ -300,7 +328,7 @@ export class Table extends React.Component<any, any> {
                             </tr>
                         </thead>
                         <tbody>
-                            {header.map(item => {
+                            {header.map((item : ITableAdminHeaderData) => {
                                 return item.header ? (
                                     <tr
                                         key={item.key}

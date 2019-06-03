@@ -15,9 +15,8 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { User } from 'ew-user-registry-lib';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import { ProducingAssetTable } from './ProducingAssetTable';
@@ -27,13 +26,14 @@ import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 
 export interface AssetProps {
     conf: Configuration.Entity;
-    certificates: OriginIssuer.Certificate.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
-    consumingAssets: EwAsset.ConsumingAsset.Entity[];
-    currentUser: EwUser.User;
+    certificates: Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+    consumingAssets: ConsumingAsset.Entity[];
+    currentUser: User;
     baseUrl: string;
     demands: Demand.Entity[];
 }

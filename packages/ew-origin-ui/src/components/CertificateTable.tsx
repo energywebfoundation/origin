@@ -16,6 +16,7 @@
 
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
+import moment from 'moment';
 
 import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
@@ -276,7 +277,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 8
+                colspan: 7
             },
             generateFooter('Certified Energy (kWh)', true)
         ];
@@ -321,23 +322,20 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
                 return [
                     certificate.id,
-                    EnrichedCertificateData.certificateOwner.organization,
                     ProducingAsset.Type[
                         EnrichedCertificateData.producingAsset.offChainProperties.assetType
                     ],
-                    new Date(
+                    moment(
                         EnrichedCertificateData.producingAsset.offChainProperties.operationalSince *
                             1000
-                    ).toDateString(),
-                    `${EnrichedCertificateData.producingAsset.offChainProperties.gpsLongitude} ${
-                        EnrichedCertificateData.producingAsset.offChainProperties.gpsLatitude
-                    }`,
+                    , 'x').format('MMM YY'),
                     `${EnrichedCertificateData.producingAsset.offChainProperties.city}, ${
                         EnrichedCertificateData.producingAsset.offChainProperties.country
                     }`,
                     ProducingAsset.Compliance[
                         EnrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
                     ],
+                    EnrichedCertificateData.certificateOwner.organization,
                     new Date(
                         EnrichedCertificateData.certificate.creationTime * 1000
                     ).toDateString(),
@@ -346,17 +344,15 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             }
         );
 
-        const TableHeader = [
-            generateHeader('#', 90.84),
-            generateHeader('Organization', 90.84),
+        let TableHeader = [
+            generateHeader('#', 60),
             generateHeader('Asset Type'),
             generateHeader('Commissioning Date'),
-            generateHeader('Geo Location'),
             generateHeader('Town, Country'),
             // generateHeader('Max Capacity (kWh)', defaultWidth, true),
             generateHeader('Compliance'),
+            generateHeader('Owner'),
             generateHeader('Certification Date'),
-
             generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
         ];
 

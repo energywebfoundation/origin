@@ -16,38 +16,33 @@
 
 import * as React from 'react';
 
-import marker from '../../assets/marker.svg';
-import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
 import hydro from '../../assets/icon_hydro.svg';
 import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import * as OriginIssuer from 'ew-origin-lib';
-import * as EwUser from 'ew-user-registry-lib';
-import * as EwAsset from 'ew-asset-registry-lib';
-import { MapContainer } from './MapContainer';
+import { Certificate } from 'ew-origin-lib';
+import { User } from 'ew-user-registry-lib';
 
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
 
 export interface DetailViewProps {
     conf: Configuration.Entity;
     id: number;
     baseUrl: string;
-    certificates: OriginIssuer.Certificate.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
+    certificates: Certificate.Entity[];
+    producingAssets: ProducingAsset.Entity[];
     addSearchField: boolean;
 }
 
 export interface DetailViewState {
     newId: number;
-    owner: EwUser.User;
+    owner: User;
     notSoldCertificates: number;
 }
-
-const TableWidth = [210, 210, 210, 210, 407];
 
 export class ProducingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
     constructor(props: DetailViewProps) {
@@ -75,13 +70,13 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
     async getOwner(props: DetailViewProps): Promise<void> {
         if (props.id !== null && props.id !== undefined) {
             const selectedAsset = props.producingAssets.find(
-                (p: EwAsset.ProducingAsset.Entity) => p.id === props.id.toString()
+                (p: ProducingAsset.Entity) => p.id === props.id.toString()
             );
             if (selectedAsset) {
                 if (this.props.certificates.length > 0) {
                     this.setState({
                         notSoldCertificates: this.props.certificates
-                            .map((certificate: OriginIssuer.Certificate.Entity) =>
+                            .map((certificate: Certificate.Entity) =>
                                 certificate.owner === selectedAsset.owner.address &&
                                 certificate.assetId.toString() === selectedAsset.id
                                     ? certificate.powerInW
@@ -91,7 +86,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                     });
                 }
                 this.setState({
-                    owner: await new EwUser.User(
+                    owner: await new User(
                         selectedAsset.owner.address,
                         props.conf as any
                     ).sync()
@@ -101,16 +96,20 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
     }
 
     render(): JSX.Element {
-        const selectedAsset: EwAsset.ProducingAsset.Entity =
+        const selectedAsset: ProducingAsset.Entity =
             this.props.id !== null && this.props.id !== undefined
                 ? this.props.producingAssets.find(
-                      (p: EwAsset.ProducingAsset.Entity) => p.id === this.props.id.toString()
+                      (p: ProducingAsset.Entity) => p.id === this.props.id.toString()
                   )
                 : null;
         let data;
         if (selectedAsset) {
             data = [
                 [
+                    {
+                        label: 'Facility Name',
+                        data: selectedAsset.offChainProperties.facilityName
+                    },
                     {
                         label: 'Asset Owner',
                         data: this.state.owner ? this.state.owner.organization : ''
@@ -120,9 +119,36 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                             'Certified by Registry' +
                             getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
                         data:
-                            EwAsset.ProducingAsset.Compliance[
+                            ProducingAsset.Compliance[
                                 selectedAsset.offChainProperties.complianceRegistry
                             ]
+                    },
+                    {
+                        label:
+                            'Other Green Attributes' +
+                            getOffChainText(
+                                'otherGreenAttributes',
+                                selectedAsset.offChainProperties
+                            ),
+                        data: selectedAsset.offChainProperties.otherGreenAttributes
+                    }
+                ],
+                [
+                    {
+                        label:
+                            'Asset Type' +
+                            getOffChainText('assetType', selectedAsset.offChainProperties),
+                        data:
+                            ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
+                        image:
+                            ProducingAsset.Type.Wind ===
+                            selectedAsset.offChainProperties.assetType
+                                ? wind
+                                : ProducingAsset.Type.Solar ===
+                                  selectedAsset.offChainProperties.assetType
+                                ? solar
+                                : hydro,
+                        rowspan: 2
                     },
                     {
                         label:
@@ -134,57 +160,23 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                         data: (selectedAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
                         tip: 'kWh'
                     },
-
-                    {
-                        label:
-                            'Geo Location' +
-                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
-                        data:
-                            selectedAsset.offChainProperties.gpsLatitude +
-                            ', ' +
-                            selectedAsset.offChainProperties.gpsLongitude,
-                        image: map,
-                        type: 'map',
-                        rowspan: 3,
-                        colspan: 2
-                    }
-                ],
-                [
-                    {
-                        label:
-                            'Asset Type' +
-                            getOffChainText('assetType', selectedAsset.offChainProperties),
-                        data:
-                            EwAsset.ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
-                        image:
-                            EwAsset.ProducingAsset.Type.Wind ===
-                            selectedAsset.offChainProperties.assetType
-                                ? wind
-                                : EwAsset.ProducingAsset.Type.Solar ===
-                                  selectedAsset.offChainProperties.assetType
-                                ? solar
-                                : hydro,
-                        rowspan: 2
-                    },
-                    {
-                        label:
-                            'Other Green Attributes' +
-                            getOffChainText(
-                                'otherGreenAttributes',
-                                selectedAsset.offChainProperties
-                            ),
-                        data: selectedAsset.offChainProperties.otherGreenAttributes
-                    },
                     {
                         label:
                             'Commissioning Date' +
                             getOffChainText('operationalSince', selectedAsset.offChainProperties),
                         data: moment(
                             selectedAsset.offChainProperties.operationalSince * 1000
-                        ).format('DD MMM YY')
+                        ).format('MMM YY')
                     }
                 ],
                 [
+                    {
+                        label:
+                            'Nameplate Capacity' +
+                            getOffChainText('capacityWh', selectedAsset.offChainProperties),
+                        data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
+                        tip: 'kW'
+                    },
                     {
                         label:
                             'Public Support' +
@@ -194,13 +186,6 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                             ),
                         data: selectedAsset.offChainProperties.typeOfPublicSupport,
                         description: ''
-                    },
-                    {
-                        label:
-                            'Nameplate Capacity' +
-                            getOffChainText('capacityWh', selectedAsset.offChainProperties),
-                        data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
-                        tip: 'kW'
                     }
                 ]
             ];
@@ -217,7 +202,7 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                         <tbody>
                             {data.map((row: any) => (
                                 <tr key={row.key}>
-                                    {row.map((col, cIndex) => {
+                                    {row.map((col) => {
                                         if (
                                             col.isAdditionalInformation &&
                                             !this.props.addSearchField
@@ -235,22 +220,9 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                                                 <div className="Data">
                                                     {col.data} {col.tip && <span>{col.tip}</span>}
                                                 </div>
-                                                {col.image &&
-                                                    (col.type !== 'map' ? (
-                                                        <div className={`Image`}>
-                                                            <img src={col.image} />
-                                                            {col.type === 'map' && (
-                                                                <img
-                                                                    src={marker as any}
-                                                                    className="Marker"
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    ) : (
-                                                        <div className={`Image Map`}>
-                                                            <MapContainer asset={selectedAsset} />
-                                                        </div>
-                                                    ))}
+                                                {col.image && <div className={`Image`}>
+                                                    <img src={col.image} />
+                                                </div>}
                                                 {col.description && (
                                                     <div className="Description">
                                                         {col.description}
@@ -291,9 +263,6 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                             </Link>
                         </div>
                         <div className="PageContentWrapper">
-                            {/* <div className='PageHeader'>
-                <div className='PageTitle'>Berlin II, <span>Berlin, Germany</span></div>
-              </div> */}
                             {pageBody}
                         </div>
                     </div>
@@ -304,7 +273,3 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
         );
     }
 }
-
-const addCommas = intNum => {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-};
