@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "ew-erc-test-contracts": "0.3.0",
-    "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#feature/add-facility-name",
+    "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#7acd085",
     "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib#5a41bd1",
     "ew-utils-general-lib": "energywebfoundation/ew-utils-general-lib#d54e4e2",
     "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#c365e3c",
-    "ew-market-lib": "energywebfoundation/ew-market-lib#3907db6",
+    "ew-market-lib": "energywebfoundation/ew-market-lib#7f3459c",
     "ew-origin-lib": "energywebfoundation/ew-origin-lib#e4f04db",
     "node-fetch": "2.5.0",
     "web3": "1.0.0-beta.37",

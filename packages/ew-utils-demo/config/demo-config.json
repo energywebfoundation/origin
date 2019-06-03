@@ -368,7 +368,9 @@
                 "otherGreenAttributes": "string",
                 "typeOfPublicSupport": "string",
                 "targetWhPerPeriod": 10,
-                "registryCompliance": "EEC"
+                "registryCompliance": "EEC",
+                "startTime": "1559477971484",
+                "endTime": "1589877971484"
             }
         },
         {

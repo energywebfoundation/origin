@@ -189,7 +189,9 @@ export const marketDemo = async (demoFile?: string) => {
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
                     targetWhPerPeriod: action.data.targetWhPerPeriod,
-                    registryCompliance: assetCompliance
+                    registryCompliance: assetCompliance,
+                    startTime: action.data.startTime,
+                    endTime: action.data.endTime
                 };
 
                 const demandProps: Market.Demand.IDemandOnChainProperties = {
