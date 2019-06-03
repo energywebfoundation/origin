@@ -17,6 +17,8 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
+import Web3 from 'web3';
+
 import {
     migrateUserRegistryContracts,
     UserLogic,
@@ -29,6 +31,15 @@ import {
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
+import { Configuration } from 'ew-utils-general-lib';
+import { ProducingAsset } from 'ew-asset-registry-lib';
+import {
+    deployERC20TestToken,
+    Erc20TestToken,
+    TestReceiver,
+    deployERC721TestReceiver
+} from 'ew-erc-test-contracts';
+
 import {
     OriginContractLookup,
     CertificateLogic,
@@ -36,16 +47,7 @@ import {
 } from '..';
 import * as Certificate from '../blockchain-facade/Certificate';
 import * as TradableEntity from '../blockchain-facade/TradableEntity';
-import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
-import * as Asset from 'ew-asset-registry-lib';
-import {
-    deployERC20TestToken,
-    Erc20TestToken,
-    TestReceiver,
-    deployERC721TestReceiver
-} from 'ew-erc-test-contracts';
-import Web3 from 'web3';
 
 describe('CertificateLogic-Facade', () => {
     let userLogic: UserLogic;
@@ -85,7 +87,7 @@ describe('CertificateLogic-Facade', () => {
     const approvedPK = '0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b';
     const approvedAccount = web3.eth.accounts.privateKeyToAccount(approvedPK).address;
 
-    let conf: GeneralLib.Configuration.Entity;
+    let conf: Configuration.Entity;
 
     let blockceationTime;
 
@@ -98,7 +100,7 @@ describe('CertificateLogic-Facade', () => {
         await userLogic.setRoles(accountDeployment, buildRights([
             Role.UserAdmin,
             Role.AssetAdmin
-        ]), { privateKey: privateKeyDeployment });
+        ]),                      { privateKey: privateKeyDeployment });
 
         const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -121,7 +123,7 @@ describe('CertificateLogic-Facade', () => {
         assetRegistryContract = new AssetContractLookup(web3 as any, assetRegistryLookupAddr);
         assetRegistry = new AssetProducingRegistryLogic(web3 as any, assetProducingAddr);
 
-        for (let key of Object.keys(originContracts)) {
+        for (const key of Object.keys(originContracts)) {
             if (key.includes('OriginContractLookup')) {
                 originRegistryContract = new OriginContractLookup(
                     web3 as any,
@@ -167,15 +169,15 @@ describe('CertificateLogic-Facade', () => {
 
         await userLogic.setRoles(accountTrader, buildRights([
             Role.Trader
-        ]), { privateKey: privateKeyDeployment });
+        ]),                      { privateKey: privateKeyDeployment });
         await userLogic.setRoles(accountAssetOwner, buildRights([
             Role.AssetManager,
             Role.Trader
-        ]), { privateKey: privateKeyDeployment });
+        ]),                      { privateKey: privateKeyDeployment });
     });
 
     it('should onboard a new asset', async () => {
-        const assetProps: Asset.ProducingAsset.OnChainProperties = {
+        const assetProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: accountAssetOwner },
             lastSmartMeterReadWh: 0,
@@ -187,7 +189,8 @@ describe('CertificateLogic-Facade', () => {
             maxOwnerChanges: 3
         };
 
-        const assetPropsOffChain: Asset.ProducingAsset.OffChainProperties = {
+        const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+            facilityName: 'TestFacility',
             operationalSince: 0,
             capacityWh: 10,
             country: 'USA',
@@ -198,15 +201,15 @@ describe('CertificateLogic-Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: Asset.ProducingAsset.Type.Wind,
-            complianceRegistry: Asset.ProducingAsset.Compliance.EEC,
+            assetType: ProducingAsset.Type.Wind,
+            complianceRegistry: ProducingAsset.Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: ''
         };
 
-        assert.equal(await Asset.ProducingAsset.getAssetListLength(conf), 0);
+        assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
 
-        await Asset.ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
     });
 
     it('should set marketcontract in asset + log a new meterreading ', async () => {
@@ -756,7 +759,7 @@ describe('CertificateLogic-Facade', () => {
 
         await userLogic.setRoles(testReceiverAddress, buildRights([
             Role.AssetManager
-        ]), { privateKey: privateKeyDeployment });
+        ]),                      { privateKey: privateKeyDeployment });
         let certificate = await new Certificate.Entity('5', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress);
@@ -845,7 +848,7 @@ describe('CertificateLogic-Facade', () => {
 
         await userLogic.setRoles(testReceiverAddress, buildRights([
             Role.AssetManager
-        ]), { privateKey: privateKeyDeployment });
+        ]),                      { privateKey: privateKeyDeployment });
         let certificate = await new Certificate.Entity('6', conf).sync();
 
         await certificate.safeTransferFrom(testReceiverAddress, '0x001');

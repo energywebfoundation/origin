@@ -265,8 +265,8 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
     /// @param _certificateId The id of the requested certificate
     /// @param _certificate The certificate where the ownership should be transfered
     function checktransferOwnerInternally(
-            uint _certificateId,
-            CertificateDB.Certificate memory _certificate
+        uint _certificateId,
+        CertificateDB.Certificate memory _certificate
     )
         internal
     {

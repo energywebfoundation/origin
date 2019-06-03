@@ -18,8 +18,10 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
+
 import { migrateUserRegistryContracts, UserLogic } from 'ew-user-registry-lib';
 import { migrateAssetRegistryContracts, AssetContractLookup } from 'ew-asset-registry-lib';
+
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 import { CertificateDB } from '../wrappedContracts/CertificateDB';
@@ -69,7 +71,7 @@ describe('OriginContractLookup', () => {
 
         assetRegistryContract = new AssetContractLookup(web3, assetRegistryLookupAddr);
 
-        for (let key of Object.keys(originContracts)) {
+        for (const key of Object.keys(originContracts)) {
             let tempBytecode;
 
             if (key.includes('OriginContractLookup')) {

@@ -315,14 +315,15 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         require(te.owner != address(0x0), "0x0 as owner is not allowed");
         require(msg.value == 0, "sending value is not allowed");
       //  require((te.owner == _from) && (te.owner != 0x0) && (msg.value == 0),"owner not matching or send value");
-        require(te.owner == msg.sender
+        require(
+            te.owner == msg.sender
             || checkMatcher(te.escrow)
             || db.getOwnerToOperators(te.owner, msg.sender)
-            || te.approvedAddress == msg.sender,"simpleTransfer, missing rights");
+            || te.approvedAddress == msg.sender, "simpleTransfer, missing rights"
+        );
         db.setTradableEntityOwnerAndAddApproval(_entityId, _to,address(0x0));
         db.removeTokenAndPrice(_entityId);
         emit Transfer(_from,_to,_entityId);
-
     }
 
     /// @notice checks requirements for a safe transder
@@ -341,5 +342,4 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         require(isContract(_to),"_to is not a contract");
         require(ERC721TokenReceiver(_to).onERC721Received(address(this),_from,_entityId,_data) == 0x150b7a02,"_to did not respond correctly");
     }
-
 }

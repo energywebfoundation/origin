@@ -4,6 +4,11 @@
   "rulesDirectory": [
     "node_modules/tslint-lines-between-class-members"
   ],
+  "linterOptions": {
+    "exclude": [
+        "src/wrappedContracts/*"
+    ]
+  },
   "rules": {
     "object-literal-sort-keys": false,
     "no-unused-expression": true,

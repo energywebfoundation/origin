@@ -14,11 +14,10 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
-import * as GeneralLib from 'ew-utils-general-lib';
-import * as TradableEntity from '..';
-import { CertificateLogic } from '..';
-import { logger } from './Logger';
 import { TransactionReceipt, Log } from 'web3/types';
+import { Configuration } from 'ew-utils-general-lib';
+
+import * as TradableEntity from '..';
 
 export enum Status {
     Active,
@@ -26,7 +25,7 @@ export enum Status {
     Split
 }
 
-export interface CertificateSpecific extends TradableEntity.TradableEntity.OnChainProperties {
+export interface ICertificateSpecific extends TradableEntity.TradableEntity.IOnChainProperties {
     status: number;
     dataLog: string;
     creationTime: number;
@@ -37,7 +36,7 @@ export interface CertificateSpecific extends TradableEntity.TradableEntity.OnCha
 }
 
 export const getCertificateListLength = async (
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<number> => {
     return parseInt(
         await configuration.blockchainProperties.certificateLogicInstance.getCertificateListLength(),
@@ -45,7 +44,7 @@ export const getCertificateListLength = async (
     );
 };
 
-export const getAllCertificates = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAllCertificates = async (configuration: Configuration.Entity) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -53,7 +52,7 @@ export const getAllCertificates = async (configuration: GeneralLib.Configuration
     return Promise.all(certificatePromises);
 };
 
-export const getActiveCertificates = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getActiveCertificates = async (configuration: Configuration.Entity) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -65,14 +64,14 @@ export const getActiveCertificates = async (configuration: GeneralLib.Configurat
 
 export const isRetired = async (
     certId: number,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<boolean> => {
     return configuration.blockchainProperties.certificateLogicInstance.isRetired(certId);
 };
 
 export const getAllCertificateEvents = async (
     certId: number,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<Log[]> => {
     const allEvents = await configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
         {
@@ -125,7 +124,7 @@ export const getAllCertificateEvents = async (
     return returnEvents;
 };
 
-export class Entity extends TradableEntity.TradableEntity.Entity implements CertificateSpecific {
+export class Entity extends TradableEntity.TradableEntity.Entity implements ICertificateSpecific {
     status: number;
     dataLog: string;
     creationTime: number;

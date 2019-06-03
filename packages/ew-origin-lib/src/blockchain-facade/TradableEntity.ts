@@ -14,10 +14,10 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
-import * as GeneralLib from 'ew-utils-general-lib';
+import { Configuration, BlockchainDataModelEntity } from 'ew-utils-general-lib';
 import { TransactionReceipt } from 'web3/types';
 
-export interface OnChainProperties {
+export interface IOnChainProperties {
     assetId: number;
     owner: string;
     powerInW: number;
@@ -29,35 +29,35 @@ export interface OnChainProperties {
 
 export const getBalance = async (
     owner: string,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<number> => {
     return configuration.blockchainProperties.certificateLogicInstance.balanceOf(owner);
 };
 
 export const ownerOf = async (
     certId: number,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<string> => {
     return configuration.blockchainProperties.certificateLogicInstance.ownerOf(certId);
 };
 
 export const getApproved = async (
     certId: number,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<string> => {
     return configuration.blockchainProperties.certificateLogicInstance.getApproved(certId);
 };
 
 export const getTradableToken = async (
     certId: number,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<string> => {
     return configuration.blockchainProperties.certificateLogicInstance.getTradableToken(certId);
 };
 
 export const getOnchainDirectPurchasePrice = async (
     certId: number,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<number> => {
     return configuration.blockchainProperties.certificateLogicInstance.getOnchainDirectPurchasePrice(
         certId
@@ -67,7 +67,7 @@ export const getOnchainDirectPurchasePrice = async (
 export const isApprovedForAll = async (
     owner: string,
     matcher: string,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<boolean> => {
     return configuration.blockchainProperties.certificateLogicInstance.isApprovedForAll(
         owner,
@@ -78,7 +78,7 @@ export const isApprovedForAll = async (
 export const setApprovalForAll = async (
     matcher: string,
     approved: boolean,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<TransactionReceipt> => {
     if (configuration.blockchainProperties.activeUser.privateKey) {
         return configuration.blockchainProperties.certificateLogicInstance.setApprovalForAll(
@@ -94,8 +94,8 @@ export const setApprovalForAll = async (
         );
     }
 };
-export abstract class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements OnChainProperties {
+export abstract class Entity extends BlockchainDataModelEntity.Entity
+    implements IOnChainProperties {
     assetId: number;
     owner: string;
     powerInW: number;
@@ -106,7 +106,7 @@ export abstract class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
 
     initialized: boolean;
 
-    constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
+    constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
         this.initialized = false;

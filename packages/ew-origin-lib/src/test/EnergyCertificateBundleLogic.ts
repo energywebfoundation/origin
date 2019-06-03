@@ -17,12 +17,16 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
+import Web3 from 'web3';
+
 import { migrateUserRegistryContracts, UserLogic, UserContractLookup, buildRights, Role } from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
+import { deploy } from 'ew-utils-deployment';
+
 import { migrateEnergyBundleContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 import { CertificateDB } from '../wrappedContracts/CertificateDB';
@@ -31,10 +35,8 @@ import { TestReceiver } from '../wrappedContracts/TestReceiver';
 import { EnergyCertificateBundleLogic } from '../wrappedContracts/EnergyCertificateBundleLogic';
 import { EnergyCertificateBundleDB } from '../wrappedContracts/EnergyCertificateBundleDB';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
-import Web3 from 'web3';
 import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
 import Erc721TestReceiverJSON from '../../build/contracts/TestReceiver.json';
-import { deploy } from 'ew-utils-deployment';
 import {
     EnergyCertificateBundleLogicJSON,
     EnergyCertificateBundleDBJSON,
@@ -97,7 +99,7 @@ describe('EnergyCertificateBundleLogic', () => {
             await userLogic.setRoles(accountDeployment, buildRights([
                 Role.UserAdmin,
                 Role.AssetAdmin
-            ]), { privateKey: privateKeyDeployment });
+            ]),                      { privateKey: privateKeyDeployment });
 
             const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -120,7 +122,7 @@ describe('EnergyCertificateBundleLogic', () => {
             assetRegistryContract = new AssetContractLookup(web3, assetRegistryLookupAddr);
             assetRegistry = new AssetProducingRegistryLogic(web3 as any, assetProducingAddr);
 
-            for (let key of Object.keys(originContracts)) {
+            for (const key of Object.keys(originContracts)) {
                 let tempBytecode;
 
                 if (key.includes('OriginContractLookup')) {
@@ -305,11 +307,11 @@ describe('EnergyCertificateBundleLogic', () => {
 
             await userLogic.setRoles(accountTrader, buildRights([
                 Role.Trader
-            ]), { privateKey: privateKeyDeployment });
+            ]),                      { privateKey: privateKeyDeployment });
             await userLogic.setRoles(accountAssetOwner, buildRights([
                 Role.AssetManager,
                 Role.Trader
-            ]), { privateKey: privateKeyDeployment });
+            ]),                      { privateKey: privateKeyDeployment });
         });
 
         it('should onboard an asset', async () => {
@@ -1922,7 +1924,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 });
                 await userLogic.setRoles(matcherAccount, buildRights([
                     Role.Trader
-                ]), { privateKey: privateKeyDeployment });
+                ]),                      { privateKey: privateKeyDeployment });
             });
 
             it('should transfer certificate#5 with new matcher', async () => {
@@ -2191,7 +2193,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 });
                 await userLogic.setRoles(matcherAccount, buildRights([
                     Role.Trader
-                ]), { privateKey: privateKeyDeployment });
+                ]),                      { privateKey: privateKeyDeployment });
             });
 
             it('should transfer certificate#6 with new matcher', async () => {
@@ -2441,7 +2443,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 });
                 await userLogic.setRoles(approvedAccount, buildRights([
                     Role.Trader
-                ]), { privateKey: privateKeyDeployment });
+                ]),                      { privateKey: privateKeyDeployment });
             });
 
             it('should log energy (Bundle #8)', async () => {
@@ -4128,7 +4130,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 await userLogic.setRoles(testreceiver.web3Contract._address, buildRights([
                     Role.Trader
-                ]), {
+                ]),                      {
                     privateKey: privateKeyDeployment
                 });
                 const tx = await testreceiver.safeTransferFrom(
