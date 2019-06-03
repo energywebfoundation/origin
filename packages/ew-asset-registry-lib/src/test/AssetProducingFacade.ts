@@ -101,6 +101,8 @@ describe('AssetProducing Facade', () => {
             logger,
         };
 
+        const FACILITY_NAME = 'Wuthering Heights Windfarm';
+
         const assetProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
@@ -128,6 +130,7 @@ describe('AssetProducing Facade', () => {
             complianceRegistry: ProducingAsset.Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
+            facilityName: FACILITY_NAME
         };
 
         assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
@@ -148,7 +151,7 @@ describe('AssetProducing Facade', () => {
             matcher: [{ address: [matcher] }],
             offChainProperties: assetPropsOffChain,
             maxOwnerChanges: '3',
-            url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`,
+            url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`
         } as any,        asset);
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
 
@@ -183,6 +186,7 @@ describe('AssetProducing Facade', () => {
             complianceRegistry: ProducingAsset.Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
+            facilityName: 'Wuthering Heights Windfarm'
         };
 
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
@@ -238,7 +242,8 @@ describe('AssetProducing Facade', () => {
                 complianceRegistry: 2,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
-            },
+                facilityName: 'Wuthering Heights Windfarm'
+            }
         });
 
     });

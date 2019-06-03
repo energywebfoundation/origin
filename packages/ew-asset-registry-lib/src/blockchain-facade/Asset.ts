@@ -37,6 +37,7 @@ export interface IOffChainProperties {
     houseNumber: string;
     gpsLatitude: string;
     gpsLongitude: string;
+    facilityName: string;
 }
 
 export abstract class Entity extends BlockchainDataModelEntity.Entity

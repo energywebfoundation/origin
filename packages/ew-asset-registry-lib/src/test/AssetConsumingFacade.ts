@@ -123,6 +123,7 @@ describe('AssetConsumingLogic Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
+            facilityName: 'Wuthering Heights Windfarm'
         };
 
         assert.equal(await ConsumingAsset.getAssetListLength(conf), 0);
@@ -173,6 +174,7 @@ describe('AssetConsumingLogic Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
+            facilityName: 'Wuthering Heights Windfarm'
         };
 
         assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
@@ -223,6 +225,7 @@ describe('AssetConsumingLogic Facade', () => {
                 houseNumber: '42',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
+                facilityName: 'Wuthering Heights Windfarm'
             },
         });
 
