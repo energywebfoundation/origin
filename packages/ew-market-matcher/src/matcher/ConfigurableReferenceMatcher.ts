@@ -14,21 +14,22 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
+import { Certificate } from 'ew-origin-lib';
+import { Agreement, Demand } from 'ew-market-lib';
+import { Configuration } from 'ew-utils-general-lib';
+
 import { Matcher } from './Matcher';
 import { Controller } from '../controller/Controller';
 import * as ConfigurationFileInterpreter from './ConfigurationFileInterpreter';
 import * as RuleConf from '../schema-defs/RuleConf';
 import { logger } from '../Logger';
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwMarket from 'ew-market-lib';
-import * as EwGeneral from 'ew-utils-general-lib';
 
 export class ConfigurableReferenceMatcher extends Matcher {
-    private blockchainConf: EwGeneral.Configuration.Entity;
-    private conf: RuleConf.RuleConf;
+    private blockchainConf: Configuration.Entity;
+    private conf: RuleConf.IRuleConf;
     private propertyRanking: string[];
 
-    constructor(conf: any) {
+    constructor(conf: RuleConf.IRuleConf) {
         super();
         this.conf = conf;
         this.propertyRanking = ConfigurationFileInterpreter.getRanking(this.conf);
@@ -39,35 +40,26 @@ export class ConfigurableReferenceMatcher extends Matcher {
     }
 
     async findMatchingAgreement(
-        certificate: EwOrigin.Certificate.Entity,
-        agreements: EwMarket.Agreement.Entity[]
-    ): Promise<{ split: boolean; agreement: EwMarket.Agreement.Entity }> {
-        logger.debug('Scanning ' + agreements.length + ' agreements for a match.');
-        const matchingAgreement = agreements.filter((agreement: EwMarket.Agreement.Entity) => {
+        certificate: Certificate.Entity,
+        agreements: Agreement.Entity[]
+    ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
+        logger.debug(`Scanning ${agreements.length} agreements for a match.`);
+        const matchingAgreement = agreements.filter((agreement: Agreement.Entity) => {
             const supply = this.controller.getSupply(agreement.supplyId.toString());
             const match = supply.assetId.toString() === certificate.assetId.toString();
             if (match) {
                 logger.debug(
-                    'Agreement #' +
-                        agreement.id +
-                        ' and certifacte #' +
-                        certificate.id +
-                        ' have the same associated asset ID: ' +
-                        supply.assetId
+                    `Agreement #${agreement.id} and certificate #${
+                        certificate.id
+                    } have the same associated asset ID: ${supply.assetId}`
                 );
 
                 return true;
             } else {
                 logger.debug(
-                    'Agreement #' +
-                        agreement.id +
-                        ' (asset #' +
-                        supply.assetId +
-                        ') and certifacte #' +
-                        certificate.id +
-                        ' ( asset #' +
-                        certificate.assetId +
-                        ') have different associated asset IDs.'
+                    `Agreement #${agreement.id} (asset #${supply.assetId}) and certificate #${
+                        certificate.id
+                    } ( asset #${certificate.assetId}) have different associated asset IDs.`
                 );
 
                 return false;
@@ -81,12 +73,12 @@ export class ConfigurableReferenceMatcher extends Matcher {
         }
 
         const sortedAgreementList = matchingAgreement.sort(
-            (a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
+            (a: Agreement.Entity, b: Agreement.Entity) => {
                 // TODO: change
-                const rule = this.conf.rule as RuleConf.SimpleHierarchyRule;
+                const rule = this.conf.rule as RuleConf.ISimpleHierarchyRule;
 
                 const unequalProperty = rule.relevantProperties.find(
-                    (property: RuleConf.SimpleHierarchyRelevantProperty) =>
+                    (property: RuleConf.ISimpleHierarchyRelevantProperty) =>
                         a[property.name] !== b[property.name]
                 );
                 if (!unequalProperty) {
@@ -107,14 +99,11 @@ export class ConfigurableReferenceMatcher extends Matcher {
         );
 
         logger.debug(
-            'Sorted agreement list for certificate #' +
-                certificate.id +
-                ': ' +
-                sortedAgreementList.reduce(
-                    (accumulator: string, currentValue: EwMarket.Agreement.Entity) =>
-                        (accumulator += currentValue.id + ' '),
-                    ''
-                )
+            `Sorted agreement list for certificate #${certificate.id}: ${sortedAgreementList.reduce(
+                (accumulator: string, currentValue: Agreement.Entity) =>
+                    (accumulator += currentValue.id + ' '),
+                ''
+            )}`
         );
 
         const filteredAgreementList = [];
@@ -124,7 +113,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 agreement.offChainProperties.start,
                 agreement.offChainProperties.timeframe
             );
-            const demand = await this.controller.getDemand(agreement.demandId.toString());
+            const demand = this.controller.getDemand(agreement.demandId.toString());
             const neededWhForCurrentPeriod =
                 agreement.matcherOffChainProperties.currentPeriod === currentPeriod
                     ? demand.offChainProperties.targetWhPerPeriod >
@@ -167,9 +156,9 @@ export class ConfigurableReferenceMatcher extends Matcher {
     }
 
     async findMatchingDemand(
-        certificate: EwOrigin.Certificate.Entity,
-        demands: EwMarket.Demand.Entity[]
-    ): Promise<EwMarket.Demand.Entity> {
+        certificate: Certificate.Entity,
+        demands: Demand.Entity[]
+    ): Promise<Demand.Entity> {
         throw new Error('Method not implemented.');
     }
 

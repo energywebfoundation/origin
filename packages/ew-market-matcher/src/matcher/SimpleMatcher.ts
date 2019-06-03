@@ -16,13 +16,12 @@
 
 import { Matcher } from './Matcher';
 import { Controller } from '../controller/Controller';
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwMarket from 'ew-market-lib';
-import * as EwGeneral from 'ew-utils-general-lib';
-import { logger } from '../Logger';
+import { Certificate } from 'ew-origin-lib';
+import { Agreement, Demand } from 'ew-market-lib';
+import { METHOD_NOT_IMPLEMENTED } from '..';
 
 export class SimpleMatcher extends Matcher {
-    static SLEEP(ms) {
+    static SLEEP(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
@@ -35,27 +34,24 @@ export class SimpleMatcher extends Matcher {
     }
 
     async findMatchingAgreement(
-        certificate: EwOrigin.Certificate.Entity,
-        agreements: EwMarket.Agreement.Entity[]
-    ): Promise<{ split: boolean; agreement: EwMarket.Agreement.Entity }> {
-        throw new Error('Method not implemented.');
+        certificate: Certificate.Entity,
+        agreements: Agreement.Entity[]
+    ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
     async findMatchingDemand(
-        certificate: EwOrigin.Certificate.Entity,
-        demands: EwMarket.Demand.Entity[]
-    ): Promise<EwMarket.Demand.Entity> {
-        throw new Error('Method not implemented.');
+        certificate: Certificate.Entity,
+        demands: Demand.Entity[]
+    ): Promise<Demand.Entity> {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity[]) {
-        throw new Error('Method not implemented.');
+    matchDemand(certificate: Certificate.Entity, demand: Demand.Entity[]) {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    matchAgreement(
-        certificate: EwOrigin.Certificate.Entity,
-        agreements: EwMarket.Agreement.Entity[]
-    ) {
-        throw new Error('Method not implemented.');
+    matchAgreement(certificate: Certificate.Entity, agreements: Agreement.Entity[]) {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 }

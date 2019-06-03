@@ -14,26 +14,26 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwMarket from 'ew-market-lib';
-import { IdentifiableEntity } from './';
+import { Agreement } from 'ew-market-lib';
+import { IIdentifiableEntity } from '.';
 
-export interface AgreementData extends IdentifiableEntity {
-    offChainProperties: EwMarket.Agreement.AgreementOffChainProperties;
-    onChainProperties: EwMarket.Agreement.AgreementOnChainProperties;
-    matcherOffChainProperties: EwMarket.Agreement.MatcherOffchainProperties;
-}
-
-export interface RegisterAgreementAction {
-    type: RegisterAgreementActionType;
-    data: AgreementData;
+export interface IAgreementData extends IIdentifiableEntity {
+    offChainProperties: Agreement.IAgreementOffChainProperties;
+    onChainProperties: Agreement.IAgreementOnChainProperties;
+    matcherOffChainProperties: Agreement.IMatcherOffchainProperties;
 }
 
 export enum RegisterAgreementActionType {
     RegisterAgreement = 'REGISTER_AGREEMENT'
 }
 
-export const agreementDataToEntity = (agreementData: AgreementData): EwMarket.Agreement.Entity => {
-    const agreement = new EwMarket.Agreement.Entity(agreementData.id, null);
+export interface IRegisterAgreementAction {
+    type: RegisterAgreementActionType;
+    data: IAgreementData;
+}
+
+export const agreementDataToEntity = (agreementData: IAgreementData): Agreement.Entity => {
+    const agreement = new Agreement.Entity(agreementData.id, null);
     agreement.offChainProperties = agreementData.offChainProperties;
     agreement.matcherOffChainProperties = agreementData.matcherOffChainProperties;
     Object.keys(agreementData.onChainProperties).forEach(

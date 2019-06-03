@@ -13,7 +13,7 @@ export enum MatcherType {
     ConfigurableReference = 'CONFIGURABLE_REFERENCE'
 }
 
-export interface BlockchainDataSource {
+export interface IBlockchainDataSource {
     type: BlockchainDataSourceType;
     web3Url: string;
     offChainDataSourceUrl: string;
@@ -22,22 +22,22 @@ export interface BlockchainDataSource {
     matcherAccount: EthAccount;
 }
 
-export interface SimulationDataSource {
+export interface ISimulationDataSource {
     type: SimulationDataSourceType;
     simulationFlowFile: string;
 }
 
-export interface SimulationMatcherSpecification {
+export interface ISimulationMatcherSpecification {
     type: MatcherType;
     matcherConfigFile?: string;
 }
 
-export interface BlockchainMatcherSpecification {
+export interface IBlockchainMatcherSpecification {
     type: MatcherType;
     matcherConfigFile?: string;
 }
 
-export interface MatcherConf {
-    dataSource: SimulationDataSource | BlockchainDataSource;
-    matcherSpecification: SimulationMatcherSpecification | BlockchainMatcherSpecification;
+export interface IMatcherConf {
+    dataSource: ISimulationDataSource | IBlockchainDataSource;
+    matcherSpecification: ISimulationMatcherSpecification | IBlockchainMatcherSpecification;
 }

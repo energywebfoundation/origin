@@ -14,20 +14,20 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-export interface SetDateAction {
-    type: SetDateActionType;
-    data: DateData;
-}
-
 export enum SetDateActionType {
     SetDate = 'SET_DATE'
 }
 
-export interface DateData {
+export interface IDateData {
     year: number;
     month: number;
     day: number;
     hour: number;
     minute: number;
     second: number;
+}
+
+export interface ISetDateAction {
+    type: SetDateActionType;
+    data: IDateData;
 }

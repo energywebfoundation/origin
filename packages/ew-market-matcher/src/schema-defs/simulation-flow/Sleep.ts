@@ -14,15 +14,15 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-export interface SleepAction {
-    type: SleepActionType;
-    data: SleepData;
-}
-
 export enum SleepActionType {
-    Sleep = 'SLEE'
+    Sleep = 'SLEEP'
 }
 
-export interface SleepData {
+export interface ISleepData {
     ms: number;
+}
+
+export interface ISleepAction {
+    type: SleepActionType;
+    data: ISleepData;
 }

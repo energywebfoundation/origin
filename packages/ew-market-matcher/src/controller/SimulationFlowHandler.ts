@@ -21,33 +21,33 @@ import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
 export const handleFlowAction = async (
     simulationModeController: SimulationModeController,
     simulationFlowAction:
-        | SimulationFlowDef.Sleep.SleepAction
-        | SimulationFlowDef.Agreement.RegisterAgreementAction
-        | SimulationFlowDef.Date.SetDateAction
-        | SimulationFlowDef.ProducingAsset.RegisterProducingAssetAction
-        | SimulationFlowDef.Certificate.RegisterCertificateAction
-        | SimulationFlowDef.Demand.RegisterDemandAction
-        | SimulationFlowDef.Supply.RegisterSupplyAction
+        | SimulationFlowDef.Sleep.ISleepAction
+        | SimulationFlowDef.Agreement.IRegisterAgreementAction
+        | SimulationFlowDef.Date.ISetDateAction
+        | SimulationFlowDef.ProducingAsset.IRegisterProducingAssetAction
+        | SimulationFlowDef.Certificate.IRegisterCertificateAction
+        | SimulationFlowDef.Demand.IRegisterDemandAction
+        | SimulationFlowDef.Supply.IRegisterSupplyAction
 ) => {
     switch (simulationFlowAction.type) {
         case SimulationFlowDef.Agreement.RegisterAgreementActionType.RegisterAgreement:
             await simulationModeController.registerAgreement(
                 SimulationFlowDef.Agreement.agreementDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Agreement.AgreementData
+                    simulationFlowAction.data as SimulationFlowDef.Agreement.IAgreementData
                 )
             );
             break;
         case SimulationFlowDef.Demand.RegisterDemandActionType.RegisterDemand:
             await simulationModeController.registerDemand(
                 SimulationFlowDef.Demand.demandDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Demand.DemandData
+                    simulationFlowAction.data as SimulationFlowDef.Demand.IDemandData
                 )
             );
             break;
         case SimulationFlowDef.Supply.RegisterSupplyActionType.RegisterSupply:
             await simulationModeController.registerSupply(
                 SimulationFlowDef.Supply.supplyDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Supply.SupplyData
+                    simulationFlowAction.data as SimulationFlowDef.Supply.ISupplyData
                 )
             );
             break;
@@ -55,14 +55,14 @@ export const handleFlowAction = async (
             .RegisterProducingAsset:
             await simulationModeController.registerProducingAsset(
                 SimulationFlowDef.ProducingAsset.producingAssetDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.ProducingAsset.ProducingAssetData
+                    simulationFlowAction.data as SimulationFlowDef.ProducingAsset.IProducingAssetData
                 )
             );
             break;
         case SimulationFlowDef.Certificate.RegisterCertificateActionType.RegisterCertificate:
             await simulationModeController.matchTrigger(
                 SimulationFlowDef.Certificate.certificateDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Certificate.CertificateData
+                    simulationFlowAction.data as SimulationFlowDef.Certificate.ICertificateData
                 )
             );
             break;
@@ -71,7 +71,7 @@ export const handleFlowAction = async (
             break;
         case SimulationFlowDef.Date.SetDateActionType.SetDate:
             simulationModeController.setDataSourceTime(
-                simulationFlowAction.data as SimulationFlowDef.Date.DateData
+                simulationFlowAction.data as SimulationFlowDef.Date.IDateData
             );
             break;
         default:
@@ -82,7 +82,7 @@ export const handleFlowAction = async (
 };
 
 const sleep = ms => {
-    logger.verbose('Sleeping for ' + ms + 'ms');
+    logger.verbose(`Sleeping for ${ms} ms`);
 
     return new Promise(resolve => setTimeout(resolve, ms));
 };

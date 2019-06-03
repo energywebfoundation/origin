@@ -14,25 +14,28 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwGeneral from 'ew-utils-general-lib';
-import * as EwMarket from 'ew-market-lib';
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import {
+    Certificate,
+    createBlockchainProperties as issuerCreateBlockchainProperties
+} from 'ew-origin-lib';
+import { Configuration, ContractEventHandler, EventHandlerManager } from 'ew-utils-general-lib';
+import {
+    Agreement,
+    Demand,
+    Supply,
+    createBlockchainProperties as marketCreateBlockchainProperties
+} from 'ew-market-lib';
 import { logger } from '../Logger';
-import * as Winston from 'winston';
 import { Controller } from './Controller';
 import Web3 from 'web3';
-import * as Conf from '../../conf.json';
-import { BlockchainDataSourceType, BlockchainDataSource } from '../schema-defs/MatcherConf';
+import { IBlockchainDataSource } from '../schema-defs/MatcherConf';
 import { EthAccount } from 'ew-utils-general-lib/dist/js/blockchain-facade/Configuration';
 
-export const initMatchingManager = async (
-    controller: Controller,
-    conf: EwGeneral.Configuration.Entity
-) => {
+export const initMatchingManager = async (controller: Controller, conf: Configuration.Entity) => {
     conf.logger.verbose('* Getting all porducing assets');
-    const assetList = await EwAsset.ProducingAsset.getAllAssets(conf);
-    assetList.forEach(async (asset: EwAsset.ProducingAsset.Entity) =>
+    const assetList = await ProducingAsset.getAllAssets(conf);
+    assetList.forEach(async (asset: ProducingAsset.Entity) =>
         controller.registerProducingAsset(asset)
     );
 
@@ -43,44 +46,42 @@ export const initMatchingManager = async (
     // );
 
     conf.logger.verbose('* Getting all active agreements');
-    const agreementListLength = await EwMarket.Agreement.getAgreementListLength(conf);
+    const agreementListLength = await Agreement.getAgreementListLength(conf);
     for (let i = 0; i < agreementListLength; i++) {
-        controller.registerAgreement(
-            await new EwMarket.Agreement.Entity(i.toString(), conf).sync()
-        );
+        controller.registerAgreement(await new Agreement.Entity(i.toString(), conf).sync());
     }
 
     conf.logger.verbose('* Getting all active demands');
-    const demandListLength = await EwMarket.Demand.getDemandListLength(conf);
+    const demandListLength = await Demand.getDemandListLength(conf);
     for (let i = 0; i < demandListLength; i++) {
-        controller.registerDemand(await new EwMarket.Demand.Entity(i.toString(), conf).sync());
+        controller.registerDemand(await new Demand.Entity(i.toString(), conf).sync());
     }
 
     conf.logger.verbose('* Getting all active supplies');
-    const supplyListLength = await EwMarket.Supply.getSupplyListLength(conf);
+    const supplyListLength = await Supply.getSupplyListLength(conf);
     for (let i = 0; i < supplyListLength; i++) {
-        controller.registerSupply(await new EwMarket.Supply.Entity(i.toString(), conf).sync());
+        controller.registerSupply(await new Supply.Entity(i.toString(), conf).sync());
     }
 
     conf.logger.verbose('* Getting all certificates');
-    const certificateListLength = await EwOrigin.Certificate.getCertificateListLength(conf);
+    const certificateListLength = await Certificate.getCertificateListLength(conf);
     for (let i = 0; i < certificateListLength; i++) {
-        const newCertificate = await new EwOrigin.Certificate.Entity(i.toString(), conf).sync();
+        const newCertificate = await new Certificate.Entity(i.toString(), conf).sync();
         await controller.matchTrigger(newCertificate);
     }
 };
 
 export const createBlockchainConf = async (
-    blockchainSectionConfFile: BlockchainDataSource,
+    blockchainSectionConfFile: IBlockchainDataSource,
     matcherAccount: EthAccount
-): Promise<EwGeneral.Configuration.Entity> => {
+): Promise<Configuration.Entity> => {
     const web3 = new Web3(blockchainSectionConfFile.web3Url);
-    const marketConf = await EwMarket.createBlockchainProperties(
+    const marketConf = await marketCreateBlockchainProperties(
         logger,
         web3,
         blockchainSectionConfFile.marketContractLookupAddress
     );
-    const originConf = await EwOrigin.createBlockchainProperties(
+    const originConf = await issuerCreateBlockchainProperties(
         logger,
         web3,
         blockchainSectionConfFile.originContractLookupAddress
@@ -97,12 +98,9 @@ export const createBlockchainConf = async (
     };
 };
 
-export const initEventHandling = async (
-    controller: Controller,
-    conf: EwGeneral.Configuration.Entity
-) => {
+export const initEventHandling = async (controller: Controller, conf: Configuration.Entity) => {
     const currentBlockNumber = await conf.blockchainProperties.web3.eth.getBlockNumber();
-    const certificateContractEventHandler = new EwGeneral.ContractEventHandler(
+    const certificateContractEventHandler = new ContractEventHandler(
         conf.blockchainProperties.certificateLogicInstance,
         currentBlockNumber
     );
@@ -111,7 +109,7 @@ export const initEventHandling = async (
         logger.verbose(
             'Event: LogCreatedCertificate certificate #' + event.returnValues._certificateId
         );
-        const newCertificate = await new EwOrigin.Certificate.Entity(
+        const newCertificate = await new Certificate.Entity(
             event.returnValues._certificateId,
             conf
         ).sync();
@@ -129,42 +127,32 @@ export const initEventHandling = async (
     //
     // });
 
-    const marketContractEventHandler = new EwGeneral.ContractEventHandler(
+    const marketContractEventHandler = new ContractEventHandler(
         conf.blockchainProperties.marketLogicInstance,
         currentBlockNumber
     );
 
     marketContractEventHandler.onEvent('createdNewDemand', async event => {
         console.log('\n* Event: createdNewDemand demand: ' + event.returnValues._demandId);
-        const newDemand = await new EwMarket.Demand.Entity(
-            event.returnValues._demandId,
-            conf
-        ).sync();
+        const newDemand = await new Demand.Entity(event.returnValues._demandId, conf).sync();
         await controller.registerDemand(newDemand);
         // matchingManager.matchDemandWithCertificatesHoldInTrust(newDemand)
     });
 
     marketContractEventHandler.onEvent('createdNewSupply', async event => {
         console.log('\n* Event: createdNewSupply supply: ' + event.returnValues._supplyId);
-        const newSupply = await new EwMarket.Supply.Entity(
-            event.returnValues._supplyId,
-            conf
-        ).sync();
+        const newSupply = await new Supply.Entity(event.returnValues._supplyId, conf).sync();
         await controller.registerSupply(newSupply);
     });
 
     marketContractEventHandler.onEvent('LogAgreementFullySigned', async event => {
         console.log(
-            '\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (' +
-                event.returnValues._agreementId +
-                ', ' +
-                event.returnValues._demandId +
-                ', ' +
-                event.returnValues._supplyId +
-                ')'
+            `\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${
+                event.returnValues._agreementId
+            }, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
         );
 
-        const newAgreement = await new EwMarket.Agreement.Entity(
+        const newAgreement = await new Agreement.Entity(
             event.returnValues._agreementId,
             conf
         ).sync();
@@ -177,7 +165,7 @@ export const initEventHandling = async (
     //
     // });
 
-    const assetContractEventHandler = new EwGeneral.ContractEventHandler(
+    const assetContractEventHandler = new ContractEventHandler(
         conf.blockchainProperties.producingAssetLogicInstance,
         currentBlockNumber
     );
@@ -188,20 +176,14 @@ export const initEventHandling = async (
 
     assetContractEventHandler.onEvent('LogAssetFullyInitialized', async event => {
         console.log('\n* Event: LogAssetFullyInitialized asset: ' + event.returnValues._assetId);
-        const newAsset = await new EwAsset.ProducingAsset.Entity(
-            event.returnValues._assetId,
-            conf
-        ).sync();
+        const newAsset = await new ProducingAsset.Entity(event.returnValues._assetId, conf).sync();
         await controller.registerProducingAsset(newAsset);
     });
 
     assetContractEventHandler.onEvent('LogAssetSetActive', async event => {
         console.log('\n* Event: LogAssetSetActive  asset: ' + event.returnValues._assetId);
 
-        const asset = await new EwAsset.ProducingAsset.Entity(
-            event.returnValues._assetId,
-            conf
-        ).sync();
+        const asset = await new ProducingAsset.Entity(event.returnValues._assetId, conf).sync();
         await controller.registerProducingAsset(asset);
     });
 
@@ -211,7 +193,7 @@ export const initEventHandling = async (
         await controller.removeProducingAsset(event.returnValues._assetId);
     });
 
-    const consumingAssetContractEventHandler = new EwGeneral.ContractEventHandler(
+    const consumingAssetContractEventHandler = new ContractEventHandler(
         conf.blockchainProperties.consumingAssetLogicInstance,
         currentBlockNumber
     );
@@ -227,20 +209,14 @@ export const initEventHandling = async (
         console.log(
             '\n* Event: LogAssetFullyInitialized consuming asset: ' + event.returnValues._assetId
         );
-        const newAsset = await new EwAsset.ConsumingAsset.Entity(
-            event.returnValues._assetId,
-            conf
-        ).sync();
+        const newAsset = await new ConsumingAsset.Entity(event.returnValues._assetId, conf).sync();
         await controller.registerConsumingAsset(newAsset);
     });
 
     consumingAssetContractEventHandler.onEvent('LogAssetSetActive', async event => {
         console.log('\n* Event: LogAssetSetActive consuming asset: ' + event.returnValues._assetId);
 
-        const asset = await new EwAsset.ConsumingAsset.Entity(
-            event.returnValues._assetId,
-            conf
-        ).sync();
+        const asset = await new ConsumingAsset.Entity(event.returnValues._assetId, conf).sync();
         await controller.registerConsumingAsset(asset);
     });
 
@@ -252,7 +228,7 @@ export const initEventHandling = async (
         await controller.removeConsumingAsset(event.returnValues._assetId);
     });
 
-    const eventHandlerManager = new EwGeneral.EventHandlerManager(4000, conf);
+    const eventHandlerManager = new EventHandlerManager(4000, conf);
     eventHandlerManager.registerEventHandler(consumingAssetContractEventHandler);
     eventHandlerManager.registerEventHandler(marketContractEventHandler);
     eventHandlerManager.registerEventHandler(assetContractEventHandler);

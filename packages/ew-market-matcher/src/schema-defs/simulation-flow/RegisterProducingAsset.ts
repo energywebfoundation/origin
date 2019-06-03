@@ -14,17 +14,17 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwAsset from 'ew-asset-registry-lib';
-import { IdentifiableEntity } from './index';
+import { ProducingAsset } from 'ew-asset-registry-lib';
+import { IIdentifiableEntity } from '.';
 
-export interface ProducingAssetData extends IdentifiableEntity {
-    offChainProperties: EwAsset.ProducingAsset.OffChainProperties;
-    onChainProperties: EwAsset.ProducingAsset.OnChainProperties;
+export interface IProducingAssetData extends IIdentifiableEntity {
+    offChainProperties: ProducingAsset.IOffChainProperties;
+    onChainProperties: ProducingAsset.IOnChainProperties;
 }
 
-export interface RegisterProducingAssetAction {
+export interface IRegisterProducingAssetAction {
     type: RegisterProducingAssetActionType;
-    data: ProducingAssetData;
+    data: IProducingAssetData;
 }
 
 export enum RegisterProducingAssetActionType {
@@ -32,9 +32,9 @@ export enum RegisterProducingAssetActionType {
 }
 
 export const producingAssetDataToEntity = (
-    producingAssetData: ProducingAssetData
-): EwAsset.ProducingAsset.Entity => {
-    const asset = new EwAsset.ProducingAsset.Entity(producingAssetData.id, null);
+    producingAssetData: IProducingAssetData
+): ProducingAsset.Entity => {
+    const asset = new ProducingAsset.Entity(producingAssetData.id, null);
     asset.offChainProperties = producingAssetData.offChainProperties;
 
     Object.keys(producingAssetData.onChainProperties).forEach(

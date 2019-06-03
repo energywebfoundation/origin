@@ -29,36 +29,37 @@ export enum DefaultValueType {
     Set = 'SET'
 }
 
-export interface RuleConf {
+export interface IRuleConf {
     ruleFormat: RuleFormat;
-    rule: SimpleHierarchyRule;
+    rule: ISimpleHierarchyRule;
 }
 
-export interface SimpleHierarchyRule {
-    relevantProperties: SimpleHierarchyRelevantProperty[];
-}
-
-export interface DefaultValue {
+export interface IDefaultValue {
     type: DefaultValueType;
     value?: number;
 }
 
-export interface SimpleHierarchyRelevantProperty {
+export interface ISimpleHierarchyRelevantProperty {
     name: string;
     mappingFormat: MappingFormat;
     preferHigherValues: boolean;
-    defaultValue: DefaultValue;
+    defaultValue: IDefaultValue;
 }
 
-export interface PriorityComparisonVectorElement {
+export interface ISimpleHierarchyRule {
+    relevantProperties: ISimpleHierarchyRelevantProperty[];
+}
+
+export interface IPriorityComparisonVectorElement {
     name: string;
     priority: number;
 }
-export interface MappedSimpleHierarchyRelevantProperty extends SimpleHierarchyRelevantProperty {
-    mapping: SimpleHierarchyRelecantPropertyMapping[];
-}
 
-export interface SimpleHierarchyRelecantPropertyMapping {
+export interface ISimpleHierarchyRelecantPropertyMapping {
     valueToMap: string;
     mappedValue: number;
+}
+
+export interface IMappedSimpleHierarchyRelevantProperty extends ISimpleHierarchyRelevantProperty {
+    mapping: ISimpleHierarchyRelecantPropertyMapping[];
 }

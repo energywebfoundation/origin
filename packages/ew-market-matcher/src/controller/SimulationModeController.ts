@@ -14,25 +14,28 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Controller } from './Controller';
-import { SimulationDataSource } from '../schema-defs/MatcherConf';
-import { logger } from '../Logger';
 import * as fs from 'fs';
+import * as LogSymbols from 'log-symbols';
+
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { Agreement, Demand, Supply } from 'ew-market-lib';
+import { TimeFrame } from 'ew-utils-general-lib';
+
+import { Controller } from './Controller';
+import { ISimulationDataSource } from '../schema-defs/MatcherConf';
+import { logger } from '../Logger';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
-import * as LogSymbols from 'log-symbols';
 import * as SimulationDescriptionSchema from '../../schemas/simulation-description.schema.json';
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwMarket from 'ew-market-lib';
-import * as EwGeneral from 'ew-utils-general-lib';
+import { METHOD_NOT_IMPLEMENTED } from '..';
 
 export class SimulationModeController extends Controller {
-    private simulationFlow: SimulationFlowDef.SimulationFlow;
-    private matches: SimulationFlowDef.Match[];
+    private simulationFlow: SimulationFlowDef.ISimulationFlow;
+    private matches: SimulationFlowDef.IMatch[];
     private date: number;
 
-    constructor(simulationDataSource: SimulationDataSource) {
+    constructor(simulationDataSource: ISimulationDataSource) {
         super();
         this.matches = [];
         this.agreements = [];
@@ -51,14 +54,14 @@ export class SimulationModeController extends Controller {
         );
         this.matcherAddress = this.simulationFlow.matcherAddress;
         logger.verbose(
-            'Loaded simulation flow file containing ' + this.simulationFlow.flow.length + ' actions'
+            `Loaded simulation flow file containing ${this.simulationFlow.flow.length} actions`
         );
         logger.verbose('Set matcher address to ' + this.matcherAddress);
     }
 
-    async registerProducingAsset(newAsset: EwAsset.ProducingAsset.Entity) {
+    async registerProducingAsset(newAsset: ProducingAsset.Entity) {
         const producingAsset = this.producingAssets.find(
-            (asset: EwAsset.ProducingAsset.Entity) => asset.id === newAsset.id
+            (asset: ProducingAsset.Entity) => asset.id === newAsset.id
         );
 
         if (!producingAsset) {
@@ -67,9 +70,9 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async registerDemand(newDemand: EwMarket.Demand.Entity) {
+    async registerDemand(newDemand: Demand.Entity) {
         const foundDemand = this.demands.find(
-            (demand: EwMarket.Demand.Entity) => demand.id === newDemand.id
+            (demand: Demand.Entity) => demand.id === newDemand.id
         );
 
         if (!foundDemand) {
@@ -78,9 +81,9 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async registerSupply(newSupply: EwMarket.Supply.Entity) {
+    async registerSupply(newSupply: Supply.Entity) {
         const foundSupply = this.supplies.find(
-            (supply: EwMarket.Supply.Entity) => supply.id === newSupply.id
+            (supply: Supply.Entity) => supply.id === newSupply.id
         );
 
         if (!foundSupply) {
@@ -89,20 +92,21 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async registerConsumingAsset(newAsset: EwAsset.ConsumingAsset.Entity) {
-        throw new Error('Method not implemented.');
+    async registerConsumingAsset(newAsset: ConsumingAsset.Entity) {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async registerAgreement(newAggreement: EwMarket.Agreement.Entity) {
+    async registerAgreement(newAggreement: Agreement.Entity) {
         const allowed = newAggreement.allowedMatcher.find(
             (matcherAddress: string) => matcherAddress === this.matcherAddress
         )
             ? true
             : false;
+
         if (allowed) {
             if (
                 !this.agreements.find(
-                    (aggreement: EwMarket.Agreement.Entity) => newAggreement.id === aggreement.id
+                    (aggreement: Agreement.Entity) => newAggreement.id === aggreement.id
                 )
             ) {
                 this.agreements.push(newAggreement);
@@ -114,48 +118,46 @@ export class SimulationModeController extends Controller {
     }
 
     async removeProducingAsset(assetId: string) {
-        throw new Error('Method not implemented.');
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
     async removeConsumingAsset(assetId: string) {
-        throw new Error('Method not implemented.');
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity {
-        return this.producingAssets.find(
-            (asset: EwAsset.ProducingAsset.Entity) => asset.id === assetId
-        );
+    getProducingAsset(assetId: string): ProducingAsset.Entity {
+        return this.producingAssets.find((asset: ProducingAsset.Entity) => asset.id === assetId);
     }
 
-    getDemand(demandId: string): EwMarket.Demand.Entity {
-        return this.demands.find((demand: EwMarket.Demand.Entity) => demand.id === demandId);
+    getDemand(demandId: string): Demand.Entity {
+        return this.demands.find((demand: Demand.Entity) => demand.id === demandId);
     }
 
-    getSupply(supplyId: string): EwMarket.Supply.Entity {
-        return this.supplies.find((supply: EwMarket.Supply.Entity) => supply.id === supplyId);
+    getSupply(supplyId: string): Supply.Entity {
+        return this.supplies.find((supply: Supply.Entity) => supply.id === supplyId);
     }
 
-    getConsumingAsset(assetId: string): EwAsset.ConsumingAsset.Entity {
-        throw new Error('Method not implemented.');
+    getConsumingAsset(assetId: string): ConsumingAsset.Entity {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
     async createOrRefreshConsumingAsset(assetId: string) {
-        throw new Error('Method not implemented.');
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    getAgreement(agreementId: string): EwMarket.Agreement.Entity {
-        throw new Error('Method not implemented.');
+    getAgreement(agreementId: string): Agreement.Entity {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
     async removeAgreement(agreementId: string) {
-        throw new Error('Method not implemented.');
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
     async getCurrentDataSourceTime(): Promise<number> {
         return this.date;
     }
 
-    setDataSourceTime(dateData: SimulationFlowDef.Date.DateData) {
+    setDataSourceTime(dateData: SimulationFlowDef.Date.IDateData) {
         const theDate = Date.UTC(
             dateData.year,
             dateData.month - 1,
@@ -168,7 +170,7 @@ export class SimulationModeController extends Controller {
         logger.verbose('Set simulation time to ' + new Date(this.date * 1000).toUTCString());
     }
 
-    async handleUnmatchedCertificate(certificate: EwOrigin.Certificate.Entity) {
+    async handleUnmatchedCertificate(certificate: Certificate.Entity) {
         this.matches.push({
             certificateId: certificate.id,
             agreementId: '-1',
@@ -176,10 +178,7 @@ export class SimulationModeController extends Controller {
         });
     }
 
-    async matchAggrement(
-        certificate: EwOrigin.Certificate.Entity,
-        agreement: EwMarket.Agreement.Entity
-    ) {
+    async matchAggrement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
         this.matches.push({
             agreementId: agreement.id,
             certificateId: certificate.id,
@@ -198,7 +197,7 @@ export class SimulationModeController extends Controller {
             agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
         }
 
-        logger.info('Matched certificate #' + certificate.id + ' to agreement #' + agreement.id);
+        logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
         logger.debug(
             `Set Wh for Agreement ${agreement.id} in period ${
                 agreement.matcherOffChainProperties.currentPeriod
@@ -206,19 +205,19 @@ export class SimulationModeController extends Controller {
         );
     }
 
-    async matchDemand(certificate: EwOrigin.Certificate.Entity, demand: EwMarket.Demand.Entity) {
-        throw new Error('Method not implemented.');
+    async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
+        throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async getCurrentPeriod(startDate: number, timeFrame: EwGeneral.TimeFrame): Promise<number> {
+    async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number> {
         switch (timeFrame) {
-            case EwGeneral.TimeFrame.yearly:
+            case TimeFrame.yearly:
                 return Math.floor((this.date - startDate) / (365 * 24 * 60 * 60));
-            case EwGeneral.TimeFrame.monthly:
+            case TimeFrame.monthly:
                 return Math.floor((this.date - startDate) / (30 * 24 * 60 * 60));
-            case EwGeneral.TimeFrame.daily:
+            case TimeFrame.daily:
                 return Math.floor((this.date - startDate) / (24 * 60 * 60));
-            case EwGeneral.TimeFrame.hourly:
+            case TimeFrame.hourly:
                 return Math.floor((this.date - startDate) / (24 * 60 * 60));
             default:
                 throw new Error('Unknown time frame' + timeFrame);
@@ -234,8 +233,8 @@ export class SimulationModeController extends Controller {
     }
 
     compareExpectedResultField(
-        expectedMatch: SimulationFlowDef.Match,
-        match: SimulationFlowDef.Match,
+        expectedMatch: SimulationFlowDef.IMatch,
+        match: SimulationFlowDef.IMatch,
         key: string,
         expectedMatchIndex: number
     ): boolean {
@@ -253,7 +252,7 @@ export class SimulationModeController extends Controller {
     }
 
     async splitCertificate(
-        certificate: EwOrigin.Certificate.Entity,
+        certificate: Certificate.Entity,
         whForFirstChild: number
     ): Promise<void> {
         if (certificate.powerInW < whForFirstChild) {
@@ -264,25 +263,23 @@ export class SimulationModeController extends Controller {
         const secondChildId = parseInt(certificate.id) + 2;
 
         const firstChild = Object.assign(
-            new EwOrigin.Certificate.Entity(null, certificate.configuration),
+            new Certificate.Entity(null, certificate.configuration),
             certificate
         );
         firstChild.id = firstChildId.toString();
         firstChild.powerInW = whForFirstChild;
 
         const secondChild = Object.assign(
-            new EwOrigin.Certificate.Entity(null, certificate.configuration),
+            new Certificate.Entity(null, certificate.configuration),
             certificate
         );
         secondChild.id = secondChildId.toString();
         secondChild.powerInW = certificate.powerInW - firstChild.powerInW;
 
         certificate.children = [firstChildId, secondChildId];
-        logger.debug(
-            'Splitting certificate #' + certificate.id + ' with ' + certificate.powerInW + 'wh'
-        );
-        logger.debug('First child #' + firstChild.id + ' with ' + firstChild.powerInW + 'wh');
-        logger.debug('Second child #' + secondChild.id + ' with ' + secondChild.powerInW + 'wh');
+        logger.debug(`Splitting certificate #${certificate.id} with ${certificate.powerInW} wh`);
+        logger.debug(`First child #${firstChild.id} with ${firstChild.powerInW} wh`);
+        logger.debug(`Second child #${secondChild.id} with ${secondChild.powerInW} wh`);
 
         await this.matchTrigger(firstChild);
         await this.matchTrigger(secondChild);
@@ -293,7 +290,7 @@ export class SimulationModeController extends Controller {
 
         logger.info('Comparing results with expected results');
 
-        this.matches.forEach((match: SimulationFlowDef.Match, index: number) => {
+        this.matches.forEach((match: SimulationFlowDef.IMatch, index: number) => {
             if (this.simulationFlow.expectedResult[index]) {
                 const expectedResult = this.simulationFlow.expectedResult[index];
                 const matchFits =
@@ -307,11 +304,11 @@ export class SimulationModeController extends Controller {
                     this.compareExpectedResultField(expectedResult, match, 'agreementId', index);
 
                 if (matchFits) {
-                    logger.verbose('Match #' + index + ' as expected ' + LogSymbols.success);
+                    logger.verbose(`Match #${index} as expected ${LogSymbols.success}`);
                 } else {
                     expectedResultFits = false;
                     logger.verbose(
-                        'Match #' + index + ' is different than expected ' + LogSymbols.error
+                        `Match #${index} is different than expected ${LogSymbols.error}`
                     );
                 }
             } else {

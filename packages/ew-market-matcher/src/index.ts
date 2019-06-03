@@ -19,9 +19,11 @@ import * as SchemaDefs from './schema-defs/MatcherConf';
 import { startMatcher } from './exports';
 import { logger } from './Logger';
 
+export const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';
+
 const main = async () => {
     if (process.argv[2]) {
-        const conf: SchemaDefs.MatcherConf = JSON.parse(
+        const conf: SchemaDefs.IMatcherConf = JSON.parse(
             fs.readFileSync(process.argv[2], 'utf8').toString()
         );
         await startMatcher(conf);

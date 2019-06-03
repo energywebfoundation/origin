@@ -15,6 +15,7 @@
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as fs from 'fs';
+
 import * as SchemaDefs from './schema-defs/MatcherConf';
 import { Matcher } from './matcher/Matcher';
 import { SimpleMatcher } from './matcher/SimpleMatcher';
@@ -29,8 +30,8 @@ import { logger } from './Logger';
 
 const buildMatcher = (
     matcherSpecification:
-        | SchemaDefs.BlockchainMatcherSpecification
-        | SchemaDefs.SimulationMatcherSpecification
+        | SchemaDefs.IBlockchainMatcherSpecification
+        | SchemaDefs.ISimulationMatcherSpecification
 ): Matcher => {
     switch (matcherSpecification.type) {
         case SchemaDefs.MatcherType.ConfigurableReference:
@@ -50,12 +51,12 @@ const buildMatcher = (
 };
 
 const buildController = async (
-    dataSource: SchemaDefs.BlockchainDataSource | SchemaDefs.SimulationDataSource
+    dataSource: SchemaDefs.IBlockchainDataSource | SchemaDefs.ISimulationDataSource
 ): Promise<Controller> => {
     logger.verbose('Data source type is ' + dataSource.type);
     switch (dataSource.type) {
         case SchemaDefs.BlockchainDataSourceType.Blockchain:
-            const blockchainDataSource = dataSource as SchemaDefs.BlockchainDataSource;
+            const blockchainDataSource = dataSource as SchemaDefs.IBlockchainDataSource;
 
             return new BlockchainModeController(
                 await createBlockchainConf(
@@ -66,18 +67,17 @@ const buildController = async (
             );
 
         case SchemaDefs.SimulationDataSourceType.Simulation:
-            return new SimulationModeController(dataSource as SchemaDefs.SimulationDataSource);
+            return new SimulationModeController(dataSource as SchemaDefs.ISimulationDataSource);
 
         default:
             throw new Error('Unknown data source type.');
     }
 };
 
-export const startMatcher = async (_config: SchemaDefs.MatcherConf) => {
+export const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
     logger.info('Matcher application started.');
 
-    if (_config) {
-        const conf: SchemaDefs.MatcherConf = _config;
+    if (conf) {
         try {
             Controller.validateJson(conf, ConfSchema, 'Config file');
             const matcher = buildMatcher(conf.matcherSpecification);

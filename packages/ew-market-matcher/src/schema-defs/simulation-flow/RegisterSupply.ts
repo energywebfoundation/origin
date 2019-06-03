@@ -14,25 +14,25 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwMarket from 'ew-market-lib';
-import { IdentifiableEntity } from '.';
+import { Supply } from 'ew-market-lib';
+import { IIdentifiableEntity } from '.';
 
-export interface SupplyData extends IdentifiableEntity {
-    offChainProperties: EwMarket.Supply.SupplyOffchainProperties;
-    onChainProperties: EwMarket.Supply.SupplyOnChainProperties;
+export interface ISupplyData extends IIdentifiableEntity {
+    offChainProperties: Supply.ISupplyOffchainProperties;
+    onChainProperties: Supply.ISupplyOnChainProperties;
 }
 
-export interface RegisterSupplyAction {
+export interface IRegisterSupplyAction {
     type: RegisterSupplyActionType;
-    data: SupplyData;
+    data: ISupplyData;
 }
 
 export enum RegisterSupplyActionType {
     RegisterSupply = 'REGISTER_SUPPLY'
 }
 
-export const supplyDataToEntity = (supplyData: SupplyData): EwMarket.Supply.Entity => {
-    const supply = new EwMarket.Supply.Entity(supplyData.id, null);
+export const supplyDataToEntity = (supplyData: ISupplyData): Supply.Entity => {
+    const supply = new Supply.Entity(supplyData.id, null);
     supply.offChainProperties = supplyData.offChainProperties;
     Object.keys(supplyData.onChainProperties).forEach(
         (key: string) => (supply[key] = supplyData.onChainProperties[key])

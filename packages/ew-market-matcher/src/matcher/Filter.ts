@@ -16,29 +16,28 @@
 
 import { Controller } from '../controller/Controller';
 import { logger } from '../Logger';
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwMarket from 'ew-market-lib';
-import * as EwGeneral from 'ew-utils-general-lib';
+import { Certificate } from 'ew-origin-lib';
+import { Agreement, Demand } from 'ew-market-lib';
 
-export interface FilterSpec {
+export interface IFilterSpec {
     originator: string;
     start: number;
     end: number;
-    demand: EwMarket.Demand.Entity;
+    demand: Demand.Entity;
 }
 
 export const filterAgreements = async (
     controller: Controller,
-    agreements: EwMarket.Agreement.Entity[],
-    certificate: EwOrigin.Certificate.Entity
-): Promise<EwMarket.Agreement.Entity[]> => {
+    agreements: Agreement.Entity[],
+    certificate: Certificate.Entity
+): Promise<Agreement.Entity[]> => {
     const filteredAgreements = [];
 
     for (const agreement of agreements) {
-        const loggerPrefix = '[Filter/checkFit] Agreement #' + agreement.id + ' ';
+        const loggerPrefix = `[Filter/checkFit] Agreement #${agreement.id}`;
 
-        const filterSpec: FilterSpec = {
-            demand: await controller.getDemand(agreement.demandId.toString()),
+        const filterSpec: IFilterSpec = {
+            demand: controller.getDemand(agreement.demandId.toString()),
             end: agreement.offChainProperties.ende,
             // TODO: includ originator in demand
             originator: null,
@@ -51,11 +50,9 @@ export const filterAgreements = async (
     }
 
     logger.verbose(
-        filteredAgreements.length +
-            ' from ' +
-            agreements.length +
-            ' are a possible fit for certificate #' +
-            certificate.id
+        `${filteredAgreements.length} from ${
+            agreements.length
+        } are a possible fit for certificate #${certificate.id}`
     );
 
     return filteredAgreements;
@@ -70,19 +67,12 @@ const checkProperty = (
     if (spec !== null && spec !== undefined) {
         const output = spec === real;
         logger.debug(
-            loggerPrefix +
-                propertyName +
-                ' equals specification: ' +
-                output +
-                ' spec: ' +
-                spec.toString() +
-                ', asset: ' +
-                real.toString()
+            `${loggerPrefix}${propertyName} equals specification: ${output} spec: ${spec.toString()}, asset: ${real.toString()}`
         );
 
         return output;
     } else {
-        logger.debug(loggerPrefix + propertyName + ' is not specified.');
+        logger.debug(`${loggerPrefix}${propertyName} is not specified.`);
 
         return true;
     }
@@ -91,44 +81,29 @@ const checkProperty = (
 const checkFit = async (
     controller: Controller,
     loggerPrefix: string,
-    filterSpec: FilterSpec,
-    certificate: EwOrigin.Certificate.Entity
+    filterSpec: IFilterSpec,
+    certificate: Certificate.Entity
 ): Promise<boolean> => {
     let fit = true;
     const currentTime = await controller.getCurrentDataSourceTime();
-    const asset = await controller.getProducingAsset(certificate.assetId.toString());
+    const asset = controller.getProducingAsset(certificate.assetId.toString());
 
     logger.debug(
-        loggerPrefix +
-            'originator: ' +
-            filterSpec.originator +
-            ', ' +
-            'asset type: ' +
-            filterSpec.demand.offChainProperties.assettype +
-            ', ' +
-            'compliance: ' +
-            filterSpec.demand.offChainProperties.registryCompliance +
-            ', ' +
-            'country ' +
-            filterSpec.demand.offChainProperties.locationCountry +
-            ', ' +
-            'region: ' +
-            filterSpec.demand.offChainProperties.locationRegion +
-            ', ' +
-            'producing asset: ' +
+        `${loggerPrefix}originator: ${filterSpec.originator}, asset type: ${
+            filterSpec.demand.offChainProperties.assettype
+        }, compliance: ${filterSpec.demand.offChainProperties.registryCompliance}, country ${
+            filterSpec.demand.offChainProperties.locationCountry
+        }, region: ${filterSpec.demand.offChainProperties.locationRegion}, producing asset: ${
             filterSpec.demand.offChainProperties.productingAsset
+        }`
     );
 
     if (filterSpec.end < currentTime || filterSpec.start > currentTime) {
         fit = false;
         logger.debug(
-            loggerPrefix +
-                'is outdated. (current time: ' +
-                currentTime +
-                ', start time: ' +
-                filterSpec.start +
-                ', end time: ' +
-                filterSpec.end
+            `${loggerPrefix}is outdated. (current time: ${currentTime}, start time: ${
+                filterSpec.start
+            }, end time: ${filterSpec.end}`
         );
     }
 
@@ -166,7 +141,7 @@ const checkFit = async (
             'producing asset id'
         );
 
-    logger.debug(loggerPrefix + (fit ? 'does' : 'does not') + ' fit with asset ' + asset.id + '.');
+    logger.debug(`${loggerPrefix}${fit ? 'does' : 'does not'} fit with asset ${asset.id}.`);
 
     return fit;
 };

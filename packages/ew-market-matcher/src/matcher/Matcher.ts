@@ -14,8 +14,8 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwMarket from 'ew-market-lib';
+import { Certificate } from 'ew-origin-lib';
+import { Demand, Agreement } from 'ew-market-lib';
 import { Controller } from '../controller/Controller';
 import { logger } from '../Logger';
 
@@ -23,19 +23,19 @@ export abstract class Matcher {
     protected controller: Controller;
 
     abstract async findMatchingAgreement(
-        certificate: EwOrigin.Certificate.Entity,
-        agreements: EwMarket.Agreement.Entity[]
-    ): Promise<{ split: boolean; agreement: EwMarket.Agreement.Entity }>;
+        certificate: Certificate.Entity,
+        agreements: Agreement.Entity[]
+    ): Promise<{ split: boolean; agreement: Agreement.Entity }>;
 
     abstract async findMatchingDemand(
-        certificate: EwOrigin.Certificate.Entity,
-        demands: EwMarket.Demand.Entity[]
-    ): Promise<EwMarket.Demand.Entity>;
+        certificate: Certificate.Entity,
+        demands: Demand.Entity[]
+    ): Promise<Demand.Entity>;
 
     async match(
-        certificate: EwOrigin.Certificate.Entity,
-        agreements: EwMarket.Agreement.Entity[],
-        demands: EwMarket.Demand.Entity[]
+        certificate: Certificate.Entity,
+        agreements: Agreement.Entity[],
+        demands: Demand.Entity[]
     ): Promise<boolean> {
         const matcherAccount = certificate.escrow.find(
             (escrow: any) => escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase()

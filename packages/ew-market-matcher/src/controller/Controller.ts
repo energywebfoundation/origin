@@ -14,15 +14,17 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Matcher } from '../matcher/Matcher';
-import * as EwAsset from 'ew-asset-registry-lib';
-import * as EwOrigin from 'ew-origin-lib';
-import * as EwMarket from 'ew-market-lib';
-import * as Filter from '../matcher/Filter';
-import { logger } from '../Logger';
 import * as Jsonschema from 'jsonschema';
 import * as LogSymbols from 'log-symbols';
-import * as EwGeneral from 'ew-utils-general-lib';
+
+import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
+import { Certificate } from 'ew-origin-lib';
+import { Agreement, Demand, Supply } from 'ew-market-lib';
+import { TimeFrame } from 'ew-utils-general-lib';
+
+import { Matcher } from '../matcher/Matcher';
+import * as Filter from '../matcher/Filter';
+import { logger } from '../Logger';
 
 export abstract class Controller {
     static validateJson(input: any, schema: any, description: string) {
@@ -42,10 +44,10 @@ export abstract class Controller {
         }
     }
 
-    agreements: EwMarket.Agreement.Entity[];
-    demands: EwMarket.Demand.Entity[];
-    supplies: EwMarket.Supply.Entity[];
-    producingAssets: EwAsset.ProducingAsset.Entity[];
+    agreements: Agreement.Entity[];
+    demands: Demand.Entity[];
+    supplies: Supply.Entity[];
+    producingAssets: ProducingAsset.Entity[];
     matcherAddress: string;
 
     protected matcher: Matcher;
@@ -54,38 +56,36 @@ export abstract class Controller {
         this.matcher = matcher;
     }
 
-    async matchTrigger(certificate: EwOrigin.Certificate.Entity) {
+    async matchTrigger(certificate: Certificate.Entity) {
         // const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
         await this.matcher.match(certificate, this.agreements, this.demands);
     }
 
     abstract async matchAggrement(
-        certificate: EwOrigin.Certificate.Entity,
-        aggreement: EwMarket.Agreement.Entity
+        certificate: Certificate.Entity,
+        aggreement: Agreement.Entity
     ): Promise<void>;
 
     abstract async matchDemand(
-        certificate: EwOrigin.Certificate.Entity,
-        demand: EwMarket.Demand.Entity
+        certificate: Certificate.Entity,
+        demand: Demand.Entity
     ): Promise<void>;
 
     abstract async getCurrentDataSourceTime(): Promise<number>;
 
     abstract start(): void;
 
-    abstract async handleUnmatchedCertificate(
-        certificate: EwOrigin.Certificate.Entity
-    ): Promise<void>;
+    abstract async handleUnmatchedCertificate(certificate: Certificate.Entity): Promise<void>;
 
-    abstract async registerProducingAsset(newAsset: EwAsset.ProducingAsset.Entity): Promise<void>;
+    abstract async registerProducingAsset(newAsset: ProducingAsset.Entity): Promise<void>;
 
-    abstract async registerConsumingAsset(newAsset: EwAsset.ConsumingAsset.Entity): Promise<void>;
+    abstract async registerConsumingAsset(newAsset: ConsumingAsset.Entity): Promise<void>;
 
-    abstract async registerAgreement(aggreement: EwMarket.Agreement.Entity): Promise<void>;
+    abstract async registerAgreement(aggreement: Agreement.Entity): Promise<void>;
 
-    abstract async registerDemand(demand: EwMarket.Demand.Entity): Promise<void>;
+    abstract async registerDemand(demand: Demand.Entity): Promise<void>;
 
-    abstract async registerSupply(supply: EwMarket.Supply.Entity): Promise<void>;
+    abstract async registerSupply(supply: Supply.Entity): Promise<void>;
 
     abstract async removeProducingAsset(assetId: string): Promise<void>;
 
@@ -93,25 +93,22 @@ export abstract class Controller {
 
     abstract async removeAgreement(agreementId: string): Promise<void>;
 
-    abstract getProducingAsset(assetId: string): EwAsset.ProducingAsset.Entity;
+    abstract getProducingAsset(assetId: string): ProducingAsset.Entity;
 
-    abstract getConsumingAsset(assetId: string): EwAsset.ConsumingAsset.Entity;
+    abstract getConsumingAsset(assetId: string): ConsumingAsset.Entity;
 
     abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
 
     abstract async splitCertificate(
-        certificate: EwOrigin.Certificate.Entity,
+        certificate: Certificate.Entity,
         whForFirstChils: number
     ): Promise<void>;
 
-    abstract async getCurrentPeriod(
-        startDate: number,
-        timeFrame: EwGeneral.TimeFrame
-    ): Promise<number>;
+    abstract async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number>;
 
-    abstract getAgreement(agreementId: string): EwMarket.Agreement.Entity;
+    abstract getAgreement(agreementId: string): Agreement.Entity;
 
-    abstract getDemand(demandId: string): EwMarket.Demand.Entity;
+    abstract getDemand(demandId: string): Demand.Entity;
 
-    abstract getSupply(supplyId: string): EwMarket.Supply.Entity;
+    abstract getSupply(supplyId: string): Supply.Entity;
 }

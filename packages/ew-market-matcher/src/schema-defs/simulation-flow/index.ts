@@ -22,28 +22,28 @@ import * as Certificate from './RegisterCertificate';
 import * as Demand from './RegisterDemand';
 import * as Supply from './RegisterSupply';
 
-interface SimulationFlow {
-    flow: Array<
-        | Sleep.SleepAction
-        | Agreement.RegisterAgreementAction
-        | Date.SetDateAction
-        | ProducingAsset.RegisterProducingAssetAction
-        | Certificate.RegisterCertificateAction
-        | Supply.RegisterSupplyAction
-        | Demand.RegisterDemandAction
-    >;
-    matcherAddress: string;
-    expectedResult: Match[];
-}
-
-interface IdentifiableEntity {
-    id: string;
-}
-
-interface Match {
+interface IMatch {
     certificateId: string;
     agreementId: string;
     powerInW: number;
+}
+
+interface ISimulationFlow {
+    flow: Array<
+        | Sleep.ISleepAction
+        | Agreement.IRegisterAgreementAction
+        | Date.ISetDateAction
+        | ProducingAsset.IRegisterProducingAssetAction
+        | Certificate.IRegisterCertificateAction
+        | Supply.IRegisterSupplyAction
+        | Demand.IRegisterDemandAction
+    >;
+    matcherAddress: string;
+    expectedResult: IMatch[];
+}
+
+interface IIdentifiableEntity {
+    id: string;
 }
 
 export {
@@ -54,7 +54,7 @@ export {
     Certificate,
     Demand,
     Supply,
-    Match,
-    IdentifiableEntity,
-    SimulationFlow
+    IMatch,
+    IIdentifiableEntity,
+    ISimulationFlow
 };
