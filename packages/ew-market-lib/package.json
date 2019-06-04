@@ -36,10 +36,9 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-market-lib#readme",
   "dependencies": {
-    "ew-asset-registry-lib": "energywebfoundation/ew-asset-registry-lib#6421264",
-    "ew-user-registry-lib": "energywebfoundation/ew-user-registry-lib#5a41bd1",
-    "ew-utils-general-lib": "energywebfoundation/ew-utils-general-lib#d54e4e2",
-    "ew-utils-testbackend": "energywebfoundation/ew-utils-testbackend#c365e3c",
+    "ew-asset-registry-lib": "1.0.3-alpha.2",
+    "ew-user-registry-lib": "1.0.3-alpha.2",
+    "ew-utils-general-lib": "1.0.2-alpha.2",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
@@ -50,6 +49,7 @@
     "@types/web3": "1.0.14",
     "chai": "4.2.0",
     "ethlint": "1.2.4",
+    "ew-utils-testbackend": "1.0.1-alpha.1",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.4.3",
     "lint-staged": "8.1.7",
