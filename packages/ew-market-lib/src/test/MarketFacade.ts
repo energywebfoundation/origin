@@ -368,7 +368,7 @@ describe('Market-Facade', () => {
 
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
-                ende: startTime + 1000,
+                end: startTime + 1000,
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
@@ -417,7 +417,7 @@ describe('Market-Facade', () => {
                 },
                 offChainProperties: {
                     currency: 1,
-                    ende: startTime + 1000,
+                    end: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
@@ -453,7 +453,7 @@ describe('Market-Facade', () => {
                 },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
-                    ende: startTime + 1000,
+                    end: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
@@ -497,7 +497,7 @@ describe('Market-Facade', () => {
                 },
                 offChainProperties: {
                     currency: 1,
-                    ende: startTime + 1000,
+                    end: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
@@ -516,7 +516,7 @@ describe('Market-Facade', () => {
 
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
-                ende: startTime + 1000,
+                end: startTime + 1000,
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
@@ -565,7 +565,7 @@ describe('Market-Facade', () => {
                 },
                 offChainProperties: {
                     currency: 1,
-                    ende: startTime + 1000,
+                    end: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
@@ -609,7 +609,7 @@ describe('Market-Facade', () => {
                 },
                 offChainProperties: {
                     currency: 1,
-                    ende: startTime + 1000,
+                    end: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,
@@ -658,7 +658,7 @@ describe('Market-Facade', () => {
                 },
                 offChainProperties: {
                     currency: 1,
-                    ende: startTime + 1000,
+                    end: startTime + 1000,
                     period: 10,
                     price: 10,
                     start: startTime,

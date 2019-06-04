@@ -21,7 +21,7 @@ import { TransactionReceipt } from 'web3/types';
 
 export interface IAgreementOffChainProperties {
     start: number;
-    ende: number;
+    end: number;
     price: number;
     currency: GeneralLib.Currency;
     period: number;

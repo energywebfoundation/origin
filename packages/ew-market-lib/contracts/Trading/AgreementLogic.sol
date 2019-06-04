@@ -70,11 +70,11 @@ contract AgreementLogic is RoleManagement, Updatable {
 
         require(msg.sender == demand.demandOwner || msg.sender == supplyOwner, "createDemand: wrong owner when creating");
         uint agreementId = db.createAgreementDB(
-            _propertiesDocumentHash, 
+            _propertiesDocumentHash,
             _documentDBURL,
             _matcherPropertiesDocumentHash,
             _matcherDBURL,
-            _demandId, 
+            _demandId,
             _supplyId
         );
 
@@ -175,7 +175,9 @@ contract AgreementLogic is RoleManagement, Updatable {
         MarketDB.Agreement memory agreement = db.getAgreementDB(_agreementId);
         MarketDB.Supply memory supply = db.getSupply(agreement.supplyId);
 
-        require(AssetGeneralInterface(assetContractLookup.assetProducingRegistry()).getAssetOwner(supply.assetId) == msg.sender, "approveAgreementSupply: wrong msg.sender");
+        require(
+            AssetGeneralInterface(assetContractLookup.assetProducingRegistry()).getAssetOwner(supply.assetId) == msg.sender, "approveAgreementSupply: wrong msg.sender"
+        );
 
         // we approve a supply. If it's returning true it means that both supply and demand are approved thus making the agreement complete
         if(db.approveAgreementSupplyDB(_agreementId)){
@@ -186,17 +188,19 @@ contract AgreementLogic is RoleManagement, Updatable {
     /// @notice sets the matcher for an agreement
     /// @dev can only be called as long as there are no matchers set
     /// @param _agreementId the agreement-Id
-    function setAgreementMatcher(uint _agreementId) 
-        internal 
+    function setAgreementMatcher(uint _agreementId)
+        internal
     {
         MarketDB.Agreement memory agreement = db.getAgreementDB(_agreementId);
 
         assert(agreement.allowedMatcher.length == 0);
         MarketDB.Supply memory supply = db.getSupply(agreement.supplyId);
 
-        (,,,,,address[] memory matcherArray,,,,) = AssetGeneralInterface(assetContractLookup.assetProducingRegistry()).getAssetGeneral(supply.assetId);
+        (,,,,,address[] memory matcherArray,,,,) = AssetGeneralInterface(
+            assetContractLookup.assetProducingRegistry()
+        ).getAssetGeneral(supply.assetId);
 
-        db.setAgreementMatcher( _agreementId, matcherArray);
+        db.setAgreementMatcher(_agreementId, matcherArray);
     }
 
     /// @notice allows matcher to change the matcher-properties for an agreement
@@ -215,11 +219,11 @@ contract AgreementLogic is RoleManagement, Updatable {
         require(agreement.approvedBySupplyOwner, "supply owner has not agreed yet");
         require(agreement.approvedByDemandOwner, "demand owner has not agreed yet");
         address[] memory agreementMatcher = agreement.allowedMatcher;
-        
+
         bool foundMatcher = false;
 
         // we have to check all the matchers
-        for(uint i=0; i < agreementMatcher.length; i++){
+        for(uint i = 0; i < agreementMatcher.length; i++){
 
             if ( agreementMatcher[i] == msg.sender) {
                 foundMatcher = true;
