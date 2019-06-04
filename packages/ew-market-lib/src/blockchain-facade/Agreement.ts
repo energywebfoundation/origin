@@ -28,7 +28,7 @@ export interface IAgreementOffChainProperties {
     timeframe: GeneralLib.TimeFrame;
 }
 
-export interface IMatcherOffchainProperties {
+export interface IMatcherOffChainProperties {
     currentWh: number;
     currentPeriod: number;
 }
@@ -45,7 +45,7 @@ export interface IAgreementOnChainProperties
 export const createAgreement = async (
     agreementPropertiesOnChain: IAgreementOnChainProperties,
     agreementPropertiesOffchain: IAgreementOffChainProperties,
-    matcherPropertiesOffchain: IMatcherOffchainProperties,
+    matcherPropertiesOffchain: IMatcherOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
     const agreement = new Entity(null, configuration);
@@ -116,7 +116,7 @@ export const getAgreementListLength = async (
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     implements IAgreementOnChainProperties {
-    matcherOffChainProperties: IMatcherOffchainProperties;
+    matcherOffChainProperties: IMatcherOffChainProperties;
     offChainProperties: IAgreementOffChainProperties;
     propertiesDocumentHash: string;
     url: string;
@@ -208,7 +208,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     }
 
     async setMatcherProperties(
-        matcherOffchainProperties: IMatcherOffchainProperties
+        matcherOffchainProperties: IMatcherOffChainProperties
     ): Promise<TransactionReceipt> {
         const agreementPropsOnChain: IAgreementOnChainProperties = {
             matcherPropertiesDocumentHash: null,

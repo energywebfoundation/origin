@@ -34,7 +34,7 @@ import { ProducingAsset } from 'ew-asset-registry-lib';
 import { deepEqual } from 'assert';
 import {
     IAgreementOffChainProperties,
-    IMatcherOffchainProperties
+    IMatcherOffChainProperties
 } from '../blockchain-facade/Agreement';
 import { timingSafeEqual } from 'crypto';
 
@@ -375,7 +375,7 @@ describe('Market-Facade', () => {
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const matcherOffchainProps: IMatcherOffchainProperties = {
+            const matcherOffchainProps: IMatcherOffChainProperties = {
                 currentWh: 0,
                 currentPeriod: 0
             };
@@ -523,7 +523,7 @@ describe('Market-Facade', () => {
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const matcherOffchainProps: IMatcherOffchainProperties = {
+            const matcherOffchainProps: IMatcherOffChainProperties = {
                 currentWh: 0,
                 currentPeriod: 0
             };
@@ -629,7 +629,7 @@ describe('Market-Facade', () => {
                 conf
             ).sync();
 
-            const matcherOffchainProps: IMatcherOffchainProperties = {
+            const matcherOffchainProps: IMatcherOffChainProperties = {
                 currentWh: 100,
                 currentPeriod: 0
             };
