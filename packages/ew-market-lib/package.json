@@ -20,7 +20,7 @@
     "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts IDemandOffChainProperties > schemas/DemandOffChainProperties.schema.json",
     "build-schema:SupplyPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Supply.ts ISupplyOffchainProperties > schemas/SupplyOffchainProperties.schema.json",
     "build-schema:AgreementPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts IAgreementOffChainProperties > schemas/AgreementOffChainProperties.schema.json",
-    "build-schema:MatcherPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts IMatcherOffchainProperties > schemas/MatcherOffchainProperties.schema.json",
+    "build-schema:MatcherPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts IMatcherOffChainProperties > schemas/MatcherOffChainProperties.schema.json",
     "flatten-contracts": "truffle-flattener contracts/**/* contracts/MarketContractLookup.sol > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",

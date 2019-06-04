@@ -16,7 +16,7 @@
 
 import * as GeneralLib from 'ew-utils-general-lib';
 import AgreementOffchainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
-import MatcherOffchainPropertiesSchema from '../../schemas/MatcherOffchainProperties.schema.json';
+import MatcherOffChainPropertiesSchema from '../../schemas/MatcherOffChainProperties.schema.json';
 import { TransactionReceipt } from 'web3/types';
 
 export interface IAgreementOffChainProperties {
@@ -60,7 +60,7 @@ export const createAgreement = async (
     const matcherOffchainStorageProperties = agreement.prepareEntityCreation(
         agreementPropertiesOnChain,
         matcherPropertiesOffchain,
-        MatcherOffchainPropertiesSchema,
+        MatcherOffChainPropertiesSchema,
         agreement.getMatcherURL()
     );
 
@@ -223,7 +223,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
         const matcherOffchainStorageProperties = this.prepareEntityCreation(
             agreementPropsOnChain,
             matcherOffchainProperties,
-            MatcherOffchainPropertiesSchema,
+            MatcherOffChainPropertiesSchema,
             this.getMatcherURL()
         );
 
