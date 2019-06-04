@@ -276,7 +276,8 @@ describe('Market-Facade', () => {
                 assetType: ProducingAsset.Type.Wind,
                 complianceRegistry: ProducingAsset.Compliance.EEC,
                 otherGreenAttributes: '',
-                typeOfPublicSupport: ''
+                typeOfPublicSupport: '',
+                facilityName: ''
             };
 
             assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
