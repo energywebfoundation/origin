@@ -20,7 +20,7 @@ import { IIdentifiableEntity } from '.';
 export interface IAgreementData extends IIdentifiableEntity {
     offChainProperties: Agreement.IAgreementOffChainProperties;
     onChainProperties: Agreement.IAgreementOnChainProperties;
-    matcherOffChainProperties: Agreement.IMatcherOffchainProperties;
+    matcherOffChainProperties: Agreement.IMatcherOffChainProperties;
 }
 
 export enum RegisterAgreementActionType {
