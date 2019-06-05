@@ -355,6 +355,11 @@ describe('Market-Facade', () => {
                 }
             });
         });
+
+        it('should get all supplies', async () => {
+            const allSupplies = await Market.Supply.getAllSupplies(conf);
+            assert.equal(allSupplies.length, 1);
+        });
     });
 
     describe('Agreement-Facade', () => {
@@ -397,6 +402,9 @@ describe('Market-Facade', () => {
                 matcherOffchainProps,
                 conf
             );
+
+            assert.equal(await Market.Agreement.getAgreementListLength(conf), 1);
+
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
@@ -545,6 +553,9 @@ describe('Market-Facade', () => {
                 matcherOffchainProps,
                 conf
             );
+
+            assert.equal(await Market.Agreement.getAgreementListLength(conf), 2);
+
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
@@ -668,6 +679,13 @@ describe('Market-Facade', () => {
             });
         });
 
+        it('should get all agreements', async () => {
+            const allAgreements = await Market.Agreement.getAllAgreements(conf);
+
+            assert.equal(allAgreements.length, 2);
+            assert.equal(allAgreements.length, await Market.Agreement.getAgreementListLength(conf));
+        });
+
         it('should delete a demand', async () => {
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
@@ -677,7 +695,6 @@ describe('Market-Facade', () => {
             assert.equal(await Market.Demand.getDemandListLength(conf), 1);
 
             const deleted = await Market.Demand.deleteDemand(0, conf);
-
             assert.isTrue(deleted);
 
             // Should remain the same

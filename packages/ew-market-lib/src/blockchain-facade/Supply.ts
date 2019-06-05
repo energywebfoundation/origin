@@ -29,10 +29,16 @@ export interface ISupplyOnChainProperties
     assetId: number;
 }
 
-export const getSupplyListLength = async (
-    configuration: GeneralLib.Configuration.Entity
-): Promise<number> => {
+export const getSupplyListLength = async (configuration: GeneralLib.Configuration.Entity) => {
     return configuration.blockchainProperties.marketLogicInstance.getAllSupplyListLength();
+};
+
+export const getAllSupplies = async (configuration: GeneralLib.Configuration.Entity) => {
+    const suppliesPromises = Array(parseInt(await getSupplyListLength(configuration)))
+        .fill(null)
+        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+
+    return (await Promise.all(suppliesPromises)).filter(promise => promise.initialized);
 };
 
 export const createSupply = async (

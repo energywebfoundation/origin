@@ -108,10 +108,16 @@ export const createAgreement = async (
     return agreement.sync();
 };
 
-export const getAgreementListLength = async (
-    configuration: GeneralLib.Configuration.Entity
-): Promise<number> => {
+export const getAgreementListLength = async (configuration: GeneralLib.Configuration.Entity) => {
     return configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength();
+};
+
+export const getAllAgreements = async (configuration: GeneralLib.Configuration.Entity) => {
+    const agreementsPromises = Array(parseInt(await getAgreementListLength(configuration)))
+        .fill(null)
+        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+
+    return (await Promise.all(agreementsPromises)).filter(promise => promise.initialized);
 };
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
@@ -133,7 +139,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
 
     constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
         super(id, configuration);
-        this.initialized = true;
+        this.initialized = false;
     }
 
     getUrl(): string {

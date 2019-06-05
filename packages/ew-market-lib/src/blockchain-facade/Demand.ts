@@ -169,9 +169,9 @@ export const getAllDemandsListLength = async (configuration: GeneralLib.Configur
 };
 
 export const getAllDemands = async (configuration: GeneralLib.Configuration.Entity) => {
-    const assetsPromises = Array(await getAllDemandsListLength(configuration))
+    const demandsPromises = Array(await getAllDemandsListLength(configuration))
         .fill(null)
         .map((item, index) => (new Entity(index.toString(), configuration)).sync());
 
-    return (await Promise.all(assetsPromises)).filter(promise => promise.initialized);
+    return (await Promise.all(demandsPromises)).filter(promise => promise.initialized);
 };
