@@ -325,14 +325,14 @@ export const marketDemo = async (demoFile?: string) => {
 
                 const agreementOffchainProps: Market.Agreement.IAgreementOffChainProperties = {
                     start: action.data.startTime,
-                    ende: action.data.endTime,
+                    end: action.data.endTime,
                     price: action.data.price,
                     currency,
                     period: action.data.period,
                     timeframe: timeFrame
                 };
 
-                const matcherOffchainProps: Market.Agreement.IMatcherOffchainProperties = {
+                const matcherOffchainProps: Market.Agreement.IMatcherOffChainProperties = {
                     currentWh: action.data.currentWh,
                     currentPeriod: action.data.currentPeriod
                 };
