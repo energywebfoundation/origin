@@ -560,3 +560,10 @@ usage: command to pause the flow for a certain amount of time
 We want to pause the flow for <code>2</code> secondss
 
 <code>{"type": "SLEEP", "data": 2000}</code>
+
+## Docker
+
+```
+docker-compose build
+docker-compose run demo npm run start
+```
