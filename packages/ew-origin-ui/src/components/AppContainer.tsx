@@ -227,6 +227,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
                 baseUrl={(this.props as any).match.params.contractAddress}
                 producingAssets={this.props.producingAssets}
                 certificates={this.props.certificates}
+                demands={this.props.demands}
                 conf={this.props.configuration}
                 currentUser={this.props.currentUser}
             />

@@ -24,6 +24,7 @@ import { User } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Configuration, TimeFrame, Currency } from 'ew-utils-general-lib';
+import { MatcherLogic } from 'ew-market-matcher';
 
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
@@ -36,6 +37,7 @@ export interface ICertificateTableProps {
     baseUrl: string;
     selectedState: SelectedState;
     switchedToOrganization: boolean;
+    demand?: Demand.Entity;
 }
 
 export interface IEnrichedCertificateData {
@@ -48,13 +50,15 @@ export interface ICertificatesState {
     EnrichedCertificateData: IEnrichedCertificateData[];
     selectedState: SelectedState;
     detailViewForCertificateId: number;
+    matchedCertificates: Certificate.Entity[];
 }
 
 export enum SelectedState {
     Claimed,
     Sold,
     ForSale,
-    ForSaleERC20
+    ForSaleERC20,
+    ForDemand
 }
 
 export class CertificateTable extends React.Component<ICertificateTableProps, ICertificatesState> {
@@ -64,7 +68,8 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         this.state = {
             EnrichedCertificateData: [],
             selectedState: SelectedState.Claimed,
-            detailViewForCertificateId: null
+            detailViewForCertificateId: null,
+            matchedCertificates: []
         };
 
         this.claimCertificate = this.claimCertificate.bind(this);
@@ -76,6 +81,10 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
     async componentDidMount() {
         await this.enrichData(this.props);
+
+        if (this.props.selectedState === SelectedState.ForDemand && this.props.demand) {
+            await this.initMatchingCertificates(this.props.demand);
+        }
     }
 
     async componentWillReceiveProps(newProps: ICertificateTableProps) {
@@ -96,6 +105,12 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 EnrichedCertificateData
             });
         });
+    }
+
+    async initMatchingCertificates(demand: Demand.Entity) {
+        const matchedCertificates: Certificate.Entity[] = await MatcherLogic.findMatchingCertificatesForDemand(demand, this.props.conf, this.props.certificates);
+
+        this.setState({ matchedCertificates });
     }
 
     async buyCertificate(certificateId: number) {
@@ -259,13 +274,8 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         if (this.state.detailViewForCertificateId !== null) {
             return (
                 <Redirect
-                    push
-                    to={
-                        '/' +
-                        this.props.baseUrl +
-                        '/certificates/detail_view/' +
-                        this.state.detailViewForCertificateId
-                    }
+                    push={true}
+                    to={`/${this.props.baseUrl}/certificates/detail_view/${this.state.detailViewForCertificateId}`}
                 />
             );
         }
@@ -299,6 +309,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     EnrichedCertificateData.certificate.onCHainDirectPurchasePrice > 0 &&
                     this.props.currentUser &&
                     EnrichedCertificateData.certificateOwner.id !== this.props.currentUser.id;
+                const forDemand = this.state.matchedCertificates.find(cert => cert.id === EnrichedCertificateData.certificate.id) !== undefined;
 
                 if (
                     this.props.switchedToOrganization &&
@@ -311,9 +322,8 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     (claimed && this.props.selectedState === SelectedState.Claimed) ||
                     (!claimed && forSale && this.props.selectedState === SelectedState.ForSale) ||
                     (!claimed && !forSale && this.props.selectedState === SelectedState.Sold) ||
-                    (!claimed &&
-                        forSaleERC20 &&
-                        this.props.selectedState === SelectedState.ForSaleERC20)
+                    (!claimed && forSaleERC20 && this.props.selectedState === SelectedState.ForSaleERC20) ||
+                    (!claimed && forDemand && this.props.selectedState === SelectedState.ForDemand)
                 );
             }
         );
