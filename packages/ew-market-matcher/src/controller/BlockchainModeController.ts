@@ -83,11 +83,9 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerAgreement(newAggreement: Agreement.Entity) {
-        const allowed = newAggreement.allowedMatcher.find(
-            (matcherAddress: string) => matcherAddress === this.matcherAddress
-        )
-            ? true
-            : false;
+        const allowed : boolean = Boolean(newAggreement.allowedMatcher.find(
+            (matcherAddress: string) => matcherAddress && (matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase())
+        ))
 
         if (allowed) {
             if (
