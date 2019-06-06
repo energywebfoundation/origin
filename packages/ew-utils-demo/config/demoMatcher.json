@@ -5,34 +5,34 @@
             "type": "CREATE_ACCOUNT",
             "data": {
                 "firstName": "John",
-                "surname": "Doe Two",
-                "organization": "AssetAdmin Organization",
+                "surname": "Doe",
+                "organization": "Seller Organization",
                 "street": "Main Street",
-                "number": "2",
+                "number": "1",
                 "zip": "01234",
                 "city": "Anytown",
-                "country": "USA",
+                "country": "Germany",
                 "state": "Anystate",
-                "address": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
-                "privateKey": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
-                "rights": 2
+                "address": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "privateKey": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+                "rights": 4
             }
         },
         {
             "type": "CREATE_ACCOUNT",
             "data": {
                 "firstName": "John",
-                "surname": "Doe",
-                "organization": "UserAdmin Organization",
+                "surname": "Doe Two",
+                "organization": "Buyer Organization",
                 "street": "Main Street",
-                "number": "1",
+                "number": "2",
                 "zip": "01234",
                 "city": "Anytown",
-                "country": "USA",
+                "country": "Germany",
                 "state": "Anystate",
-                "address": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
-                "privateKey": "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee73603fcead486",
-                "rights": 1
+                "address": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
+                "privateKey": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
+                "rights": 12
             }
         },
         {
@@ -64,50 +64,101 @@
                 "lastSmartMeterReadWh": 0,
                 "active": true,
                 "lastSmartMeterReadFileHash": "",
-                "country": "USA",
-                "region": "AnyState",
+                "country": "Germany",
+                "region": "Berlin",
                 "zip": "01234",
                 "city": "Anytown",
                 "street": "Main Street",
                 "houseNumber": "8",
                 "gpsLatitude": "0",
                 "gpsLongitude": "0",
-                "assetType": "Wind",
+                "assetType": "Solar",
                 "certificatesCreatedForWh": 0,
                 "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3
+                "maxOwnerChanges": 3,
+                "facilityName": "House Solar Panels"
+            }
+        },
+        {
+            "type": "CREATE_CONSUMING_ASSET",
+            "data": {
+                "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
+                "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
+                "owner": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
+                "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
+                "operationalSince": 1529971200,
+                "capacityWh": 5000,
+                "lastSmartMeterReadWh": 0,
+                "active": true,
+                "lastSmartMeterReadFileHash": "",
+                "country": "Germany",
+                "region": "Berlin-Brandenburg",
+                "zip": "10179",
+                "city": "Berlin",
+                "street": "Köpenicker Straße",
+                "houseNumber": "70",
+                "gpsLatitude": "0",
+                "gpsLongitude": "0",
+                "maxCapacitySet": true,
+                "certificatesUsedForWh": 0,
+                "facilityName": "Heater"
+            }
+        },
+        {
+            "type": "SLEEP",
+            "data": 2000
+        },
+        {
+            "type": "SET_MARKET_CONTRACT",
+            "data": {
+                "assetId": 0,
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 10,
+                "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
+                "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
+                "filehash": "newMeterRead"
             }
         },
         {
             "type": "CREATE_DEMAND",
             "data": {
-                "trader": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
-                "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
+                "trader": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
+                "traderPK": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
                 "timeframe": "hourly",
                 "pricePerCertifiedWh": 10,
-                "currency": "USD",
+                "currency": "Euro",
                 "producingAsset": 0,
                 "consumingAsset": 0,
                 "country": "string",
                 "region": "string",
-                "assettype": "BiomassGas",
+                "assettype": "Solar",
                 "minCO2Offset": 10,
                 "otherGreenAttributes": "string",
                 "typeOfPublicSupport": "string",
-                "targetWhPerPeriod": 10
+                "targetWhPerPeriod": 10,
+                "registryCompliance": "EEC",
+                "startTime": "1559477971484",
+                "endTime": "1589877971484"
             }
         },
         {
             "type": "CREATE_SUPPLY",
             "data": {
                 "assetId": 0,
-                "assetOwner": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
-                "assetOwnerPK": "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee73603fcead486",
+                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
                 "price": 10,
-                "currency": "USD",
+                "currency": "Euro",
                 "availableWh": 10,
                 "timeframe": "hourly"
             }
@@ -120,7 +171,7 @@
               "startTime": -1,
               "endTime": 3600,
               "price": 10,
-              "currency": "USD",
+              "currency": "Euro",
               "timeframe": "hourly",
               "period": 10,
               "currentWh": 0,
@@ -134,27 +185,15 @@
             "type": "APPROVE_AGREEMENT",
             "data": {
                 "agreementId": 0,
-                "agree": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
-                "agreePK": "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee73603fcead486"
-            }
-        },
-        {
-            "type": "SLEEP",
-            "data": 20000
-        },
-        {
-            "type": "SET_MARKET_CONTRACT",
-            "data": {
-                "assetId": 0,
-                "assetOwner": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
-                "assetOwnerPK": "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee73603fcead486"
+                "agree": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+                "agreePK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
             }
         },
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
                 "assetId": 0,
-                "meterreading": 2.57e+7,
+                "meterreading": 200,
                 "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
                 "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
                 "filehash": "newMeterRead"
