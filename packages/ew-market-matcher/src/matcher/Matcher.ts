@@ -30,7 +30,7 @@ export abstract class Matcher {
     abstract async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
-    ): Promise<Demand.Entity>;
+    ): Promise<{ split: boolean; demand: Demand.Entity }>;
 
     async match(
         certificate: Certificate.Entity,
@@ -42,24 +42,27 @@ export abstract class Matcher {
         );
 
         if (!matcherAccount) {
-            logger.verbose(' This instance is not an escrow for certificate #' + certificate.id);
+            logger.verbose('This instance is not an escrow for certificate #' + certificate.id);
         } else {
             logger.verbose('This instance is an escrow for certificate #' + certificate.id);
 
-            const result = await this.findMatchingAgreement(certificate, agreements);
-            if (result.agreement) {
-                await this.controller.matchAggrement(certificate, result.agreement);
+            const agreementMatchResult = await this.findMatchingAgreement(certificate, agreements);
+            if (agreementMatchResult.agreement) {
+                await this.controller.matchAgreement(certificate, agreementMatchResult.agreement);
 
                 return true;
-            } else if (!result.split) {
+            } else if (!agreementMatchResult.split) {
                 await this.controller.handleUnmatchedCertificate(certificate);
             }
 
-            // const demand = await this.findMatchingDemand(certificate, demands);
-            // if (demand) {
-            //     await this.controller.matchDemand(certificate, demand);
-            //     return true;
-            // }
+            const demandMatchResult = await this.findMatchingDemand(certificate, demands);
+            if (demandMatchResult.demand) {
+                await this.controller.matchDemand(certificate, demandMatchResult.demand);
+
+                return true;
+            } else if (!demandMatchResult.split) {
+                await this.controller.handleUnmatchedCertificate(certificate);
+            }
         }
 
         return false;

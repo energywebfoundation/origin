@@ -38,7 +38,7 @@ export const filterAgreements = async (
 
         const filterSpec: IFilterSpec = {
             demand: controller.getDemand(agreement.demandId.toString()),
-            end: agreement.offChainProperties.ende,
+            end: agreement.offChainProperties.end,
             // TODO: includ originator in demand
             originator: null,
             start: agreement.offChainProperties.start

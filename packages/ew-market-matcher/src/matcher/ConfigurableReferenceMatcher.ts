@@ -16,23 +16,22 @@
 
 import { Certificate } from 'ew-origin-lib';
 import { Agreement, Demand } from 'ew-market-lib';
-import { Configuration } from 'ew-utils-general-lib';
 
 import { Matcher } from './Matcher';
+import { findMatchingDemandsForCertificate, findMatchingAgreementsForCertificate } from './MatcherLogic';
 import { Controller } from '../controller/Controller';
 import * as ConfigurationFileInterpreter from './ConfigurationFileInterpreter';
 import * as RuleConf from '../schema-defs/RuleConf';
 import { logger } from '../Logger';
 
 export class ConfigurableReferenceMatcher extends Matcher {
-    private blockchainConf: Configuration.Entity;
-    private conf: RuleConf.IRuleConf;
+    private ruleConf: RuleConf.IRuleConf;
     private propertyRanking: string[];
 
-    constructor(conf: RuleConf.IRuleConf) {
+    constructor(ruleConf: RuleConf.IRuleConf) {
         super();
-        this.conf = conf;
-        this.propertyRanking = ConfigurationFileInterpreter.getRanking(this.conf);
+        this.ruleConf = ruleConf;
+        this.propertyRanking = ConfigurationFileInterpreter.getRanking(this.ruleConf);
     }
 
     setController(controller: Controller) {
@@ -44,62 +43,19 @@ export class ConfigurableReferenceMatcher extends Matcher {
         agreements: Agreement.Entity[]
     ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
         logger.debug(`Scanning ${agreements.length} agreements for a match.`);
-        const matchingAgreement = agreements.filter((agreement: Agreement.Entity) => {
-            const supply = this.controller.getSupply(agreement.supplyId.toString());
-            const match = supply.assetId.toString() === certificate.assetId.toString();
-            if (match) {
-                logger.debug(
-                    `Agreement #${agreement.id} and certificate #${
-                        certificate.id
-                    } have the same associated asset ID: ${supply.assetId}`
-                );
 
-                return true;
-            } else {
-                logger.debug(
-                    `Agreement #${agreement.id} (asset #${supply.assetId}) and certificate #${
-                        certificate.id
-                    } ( asset #${certificate.assetId}) have different associated asset IDs.`
-                );
+        const matchingAgreements = await findMatchingAgreementsForCertificate(certificate, this.controller.conf, agreements);
 
-                return false;
-            }
-        });
-
-        if (matchingAgreement.length === 0) {
+        if (matchingAgreements.length === 0) {
             logger.info('Found no matching agreement for certificate #' + certificate.id);
 
             return { split: false, agreement: null };
         }
 
-        const sortedAgreementList = matchingAgreement.sort(
-            (a: Agreement.Entity, b: Agreement.Entity) => {
-                // TODO: change
-                const rule = this.conf.rule as RuleConf.ISimpleHierarchyRule;
-
-                const unequalProperty = rule.relevantProperties.find(
-                    (property: RuleConf.ISimpleHierarchyRelevantProperty) =>
-                        a[property.name] !== b[property.name]
-                );
-                if (!unequalProperty) {
-                    return 0;
-                }
-
-                const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(
-                    unequalProperty,
-                    a
-                );
-                const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(
-                    unequalProperty,
-                    b
-                );
-
-                return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
-            }
-        );
+        matchingAgreements.sort(this.sortAgreements);
 
         logger.debug(
-            `Sorted agreement list for certificate #${certificate.id}: ${sortedAgreementList.reduce(
+            `Sorted agreement list for certificate #${certificate.id}: ${matchingAgreements.reduce(
                 (accumulator: string, currentValue: Agreement.Entity) =>
                     (accumulator += currentValue.id + ' '),
                 ''
@@ -108,7 +64,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
 
         const filteredAgreementList = [];
 
-        for (const agreement of sortedAgreementList) {
+        for (const agreement of matchingAgreements) {
             const currentPeriod = await this.controller.getCurrentPeriod(
                 agreement.offChainProperties.start,
                 agreement.offChainProperties.timeframe
@@ -125,7 +81,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
 
             if (
                 certificate.creationTime < agreement.offChainProperties.start ||
-                certificate.creationTime > agreement.offChainProperties.ende
+                certificate.creationTime > agreement.offChainProperties.end
             ) {
                 logger.debug(
                     `Certificate ${certificate.id} matches with agreement ${agreement.id}` +
@@ -133,7 +89,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 );
             } else if (certificate.powerInW > neededWhForCurrentPeriod) {
                 logger.debug(
-                    `Certificate ${certificate.id} to large (${certificate.powerInW})` +
+                    `Certificate ${certificate.id} too large (${certificate.powerInW})` +
                         `for agreement ${agreement.id} (${neededWhForCurrentPeriod})`
                 );
                 if (neededWhForCurrentPeriod > 0) {
@@ -158,8 +114,55 @@ export class ConfigurableReferenceMatcher extends Matcher {
     async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
-    ): Promise<Demand.Entity> {
-        throw new Error('Method not implemented.');
+    ): Promise<{ split: boolean; demand: Demand.Entity }> {
+        logger.debug(`Scanning ${demands.length} demands for a match.`);
+
+        const matchedDemands = await findMatchingDemandsForCertificate(certificate, this.controller.conf, demands);
+        const offeredPower: number = Number(certificate.powerInW);
+
+        for (const demand of matchedDemands) {
+            const requiredPower: number = demand.offChainProperties.targetWhPerPeriod;
+
+            if (offeredPower === requiredPower) {
+                return { split: false, demand };
+            } else if (offeredPower < requiredPower) {
+                continue;
+            }
+
+            logger.debug(`Certificate ${certificate.id} too large (${offeredPower}) for demand ${demand.id} (${requiredPower}). Splitting...`);
+
+            if (requiredPower > 0) {
+                await this.controller.splitCertificate(certificate, requiredPower);
+
+                return { split: true, demand: null };
+            }
+        }
+
+        return { split: false, demand: null };
+    }
+
+    private sortAgreements(a: Agreement.Entity, b: Agreement.Entity) {
+        // TODO: change
+        const rule = this.ruleConf.rule as RuleConf.ISimpleHierarchyRule;
+
+        const unequalProperty = rule.relevantProperties.find(
+            (property: RuleConf.ISimpleHierarchyRelevantProperty) =>
+                a[property.name] !== b[property.name]
+        );
+        if (!unequalProperty) {
+            return 0;
+        }
+
+        const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(
+            unequalProperty,
+            a
+        );
+        const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(
+            unequalProperty,
+            b
+        );
+
+        return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
     }
 
     // async match(certificate: EwOrigin.Certificate.Entity, agreements: EwMarket.Agreement.Entity[]) {
@@ -190,7 +193,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
 
     //     const sortedAgreementList = agreements.sort((a: EwMarket.Agreement.Entity, b: EwMarket.Agreement.Entity) => {
     //         // TODO: change
-    //         const rule = (this.conf.rule as RuleConf.SimpleHierarchyRule);
+    //         const rule = (this.ruleConf.rule as RuleConf.SimpleHierarchyRule);
 
     //         const unequalProperty = rule.relevantProperties
     //             .find((property: RuleConf.SimpleHierarchyRelevantProperty) => a[property.name] !== b[property.name]);
@@ -230,7 +233,7 @@ export class ConfigurableReferenceMatcher extends Matcher {
     //     }
 
     //     if (filteredAgreementList.length > 0) {
-    //         await this.controller.matchAggrement(certificate, filteredAgreementList[0]);
+    //         await this.controller.matchAgreement(certificate, filteredAgreementList[0]);
 
     //     } else {
 

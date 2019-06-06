@@ -244,54 +244,6 @@ describe('Test Matcher', async () => {
         assert.equal(await Supply.getSupplyListLength(conf), 1);
     });
 
-    it('should create an agreement', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountTrader,
-            privateKey: traderPK
-        };
-
-        const startTime = Math.floor(Date.now() / 1000);
-
-        const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
-            start: startTime,
-            ende: startTime + startTime,
-            price: 10,
-            currency: Currency.USD,
-            period: 10,
-            timeframe: TimeFrame.hourly
-        };
-
-        const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {
-            currentWh: 0,
-            currentPeriod: 0
-        };
-
-        const agreementProps: Agreement.IAgreementOnChainProperties = {
-            propertiesDocumentHash: null,
-            url: null,
-            matcherDBURL: null,
-            matcherPropertiesDocumentHash: null,
-            demandId: 0,
-            supplyId: 0,
-            allowedMatcher: []
-        };
-
-        await Agreement.createAgreement(
-            agreementProps,
-            agreementOffchainProps,
-            matcherOffchainProps,
-            conf
-        );
-
-        conf.blockchainProperties.activeUser = {
-            address: assetOwnerAddress,
-            privateKey: assetOwnerPK
-        };
-
-        const agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
-        await agreement.approveAgreementSupply();
-    });
-
     it('no certificate has been created', async () => {
         conf.blockchainProperties.activeUser = {
             address: accountTrader,
@@ -300,32 +252,32 @@ describe('Test Matcher', async () => {
         assert.equal(await Certificate.getCertificateListLength(conf), 0);
     });
 
-    describe('Matcher-specific tests', () => {
-        it('starts the matcher', async () => {
-            await startMatcher(matcherConf);
+    it('starts the matcher', async () => {
+        await startMatcher(matcherConf);
 
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-            await sleep(5000);
-        }).timeout(6000);
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(5000);
+    }).timeout(6000);
 
-        it('sets the market lookup contract', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
-            };
+    it('sets the market lookup contract', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: assetOwnerAddress,
+            privateKey: assetOwnerPK
+        };
 
-            try {
-                await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(
-                    asset.id,
-                    originContractLookupAddr,
-                    { privateKey: assetOwnerPK }
-                );
-                conf.logger.info(`Certificates for Asset #${asset.id} initialized`);
-            } catch (e) {
-                conf.logger.error(`Could not initialize certificates\n${e}`);
-            }
-        });
+        try {
+            await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(
+                asset.id,
+                originContractLookupAddr,
+                { privateKey: assetOwnerPK }
+            );
+            conf.logger.info(`Certificates for Asset #${asset.id} initialized`);
+        } catch (e) {
+            conf.logger.error(`Could not initialize certificates\n${e}`);
+        }
+    });
 
+    describe('Demand matching tests', () => {
         it('creates a smart meter reading', async () => {
             conf.blockchainProperties.activeUser = {
                 address: assetSmartmeter,
@@ -333,7 +285,7 @@ describe('Test Matcher', async () => {
             };
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
-            await producingAsset.saveSmartMeterRead(20, 'newMeterRead');
+            await producingAsset.saveSmartMeterRead(10, 'newMeterRead');
         });
 
         it('certificate has been created', async () => {
@@ -344,23 +296,100 @@ describe('Test Matcher', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
         });
 
+        it('certificate owner is the trader', async () => {
+            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+            await sleep(10000);
+
+            const certificate = await new Certificate.Entity('0', conf).sync();
+            assert.equal(await certificate.getOwner(), accountTrader);
+        }).timeout(11000);
+    });
+
+    describe('Agreement matching tests', () => {
+        it('should create an agreement', async () => {
+            conf.blockchainProperties.activeUser = {
+                address: accountTrader,
+                privateKey: traderPK
+            };
+
+            const startTime = Math.floor(Date.now() / 1000);
+
+            const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
+                start: startTime,
+                end: startTime + startTime,
+                price: 10,
+                currency: Currency.USD,
+                period: 10,
+                timeframe: TimeFrame.hourly
+            };
+
+            const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {
+                currentWh: 0,
+                currentPeriod: 0
+            };
+
+            const agreementProps: Agreement.IAgreementOnChainProperties = {
+                propertiesDocumentHash: null,
+                url: null,
+                matcherDBURL: null,
+                matcherPropertiesDocumentHash: null,
+                demandId: 0,
+                supplyId: 0,
+                allowedMatcher: []
+            };
+
+            await Agreement.createAgreement(
+                agreementProps,
+                agreementOffchainProps,
+                matcherOffchainProps,
+                conf
+            );
+
+            conf.blockchainProperties.activeUser = {
+                address: assetOwnerAddress,
+                privateKey: assetOwnerPK
+            };
+
+            const agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
+            await agreement.approveAgreementSupply();
+        }).timeout(6000);
+
+        it('creates a smart meter reading', async () => {
+            conf.blockchainProperties.activeUser = {
+                address: assetSmartmeter,
+                privateKey: assetSmartmeterPK
+            };
+
+            const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
+            await producingAsset.saveSmartMeterRead(30, 'newMeterRead2');
+        });
+
+        it('certificate has been created', async () => {
+            conf.blockchainProperties.activeUser = {
+                address: accountTrader,
+                privateKey: traderPK
+            };
+            assert.equal(await Certificate.getCertificateListLength(conf), 2);
+        });
+
         it('a certificate has been split', async () => {
             const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
             await sleep(5000);
 
-            assert.equal(await Certificate.getCertificateListLength(conf), 3);
+            assert.equal(await Certificate.getCertificateListLength(conf), 4);
         }).timeout(6000);
 
-        it('split certificate owner is the trader', async () => {
-            const certificate1 = await new Certificate.Entity('0', conf).sync();
-            assert.equal(await certificate1.getOwner(), assetOwnerAddress);
+        it('asset owner is still the owner of the original certificate', async () => {
+            const certificate = await new Certificate.Entity('1', conf).sync();
+            assert.equal(await certificate.getOwner(), assetOwnerAddress);
+        });
 
-            const certificate2 = await new Certificate.Entity('1', conf).sync();
+        it('trader is owner of the split certificates', async () => {
+            const certificate1 = await new Certificate.Entity('2', conf).sync();
+            assert.equal(await certificate1.getOwner(), accountTrader);
+
+            const certificate2 = await new Certificate.Entity('3', conf).sync();
             assert.equal(await certificate2.getOwner(), accountTrader);
-
-            const certificate3 = await new Certificate.Entity('2', conf).sync();
-            assert.equal(await certificate3.getOwner(), assetOwnerAddress);
         });
     });
 });
-

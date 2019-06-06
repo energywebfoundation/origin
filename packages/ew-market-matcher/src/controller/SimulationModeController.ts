@@ -28,7 +28,7 @@ import { logger } from '../Logger';
 import * as SimulationFlowHandler from './SimulationFlowHandler';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
 import * as SimulationDescriptionSchema from '../../schemas/simulation-description.schema.json';
-import { METHOD_NOT_IMPLEMENTED } from '..';
+import { METHOD_NOT_IMPLEMENTED } from '../exports';
 
 export class SimulationModeController extends Controller {
     private simulationFlow: SimulationFlowDef.ISimulationFlow;
@@ -178,7 +178,7 @@ export class SimulationModeController extends Controller {
         });
     }
 
-    async matchAggrement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
+    async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
         this.matches.push({
             agreementId: agreement.id,
             certificateId: certificate.id,

@@ -14,9 +14,10 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as RuleConf from '../schema-defs/RuleConf';
-import { logger } from '../Logger';
 import { Agreement } from 'ew-market-lib';
+
+import { logger } from '../Logger';
+import * as RuleConf from '../schema-defs/RuleConf';
 
 export const getRanking = (ruleConf: RuleConf.IRuleConf): string[] => {
     if (ruleConf.ruleFormat !== RuleConf.RuleFormat.SimpleHierarchy) {

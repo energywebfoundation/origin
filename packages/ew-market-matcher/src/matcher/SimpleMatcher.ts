@@ -18,7 +18,7 @@ import { Matcher } from './Matcher';
 import { Controller } from '../controller/Controller';
 import { Certificate } from 'ew-origin-lib';
 import { Agreement, Demand } from 'ew-market-lib';
-import { METHOD_NOT_IMPLEMENTED } from '..';
+import { METHOD_NOT_IMPLEMENTED } from '../exports';
 
 export class SimpleMatcher extends Matcher {
     static SLEEP(ms: number) {
@@ -43,7 +43,7 @@ export class SimpleMatcher extends Matcher {
     async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
-    ): Promise<Demand.Entity> {
+    ): Promise<{ split: boolean, demand: Demand.Entity }> {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 

@@ -20,7 +20,7 @@ import * as LogSymbols from 'log-symbols';
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 import { Certificate } from 'ew-origin-lib';
 import { Agreement, Demand, Supply } from 'ew-market-lib';
-import { TimeFrame } from 'ew-utils-general-lib';
+import { Configuration, TimeFrame } from 'ew-utils-general-lib';
 
 import { Matcher } from '../matcher/Matcher';
 import * as Filter from '../matcher/Filter';
@@ -49,6 +49,7 @@ export abstract class Controller {
     supplies: Supply.Entity[];
     producingAssets: ProducingAsset.Entity[];
     matcherAddress: string;
+    conf: Configuration.Entity;
 
     protected matcher: Matcher;
 
@@ -61,7 +62,7 @@ export abstract class Controller {
         await this.matcher.match(certificate, this.agreements, this.demands);
     }
 
-    abstract async matchAggrement(
+    abstract async matchAgreement(
         certificate: Certificate.Entity,
         aggreement: Agreement.Entity
     ): Promise<void>;

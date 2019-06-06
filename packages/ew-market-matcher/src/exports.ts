@@ -27,6 +27,9 @@ import * as RuleSchema from '../schemas/rule.schema.json';
 import { BlockchainModeController } from './controller/BlockchainModeController';
 import { createBlockchainConf } from './controller/BlockchainConnection';
 import { logger } from './Logger';
+import * as MatcherLogic from './matcher/MatcherLogic';
+
+const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';
 
 const buildMatcher = (
     matcherSpecification:
@@ -74,7 +77,7 @@ const buildController = async (
     }
 };
 
-export const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
+const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
     logger.info('Matcher application started.');
 
     if (conf) {
@@ -91,4 +94,10 @@ export const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
     } else {
         throw new Error('No config specified');
     }
+};
+
+export {
+    MatcherLogic,
+    METHOD_NOT_IMPLEMENTED,
+    startMatcher
 };
