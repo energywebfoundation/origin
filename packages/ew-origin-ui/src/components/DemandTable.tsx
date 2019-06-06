@@ -16,6 +16,7 @@
 
 import * as React from 'react';
 import moment from 'moment';
+import { Redirect } from 'react-router-dom';
 
 import { Configuration, TimeFrame, Compliance, AssetType } from 'ew-utils-general-lib';
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
@@ -39,18 +40,24 @@ export interface IDemandTableProps {
 
 export interface IDemandTableState {
     enrichedDemandData: IEnrichedDemandData[];
+    showMatchingSupply: number;
 }
 
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
     demandOwner: User;
-    consumingAsset?: ConsumingAsset.Entity
-    producingAsset?: ProducingAsset.Entity
+    consumingAsset?: ConsumingAsset.Entity;
+    producingAsset?: ProducingAsset.Entity;
 }
 
 export const PeriodToSeconds = [31536000, 2592000, 86400, 3600];
 
 const NO_VALUE_TEXT = 'any';
+
+enum OPERATIONS {
+    DELETE = 'Delete',
+    SUPPLIES = 'Show supplies for demand'
+}
 
 export class DemandTable extends React.Component<IDemandTableProps, {}> {
     state: IDemandTableState;
@@ -59,11 +66,13 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         super(props);
 
         this.state = {
-            enrichedDemandData: []
+            enrichedDemandData: [],
+            showMatchingSupply: null
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
+        this.showMatchingSupply = this.showMatchingSupply.bind(this);
     }
 
     switchToOrganization(switchedToOrganization: boolean) {
@@ -89,7 +98,6 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                 demandOwner: await (new User(demand.demandOwner, props.conf)).sync()
             };
 
-
             if (demand.offChainProperties) {
                 if (typeof(demand.offChainProperties.productingAsset) !== 'undefined') {
                     result.producingAsset = this.props.producingAssets.find(
@@ -97,12 +105,12 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                             asset.id === demand.offChainProperties.productingAsset.toString()
                     );
                 }
-    
+
                 if (typeof(demand.offChainProperties.consumingAsset) !== 'undefined') {
                     result.consumingAsset = this.props.consumingAssets.find(
                         (asset: ConsumingAsset.Entity) =>
                             asset.id === demand.offChainProperties.consumingAsset.toString()
-                    )
+                    );
                 }
             }
 
@@ -128,8 +136,11 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
 
     async operationClicked(key: string, id: number) {
         switch (key) {
-            case 'Delete':
+            case OPERATIONS.DELETE:
                 this.deleteDemand(id);
+                break;
+            case OPERATIONS.SUPPLIES:
+                this.showMatchingSupply(id);
                 break;
             default:
         }
@@ -149,7 +160,19 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         }
     }
 
+    showMatchingSupply(demandId: number) {
+        this.setState({
+            showMatchingSupply: demandId
+        });
+    }
+
     render() {
+        if (this.state.showMatchingSupply !== null) {
+            return (
+                <Redirect push={true} to={`/${this.props.baseUrl}/certificates/for_demand/${this.state.showMatchingSupply}`} />
+            );
+        }
+
         const defaultWidth = 106;
         const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
             TableUtils.generateHeader(label, width, right, body);
@@ -204,10 +227,6 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
             generateHeader('Energy Demand (kWh)'),
         ];
 
-        const operations = [
-            'Delete'
-        ];
-
         return (
             <div className="ForSaleWrapper">
                 <Table
@@ -217,7 +236,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                     actions={true}
                     data={data}
                     actionWidth={55.39}
-                    operations={operations}
+                    operations={Object.values(OPERATIONS)}
                     operationClicked={this.operationClicked}
                 />
             </div>
