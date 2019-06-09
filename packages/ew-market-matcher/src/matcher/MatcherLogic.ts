@@ -13,7 +13,21 @@ const findMatchingDemandsForCertificate = async (
         demands = await Demand.getAllDemands(conf);
     }
 
-    return demands.filter(demand => demand.offChainProperties.targetWhPerPeriod >= certificatePower);
+    return demands.filter(demand => demand.offChainProperties.targetWhPerPeriod <= certificatePower);
+};
+
+const findMatchingCertificatesForDemand = async (
+    demand: Demand.Entity,
+    conf: Configuration.Entity,
+    certs?: Certificate.Entity[]
+): Promise<Certificate.Entity[]> => {
+    const demandedPower: number = Number(demand.offChainProperties.targetWhPerPeriod);
+
+    if (!certs) {
+        certs = await Certificate.getActiveCertificates(conf);
+    }
+
+    return certs.filter(cert => cert.powerInW >= demandedPower);
 };
 
 const findMatchingAgreementsForCertificate = async (
@@ -43,21 +57,7 @@ const findMatchingSuppliesForDemand = async (
         supplies = await Supply.getAllSupplies(conf);
     }
 
-    return supplies.filter(supply => supply.offChainProperties.availableWh > demandedPower);
-};
-
-const findMatchingCertificatesForDemand = async (
-    demand: Demand.Entity,
-    conf: Configuration.Entity,
-    certs?: Certificate.Entity[]
-): Promise<Certificate.Entity[]> => {
-    const demandedPower: number = Number(demand.offChainProperties.targetWhPerPeriod);
-
-    if (!certs) {
-        certs = await Certificate.getActiveCertificates(conf);
-    }
-
-    return certs.filter(cert => cert.powerInW > demandedPower);
+    return supplies.filter(supply => supply.offChainProperties.availableWh >= demandedPower);
 };
 
 export {
