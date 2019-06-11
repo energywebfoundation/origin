@@ -52,7 +52,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
         this.switchToOrganization = this.switchToOrganization.bind(this);
         this.onFilterOrganization = this.onFilterOrganization.bind(this);
         this.CertificateTable = this.CertificateTable.bind(this);
-        this.SoldCertificates = this.SoldCertificates.bind(this);
+        this.InboxCertificates = this.InboxCertificates.bind(this);
         this.ForSaleCertificates = this.ForSaleCertificates.bind(this);
         this.ForSaleERC20Certificates = this.ForSaleERC20Certificates.bind(this);
         this.ClaimedCertificates = this.ClaimedCertificates.bind(this);
@@ -103,8 +103,8 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
         );
     }
 
-    SoldCertificates() {
-        return this.CertificateTable(SelectedState.Sold);
+    InboxCertificates() {
+        return this.CertificateTable(SelectedState.Inbox);
     }
 
     ForSaleCertificates() {
@@ -132,6 +132,20 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
 
         const CertificatesMenu = [
             {
+                key: 'inbox',
+                label: 'Inbox',
+                component: this.InboxCertificates,
+                buttons: [
+                    {
+                        type: 'dropdown',
+                        label: allOrganizationsText,
+                        face: ['filter', 'icon'],
+                        content: organizations
+                    }
+                ],
+                show: true
+            },
+            {
                 key: 'for_sale',
                 label: 'For Sale',
                 component: this.ForSaleCertificates,
@@ -149,20 +163,6 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 key: 'for_sale_erc',
                 label: 'For Sale (ERC20)',
                 component: this.ForSaleERC20Certificates,
-                buttons: [
-                    {
-                        type: 'dropdown',
-                        label: allOrganizationsText,
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ],
-                show: true
-            },
-            {
-                key: 'bought_sold',
-                label: 'Bought / Sold',
-                component: this.SoldCertificates,
                 buttons: [
                     {
                         type: 'dropdown',
@@ -251,7 +251,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 />
 
                 <Route
-                    exact
+                    exact={true}
                     path={`/${this.props.baseUrl}/certificates`}
                     render={props => (
                         <Redirect
@@ -265,7 +265,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 />
 
                 <Route
-                    exact
+                    exact={true}
                     path={`/${this.props.baseUrl}/`}
                     render={props => (
                         <Redirect

@@ -77,7 +77,7 @@ export class Admin extends React.Component<AdminProps, {}> {
                             return (
                                 <li>
                                     <NavLink
-                                        exact
+                                        exact={true}
                                         to={`/${baseUrl}/admin/${menu.key}`}
                                         activeClassName="active"
                                     >
@@ -106,7 +106,7 @@ export class Admin extends React.Component<AdminProps, {}> {
                     }}
                 />
                 <Route
-                    exact
+                    exact={true}
                     path={`/${baseUrl}/admin`}
                     render={() => (
                         <Redirect to={{ pathname: `/${baseUrl}/admin/${AdminMenu[0].key}` }} />

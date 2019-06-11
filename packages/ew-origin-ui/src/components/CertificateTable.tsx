@@ -28,6 +28,8 @@ import { MatcherLogic } from 'ew-market-matcher';
 
 import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
+import { showNotification, NotificationType } from '../utils/notifications';
+import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 
 export interface ICertificateTableProps {
     conf: Configuration.Entity;
@@ -51,14 +53,28 @@ export interface ICertificatesState {
     selectedState: SelectedState;
     detailViewForCertificateId: number;
     matchedCertificates: Certificate.Entity[];
+    shouldShowPrice: boolean;
+    showSellModal: boolean;
+    sellModalForCertificate: Certificate.Entity;
 }
 
 export enum SelectedState {
+    Inbox,
     Claimed,
-    Sold,
     ForSale,
     ForSaleERC20,
     ForDemand
+}
+
+export enum OPERATIONS {
+    PUBLISH_FOR_SALE = 'Publish For Sale',
+    RETURN_TO_INBOX = 'Return to Inbox',
+    CLAIM = 'Claim',
+    BUY = 'Buy',
+    SHOW_CLAIMING_TX = 'Show Claiming Transaction',
+    SHOW_CREATION_TX = 'Show Certificate Creation Transaction',
+    SHOW_LOGGING_TX = 'Show Initial Logging Transaction',
+    SHOW_DETAILS = 'Show Certificate Details'
 }
 
 export class CertificateTable extends React.Component<ICertificateTableProps, ICertificatesState> {
@@ -67,11 +83,20 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
         this.state = {
             EnrichedCertificateData: [],
-            selectedState: SelectedState.Claimed,
+            selectedState: SelectedState.Inbox,
             detailViewForCertificateId: null,
-            matchedCertificates: []
+            matchedCertificates: [],
+            shouldShowPrice: [
+                SelectedState.ForSale,
+                SelectedState.ForSaleERC20,
+                SelectedState.ForDemand,
+                SelectedState.Claimed
+            ].includes(props.selectedState),
+            showSellModal: false,
+            sellModalForCertificate: null
         };
 
+        this.publishForSale = this.publishForSale.bind(this);
         this.claimCertificate = this.claimCertificate.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
         this.showTxClaimed = this.showTxClaimed.bind(this);
@@ -92,7 +117,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
     }
 
     async enrichData(props: ICertificateTableProps) {
-        const promieses = props.certificates.map(async (certificate: Certificate.Entity) => ({
+        const promises = props.certificates.map(async (certificate: Certificate.Entity) => ({
             certificate,
             producingAsset: this.props.producingAssets.find(
                 (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
@@ -100,7 +125,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             certificateOwner: await new User(certificate.owner, props.conf as any).sync()
         }));
 
-        Promise.all(promieses).then(EnrichedCertificateData => {
+        Promise.all(promises).then(EnrichedCertificateData => {
             this.setState({
                 EnrichedCertificateData
             });
@@ -118,6 +143,12 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
 
+        if (certificate.owner === this.props.currentUser.id) {
+            showNotification(`You can't buy your own certificates.`, NotificationType.Error);
+
+            return;
+        }
+
         if (certificate && this.props.currentUser) {
             const erc20TestToken = new Erc20TestToken(
                 this.props.conf.blockchainProperties.web3,
@@ -125,7 +156,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             );
             await erc20TestToken.approve(
                 certificate.owner,
-                certificate.onCHainDirectPurchasePrice,
+                certificate.onChainDirectPurchasePrice,
                 {
                     from: this.props.currentUser.id,
                     privateKey: ''
@@ -136,7 +167,56 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 address: this.props.currentUser.id
             };
             await certificate.buyCertificate();
+
+            showNotification(`Certificate ${certificate.id} has been bought.`, NotificationType.Success);
+        } else {
+            showNotification(`Unable to buy certificate ${certificate.id}.`, NotificationType.Error);
         }
+    }
+
+    async publishForSale(certificateId: number) {
+        const certificate: Certificate.Entity = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+        );
+
+        if (certificate.forSale) {
+            showNotification(`Certificate ${certificate.id} has already been published for sale.`, NotificationType.Error);
+
+            return;
+        }
+
+        certificate.configuration.blockchainProperties.activeUser = {
+            address: this.props.currentUser.id
+        };
+
+        this.setState({
+            sellModalForCertificate: certificate,
+            showSellModal: true
+        });
+    }
+
+    async returnToInbox(certificateId: number) {
+        const certificate: Certificate.Entity = this.props.certificates.find(
+            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+        );
+
+        if (!this.props.currentUser || this.props.currentUser.id !== certificate.owner) {
+            showNotification(`You are not the owner of certificate ${certificate.id}.`, NotificationType.Error);
+
+            return;
+        }
+        if (!certificate.forSale) {
+            showNotification(`Certificate ${certificate.id} is already in Inbox.`, NotificationType.Error);
+
+            return;
+        }
+
+        certificate.configuration.blockchainProperties.activeUser = {
+            address: this.props.currentUser.id
+        };
+
+        await certificate.unpublishForSale();
+        showNotification(`Certificate ${certificate.id} has been returned to Inbox.`, NotificationType.Success);
     }
 
     async claimCertificate(certificateId: number) {
@@ -153,6 +233,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             };
 
             await certificate.retireCertificate();
+            showNotification(`Certificate ${certificate.id} has been claimed.`, NotificationType.Success);
         }
     }
 
@@ -248,22 +329,28 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
     async operationClicked(key: string, id: number) {
         switch (key) {
-            case 'Claim':
+            case OPERATIONS.PUBLISH_FOR_SALE:
+                this.publishForSale(id);
+                break;
+            case OPERATIONS.RETURN_TO_INBOX:
+                this.returnToInbox(id);
+                break;
+            case OPERATIONS.CLAIM:
                 this.claimCertificate(id);
                 break;
-            case 'Buy':
+            case OPERATIONS.BUY:
                 await this.buyCertificate(id);
                 break;
-            case 'Show Claiming Tx':
+            case OPERATIONS.SHOW_CLAIMING_TX:
                 this.showTxClaimed(id);
                 break;
-            case 'Show Certificate Creation Tx':
+            case OPERATIONS.SHOW_CREATION_TX:
                 this.showCertCreated(id);
                 break;
-            case 'Show Initial Logging Transaction':
+            case OPERATIONS.SHOW_LOGGING_TX:
                 // this.showInitialLoggingTx(id);
                 break;
-            case 'Show Certificate Details':
+            case OPERATIONS.SHOW_DETAILS:
                 this.showCertificateDetails(id);
                 break;
             default:
@@ -285,30 +372,17 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             TableUtils.generateHeader(label, width, right, body);
         const generateFooter = TableUtils.generateFooter;
 
-        const TableFooter = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: 7
-            },
-            generateFooter('Certified Energy (kWh)', true)
-        ];
-
         const filteredIEnrichedCertificateData = this.state.EnrichedCertificateData.filter(
             (EnrichedCertificateData: IEnrichedCertificateData) => {
-                const claimed =
-                    EnrichedCertificateData.certificate.status === Certificate.Status.Retired;
-                const forSale =
-                    EnrichedCertificateData.certificate.owner ===
-                    EnrichedCertificateData.producingAsset.owner.address;
-                const forSaleERC20 =
+                const ownerOf = this.props.currentUser && this.props.currentUser.id === EnrichedCertificateData.certificate.owner;
+                const claimed = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Retired;
+                const forSale = EnrichedCertificateData.certificate.forSale;
+                const isErc20 =
                     EnrichedCertificateData.certificate.acceptedToken &&
                     this.props.conf.blockchainProperties.web3.utils
                         .toBN(EnrichedCertificateData.certificate.acceptedToken)
                         .toString() !== '0' &&
-                    EnrichedCertificateData.certificate.onCHainDirectPurchasePrice > 0 &&
-                    this.props.currentUser &&
-                    EnrichedCertificateData.certificateOwner.id !== this.props.currentUser.id;
+                    EnrichedCertificateData.certificate.onChainDirectPurchasePrice > 0;
                 const forDemand = this.state.matchedCertificates.find(cert => cert.id === EnrichedCertificateData.certificate.id) !== undefined;
 
                 if (
@@ -319,11 +393,11 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 }
 
                 return (
+                    (ownerOf && !claimed && !forSale && this.props.selectedState === SelectedState.Inbox) ||
                     (claimed && this.props.selectedState === SelectedState.Claimed) ||
-                    (!claimed && forSale && this.props.selectedState === SelectedState.ForSale) ||
-                    (!claimed && !forSale && this.props.selectedState === SelectedState.Sold) ||
-                    (!claimed && forSaleERC20 && this.props.selectedState === SelectedState.ForSaleERC20) ||
-                    (!claimed && forDemand && this.props.selectedState === SelectedState.ForDemand)
+                    (!claimed && forSale && !isErc20 && this.props.selectedState === SelectedState.ForSale) ||
+                    (!claimed && forSale && isErc20 && this.props.selectedState === SelectedState.ForSaleERC20) ||
+                    (!claimed && forSale && forDemand && this.props.selectedState === SelectedState.ForDemand)
                 );
             }
         );
@@ -332,7 +406,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             (EnrichedCertificateData: IEnrichedCertificateData) => {
                 const certificate = EnrichedCertificateData.certificate;
 
-                return [
+                const certificateDataToShow = [
                     certificate.id,
                     ProducingAsset.Type[
                         EnrichedCertificateData.producingAsset.offChainProperties.assetType
@@ -340,7 +414,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     moment(
                         EnrichedCertificateData.producingAsset.offChainProperties.operationalSince *
                             1000
-                    , 'x').format('MMM YY'),
+                    ,   'x').format('MMM YY'),
                     `${EnrichedCertificateData.producingAsset.offChainProperties.city}, ${
                         EnrichedCertificateData.producingAsset.offChainProperties.country
                     }`,
@@ -353,10 +427,17 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     ).toDateString(),
                     EnrichedCertificateData.certificate.powerInW / 1000
                 ];
+
+                if (this.state.shouldShowPrice) {
+                    certificateDataToShow.splice(7, 0, EnrichedCertificateData.certificate.onChainDirectPurchasePrice);
+                    certificateDataToShow.splice(8, 0, `ERC20 token ${EnrichedCertificateData.certificate.acceptedToken}`);
+                }
+
+                return certificateDataToShow;
             }
         );
 
-        let TableHeader = [
+        const TableHeader = [
             generateHeader('#', 60),
             generateHeader('Asset Type'),
             generateHeader('Commissioning Date'),
@@ -368,23 +449,54 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
         ];
 
-        const operations = [
-            'Show Certificate Creation Tx',
-            'Show Initial Logging Transaction',
-            'Show Certificate Details'
-        ].concat(
-            this.props.selectedState === SelectedState.Sold
-                ? ['Claim']
-                : this.props.selectedState === SelectedState.ForSaleERC20
-                ? ['Buy']
-                : []
-        );
-        if (this.props.selectedState === SelectedState.Claimed) {
-            operations.concat(['Show Claiming Tx']);
+        if (this.state.shouldShowPrice) {
+            TableHeader.splice(7, 0, generateHeader('Price'));
+            TableHeader.splice(8, 0, generateHeader('Currency'));
         }
 
+        const TableFooter = [
+            {
+                label: 'Total',
+                key: 'total',
+                colspan: TableHeader.length - 1
+            },
+            generateFooter('Certified Energy (kWh)', true)
+        ];
+
+        const operations = [];
+
+        switch (this.props.selectedState) {
+            case SelectedState.Inbox:
+                operations.push(
+                    OPERATIONS.CLAIM,
+                    OPERATIONS.PUBLISH_FOR_SALE
+                );
+                break;
+            case SelectedState.ForSale:
+                operations.push(
+                    OPERATIONS.BUY,
+                    OPERATIONS.RETURN_TO_INBOX
+                );
+                break;
+            case SelectedState.ForSaleERC20:
+                operations.push(
+                    OPERATIONS.BUY,
+                    OPERATIONS.RETURN_TO_INBOX
+                );
+                break;
+            case SelectedState.Claimed:
+                operations.push(OPERATIONS.SHOW_CLAIMING_TX);
+                break;
+        }
+
+        operations.push(
+            OPERATIONS.SHOW_CREATION_TX,
+            OPERATIONS.SHOW_LOGGING_TX,
+            OPERATIONS.SHOW_DETAILS
+        );
+
         return (
-            <div className="ForSaleWrapper">
+            <div className="CertificateTableWrapper">
                 <Table
                     operationClicked={this.operationClicked}
                     classNames={['bare-font', 'bare-padding']}
@@ -394,6 +506,19 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     data={data}
                     actionWidth={55.39}
                     operations={operations}
+                />
+
+                <PublishForSaleModal
+                    conf={this.props.conf}
+                    certificate={this.state.sellModalForCertificate}
+                    producingAsset={
+                        this.state.sellModalForCertificate ?
+                            this.props.producingAssets.find(
+                                (asset: ProducingAsset.Entity) => asset.id === this.state.sellModalForCertificate.assetId.toString()
+                            ) 
+                            : null
+                    }
+                    showModal={this.state.showSellModal}
                 />
             </div>
         );

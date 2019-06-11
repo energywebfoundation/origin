@@ -192,7 +192,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                 const demand = enrichedDemandData.demand;
                 const overallDemand = Math.ceil(
                     (parseInt(demand.offChainProperties.endTime, 10) - parseInt(demand.offChainProperties.startTime, 10)) / PeriodToSeconds[demand.offChainProperties.timeframe] / 1000)
-                        * (demand.offChainProperties.targetWhPerPeriod / 1000)
+                        * (demand.offChainProperties.targetWhPerPeriod / 1000);
 
                 return [
                     demand.id,

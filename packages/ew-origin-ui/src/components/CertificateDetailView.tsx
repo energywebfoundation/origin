@@ -41,7 +41,7 @@ export interface DetailViewState {
 
 export interface EnrichedEvent {
     txHash: string;
-    lable: string;
+    label: string;
     description: string;
     timestamp: number;
 }
@@ -100,12 +100,12 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
 
         const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
             async (event: any) => {
-                let lable;
+                let label;
                 let description;
 
                 switch (event.event) {
                     case 'LogNewMeterRead':
-                        lable = 'Initial Logging';
+                        label = 'Initial Logging';
                         description = 'Logging by Asset #' + event.returnValues._assetId;
                         break;
                     case 'LogCreatedCertificate':
@@ -113,11 +113,11 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                             event.returnValues.owner,
                             props.conf as any
                         ).sync()).organization;
-                        lable = 'Certificate Created';
+                        label = 'Certificate Created';
                         description = 'Certificate created by asset ' + selectedCertificate.assetId;
                         break;
                     case 'LogRetireRequest':
-                        lable = 'Certificate Claimed';
+                        label = 'Certificate Claimed';
                         description = 'Initiated by ' + this.state.owner.organization;
                         break;
                     case 'Transfer':
@@ -125,7 +125,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                             (event as any).returnValues._from ===
                             '0x0000000000000000000000000000000000000000'
                         ) {
-                            lable = 'Set Initial Owner';
+                            label = 'Set Initial Owner';
                             description = (await new User(
                                 (event as any).returnValues._to,
                                 props.conf as any
@@ -139,18 +139,24 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                                 (event as any).returnValues._from,
                                 props.conf as any
                             ).sync()).organization;
-                            lable = 'Certificate Owner Change';
+                            label = 'Certificate Owner Change';
                             description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
                         }
                         break;
+                    case 'LogPublishForSale':
+                        label = 'Certificate published for sale';
+                        break;
+                    case 'LogUnpublishForSale':
+                        label = 'Certificate unpublished from sale';
+                        break;
 
                     default:
-                        lable = event.event;
+                        label = event.event;
                 }
 
                 return {
                     txHash: event.transactionHash,
-                    lable,
+                    label,
                     description,
                     timestamp: (await props.conf.blockchainProperties.web3.eth.getBlock(
                         event.blockNumber
@@ -190,7 +196,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                         </a>
                     </span>
                     <br />
-                    {event.lable} - {event.description}
+                    {event.label} - {event.description}
                     <br />
                 </p>
             ));

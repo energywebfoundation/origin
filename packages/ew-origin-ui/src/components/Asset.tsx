@@ -209,7 +209,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                     }}
                 />
                 <Route
-                    exact
+                    exact={true}
                     path={'/' + this.props.baseUrl + '/assets'}
                     render={props => (
                         <Redirect
@@ -218,7 +218,7 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                     )}
                 />
                 <Route
-                    exact
+                    exact={true}
                     path={'/' + this.props.baseUrl + '/'}
                     render={props => (
                         <Redirect

@@ -29,7 +29,7 @@ import './Table.scss';
 import './datepicker.scss';
 
 interface IProps {
-    header: (ITableHeaderData | ITableAdminHeaderData)[];
+    header: Array<ITableHeaderData | ITableAdminHeaderData>;
     data: any;
     footer?: any;
     actions?: any | boolean;
@@ -113,7 +113,7 @@ export class Table extends React.Component<IProps, any> {
         }
 
         return ret;
-    };
+    }
 
     handleDropdown = (key, itemInput) => {
         return (value => {
@@ -134,7 +134,7 @@ export class Table extends React.Component<IProps, any> {
 
             this.setState({ inputs: newInputs }, this.saveTotalEnergy);
         }).bind(this);
-    };
+    }
 
     handleToggle = (key, index) => {
         const stateKey = 'toggle_' + key;
@@ -151,7 +151,7 @@ export class Table extends React.Component<IProps, any> {
                 this.setState({ inputs: newInputs });
             }
         }).bind(this);
-    };
+    }
 
     handleInput = key => {
         return (e => {
@@ -165,7 +165,7 @@ export class Table extends React.Component<IProps, any> {
                 this.saveTotalEnergy
             );
         }).bind(this);
-    };
+    }
 
     handleDate = key => {
         return (date => {
@@ -181,7 +181,7 @@ export class Table extends React.Component<IProps, any> {
                 this.saveTotalEnergy
             );
         }).bind(this);
-    };
+    }
 
     saveTotalEnergy() {
         this.setState({
@@ -422,7 +422,7 @@ export class Table extends React.Component<IProps, any> {
                                                         <div>
                                                             <input
                                                                 value={this.state.totalEnergy}
-                                                                readOnly
+                                                                readOnly={true}
                                                             />
                                                         </div>
                                                     )}
