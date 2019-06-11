@@ -31,7 +31,6 @@ interface IPublishForSaleModalState {
     certCreationDate: string;
 }
 
-
 const ERC20CURRENCY = 'ERC20 Token';
 
 class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPublishForSaleModalState> {
@@ -94,7 +93,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                 if (price !== certificate.onChainDirectPurchasePrice) {
                     await certificate.setOnChainDirectPurchasePrice(price);
                 }
-    
+
                 if (
                     erc20TokenAddress !== ''
                     && erc20TokenAddress !== ((certificate.acceptedToken as any) as string)

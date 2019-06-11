@@ -46,6 +46,7 @@ export interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
     certificateOwner: User;
     producingAsset: ProducingAsset.Entity;
+    acceptedToken: string;
 }
 
 export interface ICertificatesState {
@@ -62,7 +63,6 @@ export enum SelectedState {
     Inbox,
     Claimed,
     ForSale,
-    ForSaleERC20,
     ForDemand
 }
 
@@ -88,7 +88,6 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             matchedCertificates: [],
             shouldShowPrice: [
                 SelectedState.ForSale,
-                SelectedState.ForSaleERC20,
                 SelectedState.ForDemand,
                 SelectedState.Claimed
             ].includes(props.selectedState),
@@ -102,6 +101,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         this.showTxClaimed = this.showTxClaimed.bind(this);
         this.showCertCreated = this.showCertCreated.bind(this);
         this.showCertificateDetails = this.showCertificateDetails.bind(this);
+        this.getTokenSymbol = this.getTokenSymbol.bind(this);
     }
 
     async componentDidMount() {
@@ -122,7 +122,8 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             producingAsset: this.props.producingAssets.find(
                 (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
             ),
-            certificateOwner: await new User(certificate.owner, props.conf as any).sync()
+            certificateOwner: await new User(certificate.owner, props.conf as any).sync(),
+            acceptedToken: await this.getTokenSymbol(certificate)
         }));
 
         Promise.all(promises).then(EnrichedCertificateData => {
@@ -136,6 +137,21 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         const matchedCertificates: Certificate.Entity[] = await MatcherLogic.findMatchingCertificatesForDemand(demand, this.props.conf, this.props.certificates);
 
         this.setState({ matchedCertificates });
+    }
+
+    async getTokenSymbol(certificate) {
+        if (certificate.acceptedToken
+            && certificate.acceptedToken !== '0x0000000000000000000000000000000000000000') {
+            const token = new Erc20TestToken(
+                this.props.conf.blockchainProperties.web3,
+                (certificate.acceptedToken as any) as string
+            );
+            const symbol = await token.web3Contract.methods.symbol().call();
+
+            return symbol;
+        }
+
+        return '';
     }
 
     async buyCertificate(certificateId: number) {
@@ -377,12 +393,6 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 const ownerOf = this.props.currentUser && this.props.currentUser.id === EnrichedCertificateData.certificate.owner;
                 const claimed = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Retired;
                 const forSale = EnrichedCertificateData.certificate.forSale;
-                const isErc20 =
-                    EnrichedCertificateData.certificate.acceptedToken &&
-                    this.props.conf.blockchainProperties.web3.utils
-                        .toBN(EnrichedCertificateData.certificate.acceptedToken)
-                        .toString() !== '0' &&
-                    EnrichedCertificateData.certificate.onChainDirectPurchasePrice > 0;
                 const forDemand = this.state.matchedCertificates.find(cert => cert.id === EnrichedCertificateData.certificate.id) !== undefined;
 
                 if (
@@ -395,8 +405,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 return (
                     (ownerOf && !claimed && !forSale && this.props.selectedState === SelectedState.Inbox) ||
                     (claimed && this.props.selectedState === SelectedState.Claimed) ||
-                    (!claimed && forSale && !isErc20 && this.props.selectedState === SelectedState.ForSale) ||
-                    (!claimed && forSale && isErc20 && this.props.selectedState === SelectedState.ForSaleERC20) ||
+                    (!claimed && forSale && this.props.selectedState === SelectedState.ForSale) ||
                     (!claimed && forSale && forDemand && this.props.selectedState === SelectedState.ForDemand)
                 );
             }
@@ -430,7 +439,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
                 if (this.state.shouldShowPrice) {
                     certificateDataToShow.splice(7, 0, EnrichedCertificateData.certificate.onChainDirectPurchasePrice);
-                    certificateDataToShow.splice(8, 0, `ERC20 token ${EnrichedCertificateData.certificate.acceptedToken}`);
+                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedToken);
                 }
 
                 return certificateDataToShow;
@@ -478,12 +487,6 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     OPERATIONS.RETURN_TO_INBOX
                 );
                 break;
-            case SelectedState.ForSaleERC20:
-                operations.push(
-                    OPERATIONS.BUY,
-                    OPERATIONS.RETURN_TO_INBOX
-                );
-                break;
             case SelectedState.Claimed:
                 operations.push(OPERATIONS.SHOW_CLAIMING_TX);
                 break;
@@ -515,7 +518,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                         this.state.sellModalForCertificate ?
                             this.props.producingAssets.find(
                                 (asset: ProducingAsset.Entity) => asset.id === this.state.sellModalForCertificate.assetId.toString()
-                            ) 
+                            )
                             : null
                     }
                     showModal={this.state.showSellModal}
