@@ -222,6 +222,30 @@ export const certificateDemo = async (
             console.log('-----------------------------------------------------------\n');
 
             break;
+        case 'PUBLISH_CERTIFICATE_FOR_SALE':
+            console.log('-----------------------------------------------------------');
+
+            conf.blockchainProperties.activeUser = {
+                address: action.data.certificateOwner,
+                privateKey: action.data.certificateOwnerPK
+            };
+
+            try {
+                let certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+
+                await certificate.publishForSale();
+                certificate = await certificate.sync();
+
+                conf.logger.info(`Certificate ${action.data.certId} published for sale`);
+            } catch (e) {
+                conf.logger.error(`Could not set publish ${action.data.certId} for sale\n`, e);
+            }
+
+            console.log('-----------------------------------------------------------\n');
+            break;
         case 'BUY_CERTIFICATE':
             console.log('-----------------------------------------------------------');
 
