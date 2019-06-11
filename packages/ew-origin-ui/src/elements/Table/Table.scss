@@ -8,6 +8,10 @@
             border-bottom: 3px solid #ba77ff;
         }
 
+        & td {
+            word-wrap: break-word;
+        }
+
         &.admin {
             table-layout: initial;
 

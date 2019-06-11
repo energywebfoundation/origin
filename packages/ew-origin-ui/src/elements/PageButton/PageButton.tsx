@@ -43,13 +43,13 @@ export class PageButton extends React.Component<any, any> {
             data: { content }
         } = this.props;
         this.setState({ itemData: content[index] });
-    };
+    }
 
     withDropdown = ary => {
         const ret = ary.map(item => `dropdown-${item}`);
 
         return ret.join(' ');
-    };
+    }
 
     render() {
         const { data, onFilterOrganization } = this.props;

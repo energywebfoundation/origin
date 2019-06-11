@@ -106,7 +106,7 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         if (this.state.detailViewForAssetId !== null) {
             return (
                 <Redirect
-                    push
+                    push={true}
                     to={
                         '/' +
                         this.props.baseUrl +

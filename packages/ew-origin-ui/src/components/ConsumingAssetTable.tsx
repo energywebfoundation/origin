@@ -103,7 +103,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         if (this.state.detailViewForAssetId !== null) {
             return (
                 <Redirect
-                    push
+                    push={true}
                     to={
                         '/' +
                         this.props.baseUrl +
