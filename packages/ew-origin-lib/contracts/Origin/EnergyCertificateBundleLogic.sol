@@ -231,11 +231,11 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface,
             assetId: _assetId,
             owner: asset.assetGeneral.owner,
             powerInW: _powerInW,
+            forSale: false,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
             escrow: asset.assetGeneral.matcher,
             approvedAddress: address(0x0)
-
         });
 
         CertificateSpecific memory certificateSpecific = CertificateSpecific({
@@ -282,6 +282,7 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface,
         internal
     {
         EnergyCertificateBundleDB.EnergyCertificateBundle memory bundle = EnergyCertificateBundleDB(address(db)).getBundle(_entityId);
+        
         simpleTransferInternal(_from, _to, _entityId);
         safeTransferChecks(_from, _to, _entityId, _data);
         emit LogBundleOwnerChanged(_entityId, bundle.tradableEntity.owner, _to, address(0x0));

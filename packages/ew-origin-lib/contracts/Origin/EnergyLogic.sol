@@ -22,7 +22,8 @@ import "../../contracts/Origin/TradableEntityContract.sol";
 import "../../contracts/Origin/TradableEntityLogic.sol";
 import "../../contracts/Interfaces/OriginContractLookupInterface.sol";
 import "ew-asset-registry-lib/contracts/Interfaces/AssetContractLookupInterface.sol";
-/// @title The logic contract for the AgreementDB of Origin list
+
+/// @title The logic contract for the EnergyDB of Origin contracts
 contract EnergyLogic is RoleManagement, TradableEntityLogic, TradableEntityContract {
 
     AssetContractLookupInterface public assetContractLookup;
@@ -38,6 +39,4 @@ contract EnergyLogic is RoleManagement, TradableEntityLogic, TradableEntityContr
     public {
         assetContractLookup = _assetContractLookup;
     }
-
-
 }

@@ -3087,6 +3087,25 @@ describe('CertificateLogic', () => {
                 );
             });
 
+            it('should fail when trying to buy a certificate that is not for sale', async () => {
+                let failed = false;
+                try {
+                    await certificateLogic.buyCertificate(15, { privateKey: traderPK });
+                } catch (ex) {
+                    failed = true;
+                    assert.include(ex.message, 'Unable to buy a certificate that is not for sale');
+                }
+
+                assert.isTrue(failed);
+            });
+
+            it('should set certificate for sale', async () => {
+                await certificateLogic.publishForSale(15, { privateKey: assetOwnerPK });
+                const cert = await certificateLogic.getCertificate(15);
+
+                assert.isTrue(cert.tradableEntity.forSale);
+            });
+
             it('should fail when trying to buy a token with a price of 0', async () => {
                 let failed = false;
                 try {

@@ -245,8 +245,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -256,6 +257,49 @@ describe('CertificateLogic-Facade', () => {
             maxOwnerChanges: '3',
             ownerChangerCounter: '0'
         });
+    });
+
+    it('should fail unpublish certificate from sale if not on sale', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: accountAssetOwner,
+            privateKey: assetOwnerPK
+        };
+        const certificate = await new Certificate.Entity('0', conf).sync();
+
+        let failed = false;
+
+        try {
+            await certificate.unpublishForSale();
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'Unable to revoke the tradable entity from sale because the entity has not been posted for sale');
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should make certificate available for sale', async() => {
+        let certificate = await new Certificate.Entity('0', conf).sync();
+
+        await certificate.publishForSale();
+
+        certificate = await new Certificate.Entity('0', conf).sync();
+        assert.isTrue(certificate.forSale);
+    });
+
+    it('should fail putting certificate for sale if already on sale', async () => {
+        const certificate = await new Certificate.Entity('0', conf).sync();
+
+        let failed = false;
+
+        try {
+            await certificate.publishForSale();
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'The tradable entity is already published for sale');
+        }
+
+        assert.isTrue(failed);
     });
 
     it('should transfer certificate', async () => {
@@ -283,8 +327,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountTrader,
             powerInW: '100',
+            forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -296,7 +341,43 @@ describe('CertificateLogic-Facade', () => {
         });
     });
 
+    it('should fail unpublish certificate from sale if not the owner', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: accountAssetOwner,
+            privateKey: assetOwnerPK
+        };
+        const certificate = await new Certificate.Entity('0', conf).sync();
+
+        let failed = false;
+
+        try {
+            await certificate.unpublishForSale();
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'not the entity-owner');
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should unpublish certificate available from sale', async() => {
+        conf.blockchainProperties.activeUser = {
+            address: accountTrader,
+            privateKey: traderPK
+        };
+        let certificate = await new Certificate.Entity('0', conf).sync();
+
+        await certificate.unpublishForSale();
+
+        certificate = await new Certificate.Entity('0', conf).sync();
+        assert.isFalse(certificate.forSale);
+    });
+
     it('create a new certificate (#1)', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: accountAssetOwner,
+            privateKey: assetOwnerPK
+        };
         await assetRegistry.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', {
             privateKey: assetSmartmeterPK
         });
@@ -313,8 +394,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -344,8 +426,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
@@ -366,7 +449,7 @@ describe('CertificateLogic-Facade', () => {
 
         certificate = await certificate.sync();
 
-        assert.equal(certificate.onCHainDirectPurchasePrice, 100);
+        assert.equal(certificate.onChainDirectPurchasePrice, 100);
 
         const erc20TestAddress = (await deployERC20TestToken(
             web3,
@@ -391,8 +474,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: erc20TestAddress,
-            onCHainDirectPurchasePrice: '100',
+            onChainDirectPurchasePrice: '100',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
@@ -402,6 +486,31 @@ describe('CertificateLogic-Facade', () => {
             maxOwnerChanges: '3',
             ownerChangerCounter: '0'
         });
+    });
+
+    it('should fail buying a certificate when not for sale', async () => {
+        const certificate = await new Certificate.Entity('1', conf).sync();
+
+        let failed = false;
+
+        try {
+            await certificate.buyCertificate();
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'Unable to buy a certificate that is not for sale');
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should make certificate 1 available for sale', async() => {
+        let certificate = await new Certificate.Entity('1', conf).sync();
+
+        await certificate.publishForSale();
+
+        certificate = await new Certificate.Entity('1', conf).sync();
+
+        assert.isTrue(certificate.forSale);
     });
 
     it('should fail buying a certificate when not enough erc20 tokens approved', async () => {
@@ -442,8 +551,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountTrader,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -472,8 +582,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -506,8 +617,9 @@ describe('CertificateLogic-Facade', () => {
             children: ['3', '4'],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Split.toString(),
@@ -533,8 +645,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '60',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -552,8 +665,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '40',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -592,8 +706,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '60',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Retired.toString(),
@@ -628,8 +743,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '40',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -657,8 +773,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '40',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -686,8 +803,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '40',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -716,8 +834,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -775,8 +894,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: testReceiverAddress,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -805,8 +925,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
@@ -864,8 +985,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: testReceiverAddress,
             powerInW: '100',
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onCHainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: '0',
             escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),

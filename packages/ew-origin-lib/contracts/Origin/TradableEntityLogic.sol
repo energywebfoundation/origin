@@ -49,6 +49,11 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice Logs when an escrow gets added
     event LogEscrowAdded(uint indexed _certificateId, address _escrow);
 
+    /// @notice Logs when an entity is published for sale
+    event LogPublishForSale(uint indexed _entityId);
+    /// @notice Logs when an entity is published for sale
+    event LogUnpublishForSale(uint indexed _entityId);
+
     modifier onlyEntityOwner(uint _entityId) {
         require(db.getTradableEntityOwner(_entityId) == msg.sender,"not the entity-owner");
         _;
@@ -138,7 +143,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @param _entityId the entity-id
     function approve(address _approved, uint256 _entityId) external payable {
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(address(db)).getTradableEntity(_entityId);
-        require(te.owner == msg.sender || checkMatcher(te.escrow),"approve: not owner / matcher");
+        require(te.owner == msg.sender || checkMatcher(te.escrow), "approve: not owner / matcher");
         db.addApprovalExternal(_entityId, _approved);
 
         emit Approval(msg.sender,_approved, _entityId);
@@ -148,8 +153,22 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @param _certificateId The id of the certificate
     /// @param _escrow The address to be removed
     function removeEscrow(uint _certificateId, address _escrow) external onlyEntityOwner(_certificateId){
-        require(db.removeEscrow(_certificateId, _escrow),"escrow address not in array");
+        require(db.removeEscrow(_certificateId, _escrow), "escrow address not in array");
         emit LogEscrowRemoved(_certificateId, _escrow);
+    }
+
+    /// @notice makes the tradable entity available for sale
+    /// @param _entityId The id of the certificate
+    function publishForSale(uint _entityId) external onlyEntityOwner(_entityId) {
+        db.publishForSale(_entityId);
+        emit LogPublishForSale(_entityId);
+    }
+
+    /// @notice makes the tradable entity available for sale
+    /// @param _entityId The id of the certificate
+    function unpublishForSale(uint _entityId) external onlyEntityOwner(_entityId) {
+        db.unpublishForSale(_entityId);
+        emit LogUnpublishForSale(_entityId);
     }
 
     /// @notice sets approve

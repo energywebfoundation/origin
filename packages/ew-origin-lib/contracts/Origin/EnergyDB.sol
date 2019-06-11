@@ -37,8 +37,8 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
 
     /// @notice An array containing all created certificates
     Energy[] private energyList;
-  //  mapping(address => uint) private tokenAmountMapping;
-  //  mapping(address => mapping (address => bool)) ownerToOperators;
+    //  mapping(address => uint) private tokenAmountMapping;
+    //  mapping(address => mapping (address => bool)) ownerToOperators;
 
     /// @notice Constructor
     /// @param _energyLogic The address of the corresbonding logic contract
@@ -84,6 +84,7 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
             assetId: _assetId,
             owner: _owner,
             powerInW: _powerInW,
+            forSale: false,
             acceptedToken: _acceptedToken,
             onChainDirectPurchasePrice: _onChainDirectPurchasePrice,
             escrow: new address[](0),
@@ -94,7 +95,7 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
         tokenAmountMapping[_owner]++;
     }
 
-    /// @notice sets a new array of escrowsfor an entity
+    /// @notice sets a new array of escrows for an entity
     /// @param _entityId the id of the entity
     /// @param _escrow the array with escrows
     function setEscrow(uint _entityId, address[] calldata _escrow) external onlyOwner {

@@ -118,13 +118,22 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         onlyRole(RoleManagement.Role.Trader)
      {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
-        require(cert.tradableEntity.acceptedToken != address(0x0),"0x0 not allowed");
 
-        require(ERC20Interface(cert.tradableEntity.acceptedToken).transferFrom(msg.sender, cert.tradableEntity.owner, cert.tradableEntity.onChainDirectPurchasePrice),"erc20 transfer failed");
+        require(cert.tradableEntity.forSale == true, "Unable to buy a certificate that is not for sale.");
+        require(cert.tradableEntity.acceptedToken != address(0x0), "0x0 not allowed");
+        require(
+            ERC20Interface(cert.tradableEntity.acceptedToken).transferFrom(
+                msg.sender, cert.tradableEntity.owner, cert.tradableEntity.onChainDirectPurchasePrice
+            ),
+            "erc20 transfer failed"
+        );
+
         TradableEntityDBInterface(address(db)).addApprovalExternal(_certificateId, msg.sender);
 
         simpleTransferInternal(cert.tradableEntity.owner, msg.sender, _certificateId);
         checktransferOwnerInternally(_certificateId, cert);
+
+        TradableEntityDBInterface(address(db)).unpublishForSale(_certificateId);
     }
 
     /// @notice creates a new Entity / certificate
@@ -149,7 +158,7 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         require(cert.tradableEntity.owner == msg.sender, "You have to be the owner of the contract.");
         require(
             cert.certificateSpecific.children.length == 0,
-            "Unable to split certificates that have already been split"
+            "Unable to retire certificates that have already been split."
         );
 
         if (cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired)) {
@@ -213,7 +222,7 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
             .getCertificate(_certificateId)
             .certificateSpecific.status == uint(CertificateSpecificContract.Status.Retired);
     }
-    
+
     /**
         internal functions
     */
@@ -256,6 +265,7 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         internal
     {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_entityId);
+
         simpleTransferInternal(_from, _to, _entityId);
         safeTransferChecks(_from, _to, _entityId, _data);
         checktransferOwnerInternally(_entityId, cert);

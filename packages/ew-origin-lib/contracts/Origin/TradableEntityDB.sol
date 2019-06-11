@@ -44,6 +44,24 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         external functions
      */
 
+    /// @notice makes the tradable entity available for sale
+    /// @param _entityId the id of the tradableEntity
+    function publishForSale(uint _entityId) external onlyOwner {
+        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
+        require(te.forSale == false, "The tradable entity is already published for sale.");
+
+        te.forSale = true;
+    }
+
+    /// @notice makes the tradable entity unavailable to sell
+    /// @param _entityId the id of the tradableEntity
+    function unpublishForSale(uint _entityId) external onlyOwner {
+        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
+        require(te.forSale == true, "Unable to revoke the tradable entity from sale because the entity has not been posted for sale.");
+
+        te.forSale = false;
+    }
+
     /// @notice adds an escrow to an entity
     /// @param _entityId the id of an entity
     /// @param _escrow the escrow to be added

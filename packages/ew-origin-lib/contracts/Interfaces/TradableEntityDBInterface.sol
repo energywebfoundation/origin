@@ -19,6 +19,14 @@ pragma experimental ABIEncoderV2;
 
 interface TradableEntityDBInterface {
 
+    /// @notice makes the tradable entity available for sale
+    /// @param _entityId the id of the tradableEntity
+    function publishForSale(uint _entityId) external;
+
+    /// @notice makes the tradable entity unavailable to sell
+    /// @param _entityId the id of the tradableEntity
+    function unpublishForSale(uint _entityId) external;
+
     /// @notice adds an approved address to an entity
     /// @param _entityId the id of the entity
     /// @param _approve the approved address

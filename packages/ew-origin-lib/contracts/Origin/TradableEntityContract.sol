@@ -23,11 +23,10 @@ contract TradableEntityContract {
         uint assetId;
         address owner;
         uint powerInW;
+        bool forSale;
         address acceptedToken;
         uint onChainDirectPurchasePrice;
         address[] escrow;
         address approvedAddress;
     }
-
-
 }
