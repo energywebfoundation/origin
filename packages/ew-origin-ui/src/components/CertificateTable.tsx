@@ -490,6 +490,9 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             case SelectedState.Claimed:
                 operations.push(OPERATIONS.SHOW_CLAIMING_TX);
                 break;
+            case SelectedState.ForDemand:
+                operations.push(OPERATIONS.BUY);
+                break;
         }
 
         operations.push(
