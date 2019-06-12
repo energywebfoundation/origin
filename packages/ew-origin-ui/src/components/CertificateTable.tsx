@@ -166,6 +166,12 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         }
 
         if (certificate && this.props.currentUser) {
+            if ((certificate.acceptedToken as any) as string === '0x0000000000000000000000000000000000000000') {
+                showNotification(`Fiat currency settlements are not supported in the app yet.`, NotificationType.Error);
+
+                return;
+            }
+
             const erc20TestToken = new Erc20TestToken(
                 this.props.conf.blockchainProperties.web3,
                 (certificate.acceptedToken as any) as string
@@ -439,7 +445,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
                 if (this.state.shouldShowPrice) {
                     certificateDataToShow.splice(7, 0, EnrichedCertificateData.certificate.onChainDirectPurchasePrice);
-                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedToken);
+                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedToken !== '' ? EnrichedCertificateData.acceptedToken : 'EUR');
                 }
 
                 return certificateDataToShow;
