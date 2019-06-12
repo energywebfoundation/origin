@@ -335,6 +335,7 @@
             "type": "PUBLISH_CERTIFICATE_FOR_SALE",
             "data": {
                 "certId": 4,
+                "price": 1000,
                 "certificateOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
                 "certificateOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
             }

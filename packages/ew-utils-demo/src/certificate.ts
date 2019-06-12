@@ -230,13 +230,17 @@ export const certificateDemo = async (
                 privateKey: action.data.certificateOwnerPK
             };
 
+            const erc20 = JSON.parse(
+                fs.readFileSync('./config/erc20Config.json', 'utf8').toString()
+            );
+
             try {
                 let certificate = await new Certificate.Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
 
-                await certificate.publishForSale();
+                await certificate.publishForSale(action.data.price, erc20.ERC20Address);
                 certificate = await certificate.sync();
 
                 conf.logger.info(`Certificate ${action.data.certId} published for sale`);
@@ -254,13 +258,13 @@ export const certificateDemo = async (
                 privateKey: action.data.buyerPK
             };
 
-            const erc20Config = JSON.parse(
+            const erc20conf = JSON.parse(
                 fs.readFileSync('./config/erc20Config.json', 'utf8').toString()
             );
 
             const erc20TestToken = new Erc20TestToken(
                 conf.blockchainProperties.web3,
-                erc20Config.ERC20Address
+                erc20conf.ERC20Address
             );
             await erc20TestToken.approve(action.data.assetOwner, action.data.price, {
                 privateKey: action.data.buyerPK
