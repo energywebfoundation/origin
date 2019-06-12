@@ -124,7 +124,7 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
                 this.id,
                 newMeterReading,
                 fileHash,
-                { privateKey: this.configuration.blockchainProperties.activeUser.address },
+                { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
 
