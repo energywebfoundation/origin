@@ -1748,10 +1748,10 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
 
 
 
-    async publishForSale(_entityId: number, txParams?: SpecialTx) {
+    async publishForSale(_entityId: number, _price: number, _tokenAddress: string, txParams?: SpecialTx) {
         let transactionParams;
 
-        const txData = await this.web3Contract.methods.publishForSale(_entityId).encodeABI();
+        const txData = await this.web3Contract.methods.publishForSale(_entityId, _price, _tokenAddress).encodeABI();
 
         let gas;
 
@@ -1769,7 +1769,7 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
             if (!txParams.gas) {
                 try {
                     gas = await this.web3Contract.methods
-                        .publishForSale(_entityId)
+                        .publishForSale(_entityId, _price, _tokenAddress)
                         .estimateGas({
                             from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
                         });
@@ -1822,7 +1822,7 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
             return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
         } else {
             return await this.web3Contract.methods
-                .publishForSale(_entityId)
+                .publishForSale(_entityId, _price, _tokenAddress)
                 .send({ from: transactionParams.from, gas: transactionParams.gas });
         }
     }

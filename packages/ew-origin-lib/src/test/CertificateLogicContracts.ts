@@ -3100,7 +3100,7 @@ describe('CertificateLogic', () => {
             });
 
             it('should set certificate for sale', async () => {
-                await certificateLogic.publishForSale(15, { privateKey: assetOwnerPK });
+                await certificateLogic.publishForSale(15, 0, erc20Test.web3Contract._address, { privateKey: assetOwnerPK });
                 const cert = await certificateLogic.getCertificate(15);
 
                 assert.isTrue(cert.tradableEntity.forSale);

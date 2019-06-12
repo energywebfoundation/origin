@@ -58,6 +58,7 @@ describe('CertificateLogic-Facade', () => {
     let userRegistryContract: UserContractLookup;
 
     let erc20TestToken: Erc20TestToken;
+    let erc20TestTokenAddress: string;
     let testReceiver: TestReceiver;
 
     const configFile = JSON.parse(
@@ -88,8 +89,18 @@ describe('CertificateLogic-Facade', () => {
     const approvedAccount = web3.eth.accounts.privateKeyToAccount(approvedPK).address;
 
     let conf: Configuration.Entity;
-
+    
     let blockceationTime;
+    
+    it('should set ERC20 token', async () => {
+        erc20TestTokenAddress = (await deployERC20TestToken(
+            web3,
+            accountTrader,
+            privateKeyDeployment
+        )).contractAddress;
+    
+        erc20TestToken = new Erc20TestToken(web3, erc20TestTokenAddress);
+    });
 
     it('should deploy the contracts', async () => {
         const userContracts = await migrateUserRegistryContracts(web3 as any, privateKeyDeployment);
@@ -272,7 +283,7 @@ describe('CertificateLogic-Facade', () => {
             await certificate.unpublishForSale();
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'Unable to revoke the tradable entity from sale because the entity has not been posted for sale');
+            assert.include(ex.message, 'forSale flag is already set to the required value');
         }
 
         assert.isTrue(failed);
@@ -281,25 +292,57 @@ describe('CertificateLogic-Facade', () => {
     it('should make certificate available for sale', async() => {
         let certificate = await new Certificate.Entity('0', conf).sync();
 
-        await certificate.publishForSale();
+        await certificate.publishForSale(10, '0x1230000000000000000000000000000000000000');
 
         certificate = await new Certificate.Entity('0', conf).sync();
         assert.isTrue(certificate.forSale);
     });
 
-    it('should fail putting certificate for sale if already on sale', async () => {
+    it('should fail unpublish certificate from sale if not the owner', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: accountTrader,
+            privateKey: traderPK
+        };
         const certificate = await new Certificate.Entity('0', conf).sync();
 
         let failed = false;
 
         try {
-            await certificate.publishForSale();
+            await certificate.unpublishForSale();
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'The tradable entity is already published for sale');
+            assert.include(ex.message, 'not the entity-owner');
         }
 
         assert.isTrue(failed);
+    });
+
+    it('should fail putting certificate for sale if already on sale', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: accountAssetOwner,
+            privateKey: assetOwnerPK
+        };
+        const certificate = await new Certificate.Entity('0', conf).sync();
+
+        let failed = false;
+
+        try {
+            await certificate.publishForSale(10, '0x1230000000000000000000000000000000000000');
+        } catch (ex) {
+            failed = true;
+            assert.include(ex.message, 'forSale flag is already set to the required value');
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should unpublish certificate available from sale', async() => {
+        let certificate = await new Certificate.Entity('0', conf).sync();
+
+        await certificate.unpublishForSale();
+
+        certificate = await new Certificate.Entity('0', conf).sync();
+        assert.isFalse(certificate.forSale);
     });
 
     it('should transfer certificate', async () => {
@@ -327,7 +370,7 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountTrader,
             powerInW: '100',
-            forSale: true,
+            forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
             escrow: [],
@@ -339,38 +382,6 @@ describe('CertificateLogic-Facade', () => {
             maxOwnerChanges: '3',
             ownerChangerCounter: '1'
         });
-    });
-
-    it('should fail unpublish certificate from sale if not the owner', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountAssetOwner,
-            privateKey: assetOwnerPK
-        };
-        const certificate = await new Certificate.Entity('0', conf).sync();
-
-        let failed = false;
-
-        try {
-            await certificate.unpublishForSale();
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'not the entity-owner');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should unpublish certificate available from sale', async() => {
-        conf.blockchainProperties.activeUser = {
-            address: accountTrader,
-            privateKey: traderPK
-        };
-        let certificate = await new Certificate.Entity('0', conf).sync();
-
-        await certificate.unpublishForSale();
-
-        certificate = await new Certificate.Entity('0', conf).sync();
-        assert.isFalse(certificate.forSale);
     });
 
     it('create a new certificate (#1)', async () => {
@@ -451,19 +462,11 @@ describe('CertificateLogic-Facade', () => {
 
         assert.equal(certificate.onChainDirectPurchasePrice, 100);
 
-        const erc20TestAddress = (await deployERC20TestToken(
-            web3,
-            accountTrader,
-            privateKeyDeployment
-        )).contractAddress;
-
-        erc20TestToken = new Erc20TestToken(web3, erc20TestAddress);
-
-        await certificate.setTradableToken(erc20TestAddress);
+        await certificate.setTradableToken(erc20TestTokenAddress);
 
         certificate = await certificate.sync();
 
-        assert.equal(await certificate.getTradableToken(), erc20TestAddress);
+        assert.equal(await certificate.getTradableToken(), erc20TestTokenAddress);
         delete certificate.configuration;
         delete certificate.proofs;
 
@@ -475,7 +478,7 @@ describe('CertificateLogic-Facade', () => {
             owner: accountAssetOwner,
             powerInW: '100',
             forSale: false,
-            acceptedToken: erc20TestAddress,
+            acceptedToken: erc20TestTokenAddress,
             onChainDirectPurchasePrice: '100',
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
@@ -506,7 +509,7 @@ describe('CertificateLogic-Facade', () => {
     it('should make certificate 1 available for sale', async() => {
         let certificate = await new Certificate.Entity('1', conf).sync();
 
-        await certificate.publishForSale();
+        await certificate.publishForSale(10, erc20TestTokenAddress);
 
         certificate = await new Certificate.Entity('1', conf).sync();
 

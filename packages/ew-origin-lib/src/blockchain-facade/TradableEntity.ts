@@ -257,15 +257,19 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         }
     }
 
-    async publishForSale(): Promise<TransactionReceipt> {
+    async publishForSale(price: number, tokenAddress: string): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
                 this.id,
+                price,
+                tokenAddress,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
             return this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
                 this.id,
+                price,
+                tokenAddress,
                 { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }

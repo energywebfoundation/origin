@@ -50,7 +50,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     event LogEscrowAdded(uint indexed _certificateId, address _escrow);
 
     /// @notice Logs when an entity is published for sale
-    event LogPublishForSale(uint indexed _entityId);
+    event LogPublishForSale(uint indexed _entityId, uint _price, address _token);
     /// @notice Logs when an entity is published for sale
     event LogUnpublishForSale(uint indexed _entityId);
 
@@ -159,15 +159,20 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
 
     /// @notice makes the tradable entity available for sale
     /// @param _entityId The id of the certificate
-    function publishForSale(uint _entityId) external onlyEntityOwner(_entityId) {
-        db.publishForSale(_entityId);
-        emit LogPublishForSale(_entityId);
+    /// @param _price the purchase price
+    /// @param _tokenAddress the address of the ERC20 token address
+    function publishForSale(uint _entityId, uint _price, address _tokenAddress) external onlyEntityOwner(_entityId) {
+        db.setOnChainDirectPurchasePrice(_entityId, _price);
+        db.setTradableToken(_entityId, _tokenAddress);
+        db.setForSale(_entityId, true);
+
+        emit LogPublishForSale(_entityId, _price, _tokenAddress);
     }
 
     /// @notice makes the tradable entity available for sale
     /// @param _entityId The id of the certificate
     function unpublishForSale(uint _entityId) external onlyEntityOwner(_entityId) {
-        db.unpublishForSale(_entityId);
+        db.setForSale(_entityId, false);
         emit LogUnpublishForSale(_entityId);
     }
 
