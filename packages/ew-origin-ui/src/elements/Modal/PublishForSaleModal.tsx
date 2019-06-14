@@ -9,7 +9,6 @@ import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { setOffChainSettlementOptions } from '../../utils/Helper';
 
 interface IValidation {
     price: boolean;
@@ -79,7 +78,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
     }
 
     async publishForSale() {
-        const { validation, price, erc20TokenAddress, currency } = this.state;
+        const { price, erc20TokenAddress, currency } = this.state;
         const { certificate } = this.props;
 
         if (this.isFormValid()) {
@@ -93,12 +92,10 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
             if (currency === ERC20CURRENCY) {
                 await certificate.publishForSale(price, erc20TokenAddress);
             } else {
-                await setOffChainSettlementOptions(
-                    certificate.id,
+                await certificate.setOffChainSettlementOptions({
                     price,
-                    Currency[currency],
-                    this.props.conf
-                );
+                    currency: Currency[currency]
+                });
                 await certificate.publishForSale(price, '0x0000000000000000000000000000000000000000');
             }
 
