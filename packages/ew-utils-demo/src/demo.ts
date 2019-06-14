@@ -163,17 +163,17 @@ export const marketDemo = async (demoFile?: string) => {
                 }
 
                 switch (action.data.currency) {
-                    case 'Euro':
-                        currency = GeneralLib.Currency.Euro;
+                    case 'EUR':
+                        currency = GeneralLib.Currency.EUR;
                         break;
                     case 'USD':
                         currency = GeneralLib.Currency.USD;
                         break;
-                    case 'Ether':
-                        currency = GeneralLib.Currency.Ether;
+                    case 'SGD':
+                        currency = GeneralLib.Currency.SGD;
                         break;
-                    case 'SingaporeDollar':
-                        currency = GeneralLib.Currency.SingaporeDollar;
+                    case 'THB':
+                        currency = GeneralLib.Currency.THB;
                         break;
                 }
 
@@ -241,17 +241,17 @@ export const marketDemo = async (demoFile?: string) => {
                 }
 
                 switch (action.data.currency) {
-                    case 'Euro':
-                        currency = GeneralLib.Currency.Euro;
+                    case 'EUR':
+                        currency = GeneralLib.Currency.EUR;
                         break;
                     case 'USD':
                         currency = GeneralLib.Currency.USD;
                         break;
-                    case 'Ether':
-                        currency = GeneralLib.Currency.Ether;
+                    case 'SGD':
+                        currency = GeneralLib.Currency.SGD;
                         break;
-                    case 'SingaporeDollar':
-                        currency = GeneralLib.Currency.SingaporeDollar;
+                    case 'THB':
+                        currency = GeneralLib.Currency.THB;
                         break;
                 }
 
@@ -309,17 +309,17 @@ export const marketDemo = async (demoFile?: string) => {
                 }
 
                 switch (action.data.currency) {
-                    case 'Euro':
-                        currency = GeneralLib.Currency.Euro;
+                    case 'EUR':
+                        currency = GeneralLib.Currency.EUR;
                         break;
                     case 'USD':
                         currency = GeneralLib.Currency.USD;
                         break;
-                    case 'Ether':
-                        currency = GeneralLib.Currency.Ether;
+                    case 'SGD':
+                        currency = GeneralLib.Currency.SGD;
                         break;
-                    case 'SingaporeDollar':
-                        currency = GeneralLib.Currency.SingaporeDollar;
+                    case 'THB':
+                        currency = GeneralLib.Currency.THB;
                         break;
                 }
 

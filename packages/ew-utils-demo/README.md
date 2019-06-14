@@ -397,9 +397,9 @@ usage: command to create a demand
 * <code>timeframe</code>: timeframe of contract
 * <code>pricePerCertifiedWh</code>: price bargain per certified Wh
 * <code>currency</code>: currency of exchange as string (USD,
-    Ether,
-    Euro,
-    SingaporeDollar)
+    EUR,
+    THB,
+    SGD)
 * <code>producingAsset</code>: <BLANK>
 * <code>consumingAsset</code>: <BLANK>
 * <code>country</code>: country where the asset is located
@@ -418,7 +418,7 @@ usage: command to create a demand
     TIGR)
 
 #### example
-We want to report a demand with target watt-hour per period(timeframe) as <code>10</code> and price per certified watt-hour as  <code>10</code>. The asset type required is <code>BiomassGas</code> which must comply with <code>EEC</code>. It is preferred to be a <code>hourly</code> contract with the currency of exchange set as <code>Ether</code>. Trader account <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is making the demand.
+We want to report a demand with target watt-hour per period(timeframe) as <code>10</code> and price per certified watt-hour as  <code>10</code>. The asset type required is <code>BiomassGas</code> which must comply with <code>EEC</code>. It is preferred to be a <code>hourly</code> contract with the currency of exchange set as <code>USD</code>. Trader account <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is making the demand.
 
 <code>
 {
@@ -428,7 +428,7 @@ We want to report a demand with target watt-hour per period(timeframe) as <code>
         "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
         "timeframe": "hourly",
         "pricePerCertifiedWh": 10,
-        "currency": "Ether",
+        "currency": "USD",
         "producingAsset": 0,
         "consumingAsset": 0,
         "country": "string",
@@ -450,10 +450,10 @@ usage: command to report a supply
 * <code>assetOwner</code>: asset owner's address
 * <code>assetOwnerPK</code>: asset owner's private key
 * <code>price</code>: price per certified Wh
-* <code>currency</code>: currency of exchange (USD,
-    Euro,
-    Ether,
-    SingaporeDollar)
+* <code>currency</code>: currency of exchange as string (USD,
+    EUR,
+    THB,
+    SGD)
 * <code>availableWh</code>: Available watt-hour per period
 * <code>timeframe</code>: period or the timeframe of the contract
 
@@ -483,10 +483,10 @@ usage: command to make an agreement - pairing a demand with an appropriate suppl
 * <code>startTime</code>: contract's start time (UNIX, UTC)
 * <code>endTime</code>: contract's end time (UNIX, UTC)
 * <code>price</code>: agreed price per certified watt-hour
-* <code>currency</code>: currency of exchange (USD,
-    Euro,
-    Ether,
-    SingaporeDollar)
+* <code>currency</code>: currency of exchange as string (USD,
+    EUR,
+    THB,
+    SGD)
 * <code>timeframe</code>: period or the timeframe of the contract
 * <code>period</code>: total period of the contract in units of timeframe
 * <code>currentWh</code>: current Wh reading of the asset

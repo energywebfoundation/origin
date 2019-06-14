@@ -371,7 +371,7 @@
                 "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
                 "timeframe": "hourly",
                 "pricePerCertifiedWh": 10,
-                "currency": "Ether",
+                "currency": "USD",
                 "producingAsset": 0,
                 "consumingAsset": 0,
                 "country": "string",

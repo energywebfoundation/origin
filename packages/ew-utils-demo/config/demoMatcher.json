@@ -136,7 +136,7 @@
                 "traderPK": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
                 "timeframe": "hourly",
                 "pricePerCertifiedWh": 10,
-                "currency": "Euro",
+                "currency": "EUR",
                 "producingAsset": 0,
                 "consumingAsset": 0,
                 "country": "string",
@@ -158,7 +158,7 @@
                 "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
                 "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
                 "price": 10,
-                "currency": "Euro",
+                "currency": "EUR",
                 "availableWh": 10,
                 "timeframe": "hourly"
             }
@@ -171,7 +171,7 @@
               "startTime": -1,
               "endTime": 3600,
               "price": 10,
-              "currency": "Euro",
+              "currency": "EUR",
               "timeframe": "hourly",
               "period": 10,
               "currentWh": 0,
