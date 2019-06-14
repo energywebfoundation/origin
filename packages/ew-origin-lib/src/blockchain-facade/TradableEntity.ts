@@ -14,7 +14,9 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
-import { Configuration, BlockchainDataModelEntity } from 'ew-utils-general-lib';
+import axios from 'axios';
+
+import { Configuration, BlockchainDataModelEntity, Currency } from 'ew-utils-general-lib';
 import { TransactionReceipt } from 'web3/types';
 
 export interface IOnChainProperties {
@@ -26,6 +28,11 @@ export interface IOnChainProperties {
     onChainDirectPurchasePrice: number;
     escrow: string[];
     approvedAddress: string;
+}
+
+export interface IOffChainSettlementOptions {
+    price: number;
+    currency: Currency;
 }
 
 export const getBalance = async (
@@ -291,5 +298,25 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
 
     async getOwner(): Promise<string> {
         return this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
+    }
+
+    get getOffChainURL() {
+        const certificateLogicAddress = this.configuration.blockchainProperties.certificateLogicInstance.web3Contract._address;
+
+        return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}`;
+    }
+
+    async setOffChainSettlementOptions(options: IOffChainSettlementOptions): Promise<void> {
+        if (this.configuration.offChainDataSource) {
+            await axios.put(`${this.getOffChainURL}/${this.id}`, options);
+        }
+    }
+
+    async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
+        if (this.configuration.offChainDataSource) {
+            const result = await axios.get(`${this.getOffChainURL}/${this.id}`);
+
+            return result.data;
+        }
     }
 }

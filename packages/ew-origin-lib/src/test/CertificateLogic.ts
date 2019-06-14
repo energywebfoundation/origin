@@ -31,7 +31,7 @@ import {
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
-import { Configuration } from 'ew-utils-general-lib';
+import { Configuration, Currency } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import {
     deployERC20TestToken,
@@ -343,6 +343,21 @@ describe('CertificateLogic-Facade', () => {
 
         certificate = await new Certificate.Entity('0', conf).sync();
         assert.isFalse(certificate.forSale);
+    });
+
+    it('should set off chain settlement options', async() => {
+        let certificate = await new Certificate.Entity('0', conf).sync();
+
+        await certificate.setOffChainSettlementOptions({
+            price: 100,
+            currency: Currency.EUR
+        });
+
+        certificate = await new Certificate.Entity('0', conf).sync();
+
+        const { price, currency } = await certificate.getOffChainSettlementOptions();
+        assert.equal(price, 100);
+        assert.equal(currency, Currency.EUR);
     });
 
     it('should transfer certificate', async () => {
