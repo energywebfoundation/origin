@@ -250,6 +250,74 @@ export const certificateDemo = async (
 
             console.log('-----------------------------------------------------------\n');
             break;
+        case 'PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN':
+            console.log('-----------------------------------------------------------');
+
+            conf.blockchainProperties.activeUser = {
+                address: action.data.certificateOwner,
+                privateKey: action.data.certificateOwnerPK
+            };
+            try {
+                let certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+
+                let currency;
+
+                switch (action.data.currency) {
+                    case 'EUR':
+                        currency = GeneralLib.Currency.EUR;
+                        break;
+                    case 'USD':
+                        currency = GeneralLib.Currency.USD;
+                        break;
+                    case 'SGD':
+                        currency = GeneralLib.Currency.SGD;
+                        break;
+                    case 'THB':
+                        currency = GeneralLib.Currency.THB;
+                        break;
+                }
+
+                await certificate.setOffChainSettlementOptions({
+                    price: action.data.price,
+                    currency
+                });
+                await certificate.publishForSale(action.data.price, '0x0000000000000000000000000000000000000000');
+                certificate = await certificate.sync();
+
+                conf.logger.info(`Certificate ${action.data.certId} published for sale`);
+            } catch (e) {
+                conf.logger.error(`Could not set publish ${action.data.certId} for sale\n`, e);
+            }
+
+            console.log('-----------------------------------------------------------\n');
+            break;
+        case 'UNPUBLISH_CERTIFICATE_FROM_SALE':
+            console.log('-----------------------------------------------------------');
+
+            conf.blockchainProperties.activeUser = {
+                address: action.data.certificateOwner,
+                privateKey: action.data.certificateOwnerPK
+            };
+
+            try {
+                let certificate = await new Certificate.Certificate.Entity(
+                    action.data.certId,
+                    conf
+                ).sync();
+
+                await certificate.unpublishForSale();
+                certificate = await certificate.sync();
+
+                conf.logger.info(`Certificate ${action.data.certId} unpublished from sale`);
+            } catch (e) {
+                conf.logger.error(`Could not set unpublish ${action.data.certId} from sale\n`, e);
+            }
+
+            console.log('-----------------------------------------------------------\n');
+            break;
         case 'BUY_CERTIFICATE':
             console.log('-----------------------------------------------------------');
 
