@@ -14,6 +14,9 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
+import axios from 'axios';
+import { Configuration, Currency } from 'ew-utils-general-lib';
+
 export const isOffChainProperty = (name: string, offChainProps: any): boolean => {
     for (const offChainPropName of Object.keys(offChainProps)) {
         if (offChainPropName === name) {
@@ -26,4 +29,35 @@ export const isOffChainProperty = (name: string, offChainProps: any): boolean =>
 
 export const getOffChainText = (name: string, offChainProps: any): string => {
     return isOffChainProperty(name, offChainProps) ? ' (private)' : '';
+};
+
+export const setOffChainSettlementOptions = async (
+    entityId: string,
+    price: number,
+    currency: Currency,
+    conf: Configuration.Entity
+): Promise<void> => {
+    if (conf.offChainDataSource) {
+        const certificateLogicAddress = conf.blockchainProperties.certificateLogicInstance.web3Contract._address;
+        const axiosurl = `${conf.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}/${entityId}`;
+
+        await axios.put(axiosurl, {
+            price,
+            currency
+        });
+    }
+};
+
+export const getOffChainSettlementOptions = async (
+    entityId: string,
+    conf: Configuration.Entity
+): Promise<any> => {
+    if (conf.offChainDataSource) {
+        const certificateLogicAddress = conf.blockchainProperties.certificateLogicInstance.web3Contract._address;
+        const axiosurl = `${conf.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}/${entityId}`;
+
+        const result = await axios.get(axiosurl);
+
+        return result.data;
+    }
 };

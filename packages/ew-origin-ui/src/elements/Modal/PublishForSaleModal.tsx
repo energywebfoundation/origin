@@ -9,6 +9,7 @@ import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
+import { setOffChainSettlementOptions } from '../../utils/Helper';
 
 interface IValidation {
     price: boolean;
@@ -46,7 +47,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         this.state = {
             show: props.showModal,
             price: 1,
-            currency: Currency[0],
+            currency: this.availableCurrencies[0],
             erc20TokenAddress: '',
             validation: {
                 price: true,
@@ -89,12 +90,17 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                 return;
             }
 
-            await certificate.publishForSale(
-                price,
-                currency === ERC20CURRENCY 
-                    ? erc20TokenAddress 
-                    : '0x0000000000000000000000000000000000000000'
-            );
+            if (currency === ERC20CURRENCY) {
+                await certificate.publishForSale(price, erc20TokenAddress);
+            } else {
+                await setOffChainSettlementOptions(
+                    certificate.id,
+                    price,
+                    Currency[currency],
+                    this.props.conf
+                );
+                await certificate.publishForSale(price, '0x0000000000000000000000000000000000000000');
+            }
 
             showNotification(`Certificate ${certificate.id} has been published for sale.`, NotificationType.Success);
             this.handleClose();
@@ -136,6 +142,15 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         return Object.keys(validation).every(property => validation[property] === true);
     }
 
+    get availableCurrencies() {
+        let currencies = Object.keys(Currency);
+        currencies = currencies.splice(Math.ceil(currencies.length / 2), currencies.length - 1);
+        currencies = currencies.filter(curr => Currency[curr] !== Currency.NONE);
+        currencies.push(ERC20CURRENCY);
+
+        return currencies;
+    }
+
     handleClose() {
         this.setState({ show: false });
     }
@@ -148,10 +163,6 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         const certificateId = this.props.certificate ? this.props.certificate.id : '';
         const facilityName = this.props.producingAsset ? this.props.producingAsset.offChainProperties.facilityName : '';
         const certificatePowerkWh = this.props.certificate ? this.props.certificate.powerInW / 1000 : '';
-
-        let currencies = Object.keys(Currency);
-        currencies = currencies.splice(Math.ceil(currencies.length / 2), currencies.length - 1);
-        currencies.push(ERC20CURRENCY);
 
         return (
             <Modal show={this.state.show} onHide={this.handleClose} animation={false} backdrop={true} backdropClassName="modal-backdrop">
@@ -192,7 +203,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                                 title={this.state.currency}
                                 onSelect={(eventKey) => this.setState({ currency: eventKey })}
                             >
-                                {currencies.map(currency => <MenuItem key={currency} eventKey={currency}>{currency}</MenuItem>)}
+                                {this.availableCurrencies.map(currency => <MenuItem key={currency} eventKey={currency}>{currency}</MenuItem>)}
                             </DropdownButton>
 
                             {this.state.currency === ERC20CURRENCY &&

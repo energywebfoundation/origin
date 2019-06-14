@@ -31,6 +31,8 @@ import TableUtils from '../elements/utils/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 
+import { getOffChainSettlementOptions } from '../utils/Helper';
+
 export interface ICertificateTableProps {
     conf: Configuration.Entity;
     certificates: Certificate.Entity[];
@@ -46,7 +48,7 @@ export interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
     certificateOwner: User;
     producingAsset: ProducingAsset.Entity;
-    acceptedToken: string;
+    acceptedCurrency: string;
 }
 
 export interface ICertificatesState {
@@ -117,14 +119,23 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
     }
 
     async enrichData(props: ICertificateTableProps) {
-        const promises = props.certificates.map(async (certificate: Certificate.Entity) => ({
-            certificate,
-            producingAsset: this.props.producingAssets.find(
-                (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
-            ),
-            certificateOwner: await new User(certificate.owner, props.conf as any).sync(),
-            acceptedToken: await this.getTokenSymbol(certificate)
-        }));
+        const promises = props.certificates.map(async (certificate: Certificate.Entity) => {
+            let acceptedCurrency = await this.getTokenSymbol(certificate);
+
+            if (acceptedCurrency === null) {
+                const { currency } = await getOffChainSettlementOptions(certificate.id, props.conf);
+                acceptedCurrency = Currency[currency];
+            }
+
+            return {
+                certificate,
+                producingAsset: this.props.producingAssets.find(
+                    (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
+                ),
+                certificateOwner: await new User(certificate.owner, props.conf as any).sync(),
+                acceptedCurrency
+            };
+        });
 
         Promise.all(promises).then(EnrichedCertificateData => {
             this.setState({
@@ -151,7 +162,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             return symbol;
         }
 
-        return '';
+        return null;
     }
 
     async buyCertificate(certificateId: number) {
@@ -166,24 +177,21 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         }
 
         if (certificate && this.props.currentUser) {
-            if ((certificate.acceptedToken as any) as string === '0x0000000000000000000000000000000000000000') {
-                showNotification(`Fiat currency settlements are not supported in the app yet.`, NotificationType.Error);
+            if ((certificate.acceptedToken as any) as string !== '0x0000000000000000000000000000000000000000') {
+                const erc20TestToken = new Erc20TestToken(
+                    this.props.conf.blockchainProperties.web3,
+                    (certificate.acceptedToken as any) as string
+                );
 
-                return;
+                await erc20TestToken.approve(
+                    certificate.owner,
+                    certificate.onChainDirectPurchasePrice,
+                    {
+                        from: this.props.currentUser.id,
+                        privateKey: ''
+                    }
+                );    
             }
-
-            const erc20TestToken = new Erc20TestToken(
-                this.props.conf.blockchainProperties.web3,
-                (certificate.acceptedToken as any) as string
-            );
-            await erc20TestToken.approve(
-                certificate.owner,
-                certificate.onChainDirectPurchasePrice,
-                {
-                    from: this.props.currentUser.id,
-                    privateKey: ''
-                }
-            );
 
             certificate.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
@@ -445,7 +453,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
                 if (this.state.shouldShowPrice) {
                     certificateDataToShow.splice(7, 0, EnrichedCertificateData.certificate.onChainDirectPurchasePrice);
-                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedToken !== '' ? EnrichedCertificateData.acceptedToken : 'EUR');
+                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedCurrency);
                 }
 
                 return certificateDataToShow;
