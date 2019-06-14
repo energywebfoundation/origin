@@ -151,7 +151,7 @@ describe('Market-Facade', () => {
             const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
                 timeframe: GeneralLib.TimeFrame.hourly,
                 pricePerCertifiedWh: 10,
-                currency: GeneralLib.Currency.Ether,
+                currency: GeneralLib.Currency.USD,
                 productingAsset: 0,
                 consumingAsset: 0,
                 locationCountry: 'string',
@@ -188,7 +188,7 @@ describe('Market-Facade', () => {
                 offChainProperties: {
                     assettype: 3,
                     consumingAsset: 0,
-                    currency: 3,
+                    currency: GeneralLib.Currency.USD,
                     locationCountry: 'string',
                     locationRegion: 'string',
                     minCO2Offset: 10,
@@ -225,7 +225,7 @@ describe('Market-Facade', () => {
                 offChainProperties: {
                     assettype: 3,
                     consumingAsset: 0,
-                    currency: 3,
+                    currency: GeneralLib.Currency.USD,
                     locationCountry: 'string',
                     locationRegion: 'string',
                     minCO2Offset: 10,
@@ -328,7 +328,7 @@ describe('Market-Facade', () => {
                 assetId: '0',
                 offChainProperties: {
                     availableWh: 10,
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     price: 10,
                     timeframe: 3
                 }
@@ -349,7 +349,7 @@ describe('Market-Facade', () => {
                 assetId: '0',
                 offChainProperties: {
                     availableWh: 10,
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     price: 10,
                     timeframe: 3
                 }
@@ -425,7 +425,7 @@ describe('Market-Facade', () => {
                     currentWh: 0
                 },
                 offChainProperties: {
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -505,7 +505,7 @@ describe('Market-Facade', () => {
                     currentWh: 0
                 },
                 offChainProperties: {
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -576,7 +576,7 @@ describe('Market-Facade', () => {
                     currentWh: 0
                 },
                 offChainProperties: {
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -620,7 +620,7 @@ describe('Market-Facade', () => {
                     currentWh: 0
                 },
                 offChainProperties: {
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -669,7 +669,7 @@ describe('Market-Facade', () => {
                     currentWh: 100
                 },
                 offChainProperties: {
-                    currency: 1,
+                    currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
                     period: 10,
                     price: 10,

@@ -1,6 +1,6 @@
 {
   "name": "ew-market-lib",
-  "version": "1.0.2-alpha.2",
+  "version": "1.0.2-alpha.3",
   "description": "",
   "main": "dist/js/src/index.js",
   "types": "dist/js/src/index.d.ts",
@@ -36,9 +36,9 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-market-lib#readme",
   "dependencies": {
-    "ew-asset-registry-lib": "1.0.3-alpha.2",
-    "ew-user-registry-lib": "1.0.3-alpha.2",
-    "ew-utils-general-lib": "1.0.2-alpha.2",
+    "ew-asset-registry-lib": "1.0.3-alpha.4",
+    "ew-user-registry-lib": "1.0.3-alpha.3",
+    "ew-utils-general-lib": "1.0.2-alpha.3",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
@@ -49,7 +49,7 @@
     "@types/web3": "1.0.14",
     "chai": "4.2.0",
     "ethlint": "1.2.4",
-    "ew-utils-testbackend": "1.0.1-alpha.1",
+    "ew-utils-testbackend": "1.0.1-alpha.2",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.4.3",
     "lint-staged": "8.1.7",
