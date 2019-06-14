@@ -165,7 +165,6 @@
             "type": "REGISTER_CERTIFICATE",
             "data": {
                 "id": "0",
-
                 "onChainProperties": {
                     "retired": false,
                     "dataLog": "",
@@ -179,11 +178,9 @@
                     "assetId": 1,
                     "owner": "0x0",
                     "powerInW": 10,
-            
                     "onChainDirectPurchasePrice": 0,
                     "escrow": ["0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"],
                     "approvedAddress": ""
-                    
                 }
             }
         },
@@ -208,7 +205,6 @@
                     "onChainDirectPurchasePrice": 0,
                     "escrow": ["0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"],
                     "approvedAddress": ""
-                    
                 }
             }
         },
@@ -233,7 +229,6 @@
                     "onChainDirectPurchasePrice": 0,
                     "escrow": ["0x492fd96a45b842fd1834b36c4055e5bc35c3dcb6"],
                     "approvedAddress": ""
-                    
                 }
             }
         }
