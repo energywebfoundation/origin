@@ -12,6 +12,7 @@ app.use(cors());
 
 const storage = new CustomStorage(
     [
+        ENTITY.TRADABLE_ENTITY,
         ENTITY.PRODUCING_ASSET,
         ENTITY.PRODUCING_ASSET_NOT_BOUND,
         ENTITY.CONSUMING_ASSET,
@@ -31,41 +32,41 @@ app.use(cors());
 
 app.options('*', cors());
 
-function createRoutesForEntityBoundToContract(app, entity : ENTITY) {
+function createRoutesForEntityBoundToContract(app, entity: ENTITY) {
     app.get(`/${entity}/:contractAddress/:id`, (req, res) => {
         const contractAddress = req.params.contractAddress.toLowerCase();
-    
+
         console.log(`GET - ${entity} ${req.params.id} (contract ${contractAddress})`);
-    
+
         const existingData = storage.get(entity, contractAddress);
-    
+
         if (!existingData) {
             return;
         }
 
         if (existingData in STATUS_CODES) {
             res.status(STATUS_CODES[existingData]).end();
-    
+
             return;
         }
 
         res.send(existingData[req.params.id]);
     });
-    
+
     app.put(`/${entity}/:contractAddress/:id`, (req, res) => {
         const contractAddress = req.params.contractAddress.toLowerCase();
         console.log(`PUT - ${entity} ${req.params.id} (contract ${contractAddress})`);
-    
+
         let existingData = storage.get(entity, contractAddress);
-    
+
         if (!existingData) {
             existingData = {};
         }
-    
+
         storage.set(entity, contractAddress, Object.assign(existingData, {
             [req.params.id]: req.body
         }));
-    
+
         res.send('success');
     });
 
@@ -74,19 +75,19 @@ function createRoutesForEntityBoundToContract(app, entity : ENTITY) {
         console.log(`DELETE - ${entity} ${req.params.id}`);
 
         let existingData = storage.get(entity, contractAddress);
-    
+
         if (!existingData) {
             existingData = {};
         }
-    
+
         storage.set(entity, contractAddress, Object.assign(existingData, {
             [req.params.id]: STATUS_CODES.GONE
         }));
-    
+
         res.send('success');
     });
 }
-
+createRoutesForEntityBoundToContract(app, ENTITY.TRADABLE_ENTITY);
 createRoutesForEntityBoundToContract(app, ENTITY.PRODUCING_ASSET);
 createRoutesForEntityBoundToContract(app, ENTITY.DEMAND);
 
