@@ -43,7 +43,7 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
             assettype: AssetType.Wind,
             registryCompliance: Compliance.none,
             timeframe: TimeFrame.yearly,
-            currency: Currency.Euro
+            currency: Currency.EUR
         };
 
         const transformedInput = { ...input };
