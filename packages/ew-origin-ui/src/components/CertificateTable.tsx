@@ -31,8 +31,6 @@ import TableUtils from '../elements/utils/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 
-import { getOffChainSettlementOptions } from '../utils/Helper';
-
 export interface ICertificateTableProps {
     conf: Configuration.Entity;
     certificates: Certificate.Entity[];
@@ -123,7 +121,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             let acceptedCurrency = await this.getTokenSymbol(certificate);
 
             if (acceptedCurrency === null) {
-                const { currency } = await getOffChainSettlementOptions(certificate.id, props.conf);
+                const { currency } = await certificate.getOffChainSettlementOptions();
                 acceptedCurrency = Currency[currency];
             }
 
