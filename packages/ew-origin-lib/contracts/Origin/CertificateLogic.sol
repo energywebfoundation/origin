@@ -120,13 +120,21 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
 
         require(cert.tradableEntity.forSale == true, "Unable to buy a certificate that is not for sale.");
-        require(cert.tradableEntity.acceptedToken != address(0x0), "0x0 not allowed");
-        require(
-            ERC20Interface(cert.tradableEntity.acceptedToken).transferFrom(
-                msg.sender, cert.tradableEntity.owner, cert.tradableEntity.onChainDirectPurchasePrice
-            ),
-            "erc20 transfer failed"
-        );
+
+        bool isOnChainSettlement = cert.tradableEntity.acceptedToken != address(0x0);
+
+        if (isOnChainSettlement) {
+            require(
+                ERC20Interface(cert.tradableEntity.acceptedToken).transferFrom(
+                    msg.sender, cert.tradableEntity.owner, cert.tradableEntity.onChainDirectPurchasePrice
+                ),
+                "erc20 transfer failed"
+            );
+        } else {
+            //  TO-DO: Implement off-chain settlement checks
+            //  For now automatically transfer the certificate
+            //  if it's an off chain settlement
+        }
 
         TradableEntityDBInterface(address(db)).addApprovalExternal(_certificateId, msg.sender);
 
