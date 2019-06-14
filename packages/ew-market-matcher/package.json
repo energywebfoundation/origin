@@ -1,6 +1,6 @@
 {
   "name": "ew-market-matcher",
-  "version": "1.0.1-alpha.4",
+  "version": "1.0.1-alpha.5",
   "description": "",
   "main": "dist/js/src/exports.js",
   "types": "dist/js/src/exports.d.ts",
@@ -37,7 +37,7 @@
     "ew-asset-registry-lib": "1.0.3-alpha.4",
     "ew-utils-general-lib": "1.0.2-alpha.3",
     "ew-market-lib": "1.0.2-alpha.3",
-    "ew-origin-lib": "1.0.2-alpha.4",
+    "ew-origin-lib": "1.0.2-alpha.5",
     "ganache-cli": "6.3.0",
     "jsonschema": "1.2.4",
     "log-symbols": "2.2.0",
