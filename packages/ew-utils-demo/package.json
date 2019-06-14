@@ -25,7 +25,7 @@
     "ew-utils-general-lib": "1.0.2-alpha.3",
     "ew-utils-testbackend": "1.0.1-alpha.2",
     "ew-market-lib": "1.0.2-alpha.3",
-    "ew-origin-lib": "1.0.2-alpha.4",
+    "ew-origin-lib": "1.0.2-alpha.5",
     "node-fetch": "2.5.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
