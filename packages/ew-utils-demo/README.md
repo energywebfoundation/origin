@@ -64,6 +64,9 @@ Currently the following action types are supported:
 * TRANSFER_CERTIFICATE
 * SPLIT_CERTIFICATE
 * SET_ERC20_CERTIFICATE
+* PUBLISH_CERTIFICATE_FOR_SALE
+* PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
+* UNPUBLISH_CERTIFICATE_FROM_SALE
 * BUY_CERTIFICATE
 * CREATE_DEMAND
 * CREATE_SUPPLY
@@ -359,6 +362,70 @@ We want to enable ERC20 trading in certificate with id <code>4</code>. The trans
         "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
         "price": 1000,
         "testAccount": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
+    }
+}
+</code>
+
+### PUBLISH_CERTIFICATE_FOR_SALE
+usage: command to publish a certificate for sale using ERC-20 tokens
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>certificateOwner</code>: address of the current owner of the certificate(must have trading rights)
+* <code>certificateOwnerPK</code>: private key of the current owner of the certificate
+* <code>price</code>: price of the certificate in unit of the ERC20 test token
+
+#### example
+<code>
+{
+    "type": "PUBLISH_CERTIFICATE_FOR_SALE",
+    "data": {
+        "certId": 4,
+        "price": 1000,
+        "certificateOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "certificateOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
+    }
+}
+</code>
+
+
+### PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
+usage: command to publish a certificate for sale using off chain settlement in fiat currencies (EUR, USD)
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>price</code>: price of the certificate in unit of the ERC20 test token
+* <code>certificateOwner</code>: address of the current owner of the certificate(must have trading rights)
+* <code>certificateOwnerPK</code>: private key of the current owner of the certificate
+* <code>currency</code>: currency that will be used to do perform the settlement. The list of currencies can be found [here](https://github.com/energywebfoundation/ew-utils-general-lib/blob/master/src/blockchain-facade/EnumExports.ts#L8)
+
+#### example
+<code>
+{
+    "type": "PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN",
+    "data": {
+        "certId": 4,
+        "price": 1000,
+        "certificateOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "certificateOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+        "currency": "USD"
+    }
+}
+</code>
+
+### UNPUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
+usage: command to unbpublish (remove) a certificate from sale 
+<br>params:
+* <code>certId</code>: id of the certificate to be transferred
+* <code>certificateOwner</code>: address of the current owner of the certificate(must have trading rights)
+* <code>certificateOwnerPK</code>: private key of the current owner of the certificate
+
+#### example
+<code>
+{
+    "type": "UNPUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN",
+    "data": {
+        "certId": 4,
+        "certificateOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "certificateOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
     }
 }
 </code>
