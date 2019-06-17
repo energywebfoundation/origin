@@ -78,7 +78,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
     }
 
     async publishForSale() {
-        const { price, erc20TokenAddress, currency } = this.state;
+        let { price, erc20TokenAddress, currency } = this.state;
         const { certificate } = this.props;
 
         if (this.isFormValid()) {
@@ -92,6 +92,9 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
             if (currency === ERC20CURRENCY) {
                 await certificate.publishForSale(price, erc20TokenAddress);
             } else {
+                // Convert to cents
+                price = price * 100;
+
                 await certificate.setOffChainSettlementOptions({
                     price,
                     currency: Currency[currency]
