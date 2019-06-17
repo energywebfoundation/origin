@@ -16,6 +16,8 @@
 
 import * as React from 'react';
 
+import marker from '../../assets/marker.svg';	
+import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
 import hydro from '../../assets/icon_hydro.svg';
 import solar from '../../assets/icon_solar.svg';
@@ -28,6 +30,7 @@ import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
+import { MapContainer } from './MapContainer';
 
 export interface DetailViewProps {
     conf: Configuration.Entity;
@@ -162,6 +165,16 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                     },
                     {
                         label:
+                            'Public Support' +
+                            getOffChainText(
+                                'typeOfPublicSupport',
+                                selectedAsset.offChainProperties
+                            ),
+                        data: selectedAsset.offChainProperties.typeOfPublicSupport,
+                        description: ''
+                    },
+                    {
+                        label:
                             'Commissioning Date' +
                             getOffChainText('operationalSince', selectedAsset.offChainProperties),
                         data: moment(
@@ -177,15 +190,18 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                         data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
                         tip: 'kW'
                     },
-                    {
-                        label:
-                            'Public Support' +
-                            getOffChainText(
-                                'typeOfPublicSupport',
-                                selectedAsset.offChainProperties
-                            ),
-                        data: selectedAsset.offChainProperties.typeOfPublicSupport,
-                        description: ''
+                    {	
+                        label:	
+                            'Geo Location' +	
+                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),	
+                        data:	
+                            selectedAsset.offChainProperties.gpsLatitude +	
+                            ', ' +	
+                            selectedAsset.offChainProperties.gpsLongitude,	
+                        image: map,	
+                        type: 'map',	
+                        rowspan: 3,	
+                        colspan: 2	
                     }
                 ]
             ];
@@ -220,9 +236,22 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                                                 <div className="Data">
                                                     {col.data} {col.tip && <span>{col.tip}</span>}
                                                 </div>
-                                                {col.image && <div className={`Image`}>
-                                                    <img src={col.image} />
-                                                </div>}
+                                                {col.image &&
+                                                    (col.type !== 'map' ? (
+                                                        <div className={`Image`}>
+                                                            <img src={col.image} />	
+                                                            {col.type === 'map' && (	
+                                                                <img	
+                                                                    src={marker as any}	
+                                                                    className="Marker"	
+                                                                />	
+                                                            )}	
+                                                        </div>	
+                                                    ) : (	
+                                                        <div className={`Image Map`}>	
+                                                            <MapContainer asset={selectedAsset} />	
+                                                        </div>	
+                                                    ))}
                                                 {col.description && (
                                                     <div className="Description">
                                                         {col.description}

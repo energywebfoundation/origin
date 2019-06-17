@@ -17,6 +17,8 @@
 import * as React from 'react';
 
 import moment from 'moment';
+import marker from '../../assets/marker.svg';	
+import map from '../../assets/map.svg';
 import { Link } from 'react-router-dom';
 import { Certificate } from 'ew-origin-lib';
 import { User } from 'ew-user-registry-lib';
@@ -25,6 +27,7 @@ import { ConsumingAsset } from 'ew-asset-registry-lib';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
+import { MapContainer } from './MapContainer';
 
 export interface IDetailViewProps {
     conf: Configuration.Entity;
@@ -109,6 +112,20 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                         data: this.state.owner ? this.state.owner.organization : ''
                     },
 
+                    {	
+                        label:	
+                            'Geo Location' +	
+                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),	
+                        data:	
+                            selectedAsset.offChainProperties.gpsLatitude +	
+                            ', ' +	
+                            selectedAsset.offChainProperties.gpsLongitude,	
+                        image: map,	
+                        type: 'map',	
+                        rowspan: 3,	
+                        colspan: 2	
+                    },
+
                     {
                         label: 'Kind',
                         data: 'Consumption'
@@ -178,9 +195,22 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                                                         {col.data}{' '}
                                                         {col.tip && <span>{col.tip}</span>}
                                                     </div>
-                                                    {col.image && <div className={`Image`}>
-                                                                <img src={col.image} />
-                                                            </div>}
+                                                    {col.image &&
+                                                    (col.type !== 'map' ? (
+                                                        <div className={`Image`}>
+                                                            <img src={col.image} />	
+                                                            {col.type === 'map' && (	
+                                                                <img	
+                                                                    src={marker as any}	
+                                                                    className="Marker"	
+                                                                />	
+                                                            )}	
+                                                        </div>	
+                                                    ) : (	
+                                                        <div className={`Image Map`}>	
+                                                            <MapContainer asset={selectedAsset} />	
+                                                        </div>	
+                                                    ))}
                                                     {col.description && (
                                                         <div className="Description">
                                                             {col.description}
