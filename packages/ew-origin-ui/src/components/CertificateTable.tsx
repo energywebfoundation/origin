@@ -47,6 +47,7 @@ export interface IEnrichedCertificateData {
     certificateOwner: User;
     producingAsset: ProducingAsset.Entity;
     acceptedCurrency: string;
+    isOffChainSettlement: boolean;
 }
 
 export interface ICertificatesState {
@@ -119,8 +120,9 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
     async enrichData(props: ICertificateTableProps) {
         const promises = props.certificates.map(async (certificate: Certificate.Entity) => {
             let acceptedCurrency = await this.getTokenSymbol(certificate);
+            const isOffChainSettlement = acceptedCurrency === null;
 
-            if (acceptedCurrency === null) {
+            if (isOffChainSettlement) {
                 const { currency } = await certificate.getOffChainSettlementOptions();
                 acceptedCurrency = Currency[currency];
             }
@@ -131,7 +133,8 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
                 ),
                 certificateOwner: await new User(certificate.owner, props.conf as any).sync(),
-                acceptedCurrency
+                acceptedCurrency,
+                isOffChainSettlement
             };
         });
 
@@ -450,7 +453,16 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 ];
 
                 if (this.state.shouldShowPrice) {
-                    certificateDataToShow.splice(7, 0, EnrichedCertificateData.certificate.onChainDirectPurchasePrice);
+                    const formatter = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    });
+
+                    certificateDataToShow.splice(7, 0,
+                        EnrichedCertificateData.isOffChainSettlement 
+                            ? formatter.format(EnrichedCertificateData.certificate.onChainDirectPurchasePrice / 100).replace('$', '')
+                            : EnrichedCertificateData.certificate.onChainDirectPurchasePrice
+                    );
                     certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedCurrency);
                 }
 
