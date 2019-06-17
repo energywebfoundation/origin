@@ -56,6 +56,8 @@
     "react-date-range": "0.9.4",
     "react-dom": "16.8.6",
     "react-fade-in": "0.1.6",
+    "react-google-maps": "9.4.5",
+    "react-inlinesvg": "0.7.5",
     "react-redux": "5.1.1",
     "react-render-html": "0.6.0",
     "react-router-dom": "4.3.1",
