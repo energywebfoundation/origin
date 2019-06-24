@@ -2,7 +2,8 @@ export enum TimeFrame {
   yearly,
   monthly,
   daily,
-  hourly
+  hourly,
+  halfHourly,
 }
 
 export enum Currency {
