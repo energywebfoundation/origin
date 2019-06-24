@@ -1,6 +1,6 @@
 {
   "name": "ew-utils-general-lib",
-  "version": "1.0.2-alpha.3",
+  "version": "1.0.2-alpha.4",
   "description": "",
   "main": "dist/js/index.js",
   "types": "dist/js/index.d.ts",
