@@ -123,8 +123,12 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             const isOffChainSettlement = acceptedCurrency === null;
 
             if (isOffChainSettlement) {
-                const { currency } = await certificate.getOffChainSettlementOptions();
-                acceptedCurrency = Currency[currency];
+                try {
+                    const { currency } = await certificate.getOffChainSettlementOptions();
+                    acceptedCurrency = Currency[currency];
+                } catch (error) {
+                    console.error('No off-chain settlement data for certificate.', error);
+                }
             }
 
             return {
