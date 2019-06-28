@@ -103,6 +103,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         this.showCertCreated = this.showCertCreated.bind(this);
         this.showCertificateDetails = this.showCertificateDetails.bind(this);
         this.getTokenSymbol = this.getTokenSymbol.bind(this);
+        this.hidePublishForSaleModal = this.hidePublishForSaleModal.bind(this);
     }
 
     async componentDidMount() {
@@ -227,6 +228,13 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         this.setState({
             sellModalForCertificate: certificate,
             showSellModal: true
+        });
+    }
+
+    hidePublishForSaleModal() {
+        this.setState({
+            sellModalForCertificate: null,
+            showSellModal: false
         });
     }
 
@@ -553,6 +561,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                             : null
                     }
                     showModal={this.state.showSellModal}
+                    callback={this.hidePublishForSaleModal}
                 />
             </div>
         );
