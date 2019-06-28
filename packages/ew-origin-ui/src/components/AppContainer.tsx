@@ -82,6 +82,24 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             );
         });
 
+        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            this.props.actions.certificateCreatedOrUpdated(
+                await new Certificate.Entity(
+                    event.returnValues._entityId,
+                    this.props.configuration
+                ).sync()
+            );
+        });
+
+        certificateContractEventHandler.onEvent('LogUnpublishForSale', async (event: any) => {
+            this.props.actions.certificateCreatedOrUpdated(
+                await new Certificate.Entity(
+                    event.returnValues._entityId,
+                    this.props.configuration
+                ).sync()
+            );
+        });
+
         const demandContractEventHandler: ContractEventHandler = new ContractEventHandler(
             conf.blockchainProperties.marketLogicInstance,
             currentBlockNumber
