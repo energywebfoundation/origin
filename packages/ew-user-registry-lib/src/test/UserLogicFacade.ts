@@ -26,6 +26,7 @@ import { UserProperties, UserPropertiesOffChain, User } from '../blockchain-faca
 import { Configuration } from 'ew-utils-general-lib';
 import { logger } from '../blockchain-facade/Logger';
 import Web3 from 'web3';
+import { buildRights, Role } from '../wrappedContracts/RoleManagement';
 
 describe('UserLogic Facade', () => {
     const configFile = JSON.parse(
@@ -50,6 +51,8 @@ describe('UserLogic Facade', () => {
     const user2PK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const user2 = web3.eth.accounts.privateKeyToAccount(user2PK).address;
 
+    const RIGHTS = buildRights([Role.Trader, Role.AssetManager]);
+
     it('should deploy the contracts', async () => {
         const contracts = (await migrateUserRegistryContracts(
             web3 as any,
@@ -68,7 +71,7 @@ describe('UserLogic Facade', () => {
         const userProps: UserProperties = {
             id: user1,
             active: true,
-            roles: 27,
+            roles: RIGHTS,
             organization: 'Testorganization'
         };
 
@@ -104,7 +107,7 @@ describe('UserLogic Facade', () => {
             {
                 id: user1,
                 organization: 'Testorganization',
-                roles: 27,
+                roles: RIGHTS,
                 active: true
             } as any,
             user
@@ -120,7 +123,7 @@ describe('UserLogic Facade', () => {
             id: user1,
             proofs: [],
             organization: 'Testorganization',
-            roles: 27,
+            roles: RIGHTS,
             active: true
         });
 
@@ -145,5 +148,16 @@ describe('UserLogic Facade', () => {
             roles: 1,
             active: false
         });
+    });
+
+    it('isRole should work correctly', async () => {
+        const user = await new User(user1, conf).sync();
+
+        assert.ok(user.isRole(Role.AssetManager));
+        assert.ok(user.isRole(Role.Trader));
+        assert.notOk(user.isRole(Role.Issuer));
+        assert.notOk(user.isRole(Role.AssetAdmin));
+        assert.notOk(user.isRole(Role.Matcher));
+        assert.notOk(user.isRole(Role.UserAdmin));
     });
 });

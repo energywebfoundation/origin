@@ -30,13 +30,15 @@ contract RoleManagement is Owned {
     AssetManager:   0x0...---1-- = 4
     Trader:         0x0...--1--- = 8
     Matcher:        0x0...-1---- = 16
+    Issuer:         0x0...1----- = 32
     */
     enum Role {
         UserAdmin,
         AssetAdmin,
         AssetManager,
         Trader,
-        Matcher
+        Matcher,
+        Issuer
     }
 
     ///@param contract-lookup for users

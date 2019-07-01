@@ -15,6 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import { Configuration, BlockchainDataModelEntity } from 'ew-utils-general-lib';
+import { Role } from '../../wrappedContracts/RoleManagement';
 
 export interface UserProperties {
     id: string;
@@ -94,5 +95,13 @@ export class User extends BlockchainDataModelEntity.Entity implements UserProper
         }
 
         return this;
+    }
+
+    isRole(role : Role) : boolean {
+        if (!this.roles) {
+            return false;
+        }
+
+        return Boolean(this.roles & Math.pow(2, role));
     }
 }
