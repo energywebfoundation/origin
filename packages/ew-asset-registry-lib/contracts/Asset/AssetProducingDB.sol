@@ -28,8 +28,16 @@ contract AssetProducingDB is AssetGeneralDB {
         uint maxOwnerChanges;
     }
 
+    struct SmartMeterRead {
+        uint energy;
+        uint timestamp;
+    }
+
     /// @dev mapping for smartMeter-address => Asset
     mapping(address => Asset) internal assetMapping;
+
+    mapping(address => SmartMeterRead[]) internal assetSmartMeterReadsMapping;
+        
     /// @dev list of all the smartMeters already used
     address[] internal smartMeterAddresses;
 
@@ -71,6 +79,17 @@ contract AssetProducingDB is AssetGeneralDB {
 	/// @return Asset-struct
     function getAssetById(uint _assetId) external view returns (Asset memory) {
         return assetMapping[smartMeterAddresses[_assetId]];
+    }
+
+    function getSmartMeterReadsForAsset(uint _assetId) external view returns (SmartMeterRead[] memory) {
+        return assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]];
+    }
+
+    function addAssetRead(uint _assetId, SmartMeterRead memory _smartMeterRead)
+        public
+        onlyOwner
+    {
+        assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]].push(_smartMeterRead);
     }
 
 	/// @notice gets an asset by its smartmeter

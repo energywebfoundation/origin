@@ -18,6 +18,8 @@ import { Configuration } from 'ew-utils-general-lib';
 import * as Asset from './Asset';
 import { ProducingAssetPropertiesOffchainSchema } from '..';
 import { TransactionReceipt } from 'web3/types';
+import moment from 'moment';
+import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
 
 /**
  * TODO: in generalLib
@@ -106,6 +108,11 @@ export const createAsset =
 
     };
 
+export interface ISmartMeterRead {
+    energy: number;
+    timestamp: number;
+}
+
 export class Entity extends Asset.Entity implements IOnChainProperties {
 
     certificatesCreatedForWh: number;
@@ -145,12 +152,13 @@ export class Entity extends Asset.Entity implements IOnChainProperties {
         return this;
     }
 
-    async saveSmartMeterRead(meterReading: number, filehash: string): Promise<TransactionReceipt> {
+    async saveSmartMeterRead(meterReading: number, filehash: string, timestamp: number = moment().unix()): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
+                timestamp,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
             );
         }
@@ -159,9 +167,18 @@ export class Entity extends Asset.Entity implements IOnChainProperties {
                 this.id,
                 meterReading,
                 filehash,
+                timestamp,
                 { from: this.configuration.blockchainProperties.activeUser.address },
             );
         }
     }
 
+    async getSmartMeterReads() : Promise<ISmartMeterRead[]> {
+        const logic : AssetProducingRegistryLogic = this.configuration.blockchainProperties.producingAssetLogicInstance;
+
+        return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map(read => ({
+            energy: Number(read.energy),
+            timestamp: Number(read.timestamp)
+        }));
+    }
 }

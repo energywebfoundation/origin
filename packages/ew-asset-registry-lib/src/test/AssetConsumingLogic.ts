@@ -38,6 +38,7 @@ import {
     AssetProducingDBJSON,
     AssetProducingRegistryLogicJSON
 } from '..';
+import moment from 'moment';
 
 describe('AssetConsumingLogic', () => {
     const configFile = JSON.parse(
@@ -348,7 +349,7 @@ describe('AssetConsumingLogic', () => {
         let failed = false;
 
         try {
-            await assetConsumingLogic.saveSmartMeterRead(0, 100, 'newMeterReadFileHash', {
+            await assetConsumingLogic.saveSmartMeterRead(0, 100, 'newMeterReadFileHash', 0, {
                 privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
             });
         } catch (ex) {
@@ -361,7 +362,9 @@ describe('AssetConsumingLogic', () => {
     });
 
     it('should be able to log new meterread with the right account', async () => {
-        const tx = await assetConsumingLogic.saveSmartMeterRead(0, 100, 'newMeterReadFileHash', {
+        const TIMESTAMP = moment().unix();
+
+        const tx = await assetConsumingLogic.saveSmartMeterRead(0, 100, 'newMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
 
@@ -376,9 +379,11 @@ describe('AssetConsumingLogic', () => {
             0: '0',
             1: '0',
             2: '100',
+            3: TIMESTAMP.toString(),
             _assetId: '0',
             _oldMeterRead: '0',
-            _newMeterRead: '100'
+            _newMeterRead: '100',
+            _timestamp: TIMESTAMP.toString()
         });
     });
 
@@ -412,6 +417,7 @@ describe('AssetConsumingLogic', () => {
                 0,
                 100,
                 'newMeterReadFileHash',
+                0,
                 { privateKey: assetSmartmeterPK }
             );
         } catch (ex) {
@@ -423,7 +429,8 @@ describe('AssetConsumingLogic', () => {
     });
 
     it('should log with a new meterreading', async () => {
-        const tx = await assetConsumingLogic.saveSmartMeterRead(0, 200, 'newMeterReadFileHash', {
+        const TIMESTAMP = moment().unix();
+        const tx = await assetConsumingLogic.saveSmartMeterRead(0, 200, 'newMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
 
@@ -437,9 +444,11 @@ describe('AssetConsumingLogic', () => {
             0: '0',
             1: '100',
             2: '200',
+            3: TIMESTAMP.toString(),
             _assetId: '0',
             _oldMeterRead: '100',
-            _newMeterRead: '200'
+            _newMeterRead: '200',
+            _timestamp: TIMESTAMP.toString()
         });
     });
 

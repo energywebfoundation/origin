@@ -33,7 +33,8 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
     event LogNewMeterRead(
         uint indexed _assetId,
         uint _oldMeterRead,
-        uint _newMeterRead
+        uint _newMeterRead,
+        uint _timestamp
     );
 
     /**
@@ -180,7 +181,8 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
     function setSmartMeterReadInternal(
         uint _assetId,
         uint _newMeterRead,
-        string memory _smartMeterReadFileHash
+        string memory _smartMeterReadFileHash,
+        uint _timestamp
     ) internal returns (uint){
 
         AssetGeneralStructContract.AssetGeneral memory asset = db.getAssetGeneral(_assetId);
@@ -197,7 +199,8 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         emit LogNewMeterRead(
             _assetId,
             oldMeterRead,
-            _newMeterRead
+            _newMeterRead,
+            _timestamp
         );
 
         return (_newMeterRead-oldMeterRead);

@@ -1,11 +1,7 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import * as fs from 'fs';
-import * as path from 'path';
 import Web3 = require('web3');
-import { Tx, BlockType } from 'web3/eth/types';
-import { TransactionReceipt, Logs } from 'web3/types';
-import { JsonRPCResponse } from 'web3/providers';
 import AssetProducingRegistryLogicJSON from '../../build/contracts/AssetProducingRegistryLogic.json';
+import moment from 'moment';
 
 export class AssetProducingRegistryLogic extends GeneralFunctions {
     web3: Web3;
@@ -123,6 +119,10 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         }
 
         return await this.web3Contract.getPastEvents('LogAssetSetInactive', filterParams);
+    }
+
+    async getSmartMeterReadsForAsset(_assetId: number, txParams?: SpecialTx) {
+        return await this.web3Contract.methods.getSmartMeterReadsForAsset(_assetId).call(txParams);
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
@@ -711,13 +711,15 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         _assetId: number,
         _newMeterRead: number,
         _lastSmartMeterReadFileHash: string,
+        _timestamp: number = moment().unix(),
         txParams?: SpecialTx
     ) {
         let transactionParams;
 
-        const txData = await this.web3Contract.methods
-            .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash)
-            .encodeABI();
+        const preparedMethod = this.web3Contract.methods
+            .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, _timestamp);
+
+        const txData = preparedMethod.encodeABI();
 
         let gas;
 
@@ -734,11 +736,9 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
             if (!txParams.gas) {
                 try {
-                    gas = await this.web3Contract.methods
-                        .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
+                    gas = await preparedMethod.estimateGas({
+                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
+                    });
                 } catch (ex) {
                     if (!(await getClientVersion(this.web3)).includes('Parity')) {
                         throw new Error(ex);
@@ -787,9 +787,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
             return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
         } else {
-            return await this.web3Contract.methods
-                .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
+            return await preparedMethod.send({ from: transactionParams.from, gas: transactionParams.gas });
         }
     }
 

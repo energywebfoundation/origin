@@ -27,7 +27,12 @@ import "../../contracts/Interfaces/AssetConsumingInterface.sol";
 /// @dev Needs a valid AssetConsumingRegistryDB contract to function correctly
 contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
 
-    event LogNewMeterRead(uint indexed _assetId, uint _oldMeterRead, uint _newMeterRead);
+    event LogNewMeterRead(
+        uint indexed _assetId,
+        uint _oldMeterRead,
+        uint _newMeterRead,
+        uint _timestamp
+    );
 
     /// @notice Constructor
     /// @param _userContractLookup userContract-lookup contract
@@ -48,10 +53,19 @@ contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
     /// @param _assetId The id belonging to an entry in the asset registry
     /// @param _newMeterRead The current meter read of the asset
     /// @param _lastSmartMeterReadFileHash Last meter read file hash
-    function saveSmartMeterRead(uint _assetId, uint _newMeterRead, string calldata _lastSmartMeterReadFileHash)
+    function saveSmartMeterRead(uint _assetId, uint _newMeterRead, string calldata _lastSmartMeterReadFileHash, uint _timestamp)
         external
     {
-        setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash);
+        uint timestamp = _timestamp;
+
+        require(timestamp >= 0, "a timestamp cannot be a negative number");
+        require(timestamp <= block.timestamp + 60, "a timestamp cannot be higher than current block time plus 1 min");
+
+        if (timestamp == 0) {
+            timestamp = block.timestamp;
+        }
+
+        setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
     }
 
     /// @notice function to get an asset by its id

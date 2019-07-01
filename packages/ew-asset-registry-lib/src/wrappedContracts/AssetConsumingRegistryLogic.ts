@@ -1,11 +1,7 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import * as fs from 'fs';
-import * as path from 'path';
 import Web3 = require('web3');
-import { Tx, BlockType } from 'web3/eth/types';
-import { TransactionReceipt, Logs } from 'web3/types';
-import { JsonRPCResponse } from 'web3/providers';
 import AssetConsumingRegistryLogicJSON from '../../build/contracts/AssetConsumingRegistryLogic.json';
+import moment from 'moment';
 
 export class AssetConsumingRegistryLogic extends GeneralFunctions {
     web3: Web3;
@@ -516,12 +512,13 @@ export class AssetConsumingRegistryLogic extends GeneralFunctions {
         _assetId: number,
         _newMeterRead: number,
         _lastSmartMeterReadFileHash: string,
+        _timestamp: number = moment().unix(),
         txParams?: SpecialTx
     ) {
         let transactionParams;
 
         const txData = await this.web3Contract.methods
-            .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash)
+            .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, _timestamp)
             .encodeABI();
 
         let gas;
@@ -540,7 +537,7 @@ export class AssetConsumingRegistryLogic extends GeneralFunctions {
             if (!txParams.gas) {
                 try {
                     gas = await this.web3Contract.methods
-                        .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash)
+                        .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, _timestamp)
                         .estimateGas({
                             from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
                         });
@@ -593,7 +590,7 @@ export class AssetConsumingRegistryLogic extends GeneralFunctions {
             return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
         } else {
             return await this.web3Contract.methods
-                .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash)
+                .saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, _timestamp)
                 .send({ from: transactionParams.from, gas: transactionParams.gas });
         }
     }

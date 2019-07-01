@@ -18,6 +18,7 @@ import { Configuration } from 'ew-utils-general-lib';
 import * as Asset from './Asset';
 import { AssetPropertiesOffchainSchema } from '..';
 import { TransactionReceipt } from 'web3/types';
+import moment from 'moment';
 
 export interface IOnChainProperties extends Asset.IOnChainProperties {
     certificatesUsedForWh: number;
@@ -110,12 +111,17 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
         return this;
     }
 
-    async saveSmartMeterRead(newMeterReading: number, fileHash: string): Promise<TransactionReceipt> {
+    async saveSmartMeterRead(
+        newMeterReading: number, 
+        fileHash: string,
+        timestamp: number = moment().unix()
+    ): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.consumingAssetLogicInstance.saveSmartMeterRead(
                 this.id,
                 newMeterReading,
                 fileHash,
+                timestamp,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
             );
         }
@@ -124,6 +130,7 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
                 this.id,
                 newMeterReading,
                 fileHash,
+                timestamp,
                 { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }

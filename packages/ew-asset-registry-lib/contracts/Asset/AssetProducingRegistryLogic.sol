@@ -19,7 +19,6 @@ pragma experimental ABIEncoderV2;
 
 import "../Asset/AssetProducingDB.sol";
 import "../AssetContractLookup.sol";
-import "../Interfaces/TradableEntityCreationInterface.sol";
 import "../Interfaces/OriginMarketContractLookupInterface.sol";
 
 import "../Asset/AssetLogic.sol";
@@ -35,7 +34,8 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
     event LogNewMeterRead(
         uint indexed _assetId,
         uint _oldMeterRead,
-        uint _newMeterRead
+        uint _newMeterRead,
+        uint _timestamp
     );
 
     
@@ -58,22 +58,27 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
     function saveSmartMeterRead(
         uint _assetId,
         uint _newMeterRead,
-        string calldata _lastSmartMeterReadFileHash
+        string calldata _lastSmartMeterReadFileHash,
+        uint _timestamp
     )
         external
         isInitialized
     {
-        uint createdPower = setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash);
+        uint timestamp = _timestamp;
 
-        AssetProducingDB.Asset memory asset = AssetProducingDB(address(db)).getAssetById(_assetId);
+        require(timestamp >= 0, "a timestamp cannot be a negative number");
+        require(timestamp <= block.timestamp + 60, "a timestamp cannot be higher than current block time plus 1 min");
 
-        if(address(asset.assetGeneral.marketLookupContract) != address(0x0)){
-            TradableEntityCreationInterface(OriginMarketContractLookupInterface(asset.assetGeneral.marketLookupContract).originLogicRegistry()).createTradableEntity(
-                _assetId,
-                createdPower
-            );
-
+        if (timestamp == 0) {
+            timestamp = block.timestamp;
         }
+
+        uint createdEnergy = setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
+
+        AssetProducingDB(address(db)).addAssetRead(_assetId, AssetProducingDB.SmartMeterRead({
+            energy: createdEnergy,
+            timestamp: timestamp
+        }));
     }
 
 	/// @notice creates an asset with the provided parameters
@@ -122,6 +127,16 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
 
         emit LogAssetCreated(msg.sender, _assetId);
 
+    }
+
+    function getSmartMeterReadsForAsset(uint _assetId)
+        external
+        view
+        returns (
+            AssetProducingDB.SmartMeterRead[] memory reads
+        )
+    {
+        return AssetProducingDB(address(db)).getSmartMeterReadsForAsset(_assetId);
     }
 
 	/// @notice Gets an asset

@@ -26,7 +26,7 @@ interface AssetConsumingInterface {
 	/// @param _assetId id of an asset
 	/// @param _newMeterRead new meterreading in wh
 	/// @param _lastSmartMeterReadFileHash filehash
-    function saveSmartMeterRead(uint _assetId, uint _newMeterRead, string calldata _lastSmartMeterReadFileHash) external;
+    function saveSmartMeterRead(uint _assetId, uint _newMeterRead, string calldata _lastSmartMeterReadFileHash, uint _timestamp) external;
 
 	/// @notice gets an asset by its id
 	/// @param _assetId id of an asset

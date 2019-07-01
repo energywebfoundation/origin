@@ -1,7 +1,6 @@
 import Web3 = require('web3');
-import { Tx, BlockType } from 'web3/eth/types';
+import { Tx } from 'web3/eth/types';
 import { TransactionReceipt, Logs } from 'web3/types';
-import { JsonRPCResponse } from 'web3/providers';
 
 export declare interface SpecialTx extends Tx {
     privateKey: string;

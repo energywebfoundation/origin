@@ -23,6 +23,7 @@ import { logger } from '../Logger';
 import { UserContractLookup, UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
 import { migrateAssetRegistryContracts, AssetProducingRegistryLogic } from '..';
 import { ProducingAsset } from '..';
+import moment from 'moment';
 
 describe('AssetProducing Facade', () => {
     const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
@@ -58,6 +59,8 @@ describe('AssetProducing Facade', () => {
 
     const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
+
+    const SM_READ_TIMESTAMP = moment().unix();
 
     it('should deploy user-registry contracts', async () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
@@ -206,7 +209,7 @@ describe('AssetProducing Facade', () => {
         };
         let asset = await (new ProducingAsset.Entity('0', conf).sync());
 
-        await asset.saveSmartMeterRead(100, 'newFileHash');
+        await asset.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
 
         asset = await asset.sync();
 
@@ -247,5 +250,18 @@ describe('AssetProducing Facade', () => {
         });
 
     });
+
+    describe('getSmartMeterReads', () => {
+        it('should correctly return reads', async () => {
+            let asset = await (new ProducingAsset.Entity('0', conf).sync());
+
+            const reads = await asset.getSmartMeterReads();
+
+            assert.deepEqual(reads, [{
+                energy: 100,
+                timestamp: SM_READ_TIMESTAMP
+            }]);
+        });
+    })
 
 });
