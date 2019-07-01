@@ -41,6 +41,8 @@ function createRoutesForEntityBoundToContract(app, entity: ENTITY) {
         const existingData = storage.get(entity, contractAddress);
 
         if (!existingData) {
+            res.status(STATUS_CODES.NOT_FOUND).end();
+
             return;
         }
 
