@@ -25,7 +25,6 @@ import "ew-asset-registry-lib/contracts/Interfaces/AssetContractLookupInterface.
 
 /// @title The logic contract for the EnergyDB of Origin contracts
 contract EnergyLogic is RoleManagement, TradableEntityLogic, TradableEntityContract {
-
     AssetContractLookupInterface public assetContractLookup;
 
     /// @notice Constructor

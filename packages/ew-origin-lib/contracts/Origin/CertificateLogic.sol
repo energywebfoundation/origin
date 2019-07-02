@@ -36,8 +36,7 @@ import "ew-asset-registry-lib/contracts/Asset/AssetProducingDB.sol";
 import "../../contracts/Origin/CertificateSpecificDB.sol";
 import "../../contracts/Origin/CertificateSpecificContract.sol";
 
-contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntityLogic, TradableEntityContract {
-
+contract CertificateLogic is CertificateInterface, CertificateSpecificContract, TradableEntityContract {
     /// @notice Logs the creation of an event
     event LogCreatedCertificate(uint indexed _certificateId, uint powerInW, address owner);
     event LogCertificateRetired(uint indexed _certificateId);
@@ -50,7 +49,7 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
         AssetContractLookupInterface _assetContractLookup,
         OriginContractLookupInterface _originContractLookup
     )
-    TradableEntityLogic(_assetContractLookup, _originContractLookup)  public { }
+    CertificateSpecificContract(_assetContractLookup, _originContractLookup) public { }
 
     /**
         ERC721 functions to overwrite
@@ -146,10 +145,12 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
 
     /// @notice creates a new Entity / certificate
     /// @param _assetId the id of the producing asset
-    /// @param _powerInW the generated power in Wh
-    function createTradableEntity(uint _assetId, uint _powerInW)
-        external
-        onlyAccount(address(assetContractLookup.assetProducingRegistry()))
+    /// @param _powerInW the power that has been produced
+    function createTradableEntity(
+        uint _assetId,
+        uint _powerInW
+    )
+        internal
         returns (uint)
     {
         return createCertificate(_assetId, _powerInW);

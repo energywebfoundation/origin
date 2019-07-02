@@ -25,11 +25,11 @@ import "../../contracts/Origin/TradableEntityDB.sol";
 import "../../contracts/Origin/CertificateSpecificContract.sol";
 import "../../contracts/Origin/CertificateSpecificDB.sol";
 
-contract CertificateDB is TradableEntityDB, CertificateSpecificContract, CertificateSpecificDB {
+contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
 
     struct Certificate {
         TradableEntityContract.TradableEntity tradableEntity;
-        CertificateSpecific certificateSpecific;
+        CertificateSpecificContract.CertificateSpecific certificateSpecific;
     }
 
     modifier onlyOwnerOrSelf {
@@ -112,7 +112,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
         });
 
 
-        CertificateDB.CertificateSpecific memory certificateSpecific = CertificateSpecific({
+        CertificateSpecificContract.CertificateSpecific memory certificateSpecific = CertificateSpecificContract.CertificateSpecific({
             status: uint(CertificateSpecificContract.Status.Active),
             dataLog: _lastSmartMeterReadFileHash,
             creationTime: block.timestamp,
@@ -155,7 +155,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
             approvedAddress: parent.tradableEntity.approvedAddress
         });
 
-        CertificateDB.CertificateSpecific memory certificateSpecificOne = CertificateSpecific({
+        CertificateSpecificContract.CertificateSpecific memory certificateSpecificOne = CertificateSpecificContract.CertificateSpecific({
             status: uint(CertificateSpecificContract.Status.Active),
             dataLog: parent.certificateSpecific.dataLog,
             creationTime: parent.certificateSpecific.creationTime,
@@ -181,7 +181,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
             approvedAddress: parent.tradableEntity.approvedAddress
         });
 
-        CertificateSpecific memory certificateSpecificTwo = CertificateSpecific({
+        CertificateSpecificContract.CertificateSpecific memory certificateSpecificTwo = CertificateSpecificContract.CertificateSpecific({
             status: uint(CertificateSpecificContract.Status.Active),
             dataLog: parent.certificateSpecific.dataLog,
             creationTime: parent.certificateSpecific.creationTime,
@@ -269,7 +269,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificContract, Certifi
     /// @return The id of the certificate
     function createCertificate(
         TradableEntityContract.TradableEntity memory _tradableEntity,
-        CertificateSpecific memory _certificateSpecific
+        CertificateSpecificContract.CertificateSpecific memory _certificateSpecific
     )
         internal
         returns

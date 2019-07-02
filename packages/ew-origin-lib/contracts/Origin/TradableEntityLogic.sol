@@ -71,15 +71,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     {
         assetContractLookup = _assetContractLookup;
     }
-
-    /**
-        abstract function
-    */
-    /// @notice creates a tradable entity
-    /// @param _assetId the id of the asset that produced the energy
-    /// @param _powerInW the amount of energy produced
-    /// @return the id of the newly created entity
-    function createTradableEntity(uint _assetId, uint _powerInW) external returns (uint);
     
     /**
         ERC721 functions

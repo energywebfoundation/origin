@@ -26,11 +26,11 @@ import "../../contracts/Origin/TradableEntityDB.sol";
 import "../../contracts/Origin/CertificateSpecificContract.sol";
 import "../../contracts/Origin/CertificateSpecificDB.sol";
 
-contract EnergyCertificateBundleDB is TradableEntityDB, TradableEntityContract, CertificateSpecificContract, CertificateSpecificDB {
+contract EnergyCertificateBundleDB is TradableEntityDB, TradableEntityContract, CertificateSpecificDB {
 
     struct EnergyCertificateBundle {
         TradableEntity tradableEntity;
-        CertificateSpecific certificateSpecific;
+        CertificateSpecificContract.CertificateSpecific certificateSpecific;
     }
 
     modifier onlyOwnerOrSelf {
@@ -89,7 +89,7 @@ contract EnergyCertificateBundleDB is TradableEntityDB, TradableEntityContract, 
     /// @return The id of the certificate
     function createEnergyCertificateBundle(
         TradableEntity memory _tradableEntity,
-        CertificateDB.CertificateSpecific memory _certificateSpecific
+        CertificateSpecificContract.CertificateSpecific memory _certificateSpecific
     )
         public
         onlyOwner

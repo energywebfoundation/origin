@@ -1,27 +1,26 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
+import { SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import * as fs from 'fs';
 import * as path from 'path';
 import Web3 = require('web3');
-import { Tx, BlockType } from 'web3/eth/types';
-import { TransactionReceipt, Logs } from 'web3/types';
-import { JsonRPCResponse } from 'web3/providers';
-import EnergyCertificateBundleLogicJSON from '../../build/contracts/EnergyCertificateBundleLogic.json';
 
-export class EnergyCertificateBundleLogic extends GeneralFunctions {
+import EnergyCertificateBundleLogicJSON from '../../build/contracts/EnergyCertificateBundleLogic.json';
+import { CertificateSpecificContract } from './CertificateSpecificContract';
+
+export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     web3: Web3;
     buildFile = EnergyCertificateBundleLogicJSON;
 
     constructor(web3: Web3, address?: string) {
-        super(
-            address
-                ? new web3.eth.Contract(EnergyCertificateBundleLogicJSON.abi, address)
-                : new web3.eth.Contract(
-                      EnergyCertificateBundleLogicJSON.abi,
-                      (EnergyCertificateBundleLogicJSON as any).networks.length > 0
-                          ? EnergyCertificateBundleLogicJSON.networks[0]
-                          : null
-                  )
-        );
+        super(web3, address);
+        
+        this.web3Contract = address
+        ? new web3.eth.Contract(EnergyCertificateBundleLogicJSON.abi, address)
+        : new web3.eth.Contract(
+              EnergyCertificateBundleLogicJSON.abi,
+              (EnergyCertificateBundleLogicJSON as any).networks.length > 0
+                  ? EnergyCertificateBundleLogicJSON.networks[0]
+                  : null
+          )
         this.web3 = web3;
     }
 

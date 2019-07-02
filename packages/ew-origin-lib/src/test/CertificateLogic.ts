@@ -88,10 +88,12 @@ describe('CertificateLogic-Facade', () => {
     const approvedPK = '0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b';
     const approvedAccount = web3.eth.accounts.privateKeyToAccount(approvedPK).address;
 
+    const issuerPK = '0x3d45690190b2f562725ae6b8d506ff9325c66c181aca3e5daec5629a97ba12ad';
+    const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
+
     let conf: Configuration.Entity;
-    
-    let blockceationTime;
-    
+    let blockCreationTime;
+        
     it('should set ERC20 token', async () => {
         erc20TestTokenAddress = (await deployERC20TestToken(
             web3,
@@ -185,6 +187,12 @@ describe('CertificateLogic-Facade', () => {
             Role.AssetManager,
             Role.Trader
         ]),                      { privateKey: privateKeyDeployment });
+
+        await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+
+        await userLogic.setRoles(issuerAccount, buildRights([
+            Role.Issuer
+        ]),                      { privateKey: privateKeyDeployment });
     });
 
     it('should onboard a new asset', async () => {
@@ -230,12 +238,22 @@ describe('CertificateLogic-Facade', () => {
             { privateKey: assetOwnerPK }
         );
 
-        await assetRegistry.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', {
+        await assetRegistry.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
     });
 
-    it('should return correct balances', async () => {
+    it('should be able to request certificates', async () => {
+        await certificateLogic.requestCertificates(0, 0, {
+            privateKey: assetOwnerPK
+        });
+    });
+
+    it('should be able to approve certification request', async () => {
+        await certificateLogic.approveCertificationRequest(0, {
+            privateKey: issuerPK
+        });
+
         assert.equal(await Certificate.getCertificateListLength(conf), 1);
         assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 1);
         assert.equal(await TradableEntity.getBalance(accountTrader, conf), 0);
@@ -248,7 +266,7 @@ describe('CertificateLogic-Facade', () => {
         delete certificate.configuration;
         delete certificate.proofs;
 
-        blockceationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
         assert.deepEqual(certificate as any, {
             id: '0',
             initialized: true,
@@ -263,7 +281,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '0',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -381,7 +399,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '0',
             maxOwnerChanges: '3',
             ownerChangerCounter: '1',
@@ -397,15 +415,23 @@ describe('CertificateLogic-Facade', () => {
             address: accountAssetOwner,
             privateKey: assetOwnerPK
         };
-        await assetRegistry.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', {
+        await assetRegistry.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
+        await certificateLogic.requestCertificates(0, 1, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.approveCertificationRequest(1, {
+            privateKey: issuerPK
+        });
+
         const certificate = await new Certificate.Entity('1', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
 
-        blockceationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
         assert.deepEqual(certificate as any, {
             id: '1',
             initialized: true,
@@ -420,7 +446,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '1',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -456,7 +482,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '1',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -500,7 +526,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '1',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -581,7 +607,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '1',
             maxOwnerChanges: '3',
             ownerChangerCounter: '1',
@@ -593,15 +619,24 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should create a new certificate (#2)', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', {
+        await assetRegistry.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', 0, {
             privateKey: assetSmartmeterPK
         });
+
+        await certificateLogic.requestCertificates(0, 2, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.approveCertificationRequest(2, {
+            privateKey: issuerPK
+        });
+
         const certificate = await new Certificate.Entity('2', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
 
-        blockceationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
         assert.deepEqual(certificate as any, {
             id: '2',
             initialized: true,
@@ -616,7 +651,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -655,7 +690,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Split.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -687,7 +722,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -711,7 +746,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -756,7 +791,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Retired.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -797,7 +832,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -831,7 +866,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -865,7 +900,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '2',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -877,15 +912,24 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should create a new certificate (#5)', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', {
+        await assetRegistry.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', 0, {
             privateKey: assetSmartmeterPK
         });
+
+        await certificateLogic.requestCertificates(0, 3, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.approveCertificationRequest(3, {
+            privateKey: issuerPK
+        });
+
         const certificate = await new Certificate.Entity('5', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
 
-        blockceationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
         assert.deepEqual(certificate as any, {
             id: '5',
             initialized: true,
@@ -900,7 +944,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#4',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '5',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -964,7 +1008,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#4',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '5',
             maxOwnerChanges: '3',
             ownerChangerCounter: '1',
@@ -976,15 +1020,24 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should create a new certificate (#6)', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', {
+        await assetRegistry.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', 0, {
             privateKey: assetSmartmeterPK
         });
+
+        await certificateLogic.requestCertificates(0, 4, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.approveCertificationRequest(4, {
+            privateKey: issuerPK
+        });
+
         const certificate = await new Certificate.Entity('6', conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
 
-        blockceationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
         assert.deepEqual(certificate as any, {
             id: '6',
             initialized: true,
@@ -999,7 +1052,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#5',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '6',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
@@ -1063,7 +1116,7 @@ describe('CertificateLogic-Facade', () => {
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#5',
-            creationTime: blockceationTime,
+            creationTime: blockCreationTime,
             parentId: '6',
             maxOwnerChanges: '3',
             ownerChangerCounter: '1',
@@ -1072,108 +1125,142 @@ describe('CertificateLogic-Facade', () => {
                 currency: Currency.NONE
             }
         });
-
-        let allEvents = await Certificate.getAllCertificateEvents(0, conf);
-
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }
-        console.log('-----------------');
-       */
-        allEvents = await Certificate.getAllCertificateEvents(1, conf);
-
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }
-        console.log('-----------------');
-        */
-        allEvents = await Certificate.getAllCertificateEvents(2, conf);
-
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }
-        console.log('-----------------');
-        */
-        allEvents = await Certificate.getAllCertificateEvents(3, conf);
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }
-        console.log('-----------------');
-        */
-        allEvents = await Certificate.getAllCertificateEvents(4, conf);
-
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }
-        console.log('-----------------');
-        */
-        allEvents = await Certificate.getAllCertificateEvents(5, conf);
-
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }
-        console.log('-----------------');
-        */
-        allEvents = await Certificate.getAllCertificateEvents(6, conf);
-
-        /*
-        for (let i = 0; i < allEvents.length; i++) {
-            console.log('');
-            console.log((allEvents as any)[i].event);
-            console.log((allEvents as any)[i].returnValues);
-            console.log((allEvents as any)[i].raw.topics);
-            console.log('');
-        }*/
-        //        console.log(allEvents);
     });
 
-    it('should create a new certificate (#7)', async () => {
+    it('asset owner can create multiple certification requests', async () => {
+        const STARTING_CERTIFICATE_LENGTH = Number(await Certificate.getCertificateListLength(conf));
+        const STARTING_ASSET_OWNER_BALANCE = Number(await TradableEntity.getBalance(accountAssetOwner, conf));
+        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SMART_METER_READ = Number((await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests()).length;
+
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
+
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 200, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
+
+        assert.equal((await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1, LAST_SM_READ_INDEX + 2);
+
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 301, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
+
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 425, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
+
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 582, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
+
+        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 2, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 5, {
+            privateKey: assetOwnerPK
+        });
+
+        assert.equal((await certificateLogic.getCertificationRequests()).length, INITIAL_CERTIFICATION_REQUESTS_LENGTH + 2);
+        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), STARTING_ASSET_OWNER_BALANCE);
+
+        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+            privateKey: issuerPK
+        });
+
+        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH + 1);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), STARTING_ASSET_OWNER_BALANCE + 1);
+
+        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH + 1, {
+            privateKey: issuerPK
+        });
+
+        assert.equal((await certificateLogic.getCertificationRequests()).length, INITIAL_CERTIFICATION_REQUESTS_LENGTH + 2);
+
+        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH + 2);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), STARTING_ASSET_OWNER_BALANCE + 2);
+
+        const certificateOne = await new Certificate.Entity((STARTING_CERTIFICATE_LENGTH).toString(), conf).sync();
+
+        assert.equal(certificateOne.powerInW, 200);
+
+        const certificateTwo = await new Certificate.Entity((STARTING_CERTIFICATE_LENGTH + 1).toString(), conf).sync();
+
+        assert.equal(certificateTwo.powerInW, 382);
+    });
+
+    it('issuer should not be able to issue certificates twice for the same certification request', async () => {
+        const STARTING_CERTIFICATE_LENGTH = Number(await Certificate.getCertificateListLength(conf));
+        const STARTING_ASSET_OWNER_BALANCE = Number(await TradableEntity.getBalance(accountAssetOwner, conf));
+        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SMART_METER_READ = Number((await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests()).length;
+
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
+
+        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), STARTING_ASSET_OWNER_BALANCE);
+
+        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+            privateKey: issuerPK
+        });
+       
+        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH + 1);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), STARTING_ASSET_OWNER_BALANCE + 1);
+
+        try {
+            await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+                privateKey: issuerPK
+            });
+        } catch (e) {
+            assert.include(e.message, 'certification request has to be in pending state')
+        }
+
+        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH + 1);
+        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), STARTING_ASSET_OWNER_BALANCE + 1);
+    });
+
+    it('should create a new certificate (#10)', async () => {
+        const STARTING_CERTIFICATE_LENGTH = Number(await Certificate.getCertificateListLength(conf));
+        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SMART_METER_READ = Number((await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests()).length;
+
         conf.blockchainProperties.activeUser = {
             address: accountAssetOwner,
             privateKey: assetOwnerPK
         };
 
-        await assetRegistry.saveSmartMeterRead(0, 600, 'lastSmartMeterReadFileHash#7', {
+        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, 'lastSmartMeterReadFileHash#10', 0, {
             privateKey: assetSmartmeterPK
         });
-        const certificate = await new Certificate.Entity('7', conf).sync();
+
+        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
+            privateKey: assetOwnerPK
+        });
+
+        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+            privateKey: issuerPK
+        });
+        
+        const certificate = await new Certificate.Entity(STARTING_CERTIFICATE_LENGTH.toString(), conf).sync();
 
         delete certificate.configuration;
         delete certificate.proofs;
 
-        blockceationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
         assert.deepEqual(certificate as any, {
-            id: '7',
+            id: STARTING_CERTIFICATE_LENGTH.toString(),
             initialized: true,
             assetId: '0',
             children: [],
@@ -1185,9 +1272,9 @@ describe('CertificateLogic-Facade', () => {
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#7',
-            creationTime: blockceationTime,
-            parentId: '7',
+            dataLog: 'lastSmartMeterReadFileHash#10',
+            creationTime: blockCreationTime,
+            parentId: STARTING_CERTIFICATE_LENGTH.toString(),
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
             offChainSettlementOptions: {
@@ -1197,8 +1284,8 @@ describe('CertificateLogic-Facade', () => {
         });
     });
 
-    it('should make certificate #7 available for sale', async() => {
-        let certificate = await new Certificate.Entity('7', conf).sync();
+    it('should make certificate #10 available for sale', async() => {
+        let certificate = await new Certificate.Entity('10', conf).sync();
 
         await certificate.publishForSale(10, '0x1230000000000000000000000000000000000000', 30);
 
@@ -1207,14 +1294,14 @@ describe('CertificateLogic-Facade', () => {
         assert.equal(certificate.status, Certificate.Status.Split);
         assert.isFalse(certificate.forSale);
 
-        const childCert1 = await new Certificate.Entity('8', conf).sync();
+        const childCert1 = await new Certificate.Entity('11', conf).sync();
 
         delete childCert1.configuration;
         delete childCert1.proofs;
         delete childCert1.creationTime;
 
         assert.deepEqual(childCert1 as any, {
-            id: '8',
+            id: '11',
             initialized: true,
             assetId: '0',
             children: [],
@@ -1226,8 +1313,8 @@ describe('CertificateLogic-Facade', () => {
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#7',
-            parentId: '7',
+            dataLog: 'lastSmartMeterReadFileHash#10',
+            parentId: '10',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
             offChainSettlementOptions: {
@@ -1236,14 +1323,14 @@ describe('CertificateLogic-Facade', () => {
             }
         });
 
-        const childCert2 = await new Certificate.Entity('9', conf).sync();
+        const childCert2 = await new Certificate.Entity('12', conf).sync();
 
         delete childCert2.configuration;
         delete childCert2.proofs;
         delete childCert2.creationTime;
 
         assert.deepEqual(childCert2 as any, {
-            id: '9',
+            id: '12',
             initialized: true,
             assetId: '0',
             children: [],
@@ -1255,8 +1342,8 @@ describe('CertificateLogic-Facade', () => {
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#7',
-            parentId: '7',
+            dataLog: 'lastSmartMeterReadFileHash#10',
+            parentId: '10',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
             offChainSettlementOptions: {
@@ -1266,8 +1353,8 @@ describe('CertificateLogic-Facade', () => {
         });
     });
 
-    it('should make certificate #9 available for sale with fiat', async() => {
-        let certificate = await new Certificate.Entity('9', conf).sync();
+    it('should make certificate #12 available for sale with fiat', async() => {
+        let certificate = await new Certificate.Entity('12', conf).sync();
 
         const price = 10.5;
 
@@ -1279,7 +1366,7 @@ describe('CertificateLogic-Facade', () => {
         delete certificate.creationTime;
 
         assert.deepEqual(certificate as any, {
-            id: '9',
+            id: '12',
             initialized: true,
             assetId: '0',
             children: [],
@@ -1291,8 +1378,8 @@ describe('CertificateLogic-Facade', () => {
             escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#7',
-            parentId: '7',
+            dataLog: 'lastSmartMeterReadFileHash#10',
+            parentId: '10',
             maxOwnerChanges: '3',
             ownerChangerCounter: '0',
             offChainSettlementOptions: {

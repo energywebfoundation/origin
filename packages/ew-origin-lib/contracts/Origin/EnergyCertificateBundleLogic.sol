@@ -35,8 +35,7 @@ import "../../contracts/Origin/CertificateSpecificContract.sol";
 
 
 
-contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface,
-    RoleManagement, TradableEntityLogic, TradableEntityContract, CertificateSpecificContract {
+contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpecificContract {
 
     /// @notice Logs the creation of an event
     event LogCreatedBundle(uint indexed _bundleId, uint powerInW, address owner);
@@ -49,16 +48,14 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface,
     /// @notice Logs when an escrow for a bundle gets added
     event LogEscrowAdded(uint indexed _bundleId, address _escrow);
 
-    /// @notice Constructor
-    /// @param _assetContractLookup the assetRegitryContractLookup-contract-address
-    /// @param _originContractLookup the originContractLookup-contract-address
+    /// @notice constructor
+    /// @param _assetContractLookup the asset-RegistryContractLookup-Address
+    /// @param _originContractLookup the origin-RegistryContractLookup-Address
     constructor(
         AssetContractLookupInterface _assetContractLookup,
         OriginContractLookupInterface _originContractLookup
     )
-        TradableEntityLogic(_assetContractLookup, _originContractLookup)
-        public
-    {}
+    CertificateSpecificContract(_assetContractLookup, _originContractLookup) public { }
 
     /**
         ERC721 functions to overwrite
@@ -144,8 +141,7 @@ contract EnergyCertificateBundleLogic is EnergyCertificateBundleInterface,
         uint _assetId,
         uint _powerInW
     )
-        external
-        onlyAccount(address(assetContractLookup.assetProducingRegistry()))
+        internal
         returns (uint)
     {
         return createBundle(_assetId, _powerInW);

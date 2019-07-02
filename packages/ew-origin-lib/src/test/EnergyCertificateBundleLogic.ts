@@ -29,8 +29,6 @@ import { deploy } from 'ew-utils-deployment';
 
 import { migrateEnergyBundleContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
-import { CertificateDB } from '../wrappedContracts/CertificateDB';
-import { CertificateLogic } from '../wrappedContracts/CertificateLogic';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
 import { EnergyCertificateBundleLogic } from '../wrappedContracts/EnergyCertificateBundleLogic';
 import { EnergyCertificateBundleDB } from '../wrappedContracts/EnergyCertificateBundleDB';
@@ -84,10 +82,11 @@ describe('EnergyCertificateBundleLogic', () => {
     const approvedPK = '0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b';
     const approvedAccount = web3.eth.accounts.privateKeyToAccount(approvedPK).address;
 
+    const issuerPK = '0x3d45690190b2f562725ae6b8d506ff9325c66c181aca3e5daec5629a97ba12ad';
+    const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
+
     describe('init checks', () => {
         it('should deploy the contracts', async () => {
-            // isGanache = (await getClientVersion(web3)).includes('EthereumJS');
-
             const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
             userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
@@ -99,6 +98,12 @@ describe('EnergyCertificateBundleLogic', () => {
             await userLogic.setRoles(accountDeployment, buildRights([
                 Role.UserAdmin,
                 Role.AssetAdmin
+            ]),                      { privateKey: privateKeyDeployment });
+
+            await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+
+            await userLogic.setRoles(issuerAccount, buildRights([
+                Role.Issuer
             ]),                      { privateKey: privateKeyDeployment });
 
             const userContractLookupAddr = (userContracts as any).UserContractLookup;
@@ -361,8 +366,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     100,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 0, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(0, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -375,17 +389,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '0',
                     2: '100',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '0',
-                    _newMeterRead: '100'
+                    _newMeterRead: '100',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
-
-                    assert.equal(allTransferEvents.length, 1);
 
                     assert.equal(allTransferEvents.length, 1);
                     assert.equal(allTransferEvents[0].event, 'Transfer');
@@ -761,8 +775,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     200,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 1, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(1, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -775,17 +798,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '100',
                     2: '200',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '100',
-                    _newMeterRead: '200'
+                    _newMeterRead: '200',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
-
-                    assert.equal(allTransferEvents.length, 1);
 
                     assert.equal(allTransferEvents.length, 1);
                     assert.equal(allTransferEvents[0].event, 'Transfer');
@@ -1019,8 +1042,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     300,
                     'lastSmartMeterReadFileHash',
+                    0, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 2, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(2, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1029,18 +1061,9 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '200',
-                    2: '300',
-                    _assetId: '0',
-                    _oldMeterRead: '200',
-                    _newMeterRead: '300'
-                });
-
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -1412,9 +1435,17 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     400,
-                    'lastSmartMeterReadFileHash',
+                    'lastSmartMeterReadFileHash', 0, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 3, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(3, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1423,19 +1454,9 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '300',
-                    2: '400',
-
-                    _assetId: '0',
-                    _oldMeterRead: '300',
-                    _newMeterRead: '400'
-                });
-
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -1605,8 +1626,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     500,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 4, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(4, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1618,14 +1648,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '400',
                     2: '500',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '400',
-                    _newMeterRead: '500'
+                    _newMeterRead: '500',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -1728,8 +1760,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     600,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 5, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(5, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1742,14 +1783,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '500',
                     2: '600',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '500',
-                    _newMeterRead: '600'
+                    _newMeterRead: '600',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -1998,10 +2041,18 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     700,
-                    'lastSmartMeterReadFileHash',
-
+                    'lastSmartMeterReadFileHash', 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 6, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(6, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2014,14 +2065,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '600',
                     2: '700',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '600',
-                    _newMeterRead: '700'
+                    _newMeterRead: '700',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -2268,8 +2321,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     800,
                     'lastSmartMeterReadFileHash',
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 7, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(7, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2282,14 +2344,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '700',
                     2: '800',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '700',
-                    _newMeterRead: '800'
+                    _newMeterRead: '800',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -2451,8 +2515,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     900,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 8, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(8, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2464,14 +2537,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '800',
                     2: '900',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '800',
-                    _newMeterRead: '900'
+                    _newMeterRead: '900',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -2698,8 +2773,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1000,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 9, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(9, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2711,14 +2795,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '900',
                     2: '1000',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '900',
-                    _newMeterRead: '1000'
+                    _newMeterRead: '1000',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -2942,6 +3028,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1100,
                     'lastSmartMeterReadFileHash',
+                    10, 
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -2950,19 +3037,19 @@ describe('EnergyCertificateBundleLogic', () => {
                     toBlock: tx.blockNumber
                 }))[0];
 
-                assert.equal(event.event, 'LogNewMeterRead');
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '1000',
-                    2: '1100',
-                    _assetId: '0',
-                    _oldMeterRead: '1000',
-                    _newMeterRead: '1100'
+                await energyCertificateBundleLogic.requestCertificates(0, 10, {
+                    privateKey: assetOwnerPK
                 });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(10, {
+                    privateKey: issuerPK
+                });
+
+                assert.equal(event.event, 'LogNewMeterRead');
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -3142,8 +3229,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1200,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 11, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(11, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -3152,18 +3248,9 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '1100',
-                    2: '1200',
-                    _assetId: '0',
-                    _oldMeterRead: '1100',
-                    _newMeterRead: '1200'
-                });
-
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -3359,6 +3446,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1300,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -3369,18 +3457,17 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '1200',
-                    2: '1300',
-                    _assetId: '0',
-                    _oldMeterRead: '1200',
-                    _newMeterRead: '1300'
+                await energyCertificateBundleLogic.requestCertificates(0, 12, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(12, {
+                    privateKey: issuerPK
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -3575,9 +3662,17 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     1400,
-                    'lastSmartMeterReadFileHash',
+                    'lastSmartMeterReadFileHash', 0, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 13, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(13, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -3586,18 +3681,9 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '1300',
-                    2: '1400',
-                    _assetId: '0',
-                    _oldMeterRead: '1300',
-                    _newMeterRead: '1400'
-                });
-
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -3938,8 +4024,17 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1500,
                     'lastSmartMeterReadFileHash',
+                    1, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 14, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(14, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -3951,14 +4046,16 @@ describe('EnergyCertificateBundleLogic', () => {
                     0: '0',
                     1: '1400',
                     2: '1500',
+                    3: '1',
                     _assetId: '0',
                     _oldMeterRead: '1400',
-                    _newMeterRead: '1500'
+                    _newMeterRead: '1500',
+                    _timestamp: '1'
                 });
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
@@ -4218,9 +4315,17 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     1600,
-                    'lastSmartMeterReadFileHash',
+                    'lastSmartMeterReadFileHash', 0, 
                     { privateKey: assetSmartmeterPK }
                 );
+
+                await energyCertificateBundleLogic.requestCertificates(0, 15, {
+                    privateKey: assetOwnerPK
+                });
+
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(15, {
+                    privateKey: issuerPK
+                });
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -4229,18 +4334,9 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
-                assert.deepEqual(event.returnValues, {
-                    0: '0',
-                    1: '1500',
-                    2: '1600',
-                    _assetId: '0',
-                    _oldMeterRead: '1500',
-                    _newMeterRead: '1600'
-                });
-
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
+                        { fromBlock: tx.blockNumber, toBlock: approveTx.blockNumber }
                     );
 
                     assert.equal(allTransferEvents.length, 1);
