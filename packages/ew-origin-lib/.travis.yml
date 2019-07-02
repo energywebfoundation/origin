@@ -5,6 +5,7 @@ node_js:
   - '10.0.0'
 
 install:
+  - npm run clean
   - npm install
   - npm run compile
 

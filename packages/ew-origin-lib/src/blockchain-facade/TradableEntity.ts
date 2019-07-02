@@ -26,6 +26,7 @@ export interface IOnChainProperties {
     forSale: boolean;
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
+    offChainSettlementOptions: IOffChainSettlementOptions;
     escrow: string[];
     approvedAddress: string;
 }
@@ -102,6 +103,7 @@ export const setApprovalForAll = async (
         );
     }
 };
+
 export abstract class Entity extends BlockchainDataModelEntity.Entity
     implements IOnChainProperties {
     assetId: number;
@@ -110,6 +112,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     forSale: boolean;
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
+    offChainSettlementOptions: IOffChainSettlementOptions;
     escrow: string[];
     approvedAddress: string;
 
@@ -264,7 +267,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         }
     }
 
-    async publishForSale(price: number, tokenAddress: string): Promise<TransactionReceipt> {
+    async publishForSale(price: number, tokenAddress: any): Promise<any> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
                 this.id,
@@ -300,23 +303,38 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         return this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
     }
 
-    get getOffChainURL() {
+    get offChainURL() {
         const certificateLogicAddress = this.configuration.blockchainProperties.certificateLogicInstance.web3Contract._address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}`;
     }
 
     async setOffChainSettlementOptions(options: IOffChainSettlementOptions): Promise<void> {
-        if (this.configuration.offChainDataSource) {
-            await axios.put(`${this.getOffChainURL}/${this.id}`, options);
+        if (!this.configuration.offChainDataSource) {
+            throw Error('No off chain data source set in the configuration');
         }
+
+        await axios.put(`${this.offChainURL}/${this.id}`, options);
     }
 
     async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
-        if (this.configuration.offChainDataSource) {
-            const result = await axios.get(`${this.getOffChainURL}/${this.id}`);
-
-            return result.data;
+        if (!this.configuration.offChainDataSource) {
+            throw Error('No off chain data source set in the configuration');
         }
+
+        const result = await axios.get(`${this.offChainURL}/${this.id}`, {
+            validateStatus: status => [200, 404].includes(status)
+        });
+
+        if (result.status === 404 || !result.data) {
+            await this.setOffChainSettlementOptions({
+                price: 0,
+                currency: Currency.NONE
+            });
+
+            return await this.getOffChainSettlementOptions();
+        }
+
+        return result.data;
     }
 }

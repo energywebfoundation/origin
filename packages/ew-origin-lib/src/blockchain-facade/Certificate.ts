@@ -15,9 +15,9 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
 import { TransactionReceipt, Log } from 'web3/types';
-import { Configuration } from 'ew-utils-general-lib';
+import { Configuration, Currency } from 'ew-utils-general-lib';
 
-import * as TradableEntity from '..';
+import * as TradableEntity from './TradableEntity';
 
 export enum Status {
     Active,
@@ -25,7 +25,7 @@ export enum Status {
     Split
 }
 
-export interface ICertificateSpecific extends TradableEntity.TradableEntity.IOnChainProperties {
+export interface ICertificateSpecific extends TradableEntity.IOnChainProperties {
     status: number;
     dataLog: string;
     creationTime: number;
@@ -124,7 +124,7 @@ export const getAllCertificateEvents = async (
     return returnEvents;
 };
 
-export class Entity extends TradableEntity.TradableEntity.Entity implements ICertificateSpecific {
+export class Entity extends TradableEntity.Entity implements ICertificateSpecific {
     status: number;
     dataLog: string;
     creationTime: number;
@@ -159,6 +159,8 @@ export class Entity extends TradableEntity.TradableEntity.Entity implements ICer
             this.parentId = cert.certificateSpecific.parentId;
             this.maxOwnerChanges = cert.certificateSpecific.maxOwnerChanges;
             this.ownerChangerCounter = cert.certificateSpecific.ownerChangeCounter;
+            this.offChainSettlementOptions = await this.getOffChainSettlementOptions();
+
             this.initialized = true;
 
             if (this.configuration.logger) {
@@ -211,6 +213,65 @@ export class Entity extends TradableEntity.TradableEntity.Entity implements ICer
                 { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
+    }
+
+    async publishForSale(
+        price: number,
+        tokenAddressOrCurrency: string | Currency,
+        wh?: number
+    ): Promise<void> {
+        const isErc20Sale = this.configuration.blockchainProperties.web3.utils.isAddress(tokenAddressOrCurrency);
+        const isFiatSale = Currency[tokenAddressOrCurrency] !== undefined;
+
+        let certificate;
+
+        if (!isErc20Sale && !isFiatSale) {
+            throw Error('Please specify either an ERC20 token address or a currency.');
+        }
+
+        const certificateEnergy = Number(this.powerInW);
+        const saleParams = {
+            onChainPrice: isErc20Sale ? Math.floor(price) : 0,
+            tokenAddress: isErc20Sale ? tokenAddressOrCurrency : '0x0000000000000000000000000000000000000000',
+            offChainPrice: isFiatSale ? Math.floor(price * 100) : 0,
+            offChainCurrency: isFiatSale ? tokenAddressOrCurrency : Currency.NONE
+        };
+
+        if (wh > certificateEnergy || wh <= 0) {
+            throw Error(`Invalid energy request: Certificate ${this.id} has ${certificateEnergy} Wh, but user requested ${wh} Wh.`);
+        }
+
+        if (wh === undefined || wh === certificateEnergy) {
+            await this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
+                this.id,
+                saleParams.onChainPrice,
+                saleParams.tokenAddress,
+                this.configuration.blockchainProperties.activeUser.privateKey
+                    ? { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+                    : { from: this.configuration.blockchainProperties.activeUser.address }
+            );
+
+            certificate = await new Entity(this.id, this.configuration).sync();
+        } else {
+            await this.configuration.blockchainProperties.certificateLogicInstance.splitAndPublishForSale(
+                this.id,
+                wh,
+                saleParams.onChainPrice,
+                saleParams.tokenAddress,
+                this.configuration.blockchainProperties.activeUser.privateKey
+                    ? { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+                    : { from: this.configuration.blockchainProperties.activeUser.address }
+            );
+
+            await this.sync();
+
+            certificate = await new Entity(this.children['0'], this.configuration).sync();
+        }
+
+        await certificate.setOffChainSettlementOptions({
+            price: saleParams.offChainPrice,
+            currency: saleParams.offChainCurrency
+        });
     }
 
     async getCertificateOwner(): Promise<string> {

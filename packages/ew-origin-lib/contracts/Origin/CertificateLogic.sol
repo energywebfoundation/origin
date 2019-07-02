@@ -178,27 +178,34 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
     /// @param _certificateId The id of the certificate
     /// @param _power The amount of power in W for the 1st certificate
     function splitCertificate(uint _certificateId, uint _power) external {
-        CertificateDB.Certificate memory parent = CertificateDB(address(db)).getCertificate(_certificateId);
+        CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
         require(
-            msg.sender == parent.tradableEntity.owner || checkMatcher(parent.tradableEntity.escrow),
+            msg.sender == cert.tradableEntity.owner || checkMatcher(cert.tradableEntity.escrow),
             "You are not the owner of the certificate"
         );
-        require(parent.tradableEntity.powerInW > _power, "The certificate doesn't have enough power to be split.");
+
+        splitCertificateInternal(_certificateId, _power);
+    }
+
+    /// @notice Splits a certificate and publishes the first split certificate for sale
+    /// @param _certificateId The id of the certificate
+    /// @param _power The amount of power in W for the 1st certificate
+    /// @param _price the purchase price
+    /// @param _tokenAddress the address of the ERC20 token address
+    function splitAndPublishForSale(uint _certificateId, uint _power, uint _price, address _tokenAddress) external {
+        CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
         require(
-            parent.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
-            "Unable to split certificate. You can only split Active certificates."
-        );
-        require(
-            parent.certificateSpecific.children.length == 0,
-            "This certificate has already been split."
+            msg.sender == cert.tradableEntity.owner || checkMatcher(cert.tradableEntity.escrow),
+            "You are not the owner of the certificate"
         );
 
-        (uint childIdOne, uint childIdTwo) = CertificateDB(address(db)).createChildCertificate(_certificateId, _power);
-        emit Transfer(address(0), parent.tradableEntity.owner, childIdOne);
-        emit Transfer(address(0), parent.tradableEntity.owner, childIdTwo);
+        uint childOneId = splitCertificateInternal(_certificateId, _power);
 
-        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Split);
-        emit LogCertificateSplit(_certificateId, childIdOne, childIdTwo);
+        TradableEntityDBInterface(address(db)).setOnChainDirectPurchasePrice(childOneId, _price);
+        TradableEntityDBInterface(address(db)).setTradableToken(childOneId, _tokenAddress);
+        TradableEntityDBInterface(address(db)).setForSale(childOneId, true);
+
+        emit LogPublishForSale(childOneId, _price, _tokenAddress);
     }
 
     /// @notice gets the certificate
@@ -234,6 +241,33 @@ contract CertificateLogic is CertificateInterface, RoleManagement, TradableEntit
     /**
         internal functions
     */
+
+    /// @notice Splits a certificate into two smaller ones, where (total - _power = 2ndCertificate)
+    /// @param _certificateId The id of the certificate
+    /// @param _power The amount of power in W for the 1st certificate
+    function splitCertificateInternal(uint _certificateId, uint _power) internal returns (uint childOneId) {
+        CertificateDB.Certificate memory parent = CertificateDB(address(db)).getCertificate(_certificateId);
+
+        require(parent.tradableEntity.powerInW > _power, "The certificate doesn't have enough power to be split.");
+        require(
+            parent.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
+            "Unable to split certificate. You can only split Active certificates."
+        );
+        require(
+            parent.certificateSpecific.children.length == 0,
+            "This certificate has already been split."
+        );
+
+        (uint childIdOne, uint childIdTwo) = CertificateDB(address(db)).createChildCertificate(_certificateId, _power);
+        emit Transfer(address(0), parent.tradableEntity.owner, childIdOne);
+        emit Transfer(address(0), parent.tradableEntity.owner, childIdTwo);
+
+        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Split);
+        emit LogCertificateSplit(_certificateId, childIdOne, childIdTwo);
+
+        return childIdOne;
+    }
+
 	/// @notice Retires a certificate
 	/// @param _certificateId The id of the requested certificate
     function retireCertificateAuto(uint _certificateId) internal {
