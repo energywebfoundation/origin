@@ -18,7 +18,7 @@ import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 import moment from 'moment';
 
-import { Certificate } from 'ew-origin-lib';
+import { Certificate, TradableEntity } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
@@ -47,6 +47,7 @@ export interface IEnrichedCertificateData {
     certificateOwner: User;
     producingAsset: ProducingAsset.Entity;
     acceptedCurrency: string;
+    offChainSettlementOptions: TradableEntity.IOffChainSettlementOptions;
     isOffChainSettlement: boolean;
 }
 
@@ -122,11 +123,12 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         const promises = props.certificates.map(async (certificate: Certificate.Entity) => {
             let acceptedCurrency = await this.getTokenSymbol(certificate);
             const isOffChainSettlement = acceptedCurrency === null;
+            let offChainSettlementOptions;
 
             if (isOffChainSettlement) {
                 try {
-                    const { currency } = await certificate.getOffChainSettlementOptions();
-                    acceptedCurrency = Currency[currency];
+                    offChainSettlementOptions = await certificate.getOffChainSettlementOptions();
+                    acceptedCurrency = Currency[offChainSettlementOptions.currency];
                 } catch (error) {
                     console.error('No off-chain settlement data for certificate.', error);
                 }
@@ -138,6 +140,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
                 ),
                 certificateOwner: await new User(certificate.owner, props.conf as any).sync(),
+                offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
             };
@@ -421,6 +424,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 const claimed = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Retired;
                 const forSale = EnrichedCertificateData.certificate.forSale;
                 const forDemand = this.state.matchedCertificates.find(cert => cert.id === EnrichedCertificateData.certificate.id) !== undefined;
+                const isActive = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Active;
 
                 if (
                     this.props.switchedToOrganization &&
@@ -430,10 +434,10 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 }
 
                 return (
-                    (ownerOf && !claimed && !forSale && this.props.selectedState === SelectedState.Inbox) ||
+                    (isActive && ownerOf && !forSale && this.props.selectedState === SelectedState.Inbox) ||
                     (claimed && this.props.selectedState === SelectedState.Claimed) ||
-                    (!claimed && forSale && this.props.selectedState === SelectedState.ForSale) ||
-                    (!claimed && forSale && forDemand && this.props.selectedState === SelectedState.ForDemand)
+                    (isActive && forSale && this.props.selectedState === SelectedState.ForSale) ||
+                    (isActive && forSale && forDemand && this.props.selectedState === SelectedState.ForDemand)
                 );
             }
         );
@@ -472,7 +476,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
                     certificateDataToShow.splice(7, 0,
                         EnrichedCertificateData.isOffChainSettlement 
-                            ? formatter.format(EnrichedCertificateData.certificate.onChainDirectPurchasePrice / 100).replace('$', '')
+                            ? formatter.format(EnrichedCertificateData.offChainSettlementOptions.price / 100).replace('$', '')
                             : EnrichedCertificateData.certificate.onChainDirectPurchasePrice
                     );
                     certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedCurrency);

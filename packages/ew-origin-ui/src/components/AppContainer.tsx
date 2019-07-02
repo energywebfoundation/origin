@@ -73,6 +73,15 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             )
         );
 
+        certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) =>
+            this.props.actions.certificateCreatedOrUpdated(
+                await new Certificate.Entity(
+                    event.returnValues._certificateId,
+                    this.props.configuration
+                ).sync()
+            )
+        );
+
         certificateContractEventHandler.onEvent('Transfer', async (event: any) => {
             this.props.actions.certificateCreatedOrUpdated(
                 await new Certificate.Entity(
