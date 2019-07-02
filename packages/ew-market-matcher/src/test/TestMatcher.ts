@@ -45,6 +45,9 @@ describe('Test Matcher', async () => {
     const traderPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
+    const issuerPK = '0x3d45690190b2f562725ae6b8d506ff9325c66c181aca3e5daec5629a97ba12ad';
+    const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
+
     const matcherConf: SchemaDefs.IMatcherConf = {
         dataSource: {
             type: ('BLOCKCHAIN' as SchemaDefs.BlockchainDataSourceType),
@@ -89,6 +92,12 @@ describe('Test Matcher', async () => {
         await userLogic.setRoles(assetOwnerAddress, buildRights([
             Role.AssetManager
         ]), { privateKey: privateKeyDeployment });
+
+        await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+
+        await userLogic.setRoles(issuerAccount, buildRights([
+            Role.Issuer
+        ]),                      { privateKey: privateKeyDeployment });
     }).timeout(5000);
 
     it('should deploy asset-registry contracts', async () => {
@@ -286,6 +295,14 @@ describe('Test Matcher', async () => {
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
             await producingAsset.saveSmartMeterRead(10, 'newMeterRead');
+
+            await certificateLogic.requestCertificates(0, 0, {
+                privateKey: assetOwnerPK
+            });
+
+            await certificateLogic.approveCertificationRequest(0, {
+                privateKey: issuerPK
+            });
         });
 
         it('certificate has been created', async () => {
@@ -362,6 +379,14 @@ describe('Test Matcher', async () => {
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
             await producingAsset.saveSmartMeterRead(30, 'newMeterRead2');
+
+            await certificateLogic.requestCertificates(0, 1, {
+                privateKey: assetOwnerPK
+            });
+
+            await certificateLogic.approveCertificationRequest(1, {
+                privateKey: issuerPK
+            });
         });
 
         it('certificate has been created', async () => {
