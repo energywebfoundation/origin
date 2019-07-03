@@ -20,13 +20,14 @@ import { Nav } from 'react-bootstrap';
 
 import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
-import { User } from 'ew-user-registry-lib';
+import { User, Role } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
 import { Configuration } from 'ew-utils-general-lib';
 
 import { PageContent } from '../elements/PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
+import { CertificationRequestsTable } from './CertificationRequestsTable';
 
 export interface ICertificatesProps {
     conf: Configuration.Entity;
@@ -56,6 +57,8 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
         this.ForSaleCertificates = this.ForSaleCertificates.bind(this);
         this.ClaimedCertificates = this.ClaimedCertificates.bind(this);
         this.ForDemandCertificates = this.ForDemandCertificates.bind(this);
+        this.PendingCertificationRequests = this.PendingCertificationRequests.bind(this);
+        this.ApprovedCertificationRequests = this.ApprovedCertificationRequests.bind(this);
     }
 
     switchToOrganization(switchedToOrganization: boolean) {
@@ -118,12 +121,31 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
         return this.CertificateTable(SelectedState.ForDemand, demandId);
     }
 
+    PendingCertificationRequests() {
+        return <CertificationRequestsTable
+            conf={this.props.conf}
+            producingAssets={this.props.producingAssets}
+            currentUser={this.props.currentUser}
+        />
+    }
+
+    ApprovedCertificationRequests() {
+        return <CertificationRequestsTable
+            conf={this.props.conf}
+            producingAssets={this.props.producingAssets}
+            currentUser={this.props.currentUser}
+            approvedOnly={true}
+        />
+    }
+
     render() {
         const allOrganizationsText = 'All Organizations';
 
         const organizations = this.props.currentUser
             ? [allOrganizationsText, this.props.currentUser.organization]
             : [allOrganizationsText];
+
+        const isIssuer = this.props.currentUser && this.props.currentUser.isRole(Role.Issuer);
 
         const CertificatesMenu = [
             {
@@ -138,7 +160,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                         content: organizations
                     }
                 ],
-                show: true
+                show: !isIssuer
             },
             {
                 key: 'for_sale',
@@ -152,7 +174,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                         content: organizations
                     }
                 ],
-                show: true
+                show: !isIssuer
             },
             {
                 key: 'claims_report',
@@ -166,13 +188,25 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                         content: organizations
                     }
                 ],
-                show: true
+                show: !isIssuer
             },
             {
                 key: 'detail_view',
                 label: 'Detail View',
                 component: null,
+                show: !isIssuer
+            },
+            {
+                key: 'pending',
+                label: 'Pending',
+                component: this.PendingCertificationRequests,
                 show: true
+            },
+            {
+                key: 'approved',
+                label: 'Approved',
+                component: this.ApprovedCertificationRequests,
+                show: isIssuer
             },
             {
                 key: 'for_demand',
@@ -181,6 +215,12 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 show: false
             },
         ];
+
+        const defaultRedirect = {
+            pathname: `/${this.props.baseUrl}/certificates/${
+                isIssuer ? CertificatesMenu[4].key : CertificatesMenu[0].key
+            }`
+        };
 
         return (
             <div className="PageWrapper">
@@ -236,11 +276,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                     path={`/${this.props.baseUrl}/certificates`}
                     render={props => (
                         <Redirect
-                            to={{
-                                pathname: `/${this.props.baseUrl}/certificates/${
-                                    CertificatesMenu[0].key
-                                }`
-                            }}
+                            to={defaultRedirect}
                         />
                     )}
                 />
@@ -250,11 +286,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                     path={`/${this.props.baseUrl}/`}
                     render={props => (
                         <Redirect
-                            to={{
-                                pathname: `/${this.props.baseUrl}/certificates/${
-                                    CertificatesMenu[0].key
-                                }`
-                            }}
+                            to={defaultRedirect}
                         />
                     )}
                 />
