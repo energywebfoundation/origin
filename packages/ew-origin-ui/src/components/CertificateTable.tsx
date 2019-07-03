@@ -120,9 +120,11 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
     }
 
     async enrichData(props: ICertificateTableProps) {
-        const promises = props.certificates.map(async (certificate: Certificate.Entity) => {
+        const enrichedData = [];
+
+        for (const certificate of props.certificates) {
             let acceptedCurrency = await this.getTokenSymbol(certificate);
-            const isOffChainSettlement = acceptedCurrency === null;
+            const isOffChainSettlement = certificate.forSale && acceptedCurrency === null;
             let offChainSettlementOptions;
 
             if (isOffChainSettlement) {
@@ -134,7 +136,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 }
             }
 
-            return {
+            enrichedData.push({
                 certificate,
                 producingAsset: this.props.producingAssets.find(
                     (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
@@ -143,13 +145,11 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
-            };
-        });
-
-        Promise.all(promises).then(EnrichedCertificateData => {
-            this.setState({
-                EnrichedCertificateData
             });
+        }
+
+        this.setState({
+            EnrichedCertificateData: enrichedData
         });
     }
 
@@ -428,7 +428,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
 
                 if (
                     this.props.switchedToOrganization &&
-                    EnrichedCertificateData.certificate.owner !== this.props.currentUser.id
+                    EnrichedCertificateData.certificate.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
                 ) {
                     return false;
                 }

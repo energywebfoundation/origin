@@ -16,13 +16,15 @@
 
 import * as React from 'react';
 
-import { Certificate } from 'ew-origin-lib';
-import { User } from 'ew-user-registry-lib';
+import { Certificate, CertificateLogic } from 'ew-origin-lib';
+import { User, Role } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
 import { Table, ITableHeaderData } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
+import { showNotification, NotificationType } from '../utils/notifications';
+import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
 
 export interface ProducingAssetTableProps {
     conf: Configuration.Entity;
@@ -33,9 +35,12 @@ export interface ProducingAssetTableProps {
     switchedToOrganization: boolean;
 }
 
-export interface ProducingAssetTableState {
+interface ProducingAssetTableState {
     enrichedProducingAssetData: EnrichedProducingAssetData[];
     detailViewForAssetId: number;
+    requestIRECsModalAsset: ProducingAsset.Entity;
+    showRequestIRECsModal: boolean;
+    switchedToOrganization: boolean;
 }
 
 export interface EnrichedProducingAssetData {
@@ -44,19 +49,26 @@ export interface EnrichedProducingAssetData {
     notSoldCertificates: Certificate.Entity[];
 }
 
-export class ProducingAssetTable extends React.Component<ProducingAssetTableProps, {}> {
-    state: ProducingAssetTableState;
+enum OPERATIONS {
+    REQUEST_IRECS = 'Request I-RECs',
+    SHOW_DETAILS = 'Show Details'
+}
 
+export class ProducingAssetTable extends React.Component<ProducingAssetTableProps, ProducingAssetTableState> {
     constructor(props: ProducingAssetTableProps) {
         super(props);
 
         this.state = {
             enrichedProducingAssetData: [],
-            detailViewForAssetId: null
+            detailViewForAssetId: null,
+            requestIRECsModalAsset: null,
+            showRequestIRECsModal: false,
+            switchedToOrganization: false
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
+        this.hideRequestIRECsModal = this.hideRequestIRECsModal.bind(this);
     }
 
     switchToOrganization(switchedToOrganization: boolean): void {
@@ -97,8 +109,71 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
     }
 
     operationClicked(key: string, id: number): void {
+        switch (key) {
+            case OPERATIONS.REQUEST_IRECS:
+                this.requestIRECs(id);
+                break;
+            default:
+                this.setState({
+                    detailViewForAssetId: id
+                });
+                break;
+        }
+        
+    }
+
+    async requestIRECs(id: number) {
+        const asset: ProducingAsset.Entity = this.props.producingAssets.find(
+            (a: ProducingAsset.Entity) => a.id === id.toString()
+        );
+        
+        let isOwner = asset.owner && asset.owner.address.toLowerCase() === this.props.currentUser.id.toLowerCase();
+        if (!isOwner) {
+            showNotification(`You need to own the asset to request I-RECs.`, NotificationType.Error);
+
+            return;
+        }
+
+        let hasRights = this.props.currentUser.isRole(Role.AssetManager);
+        if (!hasRights) {
+            showNotification(`You need to have Asset Manager role to request I-RECs.`, NotificationType.Error);
+
+            return;
+        }
+
+        const reads = await asset.getSmartMeterReads();
+
+        if (reads.length === 0) {
+            showNotification(`There are no smart meter reads for this asset.`, NotificationType.Error);
+
+            return;
+        }
+
+        const certificateLogic : CertificateLogic = this.props.conf.blockchainProperties.certificateLogicInstance;
+
+        const lastRequestedSMReadIndex = Number(await certificateLogic.getAssetRequestedCertsForSMReadsLength(Number(asset.id)));
+
+        if (reads.length === lastRequestedSMReadIndex) {
+            showNotification(`You have already requested certificates for all smart meter reads for this asset.`, NotificationType.Error);
+
+            return;
+        }
+
+        asset.configuration.blockchainProperties.activeUser = {
+            address: this.props.currentUser.id
+        };
+
         this.setState({
-            detailViewForAssetId: id
+            requestIRECsModalAsset: asset,
+            showRequestIRECsModal: true
+        });
+    }
+
+
+    hideRequestIRECsModal() {
+        this.setState({
+            requestIRECsModalAsset: null,
+            showRequestIRECsModal: false
         });
     }
 
@@ -170,7 +245,13 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             }
         );
 
-        const operations = ['Show Details'];
+        const operations = [
+            OPERATIONS.SHOW_DETAILS
+        ];
+
+        if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
+            operations.push(OPERATIONS.REQUEST_IRECS);
+        }
 
         return (
             <div className="ProductionWrapper">
@@ -181,6 +262,13 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                     actions={true}
                     data={data}
                     operations={operations}
+                />
+
+                <RequestIRECsModal
+                    conf={this.props.conf}
+                    producingAsset={this.state.requestIRECsModalAsset}
+                    showModal={this.state.showRequestIRECsModal}
+                    callback={this.hideRequestIRECsModal}
                 />
             </div>
         );
