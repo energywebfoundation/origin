@@ -21,6 +21,9 @@ import * as Certificate from 'ew-origin-lib';
 import * as User from 'ew-user-registry-lib';
 import * as Asset from 'ew-asset-registry-lib';
 import * as GeneralLib from 'ew-utils-general-lib';
+import {
+    CertificateLogic
+} from 'ew-origin-lib';
 
 import {
     deployERC20TestToken,
@@ -44,7 +47,24 @@ export const certificateDemo = async (
 
     const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
+    const certificateLogic : CertificateLogic = conf.blockchainProperties.certificateLogicInstance;
+
     switch (action.type) {
+        case 'APPROVE_CERTIFICATION_REQUEST':
+            console.log('-----------------------------------------------------------');
+
+            try {
+                await certificateLogic.approveCertificationRequest(action.data.certificationRequestIndex, {
+                    privateKey: action.data.issuerPK
+                });
+
+                conf.logger.info(`Certification request #${action.data.certificationRequestIndex} approved`);
+            } catch (e) {
+                conf.logger.error(`Could not approve certification request #${action.data.certificationRequestIndex}\n`, e);
+            }
+
+            console.log('-----------------------------------------------------------\n');
+            break;
         case 'SAVE_SMARTMETER_READ_PRODUCING':
             console.log('-----------------------------------------------------------');
 
@@ -55,7 +75,7 @@ export const certificateDemo = async (
 
             try {
                 let asset = await new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync();
-                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash, action.data.timestamp || 0);
                 asset = await asset.sync();
                 conf.logger.verbose('Producing smart meter reading saved');
             } catch (e) {
@@ -75,7 +95,7 @@ export const certificateDemo = async (
 
             try {
                 let asset = await new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync();
-                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash);
+                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash, action.data.timestamp || 0);
                 asset = await asset.sync();
                 conf.logger.verbose('Consuming meter reading saved');
             } catch (e) {
@@ -294,6 +314,23 @@ export const certificateDemo = async (
 
             console.log('-----------------------------------------------------------\n');
             break;
+        case 'REQUEST_CERTIFICATES':
+                console.log('-----------------------------------------------------------');
+
+                const assetId = Number(action.data.assetId);
+    
+                try {
+                    await certificateLogic.requestCertificates(assetId, action.data.lastRequestedSMRead, {
+                        privateKey: action.data.assetOwnerPK
+                    });
+    
+                    conf.logger.info(`Requested certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}`);
+                } catch (e) {
+                    conf.logger.error(`Could not request certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}\n`, e);
+                }
+    
+                console.log('-----------------------------------------------------------\n');
+                break;
         case 'UNPUBLISH_CERTIFICATE_FROM_SALE':
             console.log('-----------------------------------------------------------');
 

@@ -55,6 +55,7 @@ Every flowaction has two entries:
 * <code>data</code>: the corresponding data for the action type
 
 Currently the following action types are supported:
+* APPROVE_CERTIFICATION_REQUEST
 * CREATE_ACCOUNT
 * CREATE_CONSUMING_ASSET
 * CREATE_PRODUCING_ASSET
@@ -66,12 +67,32 @@ Currently the following action types are supported:
 * SET_ERC20_CERTIFICATE
 * PUBLISH_CERTIFICATE_FOR_SALE
 * PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
+* REQUEST_CERTIFICATES
 * UNPUBLISH_CERTIFICATE_FROM_SALE
 * BUY_CERTIFICATE
 * CREATE_DEMAND
 * CREATE_SUPPLY
 * MAKE_AGREEMENT
 * APPROVE_AGREEMENT
+
+### APPROVE_CERTIFICATION_REQUEST
+usage: command to approve certification requests, it creates certificates
+<br>params:
+* <code>certificationRequestIndex</code>: index of certification request to be approved
+* <code>issuer</code>: address of issuer
+* <code>issuerPK</code>: private key of issuer
+
+#### example
+<code>
+{
+    "type": "APPROVE_CERTIFICATION_REQUEST",
+    "data": {
+        "certificationRequestIndex": 0,
+        "issuer": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
+        "issuerPK": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e"
+    }
+}
+</code>
 
 #### CREATE_ACCOUNT
 usage: command to onboard a new user <br>
@@ -407,6 +428,27 @@ usage: command to publish a certificate for sale using off chain settlement in f
         "certificateOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
         "certificateOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
         "currency": "USD"
+    }
+}
+</code>
+
+### REQUEST_CERTIFICATES
+usage: command to request certificates for smart meter reads, to get certificate this request has to be later approved, for example using: APPROVE_CERTIFICATION_REQUEST action
+<br>params:
+* <code>assetId</code>: id of the asset
+* <code>lastRequestedSMRead</code>: index of last smart meter read to be included in certification request
+* <code>assetOwner</code>: address of asset owner
+* <code>assetOwnerPK</code>: private key of the asset owner
+
+#### example
+<code>
+{
+    "type": "REQUEST_CERTIFICATES",
+    "data": {
+        "assetId": 0,
+        "lastRequestedSMRead": 2,
+        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
+        "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
     }
 }
 </code>
