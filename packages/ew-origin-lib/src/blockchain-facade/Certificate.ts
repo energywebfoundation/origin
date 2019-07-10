@@ -18,6 +18,7 @@ import { TransactionReceipt, Log } from 'web3/types';
 import { Configuration, Currency } from 'ew-utils-general-lib';
 
 import * as TradableEntity from './TradableEntity';
+import { CertificateLogic } from '..';
 
 export enum Status {
     Active,
@@ -171,16 +172,51 @@ export class Entity extends TradableEntity.Entity implements ICertificateSpecifi
         return this;
     }
 
-    async buyCertificate(): Promise<TransactionReceipt> {
+    async buyCertificate(wh?: number): Promise<TransactionReceipt> {
+        const logic: CertificateLogic = this.configuration.blockchainProperties.certificateLogicInstance;
+        const id: number = Number(this.id);
+
+        if (wh) {
+            let splitAndBuyCertificateCall;
+            if (this.configuration.blockchainProperties.activeUser.privateKey) {
+                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(
+                    id,
+                    wh,
+                    { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+                );
+            } else {
+                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(
+                    id,
+                    wh,
+                    { from: this.configuration.blockchainProperties.activeUser.address, privateKey: '' }
+                );
+            }
+
+            const txResult = await splitAndBuyCertificateCall;
+
+            await this.sync();
+            const offChainSettlementOptions = await this.getOffChainSettlementOptions();
+
+            if (Number(this.status) === Status.Split) {
+                for (const certificateId of this.children) {
+                    const certificate = new Entity(certificateId.toString(), this.configuration);
+
+                    await certificate.setOffChainSettlementOptions(offChainSettlementOptions);
+                }
+            }
+
+            return txResult;
+        }
+
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.buyCertificate(
-                this.id,
+            return logic.buyCertificate(
+                id,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.buyCertificate(
-                this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address }
+            return logic.buyCertificate(
+                id,
+                { from: this.configuration.blockchainProperties.activeUser.address, privateKey: '' }
             );
         }
     }
