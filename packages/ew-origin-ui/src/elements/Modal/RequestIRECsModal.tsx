@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Button, Dropdown, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import './Modal.scss';
 import '../PageButton/PageButton.scss';
 import moment from 'moment';
