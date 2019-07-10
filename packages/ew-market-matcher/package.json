@@ -38,7 +38,7 @@
     "ew-asset-registry-lib": "1.0.3-alpha.5",
     "ew-utils-general-lib": "1.0.2-alpha.4",
     "ew-market-lib": "1.0.2-alpha.4",
-    "ew-origin-lib": "1.0.2-alpha.7",
+    "ew-origin-lib": "1.0.2-alpha.8",
     "ganache-cli": "6.3.0",
     "jsonschema": "1.2.4",
     "log-symbols": "2.2.0",
