@@ -169,7 +169,6 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         });
     }
 
-
     hideRequestIRECsModal() {
         this.setState({
             requestIRECsModalAsset: null,

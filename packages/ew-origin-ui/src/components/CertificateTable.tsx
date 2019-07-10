@@ -22,7 +22,6 @@ import { Certificate, TradableEntity } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Configuration, TimeFrame, Currency } from 'ew-utils-general-lib';
 import { MatcherLogic } from 'ew-market-matcher';
 
@@ -30,6 +29,8 @@ import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
+import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
+import { Erc20TestToken } from 'ew-erc-test-contracts';
 
 export interface ICertificateTableProps {
     conf: Configuration.Entity;
@@ -59,6 +60,9 @@ export interface ICertificatesState {
     shouldShowPrice: boolean;
     showSellModal: boolean;
     sellModalForCertificate: Certificate.Entity;
+    showBuyModal: boolean;
+    buyModalForCertificate: Certificate.Entity;
+    buyModalForProducingAsset: ProducingAsset.Entity;
 }
 
 export enum SelectedState {
@@ -94,7 +98,10 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 SelectedState.Claimed
             ].includes(props.selectedState),
             showSellModal: false,
-            sellModalForCertificate: null
+            sellModalForCertificate: null,
+            showBuyModal: false,
+            buyModalForCertificate: null,
+            buyModalForProducingAsset: null
         };
 
         this.publishForSale = this.publishForSale.bind(this);
@@ -105,6 +112,7 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         this.showCertificateDetails = this.showCertificateDetails.bind(this);
         this.getTokenSymbol = this.getTokenSymbol.bind(this);
         this.hidePublishForSaleModal = this.hidePublishForSaleModal.bind(this);
+        this.hideBuyModal = this.hideBuyModal.bind(this);
     }
 
     async componentDidMount() {
@@ -185,32 +193,23 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             return;
         }
 
-        if (certificate && this.props.currentUser) {
-            if ((certificate.acceptedToken as any) as string !== '0x0000000000000000000000000000000000000000') {
-                const erc20TestToken = new Erc20TestToken(
-                    this.props.conf.blockchainProperties.web3,
-                    (certificate.acceptedToken as any) as string
-                );
+        const asset: ProducingAsset.Entity = this.props.producingAssets.find(
+            (a: ProducingAsset.Entity) => a.id === certificate.assetId.toString()
+        );
 
-                await erc20TestToken.approve(
-                    certificate.owner,
-                    certificate.onChainDirectPurchasePrice,
-                    {
-                        from: this.props.currentUser.id,
-                        privateKey: ''
-                    }
-                );    
-            }
+        asset.configuration.blockchainProperties.activeUser = {
+            address: this.props.currentUser.id
+        };
 
-            certificate.configuration.blockchainProperties.activeUser = {
-                address: this.props.currentUser.id
-            };
-            await certificate.buyCertificate();
+        certificate.configuration.blockchainProperties.activeUser = {
+            address: this.props.currentUser.id
+        };
 
-            showNotification(`Certificate ${certificate.id} has been bought.`, NotificationType.Success);
-        } else {
-            showNotification(`Unable to buy certificate ${certificate.id}.`, NotificationType.Error);
-        }
+        this.setState({
+            buyModalForCertificate: certificate,
+            buyModalForProducingAsset: asset,
+            showBuyModal: true
+        });
     }
 
     async publishForSale(certificateId: number) {
@@ -403,6 +402,14 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
         }
     }
 
+    hideBuyModal() {
+        this.setState({
+            showBuyModal: false,
+            buyModalForCertificate: null,
+            buyModalForProducingAsset: null
+        });
+    }
+
     render() {
         if (this.state.detailViewForCertificateId !== null) {
             return (
@@ -566,6 +573,14 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     }
                     showModal={this.state.showSellModal}
                     callback={this.hidePublishForSaleModal}
+                />
+
+                <BuyCertificateModal
+                    conf={this.props.conf}
+                    certificate={this.state.buyModalForCertificate}
+                    producingAsset={this.state.buyModalForProducingAsset}
+                    showModal={this.state.showBuyModal}
+                    callback={this.hideBuyModal}
                 />
             </div>
         );
