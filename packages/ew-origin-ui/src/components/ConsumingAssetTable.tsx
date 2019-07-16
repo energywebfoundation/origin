@@ -23,6 +23,7 @@ import TableUtils from '../elements/utils/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
 import { ConsumingAsset } from 'ew-asset-registry-lib';
+import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE } from '../elements/Table/PaginatedLoader';
 
 export interface ConsumingAssetTableProps {
     conf: Configuration.Entity;
@@ -34,25 +35,26 @@ export interface ConsumingAssetTableProps {
     switchedToOrganization: boolean;
 }
 
-export interface ConsumingAssetTableState {
-    enrichedConsumingAssetData: EnrichedConsumingAssetData[];
+export interface IConsumingAssetTableState extends IPaginatedLoaderState {
     detailViewForAssetId: number;
+    switchedToOrganization: boolean;
 }
 
-export interface EnrichedConsumingAssetData {
+export interface IEnrichedConsumingAssetData {
     consumingAsset: ConsumingAsset.Entity;
     organizationName: string;
 }
 
-export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProps, {}> {
-    state: ConsumingAssetTableState;
-
+export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProps, IConsumingAssetTableState> {
     constructor(props: ConsumingAssetTableProps) {
         super(props);
 
         this.state = {
-            enrichedConsumingAssetData: [],
-            detailViewForAssetId: null
+            detailViewForAssetId: null,
+            data: [],
+            pageSize: DEFAULT_PAGE_SIZE,
+            total: 0,
+            switchedToOrganization: false
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
@@ -65,35 +67,67 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
         });
     }
 
-    async componentDidMount(): Promise<void> {
-        await this.getOrganizationNames(this.props);
+    async getPaginatedData({ pageSize, offset }) {
+        const consumingAssets: ConsumingAsset.Entity[] = this.props.consumingAssets.slice(offset, offset + pageSize);
+        const enrichedConsumingAssetData = await this.enrichedConsumingAssetData(consumingAssets);
+
+        const filteredEnrichedAssetData = enrichedConsumingAssetData.filter(
+            (enrichedConsumingAssetData: IEnrichedConsumingAssetData) =>
+                !this.props.switchedToOrganization ||
+                enrichedConsumingAssetData.consumingAsset.owner.address ===
+                    this.props.currentUser.id
+        );
+
+        const total = filteredEnrichedAssetData.length;
+
+        const data = filteredEnrichedAssetData.map(
+            (enrichedConsumingAssetData: IEnrichedConsumingAssetData) => {
+                const consumingAsset: ConsumingAsset.Entity =
+                    enrichedConsumingAssetData.consumingAsset;
+
+                return [
+                    consumingAsset.id,
+                    enrichedConsumingAssetData.organizationName,
+                    consumingAsset.offChainProperties.facilityName,
+                    consumingAsset.offChainProperties.city +
+                        ', ' +
+                        consumingAsset.offChainProperties.country,
+                    consumingAsset.offChainProperties.capacityWh
+                        ? (consumingAsset.offChainProperties.capacityWh / 1000).toLocaleString()
+                        : '-',
+                    (consumingAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
+                    (consumingAsset.certificatesUsedForWh / 1000).toLocaleString()
+                ];
+            }
+        );
+        
+        return {
+            data,
+            total
+        };
     }
 
-    async componentWillReceiveProps(newProps: ConsumingAssetTableProps): Promise<void> {
-        await this.getOrganizationNames(newProps);
+    async componentDidUpdate(newProps: ConsumingAssetTableProps) {
+        if (newProps.consumingAssets !== this.props.consumingAssets) {
+            await this.loadPage(1);
+        }
     }
 
-    async getOrganizationNames(props: ConsumingAssetTableProps): Promise<void> {
-        const enrichedConsumingAssetData = [];
-
-        const promieses = props.consumingAssets.map(
-            async (consumingAsset: ConsumingAsset.Entity, index: number) => ({
+    async enrichedConsumingAssetData(consumingAssets: ConsumingAsset.Entity[]): Promise<IEnrichedConsumingAssetData[]> {
+        const promises = consumingAssets.map(
+            async (consumingAsset: ConsumingAsset.Entity) => ({
                 consumingAsset,
                 organizationName: (await new User(
                     consumingAsset.owner.address,
-                    props.conf as any
+                    this.props.conf as any
                 ).sync()).organization
             })
         );
 
-        Promise.all(promieses).then(enrichedConsumingAssetData =>
-            this.setState({
-                enrichedConsumingAssetData
-            })
-        );
+        return Promise.all(promises);
     }
 
-    operationClicked(key: string, id: number): void {
+    operationClicked(id: number): void {
         this.setState({
             detailViewForAssetId: id
         });
@@ -136,35 +170,7 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
             generateFooter('Consumption (kWh)')
         ];
 
-        const filteredEnrichedAssetData = this.state.enrichedConsumingAssetData.filter(
-            (enrichedConsumingAssetData: EnrichedConsumingAssetData) =>
-                !this.props.switchedToOrganization ||
-                enrichedConsumingAssetData.consumingAsset.owner.address ===
-                    this.props.currentUser.id
-        );
-
         const operations = ['Show Details'];
-
-        const data = filteredEnrichedAssetData.map(
-            (enrichedConsumingAssetData: EnrichedConsumingAssetData) => {
-                const consumingAsset: ConsumingAsset.Entity =
-                    enrichedConsumingAssetData.consumingAsset;
-
-                return [
-                    consumingAsset.id,
-                    enrichedConsumingAssetData.organizationName,
-                    consumingAsset.offChainProperties.facilityName,
-                    consumingAsset.offChainProperties.city +
-                        ', ' +
-                        consumingAsset.offChainProperties.country,
-                    consumingAsset.offChainProperties.capacityWh
-                        ? (consumingAsset.offChainProperties.capacityWh / 1000).toLocaleString()
-                        : '-',
-                    (consumingAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
-                    (consumingAsset.certificatesUsedForWh / 1000).toLocaleString()
-                ];
-            }
-        );
 
         return (
             <div className="ConsumptionWrapper">
@@ -173,8 +179,11 @@ export class ConsumingAssetTable extends React.Component<ConsumingAssetTableProp
                     footer={TableFooter}
                     actions={true}
                     operationClicked={this.operationClicked}
-                    data={data}
+                    data={this.state.data}
                     operations={operations}
+                    loadPage={this.loadPage}
+                    total={this.state.total}
+                    pageSize={this.state.pageSize}
                 />
             </div>
         );

@@ -27,6 +27,7 @@ import { Table } from '../elements/Table/Table';
 import TableUtils from '../elements/utils/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { deleteDemand } from 'ew-market-lib/dist/js/src/blockchain-facade/Demand';
+import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../elements/Table/PaginatedLoader';
 
 export interface IDemandTableProps {
     conf: Configuration.Entity;
@@ -38,9 +39,9 @@ export interface IDemandTableProps {
     baseUrl: string;
 }
 
-export interface IDemandTableState {
-    enrichedDemandData: IEnrichedDemandData[];
+export interface IDemandTableState extends IPaginatedLoaderState {
     showMatchingSupply: number;
+    switchedToOrganization: boolean;
 }
 
 export interface IEnrichedDemandData {
@@ -59,15 +60,16 @@ enum OPERATIONS {
     SUPPLIES = 'Show supplies for demand'
 }
 
-export class DemandTable extends React.Component<IDemandTableProps, {}> {
-    state: IDemandTableState;
-
-    constructor(props) {
+export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTableState> {
+    constructor(props: IDemandTableProps) {
         super(props);
 
         this.state = {
-            enrichedDemandData: [],
-            showMatchingSupply: null
+            showMatchingSupply: null,
+            switchedToOrganization: false,
+            data: [],
+            total: 0,
+            pageSize: DEFAULT_PAGE_SIZE
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
@@ -81,21 +83,13 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         });
     }
 
-    async componentDidMount() {
-        await this.enrichData(this.props);
-    }
-
-    async componentWillReceiveProps(newProps: IDemandTableProps) {
-        await this.enrichData(newProps);
-    }
-
-    async enrichData(props: IDemandTableProps) {
-        const promises = props.demands.map(async (demand: Demand.Entity) => {
+    async enrichData(demands: Demand.Entity[]) : Promise<IEnrichedDemandData[]> {
+        const promises = demands.map(async (demand: Demand.Entity) => {
             const result: IEnrichedDemandData = {
                 demand,
                 producingAsset: null,
                 consumingAsset: null,
-                demandOwner: await (new User(demand.demandOwner, props.conf)).sync()
+                demandOwner: await (new User(demand.demandOwner, this.props.conf)).sync()
             };
 
             if (demand.offChainProperties) {
@@ -117,7 +111,7 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
             return result;
         });
 
-        Promise.all(promises).then(enrichedDemandData => this.setState({ enrichedDemandData }));
+        return Promise.all(promises);
     }
 
     getCountryRegionText(demand: Demand.Entity): string {
@@ -166,28 +160,13 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
         });
     }
 
-    render() {
-        if (this.state.showMatchingSupply !== null) {
-            return (
-                <Redirect push={true} to={`/${this.props.baseUrl}/certificates/for_demand/${this.state.showMatchingSupply}`} />
-            );
-        }
+    async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const { demands } = this.props;
+        const enrichedData = await this.enrichData(demands);
 
-        const defaultWidth = 106;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body);
-        const generateFooter = TableUtils.generateFooter;
+        const total = enrichedData.length;
 
-        const TableFooter = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: 11
-            },
-            generateFooter('Energy Demand (kWh)', true)
-        ];
-
-        const data = this.state.enrichedDemandData.map(
+        const data = enrichedData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
                 const demand = enrichedDemandData.demand;
                 const overallDemand = Math.ceil(
@@ -210,7 +189,40 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                     overallDemand
                 ];
             }
-        );
+        ).slice(offset, offset + pageSize);
+
+        return {
+            data,
+            total
+        };
+    }
+
+    async componentDidUpdate(prevProps) {
+        if (prevProps.demands.length !== this.props.demands.length) {
+            this.loadPage(1);
+        }
+    }
+
+    render() {
+        if (this.state.showMatchingSupply !== null) {
+            return (
+                <Redirect push={true} to={`/${this.props.baseUrl}/certificates/for_demand/${this.state.showMatchingSupply}`} />
+            );
+        }
+
+        const defaultWidth = 106;
+        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
+            TableUtils.generateHeader(label, width, right, body);
+        const generateFooter = TableUtils.generateFooter;
+
+        const TableFooter = [
+            {
+                label: 'Total',
+                key: 'total',
+                colspan: 11
+            },
+            generateFooter('Energy Demand (kWh)', true)
+        ];
 
         const TableHeader = [
             generateHeader('#'),
@@ -234,10 +246,13 @@ export class DemandTable extends React.Component<IDemandTableProps, {}> {
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}
-                    data={data}
+                    data={this.state.data}
                     actionWidth={55.39}
                     operations={Object.values(OPERATIONS)}
                     operationClicked={this.operationClicked}
+                    loadPage={this.loadPage}
+                    total={this.state.total}
+                    pageSize={this.state.pageSize}
                 />
             </div>
         );

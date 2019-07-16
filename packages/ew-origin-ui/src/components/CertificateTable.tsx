@@ -31,6 +31,7 @@ import { showNotification, NotificationType } from '../utils/notifications';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { PaginatedLoader, DEFAULT_PAGE_SIZE, IPaginatedLoaderState, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../elements/Table/PaginatedLoader';
 
 export interface ICertificateTableProps {
     conf: Configuration.Entity;
@@ -52,8 +53,7 @@ export interface IEnrichedCertificateData {
     isOffChainSettlement: boolean;
 }
 
-export interface ICertificatesState {
-    EnrichedCertificateData: IEnrichedCertificateData[];
+export interface ICertificatesState extends IPaginatedLoaderState {
     selectedState: SelectedState;
     detailViewForCertificateId: number;
     matchedCertificates: Certificate.Entity[];
@@ -83,12 +83,12 @@ export enum OPERATIONS {
     SHOW_DETAILS = 'Show Certificate Details'
 }
 
-export class CertificateTable extends React.Component<ICertificateTableProps, ICertificatesState> {
+export class CertificateTable extends PaginatedLoader<ICertificateTableProps, ICertificatesState> {
     constructor(props: ICertificateTableProps) {
         super(props);
 
         this.state = {
-            EnrichedCertificateData: [],
+            data: [],
             selectedState: SelectedState.Inbox,
             detailViewForCertificateId: null,
             matchedCertificates: [],
@@ -101,7 +101,9 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             sellModalForCertificate: null,
             showBuyModal: false,
             buyModalForCertificate: null,
-            buyModalForProducingAsset: null
+            buyModalForProducingAsset: null,
+            pageSize: DEFAULT_PAGE_SIZE,
+            total: 0
         };
 
         this.publishForSale = this.publishForSale.bind(this);
@@ -116,21 +118,103 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
     }
 
     async componentDidMount() {
-        await this.enrichData(this.props);
+        await super.componentDidMount();        
 
         if (this.props.selectedState === SelectedState.ForDemand && this.props.demand) {
             await this.initMatchingCertificates(this.props.demand);
         }
     }
 
-    async componentWillReceiveProps(newProps: ICertificateTableProps) {
-        await this.enrichData(newProps);
+    async componentDidUpdate(newProps: ICertificateTableProps) {
+        if (newProps.certificates !== this.props.certificates) {
+            await this.loadPage(1);
+        }
     }
 
-    async enrichData(props: ICertificateTableProps) {
+    async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const enrichedData = await this.enrichData(this.props.certificates);        
+
+        const filteredIEnrichedCertificateData = enrichedData.filter(
+            (EnrichedCertificateData: IEnrichedCertificateData) => {
+                const ownerOf = this.props.currentUser && this.props.currentUser.id === EnrichedCertificateData.certificate.owner;
+                const claimed = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Retired;
+                const forSale = EnrichedCertificateData.certificate.forSale;
+                const forDemand = this.state.matchedCertificates.find(cert => cert.id === EnrichedCertificateData.certificate.id) !== undefined;
+                const isActive = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Active;
+
+                if (
+                    this.props.switchedToOrganization &&
+                    EnrichedCertificateData.certificate.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
+                ) {
+                    return false;
+                }
+
+                return (
+                    (isActive && ownerOf && !forSale && this.props.selectedState === SelectedState.Inbox) ||
+                    (claimed && this.props.selectedState === SelectedState.Claimed) ||
+                    (isActive && forSale && this.props.selectedState === SelectedState.ForSale) ||
+                    (isActive && forSale && forDemand && this.props.selectedState === SelectedState.ForDemand)
+                );
+            }
+        );
+
+        const certificates = filteredIEnrichedCertificateData.slice(offset, offset + pageSize);
+        const total = filteredIEnrichedCertificateData.length;
+
+        const data = certificates.map(
+            (EnrichedCertificateData: IEnrichedCertificateData) => {
+                const certificate = EnrichedCertificateData.certificate;
+
+                const certificateDataToShow = [
+                    certificate.id,
+                    ProducingAsset.Type[
+                        EnrichedCertificateData.producingAsset.offChainProperties.assetType
+                    ],
+                    moment(
+                        EnrichedCertificateData.producingAsset.offChainProperties.operationalSince *
+                            1000
+                    ,   'x').format('MMM YY'),
+                    `${EnrichedCertificateData.producingAsset.offChainProperties.city}, ${
+                        EnrichedCertificateData.producingAsset.offChainProperties.country
+                    }`,
+                    ProducingAsset.Compliance[
+                        EnrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
+                    ],
+                    EnrichedCertificateData.certificateOwner.organization,
+                    new Date(
+                        EnrichedCertificateData.certificate.creationTime * 1000
+                    ).toDateString(),
+                    EnrichedCertificateData.certificate.powerInW / 1000
+                ];
+
+                if (this.state.shouldShowPrice) {
+                    const formatter = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    });
+
+                    certificateDataToShow.splice(7, 0,
+                        EnrichedCertificateData.isOffChainSettlement 
+                            ? formatter.format(EnrichedCertificateData.offChainSettlementOptions.price / 100).replace('$', '')
+                            : EnrichedCertificateData.certificate.onChainDirectPurchasePrice
+                    );
+                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedCurrency);
+                }
+
+                return certificateDataToShow;
+            }
+        );
+
+        return {
+            data,
+            total
+        };
+    }
+
+    async enrichData(certificates: Certificate.Entity[]) {
         const enrichedData = [];
 
-        for (const certificate of props.certificates) {
+        for (const certificate of certificates) {
             let acceptedCurrency = await this.getTokenSymbol(certificate);
             const isOffChainSettlement = certificate.forSale && acceptedCurrency === null;
             let offChainSettlementOptions;
@@ -149,16 +233,14 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                 producingAsset: this.props.producingAssets.find(
                     (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
                 ),
-                certificateOwner: await new User(certificate.owner, props.conf as any).sync(),
+                certificateOwner: await new User(certificate.owner, this.props.conf as any).sync(),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
             });
         }
 
-        this.setState({
-            EnrichedCertificateData: enrichedData
-        });
+        return enrichedData;
     }
 
     async initMatchingCertificates(demand: Demand.Entity) {
@@ -425,74 +507,6 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
             TableUtils.generateHeader(label, width, right, body);
         const generateFooter = TableUtils.generateFooter;
 
-        const filteredIEnrichedCertificateData = this.state.EnrichedCertificateData.filter(
-            (EnrichedCertificateData: IEnrichedCertificateData) => {
-                const ownerOf = this.props.currentUser && this.props.currentUser.id === EnrichedCertificateData.certificate.owner;
-                const claimed = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Retired;
-                const forSale = EnrichedCertificateData.certificate.forSale;
-                const forDemand = this.state.matchedCertificates.find(cert => cert.id === EnrichedCertificateData.certificate.id) !== undefined;
-                const isActive = Number(EnrichedCertificateData.certificate.status) === Certificate.Status.Active;
-
-                if (
-                    this.props.switchedToOrganization &&
-                    EnrichedCertificateData.certificate.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
-                ) {
-                    return false;
-                }
-
-                return (
-                    (isActive && ownerOf && !forSale && this.props.selectedState === SelectedState.Inbox) ||
-                    (claimed && this.props.selectedState === SelectedState.Claimed) ||
-                    (isActive && forSale && this.props.selectedState === SelectedState.ForSale) ||
-                    (isActive && forSale && forDemand && this.props.selectedState === SelectedState.ForDemand)
-                );
-            }
-        );
-
-        const data = filteredIEnrichedCertificateData.map(
-            (EnrichedCertificateData: IEnrichedCertificateData) => {
-                const certificate = EnrichedCertificateData.certificate;
-
-                const certificateDataToShow = [
-                    certificate.id,
-                    ProducingAsset.Type[
-                        EnrichedCertificateData.producingAsset.offChainProperties.assetType
-                    ],
-                    moment(
-                        EnrichedCertificateData.producingAsset.offChainProperties.operationalSince *
-                            1000
-                    ,   'x').format('MMM YY'),
-                    `${EnrichedCertificateData.producingAsset.offChainProperties.city}, ${
-                        EnrichedCertificateData.producingAsset.offChainProperties.country
-                    }`,
-                    ProducingAsset.Compliance[
-                        EnrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
-                    ],
-                    EnrichedCertificateData.certificateOwner.organization,
-                    new Date(
-                        EnrichedCertificateData.certificate.creationTime * 1000
-                    ).toDateString(),
-                    EnrichedCertificateData.certificate.powerInW / 1000
-                ];
-
-                if (this.state.shouldShowPrice) {
-                    const formatter = new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD'
-                    });
-
-                    certificateDataToShow.splice(7, 0,
-                        EnrichedCertificateData.isOffChainSettlement 
-                            ? formatter.format(EnrichedCertificateData.offChainSettlementOptions.price / 100).replace('$', '')
-                            : EnrichedCertificateData.certificate.onChainDirectPurchasePrice
-                    );
-                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedCurrency);
-                }
-
-                return certificateDataToShow;
-            }
-        );
-
         const TableHeader = [
             generateHeader('#', 60),
             generateHeader('Asset Type'),
@@ -556,9 +570,12 @@ export class CertificateTable extends React.Component<ICertificateTableProps, IC
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}
-                    data={data}
+                    data={this.state.data}
                     actionWidth={55.39}
                     operations={operations}
+                    loadPage={this.loadPage}
+                    total={this.state.total}
+                    pageSize={this.state.pageSize}
                 />
 
                 <PublishForSaleModal

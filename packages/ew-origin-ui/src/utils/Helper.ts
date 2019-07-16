@@ -27,3 +27,13 @@ export const isOffChainProperty = (name: string, offChainProps: any): boolean =>
 export const getOffChainText = (name: string, offChainProps: any): string => {
     return isOffChainProperty(name, offChainProps) ? ' (private)' : '';
 };
+
+export function dataTest(value, name = 'data-test') {
+    return {
+        [name]: value
+    };
+}
+
+export function dataTestSelector(value, name = 'data-test') {
+    return `[${name}="${value}"]`;
+}

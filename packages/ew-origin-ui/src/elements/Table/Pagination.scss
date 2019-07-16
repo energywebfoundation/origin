@@ -1,0 +1,36 @@
+.Pagination {
+    padding-top: 20px;
+    color: #979797;
+    user-select: none;
+
+    &_list {
+        list-style: none;
+
+        &_entry {
+            display: inline-block;
+            
+            a {
+                color: #c1bebc;
+                cursor: pointer;
+                padding: 4px;
+                margin-left: 6px;
+    
+                &:hover {
+                    color: white;
+                    text-decoration: none;
+                }
+
+                &:focus {
+                    outline: none;
+                }
+            }
+
+            &-current {
+                a {
+                    font-weight: bold;
+                    color: white;
+                }
+            }
+        }
+    }
+}
