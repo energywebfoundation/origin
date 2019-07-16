@@ -25,6 +25,7 @@ import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
+import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE } from '../elements/Table/PaginatedLoader';
 
 export interface ProducingAssetTableProps {
     conf: Configuration.Entity;
@@ -35,15 +36,14 @@ export interface ProducingAssetTableProps {
     switchedToOrganization: boolean;
 }
 
-interface ProducingAssetTableState {
-    enrichedProducingAssetData: EnrichedProducingAssetData[];
+interface IProducingAssetTableState extends IPaginatedLoaderState {
     detailViewForAssetId: number;
     requestIRECsModalAsset: ProducingAsset.Entity;
     showRequestIRECsModal: boolean;
     switchedToOrganization: boolean;
 }
 
-export interface EnrichedProducingAssetData {
+export interface IEnrichedProducingAssetData {
     producingAsset: ProducingAsset.Entity;
     organizationName: string;
     notSoldCertificates: Certificate.Entity[];
@@ -54,16 +54,18 @@ enum OPERATIONS {
     SHOW_DETAILS = 'Show Details'
 }
 
-export class ProducingAssetTable extends React.Component<ProducingAssetTableProps, ProducingAssetTableState> {
+export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProps, IProducingAssetTableState> {    
     constructor(props: ProducingAssetTableProps) {
         super(props);
 
         this.state = {
-            enrichedProducingAssetData: [],
+            data: [],
             detailViewForAssetId: null,
             requestIRECsModalAsset: null,
             showRequestIRECsModal: false,
-            switchedToOrganization: false
+            switchedToOrganization: false,
+            pageSize: DEFAULT_PAGE_SIZE,
+            total: 0
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);
@@ -77,16 +79,14 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         });
     }
 
-    async componentDidMount(): Promise<void> {
-        await this.getOrganizationNames(this.props);
+    async componentDidUpdate(newProps: ProducingAssetTableProps) {
+        if (newProps.producingAssets !== this.props.producingAssets) {
+            await this.loadPage(1);
+        }
     }
 
-    async componentWillReceiveProps(newProps: ProducingAssetTableProps): Promise<void> {
-        await this.getOrganizationNames(newProps);
-    }
-
-    async getOrganizationNames(props: ProducingAssetTableProps): Promise<void> {
-        const promieses = props.producingAssets.map(
+    async enrichProducingAssetData(producingAssets: ProducingAsset.Entity[]): Promise<IEnrichedProducingAssetData[]> {
+        const promises = producingAssets.map(
             async (producingAsset: ProducingAsset.Entity, index: number) => ({
                 producingAsset,
                 notSoldCertificates: this.props.certificates.filter(
@@ -96,16 +96,12 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                 ),
                 organizationName: (await new User(
                     producingAsset.owner.address,
-                    props.conf as any
+                    this.props.conf as any
                 ).sync()).organization
             })
         );
 
-        Promise.all(promieses).then(enrichedProducingAssetData =>
-            this.setState({
-                enrichedProducingAssetData
-            })
-        );
+        return Promise.all(promises);
     }
 
     operationClicked(key: string, id: number): void {
@@ -176,6 +172,45 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
         });
     }
 
+    async getPaginatedData({ pageSize, offset }) {
+        const producingAssets: ProducingAsset.Entity[] = this.props.producingAssets.slice(offset, offset + pageSize);
+        const enrichedProducingAssetData = await this.enrichProducingAssetData(producingAssets);
+        const total = this.props.producingAssets.length;
+
+        const filteredEnrichedAssetData = enrichedProducingAssetData.filter(
+            (enrichedProducingAssetData: IEnrichedProducingAssetData) => {
+                return (
+                    !this.props.switchedToOrganization ||
+                    enrichedProducingAssetData.producingAsset.owner.address ===
+                        this.props.currentUser.id
+                );
+            }
+        );
+
+        const data = filteredEnrichedAssetData.map(
+            (enrichedProducingAssetData: IEnrichedProducingAssetData) => {
+                const producingAsset = enrichedProducingAssetData.producingAsset;
+
+                return [
+                    producingAsset.id,
+                    enrichedProducingAssetData.organizationName,
+                    producingAsset.offChainProperties.facilityName,
+                    producingAsset.offChainProperties.city +
+                        ', ' +
+                        producingAsset.offChainProperties.country,
+                    ProducingAsset.Type[producingAsset.offChainProperties.assetType],
+                    producingAsset.offChainProperties.capacityWh / 1000,
+                    producingAsset.lastSmartMeterReadWh / 1000
+                ];
+            }
+        );
+        
+        return {
+            data,
+            total
+        };
+    }
+
     render(): JSX.Element {
         if (this.state.detailViewForAssetId !== null) {
             return (
@@ -213,37 +248,6 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
             generateFooter('Meter Read (kWh)')
         ];
 
-        const accumulatorCb = (accumulator, currentValue) => accumulator + currentValue;
-
-        const filteredEnrichedAssetData = this.state.enrichedProducingAssetData.filter(
-            (enrichedProducingAssetData: EnrichedProducingAssetData) => {
-                return (
-                    !this.props.switchedToOrganization ||
-                    enrichedProducingAssetData.producingAsset.owner.address ===
-                        this.props.currentUser.id
-                );
-            }
-        );
-
-        let data = [];
-        data = filteredEnrichedAssetData.map(
-            (enrichedProducingAssetData: EnrichedProducingAssetData) => {
-                const producingAsset = enrichedProducingAssetData.producingAsset;
-
-                return [
-                    producingAsset.id,
-                    enrichedProducingAssetData.organizationName,
-                    producingAsset.offChainProperties.facilityName,
-                    producingAsset.offChainProperties.city +
-                        ', ' +
-                        producingAsset.offChainProperties.country,
-                    ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                    producingAsset.offChainProperties.capacityWh / 1000,
-                    producingAsset.lastSmartMeterReadWh / 1000
-                ];
-            }
-        );
-
         const operations = [
             OPERATIONS.SHOW_DETAILS
         ];
@@ -259,8 +263,11 @@ export class ProducingAssetTable extends React.Component<ProducingAssetTableProp
                     footer={TableFooter}
                     operationClicked={this.operationClicked}
                     actions={true}
-                    data={data}
+                    data={this.state.data}
                     operations={operations}
+                    loadPage={this.loadPage}
+                    total={this.state.total}
+                    pageSize={this.state.pageSize}
                 />
 
                 <RequestIRECsModal

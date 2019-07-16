@@ -23,14 +23,19 @@ import moment from 'moment';
 import action from '../../../assets/action.svg';
 import { PeriodToSeconds } from '../../components/DemandTable';
 import { TimeFrame } from 'ew-utils-general-lib';
+import { Pagination } from './Pagination';
 
 import './toggle.scss';
 import './Table.scss';
 import './datepicker.scss';
+import { dataTest } from '../../utils/Helper';
 
 interface IProps {
     header: Array<ITableHeaderData | ITableAdminHeaderData>;
     data: any;
+    loadPage?: (page: number) => void;
+    pageSize?: number;
+    total?: number;
     footer?: any;
     actions?: any | boolean;
     actionWidth?: any;
@@ -55,7 +60,19 @@ export interface ITableAdminHeaderData {
     key?: string;
 }
 
-export class Table extends React.Component<IProps, any> {
+interface State {
+    inputs: any;
+    totalEnergy: any;
+    date: any;
+    currentPage: number;
+
+    [x: string]: any;
+    [x: number]: any;
+}
+
+export class Table extends React.Component<IProps, State> {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -94,10 +111,26 @@ export class Table extends React.Component<IProps, any> {
                 ]
             },
             totalEnergy: 0,
-            date: new Date()
+            date: new Date(),
+            currentPage: 1
         };
+
+        this.loadPage = this.loadPage.bind(this);
     }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     calculateTotal = (data, keys) => {
+        if (!keys || keys.length === 0) {
+            return;
+        }
+
         const ret = {};
         const offset = keys[0].colspan - 1;
         for (let k = 1; k < keys.length; k++) {
@@ -119,6 +152,18 @@ export class Table extends React.Component<IProps, any> {
         }
 
         return ret;
+    }
+
+    async loadPage(page: number) {
+        await this.props.loadPage(page);
+
+        if (!this._isMounted) {
+            return;
+        }
+
+        this.setState({
+            currentPage: page
+        });
     }
 
     handleDropdown = (key, itemInput) => {
@@ -217,9 +262,9 @@ export class Table extends React.Component<IProps, any> {
     render() {
         const { state, props, handleToggle, handleDropdown, handleInput, handleDate } = this;
         const {
-            header,
-            footer,
-            data,
+            header = [],
+            footer = [],
+            data = [],
             actions,
             actionWidth,
             classNames,
@@ -227,7 +272,8 @@ export class Table extends React.Component<IProps, any> {
             operations = [],
             operationClicked = () => {}
         } = props;
-        const total = type === 'data' ? this.calculateTotal(data, footer) : 0;
+
+        const totalTableColumnSum = type === 'data' ? this.calculateTotal(data, footer) : 0;
 
         const popoverFocus = (id: number) => (
             <Popover id="popover-trigger-focus">
@@ -248,6 +294,7 @@ export class Table extends React.Component<IProps, any> {
         return (
             <div className="TableWrapper">
                 {type === 'data' && (
+                    <>
                     <table className={(classNames || []).join(' ')}>
                         <thead>
                             <tr>
@@ -275,7 +322,7 @@ export class Table extends React.Component<IProps, any> {
                                             style={item.style || {}}
                                             key={item.key}
                                         >
-                                            {renderHTML(renderText(item.label || total[item.key]))}
+                                            {renderHTML(renderText(item.label || totalTableColumnSum[item.key]))}
                                         </td>
                                     );
                                 })}
@@ -321,6 +368,14 @@ export class Table extends React.Component<IProps, any> {
                             })}
                         </tbody>
                     </table>
+                    <Pagination
+                        displayedEntriesLength={data.length}
+                        currentPage={this.state.currentPage}
+                        loadPage={this.loadPage}
+                        pageSize={this.props.pageSize}
+                        total={this.props.total}
+                    />        
+                    </>
                 )}
                 {type === 'admin' && (
                     <table className={`${type}`}>
