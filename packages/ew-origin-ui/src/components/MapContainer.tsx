@@ -26,11 +26,12 @@ export interface MapDetailProps {
  const MyMapComponent = withScriptjs(	
     withGoogleMap((props: any) => (	
         <GoogleMap	
-            defaultZoom={13}	
+            defaultZoom={18}	
             defaultCenter={{	
                 lat: parseFloat(props.asset.offChainProperties.gpsLatitude),	
                 lng: parseFloat(props.asset.offChainProperties.gpsLongitude)	
-            }}	
+            }}
+            defaultMapTypeId={'satellite'}
         >	
             <Marker	
                 position={{	
