@@ -34,12 +34,6 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
         this.operationClicked = this.operationClicked.bind(this);
     }
 
-    async componentDidMount() {
-        super.componentDidMount();
-        
-        this.loadPage(1);
-    }
-
     async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
             this.loadPage(1);
