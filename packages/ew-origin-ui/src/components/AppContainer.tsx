@@ -36,8 +36,9 @@ import { Asset } from './Asset';
 import { Admin } from './Admin';
 import './AppContainer.scss';
 import { Demands } from './Demands';
+import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 
-export const API_BASE_URL = 'http://localhost:3030';
+export const API_BASE_URL = process.env.API_BASE_URL;
 
 interface IAppContainerProps extends IStoreState {
     actions: IActions;
@@ -328,6 +329,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
                     />
                 </Switch>
                 {/* <Footer cooContractAddress={contractAddress} /> */}
+                <AccountChangedModal />
             </div>
         );
     }

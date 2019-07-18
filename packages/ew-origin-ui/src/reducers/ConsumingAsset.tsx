@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Actions } from '../actions/index';
+import { Actions } from '../features/actions';
 import { ConsumingAsset } from 'ew-asset-registry-lib';
 
 const defaultState = [];

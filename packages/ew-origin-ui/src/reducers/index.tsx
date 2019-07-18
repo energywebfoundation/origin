@@ -20,14 +20,16 @@ import consumingAssets from './ConsumingAsset';
 import demands from './Demand';
 import configuration from './Configuration';
 import currentUser from './User';
+import general from '../features/general/reducer';
 import { combineReducers } from 'redux';
+import { IStoreState } from '../types';
 
-const reducers = combineReducers({
+const reducers = combineReducers<IStoreState>({
     certificates,
     producingAssets,
     consumingAssets,
     demands,
-    // web3Service,
+    general,
     currentUser,
     configuration
 });

@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import { Certificate } from 'ew-origin-lib';
-import { Actions } from '../actions/index';
+import { Actions } from '../features/actions';
 
 const defaultState = [];
 

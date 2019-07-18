@@ -7,18 +7,17 @@ module.exports = {
         path: __dirname + "/dist"
     },
 
-    // Enable sourcemaps for debugging webpack's output.
-    devtool: "source-map",
-
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".ts", ".tsx", ".js", ".json"]
     },
+
     devServer: {
         port: 3000,
         historyApiFallback: true,
         inline: true
     },
+
     plugins: [
         new ExtractTextPlugin({
             filename: 'styles.css',

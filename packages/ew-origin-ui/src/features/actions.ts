@@ -18,7 +18,6 @@ import { Certificate } from 'ew-origin-lib';
 import { Demand } from 'ew-market-lib';
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
-// import { Web3Service} from '../utils/Web3Service';
 import { Configuration } from 'ew-utils-general-lib';
 
 export enum Actions {

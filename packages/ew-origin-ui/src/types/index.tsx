@@ -14,13 +14,12 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-// import { Web3Service } from '../utils/Web3Service'
-// import { EventHandlerManager, ContractEventHandler } from 'ewf-coo';
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
 import { Certificate } from 'ew-origin-lib';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
+import { IGeneralState } from '../features/general/reducer';
 
 export interface IStoreState {
     configuration: Configuration.Entity;
@@ -29,6 +28,7 @@ export interface IStoreState {
     certificates: Certificate.Entity[];
     demands: Demand.Entity[];
     currentUser: User;
+    general: IGeneralState;
 }
 
 export interface IActions {
