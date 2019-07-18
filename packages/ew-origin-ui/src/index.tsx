@@ -19,22 +19,48 @@ import * as ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { AppContainer } from './components/AppContainer';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-    certificateCreatedOrUpdated,
-    currentUserUpdated,
-    consumingAssetCreatedOrUpdated,
-    demandCreatedOrUpdated,
-    producingAssetCreatedOrUpdated,
-    configurationUpdated,
-    demandDeleted
-} from './actions';
-import './index.scss';
 
-const store = createStore<any>(reducer);
+import './index.scss';
+import createSagaMiddleware from 'redux-saga';
+import sagas from './features/sagas';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { IStoreState } from './types';
+import { 
+    currentUserUpdated,
+    configurationUpdated,
+    demandCreatedOrUpdated,
+    demandDeleted,
+    producingAssetCreatedOrUpdated,
+    certificateCreatedOrUpdated,
+    consumingAssetCreatedOrUpdated
+ } from './features/actions';
+
+const IS_PRODUCTION = process.env.MODE === 'production';
+
+let middleware;
+
+const sagaMiddleware = createSagaMiddleware();
+
+if (IS_PRODUCTION) {
+    middleware = applyMiddleware(sagaMiddleware);
+} else {
+    middleware = composeWithDevTools(
+        applyMiddleware(sagaMiddleware)
+    );
+}
+
+const store = createStore<IStoreState>(
+    reducer,
+    middleware
+);
+
+Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
+    sagaMiddleware.run(sagas[saga]);
+});
 
 const mapDispatchToProps = dispatch => ({
     actions: bindActionCreators(
