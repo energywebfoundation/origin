@@ -14,7 +14,7 @@ import * as SchemaDefs from '../schema-defs/MatcherConf';
 
 const PROVIDER_URL = 'http://localhost:8545';
 const BACKEND_URL = 'http://localhost:3030';
-const deployKey = 'd7410fb6e0c10ce73cc3179f73e7bb6adabbe8fb17570a47eb8195e17ed0c3f4';
+const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
 describe('Test Matcher', async () => {
     const web3 = new Web3(PROVIDER_URL);
@@ -36,16 +36,16 @@ describe('Test Matcher', async () => {
 
     let asset;
 
-    const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
+    const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
 
-    const assetSmartmeterPK = '0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98';
+    const assetSmartmeterPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
     const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
 
-    const traderPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
-    const issuerPK = '0x3d45690190b2f562725ae6b8d506ff9325c66c181aca3e5daec5629a97ba12ad';
+    const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     const matcherConf: SchemaDefs.IMatcherConf = {
