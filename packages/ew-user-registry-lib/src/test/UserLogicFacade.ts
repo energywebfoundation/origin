@@ -45,10 +45,10 @@ describe('UserLogic Facade', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
 
-    const user1PK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
+    const user1PK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const user1 = web3.eth.accounts.privateKeyToAccount(user1PK).address;
 
-    const user2PK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const user2PK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
     const user2 = web3.eth.accounts.privateKeyToAccount(user2PK).address;
 
     const RIGHTS = buildRights([Role.Trader, Role.AssetManager]);
