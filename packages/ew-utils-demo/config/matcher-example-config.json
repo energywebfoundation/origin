@@ -1,5 +1,5 @@
 {
-    "topAdminPrivateKey": "d7410fb6e0c10ce73cc3179f73e7bb6adabbe8fb17570a47eb8195e17ed0c3f4",
+    "topAdminPrivateKey": "d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5",
     "flow": [
         {
             "type": "CREATE_ACCOUNT",
@@ -13,8 +13,8 @@
                 "city": "Anytown",
                 "country": "Germany",
                 "state": "Anystate",
-                "address": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "privateKey": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+                "address": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
+                "privateKey": "0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3",
                 "rights": 4
             }
         },
@@ -30,8 +30,8 @@
                 "city": "Anytown",
                 "country": "Germany",
                 "state": "Anystate",
-                "address": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
-                "privateKey": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
+                "address": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "privateKey": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3",
                 "rights": 12
             }
         },
@@ -47,18 +47,18 @@
                 "city": "-",
                 "country": "-",
                 "state": "-",
-                "address": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
-                "privateKey": "0xe9a63e116f72c2e368376eb88c22fecf2a5e94a93464ff8802cf97caac657548",
+                "address": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651",
+                "privateKey": "0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e",
                 "rights": 127
             }
         },
         {
             "type": "CREATE_PRODUCING_ASSET",
             "data": {
-                "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
-                "smartMeterPK": "12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
-                "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
+                "smartMeter": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "smartMeterPK": "622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
+                "owner": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
+                "matcher": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651",
                 "operationalSince": 1514764800,
                 "capacityWh": 10000,
                 "lastSmartMeterReadWh": 0,
@@ -85,10 +85,10 @@
         {
             "type": "CREATE_CONSUMING_ASSET",
             "data": {
-                "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
-                "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
-                "owner": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
-                "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
+                "smartMeter": "0xfd863c662307fcf0c15f0b9f74f1d06544f19908",
+                "smartMeterPK": "60a0dae29ff80793b6cc1602f60fbe548b6787d0f9d4eb7c0967dac8ff11591a",
+                "owner": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "matcher": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651",
                 "operationalSince": 1529971200,
                 "capacityWh": 5000,
                 "lastSmartMeterReadWh": 0,
@@ -115,8 +115,8 @@
             "type": "SET_MARKET_CONTRACT",
             "data": {
                 "assetId": 0,
-                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
+                "assetOwner": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
+                "assetOwnerPK": "0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3"
             }
         },
         {
@@ -124,16 +124,16 @@
             "data": {
                 "assetId": 0,
                 "meterreading": 10,
-                "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
-                "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
+                "smartMeter": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "smartMeterPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
                 "filehash": "newMeterRead"
             }
         },
         {
             "type": "CREATE_DEMAND",
             "data": {
-                "trader": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
-                "traderPK": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
+                "trader": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "traderPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3",
                 "timeframe": "hourly",
                 "pricePerCertifiedWh": 10,
                 "currency": "EUR",
@@ -155,8 +155,8 @@
             "type": "CREATE_SUPPLY",
             "data": {
                 "assetId": 0,
-                "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
+                "assetOwner": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
+                "assetOwnerPK": "0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3",
                 "price": 10,
                 "currency": "EUR",
                 "availableWh": 10,
@@ -166,8 +166,8 @@
         {
             "type": "MAKE_AGREEMENT",
             "data": {
-              "creator": "0xcea1c413a570654fa85e78f7c17b755563fec5a5",
-              "creatorPK": "0x5c0b28bff67916a879953c50b25c73827ae0b777a2ad13abba2e4b67f843294e",
+              "creator": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+              "creatorPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3",
               "startTime": -1,
               "endTime": 3600,
               "price": 10,
@@ -178,15 +178,15 @@
               "currentPeriod": 0,
               "demandId": 0,
               "supplyId": 0,
-              "allowedMatcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e"
+              "allowedMatcher": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651"
             }
         },
         {
             "type": "APPROVE_AGREEMENT",
             "data": {
                 "agreementId": 0,
-                "agree": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-                "agreePK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047"
+                "agree": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
+                "agreePK": "0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3"
             }
         },
         {
@@ -194,8 +194,8 @@
             "data": {
                 "assetId": 0,
                 "meterreading": 200,
-                "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
-                "smartMeterPK": "0x12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
+                "smartMeter": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "smartMeterPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
                 "filehash": "newMeterRead"
             }
         }

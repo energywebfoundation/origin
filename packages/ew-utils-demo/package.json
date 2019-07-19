@@ -10,7 +10,7 @@
   "scripts": {
     "start-test-backend": "node node_modules/ew-utils-testbackend/dist/js/src/index.js",
     "test": "npm run build-ts && node dist/js/test",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "start": "npm run build-ts && node dist/js/test",
     "deploy-empty": "npm run build-ts && node dist/js/deployEmpty",
     "prebuild-ts": "rm -rf build/ts",
@@ -19,13 +19,13 @@
     "lint": "./node_modules/.bin/tslint --fix  'src/**/*{.ts,.tsx}'"
   },
   "dependencies": {
+    "ew-asset-registry-lib": "1.0.3-alpha.6",
     "ew-erc-test-contracts": "0.3.0",
-    "ew-asset-registry-lib": "1.0.3-alpha.5",
-    "ew-origin-lib": "1.0.2-alpha.8",
-    "ew-user-registry-lib": "1.0.3-alpha.4",
-    "ew-utils-general-lib": "1.0.2-alpha.3",
-    "ew-utils-testbackend": "1.0.1-alpha.2",
-    "ew-market-lib": "1.0.2-alpha.3",
+    "ew-market-lib": "1.0.2-alpha.5",
+    "ew-user-registry-lib": "1.0.3-alpha.5",
+    "ew-utils-general-lib": "1.0.2-alpha.4",
+    "ew-utils-testbackend": "1.0.1-alpha.3",
+    "ew-origin-lib": "1.0.2-alpha.9",
     "node-fetch": "2.5.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
