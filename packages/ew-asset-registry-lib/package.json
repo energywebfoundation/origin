@@ -1,6 +1,6 @@
 {
   "name": "ew-asset-registry-lib",
-  "version": "1.0.3-alpha.5",
+  "version": "1.0.3-alpha.6",
   "description": "",
   "main": "dist/js/src/index.js",
   "types": "dist/js/src/index.d.ts",
@@ -13,7 +13,7 @@
     "build": "npm run build-schemas && npm run build-ts",
     "start-test-backend": "node node_modules/ew-utils-testbackend/dist/js/src/index.js",
     "test": "npm run build-schemas && npm run build-ts && mocha dist/js/src/test/ --timeout 60000",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "build-and-deploy": "npm run build && npm run deploy-contracts",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "build-ts": "rm -rf dist/js && tsc",
@@ -31,13 +31,13 @@
     "url": "git+https://github.com/energywebfoundation/ew-asset-registry-lib.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/energywebfoundation/ew-asset-registry-lib/issues"
   },
   "homepage": "https://github.com/energywebfoundation/ew-asset-registry-lib#readme",
   "dependencies": {
-    "ew-user-registry-lib": "1.0.3-alpha.4",
+    "ew-user-registry-lib": "1.0.3-alpha.5",
     "ew-utils-general-lib": "1.0.2-alpha.3",
     "moment": "2.24.0",
     "web3": "1.0.0-beta.37",

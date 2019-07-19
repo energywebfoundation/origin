@@ -362,8 +362,6 @@ describe('AssetConsumingLogic', () => {
     });
 
     it('should be able to log new meterread with the right account', async () => {
-        const TIMESTAMP = moment().unix();
-
         const tx = await assetConsumingLogic.saveSmartMeterRead(0, 100, 'newMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
@@ -374,6 +372,8 @@ describe('AssetConsumingLogic', () => {
         }))[0];
 
         assert.equal(event.event, 'LogNewMeterRead');
+
+        const TIMESTAMP = moment().unix();
 
         assert.deepEqual(event.returnValues, {
             0: '0',

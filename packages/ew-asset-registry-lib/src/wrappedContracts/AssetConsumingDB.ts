@@ -1,4 +1,4 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
+import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 = require('web3');
 import AssetConsumingDBJSON from '../../build/contracts/AssetConsumingDB.json';
 
@@ -76,161 +76,17 @@ export class AssetConsumingDB extends GeneralFunctions {
     }
 
     async setIsBundled(_assetId: number, _bundled: boolean, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setIsBundled(_assetId, _bundled);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.setIsBundled(_assetId, _bundled).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setIsBundled(_assetId, _bundled)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setIsBundled(_assetId, _bundled)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setAssetOwner(_assetId: number, _owner: string, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setAssetOwner(_assetId, _owner);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.setAssetOwner(_assetId, _owner).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setAssetOwner(_assetId, _owner)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setAssetOwner(_assetId, _owner)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setLastSmartMeterReadWh(
@@ -238,404 +94,38 @@ export class AssetConsumingDB extends GeneralFunctions {
         _lastSmartMeterReadWh: number,
         txParams?: SpecialTx
     ) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setLastSmartMeterReadWh(_assetId, _lastSmartMeterReadWh);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .setLastSmartMeterReadWh(_assetId, _lastSmartMeterReadWh)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setLastSmartMeterReadWh(_assetId, _lastSmartMeterReadWh)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setLastSmartMeterReadWh(_assetId, _lastSmartMeterReadWh)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async addMatcher(_assetId: number, _matcher: string, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.addMatcher(_assetId, _matcher);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.addMatcher(_assetId, _matcher).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .addMatcher(_assetId, _matcher)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .addMatcher(_assetId, _matcher)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setMatcherExternal(_assetId: number, _matcher: string[], txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setMatcherExternal(_assetId, _matcher);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .setMatcherExternal(_assetId, _matcher)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setMatcherExternal(_assetId, _matcher)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setMatcherExternal(_assetId, _matcher)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async removeMatcherExternal(_assetId: number, _removal: string, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.removeMatcherExternal(_assetId, _removal);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .removeMatcherExternal(_assetId, _removal)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .removeMatcherExternal(_assetId, _removal)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .removeMatcherExternal(_assetId, _removal)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setMatcher(_assetId: number, _matcher: string[], txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setMatcher(_assetId, _matcher);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.setMatcher(_assetId, _matcher).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setMatcher(_assetId, _matcher)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setMatcher(_assetId, _matcher)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setLastSmartMeterReadFileHash(
@@ -643,84 +133,10 @@ export class AssetConsumingDB extends GeneralFunctions {
         _lastSmartMeterReadFileHash: string,
         txParams?: SpecialTx
     ) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setMarketLookupContract(
@@ -728,84 +144,10 @@ export class AssetConsumingDB extends GeneralFunctions {
         _marketLookupContract: string,
         txParams?: SpecialTx
     ) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setMarketLookupContract(_assetId, _marketLookupContract);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .setMarketLookupContract(_assetId, _marketLookupContract)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setMarketLookupContract(_assetId, _marketLookupContract)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setMarketLookupContract(_assetId, _marketLookupContract)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async setSmartMeterRead(
@@ -814,88 +156,10 @@ export class AssetConsumingDB extends GeneralFunctions {
         _lastSmartMeterReadFileHash: string,
         txParams?: SpecialTx
     ) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setSmartMeterRead(_assetId, _lastSmartMeterReadWh, _lastSmartMeterReadFileHash);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .setSmartMeterRead(_assetId, _lastSmartMeterReadWh, _lastSmartMeterReadFileHash)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .setSmartMeterRead(
-                            _assetId,
-                            _lastSmartMeterReadWh,
-                            _lastSmartMeterReadFileHash
-                        )
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setSmartMeterRead(_assetId, _lastSmartMeterReadWh, _lastSmartMeterReadFileHash)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async getAssetOwner(_assetId: number, txParams?: SpecialTx) {
@@ -907,161 +171,17 @@ export class AssetConsumingDB extends GeneralFunctions {
     }
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.changeOwner(_newOwner);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.changeOwner(_newOwner).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods.changeOwner(_newOwner).estimateGas({
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                    });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .changeOwner(_newOwner)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async removeMatcher(_assetId: number, _removal: string, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.removeMatcher(_assetId, _removal);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods
-            .removeMatcher(_assetId, _removal)
-            .encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods
-                        .removeMatcher(_assetId, _removal)
-                        .estimateGas({
-                            from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                        });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .removeMatcher(_assetId, _removal)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async getAssetGeneral(_assetId: number, txParams?: SpecialTx) {
@@ -1077,80 +197,10 @@ export class AssetConsumingDB extends GeneralFunctions {
     }
 
     async addFullAsset(_a: any, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.addFullAsset(_a);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.addFullAsset(_a).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods.addFullAsset(_a).estimateGas({
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                    });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .addFullAsset(_a)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async getActive(_assetId: number, txParams?: SpecialTx) {
@@ -1162,80 +212,10 @@ export class AssetConsumingDB extends GeneralFunctions {
     }
 
     async setActive(_assetId: number, _active: boolean, txParams?: SpecialTx) {
-        let transactionParams;
+        const method = this.web3Contract.methods.setActive(_assetId, _active);
+        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        const txData = await this.web3Contract.methods.setActive(_assetId, _active).encodeABI();
-
-        let gas;
-
-        if (txParams) {
-            if (txParams.privateKey) {
-                const privateKey = txParams.privateKey.startsWith('0x')
-                    ? txParams.privateKey
-                    : '0x' + txParams.privateKey;
-                txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
-                txParams.nonce = txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from);
-            }
-
-            if (!txParams.gas) {
-                try {
-                    gas = await this.web3Contract.methods.setActive(_assetId, _active).estimateGas({
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0]
-                    });
-                } catch (ex) {
-                    if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                        throw new Error(ex);
-                    }
-
-                    const errorResult = await this.getErrorMessage(this.web3, {
-                        from: txParams ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                        to: this.web3Contract._address,
-                        data: txData,
-                        gas: this.web3.utils.toHex(7000000)
-                    });
-                    throw new Error(errorResult);
-                }
-                gas = Math.round(gas * 2);
-
-                txParams.gas = gas;
-            }
-
-            transactionParams = {
-                from: txParams.from ? txParams.from : (await this.web3.eth.getAccounts())[0],
-                gas: txParams.gas ? txParams.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: txParams.nonce
-                    ? txParams.nonce
-                    : await this.web3.eth.getTransactionCount(txParams.from),
-                data: txParams.data ? txParams.data : '',
-                to: this.web3Contract._address,
-                privateKey: txParams.privateKey ? txParams.privateKey : ''
-            };
-        } else {
-            transactionParams = {
-                from: (await this.web3.eth.getAccounts())[0],
-                gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: 0,
-                nonce: await this.web3.eth.getTransactionCount(
-                    (await this.web3.eth.getAccounts())[0]
-                ),
-                data: '',
-                to: this.web3Contract._address,
-                privateKey: ''
-            };
-        }
-
-        if (transactionParams.privateKey !== '') {
-            transactionParams.data = txData;
-
-            return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
-        } else {
-            return await this.web3Contract.methods
-                .setActive(_assetId, _active)
-                .send({ from: transactionParams.from, gas: transactionParams.gas });
-        }
+        return await this.send(method, transactionParams);
     }
 
     async getSmartMeter(_assetId: number, txParams?: SpecialTx) {
