@@ -73,22 +73,22 @@ describe('CertificateLogic-Facade', () => {
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    const assetOwnerPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
+    const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const accountAssetOwner = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
 
-    const traderPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const traderPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
-    const assetSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const assetSmartmeterPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
 
-    const matcherPK = '0xd9d5e7a2ebebbad1eb22a63baa739a6c6a6f15d07fcc990ea4dea5c64022a87a';
+    const matcherPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
 
-    const approvedPK = '0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b';
+    const approvedPK = '0x60a0dae29ff80793b6cc1602f60fbe548b6787d0f9d4eb7c0967dac8ff11591a';
     const approvedAccount = web3.eth.accounts.privateKeyToAccount(approvedPK).address;
 
-    const issuerPK = '0x3d45690190b2f562725ae6b8d506ff9325c66c181aca3e5daec5629a97ba12ad';
+    const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     let conf: Configuration.Entity;
@@ -1259,7 +1259,7 @@ describe('CertificateLogic-Facade', () => {
         await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
             privateKey: issuerPK
         });
-        
+
         const certificate = await new Certificate.Entity(STARTING_CERTIFICATE_LENGTH.toString(), conf).sync();
 
         delete certificate.configuration;
