@@ -1,6 +1,6 @@
 {
   "name": "ew-market-lib",
-  "version": "1.0.2-alpha.4",
+  "version": "1.0.2-alpha.5",
   "description": "",
   "main": "dist/js/src/index.js",
   "types": "dist/js/src/index.d.ts",
@@ -13,7 +13,7 @@
     "build": "npm run build-schemas && npm run build-ts",
     "build-ts": "rm -rf dist/js && tsc",
     "start-test-backend": "node node_modules/ew-utils-testbackend/dist/js/src/index.js",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run build-schema:AgreementPropertiesOffChain && npm run build-schema:MatcherPropertiesOffChain && npm run build-schema:DemandPropertiesOffChain && npm run build-schema:SupplyPropertiesOffChain && cp -R schemas dist/schemas",
@@ -36,8 +36,8 @@
   },
   "homepage": "https://github.com/energywebfoundation/ew-market-lib#readme",
   "dependencies": {
-    "ew-asset-registry-lib": "1.0.3-alpha.4",
-    "ew-user-registry-lib": "1.0.3-alpha.3",
+    "ew-asset-registry-lib": "1.0.3-alpha.6",
+    "ew-user-registry-lib": "1.0.3-alpha.5",
     "ew-utils-general-lib": "1.0.2-alpha.4",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
