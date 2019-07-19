@@ -2,8 +2,6 @@ import Web3 = require('web3');
 import { Tx } from 'web3/eth/types';
 import { TransactionReceipt, Logs } from 'web3/types';
 
-const DEFAULT_GAS_PRICE = '10';
-
 export declare interface SpecialTx extends Tx {
     privateKey: string;
 }
@@ -132,6 +130,8 @@ export class GeneralFunctions {
     async buildTransactionParams(method, params): Promise<ITxParams> {
         let gas;
 
+        const networkGasPrice = await this.web3.eth.getGasPrice();
+
         if (params) {
             params.data = await method.encodeABI();
 
@@ -171,7 +171,7 @@ export class GeneralFunctions {
             return {
                 from: params.from ? params.from : (await this.web3.eth.getAccounts())[0],
                 gas: params.gas ? params.gas : Math.round(gas * 1.1 + 21000),
-                gasPrice: params.gasPrice ? params.gasPrice : this.web3.utils.toWei(DEFAULT_GAS_PRICE, 'gwei'),
+                gasPrice: params.gasPrice ? params.gasPrice : networkGasPrice.toString(),
                 nonce: params.nonce
                     ? params.nonce
                     : await this.web3.eth.getTransactionCount(params.from),
@@ -185,7 +185,7 @@ export class GeneralFunctions {
             return {
                 from: fromAddress,
                 gas: Math.round(gas * 1.1 + 21000),
-                gasPrice: this.web3.utils.toWei(DEFAULT_GAS_PRICE, 'gwei'),
+                gasPrice: networkGasPrice.toString(),
                 nonce: await this.web3.eth.getTransactionCount(
                     (await this.web3.eth.getAccounts())[0]
                 ),
