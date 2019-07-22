@@ -37,11 +37,14 @@ import { Admin } from './Admin';
 import './AppContainer.scss';
 import { Demands } from './Demands';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
+import axios from 'axios';
 
-export const API_BASE_URL = process.env.API_BASE_URL;
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3030';
 
 interface IAppContainerProps extends IStoreState {
     actions: IActions;
+    match: any;
+    location: any;
 }
 
 function isDemandDeleted(demand: Demand.Entity) {
@@ -142,16 +145,12 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
     }
 
     async getMarketLogicInstance(originIssuerContractLookupAddress: string, web3: Web3) {
-        const response = await fetch(
-            `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`
-        );
-
-        const json = await response.json();
+        const response = await axios.get(`${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`);
 
         const marketBlockchainProperties: Configuration.BlockchainProperties = (await marketCreateBlockchainProperties(
             null,
             web3,
-            json.marketContractLookup
+            response.data.marketContractLookup
         )) as any;
 
         return marketBlockchainProperties.marketLogicInstance;
@@ -159,7 +158,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
 
     async initConf(originIssuerContractLookupAddress: string): Promise<Configuration.Entity> {
         let web3: any = null;
-        const params: any = queryString.parse((this.props as any).location.search);
+        const params: any = queryString.parse(this.props.location.search);
 
         if (params.rpc) {
             web3 = new Web3(params.rpc);
@@ -202,7 +201,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
 
     async componentDidMount(): Promise<void> {
         const conf: Configuration.Entity = await this.initConf(
-            (this.props as any).match.params.contractAddress
+            this.props.match.params.contractAddress
         );
         this.props.actions.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
@@ -244,7 +243,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
                 consumingAssets={this.props.consumingAssets}
                 conf={this.props.configuration}
                 currentUser={this.props.currentUser}
-                baseUrl={(this.props as any).match.params.contractAddress}
+                baseUrl={this.props.match.params.contractAddress}
             />
         );
     }
@@ -252,7 +251,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
     CertificateTable() {
         return (
             <Certificates
-                baseUrl={(this.props as any).match.params.contractAddress}
+                baseUrl={this.props.match.params.contractAddress}
                 producingAssets={this.props.producingAssets}
                 certificates={this.props.certificates}
                 demands={this.props.demands}
@@ -270,7 +269,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
                 consumingAssets={this.props.consumingAssets}
                 producingAssets={this.props.producingAssets}
                 currentUser={this.props.currentUser}
-                baseUrl={(this.props as any).match.params.contractAddress}
+                baseUrl={this.props.match.params.contractAddress}
             />
         );
     }
@@ -281,7 +280,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
                 conf={this.props.configuration}
                 currentUser={this.props.currentUser}
                 producingAssets={this.props.producingAssets}
-                baseUrl={(this.props as any).match.params.contractAddress}
+                baseUrl={this.props.match.params.contractAddress}
             />
         );
     }
@@ -295,7 +294,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             );
         }
 
-        const contractAddress = (this.props as any).match.params.contractAddress;
+        const contractAddress = this.props.match.params.contractAddress;
 
         return (
             <div className={`AppWrapper ${false ? 'Profile--open' : ''}`}>
