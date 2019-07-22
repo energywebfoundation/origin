@@ -4,8 +4,8 @@ This repository is used to deploy all the contracts for the Origin project of th
 
 ## How-to
 - `npm install` - Install the dependencies
-- `npm start-ganache` - Starts a local blockchain instance
-- (new terminal window) `npm start-test-backend` - Starts a local backend instance
+- `npm run start-ganache` - Starts a local blockchain instance
+- (new terminal window) `npm run start-test-backend` - Starts a local backend instance
 - (new terminal window) `npm start` - Deploys the contracts and the configuration in [config/demo-config.json](config/demo-config.json)
 
 This will deploy all the contracts to a local Ganache instance and a local test backend.
@@ -454,7 +454,7 @@ usage: command to request certificates for smart meter reads, to get certificate
 </code>
 
 ### UNPUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
-usage: command to unbpublish (remove) a certificate from sale 
+usage: command to unbpublish (remove) a certificate from sale
 <br>params:
 * <code>certId</code>: id of the certificate to be transferred
 * <code>certificateOwner</code>: address of the current owner of the certificate(must have trading rights)
