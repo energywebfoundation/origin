@@ -676,3 +676,13 @@ We want to pause the flow for <code>2</code> secondss
 docker-compose build
 docker-compose run demo npm run start
 ```
+
+If you would like to start a local Ganache server instance running on localhost:8545 please run this command:
+
+```
+docker-compose run -p 8545:8545 demo npm run start-ganache
+```
+
+And replace `localhost` in `connection-config.json`, `src/config.ts` to Docker host machine IP, for example: `172.17.0.1`.
+
+[For more comprehensive Docker deployment instructions please refer to this page.](https://github.com/energywebfoundation/origin/wiki/Docker-Deployment)
