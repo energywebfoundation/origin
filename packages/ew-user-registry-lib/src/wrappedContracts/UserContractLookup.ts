@@ -61,9 +61,8 @@ export class UserContractLookup extends GeneralFunctions {
 
     async update(_userRegistry: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_userRegistry);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async userRegistry(txParams?: SpecialTx) {
@@ -76,15 +75,13 @@ export class UserContractLookup extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async init(_userRegistry: string, _db: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.init(_userRegistry, _db);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 }

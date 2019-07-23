@@ -10,16 +10,6 @@ export declare interface SearchLog extends Logs {
     toBlock: number;
 }
 
-export declare interface ITxParams {
-    from: string;
-    privateKey?: string;
-    nonce?: number;
-    gas?: number;
-    gasPrice?: string;
-    data?: string;
-    to?: string;
-}
-
 export async function getClientVersion(web3: Web3): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         (web3.currentProvider as any).send(
@@ -83,16 +73,14 @@ export class GeneralFunctions {
         return await web3.eth.sendSignedTransaction((txObject as any).rawTransaction);
     }
 
-    async send(method: any, txParams: ITxParams): Promise<TransactionReceipt> {
-        if (txParams.privateKey !== '') {
-            return await this.sendRaw(this.web3, txParams.privateKey, txParams);
+    async send(method: any, txParams: SpecialTx): Promise<TransactionReceipt> {
+        const transactionParams: SpecialTx = await this.buildTransactionParams(method, txParams);
+
+        if (transactionParams.privateKey === '') {
+            return await this.web3.eth.sendTransaction(transactionParams);
         }
-        
-        return await method.send({
-            from: txParams.from,
-            gas: txParams.gas,
-            gasPrice: txParams.gasPrice
-        });
+
+        return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
     }
 
     getWeb3Contract() {
@@ -127,7 +115,7 @@ export class GeneralFunctions {
         });
     }
 
-    async buildTransactionParams(method, params): Promise<ITxParams> {
+    async buildTransactionParams(method, params): Promise<SpecialTx> {
         let gas;
 
         const networkGasPrice = await this.web3.eth.getGasPrice();

@@ -59,16 +59,14 @@ export class UserLogic extends GeneralFunctions {
 
     async deactivateUser(_user: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.deactivateUser(_user);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getRolesRights(_user: string, txParams?: SpecialTx) {
@@ -77,16 +75,14 @@ export class UserLogic extends GeneralFunctions {
 
     async setRoles(_user: string, _rights: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setRoles(_user, _rights);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setUser(_user: string, _organization: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setUser(_user, _organization);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async userContractLookup(txParams?: SpecialTx) {
@@ -103,9 +99,8 @@ export class UserLogic extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
@@ -122,8 +117,7 @@ export class UserLogic extends GeneralFunctions {
 
     async init(_database: string, _admin: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.init(_database, _admin);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 }

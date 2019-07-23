@@ -59,30 +59,26 @@ export class UserDB extends GeneralFunctions {
 
     async setOrganization(_user: string, _organization: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setOrganization(_user, _organization);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setRoles(_user: string, _roles: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setRoles(_user, _roles);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setUser(_user: string, _organization: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setUser(_user, _organization);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setUserActive(_user: string, _active: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setUserActive(_user, _active);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async owner(txParams?: SpecialTx) {
@@ -91,9 +87,8 @@ export class UserDB extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getFullUser(_user: string, txParams?: SpecialTx) {

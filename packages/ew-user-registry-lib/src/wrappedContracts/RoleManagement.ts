@@ -86,9 +86,8 @@ export class RoleManagement extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
