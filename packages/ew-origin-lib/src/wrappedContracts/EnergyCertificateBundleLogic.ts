@@ -231,16 +231,14 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async approve(_approved: string, _entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approve(_approved, _entityId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async addEscrowForEntity(_certificateId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addEscrowForEntity(_certificateId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async getBundleListLength(txParams?: SpecialTx) {
@@ -249,23 +247,20 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async addEscrowForAsset(_bundleId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addEscrowForAsset(_bundleId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async transferFrom(_from: string, _to: string, _entityId: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.transferFrom(_from, _to, _entityId)
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+        const method = this.web3Contract.methods.transferFrom(_from, _to, _entityId);
+
+        return await this.send(method, txParams);
     }
 
     async getBundle(_bundleId: number, txParams?: SpecialTx) {
@@ -274,22 +269,19 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async createTradableEntity(_assetId: number, _powerInW: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.createTradableEntity(_assetId, _powerInW);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: SpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
-            const transactionParams = await this.buildTransactionParams(method, txParams);
-                
-            return await this.send(method, transactionParams);
+
+            return await this.send(method, txParams);
         } else {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId);
-            const transactionParams = await this.buildTransactionParams(method, txParams);
-                
-            return await this.send(method, transactionParams);
+
+            return await this.send(method, txParams);
         }
     }
 
@@ -303,9 +295,8 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async ownerOf(_entityId: number, txParams?: SpecialTx) {
@@ -338,23 +329,20 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async setApprovalForAll(_escrow: string, _approved: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setApprovalForAll(_escrow, _approved);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async retireBundle(_bundleId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.retireBundle(_bundleId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
@@ -363,23 +351,20 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async removeEscrow(_bundleId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeEscrow(_bundleId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async publishForSale(_certificateId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.publishForSale(_certificateId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async unpublishForSale(_certificateId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.unpublishForSale(_certificateId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async isRetired(_bundleId: number, txParams?: SpecialTx) {
@@ -388,9 +373,8 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async setTradableToken(_entityId: number, _tokenContract: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableToken(_entityId, _tokenContract);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getOnChainDirectPurchasePrice(_entityId: number, txParams?: SpecialTx) {
@@ -405,9 +389,8 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async init(_database: string, _admin: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.init(_database, _admin);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getTradableToken(_entityId: number, txParams?: SpecialTx) {

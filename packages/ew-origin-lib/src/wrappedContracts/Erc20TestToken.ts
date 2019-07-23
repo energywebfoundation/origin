@@ -85,9 +85,8 @@ export class Erc20TestToken extends GeneralFunctions {
 
     async approve(_spender: string, _tokens: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approve(_spender, _tokens);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async totalSupplyNumber(txParams?: SpecialTx) {
@@ -104,9 +103,8 @@ export class Erc20TestToken extends GeneralFunctions {
 
     async transferFrom(_from: string, _to: string, _tokens: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.transferFrom(_from, _to, _tokens);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async balances(param0: string, txParams?: SpecialTx) {
@@ -131,9 +129,8 @@ export class Erc20TestToken extends GeneralFunctions {
 
     async transfer(_to: string, _tokens: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.transfer(_to, _tokens);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async allowance(_tokenOwner: string, _spender: string, txParams?: SpecialTx) {

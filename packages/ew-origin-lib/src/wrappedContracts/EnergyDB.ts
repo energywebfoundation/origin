@@ -67,9 +67,8 @@ export class EnergyDB extends GeneralFunctions {
 
     async addEscrowForEntity(_entityId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addEscrowForEntity(_entityId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setTradableEntityEscrowExternal(
@@ -78,9 +77,8 @@ export class EnergyDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setTradableEntityEscrowExternal(_entityId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async getTradableEntityEscrowLength(_entityId: number, txParams?: SpecialTx) {
@@ -91,9 +89,8 @@ export class EnergyDB extends GeneralFunctions {
 
     async addEscrowForAsset(_entityId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addEscrowForAsset(_entityId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setTradableEntityOwnerAndAddApproval(
@@ -103,30 +100,26 @@ export class EnergyDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setTradableEntityOwnerAndAddApproval(_entityId, _owner, _approve);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async addApprovalExternal(_entityId: number, _approve: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addApprovalExternal(_entityId, _approve);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setEscrow(_entityId: number, _escrow: string[], txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setEscrow(_entityId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async getOwnerToOperators(_company: string, _escrow: string, txParams?: SpecialTx) {
@@ -137,9 +130,8 @@ export class EnergyDB extends GeneralFunctions {
 
     async setTradableEntityOwnerExternal(_entityId: number, _owner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableEntityOwnerExternal(_entityId, _owner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async createTradableEntityEntry(
@@ -158,9 +150,8 @@ export class EnergyDB extends GeneralFunctions {
                 _acceptedToken,
                 _onChainDirectPurchasePrice
             );
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async getTradableEntity(_entityId: number, txParams?: SpecialTx) {
@@ -177,16 +168,14 @@ export class EnergyDB extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async removeTokenAndPrice(_entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeTokenAndPrice(_entityId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setOwnerToOperators(
@@ -196,46 +185,38 @@ export class EnergyDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setOwnerToOperators(_company, _escrow, _allowed);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async removeEscrow(_entityId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeEscrow(_entityId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
-
-
 
     async publishForSale(_entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.publishForSale(_entityId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async unpublishForSale(_entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.unpublishForSale(_entityId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setTradableEntity(_entityId: number, _entity: any, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableEntity(_entityId, _entity);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setTradableToken(_entityId: number, _token: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableToken(_entityId, _token);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async getOnChainDirectPurchasePrice(_entityId: number, txParams?: SpecialTx) {

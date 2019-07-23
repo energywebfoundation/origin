@@ -228,57 +228,49 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async approve(_approved: string, _entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approve(_approved, _entityId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async addEscrowForEntity(_certificateId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addEscrowForEntity(_certificateId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async transferFrom(_from: string, _to: string, _entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.transferFrom(_from, _to, _entityId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async splitCertificate(_certificateId: number, _power: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.splitCertificate(_certificateId, _power);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async splitAndPublishForSale(_certificateId: number, _energy: number, _price: number, _tokenAddress: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.splitAndPublishForSale(_certificateId, _energy, _price, _tokenAddress);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: SpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
-            const transactionParams = await this.buildTransactionParams(method, txParams);
 
-            return await this.send(method, transactionParams);
+            return await this.send(method, txParams);
         } else {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId);
-            const transactionParams = await this.buildTransactionParams(method, txParams);
 
-            return await this.send(method, transactionParams);
+            return await this.send(method, txParams);
         }
     }
 
@@ -296,9 +288,8 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async ownerOf(_entityId: number, txParams?: SpecialTx) {
@@ -331,30 +322,26 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async splitAndBuyCertificate(_certificateId: number, _power: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.splitAndBuyCertificate(_certificateId, _power);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async buyCertificate(_certificateId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.buyCertificate(_certificateId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setApprovalForAll(_escrow: string, _approved: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setApprovalForAll(_escrow, _approved);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getCertificateListLength(txParams?: SpecialTx) {
@@ -367,23 +354,20 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async removeEscrow(_certificateId: number, _escrow: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeEscrow(_certificateId, _escrow);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async publishForSale(_certificateId: number, _price: number, _tokenAddress: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.publishForSale(_certificateId, _price, _tokenAddress);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async unpublishForSale(_certificateId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.unpublishForSale(_certificateId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async isRetired(_certificateId: number, txParams?: SpecialTx) {
@@ -392,16 +376,14 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async retireCertificate(_certificateId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.retireCertificate(_certificateId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setTradableToken(_entityId: number, _tokenContract: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableToken(_entityId, _tokenContract);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getOnChainDirectPurchasePrice(_entityId: number, txParams?: SpecialTx) {
@@ -416,9 +398,8 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async init(_database: string, _admin: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.init(_database, _admin);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getTradableToken(_entityId: number, txParams?: SpecialTx) {

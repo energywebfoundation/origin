@@ -71,23 +71,20 @@ export class OriginContractLookup extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.init(_assetRegistry, _originLogicRegistry, _originDB);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async update(_originRegistry: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_originRegistry);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async setMaxMatcherPerCertificate(_new: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setMaxMatcherPerCertificate(_new);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async assetContractLookup(txParams?: SpecialTx) {
@@ -108,8 +105,7 @@ export class OriginContractLookup extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 }

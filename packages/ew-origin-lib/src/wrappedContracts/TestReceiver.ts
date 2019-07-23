@@ -28,22 +28,19 @@ export class TestReceiver extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.onERC721Received(_operator, _from, _tokenId, _data);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
-            
-        return await this.send(method, transactionParams);
+
+        return await this.send(method, txParams);
     }
 
     async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: SpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
-            const transactionParams = await this.buildTransactionParams(method, txParams);
-                
-            return await this.send(method, transactionParams);
+
+            return await this.send(method, txParams);
         } else {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId)
-            const transactionParams = await this.buildTransactionParams(method, txParams);
-                
-            return await this.send(method, transactionParams);
+
+            return await this.send(method, txParams);
         }
     }
 

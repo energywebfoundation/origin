@@ -37,15 +37,13 @@ export class CertificateSpecificContract extends GeneralFunctions {
 
     async requestCertificates(_assetId: number, limitingSmartMeterReadIndex: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.requestCertificates(_assetId, limitingSmartMeterReadIndex);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async approveCertificationRequest(_certicationRequestIndex: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approveCertificationRequest(_certicationRequestIndex);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 }
