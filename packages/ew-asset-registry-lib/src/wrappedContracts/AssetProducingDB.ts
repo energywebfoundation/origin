@@ -77,16 +77,14 @@ export class AssetProducingDB extends GeneralFunctions {
 
     async setIsBundled(_assetId: number, _bundled: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setIsBundled(_assetId, _bundled);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setAssetOwner(_assetId: number, _owner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setAssetOwner(_assetId, _owner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setLastSmartMeterReadWh(
@@ -95,37 +93,32 @@ export class AssetProducingDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method =  this.web3Contract.methods.setLastSmartMeterReadWh(_assetId, _lastSmartMeterReadWh);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async addMatcher(_assetId: number, _matcher: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addMatcher(_assetId, _matcher);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setMatcherExternal(_assetId: number, _matcher: string[], txParams?: SpecialTx) {
         const method = await this.web3Contract.methods.setMatcherExternal(_assetId, _matcher);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async removeMatcherExternal(_assetId: number, _removal: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeMatcherExternal(_assetId, _removal);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setMatcher(_assetId: number, _matcher: string[], txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setMatcher(_assetId, _matcher);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setLastSmartMeterReadFileHash(
@@ -134,9 +127,8 @@ export class AssetProducingDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setMarketLookupContract(
@@ -145,9 +137,8 @@ export class AssetProducingDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setMarketLookupContract(_assetId, _marketLookupContract);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setSmartMeterRead(
@@ -157,9 +148,8 @@ export class AssetProducingDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setSmartMeterRead(_assetId, _lastSmartMeterReadWh, _lastSmartMeterReadFileHash);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getAssetOwner(_assetId: number, txParams?: SpecialTx) {
@@ -172,16 +162,14 @@ export class AssetProducingDB extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async removeMatcher(_assetId: number, _removal: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeMatcher(_assetId, _removal);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getAssetGeneral(_assetId: number, txParams?: SpecialTx) {
@@ -202,9 +190,8 @@ export class AssetProducingDB extends GeneralFunctions {
 
     async addFullAsset(_a: any, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addFullAsset(_a);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getMarketLookupContract(_assetId: number, txParams?: SpecialTx) {
@@ -213,9 +200,8 @@ export class AssetProducingDB extends GeneralFunctions {
 
     async setActive(_assetId: number, _active: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setActive(_assetId, _active);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getSmartMeter(_assetId: number, txParams?: SpecialTx) {

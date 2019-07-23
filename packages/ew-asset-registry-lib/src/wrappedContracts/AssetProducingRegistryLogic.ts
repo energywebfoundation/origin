@@ -166,9 +166,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getLastMeterReadingAndHash(_assetId: number, txParams?: SpecialTx) {
@@ -193,9 +192,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async addMatcher(_assetId: number, _new: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.addMatcher(_assetId, _new);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async createAsset(
@@ -218,9 +216,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
                 _url,
                 _numOwnerChanges
             );
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setMarketLookupContract(
@@ -229,9 +226,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setMarketLookupContract(_assetId, _marketContractLookup);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getAssetOwner(_assetId: number, txParams?: SpecialTx) {
@@ -244,9 +240,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async checkAssetExistExternal(_smartMeter: string, txParams?: SpecialTx) {
@@ -255,9 +250,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async setBundleActive(_assetId: number, _active: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setBundleActive(_assetId, _active);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async saveSmartMeterRead(
@@ -268,16 +262,14 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, _timestamp);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async removeMatcher(_assetId: number, _remove: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.removeMatcher(_assetId, _remove);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getAssetGeneral(_assetId: number, txParams?: SpecialTx) {
@@ -302,16 +294,14 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async setActive(_assetId: number, _active: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setActive(_assetId, _active);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async init(_dbAddress: string, param1: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.init(_dbAddress, param1);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getMatcher(_assetId: number, txParams?: SpecialTx) {
