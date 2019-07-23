@@ -1,6 +1,6 @@
 {
   "name": "ew-asset-registry-lib",
-  "version": "1.0.3-alpha.7",
+  "version": "1.0.3-alpha.8",
   "description": "",
   "main": "dist/js/src/index.js",
   "types": "dist/js/src/index.d.ts",
