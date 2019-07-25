@@ -127,7 +127,7 @@ export class GeneralFunctions {
             params.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
         }
 
-        params.from = params ? params.from : (await this.web3.eth.getAccounts())[0];
+        params.from = params.from || (await this.web3.eth.getAccounts())[0];
 
         try {
             methodGas = await method.estimateGas({
