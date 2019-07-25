@@ -117,30 +117,26 @@ export class AgreementLogic extends GeneralFunctions {
                 _demandId,
                 _supplyId
             );
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async approveAgreementSupply(_agreementId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approveAgreementSupply(_agreementId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async approveAgreementDemand(_agreementId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approveAgreementDemand(_agreementId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getAllAgreementListLength(txParams?: SpecialTx) {
@@ -166,9 +162,8 @@ export class AgreementLogic extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setMatcherProperties(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async assetContractLookup(txParams?: SpecialTx) {
@@ -181,9 +176,8 @@ export class AgreementLogic extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
@@ -196,8 +190,7 @@ export class AgreementLogic extends GeneralFunctions {
 
     async init(_database: string, _admin: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.init(_database, _admin);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 }

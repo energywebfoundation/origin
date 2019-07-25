@@ -77,9 +77,8 @@ export class MarketDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setMatcherPropertiesAndURL(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async createSupply(
@@ -89,16 +88,14 @@ export class MarketDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.createSupply(_propertiesDocumentHash, _documentDBURL, _assetId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async setAgreementMatcher(_agreementId: number, _matchers: string[], txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setAgreementMatcher(_agreementId, _matchers);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getAgreementDB(_agreementId: number, txParams?: SpecialTx) {
@@ -116,16 +113,14 @@ export class MarketDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.createDemand(_propertiesDocumentHash, _documentDBURL, _demandOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async approveAgreementSupplyDB(_agreementId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approveAgreementSupplyDB(_agreementId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async owner(txParams?: SpecialTx) {
@@ -134,16 +129,14 @@ export class MarketDB extends GeneralFunctions {
 
     async changeOwner(_newOwner: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async approveAgreementDemandDB(_agreementId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approveAgreementDemandDB(_agreementId);
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async createAgreementDB(
@@ -164,9 +157,8 @@ export class MarketDB extends GeneralFunctions {
                 _demandId,
                 _supplyId
             );
-        const transactionParams = await this.buildTransactionParams(method, txParams);
 
-        return await this.send(method, transactionParams);
+        return await this.send(method, txParams);
     }
 
     async getSupply(_supplyId: number, txParams?: SpecialTx) {
