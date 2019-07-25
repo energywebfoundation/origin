@@ -428,11 +428,11 @@ describe('AssetConsumingLogic', () => {
     });
 
     it('should log with a new meterreading', async () => {
-        const TIMESTAMP = moment().unix();
         const tx = await assetConsumingLogic.saveSmartMeterRead(0, 200, 'newMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
 
+        const TIMESTAMP = moment().unix();
         const event = (await assetConsumingLogic.getAllLogNewMeterReadEvents({
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
