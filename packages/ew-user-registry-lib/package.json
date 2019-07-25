@@ -1,6 +1,6 @@
 {
   "name": "ew-user-registry-lib",
-  "version": "1.0.3-alpha.8",
+  "version": "1.0.3-alpha.9",
   "description": "",
   "main": "dist/js/src/index.js",
   "types": "dist/js/src/index.d.ts",
@@ -32,7 +32,7 @@
   "homepage": "https://github.com/energywebfoundation/ew-user-registry-lib#readme",
   "dependencies": {
     "ew-utils-deployment": "0.3.0",
-    "ew-utils-general-lib": "1.0.2-alpha.3",
+    "ew-utils-general-lib": "1.0.2-alpha.4",
     "typedarray-to-buffer": "3.1.5",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
