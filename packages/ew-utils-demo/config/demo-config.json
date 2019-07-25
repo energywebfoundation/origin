@@ -267,7 +267,7 @@
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
                 "assetId": 0,
-                "meterreading": 10,
+                "meterreading": 100000,
                 "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "filehash": "newMeterRead",
@@ -278,7 +278,7 @@
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
                 "assetId": 0,
-                "meterreading": 15,
+                "meterreading": 500000,
                 "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "filehash": "newMeterRead",
@@ -289,7 +289,7 @@
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
                 "assetId": 0,
-                "meterreading": 20,
+                "meterreading": 800000,
                 "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "filehash": "newMeterRead"
@@ -299,7 +299,7 @@
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
                 "assetId": 0,
-                "meterreading": 215,
+                "meterreading": 900000,
                 "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "filehash": "newMeterRead"
@@ -309,7 +309,7 @@
             "type": "SAVE_SMARTMETER_READ_CONSUMING",
             "data": {
                 "assetId": 0,
-                "meterreading": 10,
+                "meterreading": 1000000,
                 "smartMeter": "0xf7f7c9186fa724c8392a55b9d83d0f3701c16176",
                 "smartMeterPK": "0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b",
                 "filehash": "newMeterRead"

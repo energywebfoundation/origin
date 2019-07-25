@@ -135,7 +135,7 @@
                 "trader": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
                 "traderPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3",
                 "timeframe": "hourly",
-                "pricePerCertifiedWh": 10,
+                "maxPricePerMwh": 10,
                 "currency": "EUR",
                 "producingAsset": 0,
                 "consumingAsset": 0,

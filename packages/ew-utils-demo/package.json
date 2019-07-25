@@ -16,15 +16,15 @@
     "prebuild-ts": "rm -rf build/ts",
     "build-ts": "rm -rf dist/js && tsc",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "lint": "./node_modules/.bin/tslint --fix  'src/**/*{.ts,.tsx}'"
+    "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'"
   },
   "dependencies": {
     "ew-asset-registry-lib": "1.0.3-alpha.11",
     "ew-erc-test-contracts": "0.3.0",
-    "ew-market-lib": "1.0.2-alpha.9",
+    "ew-market-lib": "energywebfoundation/ew-market-lib#26b5022f91a60095d1a38568ee1497ec475a5378",
     "ew-user-registry-lib": "1.0.3-alpha.10",
     "ew-utils-general-lib": "1.0.2-alpha.4",
-    "ew-utils-testbackend": "1.0.1-alpha.3",
+    "ew-utils-testbackend": "1.0.1-alpha.4",
     "ew-origin-lib": "1.0.2-alpha.14",
     "node-fetch": "2.5.0",
     "web3": "1.0.0-beta.37",

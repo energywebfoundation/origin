@@ -452,7 +452,7 @@
                 "trader": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
                 "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
                 "timeframe": "hourly",
-                "pricePerCertifiedWh": 10,
+                "maxPricePerMwh": 10,
                 "currency": "USD",
                 "producingAsset": 0,
                 "consumingAsset": 0,

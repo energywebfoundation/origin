@@ -504,7 +504,7 @@ usage: command to create a demand
 * <code>trader</code>: address of the trader creating the demand
 * <code>traderPK</code>: private key of the trader creating the demand
 * <code>timeframe</code>: timeframe of contract
-* <code>pricePerCertifiedWh</code>: price bargain per certified Wh
+* <code>maxPricePerMwh</code>: maximum price per MWh
 * <code>currency</code>: currency of exchange as string (USD,
     EUR,
     THB,
@@ -536,7 +536,7 @@ We want to report a demand with target watt-hour per period(timeframe) as <code>
         "trader": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
         "traderPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
         "timeframe": "hourly",
-        "pricePerCertifiedWh": 10,
+        "maxPricePerMwh": 10,
         "currency": "USD",
         "producingAsset": 0,
         "consumingAsset": 0,

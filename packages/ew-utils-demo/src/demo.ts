@@ -179,7 +179,7 @@ export const marketDemo = async (demoFile?: string) => {
 
                 const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
                     timeframe: timeFrame,
-                    pricePerCertifiedWh: action.data.pricePerCertifiedWh,
+                    maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
                     productingAsset: action.data.producingAsset,
                     consumingAsset: action.data.consumingAsset,
