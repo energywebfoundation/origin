@@ -366,14 +366,13 @@ describe('AssetConsumingLogic', () => {
             privateKey: assetSmartmeterPK
         });
 
+        const TIMESTAMP = moment().unix();
         const event = (await assetConsumingLogic.getAllLogNewMeterReadEvents({
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         }))[0];
 
         assert.equal(event.event, 'LogNewMeterRead');
-
-        const TIMESTAMP = moment().unix();
 
         assert.deepEqual(event.returnValues, {
             0: '0',

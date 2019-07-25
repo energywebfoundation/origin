@@ -180,7 +180,7 @@ describe('AssetConsumingLogic Facade', () => {
         assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
 
         try {
-            const asset = await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+            await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         } catch (e) {
             assert.include(e.message, 'smartmeter does already exist');
         }
@@ -190,8 +190,10 @@ describe('AssetConsumingLogic Facade', () => {
 
     it('should log a new meterreading', async () => {
         conf.blockchainProperties.activeUser = {
-            address: assetSmartmeter, privateKey: assetSmartmeterPK,
+            address: assetSmartmeter,
+            privateKey: assetSmartmeterPK,
         };
+
         let asset = await (new ConsumingAsset.Entity('0', conf).sync());
 
         await asset.saveSmartMeterRead(100, 'newFileHash');
