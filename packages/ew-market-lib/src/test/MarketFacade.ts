@@ -150,7 +150,7 @@ describe('Market-Facade', () => {
 
             const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
                 timeframe: GeneralLib.TimeFrame.hourly,
-                pricePerCertifiedWh: 10,
+                maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
                 productingAsset: 0,
                 consumingAsset: 0,
@@ -193,7 +193,7 @@ describe('Market-Facade', () => {
                     locationRegion: 'string',
                     minCO2Offset: 10,
                     otherGreenAttributes: 'string',
-                    pricePerCertifiedWh: 10,
+                    maxPricePerMwh: 1.5,
                     productingAsset: 0,
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
@@ -230,7 +230,7 @@ describe('Market-Facade', () => {
                     locationRegion: 'string',
                     minCO2Offset: 10,
                     otherGreenAttributes: 'string',
-                    pricePerCertifiedWh: 10,
+                    maxPricePerMwh: 1.5,
                     productingAsset: 0,
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
