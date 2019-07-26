@@ -118,11 +118,11 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
     }
 
     async componentDidMount() {
-        await super.componentDidMount();        
-
         if (this.props.selectedState === SelectedState.ForDemand && this.props.demand) {
             await this.initMatchingCertificates(this.props.demand);
         }
+
+        await super.componentDidMount();
     }
 
     async componentDidUpdate(newProps: ICertificateTableProps) {
@@ -132,7 +132,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
     }
 
     async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const enrichedData = await this.enrichData(this.props.certificates);        
+        const enrichedData = await this.enrichData(this.props.certificates);
 
         const filteredIEnrichedCertificateData = enrichedData.filter(
             (EnrichedCertificateData: IEnrichedCertificateData) => {
@@ -418,7 +418,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
 
             const offChainProperties: Demand.IDemandOffChainProperties = {
                 timeframe: TimeFrame.yearly,
-                pricePerCertifiedWh: 0,
+                maxPricePerMwh: 0,
                 currency: Currency.USD,
                 productingAsset: certificate.assetId,
                 consumingAsset: 0,

@@ -133,7 +133,6 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                 const priceValid = !isNaN(price)
                     && price > 0
                     && countDecimals(price) <= (this.isErc20Sale ? 0 : 2);
-                console.log({price, priceValid})
 
                 this.setState({
                     price: event.target.value,

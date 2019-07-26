@@ -51,16 +51,16 @@ export abstract class PaginatedLoader<Props extends IPaginatedLoaderProps, State
         } = this.state;
 
         const offset = (page - 1) * pageSize;
-    
+
         const { total, data } = await this.getPaginatedData({
             pageSize,
             offset
         });
-    
+
         if (!this._isMounted) {
           return;
         }
-    
+
         this.setState({
           data,
           total
