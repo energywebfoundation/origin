@@ -119,6 +119,12 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
         );
 
         demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            const demandAlreadyExists = this.props.demands.some(d => d.id === event.returnValues._demandId);
+
+            if (demandAlreadyExists) {
+                return;
+            }
+
             const demand = await (new Demand.Entity(
                 event.returnValues._demandId,
                 this.props.configuration).sync()
