@@ -1,7 +1,7 @@
 import { assert } from 'chai';
-import { mock, instance, when, spy } from 'ts-mockito';
+import { mock, instance, when, spy, reset } from 'ts-mockito';
 
-import { Configuration } from 'ew-utils-general-lib';
+import { Configuration, Currency } from 'ew-utils-general-lib';
 import { Certificate } from 'ew-origin-lib';
 import { Demand, Agreement, Supply } from 'ew-market-lib';
 
@@ -14,117 +14,251 @@ import {
 
 describe('Test Matcher Logic', async () => {
     const mockedConfiguration: Configuration.Entity = mock(Configuration.Entity);
-    const conf: mockedConfiguration = instance(mockedConfiguration);
+    const conf: Configuration.Entity = instance(mockedConfiguration);
 
     describe('findMatchingDemandsForCertificate', async () => {
-        it('matches only when certificate power higher or equal than demand', async () => {
+        it('matches only when demand matches certificate', async () => {
+            const testCertificate = {
+                powerInW: 1e6,
+                offChainSettlementOptions: {
+                    price: 150,
+                    currency: Currency.EUR
+                },
+                acceptedToken: '0x0000000000000000000000000000000000000000'
+            };
+
+            const testDemands = [
+                // All checks should fail
+                {
+                    targetWhPerPeriod: 1.5e6,
+                    maxPricePerMwh: 100,
+                    currency: Currency.USD
+                },
+                // Wh check should fail
+                {
+                    targetWhPerPeriod: 1e5,
+                    maxPricePerMwh: 100,
+                    currency: Currency.EUR
+                },
+                // Price check should fail
+                {
+                    targetWhPerPeriod: 1.5e6,
+                    maxPricePerMwh: 200,
+                    currency: Currency.EUR
+                },
+                // Currency check should fail
+                {
+                    targetWhPerPeriod: 1e5,
+                    maxPricePerMwh: 200,
+                    currency: Currency.USD
+                },
+                // All checks should pass
+                {
+                    targetWhPerPeriod: 1e5,
+                    maxPricePerMwh: 200,
+                    currency: Currency.EUR
+                }
+            ];
+
+            const numShouldMatch = 1;
+
             const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
-            when(mockedCertificate.powerInW).thenReturn(10);
+            when(mockedCertificate.powerInW).thenReturn(testCertificate.powerInW);
+            when(mockedCertificate.offChainSettlementOptions).thenReturn(testCertificate.offChainSettlementOptions);
+            when(mockedCertificate.acceptedToken).thenReturn(testCertificate.acceptedToken);
 
-            const mockedDemand: Demand.Entity = mock(Demand.Entity);
-            when(mockedDemand.offChainProperties).thenReturn({
-                targetWhPerPeriod: 8
-            }).thenReturn({
-                targetWhPerPeriod: 9
-            }).thenReturn({
-                targetWhPerPeriod: 10
-            }).thenReturn({
-                targetWhPerPeriod: 11
-            });
+            const certificate: Certificate.Entity = instance(mockedCertificate);
+            const demandsToTest = [];
 
-            const certificate: mockedCertificate = instance(mockedCertificate);
-            const demands = [];
-
-            for (let i = 0; i < 4; i++) {
-                const demand: mockedDemand = instance(mockedDemand);
-                demands.push(demand);
+            for (const demand of testDemands) {
+                const mockedDemand: Demand.Entity = mock(Demand.Entity);
+                when(mockedDemand.offChainProperties).thenReturn(demand);
+                const demandInstance: Demand.Entity = instance(mockedDemand);
+                demandsToTest.push(demandInstance);
             }
 
-            const matchedDemands = await findMatchingDemandsForCertificate(certificate, conf, demands);
-            assert.lengthOf(matchedDemands, 3);
+            const matchedDemands = await findMatchingDemandsForCertificate(certificate, conf, demandsToTest);
+            assert.lengthOf(matchedDemands, numShouldMatch);
         });
     });
 
     describe('findMatchingCertificatesForDemand', async () => {
-        it('matches only when certificate power higher or equal than demand', async () => {
+        it('matches only when certificate matches demand', async () => {
+            const testDemand = {
+                targetWhPerPeriod: 1e6,
+                maxPricePerMwh: 150,
+                currency: Currency.EUR
+            };
+
+            const testCertificates = [
+                // All checks should fail
+                {
+                    powerInW: 1e6,
+                    offChainSettlementOptions: {
+                        price: 200,
+                        currency: Currency.EUR
+                    },
+                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    forSale: true
+                },
+                // Wh check should fail
+                {
+                    powerInW: 1.1e6,
+                    offChainSettlementOptions: {
+                        price: 200,
+                        currency: Currency.EUR
+                    },
+                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    forSale: true
+                },
+                // Price check should fail
+                {
+                    powerInW: 0.9e6,
+                    offChainSettlementOptions: {
+                        price: 100,
+                        currency: Currency.EUR
+                    },
+                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    forSale: true
+                },
+                // Currency check should fail
+                {
+                    powerInW: 1.1e6,
+                    offChainSettlementOptions: {
+                        price: 100,
+                        currency: Currency.USD
+                    },
+                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    forSale: true
+                },
+                // For sale check should fail
+                {
+                    powerInW: 1.1e6,
+                    offChainSettlementOptions: {
+                        price: 100,
+                        currency: Currency.EUR
+                    },
+                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    forSale: false
+                },
+                // All checks should pass
+                {
+                    powerInW: 1.1e6,
+                    offChainSettlementOptions: {
+                        price: 100,
+                        currency: Currency.EUR
+                    },
+                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    forSale: true
+                }
+            ];
+
+            const numShouldMatch = 1;
+
             const mockedDemand: Demand.Entity = mock(Demand.Entity);
-            when(mockedDemand.offChainProperties).thenReturn({
-                targetWhPerPeriod: 10
-            });
+            when(mockedDemand.offChainProperties).thenReturn(testDemand);
 
-            const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
-            when(mockedCertificate.powerInW).thenReturn(9).thenReturn(10).thenReturn(11).thenReturn(12);
+            const demand: Demand.Entity = instance(mockedDemand);
+            const certificatesToTest = [];
 
-            const demand: mockedDemand = instance(mockedDemand);
-            const certificates = [];
-            
-            for (let i = 0; i < 4; i++) {
-                const certificate: mockedCertificate = instance(mockedCertificate);
-                certificates.push(certificate);
+            for (const certificate of testCertificates) {
+                const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
+                when(mockedCertificate.powerInW).thenReturn(certificate.powerInW);
+                when(mockedCertificate.offChainSettlementOptions).thenReturn(certificate.offChainSettlementOptions);
+                when(mockedCertificate.acceptedToken).thenReturn(certificate.acceptedToken);
+                when(mockedCertificate.forSale).thenReturn(certificate.forSale);
+
+                const certificateInstance: Certificate.Entity = instance(mockedCertificate);
+                certificatesToTest.push(certificateInstance);
             }
 
-            const matchedCertificates = await findMatchingCertificatesForDemand(demand, conf, certificates);
-            assert.lengthOf(matchedCertificates, 3);
+            const matchedCertificates = await findMatchingCertificatesForDemand(demand, conf, certificatesToTest);
+            assert.lengthOf(matchedCertificates, numShouldMatch);
         });
     });
 
     describe('findMatchingSuppliesForDemand', async () => {
-        it('matches only when supply power higher or equal than demand', async () => {
+        it('matches only when supply matches demand', async () => {
+            const testDemand = {
+                targetWhPerPeriod: 1e6,
+                maxPricePerMwh: 150
+            };
+
+            const testSupplies = [
+                // Both checks should fail
+                {
+                    availableWh: 0.9e6,
+                    price: 200
+                },
+                // Wh check should fail
+                {
+                    availableWh: 1.1e6,
+                    price: 200
+                },
+                // Price check should fail
+                {
+                    availableWh: 0.9e6,
+                    price: 100
+                },
+                // Both checks should pass
+                {
+                    availableWh: 1.1e6,
+                    price: 100
+                }
+            ];
+
+            const numShouldMatch = 1;
+
             const mockedDemand: Demand.Entity = mock(Demand.Entity);
-            when(mockedDemand.offChainProperties).thenReturn({
-                targetWhPerPeriod: 10
-            });
+            when(mockedDemand.offChainProperties).thenReturn(testDemand);
 
-            const mockedSupply: Supply.Entity = mock(Supply.Entity);
-            when(mockedSupply.offChainProperties).thenReturn({
-                availableWh: 9
-            }).thenReturn({
-                availableWh: 10
-            }).thenReturn({
-                availableWh: 11
-            }).thenReturn({
-                availableWh: 12
-            });
+            const demand: Demand.Entity = instance(mockedDemand);
+            const suppliesToTest = [];
 
-            const demand: mockedDemand = instance(mockedDemand);
-            const supplies = [];
-            
-            for (let i = 0; i < 4; i++) {
-                const supply: mockedSupply = instance(mockedSupply);
-                supplies.push(supply);
+            for (const supply of testSupplies) {
+                const mockedSupply: Supply.Entity = mock(Supply.Entity);
+                when(mockedSupply.offChainProperties).thenReturn(supply);
+
+                const supplyInstance: Supply.Entity = instance(mockedSupply);
+                suppliesToTest.push(supplyInstance);
             }
 
-            const matchedSupplies = await findMatchingSuppliesForDemand(demand, conf, supplies);
-            assert.lengthOf(matchedSupplies, 3);
+            const matchedSupplies = await findMatchingSuppliesForDemand(demand, conf, suppliesToTest);
+            assert.lengthOf(matchedSupplies, numShouldMatch);
         });
     });
 
     // TO-DO Finish mocking this test
+    describe('findMatchingAgreementsForCertificate', async () => {
+        xit('matches when certificate assetId equals agreement supply assetId', async () => {
+            const testCertificate = {
+                assetId: 0
+            };
 
-    // describe('findMatchingAgreementsForCertificate', async () => {
-    //     it('matches when certificate assetId equals agreement supply assetId', async () => {
-    //         const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
-    //         when(mockedCertificate.assetId).thenReturn(0);
+            const testAgreements = [
+                { supplyId: 1 },
+                { supplyId: 2 },
+                { supplyId: 3 }
+            ];
 
-    //         const mockedAgreement: Agreement.Entity = mock(Agreement.Entity);
-    //         when(mockedAgreement.supplyId).thenReturn(1).thenReturn(2).thenReturn(3);
-            
-    //         const certificate: mockedCertificate = instance(mockedCertificate);
-    //         const agreements = [];
+            const expectedMatches = 1;
 
-    //         for (let i = 0; i < 3; i++) {
-    //             const agreement: mockedAgreement = instance(mockedAgreement);
-    //             agreements.push(agreement);
-    //         }
+            const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
+            when(mockedCertificate.assetId).thenReturn(testCertificate.assetId);
 
-    //         console.log({
-    //             certAssetId: certificate.assetId,
-    //             agreementsAssetIds: agreements.map(agreement => agreement.supplyId)
-    //         })
+            const certificate: Certificate.Entity = instance(mockedCertificate);
+            const agreementsToTest = [];
 
-    //         const matchedAgreements = await findMatchingAgreementsForCertificate(certificate, conf, agreements);
-    //         assert.lengthOf(matchedAgreements, 1);
-    //     });
-    // });
+            for (const agreement of testAgreements) {
+                const mockedAgreement: Agreement.Entity = mock(Agreement.Entity);
+                when(mockedAgreement.supplyId).thenReturn(agreement.supplyId);
 
+                const agreementInstance: Agreement.Entity = instance(mockedAgreement);
+                agreementsToTest.push(agreementInstance);
+            }
+
+            const matchedAgreements = await findMatchingAgreementsForCertificate(certificate, conf, agreementsToTest);
+            assert.lengthOf(matchedAgreements, expectedMatches);
+        });
+    });
 });

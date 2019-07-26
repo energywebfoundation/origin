@@ -162,7 +162,7 @@ export class BlockchainModeController extends Controller {
     async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
         const demand = this.getDemand(agreement.demandId.toString());
         logger.debug(
-            `Transfering certificate to ${demand.demandOwner} with account ${
+            `Transferring certificate to ${demand.demandOwner} with account ${
                 this.conf.blockchainProperties.activeUser.address
             }`
         );
@@ -198,6 +198,7 @@ export class BlockchainModeController extends Controller {
             certificate.children['1'],
             this.conf
         ).sync();
+
         await this.matchTrigger(childCertificate1);
         await this.matchTrigger(childCertificate2);
     }
@@ -205,12 +206,11 @@ export class BlockchainModeController extends Controller {
     async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
         logger.info(`Matched certificate #${certificate.id} to demand #${demand.id}`);
         logger.debug(
-            `Transfering certificate to ${demand.demandOwner} with account ${
+            `Transferring certificate to ${demand.demandOwner} with account ${
                 this.conf.blockchainProperties.activeUser.address
             }`
         );
         await certificate.transferFrom(demand.demandOwner);
-
     }
 
     async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number> {

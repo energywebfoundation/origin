@@ -159,7 +159,7 @@ describe('Test Matcher', async () => {
 
         const demandOffchainProps: Demand.IDemandOffChainProperties = {
             timeframe: TimeFrame.hourly,
-            pricePerCertifiedWh: 10,
+            maxPricePerMwh: 150,
             currency: Currency.USD,
             productingAsset: 0,
             consumingAsset: 0,
@@ -169,7 +169,7 @@ describe('Test Matcher', async () => {
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
-            targetWhPerPeriod: 10,
+            targetWhPerPeriod: 1e6,
             registryCompliance: Compliance.EEC,
             startTime: '1559466472732',
             endTime: '1559466492732'
@@ -242,9 +242,9 @@ describe('Test Matcher', async () => {
                 assetId: 0
             },
             {
-                price: 10,
+                price: 150,
                 currency: Currency.USD,
-                availableWh: 10,
+                availableWh: 1e6,
                 timeframe: TimeFrame.hourly
             },
             conf
@@ -294,7 +294,7 @@ describe('Test Matcher', async () => {
             };
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
-            await producingAsset.saveSmartMeterRead(10, 'newMeterRead');
+            await producingAsset.saveSmartMeterRead(1e6, 'newMeterRead');
 
             await certificateLogic.requestCertificates(0, 0, {
                 privateKey: assetOwnerPK
@@ -303,17 +303,33 @@ describe('Test Matcher', async () => {
             await certificateLogic.approveCertificationRequest(0, {
                 privateKey: issuerPK
             });
-        });
+        }).timeout(10000);
 
         it('certificate has been created', async () => {
+            assert.equal(await Certificate.getCertificateListLength(conf), 1);
+        });
+
+        it('certificate has been published for sale', async () => {
             conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
+                address: assetOwnerAddress,
+                privateKey: assetOwnerPK
             };
+
+            let certificate = await new Certificate.Entity('0', conf).sync();
+
+            await certificate.publishForSale(1,  Currency.USD);
+            certificate = await certificate.sync();
+
+            assert.isTrue(certificate.forSale);
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
         });
 
         it('certificate owner is the trader', async () => {
+            conf.blockchainProperties.activeUser = {
+                address: accountTrader,
+                privateKey: traderPK
+            };
+
             const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
             await sleep(10000);
 
@@ -334,7 +350,7 @@ describe('Test Matcher', async () => {
             const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
                 start: startTime,
                 end: startTime + startTime,
-                price: 10,
+                price: 150,
                 currency: Currency.USD,
                 period: 10,
                 timeframe: TimeFrame.hourly
@@ -378,7 +394,7 @@ describe('Test Matcher', async () => {
             };
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
-            await producingAsset.saveSmartMeterRead(30, 'newMeterRead2');
+            await producingAsset.saveSmartMeterRead(2.5e6, 'newMeterRead2');
 
             await certificateLogic.requestCertificates(0, 1, {
                 privateKey: assetOwnerPK
@@ -387,7 +403,7 @@ describe('Test Matcher', async () => {
             await certificateLogic.approveCertificationRequest(1, {
                 privateKey: issuerPK
             });
-        });
+        }).timeout(10000);
 
         it('certificate has been created', async () => {
             conf.blockchainProperties.activeUser = {
@@ -395,6 +411,12 @@ describe('Test Matcher', async () => {
                 privateKey: traderPK
             };
             assert.equal(await Certificate.getCertificateListLength(conf), 2);
+        });
+
+        it('certificate is not for sale', async () => {
+            const certificate = await new Certificate.Entity('1', conf).sync();
+
+            assert.isFalse(certificate.forSale);
         });
 
         it('a certificate has been split', async () => {
@@ -414,7 +436,7 @@ describe('Test Matcher', async () => {
             assert.equal(await certificate1.getOwner(), accountTrader);
 
             const certificate2 = await new Certificate.Entity('3', conf).sync();
-            assert.equal(await certificate2.getOwner(), accountTrader);
+            assert.equal(await certificate2.getOwner(), assetOwnerAddress);
         });
     });
 });

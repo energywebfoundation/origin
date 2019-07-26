@@ -118,6 +118,13 @@ export class ConfigurableReferenceMatcher extends Matcher {
         logger.debug(`Scanning ${demands.length} demands for a match.`);
 
         const matchedDemands = await findMatchingDemandsForCertificate(certificate, this.controller.conf, demands);
+
+        if (matchedDemands.length === 0) {
+            logger.info('Found no matching demands for certificate #' + certificate.id);
+
+            return { split: false, demand: null };
+        }
+
         const offeredPower: number = Number(certificate.powerInW);
 
         for (const demand of matchedDemands) {
