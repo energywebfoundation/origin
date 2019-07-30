@@ -4,6 +4,7 @@ import './Modal.scss';
 import '../PageButton/PageButton.scss';
 import moment from 'moment';
 
+import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Currency, Configuration } from 'ew-utils-general-lib';
 import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
@@ -108,7 +109,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         }
     }
 
-    validateInputs(event) {
+    async validateInputs(event) {
         const countDecimals = value => value % 1 ? value.toString().split('.')[1].length : 0;
 
         switch (event.target.id) {
@@ -144,12 +145,26 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                 });
                 break;
             case 'tokenAddressInput':
+                const givenAddress = event.target.value;
+                const isAddress = this.props.conf.blockchainProperties.web3.utils.isAddress(givenAddress);
+                let isInitializedToken = true;
+
+                if (isAddress) {
+                    const token = new Erc20TestToken(this.props.conf.blockchainProperties.web3, givenAddress);
+
+                    try {
+                        await token.web3Contract.methods.symbol().call();
+                    } catch (e) {
+                        isInitializedToken = false;
+                    }
+                }
+
                 this.setState({
-                    erc20TokenAddress: event.target.value,
+                    erc20TokenAddress: givenAddress,
                     validation: {
                         kwh: this.state.validation.kwh,
                         price: this.state.validation.price,
-                        erc20TokenAddress: this.props.conf.blockchainProperties.web3.utils.isAddress(event.target.value)
+                        erc20TokenAddress: isAddress && isInitializedToken
                     }
                 });
                 break;
