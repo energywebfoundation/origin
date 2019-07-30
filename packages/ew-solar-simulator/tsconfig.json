@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/js",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "declaration": true,
+        "module": "CommonJS",
+        "target": "es2018",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": [
+            "es2018"
+        ]
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
