@@ -17,19 +17,20 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "ew-user-registry-lib/contracts/Users/RoleManagement.sol";
+import "ew-erc-test-contracts/contracts/Interfaces/ERC721.sol";
+import "ew-erc-test-contracts/contracts/Interfaces/ERC721TokenReceiver.sol";
 import "ew-utils-general-lib/contracts/Interfaces/Updatable.sol";
-import "../../contracts/Origin/TradableEntityContract.sol";
-import "../../contracts/Interfaces/ERC721.sol";
-import "../../contracts/Interfaces/ERC721TokenReceiver.sol";
-import "../../contracts/Interfaces/ERC165.sol";
+import "ew-user-registry-lib/contracts/Users/RoleManagement.sol";
+import "ew-user-registry-lib/contracts/Interfaces/UserContractLookupInterface.sol";
 import "ew-asset-registry-lib/contracts/Interfaces/AssetProducingInterface.sol";
+import "ew-asset-registry-lib/contracts/Interfaces/AssetContractLookupInterface.sol";
+
+import "../..//contracts/Interfaces/ERC165.sol";
+import "../../contracts/Origin/TradableEntityContract.sol";
 import "../../contracts/Origin/EnergyDB.sol";
 import "../../contracts/Interfaces/TradableEntityDBInterface.sol";
 import "../../contracts/Interfaces/OriginContractLookupInterface.sol";
 import "../../contracts/Interfaces/TradableEntityInterface.sol";
-import "ew-asset-registry-lib/contracts/Interfaces/AssetContractLookupInterface.sol";
-import "ew-user-registry-lib/contracts/Interfaces/UserContractLookupInterface.sol";
 
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, TradableEntityInterface {

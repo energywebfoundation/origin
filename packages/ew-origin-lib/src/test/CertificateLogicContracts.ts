@@ -18,6 +18,7 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
+import moment from 'moment';
 
 import { migrateUserRegistryContracts, UserLogic, UserContractLookup, buildRights, Role } from 'ew-user-registry-lib';
 import {
@@ -26,18 +27,14 @@ import {
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
 import { deploy } from 'ew-utils-deployment';
+import { TestReceiver, Erc20TestToken, Erc20TestTokenJSON, Erc721TestReceiverJSON } from 'ew-erc-test-contracts';
 
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 import { CertificateDB } from '../wrappedContracts/CertificateDB';
 import { CertificateLogic } from '../wrappedContracts/CertificateLogic';
-import { TestReceiver } from '../wrappedContracts/TestReceiver';
-import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
-import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
-import Erc721TestReceiverJSON from '../../build/contracts/TestReceiver.json';
 import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '..';
 import * as Certificate from '../blockchain-facade/Certificate';
-import moment from 'moment';
 
 describe('CertificateLogic', () => {
     let assetRegistryContract: AssetContractLookup;

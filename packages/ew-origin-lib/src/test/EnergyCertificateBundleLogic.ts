@@ -26,15 +26,13 @@ import {
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
 import { deploy } from 'ew-utils-deployment';
+import { Erc20TestToken, Erc20TestTokenJSON, Erc721TestReceiverJSON, TestReceiver } from 'ew-erc-test-contracts';
 
 import { migrateEnergyBundleContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
-import { TestReceiver } from '../wrappedContracts/TestReceiver';
 import { EnergyCertificateBundleLogic } from '../wrappedContracts/EnergyCertificateBundleLogic';
 import { EnergyCertificateBundleDB } from '../wrappedContracts/EnergyCertificateBundleDB';
-import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
-import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
-import Erc721TestReceiverJSON from '../../build/contracts/TestReceiver.json';
+
 import {
     EnergyCertificateBundleLogicJSON,
     EnergyCertificateBundleDBJSON,

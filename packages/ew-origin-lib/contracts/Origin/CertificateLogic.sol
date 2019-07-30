@@ -21,17 +21,18 @@ pragma experimental ABIEncoderV2;
 /// @notice This contract provides the logic that determines how the data is stored
 /// @dev Needs a valid CertificateDB(db) contract to function correctly
 
+import "ew-erc-test-contracts/contracts/Interfaces/ERC20Interface.sol";
 import "ew-user-registry-lib/contracts/Users/RoleManagement.sol";
-import "../../contracts/Origin/CertificateDB.sol";
 import "ew-asset-registry-lib/contracts/Interfaces/AssetProducingInterface.sol";
+import "ew-asset-registry-lib/contracts/Interfaces/AssetContractLookupInterface.sol";
+import "ew-asset-registry-lib/contracts/Asset/AssetProducingDB.sol";
+
+import "../../contracts/Origin/CertificateDB.sol";
 import "../../contracts/Origin/TradableEntityContract.sol";
 import "../../contracts/Origin/TradableEntityLogic.sol";
-import "ew-asset-registry-lib/contracts/Interfaces/AssetContractLookupInterface.sol";
 import "../../contracts/Interfaces/OriginContractLookupInterface.sol";
 import "../../contracts/Interfaces/CertificateInterface.sol";
-import "../../contracts/Interfaces/ERC20Interface.sol";
 import "../../contracts/Interfaces/TradableEntityDBInterface.sol";
-import "ew-asset-registry-lib/contracts/Asset/AssetProducingDB.sol";
 
 import "../../contracts/Origin/CertificateSpecificDB.sol";
 import "../../contracts/Origin/CertificateSpecificContract.sol";
