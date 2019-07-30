@@ -15,31 +15,20 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
 
 import * as fs from 'fs';
+
+import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Certificate, TradableEntity } from 'ew-origin-lib';
+import { ConsumingAsset, ProducingAsset } from 'ew-asset-registry-lib';
+import { Configuration, Currency } from 'ew-utils-general-lib';
+import { CertificateLogic } from 'ew-origin-lib';
+
 import { onboardDemo } from './onboarding';
-
-import * as Certificate from 'ew-origin-lib';
-import * as User from 'ew-user-registry-lib';
-import * as Asset from 'ew-asset-registry-lib';
-import * as GeneralLib from 'ew-utils-general-lib';
-import {
-    CertificateLogic
-} from 'ew-origin-lib';
-
-import {
-    deployERC20TestToken,
-    Erc20TestToken,
-    TestReceiver,
-    deployERC721TestReceiver
-} from 'ew-erc-test-contracts';
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 export const certificateDemo = async (
     actionString: string,
-    conf: GeneralLib.Configuration.Entity,
-    adminPrivateKey: string
+    conf: Configuration.Entity,
+    adminPrivateKey: string,
+    erc20TestAddress: string
 ) => {
     const action = JSON.parse(actionString);
 
@@ -74,7 +63,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let asset = await new Asset.ProducingAsset.Entity(action.data.assetId, conf).sync();
+                let asset = await new ProducingAsset.Entity(action.data.assetId, conf).sync();
                 await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash, action.data.timestamp || 0);
                 asset = await asset.sync();
                 conf.logger.verbose('Producing smart meter reading saved');
@@ -94,7 +83,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let asset = await new Asset.ConsumingAsset.Entity(action.data.assetId, conf).sync();
+                let asset = await new ConsumingAsset.Entity(action.data.assetId, conf).sync();
                 await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash, action.data.timestamp || 0);
                 asset = await asset.sync();
                 conf.logger.verbose('Consuming meter reading saved');
@@ -142,13 +131,13 @@ export const certificateDemo = async (
             try {
                 conf.logger.verbose(
                     'Asset Owner Balance(BEFORE): ' +
-                        (await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf))
+                        (await TradableEntity.getBalance(action.data.assetOwner, conf))
                 );
                 conf.logger.verbose(
                     'Asset Owner Balance(BEFORE): ' +
-                        (await Certificate.TradableEntity.getBalance(action.data.addressTo, conf))
+                        (await TradableEntity.getBalance(action.data.addressTo, conf))
                 );
-                const certificate = await new Certificate.Certificate.Entity(
+                const certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
@@ -156,11 +145,11 @@ export const certificateDemo = async (
                 conf.logger.info('Certificate Transferred');
                 conf.logger.verbose(
                     'Asset Owner Balance(AFTER): ' +
-                        (await Certificate.TradableEntity.getBalance(action.data.assetOwner, conf))
+                        (await TradableEntity.getBalance(action.data.assetOwner, conf))
                 );
                 conf.logger.verbose(
                     'Asset Owner Balance(AFTER): ' +
-                        (await Certificate.TradableEntity.getBalance(action.data.addressTo, conf))
+                        (await TradableEntity.getBalance(action.data.addressTo, conf))
                 );
             } catch (e) {
                 conf.logger.error('Could not transfer certificates\n' + e);
@@ -178,7 +167,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Certificate.Entity(
+                let certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
@@ -188,7 +177,7 @@ export const certificateDemo = async (
                 conf.logger.info('Certificate Split into:', certificate.children);
 
                 for (const cId of certificate.children) {
-                    const c = await new Certificate.Certificate.Entity(cId.toString(), conf).sync();
+                    const c = await new Certificate.Entity(cId.toString(), conf).sync();
                     conf.logger.info('Child Certificate #' + cId + ' - PowerInW: ' + c.powerInW);
                 }
             } catch (e) {
@@ -207,19 +196,13 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Certificate.Entity(
+                let certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
 
                 await certificate.setOnChainDirectPurchasePrice(action.data.price);
                 certificate = await certificate.sync();
-
-                const erc20TestAddress = (await deployERC20TestToken(
-                    conf.blockchainProperties.web3,
-                    action.data.testAccount,
-                    adminPK
-                )).contractAddress;
 
                 const erc20TestToken = new Erc20TestToken(
                     conf.blockchainProperties.web3,
@@ -255,7 +238,7 @@ export const certificateDemo = async (
             );
 
             try {
-                let certificate = await new Certificate.Certificate.Entity(
+                let certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
@@ -278,7 +261,7 @@ export const certificateDemo = async (
                 privateKey: action.data.certificateOwnerPK
             };
             try {
-                let certificate = await new Certificate.Certificate.Entity(
+                let certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
@@ -287,16 +270,16 @@ export const certificateDemo = async (
 
                 switch (action.data.currency) {
                     case 'EUR':
-                        currency = GeneralLib.Currency.EUR;
+                        currency = Currency.EUR;
                         break;
                     case 'USD':
-                        currency = GeneralLib.Currency.USD;
+                        currency = Currency.USD;
                         break;
                     case 'SGD':
-                        currency = GeneralLib.Currency.SGD;
+                        currency = Currency.SGD;
                         break;
                     case 'THB':
-                        currency = GeneralLib.Currency.THB;
+                        currency = Currency.THB;
                         break;
                 }
 
@@ -340,7 +323,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Certificate.Entity(
+                let certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
@@ -382,9 +365,9 @@ export const certificateDemo = async (
             try {
                 conf.logger.verbose(
                     'Buyer Balance(BEFORE): ' +
-                        (await Certificate.TradableEntity.getBalance(action.data.buyer, conf))
+                        (await TradableEntity.getBalance(action.data.buyer, conf))
                 );
-                const certificate = await new Certificate.Certificate.Entity(
+                const certificate = await new Certificate.Entity(
                     action.data.certId,
                     conf
                 ).sync();
@@ -392,7 +375,7 @@ export const certificateDemo = async (
                 conf.logger.info('Certificate Bought');
                 conf.logger.verbose(
                     'Buyer Balance(AFTER): ' +
-                        (await Certificate.TradableEntity.getBalance(action.data.buyer, conf))
+                        (await TradableEntity.getBalance(action.data.buyer, conf))
                 );
             } catch (e) {
                 conf.logger.error('Could not buy Certificates\n' + e);

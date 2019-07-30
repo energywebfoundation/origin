@@ -16,21 +16,16 @@
 
 import * as fs from 'fs';
 import Web3 from 'web3';
+
+import { deployERC20TestToken } from 'ew-erc-test-contracts';
+import { Configuration, AssetType, Currency, Compliance, TimeFrame } from 'ew-utils-general-lib';
+import { UserLogic, Role, buildRights } from 'ew-user-registry-lib';
+import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from 'ew-asset-registry-lib';
+import { Demand, Supply, Agreement, MarketLogic } from 'ew-market-lib';
+import { CertificateLogic } from 'ew-origin-lib';
+
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
-
-import * as GeneralLib from 'ew-utils-general-lib';
-import * as Market from 'ew-market-lib';
-
-import { UserLogic, Role, buildRights } from 'ew-user-registry-lib';
-
-import {
-    AssetProducingRegistryLogic,
-    AssetConsumingRegistryLogic
-} from 'ew-asset-registry-lib';
-import {
-    CertificateLogic} from 'ew-origin-lib';
-import { MarketLogic } from 'ew-market-lib';
 import { CONFIG } from './config';
 
 export const marketDemo = async (demoFile?: string) => {
@@ -81,7 +76,7 @@ export const marketDemo = async (demoFile?: string) => {
     let currency;
 
     // blockchain configuration
-    let conf: GeneralLib.Configuration.Entity;
+    let conf: Configuration.Entity;
 
     conf = {
         blockchainProperties: {
@@ -104,6 +99,14 @@ export const marketDemo = async (demoFile?: string) => {
 
     const actionsArray = demoConfig.flow;
 
+    const erc20TestAddress = (await deployERC20TestToken(
+        conf.blockchainProperties.web3,
+        adminAccount.address,
+        adminPK
+    )).contractAddress;
+
+    conf.logger.info('ERC20 TOKEN: ' + erc20TestAddress);
+
     for (const action of actionsArray) {
         switch (action.type) {
             case 'CREATE_DEMAND':
@@ -118,66 +121,66 @@ export const marketDemo = async (demoFile?: string) => {
 
                 switch (action.data.assettype) {
                     case 'Wind':
-                        assetTypeConfig = GeneralLib.AssetType.Wind;
+                        assetTypeConfig = AssetType.Wind;
                         break;
                     case 'Solar':
-                        assetTypeConfig = GeneralLib.AssetType.Solar;
+                        assetTypeConfig = AssetType.Solar;
                         break;
                     case 'RunRiverHydro':
-                        assetTypeConfig = GeneralLib.AssetType.RunRiverHydro;
+                        assetTypeConfig = AssetType.RunRiverHydro;
                         break;
                     case 'BiomassGas':
-                        assetTypeConfig = GeneralLib.AssetType.BiomassGas;
+                        assetTypeConfig = AssetType.BiomassGas;
                 }
 
                 let assetCompliance;
 
                 switch (action.data.registryCompliance) {
                     case 'IREC':
-                        assetCompliance = GeneralLib.Compliance.IREC;
+                        assetCompliance = Compliance.IREC;
                         break;
                     case 'EEC':
-                        assetCompliance = GeneralLib.Compliance.EEC;
+                        assetCompliance = Compliance.EEC;
                         break;
                     case 'TIGR':
-                        assetCompliance = GeneralLib.Compliance.TIGR;
+                        assetCompliance = Compliance.TIGR;
                         break;
                     default:
-                        assetCompliance = GeneralLib.Compliance.none;
+                        assetCompliance = Compliance.none;
                         break;
                 }
 
                 switch (action.data.timeframe) {
                     case 'yearly':
-                        timeFrame = GeneralLib.TimeFrame.yearly;
+                        timeFrame = TimeFrame.yearly;
                         break;
                     case 'monthly':
-                        timeFrame = GeneralLib.TimeFrame.monthly;
+                        timeFrame = TimeFrame.monthly;
                         break;
                     case 'daily':
-                        timeFrame = GeneralLib.TimeFrame.daily;
+                        timeFrame = TimeFrame.daily;
                         break;
                     case 'hourly':
-                        timeFrame = GeneralLib.TimeFrame.hourly;
+                        timeFrame = TimeFrame.hourly;
                         break;
                 }
 
                 switch (action.data.currency) {
                     case 'EUR':
-                        currency = GeneralLib.Currency.EUR;
+                        currency = Currency.EUR;
                         break;
                     case 'USD':
-                        currency = GeneralLib.Currency.USD;
+                        currency = Currency.USD;
                         break;
                     case 'SGD':
-                        currency = GeneralLib.Currency.SGD;
+                        currency = Currency.SGD;
                         break;
                     case 'THB':
-                        currency = GeneralLib.Currency.THB;
+                        currency = Currency.THB;
                         break;
                 }
 
-                const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
+                const demandOffchainProps: Demand.IDemandOffChainProperties = {
                     timeframe: timeFrame,
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
@@ -195,14 +198,14 @@ export const marketDemo = async (demoFile?: string) => {
                     endTime: action.data.endTime
                 };
 
-                const demandProps: Market.Demand.IDemandOnChainProperties = {
+                const demandProps: Demand.IDemandOnChainProperties = {
                     url: '',
                     propertiesDocumentHash: '',
                     demandOwner: action.data.trader
                 };
 
                 try {
-                    const demand = await Market.Demand.createDemand(
+                    const demand = await Demand.createDemand(
                         demandProps,
                         demandOffchainProps,
                         conf
@@ -227,49 +230,49 @@ export const marketDemo = async (demoFile?: string) => {
 
                 switch (action.data.timeframe) {
                     case 'yearly':
-                        timeFrame = GeneralLib.TimeFrame.yearly;
+                        timeFrame = TimeFrame.yearly;
                         break;
                     case 'monthly':
-                        timeFrame = GeneralLib.TimeFrame.monthly;
+                        timeFrame = TimeFrame.monthly;
                         break;
                     case 'daily':
-                        timeFrame = GeneralLib.TimeFrame.daily;
+                        timeFrame = TimeFrame.daily;
                         break;
                     case 'hourly':
-                        timeFrame = GeneralLib.TimeFrame.hourly;
+                        timeFrame = TimeFrame.hourly;
                         break;
                 }
 
                 switch (action.data.currency) {
                     case 'EUR':
-                        currency = GeneralLib.Currency.EUR;
+                        currency = Currency.EUR;
                         break;
                     case 'USD':
-                        currency = GeneralLib.Currency.USD;
+                        currency = Currency.USD;
                         break;
                     case 'SGD':
-                        currency = GeneralLib.Currency.SGD;
+                        currency = Currency.SGD;
                         break;
                     case 'THB':
-                        currency = GeneralLib.Currency.THB;
+                        currency = Currency.THB;
                         break;
                 }
 
-                const supplyOffChainProperties: Market.Supply.ISupplyOffchainProperties = {
+                const supplyOffChainProperties: Supply.ISupplyOffchainProperties = {
                     price: action.data.price,
                     currency,
                     availableWh: action.data.availableWh,
                     timeframe: timeFrame
                 };
 
-                const supplyProps: Market.Supply.ISupplyOnChainProperties = {
+                const supplyProps: Supply.ISupplyOnChainProperties = {
                     url: '',
                     propertiesDocumentHash: '',
                     assetId: action.data.assetId
                 };
 
                 try {
-                    const supply = await Market.Supply.createSupply(
+                    const supply = await Supply.createSupply(
                         supplyProps,
                         supplyOffChainProperties,
                         conf
@@ -295,35 +298,35 @@ export const marketDemo = async (demoFile?: string) => {
 
                 switch (action.data.timeframe) {
                     case 'yearly':
-                        timeFrame = GeneralLib.TimeFrame.yearly;
+                        timeFrame = TimeFrame.yearly;
                         break;
                     case 'monthly':
-                        timeFrame = GeneralLib.TimeFrame.monthly;
+                        timeFrame = TimeFrame.monthly;
                         break;
                     case 'daily':
-                        timeFrame = GeneralLib.TimeFrame.daily;
+                        timeFrame = TimeFrame.daily;
                         break;
                     case 'hourly':
-                        timeFrame = GeneralLib.TimeFrame.hourly;
+                        timeFrame = TimeFrame.hourly;
                         break;
                 }
 
                 switch (action.data.currency) {
                     case 'EUR':
-                        currency = GeneralLib.Currency.EUR;
+                        currency = Currency.EUR;
                         break;
                     case 'USD':
-                        currency = GeneralLib.Currency.USD;
+                        currency = Currency.USD;
                         break;
                     case 'SGD':
-                        currency = GeneralLib.Currency.SGD;
+                        currency = Currency.SGD;
                         break;
                     case 'THB':
-                        currency = GeneralLib.Currency.THB;
+                        currency = Currency.THB;
                         break;
                 }
 
-                const agreementOffchainProps: Market.Agreement.IAgreementOffChainProperties = {
+                const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
                     start: action.data.startTime,
                     end: action.data.endTime,
                     price: action.data.price,
@@ -332,12 +335,12 @@ export const marketDemo = async (demoFile?: string) => {
                     timeframe: timeFrame
                 };
 
-                const matcherOffchainProps: Market.Agreement.IMatcherOffChainProperties = {
+                const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {
                     currentWh: action.data.currentWh,
                     currentPeriod: action.data.currentPeriod
                 };
 
-                const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
+                const agreementProps: Agreement.IAgreementOnChainProperties = {
                     propertiesDocumentHash: null,
                     url: null,
                     matcherDBURL: null,
@@ -348,7 +351,7 @@ export const marketDemo = async (demoFile?: string) => {
                 };
 
                 try {
-                    const agreement = await Market.Agreement.createAgreement(
+                    const agreement = await Agreement.createAgreement(
                         agreementProps,
                         agreementOffchainProps,
                         matcherOffchainProps,
@@ -380,7 +383,7 @@ export const marketDemo = async (demoFile?: string) => {
                 };
 
                 try {
-                    let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
+                    let agreement: Agreement.Entity = await new Agreement.Entity(
                         action.data.agreementId.toString(),
                         conf
                     ).sync();
@@ -401,7 +404,7 @@ export const marketDemo = async (demoFile?: string) => {
                 break;
             default:
                 const passString = JSON.stringify(action);
-                await certificateDemo(passString, conf, adminPK);
+                await certificateDemo(passString, conf, adminPK, erc20TestAddress);
         }
     }
     conf.logger.info('Total Time: ' + (Date.now() - startTime) / 1000 + ' seconds');
