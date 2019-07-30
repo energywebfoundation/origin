@@ -250,15 +250,10 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
     }
 
     async getTokenSymbol(certificate) {
-        if (certificate.acceptedToken
-            && certificate.acceptedToken !== '0x0000000000000000000000000000000000000000') {
-            const token = new Erc20TestToken(
-                this.props.conf.blockchainProperties.web3,
-                (certificate.acceptedToken as any) as string
-            );
-            const symbol = await token.web3Contract.methods.symbol().call();
+        if (certificate.acceptedToken && certificate.acceptedToken !== '0x0000000000000000000000000000000000000000') {
+            const token = new Erc20TestToken(this.props.conf.blockchainProperties.web3, certificate.acceptedToken);
 
-            return symbol;
+            return await token.web3Contract.methods.symbol().call();
         }
 
         return null;
