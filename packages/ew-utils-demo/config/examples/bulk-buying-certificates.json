@@ -1,0 +1,296 @@
+{
+    "topAdminPrivateKey": "d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5",
+    "flow": [
+        {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "John",
+                "surname": "Doe",
+                "organization": "UserAdmin Organization",
+                "street": "Main Street",
+                "number": "1",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
+                "privateKey": "0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3",
+                "rights": 1
+            }
+        },
+        {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "John",
+                "surname": "Doe Two",
+                "organization": "Issuer",
+                "street": "Main Street",
+                "number": "2",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "privateKey": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3",
+                "rights": 32
+            }
+        },
+        {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "John",
+                "surname": "Doe Four",
+                "organization": "AssetManager Organization",
+                "street": "Main Street",
+                "number": "4",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "privateKey": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
+                "rights": 12
+            }
+        },
+        {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "John",
+                "surname": "Doe Six",
+                "organization": "Trader Organization",
+                "street": "Main Street",
+                "number": "6",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0x7672fa3f8c04abbcbad14d896aad8bedece72d2b",
+                "privateKey": "0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7",
+                "rights": 8
+            }
+        },
+        {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "John",
+                "surname": "Doe Seven",
+                "organization": "Matcher Organization",
+                "street": "Main Street",
+                "number": "7",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
+                "privateKey": "0x05369a7c890005a9babfb52645d0347bbb456ae562bbac5aad27118e2e9e3a6c",
+                "rights": 63
+            }
+        },
+        {
+            "type": "CREATE_PRODUCING_ASSET",
+            "data": {
+                "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
+                "smartMeterPK": "191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "matcher": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
+                "operationalSince": 1514764800,
+                "capacityWh": 10000,
+                "lastSmartMeterReadWh": 0,
+                "active": true,
+                "lastSmartMeterReadFileHash": "",
+                "country": "USA",
+                "region": "AnyState",
+                "zip": "01234",
+                "city": "Anytown",
+                "street": "Main Street",
+                "houseNumber": "8",
+                "gpsLatitude": "0",
+                "gpsLongitude": "0",
+                "assetType": "Wind",
+                "certificatesCreatedForWh": 0,
+                "lastSmartMeterCO2OffsetRead": 0,
+                "complianceRegistry": "none",
+                "otherGreenAttributes": "N.A.",
+                "typeOfPublicSupport": "N.A",
+                "maxOwnerChanges": 3,
+                "facilityName": "Wuthering Heights Windfarm"
+            }
+        },
+        {
+            "type": "SLEEP",
+            "data": 2000
+        },
+        {
+            "type": "SET_MARKET_CONTRACT",
+            "data": {
+                "assetId": 0,
+                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 100000,
+                "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
+                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "filehash": "newMeterRead",
+                "timestamp": "1560988800"
+            }
+        },
+        {
+            "type": "REQUEST_CERTIFICATES",
+            "data": {
+                "assetId": 0,
+                "lastRequestedSMRead": 0,
+                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "APPROVE_CERTIFICATION_REQUEST",
+            "data": {
+                "certificationRequestIndex": 0,
+                "issuer": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "issuerPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3"
+            }
+        },
+        {
+            "type": "PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN",
+            "data": {
+                "certId": 0,
+                "price": 1.5,
+                "certificateOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "certificateOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
+                "currency": "USD"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 500000,
+                "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "filehash": "newMeterRead",
+                "timestamp": "1560989800"
+            }
+        },
+        {
+            "type": "REQUEST_CERTIFICATES",
+            "data": {
+                "assetId": 0,
+                "lastRequestedSMRead": 1,
+                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "APPROVE_CERTIFICATION_REQUEST",
+            "data": {
+                "certificationRequestIndex": 1,
+                "issuer": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "issuerPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3"
+            }
+        },
+        {
+            "type": "PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN",
+            "data": {
+                "certId": 1,
+                "price": 1,
+                "certificateOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "certificateOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
+                "currency": "USD"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 800000,
+                "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "filehash": "newMeterRead"
+            }
+        },
+        {
+            "type": "REQUEST_CERTIFICATES",
+            "data": {
+                "assetId": 0,
+                "lastRequestedSMRead": 2,
+                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "APPROVE_CERTIFICATION_REQUEST",
+            "data": {
+                "certificationRequestIndex": 2,
+                "issuer": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "issuerPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3"
+            }
+        },
+        {
+            "type": "PUBLISH_CERTIFICATE_FOR_SALE",
+            "data": {
+                "certId": 2,
+                "price": 100,
+                "certificateOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "certificateOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "SAVE_SMARTMETER_READ_PRODUCING",
+            "data": {
+                "assetId": 0,
+                "meterreading": 900000,
+                "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "filehash": "newMeterRead"
+            }
+        },
+
+        {
+            "type": "REQUEST_CERTIFICATES",
+            "data": {
+                "assetId": 0,
+                "lastRequestedSMRead": 3,
+                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "APPROVE_CERTIFICATION_REQUEST",
+            "data": {
+                "certificationRequestIndex": 3,
+                "issuer": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
+                "issuerPK": "0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3"
+            }
+        },
+        {
+            "type": "PUBLISH_CERTIFICATE_FOR_SALE",
+            "data": {
+                "certId": 3,
+                "price": 100,
+                "certificateOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "certificateOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+            }
+        },
+        {
+            "type": "SEND_ERC20_TOKENS_TO",
+            "data": {
+                "address": "0x7672fa3f8c04abbcbad14d896aad8bedece72d2b",
+                "amount": 500
+            }
+        },
+        {
+            "type": "BUY_CERTIFICATE_BULK",
+            "data": {
+                "certificateIds": [2, 3],
+                "buyer": "0x7672fa3f8c04abbcbad14d896aad8bedece72d2b",
+                "buyerPK": "0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7"
+            }
+        }
+    ]
+}

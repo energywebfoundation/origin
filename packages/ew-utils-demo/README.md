@@ -62,6 +62,7 @@ Currently the following action types are supported:
 * SET_MARKET_CONTRACT
 * SAVE_SMARTMETER_READ_PRODUCING
 * SAVE_SMARTMETER_READ_CONSUMING
+* SEND_ERC20_TOKENS_TO
 * TRANSFER_CERTIFICATE
 * SPLIT_CERTIFICATE
 * SET_ERC20_CERTIFICATE
@@ -70,6 +71,7 @@ Currently the following action types are supported:
 * REQUEST_CERTIFICATES
 * UNPUBLISH_CERTIFICATE_FROM_SALE
 * BUY_CERTIFICATE
+* BUY_CERTIFICATE_BULK
 * CREATE_DEMAND
 * CREATE_SUPPLY
 * MAKE_AGREEMENT
@@ -315,6 +317,22 @@ Keep in mind that the meterrading is not doing any addition, so the meterreading
 }
 </code>
 
+### SEND_ERC20_TOKENS_TO
+usage: send some ERC20 tokens to an address
+<br>params:
+* <code>address</code>: address to which ERC20 tokens should be sent
+* <code>amount</code>: amount of ERC20 tokens
+
+<code>
+{
+    "type": "SEND_ERC20_TOKENS_TO",
+    "data": {
+        "address": "0x7672fa3f8c04abbcbad14d896aad8bedece72d2b",
+        "amount": 500
+    }
+}
+</code>
+
 ### TRANSFER_CERTIFICATE
 usage: command to transfer the ownership of a certificate
 <br>params:
@@ -494,6 +512,28 @@ We want to buy the certificate with id <code>4</code> at the specified price of 
         "buyer": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
         "buyerPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
         "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d"
+    }
+}
+</code>
+
+### BUY_CERTIFICATE_BULK
+usage: command to buy multiple certificates
+<br>params:
+* <code>certificateIds</code>: ids of the certificates that want to be bought
+* <code>buyer</code>: address of the trader who wants to buy the certificates
+* <code>buyerPK</code>: private key of the trader who wants to buy the certificates
+
+#### example
+We want to buy the certificates <code>0</code>, <code>1</code> and <code>2</code>.
+
+###### NOTE: The current buyer and the certificate owners must both have trading rights.
+<code>
+{
+    "type": "BUY_CERTIFICATE_BULK",
+    "data": {
+        "certificateIds": [0, 1, 2],
+        "buyer": "0x7672fa3f8c04abbcbad14d896aad8bedece72d2b",
+        "buyerPK": "0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7"
     }
 }
 </code>

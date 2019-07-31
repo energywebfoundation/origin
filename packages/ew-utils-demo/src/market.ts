@@ -112,6 +112,28 @@ export const marketDemo = async (demoFile?: string) => {
 
     for (const action of actionsArray) {
         switch (action.type) {
+            case 'SEND_ERC20_TOKENS_TO':
+                console.log('-----------------------------------------------------------');
+
+                const erc20token = new Erc20TestToken(
+                    conf.blockchainProperties.web3,
+                    erc20TestAddress
+                );
+
+                const tokenSymbol = await erc20token.symbol();
+
+                try {
+                    await erc20token.transfer(action.data.address, action.data.amount, {
+                        privateKey: adminPK
+                    });
+                    conf.logger.info(`Transferred ${action.data.amount} of ${tokenSymbol} tokens to ${action.data.address}`);
+                } catch (e) {
+                    conf.logger.error(`Could not transfer ${action.data.amount} ${tokenSymbol} tokens to ${action.data.address}\n` + e);
+                }
+
+                console.log('-----------------------------------------------------------\n');
+                break;
+
             case 'CREATE_DEMAND':
                 console.log('-----------------------------------------------------------');
 
