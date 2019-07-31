@@ -53,7 +53,7 @@ export class PageButton extends React.Component<any, any> {
 
     render() {
         const { data, onFilterOrganization } = this.props;
-        const { type, label, face, content } = data;
+        const { type, label, face, content, onClick } = data;
         const { itemData } = this.state;
 
         return (
@@ -103,8 +103,13 @@ export class PageButton extends React.Component<any, any> {
                     >
                         <DateRange onInit={this.handleDateRange} onChange={this.handleDateRange} />
                     </DropdownButton>
+                ) : type === 'button' ? (
+                    <button
+                        onClick={onClick}
+                        className={'btn btn-default'}
+                    >{label}</button>
                 ) : (
-                    <div>Unkown Type</div>
+                    <div>Unknown Type</div>
                 )}
             </div>
         );

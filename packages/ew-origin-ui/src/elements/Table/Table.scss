@@ -292,3 +292,11 @@
         }
     }
 }
+
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+    background-color: #894ec5;
+}
+
+.custom-checkbox .custom-control-label::before {
+    background-color: #5d5d5d;
+}

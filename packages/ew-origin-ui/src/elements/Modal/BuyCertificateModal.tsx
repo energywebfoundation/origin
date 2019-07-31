@@ -77,7 +77,7 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
                 await erc20TestToken.approve(
                     certificate.owner,
                     certificate.onChainDirectPurchasePrice
-                );    
+                );
             }
 
             await certificate.buyCertificate(this.state.kwh * 1000);
