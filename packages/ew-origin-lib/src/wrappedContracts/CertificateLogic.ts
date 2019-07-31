@@ -332,6 +332,12 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
+    async buyCertificateBulk(_idArray: number[], txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.buyCertificateBulk(_idArray);
+
+        return await this.send(method, txParams);
+    }
+
     async setApprovalForAll(_escrow: string, _approved: boolean, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setApprovalForAll(_escrow, _approved);
 

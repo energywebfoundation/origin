@@ -26,6 +26,10 @@ interface CertificateInterface {
     /// @param _certificateId the id of the certificate to be bought
     function buyCertificate(uint _certificateId) external;
 
+    /// @notice buys a set of certificates
+    /// @param _idArray the ids of the certificates to be bought
+    function buyCertificateBulk(uint[] calldata _idArray) external;
+
     /// @notice splits a certificate
     /// @param _certificateId the id of the certificate to be splitted
     /// @param _power the power to be splitted from the parent certificate
@@ -47,7 +51,7 @@ interface CertificateInterface {
     /// @return the length of all created certificates
     function getCertificateListLength() external view returns (uint);
 
-    /// @notice gets the certificats owner
+    /// @notice gets the certificate's owner
     /// @param _certificateId the certificate-id
     /// @return the owner of a certificate
     function getCertificateOwner(uint _certificateId) external view returns (address);
