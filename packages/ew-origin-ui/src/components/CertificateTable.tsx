@@ -30,6 +30,7 @@ import TableUtils from '../elements/utils/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
+import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { PaginatedLoader, DEFAULT_PAGE_SIZE, IPaginatedLoaderState, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../elements/Table/PaginatedLoader';
 
@@ -55,6 +56,7 @@ export interface IEnrichedCertificateData {
 
 export interface ICertificatesState extends IPaginatedLoaderState {
     selectedState: SelectedState;
+    selectedCertificates: Certificate.Entity[];
     detailViewForCertificateId: number;
     matchedCertificates: Certificate.Entity[];
     shouldShowPrice: boolean;
@@ -63,6 +65,7 @@ export interface ICertificatesState extends IPaginatedLoaderState {
     showBuyModal: boolean;
     buyModalForCertificate: Certificate.Entity;
     buyModalForProducingAsset: ProducingAsset.Entity;
+    showBuyBulkModal: boolean;
 }
 
 export enum SelectedState {
@@ -90,6 +93,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
         this.state = {
             data: [],
             selectedState: SelectedState.Inbox,
+            selectedCertificates: [],
             detailViewForCertificateId: null,
             matchedCertificates: [],
             shouldShowPrice: [
@@ -102,6 +106,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
             showBuyModal: false,
             buyModalForCertificate: null,
             buyModalForProducingAsset: null,
+            showBuyBulkModal: false,
             pageSize: DEFAULT_PAGE_SIZE,
             total: 0
         };
@@ -113,8 +118,12 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
         this.showCertCreated = this.showCertCreated.bind(this);
         this.showCertificateDetails = this.showCertificateDetails.bind(this);
         this.getTokenSymbol = this.getTokenSymbol.bind(this);
+        this.buyCertificateBulk = this.buyCertificateBulk.bind(this);
+        this.selectCertificate = this.selectCertificate.bind(this);
+
         this.hidePublishForSaleModal = this.hidePublishForSaleModal.bind(this);
         this.hideBuyModal = this.hideBuyModal.bind(this);
+        this.hideBuyBulkModal = this.hideBuyBulkModal.bind(this);
     }
 
     async componentDidMount() {
@@ -289,6 +298,34 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
         });
     }
 
+    async buyCertificateBulk() {
+        if (this.state.selectedCertificates.length === 0) {
+            showNotification(`No certificates have been selected. Please select at least one certificate.`, NotificationType.Error);
+
+            return;
+        }
+
+        // If we try to bulk buy more than 100 certificates it will probably
+        // overflow the block gas limit
+        if (this.state.selectedCertificates.length > 100) {
+            showNotification(`Please select less than 100 certificates.`, NotificationType.Error);
+
+            return;
+        }
+
+        const isOwnerOfSomeCertificates = this.state.selectedCertificates.some(c => c.owner === this.props.currentUser.id);
+
+        if (isOwnerOfSomeCertificates) {
+            showNotification(`You can't buy your own certificates.`, NotificationType.Error);
+
+            return;
+        }
+
+        this.setState({
+            showBuyBulkModal: true
+        });
+    }
+
     async publishForSale(certificateId: number) {
         const certificate: Certificate.Entity = this.props.certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
@@ -357,6 +394,38 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
             await certificate.retireCertificate();
             showNotification(`Certificate ${certificate.id} has been claimed.`, NotificationType.Success);
         }
+    }
+
+    selectCertificate(certificateId: string, selected: boolean) {
+        const { selectedCertificates } = this.state;
+
+        if (selected) {
+            if (selectedCertificates.some(cert => cert.id === certificateId)) {
+                return;
+            }
+
+            const certificate = this.props.certificates.find(cert => cert.id === certificateId);
+
+            selectedCertificates.push(certificate);
+        } else {
+            if (!selectedCertificates.some(cert => cert.id === certificateId)) {
+                return;
+            }
+
+            const certificate = selectedCertificates.find(cert => cert.id === certificateId);
+
+            const index = selectedCertificates.indexOf(certificate);
+
+            if (index < 0) {
+                showNotification(`Unknown error unselecting ${certificateId}.`, NotificationType.Error);
+            }
+
+            selectedCertificates.splice(index, 1);
+        }
+
+        this.setState({
+            selectedCertificates
+        });
     }
 
     async showTxClaimed(certificateId: number) {
@@ -487,6 +556,12 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
         });
     }
 
+    hideBuyBulkModal() {
+        this.setState({
+            showBuyBulkModal: false
+        });
+    }
+
     render() {
         if (this.state.detailViewForCertificateId !== null) {
             return (
@@ -529,6 +604,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
         ];
 
         const operations = [];
+        let onSelect = null;
 
         switch (this.props.selectedState) {
             case SelectedState.Inbox:
@@ -542,6 +618,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
                     OPERATIONS.BUY,
                     OPERATIONS.RETURN_TO_INBOX
                 );
+                onSelect = this.selectCertificate;
                 break;
             case SelectedState.Claimed:
                 operations.push(OPERATIONS.SHOW_CLAIMING_TX);
@@ -571,6 +648,7 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
                     loadPage={this.loadPage}
                     total={this.state.total}
                     pageSize={this.state.pageSize}
+                    onSelect={onSelect}
                 />
 
                 <PublishForSaleModal
@@ -593,6 +671,13 @@ export class CertificateTable extends PaginatedLoader<ICertificateTableProps, IC
                     producingAsset={this.state.buyModalForProducingAsset}
                     showModal={this.state.showBuyModal}
                     callback={this.hideBuyModal}
+                />
+
+                <BuyCertificateBulkModal
+                    conf={this.props.conf}
+                    certificates={this.state.selectedCertificates}
+                    showModal={this.state.showBuyBulkModal}
+                    callback={this.hideBuyBulkModal}
                 />
             </div>
         );

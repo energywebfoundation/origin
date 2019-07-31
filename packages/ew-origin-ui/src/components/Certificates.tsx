@@ -43,6 +43,8 @@ export interface ICertificatesState {
 }
 
 export class Certificates extends React.Component<ICertificatesProps, ICertificatesState> {
+    tableRef;
+
     constructor(props: ICertificatesProps) {
         super(props);
 
@@ -59,6 +61,8 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
         this.ForDemandCertificates = this.ForDemandCertificates.bind(this);
         this.PendingCertificationRequests = this.PendingCertificationRequests.bind(this);
         this.ApprovedCertificationRequests = this.ApprovedCertificationRequests.bind(this);
+
+        this.tableRef = React.createRef();
     }
 
     switchToOrganization(switchedToOrganization: boolean) {
@@ -75,6 +79,7 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
 
         return (
             <CertificateTable
+                ref={this.tableRef}
                 conf={this.props.conf}
                 certificates={this.props.certificates}
                 producingAssets={this.props.producingAssets}
@@ -166,7 +171,12 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 key: 'for_sale',
                 label: 'For Sale',
                 component: this.ForSaleCertificates,
-                buttons: [
+                buttons: [,
+                    {
+                        type: 'button',
+                        label: 'Bulk Buy',
+                        onClick: () => this.tableRef.current.buyCertificateBulk()
+                    },
                     {
                         type: 'dropdown',
                         label: allOrganizationsText,

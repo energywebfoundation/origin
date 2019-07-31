@@ -1,4 +1,12 @@
 .ButtonWrapper {
+    .btn.btn-default {
+        border-radius: 2px;
+        background: #3c3c3c;
+        color: #dddddd;
+        font-size: 12px;
+        height: 40px;
+    }
+
     .dropdown {
         .dropdown-toggle {
             width: 197px;

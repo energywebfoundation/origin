@@ -43,6 +43,7 @@ interface IProps {
     type?: any;
     operations?: any[];
     operationClicked?: Function;
+    onSelect?: (id: string, selected: boolean) => void;
 }
 
 export interface ITableHeaderData {
@@ -60,7 +61,7 @@ export interface ITableAdminHeaderData {
     key?: string;
 }
 
-interface State {
+interface IState {
     inputs: any;
     totalEnergy: any;
     date: any;
@@ -70,7 +71,7 @@ interface State {
     [x: number]: any;
 }
 
-export class Table extends React.Component<IProps, State> {
+export class Table extends React.Component<IProps, IState> {
     _isMounted = false;
 
     constructor(props) {
@@ -298,6 +299,7 @@ export class Table extends React.Component<IProps, State> {
                     <table className={(classNames || []).join(' ')}>
                         <thead>
                             <tr>
+                                {this.props.onSelect && <th style={{ width: '30px' }} />}
                                 {header.map((item: ITableHeaderData) => {
                                     return (
                                         <th style={item.style} key={item.key}>
@@ -317,7 +319,7 @@ export class Table extends React.Component<IProps, State> {
                                 {footer.map(item => {
                                     return (
                                         <td
-                                            colSpan={item.colspan || 1}
+                                            colSpan={(item.colspan + (this.props.onSelect ? 1 : 0) || 1)}
                                             className={`Total ${item.hide ? 'Hide' : 'Show'}`}
                                             style={item.style || {}}
                                             key={item.key}
@@ -333,6 +335,19 @@ export class Table extends React.Component<IProps, State> {
                             {data.map((row, rowIndex) => {
                                 return (
                                     <tr key={row[0]}>
+                                        {this.props.onSelect && 
+                                            <td className="selectRow">
+                                                <div className="custom-control custom-checkbox">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="custom-control-input"
+                                                        id={'selectbox' + row[0]}
+                                                        onChange={e => this.props.onSelect(row[0], e.target.checked)}
+                                                    />
+                                                    <label className="custom-control-label" htmlFor={'selectbox' + row[0]} />
+                                                </div>
+                                            </td>
+                                        }
                                         {header.map((item: ITableHeaderData, colIndex) => {
                                             return (
                                                 <td
