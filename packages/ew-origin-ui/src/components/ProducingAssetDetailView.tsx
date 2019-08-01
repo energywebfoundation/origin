@@ -31,8 +31,9 @@ import { getOffChainText } from '../utils/Helper';
 import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
+import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 
-export interface DetailViewProps {
+export interface IDetailViewProps {
     conf: Configuration.Entity;
     id: number;
     baseUrl: string;
@@ -41,14 +42,14 @@ export interface DetailViewProps {
     addSearchField: boolean;
 }
 
-export interface DetailViewState {
+export interface IDetailViewState {
     newId: number;
     owner: User;
     notSoldCertificates: number;
 }
 
-export class ProducingAssetDetailView extends React.Component<DetailViewProps, DetailViewState> {
-    constructor(props: DetailViewProps) {
+export class ProducingAssetDetailView extends React.Component<IDetailViewProps, IDetailViewState> {
+    constructor(props: IDetailViewProps) {
         super(props);
         this.state = {
             newId: null,
@@ -66,11 +67,11 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
         await this.getOwner(this.props);
     }
 
-    async componentWillReceiveProps(newProps: DetailViewProps): Promise<void> {
+    async componentWillReceiveProps(newProps: IDetailViewProps): Promise<void> {
         await this.getOwner(newProps);
     }
 
-    async getOwner(props: DetailViewProps): Promise<void> {
+    async getOwner(props: IDetailViewProps): Promise<void> {
         if (props.id !== null && props.id !== undefined) {
             const selectedAsset = props.producingAssets.find(
                 (p: ProducingAsset.Entity) => p.id === props.id.toString()
@@ -105,7 +106,9 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                       (p: ProducingAsset.Entity) => p.id === this.props.id.toString()
                   )
                 : null;
+
         let data;
+
         if (selectedAsset) {
             data = [
                 [
@@ -190,18 +193,18 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                         data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
                         tip: 'kW'
                     },
-                    {	
-                        label:	
-                            'Geo Location' +	
-                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),	
-                        data:	
-                            selectedAsset.offChainProperties.gpsLatitude +	
-                            ', ' +	
-                            selectedAsset.offChainProperties.gpsLongitude,	
-                        image: map,	
-                        type: 'map',	
-                        rowspan: 3,	
-                        colspan: 2	
+                    {
+                        label:
+                            'Geo Location' +
+                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
+                        data:
+                            selectedAsset.offChainProperties.gpsLatitude +
+                            ', ' +
+                            selectedAsset.offChainProperties.gpsLongitude,
+                        image: map,
+                        type: 'map',
+                        rowspan: 3,
+                        colspan: 2
                     }
                 ]
             ];
@@ -214,90 +217,103 @@ export class ProducingAssetDetailView extends React.Component<DetailViewProps, D
                         <strong>Asset not found</strong>
                     </div>
                 ) : (
-                    <table>
-                        <tbody>
-                            {data.map((row: any) => (
-                                <tr key={row.key}>
-                                    {row.map((col) => {
-                                        if (
-                                            col.isAdditionalInformation &&
-                                            !this.props.addSearchField
-                                        ) {
-                                            return null;
-                                        }
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-lg-8">
+                                <table>
+                                    <tbody>
+                                        {data.map((row: any) => (
+                                            <tr key={row.key}>
+                                                {row.map((col) => {
+                                                    if (
+                                                        col.isAdditionalInformation &&
+                                                        !this.props.addSearchField
+                                                    ) {
+                                                        return null;
+                                                    }
 
-                                        return (
-                                            <td
-                                                key={col.key}
-                                                rowSpan={col.rowspan || 1}
-                                                colSpan={col.colspan || 1}
-                                            >
-                                                <div className="Label">{col.label}</div>
-                                                <div className="Data">
-                                                    {col.data} {col.tip && <span>{col.tip}</span>}
-                                                </div>
-                                                {col.image &&
-                                                    (col.type !== 'map' ? (
-                                                        <div className={`Image`}>
-                                                            <img src={col.image} />	
-                                                            {col.type === 'map' && (	
-                                                                <img	
-                                                                    src={marker as any}	
-                                                                    className="Marker"	
-                                                                />	
-                                                            )}	
-                                                        </div>	
-                                                    ) : (	
-                                                        <div className={`Image Map`}>	
-                                                            <MapContainer asset={selectedAsset} />	
-                                                        </div>	
-                                                    ))}
-                                                {col.description && (
-                                                    <div className="Description">
-                                                        {col.description}
-                                                    </div>
-                                                )}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                                    return (
+                                                        <td
+                                                            key={col.key}
+                                                            rowSpan={col.rowspan || 1}
+                                                            colSpan={col.colspan || 1}
+                                                        >
+                                                            <div className="Label">{col.label}</div>
+                                                            <div className="Data">
+                                                                {col.data} {col.tip && <span>{col.tip}</span>}
+                                                            </div>
+                                                            {col.image &&
+                                                                (col.type !== 'map' ? (
+                                                                    <div className={`Image`}>
+                                                                        <img src={col.image} />	
+                                                                        {col.type === 'map' && (	
+                                                                            <img	
+                                                                                src={marker as any}	
+                                                                                className="Marker"	
+                                                                            />	
+                                                                        )}	
+                                                                    </div>	
+                                                                ) : (	
+                                                                    <div className={`Image Map`}>	
+                                                                        <MapContainer asset={selectedAsset} />	
+                                                                    </div>	
+                                                                ))}
+                                                            {col.description && (
+                                                                <div className="Description">
+                                                                    {col.description}
+                                                                </div>
+                                                            )}
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="col-lg-4">
+                                <div className="text-center py-3">
+                                    Smart meter readings
+                                </div>
+
+                                <SmartMeterReadingsTable
+                                    conf={this.props.conf}
+                                    producingAsset={selectedAsset}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
         );
 
         return (
-            <div>
-                {this.props.addSearchField ? (
-                    <div className="DetailViewWrapper">
-                        <div className="FindAsset">
-                            <input
-                                onChange={this.onInputChange}
-                                defaultValue={
-                                    this.props.id || this.props.id === 0
-                                        ? this.props.id.toString()
-                                        : ''
-                                }
-                            />
+            <div className="DetailViewWrapper">
+                {this.props.addSearchField && (
+                    <div className="FindAsset">
+                        <input
+                            onChange={this.onInputChange}
+                            defaultValue={
+                                this.props.id || this.props.id === 0
+                                    ? this.props.id.toString()
+                                    : ''
+                            }
+                        />
 
-                            <Link
-                                className="btn btn-primary find-asset-button"
-                                to={`/${this.props.baseUrl}/assets/producing_detail_view/${
-                                    this.state.newId
-                                }`}
-                            >
-                                Find Asset
-                            </Link>
-                        </div>
-                        <div className="PageContentWrapper">
-                            {pageBody}
-                        </div>
+                        <Link
+                            className="btn btn-primary find-asset-button"
+                            to={`/${this.props.baseUrl}/assets/producing_detail_view/${
+                                this.state.newId
+                            }`}
+                        >
+                            Find Asset
+                        </Link>
                     </div>
-                ) : (
-                    pageBody
                 )}
+                <div className="PageContentWrapper">
+                    {pageBody}
+                </div>
             </div>
         );
     }
