@@ -314,23 +314,25 @@ export class Table extends React.Component<IProps, IState> {
                                 )}
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                {footer.map(item => {
-                                    return (
-                                        <td
-                                            colSpan={(item.colspan + (this.props.onSelect ? 1 : 0) || 1)}
-                                            className={`Total ${item.hide ? 'Hide' : 'Show'}`}
-                                            style={item.style || {}}
-                                            key={item.key}
-                                        >
-                                            {renderHTML(renderText(item.label || totalTableColumnSum[item.key]))}
-                                        </td>
-                                    );
-                                })}
-                                {actions && <td className="Actions" />}
-                            </tr>
-                        </tfoot>
+                        {footer.length > 0 &&
+                            <tfoot>
+                                <tr>
+                                    {footer.map(item => {
+                                        return (
+                                            <td
+                                                colSpan={(item.colspan + (this.props.onSelect ? 1 : 0) || 1)}
+                                                className={`Total ${item.hide ? 'Hide' : 'Show'}`}
+                                                style={item.style || {}}
+                                                key={item.key}
+                                            >
+                                                {renderHTML(renderText(item.label || totalTableColumnSum[item.key]))}
+                                            </td>
+                                        );
+                                    })}
+                                    {actions && <td className="Actions" />}
+                                </tr>
+                            </tfoot>
+                        }
                         <tbody>
                             {data.map((row, rowIndex) => {
                                 return (
