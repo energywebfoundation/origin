@@ -5,11 +5,11 @@
             "maxCapacity": 5000000,
             "smartMeterPrivateKey": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
             "role": "producer",
-            "manufacturer": "string",
-            "model": "string",
-            "serial_number": "string",
-            "latitude": 0,
-            "longitude": 0,
+            "manufacturer": "",
+            "model": "",
+            "serial_number": "",
+            "latitude": 12.788956,
+            "longitude": 101.851193,
             "energy_unit": "wattHour",
             "is_accumulated": true
         }
