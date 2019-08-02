@@ -43,8 +43,8 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
         }
 
         return {
-            formattedPaginatedData: data,
-            paginatedData: data,
+            formattedPaginatedData: data.reverse().slice(offset, offset + pageSize),
+            paginatedData: [],
             total: readings.length
         };
     }
