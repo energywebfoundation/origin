@@ -67,7 +67,8 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         this.state = {
             showMatchingSupply: null,
             switchedToOrganization: false,
-            data: [],
+            paginatedData: [],
+            formattedPaginatedData: [],
             total: 0,
             pageSize: DEFAULT_PAGE_SIZE
         };
@@ -166,7 +167,9 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
 
         const total = enrichedData.length;
 
-        const data = enrichedData.map(
+        const paginatedData = enrichedData.slice(offset, offset + pageSize);
+
+        const formattedPaginatedData = paginatedData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
                 const demand = enrichedDemandData.demand;
                 const overallDemand = Math.ceil(
@@ -190,10 +193,11 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
                     overallDemand
                 ];
             }
-        ).slice(offset, offset + pageSize);
+        );
 
         return {
-            data,
+            paginatedData,
+            formattedPaginatedData,
             total
         };
     }
@@ -248,7 +252,7 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}
-                    data={this.state.data}
+                    data={this.state.formattedPaginatedData}
                     actionWidth={55.39}
                     operations={Object.values(OPERATIONS)}
                     operationClicked={this.operationClicked}

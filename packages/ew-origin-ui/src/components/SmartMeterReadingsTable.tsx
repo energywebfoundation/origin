@@ -19,7 +19,8 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
         super(props);
 
         this.state = {
-            data: [],
+            formattedPaginatedData: [],
+            paginatedData: [],
             total: 0,
             pageSize: 10
         };
@@ -42,7 +43,8 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
         }
 
         return {
-            data: data.reverse().slice(offset, offset + pageSize),
+            formattedPaginatedData: data,
+            paginatedData: data,
             total: readings.length
         };
     }
@@ -63,7 +65,7 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
                 <Table
                     classNames={['bare-font', 'bare-padding']}
                     header={TableHeader}
-                    data={this.state.data}
+                    data={this.state.formattedPaginatedData}
                     loadPage={this.loadPage}
                     total={this.state.total}
                     pageSize={this.state.pageSize}

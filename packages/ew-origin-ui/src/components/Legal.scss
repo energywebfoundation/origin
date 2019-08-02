@@ -1,3 +1,5 @@
+@import "../styles/variables.scss";
+
 .PageWrapper {
     .PageBody {
         margin-top: 32.5px;
@@ -8,7 +10,7 @@
             color: #b7b7b7;
 
             a {
-                color: #ba77ff;
+                color: $primaryColor;
                 text-decoration: none;
                 cursor: pointer;
             }
