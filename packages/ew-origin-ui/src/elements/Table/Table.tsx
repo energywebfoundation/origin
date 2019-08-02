@@ -20,7 +20,6 @@ import Toggle from 'react-toggle';
 import DatePicker from 'react-date-picker';
 import renderHTML from 'react-render-html';
 import moment from 'moment';
-import action from '../../../assets/action.svg';
 import { PeriodToSeconds } from '../../components/DemandTable';
 import { TimeFrame } from 'ew-utils-general-lib';
 import { Pagination } from './Pagination';
@@ -28,9 +27,11 @@ import { Pagination } from './Pagination';
 import './toggle.scss';
 import './Table.scss';
 import './datepicker.scss';
-import { dataTest } from '../../utils/Helper';
+import { ActionIcon } from '../icons/ActionIcon';
 
-interface IProps {
+export type TableOnSelectFunction = (index: number, selected: boolean) => void;
+
+export interface ITableProps {
     header: Array<ITableHeaderData | ITableAdminHeaderData>;
     data: any;
     loadPage?: (page: number) => void;
@@ -43,7 +44,7 @@ interface IProps {
     type?: any;
     operations?: any[];
     operationClicked?: Function;
-    onSelect?: (id: string, selected: boolean) => void;
+    onSelect?: TableOnSelectFunction;
 }
 
 export interface ITableHeaderData {
@@ -71,7 +72,7 @@ interface IState {
     [x: number]: any;
 }
 
-export class Table extends React.Component<IProps, IState> {
+export class Table extends React.Component<ITableProps, IState> {
     _isMounted = false;
 
     constructor(props) {
@@ -344,7 +345,7 @@ export class Table extends React.Component<IProps, IState> {
                                                         type="checkbox"
                                                         className="custom-control-input"
                                                         id={'selectbox' + row[0]}
-                                                        onChange={e => this.props.onSelect(row[0], e.target.checked)}
+                                                        onChange={e => this.props.onSelect(rowIndex, e.target.checked)}
                                                     />
                                                     <label className="custom-control-label" htmlFor={'selectbox' + row[0]} />
                                                 </div>
@@ -374,7 +375,7 @@ export class Table extends React.Component<IProps, IState> {
                                                         overlay={popoverFocus(row[0])}
                                                     >
                                                         <Button>
-                                                            <img src={action as any} />
+                                                            <ActionIcon />
                                                         </Button>
                                                     </OverlayTrigger>
                                                 )}

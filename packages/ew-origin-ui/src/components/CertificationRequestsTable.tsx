@@ -26,7 +26,8 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
         super(props);
 
         this.state = {
-            data: [],
+            formattedPaginatedData: [],
+            paginatedData: [],
             pageSize: DEFAULT_PAGE_SIZE,
             total: 0
         };
@@ -43,7 +44,8 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
     async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         if (!this.props.currentUser) {
             return {
-                data: [],
+                formattedPaginatedData: [],
+                paginatedData: [],
                 total: 0
             };
         }
@@ -56,7 +58,8 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
 
         const requests = await certificateLogic.getCertificationRequests();
 
-        let data = [];
+        let paginatedData = [];
+        let formattedPaginatedData = [];
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
@@ -74,7 +77,8 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
 
             const energy = reads.slice(request.readsStartIndex, Number(request.readsEndIndex) + 1).reduce((a, b) => a + Number(b.energy), 0);
 
-            data.push([
+            paginatedData.push(request);
+            formattedPaginatedData.push([
                 i,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city +
@@ -86,11 +90,14 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
             ]);
         }
         
-        const total = data.length;
-        data = data.slice(offset, offset + pageSize);
+        const total = paginatedData.length;
+
+        paginatedData = paginatedData.slice(offset, offset + pageSize);
+        formattedPaginatedData = formattedPaginatedData.slice(offset, offset + pageSize);
 
         return {
-            data,
+            formattedPaginatedData,
+            paginatedData,
             total
         }
     }
@@ -137,7 +144,7 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
                     footer={TableFooter}
                     actions={true}
                     actionWidth={55}
-                    data={this.state.data}
+                    data={this.state.formattedPaginatedData}
                     operations={operations}
                     operationClicked={this.operationClicked}
                     loadPage={this.loadPage}

@@ -51,7 +51,8 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
 
         this.state = {
             detailViewForAssetId: null,
-            data: [],
+            formattedPaginatedData: [],
+            paginatedData: [],
             pageSize: DEFAULT_PAGE_SIZE,
             total: 0,
             switchedToOrganization: false
@@ -68,7 +69,7 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
     }
 
     async getPaginatedData({ pageSize, offset }) {
-        const consumingAssets: ConsumingAsset.Entity[] = this.props.consumingAssets.slice(offset, offset + pageSize);
+        const consumingAssets: ConsumingAsset.Entity[] = this.props.consumingAssets;
         const enrichedConsumingAssetData = await this.enrichedConsumingAssetData(consumingAssets);
 
         const filteredEnrichedAssetData = enrichedConsumingAssetData.filter(
@@ -80,7 +81,9 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
 
         const total = filteredEnrichedAssetData.length;
 
-        const data = filteredEnrichedAssetData.map(
+        const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
+
+        const formattedPaginatedData = paginatedData.map(
             (enrichedConsumingAssetData: IEnrichedConsumingAssetData) => {
                 const consumingAsset: ConsumingAsset.Entity =
                     enrichedConsumingAssetData.consumingAsset;
@@ -102,7 +105,8 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
         );
         
         return {
-            data,
+            formattedPaginatedData,
+            paginatedData,
             total
         };
     }
@@ -179,7 +183,7 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
                     footer={TableFooter}
                     actions={true}
                     operationClicked={this.operationClicked}
-                    data={this.state.data}
+                    data={this.state.formattedPaginatedData}
                     operations={operations}
                     loadPage={this.loadPage}
                     total={this.state.total}

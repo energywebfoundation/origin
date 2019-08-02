@@ -36,17 +36,18 @@ export interface ProducingAssetTableProps {
     switchedToOrganization: boolean;
 }
 
+export interface IEnrichedProducingAssetData {
+    producingAsset: ProducingAsset.Entity;
+    organizationName: string;
+    notSoldCertificates: Certificate.Entity[];
+}
+
 interface IProducingAssetTableState extends IPaginatedLoaderState {
     detailViewForAssetId: number;
     requestIRECsModalAsset: ProducingAsset.Entity;
     showRequestIRECsModal: boolean;
     switchedToOrganization: boolean;
-}
-
-export interface IEnrichedProducingAssetData {
-    producingAsset: ProducingAsset.Entity;
-    organizationName: string;
-    notSoldCertificates: Certificate.Entity[];
+    paginatedData: IEnrichedProducingAssetData[];
 }
 
 enum OPERATIONS {
@@ -59,7 +60,8 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
         super(props);
 
         this.state = {
-            data: [],
+            formattedPaginatedData: [],
+            paginatedData: [],
             detailViewForAssetId: null,
             requestIRECsModalAsset: null,
             showRequestIRECsModal: false,
@@ -173,9 +175,8 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
     }
 
     async getPaginatedData({ pageSize, offset }) {
-        const producingAssets: ProducingAsset.Entity[] = this.props.producingAssets.slice(offset, offset + pageSize);
+        const producingAssets: ProducingAsset.Entity[] = this.props.producingAssets;
         const enrichedProducingAssetData = await this.enrichProducingAssetData(producingAssets);
-        const total = this.props.producingAssets.length;
 
         const filteredEnrichedAssetData = enrichedProducingAssetData.filter(
             (enrichedProducingAssetData: IEnrichedProducingAssetData) => {
@@ -187,7 +188,11 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
             }
         );
 
-        const data = filteredEnrichedAssetData.map(
+        const total = filteredEnrichedAssetData.length;
+
+        const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
+
+        const formattedPaginatedData = paginatedData.map(
             (enrichedProducingAssetData: IEnrichedProducingAssetData) => {
                 const producingAsset = enrichedProducingAssetData.producingAsset;
 
@@ -206,7 +211,8 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
         );
         
         return {
-            data,
+            formattedPaginatedData,
+            paginatedData,
             total
         };
     }
@@ -263,7 +269,7 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
                     footer={TableFooter}
                     operationClicked={this.operationClicked}
                     actions={true}
-                    data={this.state.data}
+                    data={this.state.formattedPaginatedData}
                     operations={operations}
                     loadPage={this.loadPage}
                     total={this.state.total}

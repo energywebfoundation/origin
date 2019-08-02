@@ -37,7 +37,7 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         this.state = {
             show: props.showModal,
             fromDate: moment().toDate(),
-            toDate: this.setMaxTimeInDay(moment().add('1', 'month').toDate()),
+            toDate: this.setMaxTimeInDay(moment().toDate()),
             reads: []
         };
     }

@@ -1,3 +1,5 @@
+@import "../../styles/variables.scss";
+
 .react-date-picker {
     position: absolute;
     right: 10px;
@@ -68,7 +70,7 @@
                 }
 
                 .react-calendar__navigation__arrow {
-                    color: #ba77ff;
+                    color: $primaryColor;
                 }
 
                 .react-calendar__navigation__next2-button,
