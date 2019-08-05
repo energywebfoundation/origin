@@ -37,7 +37,7 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
 
             data.push([
                 i,
-                moment.unix(readings[i].timestamp).format('DD MMM YY, hh:mm:ss'),
+                moment.unix(readings[i].timestamp).format('DD MMM YY, HH:mm'),
                 currentSmartMeterState
             ]);
         }
