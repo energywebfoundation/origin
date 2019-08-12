@@ -27,7 +27,7 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
     }
 
     async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const readings = (await this.props.producingAsset.getSmartMeterReads());
+        const readings = await this.props.producingAsset.getSmartMeterReads();
 
         const data = [];
         let currentSmartMeterState = 0;
