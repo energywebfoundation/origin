@@ -1,5 +1,13 @@
 @import "./styles/toastr.scss";
 
+$color-primary: #593e74;
+$color-primary-light: #654784;
+
+.vertical-align {
+    display: flex;
+    align-items: center;
+}
+
 .PageWrapper {
     .PageFooter,
     .PageNav {
@@ -19,7 +27,6 @@
     }
 
     .PageContentWrapper {
-        min-height: calc(100vh - 391px);
         padding: 63px 95px;
 
         .PageHeader {

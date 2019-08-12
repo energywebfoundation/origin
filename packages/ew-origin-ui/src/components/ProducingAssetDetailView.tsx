@@ -32,6 +32,7 @@ import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
+import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 
 export interface IDetailViewProps {
     conf: Configuration.Entity;
@@ -217,73 +218,56 @@ export class ProducingAssetDetailView extends React.Component<IDetailViewProps, 
                         <strong>Asset not found</strong>
                     </div>
                 ) : (
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-lg-8">
-                                <table>
-                                    <tbody>
-                                        {data.map((row: any) => (
-                                            <tr key={row.key}>
-                                                {row.map((col) => {
-                                                    if (
-                                                        col.isAdditionalInformation &&
-                                                        !this.props.addSearchField
-                                                    ) {
-                                                        return null;
-                                                    }
+                    <table>
+                        <tbody>
+                            {data.map((row: any) => (
+                                <tr key={row.key}>
+                                    {row.map((col) => {
+                                        if (
+                                            col.isAdditionalInformation &&
+                                            !this.props.addSearchField
+                                        ) {
+                                            return null;
+                                        }
 
-                                                    return (
-                                                        <td
-                                                            key={col.key}
-                                                            rowSpan={col.rowspan || 1}
-                                                            colSpan={col.colspan || 1}
-                                                        >
-                                                            <div className="Label">{col.label}</div>
-                                                            <div className="Data">
-                                                                {col.data} {col.tip && <span>{col.tip}</span>}
-                                                            </div>
-                                                            {col.image &&
-                                                                (col.type !== 'map' ? (
-                                                                    <div className={`Image`}>
-                                                                        <img src={col.image} />	
-                                                                        {col.type === 'map' && (	
-                                                                            <img	
-                                                                                src={marker as any}	
-                                                                                className="Marker"	
-                                                                            />	
-                                                                        )}	
-                                                                    </div>	
-                                                                ) : (	
-                                                                    <div className={`Image Map`}>	
-                                                                        <MapContainer asset={selectedAsset} />	
-                                                                    </div>	
-                                                                ))}
-                                                            {col.description && (
-                                                                <div className="Description">
-                                                                    {col.description}
-                                                                </div>
-                                                            )}
-                                                        </td>
-                                                    );
-                                                })}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div className="col-lg-4">
-                                <div className="text-center py-3">
-                                    Smart meter readings
-                                </div>
-
-                                <SmartMeterReadingsTable
-                                    conf={this.props.conf}
-                                    producingAsset={selectedAsset}
-                                />
-                            </div>
-                        </div>
-                    </div>
+                                        return (
+                                            <td
+                                                key={col.key}
+                                                rowSpan={col.rowspan || 1}
+                                                colSpan={col.colspan || 1}
+                                            >
+                                                <div className="Label">{col.label}</div>
+                                                <div className="Data">
+                                                    {col.data} {col.tip && <span>{col.tip}</span>}
+                                                </div>
+                                                {col.image &&
+                                                    (col.type !== 'map' ? (
+                                                        <div className={`Image`}>
+                                                            <img src={col.image} />	
+                                                            {col.type === 'map' && (	
+                                                                <img	
+                                                                    src={marker as any}	
+                                                                    className="Marker"	
+                                                                />	
+                                                            )}	
+                                                        </div>	
+                                                    ) : (	
+                                                        <div className={`Image Map`}>	
+                                                            <MapContainer asset={selectedAsset} />	
+                                                        </div>	
+                                                    ))}
+                                                {col.description && (
+                                                    <div className="Description">
+                                                        {col.description}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 )}
             </div>
         );
@@ -311,9 +295,36 @@ export class ProducingAssetDetailView extends React.Component<IDetailViewProps, 
                         </Link>
                     </div>
                 )}
-                <div className="PageContentWrapper">
-                    {pageBody}
-                </div>
+
+                {selectedAsset && 
+                    <div className="PageContentWrapper">
+                        {pageBody}
+
+                        <div className="PageBody p-4">
+                            <div className="PageBodyTitle">
+                                Smart meter readings
+                            </div>
+
+                            <div className="container-fluid">
+                                <div className="row">
+                                    <div className="col-lg-4">
+                                        <SmartMeterReadingsTable
+                                            conf={this.props.conf}
+                                            producingAsset={selectedAsset}
+                                        />
+                                    </div>
+
+                                    <div className="col-lg-8">
+                                        <SmartMeterReadingsChart
+                                            conf={this.props.conf}
+                                            producingAsset={selectedAsset}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         );
     }
