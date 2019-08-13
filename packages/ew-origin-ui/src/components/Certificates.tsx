@@ -38,20 +38,10 @@ export interface ICertificatesProps {
     baseUrl: string;
 }
 
-export interface ICertificatesState {
-    switchedToOrganization: boolean;
-}
-
-export class Certificates extends React.Component<ICertificatesProps, ICertificatesState> {
+export class Certificates extends React.Component<ICertificatesProps> {
     constructor(props: ICertificatesProps) {
         super(props);
 
-        this.state = {
-            switchedToOrganization: false
-        };
-
-        this.switchToOrganization = this.switchToOrganization.bind(this);
-        this.onFilterOrganization = this.onFilterOrganization.bind(this);
         this.CertificateTable = this.CertificateTable.bind(this);
         this.InboxCertificates = this.InboxCertificates.bind(this);
         this.ForSaleCertificates = this.ForSaleCertificates.bind(this);
@@ -59,12 +49,6 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
         this.ForDemandCertificates = this.ForDemandCertificates.bind(this);
         this.PendingCertificationRequests = this.PendingCertificationRequests.bind(this);
         this.ApprovedCertificationRequests = this.ApprovedCertificationRequests.bind(this);
-    }
-
-    switchToOrganization(switchedToOrganization: boolean) {
-        this.setState({
-            switchedToOrganization
-        });
     }
 
     CertificateTable(key: SelectedState, demandId?: number) {
@@ -81,16 +65,9 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 currentUser={this.props.currentUser}
                 baseUrl={this.props.baseUrl}
                 selectedState={key}
-                switchedToOrganization={this.state.switchedToOrganization}
                 demand={demand}
             />
         );
-    }
-
-    onFilterOrganization(index: number) {
-        this.setState({
-            switchedToOrganization: index !== 0
-        });
     }
 
     CertificateDetailView(id: number) {
@@ -139,12 +116,6 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
     }
 
     render() {
-        const allOrganizationsText = 'All Organizations';
-
-        const organizations = this.props.currentUser
-            ? [allOrganizationsText, this.props.currentUser.organization]
-            : [allOrganizationsText];
-
         const isIssuer = this.props.currentUser && this.props.currentUser.isRole(Role.Issuer);
 
         const CertificatesMenu = [
@@ -152,42 +123,18 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
                 key: 'inbox',
                 label: 'Inbox',
                 component: this.InboxCertificates,
-                buttons: [
-                    {
-                        type: 'dropdown',
-                        label: allOrganizationsText,
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ],
                 show: !isIssuer
             },
             {
                 key: 'for_sale',
                 label: 'For Sale',
                 component: this.ForSaleCertificates,
-                buttons: [,
-                    {
-                        type: 'dropdown',
-                        label: allOrganizationsText,
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ],
                 show: !isIssuer
             },
             {
                 key: 'claims_report',
                 label: 'Claims Report',
                 component: this.ClaimedCertificates,
-                buttons: [
-                    {
-                        type: 'dropdown',
-                        label: allOrganizationsText,
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ],
                 show: !isIssuer
             },
             {
@@ -263,7 +210,6 @@ export class Certificates extends React.Component<ICertificatesProps, ICertifica
 
                         return (
                             <PageContent
-                                onFilterOrganization={this.onFilterOrganization}
                                 menu={matches.length > 0 ? matches[0] : null}
                                 redirectPath={`/${this.props.baseUrl}/certificates`}
                             />

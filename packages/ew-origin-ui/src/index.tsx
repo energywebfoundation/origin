@@ -39,6 +39,11 @@ import {
     consumingAssetCreatedOrUpdated
  } from './features/actions';
 
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import { DEFAULT_MATERIAL_THEME } from './styles/styleConfig';
+
 const IS_PRODUCTION = process.env.MODE === 'production';
 
 let middleware;
@@ -82,16 +87,20 @@ const mapStateToProps = state => {
 };
 
 ReactDOM.render(
-    <Provider store={store}>
-        <BrowserRouter>
-            <Route
-                path="/:contractAddress/"
-                component={connect(
-                    mapStateToProps,
-                    mapDispatchToProps
-                )(AppContainer)}
-            />
-        </BrowserRouter>
-    </Provider>,
+    <MuiThemeProvider theme={DEFAULT_MATERIAL_THEME}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Route
+                        path="/:contractAddress/"
+                        component={connect(
+                            mapStateToProps,
+                            mapDispatchToProps
+                        )(AppContainer)}
+                    />
+                </BrowserRouter>
+            </Provider>
+        </MuiPickersUtilsProvider>
+    </MuiThemeProvider>,
     document.getElementById('root')
 );

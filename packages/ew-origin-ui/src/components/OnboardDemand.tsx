@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Table, ITableAdminHeaderData } from '../elements/Table/Table';
+import { Table, ITableAdminHeaderData } from './Table/Table';
 import { User } from 'ew-user-registry-lib';
 import { AssetType, TimeFrame, Compliance, Currency, Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';

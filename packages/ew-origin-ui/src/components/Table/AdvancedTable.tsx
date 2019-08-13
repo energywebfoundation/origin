@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { Table, ITableProps, TableOnSelectFunction } from './Table';
-import { ColumnBatchActions, IBatchableAction, CustomCounterGeneratorFunction } from '../../components/Table/ColumnBatchActions';
+import { ColumnBatchActions, IBatchableAction, CustomCounterGeneratorFunction } from './ColumnBatchActions';
+import { FiltersHeader, ICustomFilterDefinition, ICustomFilter } from './FiltersHeader';
+
+interface IState {
+    selectedIndexes: number[];
+}
 
 interface IProps extends ITableProps {
     onSelect?: TableOnSelectFunction;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction
-}
-
-
-interface IState {
-    selectedIndexes: number[];
+    filters?: ICustomFilterDefinition[];
 }
 
 export class AdvancedTable extends React.Component<IProps, IState> {
@@ -23,6 +24,8 @@ export class AdvancedTable extends React.Component<IProps, IState> {
 
         this.itemSelectionChanged = this.itemSelectionChanged.bind(this);
         this.resetSelection = this.resetSelection.bind(this);
+        this.filtersChanged = this.filtersChanged.bind(this);
+        this.loadPage = this.loadPage.bind(this);
     }
 
     itemSelectionChanged(index: number, selected: boolean) {
@@ -55,6 +58,18 @@ export class AdvancedTable extends React.Component<IProps, IState> {
         }
     }
 
+    filtersChanged(filters: ICustomFilter[]) {
+        this.loadPage(1, filters);
+    }
+
+    loadPage(page: number, filters: ICustomFilter[]) {
+        if (!this.props.loadPage) {
+            return;
+        }
+
+        this.props.loadPage(page, filters);
+    }
+
     render() {
         const {
             header,
@@ -68,7 +83,8 @@ export class AdvancedTable extends React.Component<IProps, IState> {
             actionWidth,
             actions,
             batchableActions,
-            customSelectCounterGenerator
+            customSelectCounterGenerator,
+            filters
         } = this.props;
 
         const {
@@ -76,6 +92,11 @@ export class AdvancedTable extends React.Component<IProps, IState> {
         } = this.state;
 
         return <>
+            <FiltersHeader
+                filters={filters}
+                filtersChanged={this.filtersChanged}
+            />
+            
             <ColumnBatchActions
                 batchableActions={batchableActions}
                 selectedIndexes={selectedIndexes}

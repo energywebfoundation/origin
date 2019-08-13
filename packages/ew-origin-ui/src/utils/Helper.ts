@@ -37,3 +37,15 @@ export function dataTest(value, name = 'data-test') {
 export function dataTestSelector(value, name = 'data-test') {
     return `[${name}="${value}"]`;
 }
+
+export function getPropertyByPath(obj, path) {
+    return path.split('.').reduce((prev, curr) => {
+        return prev ? prev[curr] : null
+    }, obj || self);
+}
+
+export function indexOfEnd(baseString: string, searchString: string) {
+    const index = baseString.indexOf(searchString);
+    
+    return index == -1 ? -1 : index + searchString.length;
+}
