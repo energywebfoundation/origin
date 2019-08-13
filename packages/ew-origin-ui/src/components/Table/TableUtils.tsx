@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import { CSSProperties } from 'react';
-import { ITableHeaderData } from '../Table/Table';
+import { ITableHeaderData } from './Table';
 
 const getKey = lbl => {
     const trimLabel = lbl

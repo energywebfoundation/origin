@@ -1,7 +1,7 @@
 import * as React from "react";
 import { mount } from "enzyme";
-import { Table } from "../elements/Table/Table";
-import TableUtils from "../elements/utils/TableUtils";
+import { Table } from "../components/Table/Table";
+import TableUtils from "../components/Table/TableUtils";
 import { dataTestSelector } from "../utils/Helper";
 
 const wait = (ms: number) => {

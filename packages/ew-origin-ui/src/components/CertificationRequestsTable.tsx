@@ -2,13 +2,13 @@ import * as React from 'react';
 
 import { Configuration } from 'ew-utils-general-lib';
 
-import { Table } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
+import { Table } from './Table/Table';
+import TableUtils from './Table/TableUtils';
 import { CertificateLogic } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { User, Role } from 'ew-user-registry-lib';
 import { showNotification, NotificationType } from '../utils/notifications';
-import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../elements/Table/PaginatedLoader';
+import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
 
 interface ICertificateTableProps {
     conf: Configuration.Entity;
@@ -25,12 +25,7 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
     constructor(props: ICertificateTableProps) {
         super(props);
 
-        this.state = {
-            formattedPaginatedData: [],
-            paginatedData: [],
-            pageSize: DEFAULT_PAGE_SIZE,
-            total: 0
-        };
+        this.state = getInitialPaginatedLoaderState();
 
         this.operationClicked = this.operationClicked.bind(this);
     }

@@ -19,13 +19,13 @@ import * as React from 'react';
 import { Certificate, CertificateLogic } from 'ew-origin-lib';
 import { User, Role } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
-import { Table, ITableHeaderData } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
+import { Table, ITableHeaderData } from './Table/Table';
+import TableUtils from './Table/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
-import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE } from '../elements/Table/PaginatedLoader';
+import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
 
 export interface ProducingAssetTableProps {
     conf: Configuration.Entity;
@@ -60,14 +60,11 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
         super(props);
 
         this.state = {
-            formattedPaginatedData: [],
-            paginatedData: [],
+            ...getInitialPaginatedLoaderState(),
             detailViewForAssetId: null,
             requestIRECsModalAsset: null,
             showRequestIRECsModal: false,
             switchedToOrganization: false,
-            pageSize: DEFAULT_PAGE_SIZE,
-            total: 0
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);

@@ -18,12 +18,12 @@ import * as React from 'react';
 import { Certificate } from 'ew-origin-lib';
 import { User } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
-import { Table } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
+import { Table } from './Table/Table';
+import TableUtils from './Table/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
 import { ConsumingAsset } from 'ew-asset-registry-lib';
-import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE } from '../elements/Table/PaginatedLoader';
+import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
 
 export interface ConsumingAssetTableProps {
     conf: Configuration.Entity;
@@ -50,11 +50,8 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
         super(props);
 
         this.state = {
+            ...getInitialPaginatedLoaderState(),
             detailViewForAssetId: null,
-            formattedPaginatedData: [],
-            paginatedData: [],
-            pageSize: DEFAULT_PAGE_SIZE,
-            total: 0,
             switchedToOrganization: false
         };
 

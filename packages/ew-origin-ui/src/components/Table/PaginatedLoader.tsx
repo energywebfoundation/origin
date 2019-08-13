@@ -1,4 +1,5 @@
 import { Component, ReactText } from 'react';
+import { ICustomFilter } from './FiltersHeader';
 
 export const DEFAULT_PAGE_SIZE = 25;
 
@@ -14,6 +15,7 @@ export interface IPaginatedLoaderState {
 export interface IPaginatedLoaderFetchDataParameters {
     pageSize: number;
     offset: number;
+    filters?: ICustomFilter[];
 }
 
 export interface IPaginatedLoaderFetchDataReturnValues {
@@ -23,7 +25,18 @@ export interface IPaginatedLoaderFetchDataReturnValues {
 }
 
 export interface IPaginatedLoader {
-    getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters) : Promise<IPaginatedLoaderFetchDataReturnValues>
+    getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters) : Promise<IPaginatedLoaderFetchDataReturnValues>
+}
+
+export const PAGINATED_LOADER_INITIAL_STATE: IPaginatedLoaderState = {
+    paginatedData: [],
+    formattedPaginatedData: [],
+    pageSize: DEFAULT_PAGE_SIZE,
+    total: 0
+};
+
+export function getInitialPaginatedLoaderState(): IPaginatedLoaderState {
+    return JSON.parse(JSON.stringify(PAGINATED_LOADER_INITIAL_STATE));
 }
 
 export abstract class PaginatedLoader<Props extends IPaginatedLoaderProps, State extends IPaginatedLoaderState> extends Component<Props, State> implements IPaginatedLoader {
@@ -45,9 +58,9 @@ export abstract class PaginatedLoader<Props extends IPaginatedLoaderProps, State
         this._isMounted = false;
     }
 
-    abstract getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>
+    abstract getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>
 
-    async loadPage(page: number) {
+    async loadPage(page: number, filters?: ICustomFilter[]) {
         const {
             pageSize
         } = this.state;
@@ -60,7 +73,8 @@ export abstract class PaginatedLoader<Props extends IPaginatedLoaderProps, State
             total
         } = await this.getPaginatedData({
             pageSize,
-            offset
+            offset,
+            filters
         });
 
         if (!this._isMounted) {

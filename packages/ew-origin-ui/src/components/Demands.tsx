@@ -25,8 +25,8 @@ import { Demand } from 'ew-market-lib';
 import { Configuration } from 'ew-utils-general-lib';
 
 import { OrganizationFilter } from './OrganizationFilter';
-import { Table } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
+import { Table } from './Table/Table';
+import TableUtils from './Table/TableUtils';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { DemandTable } from './DemandTable';
 

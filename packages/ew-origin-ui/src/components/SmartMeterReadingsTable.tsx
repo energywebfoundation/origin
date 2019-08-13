@@ -5,9 +5,9 @@ import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 
 import './SmartMeterReadingsTable.scss';
-import { Table } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
-import { IPaginatedLoaderState, PaginatedLoader, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../elements/Table/PaginatedLoader';
+import { Table } from './Table/Table';
+import TableUtils from './Table/TableUtils';
+import { IPaginatedLoaderState, PaginatedLoader, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
 
 export interface ISmartMeterReadingsTableProps {
     conf: Configuration.Entity;
@@ -19,9 +19,7 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
         super(props);
 
         this.state = {
-            formattedPaginatedData: [],
-            paginatedData: [],
-            total: 0,
+            ...getInitialPaginatedLoaderState(),
             pageSize: 10
         };
     }

@@ -23,11 +23,11 @@ import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
 
-import { Table } from '../elements/Table/Table';
-import TableUtils from '../elements/utils/TableUtils';
+import { Table } from './Table/Table';
+import TableUtils from './Table/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { deleteDemand } from 'ew-market-lib/dist/js/src/blockchain-facade/Demand';
-import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../elements/Table/PaginatedLoader';
+import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
 
 export interface IDemandTableProps {
     conf: Configuration.Entity;
@@ -65,12 +65,9 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         super(props);
 
         this.state = {
+            ...getInitialPaginatedLoaderState(),
             showMatchingSupply: null,
-            switchedToOrganization: false,
-            paginatedData: [],
-            formattedPaginatedData: [],
-            total: 0,
-            pageSize: DEFAULT_PAGE_SIZE
+            switchedToOrganization: false
         };
 
         this.switchToOrganization = this.switchToOrganization.bind(this);

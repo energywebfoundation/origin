@@ -20,7 +20,7 @@ import Toggle from 'react-toggle';
 import DatePicker from 'react-date-picker';
 import renderHTML from 'react-render-html';
 import moment from 'moment';
-import { PeriodToSeconds } from '../../components/DemandTable';
+import { PeriodToSeconds } from '../DemandTable';
 import { TimeFrame } from 'ew-utils-general-lib';
 import { Pagination } from './Pagination';
 
@@ -28,13 +28,14 @@ import './toggle.scss';
 import './Table.scss';
 import './datepicker.scss';
 import { ActionIcon } from '../icons/ActionIcon';
+import { ICustomFilter } from './FiltersHeader';
 
 export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
 export interface ITableProps {
     header: Array<ITableHeaderData | ITableAdminHeaderData>;
     data: any;
-    loadPage?: (page: number) => void;
+    loadPage?: (page: number, filters?: ICustomFilter[]) => void;
     pageSize?: number;
     total?: number;
     footer?: any;

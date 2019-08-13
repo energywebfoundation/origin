@@ -23,7 +23,7 @@ import './PageContent.scss';
 
 export class PageContent extends React.Component<any, {}> {
     render() {
-        const { menu, redirectPath, onFilterOrganization } = this.props;
+        const { menu, redirectPath } = this.props;
         const PageComponent = menu.component;
         const { buttons = [] } = menu || {};
 
@@ -35,7 +35,6 @@ export class PageContent extends React.Component<any, {}> {
                         {buttons.map((button, index) => {
                             return (
                                 <PageButton
-                                    onFilterOrganization={onFilterOrganization}
                                     key={index}
                                     data={button}
                                 />
