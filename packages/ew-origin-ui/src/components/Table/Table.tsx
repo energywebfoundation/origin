@@ -23,12 +23,14 @@ import moment from 'moment';
 import { PeriodToSeconds } from '../DemandTable';
 import { TimeFrame } from 'ew-utils-general-lib';
 import { Pagination } from './Pagination';
+import { ArrowDropUp, ArrowDropDown } from '@material-ui/icons';
 
 import './toggle.scss';
 import './Table.scss';
 import './datepicker.scss';
 import { ActionIcon } from '../icons/ActionIcon';
 import { ICustomFilter } from './FiltersHeader';
+import { deepEqual } from '../../utils/Helper';
 
 export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
@@ -46,6 +48,9 @@ export interface ITableProps {
     operations?: any[];
     operationClicked?: Function;
     onSelect?: TableOnSelectFunction;
+    currentSort?: string[];
+    sortAscending?: boolean;
+    toggleSort?: (sortProperties: string[]) => void;
 }
 
 export interface ITableHeaderData {
@@ -53,6 +58,7 @@ export interface ITableHeaderData {
     key: string;
     style: React.CSSProperties;
     styleBody: React.CSSProperties;
+    sortProperties?: string[];
 }
 
 export interface ITableAdminHeaderData {
@@ -273,7 +279,9 @@ export class Table extends React.Component<ITableProps, IState> {
             classNames,
             type = 'data',
             operations = [],
-            operationClicked = () => {}
+            operationClicked = () => {},
+            currentSort,
+            sortAscending
         } = props;
 
         const totalTableColumnSum = type === 'data' ? this.calculateTotal(data, footer) : 0;
@@ -305,7 +313,19 @@ export class Table extends React.Component<ITableProps, IState> {
                                 {header.map((item: ITableHeaderData) => {
                                     return (
                                         <th style={item.style} key={item.key}>
-                                            {renderHTML(renderText(item.label))}
+                                            {item.sortProperties ?
+                                                <div onClick={() => this.props.toggleSort(item.sortProperties)} className="Table_head_columnHeader-clickable">
+                                                    {item.label}
+                                                    {deepEqual(item.sortProperties, currentSort) ?
+                                                        (sortAscending ?
+                                                            <ArrowDropUp className="Table_head_columnHeader_sortIcon" /> :
+                                                            <ArrowDropDown className="Table_head_columnHeader_sortIcon" />)
+                                                        : ''
+                                                    }
+                                                </div>
+                                                :
+                                                renderHTML(renderText(item.label))
+                                            }
                                         </th>
                                     );
                                 })}

@@ -27,7 +27,7 @@ const getKey = lbl => {
     return sp.join('_');
 };
 
-const generateHeader = (label, width?: string | number, right = false, body = false) : ITableHeaderData => {
+const generateHeader = (label, width?: string | number, right = false, body = false, sortProperties: string[] = null) : ITableHeaderData => {
     const style: CSSProperties = {};
 
     if (right) {
@@ -46,7 +46,8 @@ const generateHeader = (label, width?: string | number, right = false, body = fa
         label,
         key: getKey(label),
         style,
-        styleBody: body ? { opacity: 1, fontWeight: 900 } : {}
+        styleBody: body ? { opacity: 1, fontWeight: 900 } : {},
+        sortProperties
     };
 };
 

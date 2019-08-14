@@ -302,3 +302,17 @@
 .custom-checkbox .custom-control-label::before {
     background-color: #5d5d5d;
 }
+
+.Table {
+    &_head_columnHeader {
+        &-clickable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        &_sortIcon {
+            margin-top: -6px;
+            vertical-align: text-top;
+        }
+    }
+}

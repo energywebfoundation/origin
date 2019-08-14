@@ -49,3 +49,15 @@ export function indexOfEnd(baseString: string, searchString: string) {
     
     return index == -1 ? -1 : index + searchString.length;
 }
+
+export function deepEqual(a: any, b: any) {
+    if (typeof(a) !== typeof(b)) {
+        return false;
+    }
+
+    if (typeof(a) === 'object') {
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    return a === b;
+}

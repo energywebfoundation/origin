@@ -84,7 +84,10 @@ export class AdvancedTable extends React.Component<IProps, IState> {
             actions,
             batchableActions,
             customSelectCounterGenerator,
-            filters
+            filters,
+            currentSort,
+            sortAscending,
+            toggleSort
         } = this.props;
 
         const {
@@ -115,6 +118,9 @@ export class AdvancedTable extends React.Component<IProps, IState> {
                 total={total}
                 pageSize={pageSize}
                 onSelect={batchableActions && batchableActions.length ? this.itemSelectionChanged : null}
+                currentSort={currentSort}
+                sortAscending={sortAscending}
+                toggleSort={toggleSort}
             />
         </>
     }

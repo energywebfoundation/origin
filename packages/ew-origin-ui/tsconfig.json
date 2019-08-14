@@ -3,13 +3,14 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "noImplicitAny": false,
-        "module": "commonjs",
-        "target": "es6",
+        "moduleResolution": "node",
+        "module": "es2015",
+        "target": "es2018",
         "jsx": "react",
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "lib": ["es2017", "dom"]
+        "lib": ["es2018", "dom"]
     },
     "include": [
         "./src/**/*"

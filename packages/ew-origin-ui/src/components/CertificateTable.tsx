@@ -35,7 +35,8 @@ import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnVal
 import { IBatchableAction } from './Table/ColumnBatchActions';
 import { AdvancedTable } from './Table/AdvancedTable';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { PaginatedLoaderFiltered, getInitialPaginatedLoaderFilteredState, IPaginatedLoaderFilteredState, RECORD_INDICATOR, FILTER_SPECIAL_TYPES } from './Table/PaginatedLoaderFiltered';
+import { RECORD_INDICATOR, FILTER_SPECIAL_TYPES } from './Table/PaginatedLoaderFiltered';
+import { PaginatedLoaderFilteredSorted, IPaginatedLoaderFilteredSortedState, getInitialPaginatedLoaderFilteredSortedState } from './Table/PaginatedLoaderFilteredSorted';
 
 export interface ICertificateTableProps {
     conf: Configuration.Entity;
@@ -54,9 +55,10 @@ export interface IEnrichedCertificateData {
     acceptedCurrency: string;
     offChainSettlementOptions: TradableEntity.IOffChainSettlementOptions;
     isOffChainSettlement: boolean;
+    assetTypeLabel: string;
 }
 
-export interface ICertificatesState extends IPaginatedLoaderFilteredState {
+export interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
     selectedState: SelectedState;
     selectedCertificates: Certificate.Entity[];
     detailViewForCertificateId: number;
@@ -89,12 +91,12 @@ export enum OPERATIONS {
     SHOW_DETAILS = 'Show Certificate Details'
 }
 
-export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableProps, ICertificatesState> {
+export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificateTableProps, ICertificatesState> {
     constructor(props: ICertificateTableProps) {
         super(props);
 
         this.state = {
-            ...getInitialPaginatedLoaderFilteredState(),
+            ...getInitialPaginatedLoaderFilteredSortedState(),
             selectedState: SelectedState.Inbox,
             selectedCertificates: [],
             detailViewForCertificateId: null,
@@ -109,7 +111,9 @@ export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableP
             showBuyModal: false,
             buyModalForCertificate: null,
             buyModalForProducingAsset: null,
-            showBuyBulkModal: false
+            showBuyBulkModal: false,
+            currentSort: ['certificate.creationTime'],
+            sortAscending: false
         };
 
         this.publishForSale = this.publishForSale.bind(this);
@@ -164,8 +168,10 @@ export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableP
             }
         );
 
-        const paginatedData = filteredIEnrichedCertificateData.slice(offset, offset + pageSize);
-        const total = filteredIEnrichedCertificateData.length;
+        const sortedEnrichedData = this.sortData(filteredIEnrichedCertificateData);
+
+        const paginatedData = sortedEnrichedData.slice(offset, offset + pageSize);
+        const total = sortedEnrichedData.length;
 
         const formattedPaginatedData = paginatedData.map(
             (EnrichedCertificateData: IEnrichedCertificateData) => {
@@ -235,11 +241,14 @@ export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableP
                 }
             }
 
+            const producingAsset = this.props.producingAssets.find(
+                (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
+            );
+
             enrichedData.push({
                 certificate,
-                producingAsset: this.props.producingAssets.find(
-                    (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
-                ),
+                producingAsset,
+                assetTypeLabel: ProducingAsset.Type[producingAsset.offChainProperties.assetType],
                 certificateOwner: await new User(certificate.owner, this.props.conf as any).sync(),
                 offChainSettlementOptions,
                 acceptedCurrency,
@@ -628,33 +637,49 @@ export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableP
     }
 
     render() {
-        if (this.state.detailViewForCertificateId !== null) {
+        const {
+            buyModalForCertificate,
+            buyModalForProducingAsset,
+            currentSort,
+            detailViewForCertificateId,
+            formattedPaginatedData,
+            pageSize,
+            selectedCertificates,
+            sellModalForCertificate,
+            shouldShowPrice,
+            showBuyBulkModal,
+            showBuyModal,
+            showSellModal,
+            sortAscending,
+            total
+        } = this.state;
+
+        if (detailViewForCertificateId !== null) {
             return (
                 <Redirect
                     push={true}
-                    to={`/${this.props.baseUrl}/certificates/detail_view/${this.state.detailViewForCertificateId}`}
+                    to={`/${this.props.baseUrl}/certificates/detail_view/${detailViewForCertificateId}`}
                 />
             );
         }
 
         const defaultWidth = 106;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body);
+        const generateHeader = (label, sortProperties = null, width = defaultWidth, right = false, body = false) =>
+            TableUtils.generateHeader(label, width, right, body, sortProperties);
         const generateFooter = TableUtils.generateFooter;
 
         const TableHeader = [
-            generateHeader('#', 60),
-            generateHeader('Asset Type'),
-            generateHeader('Commissioning Date'),
-            generateHeader('Town, Country'),
-            // generateHeader('Max Capacity (kWh)', defaultWidth, true),
+            generateHeader('#', null, 60),
+            generateHeader('Asset Type', ['assetTypeLabel']),
+            generateHeader('Commissioning Date', ['producingAsset.offChainProperties.operationalSince']),
+            generateHeader('Town, Country', ['producingAsset.offChainProperties.country', 'producingAsset.offChainProperties.city']),
             generateHeader('Compliance'),
-            generateHeader('Owner'),
-            generateHeader('Certification Date'),
-            generateHeader('Certified Energy (kWh)', defaultWidth, true, true)
+            generateHeader('Owner', ['certificateOwner.organization']),
+            generateHeader('Certification Date', ['certificate.creationTime']),
+            generateHeader('Certified Energy (kWh)', ['certificate.powerInW'], defaultWidth, true, true)
         ];
 
-        if (this.state.shouldShowPrice) {
+        if (shouldShowPrice) {
             TableHeader.splice(7, 0, generateHeader('Price'));
             TableHeader.splice(8, 0, generateHeader('Currency'));
         }
@@ -709,15 +734,18 @@ export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableP
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}
-                    data={this.state.formattedPaginatedData}
+                    data={formattedPaginatedData}
                     actionWidth={55.39}
                     operations={operations}
                     loadPage={this.loadPage}
-                    total={this.state.total}
-                    pageSize={this.state.pageSize}
+                    total={total}
+                    pageSize={pageSize}
                     batchableActions={batchableActions}
                     customSelectCounterGenerator={this.customSelectCounterGenerator}
                     filters={this.filters}
+                    currentSort={currentSort}
+                    sortAscending={sortAscending}
+                    toggleSort={this.toggleSort}
                 />
 
                 <PublishForSaleModal
@@ -726,26 +754,26 @@ export class CertificateTable extends PaginatedLoaderFiltered<ICertificateTableP
                     producingAsset={
                         this.state.sellModalForCertificate ?
                             this.props.producingAssets.find(
-                                (asset: ProducingAsset.Entity) => asset.id === this.state.sellModalForCertificate.assetId.toString()
+                                (asset: ProducingAsset.Entity) => asset.id === sellModalForCertificate.assetId.toString()
                             )
                             : null
                     }
-                    showModal={this.state.showSellModal}
+                    showModal={showSellModal}
                     callback={this.hidePublishForSaleModal}
                 />
 
                 <BuyCertificateModal
                     conf={this.props.conf}
-                    certificate={this.state.buyModalForCertificate}
-                    producingAsset={this.state.buyModalForProducingAsset}
-                    showModal={this.state.showBuyModal}
+                    certificate={buyModalForCertificate}
+                    producingAsset={buyModalForProducingAsset}
+                    showModal={showBuyModal}
                     callback={this.hideBuyModal}
                 />
 
                 <BuyCertificateBulkModal
                     conf={this.props.conf}
-                    certificates={this.state.selectedCertificates}
-                    showModal={this.state.showBuyBulkModal}
+                    certificates={selectedCertificates}
+                    showModal={showBuyBulkModal}
                     callback={this.hideBuyBulkModal}
                 />
             </div>
