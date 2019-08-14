@@ -46,6 +46,7 @@ export interface ICertificateTableProps {
     baseUrl: string;
     selectedState: SelectedState;
     demand?: Demand.Entity;
+    hiddenColumns?: string[];
 }
 
 export interface IEnrichedCertificateData {
@@ -90,6 +91,70 @@ export enum OPERATIONS {
     SHOW_LOGGING_TX = 'Show Initial Logging Transaction',
     SHOW_DETAILS = 'Show Certificate Details'
 }
+
+interface ICertificateTableColumn {
+    label: string;
+    width?: number;
+    displayValue?: (enrichedData: IEnrichedCertificateData) => string | number;
+    right?: boolean;
+    body?: boolean;
+    sortProperties?: any[];
+}
+
+const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
+    {
+        label: '#',
+        width: 60,
+        displayValue: (enrichedData: IEnrichedCertificateData) => enrichedData.certificate.id
+    },
+    {
+        label: 'Asset Type',
+        sortProperties: ['assetTypeLabel'],
+        displayValue: (enrichedData: IEnrichedCertificateData) => ProducingAsset.Type[
+            enrichedData.producingAsset.offChainProperties.assetType
+        ]
+    },
+    {
+        label: 'Commissioning Date',
+        sortProperties: ['producingAsset.offChainProperties.operationalSince'],
+        displayValue: (enrichedData: IEnrichedCertificateData) => moment(
+            enrichedData.producingAsset.offChainProperties.operationalSince *
+                1000
+        , 'x').format('MMM YY')
+    },
+    {
+        label: 'Town, Country',
+        sortProperties: ['producingAsset.offChainProperties.country', 'producingAsset.offChainProperties.city'],
+        displayValue: (enrichedData: IEnrichedCertificateData) => `${enrichedData.producingAsset.offChainProperties.city}, ${
+            enrichedData.producingAsset.offChainProperties.country
+        }`,
+    },
+    {
+        label: 'Compliance',
+        displayValue: (enrichedData: IEnrichedCertificateData) => ProducingAsset.Compliance[
+            enrichedData.producingAsset.offChainProperties.complianceRegistry
+        ]
+    },
+    {
+        label: 'Owner',
+        sortProperties: ['certificateOwner.organization'],
+        displayValue: (enrichedData: IEnrichedCertificateData) => enrichedData.certificateOwner.organization,
+    },
+    {
+        label: 'Certification Date',
+        sortProperties: ['certificate.creationTime'],
+        displayValue: (enrichedData: IEnrichedCertificateData) => new Date(
+            enrichedData.certificate.creationTime * 1000
+        ).toDateString()
+    },
+    {
+        label: 'Certified Energy (kWh)',
+        sortProperties: [['certificate.powerInW', (value) => parseInt(value, 10)]],
+        displayValue: (enrichedData: IEnrichedCertificateData) => enrichedData.certificate.powerInW / 1000,
+        right: true,
+        body: true
+    }
+];
 
 export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificateTableProps, ICertificatesState> {
     constructor(props: ICertificateTableProps) {
@@ -144,6 +209,10 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificate
         }
     }
 
+    get visibleColumns(): ICertificateTableColumn[] {
+        return DEFAULT_COLUMNS.filter(column => !this.props.hiddenColumns || !this.props.hiddenColumns.includes(column.label));
+    }
+
     async getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const enrichedData = await this.enrichData(this.props.certificates);
 
@@ -174,30 +243,8 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificate
         const total = sortedEnrichedData.length;
 
         const formattedPaginatedData = paginatedData.map(
-            (EnrichedCertificateData: IEnrichedCertificateData) => {
-                const certificate = EnrichedCertificateData.certificate;
-
-                const certificateDataToShow = [
-                    certificate.id,
-                    ProducingAsset.Type[
-                        EnrichedCertificateData.producingAsset.offChainProperties.assetType
-                    ],
-                    moment(
-                        EnrichedCertificateData.producingAsset.offChainProperties.operationalSince *
-                            1000
-                    ,   'x').format('MMM YY'),
-                    `${EnrichedCertificateData.producingAsset.offChainProperties.city}, ${
-                        EnrichedCertificateData.producingAsset.offChainProperties.country
-                    }`,
-                    ProducingAsset.Compliance[
-                        EnrichedCertificateData.producingAsset.offChainProperties.complianceRegistry
-                    ],
-                    EnrichedCertificateData.certificateOwner.organization,
-                    new Date(
-                        EnrichedCertificateData.certificate.creationTime * 1000
-                    ).toDateString(),
-                    EnrichedCertificateData.certificate.powerInW / 1000
-                ];
+            (enrichedData: IEnrichedCertificateData) => {
+                const certificateDataToShow = this.visibleColumns.map(column => column.displayValue(enrichedData));
 
                 if (this.state.shouldShowPrice) {
                     const formatter = new Intl.NumberFormat('en-US', {
@@ -205,12 +252,12 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificate
                         currency: 'USD'
                     });
 
-                    certificateDataToShow.splice(7, 0,
-                        EnrichedCertificateData.isOffChainSettlement 
-                            ? formatter.format(EnrichedCertificateData.offChainSettlementOptions.price / 100).replace('$', '')
-                            : EnrichedCertificateData.certificate.onChainDirectPurchasePrice
+                    certificateDataToShow.splice(certificateDataToShow.length - 1, 0,
+                        enrichedData.isOffChainSettlement 
+                            ? formatter.format(enrichedData.offChainSettlementOptions.price / 100).replace('$', '')
+                            : enrichedData.certificate.onChainDirectPurchasePrice
                     );
-                    certificateDataToShow.splice(8, 0, EnrichedCertificateData.acceptedCurrency);
+                    certificateDataToShow.splice(certificateDataToShow.length - 1, 0, enrichedData.acceptedCurrency);
                 }
 
                 return certificateDataToShow;
@@ -577,7 +624,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificate
                     max: maxCertificateEnergyInkWh
                 }
             }
-        ];
+        ].filter(filter => !this.props.hiddenColumns || !this.props.hiddenColumns.includes(filter.label));
 
         return filters;
     }
@@ -664,25 +711,22 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificate
         }
 
         const defaultWidth = 106;
-        const generateHeader = (label, sortProperties = null, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body, sortProperties);
         const generateFooter = TableUtils.generateFooter;
 
-        const TableHeader = [
-            generateHeader('#', null, 60),
-            generateHeader('Asset Type', ['assetTypeLabel']),
-            generateHeader('Commissioning Date', ['producingAsset.offChainProperties.operationalSince']),
-            generateHeader('Town, Country', ['producingAsset.offChainProperties.country', 'producingAsset.offChainProperties.city']),
-            generateHeader('Compliance'),
-            generateHeader('Owner', ['certificateOwner.organization']),
-            generateHeader('Certification Date', ['certificate.creationTime']),
-            generateHeader('Certified Energy (kWh)', [['certificate.powerInW', (value) => parseInt(value, 10)]], defaultWidth, true, true)
-        ];
+        const columns = this.visibleColumns;
 
         if (shouldShowPrice) {
-            TableHeader.splice(7, 0, generateHeader('Price'));
-            TableHeader.splice(8, 0, generateHeader('Currency'));
+            columns.splice(columns.length - 1, 0, {
+                label: 'Price'
+            });
+            columns.splice(columns.length - 1, 0, {
+                label: 'Currency'
+            });
         }
+
+        const TableHeader = columns.map(column => {
+            return TableUtils.generateHeader(column.label, column.width || defaultWidth, column.right, column.body, column.sortProperties)
+        });
 
         const TableFooter = [
             {

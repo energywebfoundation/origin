@@ -33,6 +33,9 @@ import { ProducingAsset } from 'ew-asset-registry-lib';
 import { MapContainer } from './MapContainer';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
+import { CertificateTable, SelectedState } from './CertificateTable';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
 
 export interface IDetailViewProps {
     conf: Configuration.Entity;
@@ -41,6 +44,7 @@ export interface IDetailViewProps {
     certificates: Certificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
     addSearchField: boolean;
+    currentUser: User;
 }
 
 export interface IDetailViewState {
@@ -49,7 +53,7 @@ export interface IDetailViewState {
     notSoldCertificates: number;
 }
 
-export class ProducingAssetDetailView extends React.Component<IDetailViewProps, IDetailViewState> {
+class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, IDetailViewState> {
     constructor(props: IDetailViewProps) {
         super(props);
         this.state = {
@@ -297,35 +301,54 @@ export class ProducingAssetDetailView extends React.Component<IDetailViewProps, 
                 )}
 
                 {selectedAsset && 
-                    <div className="PageContentWrapper">
-                        {pageBody}
+                    <>
+                        <div className="PageContentWrapper">
+                            {pageBody}
 
-                        <div className="PageBody p-4">
-                            <div className="PageBodyTitle">
-                                Smart meter readings
-                            </div>
+                            <div className="PageBody p-4">
+                                <div className="PageBodyTitle">
+                                    Smart meter readings
+                                </div>
 
-                            <div className="container-fluid">
-                                <div className="row">
-                                    <div className="col-lg-4">
-                                        <SmartMeterReadingsTable
-                                            conf={this.props.conf}
-                                            producingAsset={selectedAsset}
-                                        />
-                                    </div>
+                                <div className="container-fluid">
+                                    <div className="row">
+                                        <div className="col-lg-4">
+                                            <SmartMeterReadingsTable
+                                                conf={this.props.conf}
+                                                producingAsset={selectedAsset}
+                                            />
+                                        </div>
 
-                                    <div className="col-lg-8">
-                                        <SmartMeterReadingsChart
-                                            conf={this.props.conf}
-                                            producingAsset={selectedAsset}
-                                        />
+                                        <div className="col-lg-8">
+                                            <SmartMeterReadingsChart
+                                                conf={this.props.conf}
+                                                producingAsset={selectedAsset}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <br/><br/>
+                        <CertificateTable
+                            conf={this.props.conf}
+                            certificates={this.props.certificates.filter((c: Certificate.Entity) => c.assetId.toString() === this.props.id.toString())}
+                            producingAssets={this.props.producingAssets}
+                            currentUser={this.props.currentUser}
+                            baseUrl={this.props.baseUrl}
+                            selectedState={SelectedState.ForSale}
+                            demand={null}
+                            hiddenColumns={['Asset Type', 'Commissioning Date', 'Town, Country']}
+                        />
+                    </>
                 }
             </div>
         );
     }
 }
+
+export const ProducingAssetDetailView = connect(
+    (state: IStoreState) => ({
+        currentUser: state.currentUser
+    })
+)(ProducingAssetDetailViewClass);
