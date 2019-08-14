@@ -4,9 +4,14 @@ This repository is used to deploy all the contracts for the Origin project of th
 
 ## How-to
 - `npm install` - Install the dependencies
+
+Method 1
 - `npm run start-ganache` - Starts a local blockchain instance
 - (new terminal window) `npm run start-test-backend` - Starts a local backend instance
 - (new terminal window) `npm start` - Deploys the contracts and the configuration in [config/demo-config.json](config/demo-config.json)
+
+Method 2
+- `npm run start-all`- Starts all script from Method 1 using concurrently 
 
 This will deploy all the contracts to a local Ganache instance and a local test backend.
 

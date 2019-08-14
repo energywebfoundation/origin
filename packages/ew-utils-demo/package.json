@@ -16,16 +16,18 @@
     "prebuild-ts": "rm -rf build/ts",
     "build-ts": "rm -rf dist/js && tsc",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'"
+    "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
+    "start-all": "npx concurrently -n eth,backend,deploy \"npm run start-ganache\" \"npm run start-test-backend\" \"npm run start\""
   },
   "dependencies": {
+    "concurrently": "4.1.1",
     "ew-asset-registry-lib": "1.0.3-alpha.11",
     "ew-erc-test-contracts": "1.0.0",
     "ew-market-lib": "1.0.2-alpha.10",
+    "ew-origin-lib": "1.0.2-alpha.16",
     "ew-user-registry-lib": "1.0.3-alpha.10",
     "ew-utils-general-lib": "1.0.2-alpha.4",
     "ew-utils-testbackend": "1.0.1-alpha.4",
-    "ew-origin-lib": "1.0.2-alpha.16",
     "node-fetch": "2.5.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
