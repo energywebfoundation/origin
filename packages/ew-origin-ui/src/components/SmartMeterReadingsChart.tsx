@@ -99,12 +99,11 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
             measurementUnit = 'year';
         }
 
-        const amount = timeframe === TIMEFRAME.WEEK ? 7 : 1;
         const currentDate = moment(endDate);
 
         const newEndDate = increment
-            ? currentDate.add(amount, measurementUnit)
-            : currentDate.subtract(amount, measurementUnit);
+            ? currentDate.add(1, measurementUnit)
+            : currentDate.subtract(1, measurementUnit);
 
         this.setSelectedTimeFrame({
             timeframe,
