@@ -51,6 +51,7 @@
     "chai": "4.1.2",
     "ethlint": "1.2.4",
     "ew-utils-testbackend": "1.0.1-alpha.3",
+    "ew-utils-deployment": "1.0.0",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.1.8",
     "lint-staged": "8.1.7",
