@@ -10,7 +10,7 @@
   "scripts": {
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
-    "build-ts": "rm -rf dist/js && tsc",
+    "build": "rm -rf dist/js && tsc",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",

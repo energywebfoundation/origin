@@ -17,7 +17,7 @@
 import Web3 from 'web3';
 
 import { AssetContractLookup } from '../wrappedContracts/AssetContractLookup';
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from 'ew-utils-general-lib';
 import {
     AssetContractLookupJSON,
     AssetConsumingDBJSON,

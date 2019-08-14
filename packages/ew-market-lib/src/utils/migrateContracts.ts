@@ -19,7 +19,7 @@ import * as path from 'path';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import Web3 from 'web3';
 
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from 'ew-utils-general-lib';
 import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
 
 export async function migrateMarketRegistryContracts(
