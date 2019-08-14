@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .modal {
     &-backdrop {
         background-color: black;
@@ -54,7 +56,7 @@
     }
 
     &-publish {
-        background: #654784;
+        background: $primaryColorDark;
     }
 
     &-cancel {

@@ -87,7 +87,7 @@ const mapStateToProps = state => {
 };
 
 ReactDOM.render(
-    <MuiThemeProvider theme={DEFAULT_MATERIAL_THEME}>
+    <MuiThemeProvider theme={DEFAULT_MATERIAL_THEME()}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
             <Provider store={store}>
                 <BrowserRouter>

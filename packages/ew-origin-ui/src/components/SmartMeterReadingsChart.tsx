@@ -8,6 +8,7 @@ import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 
 import './SmartMeterReadingsChart.scss';
+import { STYLE_CONFIG } from '../styles/styleConfig';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -167,7 +168,7 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
 
             formatted.push({
                 label: measurementUnit !== 'hour' ? currentDate.format(keyFormat) : `${currentDate.format(keyFormat)}:00`,
-                color: '#8059a6',
+                color: STYLE_CONFIG.PRIMARY_COLOR,
                 value: totalEnergy
             });
 

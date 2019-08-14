@@ -1,3 +1,5 @@
+@import '../styles/variables.scss';
+
 .HeaderWrapper {
     height: 203px;
     padding: 86px 94px 42px 100px;
@@ -57,7 +59,7 @@
             &:after {
                 content: '';
                 position: absolute;
-                background: #894ec5;
+                background: $primaryColor;
                 height: 2px;
                 width: 0;
                 left: 0;

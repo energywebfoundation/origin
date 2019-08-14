@@ -38,7 +38,7 @@
 
                         button {
                             margin-top: 22px;
-                            background: #654784;
+                            background: $primaryColor;
                             border-radius: 3px;
                             font-weight: 500;
                             font-size: 14px;
@@ -296,7 +296,7 @@
 }
 
 .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-    background-color: #894ec5;
+    background-color: $primaryColor;
 }
 
 .custom-checkbox .custom-control-label::before {

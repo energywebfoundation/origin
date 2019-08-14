@@ -1,16 +1,16 @@
-@import "../index.scss";
+@import '../styles/variables.scss';
 
 .smartMeterReadingsChart {
     & .btn-switcher {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.267125);
     
         .btn-switcher-btn {
-            background: $color-primary-light;
+            background: $primaryColorDark;
             color: white;
             font-size: 14px;
     
             &:hover, &.selected {
-                background: $color-primary;
+                background: $primaryColorDarker;
             }
     
             &:focus {
