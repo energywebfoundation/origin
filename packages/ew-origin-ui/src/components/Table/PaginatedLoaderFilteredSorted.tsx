@@ -35,8 +35,16 @@ export abstract class PaginatedLoaderFilteredSorted<Props extends IPaginatedLoad
             return currentSort.map(field => {
                 const direction = sortAscending ? 1 : -1;
 
-                const aPropertyValue = getPropertyByPath(a, field);
-                const bPropertyValue = getPropertyByPath(b, field);
+                let aPropertyValue;
+                let bPropertyValue;
+
+                if (Array.isArray(field) && field.length === 2) {
+                    aPropertyValue = field[1](getPropertyByPath(a, field[0]));
+                    bPropertyValue = field[1](getPropertyByPath(b, field[0]));
+                } else {
+                    aPropertyValue = getPropertyByPath(a, field);
+                    bPropertyValue = getPropertyByPath(b, field);
+                }
 
                 if (aPropertyValue > bPropertyValue) {
                     return direction;

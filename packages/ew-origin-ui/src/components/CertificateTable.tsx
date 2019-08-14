@@ -676,7 +676,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<ICertificate
             generateHeader('Compliance'),
             generateHeader('Owner', ['certificateOwner.organization']),
             generateHeader('Certification Date', ['certificate.creationTime']),
-            generateHeader('Certified Energy (kWh)', ['certificate.powerInW'], defaultWidth, true, true)
+            generateHeader('Certified Energy (kWh)', [['certificate.powerInW', (value) => parseInt(value, 10)]], defaultWidth, true, true)
         ];
 
         if (shouldShowPrice) {
