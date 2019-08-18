@@ -16,14 +16,13 @@
 
 import * as React from 'react';
 import { Nav } from 'react-bootstrap';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { User } from 'ew-user-registry-lib';
-// import Profile from '../Profile/Profile'
 
 import logo from '../../assets/logo.svg';
-import avatar from '../../assets/avatar.svg';
-import view_profile from '../../assets/view_profile.svg';
+
+import { AccountCircle } from '@material-ui/icons';
 
 import './Header.scss';
 
@@ -77,21 +76,10 @@ export class Header extends React.Component<IHeaderProps, {}> {
                         </li>
                     </Nav>
                     <div className="ViewProfile">
-                        <div>
-                            <img src={avatar} />
-                            <span>{currentUser ? currentUser.organization : 'Guest'}</span>
-                        </div>
-                        <img src={view_profile} />
+                        <AccountCircle className="ViewProfile_icon" color="primary" />
+                        {currentUser ? currentUser.organization : 'Guest'}
                     </div>
                 </div>
-                {/* <SlidingPane
-            className='ProfilePane'
-            overlayClassName='ProfilePaneOverlay'
-            width='292px'
-            isOpen={isProfileOpened}
-            onRequestClose={handleProfile.close}>
-            <Profile fakeAuth={fakeAuth} handleProfile={handleProfile} />
-          </SlidingPane> */}
             </div>
         );
     }

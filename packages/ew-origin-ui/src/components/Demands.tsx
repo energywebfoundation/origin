@@ -15,22 +15,15 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import FadeIn from 'react-fade-in';
-import { Nav, NavItem } from 'react-bootstrap';
-import { BrowserRouter, Route, Link, NavLink, Redirect } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
 
 import { ProducingAsset, ConsumingAsset } from 'ew-asset-registry-lib';
 import { User } from 'ew-user-registry-lib';
 import { Demand } from 'ew-market-lib';
 import { Configuration } from 'ew-utils-general-lib';
 
-import { OrganizationFilter } from './OrganizationFilter';
-import { Table } from './Table/Table';
-import TableUtils from './Table/TableUtils';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { DemandTable } from './DemandTable';
-
-import '../../assets/common.scss';
 
 export interface IDemandsProps {
     conf: Configuration.Entity;

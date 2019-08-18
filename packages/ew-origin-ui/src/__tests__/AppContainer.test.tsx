@@ -292,8 +292,6 @@ describe('Application[E2E]', () => {
 
         expect(renderedApp.find('.ViewProfile').text()).toBe('admin');
 
-        expect(renderedApp.find('.PageTitle').text()).toBe('Production List')
-
         expect(renderedApp.find('table tbody tr td').map(el => el.text())).toEqual([
             "0",
             "Asset Manager organization",
@@ -315,8 +313,6 @@ describe('Application[E2E]', () => {
         (document.body.querySelector('.popover-item') as any).click();
     
         await renderedApp.update();
-
-        expect(renderedApp.find('.PageTitle').text()).toBe('Production Detail')
 
         expect(renderedApp.find('table tbody tr td div').map(el => el.text())).toEqual([
             "Facility Name",

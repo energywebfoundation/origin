@@ -256,9 +256,6 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                     </Link>
                 </div>
                 <div className="PageContentWrapper">
-                    {/* <div className='PageHeader'>
-              <div className='PageTitle'>Berlin II, <span>Berlin, Germany</span></div>
-            </div> */}
                     <div className="PageBody">
                         {!selectedCertificate ? (
                             <div className="text-center">

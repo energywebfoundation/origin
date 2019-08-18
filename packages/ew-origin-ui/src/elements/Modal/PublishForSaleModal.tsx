@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Modal, Button, Dropdown, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Modal, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import './Modal.scss';
-import '../PageButton/PageButton.scss';
+import '../Block/Block.scss';
 import moment from 'moment';
 
 import { Erc20TestToken } from 'ew-erc-test-contracts';

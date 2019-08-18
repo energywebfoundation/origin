@@ -326,14 +326,11 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
                         component={this.DemandTable}
                     />
 
-                    {/* <Route path={`/${contractAddress}/legal/`'} component={Legal} />
-                    <Route path={`/${contractAddress}/about/`} component={About} /> */}
                     <Route
                         path={`/${contractAddress}`}
                         component={this.Asset}
                     />
                 </Switch>
-                {/* <Footer cooContractAddress={contractAddress} /> */}
                 <AccountChangedModal />
             </div>
         );

@@ -26,7 +26,7 @@
 
                 &.TableFooter,
                 &.TableHeader {
-                    background-color: #2c2c2c !important;
+                    background-color: $backgroundColorDark !important;
                 }
 
                 &.TableFooter {
@@ -226,7 +226,7 @@
             tr {
                 vertical-align: top;
                 height: 57px;
-                background-color: #2c2c2c;
+                background-color: $backgroundColorDark;
 
                 th {
                     padding-top: 14px;

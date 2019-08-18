@@ -6,7 +6,7 @@
             display: flex;
 
             input {
-                background: #2c2c2c;
+                background: $backgroundColorDark;
                 border-radius: 3px;
                 border: none;
                 outline: none;
@@ -39,22 +39,6 @@
 
         .PageContentWrapper {
             padding: 15px 0 0;
-
-            .PageHeader {
-                .PageTitle {
-                    font-weight: 100;
-                    line-height: normal;
-                    font-size: 28px;
-                    letter-spacing: 0.6px;
-                    color: #ffffff;
-                    mix-blend-mode: normal;
-                    opacity: 0.26;
-
-                    span {
-                        font-size: 16px;
-                    }
-                }
-            }
 
             .PageBody {
                 padding: 12px 0;

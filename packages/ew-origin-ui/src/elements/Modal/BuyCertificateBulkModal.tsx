@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import './Modal.scss';
-import '../PageButton/PageButton.scss';
+import '../Block/Block.scss';
 
 import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Configuration } from 'ew-utils-general-lib';
