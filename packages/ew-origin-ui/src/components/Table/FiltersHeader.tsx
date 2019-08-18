@@ -28,6 +28,7 @@ export interface ICustomFilterDefinition {
     property: string;
     label: string;
     input: ICustomFilterInput;
+    search?: boolean;
 }
 
 export interface ICustomFilter extends ICustomFilterDefinition {
@@ -79,6 +80,10 @@ export class FiltersHeader extends Component<IProps, IState> {
     }
 
     setupProcessedFilters() {
+        if (!this.props.filters) {
+            return;
+        }
+
         const processedFilters: ICustomFilter[] = this.props.filters.map(filter => {
             if (filter.input.type === CustomFilterInputType.multiselect) {
                 return {
@@ -120,18 +125,28 @@ export class FiltersHeader extends Component<IProps, IState> {
             return null;
         }
 
-        return processedFilters && <div className="FiltersHeader">
-            <div className={`Filter ${menuShown ? 'Filter-opened' : ''}`} onClick={() => this.setState({ menuShown: !menuShown })}>
-                <div className="Filter_icon"><FilterIcon /></div>
-                Filter
-            </div>
-            {menuShown && <div className="Filter_menu">
-                {processedFilters.map((filter, index) => {
-                    return <div className="Filter_menu_item" key={index}>
-                        <IndividualFilter filter={filter} changeFilterValue={this.changeFilterValue} />
-                    </div>
-                })}
+        const searchFilter = processedFilters.find(f => f.search);
+
+        const standardFilters = processedFilters.filter(f => !f.search);
+
+        return <>
+            {searchFilter && <div className="pb-4">
+                <IndividualFilter filter={searchFilter} changeFilterValue={this.changeFilterValue} />
             </div>}
-        </div>
+            
+            {standardFilters.length > 0 && <div className="FiltersHeader">
+                <div className={`Filter ${menuShown ? 'Filter-opened' : ''}`} onClick={() => this.setState({ menuShown: !menuShown })}>
+                    <div className="Filter_icon"><FilterIcon /></div>
+                    Filter
+                </div>
+                {menuShown && <div className="Filter_menu">
+                    {standardFilters.map((filter, index) => {
+                        return <div className="Filter_menu_item" key={index}>
+                            <IndividualFilter filter={filter} changeFilterValue={this.changeFilterValue} />
+                        </div>
+                    })}
+                </div>}
+            </div>}
+        </>
     }
 }

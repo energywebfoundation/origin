@@ -38,28 +38,12 @@ export interface AssetProps {
     demands: Demand.Entity[];
 }
 
-export interface AssetState {
-    switchedToOrganization: boolean;
-}
-
-export class Asset extends React.Component<AssetProps, AssetState> {
+export class Asset extends React.Component<AssetProps> {
     constructor(props: AssetProps) {
         super(props);
 
-        this.state = {
-            switchedToOrganization: false
-        };
-
-        this.switchToOrganization = this.switchToOrganization.bind(this);
         this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this);
         this.ProducingAssetTable = this.ProducingAssetTable.bind(this);
-        this.onFilterOrganization = this.onFilterOrganization.bind(this);
-    }
-
-    switchToOrganization(switchedToOrganization: boolean): void {
-        this.setState({
-            switchedToOrganization
-        });
     }
 
     ProducingAssetTable(): JSX.Element {
@@ -70,7 +54,6 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 conf={this.props.conf}
                 currentUser={this.props.currentUser}
                 baseUrl={this.props.baseUrl}
-                switchedToOrganization={this.state.switchedToOrganization}
             />
         );
     }
@@ -84,7 +67,6 @@ export class Asset extends React.Component<AssetProps, AssetState> {
                 conf={this.props.conf}
                 currentUser={this.props.currentUser}
                 baseUrl={this.props.baseUrl}
-                switchedToOrganization={this.state.switchedToOrganization}
             />
         );
     }
@@ -114,43 +96,17 @@ export class Asset extends React.Component<AssetProps, AssetState> {
         );
     }
 
-    onFilterOrganization(index: number): void {
-        this.setState({
-            switchedToOrganization: index !== 0
-        });
-    }
-
     render(): JSX.Element {
-        const organizations = this.props.currentUser
-            ? ['All Organizations', this.props.currentUser.organization]
-            : ['All Organizations'];
-
         const AssetsMenu = [
             {
                 key: 'production',
                 label: 'Production List',
-                component: this.ProducingAssetTable,
-                buttons: [
-                    {
-                        type: 'dropdown',
-                        label: 'All Organizations',
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ]
+                component: this.ProducingAssetTable
             },
             {
                 key: 'consumption',
                 label: 'Consumption List',
-                component: this.ConsumingAssetTable,
-                buttons: [
-                    {
-                        type: 'dropdown',
-                        label: 'All Organizations',
-                        face: ['filter', 'icon'],
-                        content: organizations
-                    }
-                ]
+                component: this.ConsumingAssetTable
             },
             {
                 key: 'producing_detail_view',
@@ -201,7 +157,6 @@ export class Asset extends React.Component<AssetProps, AssetState> {
 
                         return (
                             <PageContent
-                                onFilterOrganization={this.onFilterOrganization}
                                 menu={matches.length > 0 ? matches[0] : null}
                                 redirectPath={'/' + this.props.baseUrl + '/assets'}
                             />

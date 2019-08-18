@@ -18,85 +18,83 @@ import * as React from 'react';
 import { Certificate } from 'ew-origin-lib';
 import { User } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
-import { Table } from './Table/Table';
+import { ITableHeaderData } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
 import { ConsumingAsset } from 'ew-asset-registry-lib';
-import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
+import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
+import { IPaginatedLoaderFilteredState, getInitialPaginatedLoaderFilteredState, FILTER_SPECIAL_TYPES, RECORD_INDICATOR, PaginatedLoaderFiltered } from './Table/PaginatedLoaderFiltered';
+import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
+import { AdvancedTable } from './Table/AdvancedTable';
 
-export interface ConsumingAssetTableProps {
+interface ConsumingAssetTableProps {
     conf: Configuration.Entity;
     consumingAssets: ConsumingAsset.Entity[];
     demands: Demand.Entity[];
     certificates: Certificate.Entity[];
     currentUser: User;
     baseUrl: string;
-    switchedToOrganization: boolean;
 }
 
-export interface IConsumingAssetTableState extends IPaginatedLoaderState {
+interface IConsumingAssetTableState extends IPaginatedLoaderFilteredState {
     detailViewForAssetId: number;
-    switchedToOrganization: boolean;
 }
 
-export interface IEnrichedConsumingAssetData {
-    consumingAsset: ConsumingAsset.Entity;
+interface IEnrichedConsumingAssetData {
+    asset: ConsumingAsset.Entity;
     organizationName: string;
 }
 
-export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProps, IConsumingAssetTableState> {
+export class ConsumingAssetTable extends PaginatedLoaderFiltered<ConsumingAssetTableProps, IConsumingAssetTableState> {
     constructor(props: ConsumingAssetTableProps) {
         super(props);
 
         this.state = {
-            ...getInitialPaginatedLoaderState(),
-            detailViewForAssetId: null,
-            switchedToOrganization: false
+            ...getInitialPaginatedLoaderFilteredState(),
+            detailViewForAssetId: null
         };
 
-        this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
     }
 
-    switchToOrganization(switchedToOrganization: boolean): void {
-        this.setState({
-            switchedToOrganization
-        });
-    }
+    filters: ICustomFilterDefinition[] = [
+        {
+            property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}asset.offChainProperties.facilityName::${RECORD_INDICATOR}organizationName`,
+            label: 'Search',
+            input: {
+                type: CustomFilterInputType.string
+            },
+            search: true
+        }
+    ]
 
-    async getPaginatedData({ pageSize, offset }) {
-        const consumingAssets: ConsumingAsset.Entity[] = this.props.consumingAssets;
-        const enrichedConsumingAssetData = await this.enrichedConsumingAssetData(consumingAssets);
+    async getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const assets = this.props.consumingAssets;
+        const enrichedAssetData = await this.enrichedConsumingAssetData(assets);
 
-        const filteredEnrichedAssetData = enrichedConsumingAssetData.filter(
-            (enrichedConsumingAssetData: IEnrichedConsumingAssetData) =>
-                !this.props.switchedToOrganization ||
-                enrichedConsumingAssetData.consumingAsset.owner.address ===
-                    this.props.currentUser.id
-        );
+        const filteredEnrichedAssetData = enrichedAssetData.filter(record => this.checkRecordPassesFilters(record, filters));
 
         const total = filteredEnrichedAssetData.length;
 
         const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
 
         const formattedPaginatedData = paginatedData.map(
-            (enrichedConsumingAssetData: IEnrichedConsumingAssetData) => {
-                const consumingAsset: ConsumingAsset.Entity =
-                    enrichedConsumingAssetData.consumingAsset;
+            (enrichedRecordData) => {
+                const asset = enrichedRecordData.asset;
 
                 return [
-                    consumingAsset.id,
-                    enrichedConsumingAssetData.organizationName,
-                    consumingAsset.offChainProperties.facilityName,
-                    consumingAsset.offChainProperties.city +
+                    asset.id,
+                    enrichedRecordData.organizationName,
+                    asset.offChainProperties.facilityName,
+                    asset.offChainProperties.city +
                         ', ' +
-                        consumingAsset.offChainProperties.country,
-                    consumingAsset.offChainProperties.capacityWh
-                        ? (consumingAsset.offChainProperties.capacityWh / 1000).toLocaleString()
+                        asset.offChainProperties.country,
+                    asset.offChainProperties.capacityWh
+                        ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
                         : '-',
-                    (consumingAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
-                    (consumingAsset.certificatesUsedForWh / 1000).toLocaleString()
+                    (asset.lastSmartMeterReadWh / 1000).toLocaleString(),
+                    (asset.certificatesUsedForWh / 1000).toLocaleString()
                 ];
             }
         );
@@ -116,10 +114,10 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
 
     async enrichedConsumingAssetData(consumingAssets: ConsumingAsset.Entity[]): Promise<IEnrichedConsumingAssetData[]> {
         const promises = consumingAssets.map(
-            async (consumingAsset: ConsumingAsset.Entity) => ({
-                consumingAsset,
+            async (asset: ConsumingAsset.Entity) => ({
+                asset,
                 organizationName: (await new User(
-                    consumingAsset.owner.address,
+                    asset.owner.address,
                     this.props.conf as any
                 ).sync()).organization
             })
@@ -153,7 +151,7 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
         const generateHeader = TableUtils.generateHeader;
         const generateFooter = TableUtils.generateFooter;
 
-        const TableHeader = [
+        const TableHeader: ITableHeaderData[] = [
             generateHeader('#', 60),
             generateHeader('Owner'),
             generateHeader('Facility Name'),
@@ -175,7 +173,7 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
 
         return (
             <div className="ConsumptionWrapper">
-                <Table
+                <AdvancedTable
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}
@@ -185,6 +183,7 @@ export class ConsumingAssetTable extends PaginatedLoader<ConsumingAssetTableProp
                     loadPage={this.loadPage}
                     total={this.state.total}
                     pageSize={this.state.pageSize}
+                    filters={this.filters}
                 />
             </div>
         );

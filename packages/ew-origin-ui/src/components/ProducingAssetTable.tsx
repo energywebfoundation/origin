@@ -19,13 +19,16 @@ import * as React from 'react';
 import { Certificate, CertificateLogic } from 'ew-origin-lib';
 import { User, Role } from 'ew-user-registry-lib';
 import { Redirect } from 'react-router-dom';
-import { Table, ITableHeaderData } from './Table/Table';
+import { ITableHeaderData } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
-import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
+import { PaginatedLoaderFiltered, IPaginatedLoaderFilteredState, getInitialPaginatedLoaderFilteredState, FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderFiltered';
+import { AdvancedTable } from './Table/AdvancedTable';
+import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
+import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
 
 export interface ProducingAssetTableProps {
     conf: Configuration.Entity;
@@ -33,21 +36,18 @@ export interface ProducingAssetTableProps {
     producingAssets: ProducingAsset.Entity[];
     currentUser: User;
     baseUrl: string;
-    switchedToOrganization: boolean;
 }
 
 export interface IEnrichedProducingAssetData {
-    producingAsset: ProducingAsset.Entity;
+    asset: ProducingAsset.Entity;
     organizationName: string;
     notSoldCertificates: Certificate.Entity[];
 }
 
-interface IProducingAssetTableState extends IPaginatedLoaderState {
+interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
     detailViewForAssetId: number;
     requestIRECsModalAsset: ProducingAsset.Entity;
     showRequestIRECsModal: boolean;
-    switchedToOrganization: boolean;
-    paginatedData: IEnrichedProducingAssetData[];
 }
 
 enum OPERATIONS {
@@ -55,27 +55,19 @@ enum OPERATIONS {
     SHOW_DETAILS = 'Show Details'
 }
 
-export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProps, IProducingAssetTableState> {    
+export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetTableProps, IProducingAssetTableState> {    
     constructor(props: ProducingAssetTableProps) {
         super(props);
 
         this.state = {
-            ...getInitialPaginatedLoaderState(),
+            ...getInitialPaginatedLoaderFilteredState(),
             detailViewForAssetId: null,
             requestIRECsModalAsset: null,
             showRequestIRECsModal: false,
-            switchedToOrganization: false,
         };
 
-        this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
         this.hideRequestIRECsModal = this.hideRequestIRECsModal.bind(this);
-    }
-
-    switchToOrganization(switchedToOrganization: boolean): void {
-        this.setState({
-            switchedToOrganization
-        });
     }
 
     async componentDidUpdate(newProps: ProducingAssetTableProps) {
@@ -86,15 +78,15 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
 
     async enrichProducingAssetData(producingAssets: ProducingAsset.Entity[]): Promise<IEnrichedProducingAssetData[]> {
         const promises = producingAssets.map(
-            async (producingAsset: ProducingAsset.Entity, index: number) => ({
-                producingAsset,
+            async (asset) => ({
+                asset,
                 notSoldCertificates: this.props.certificates.filter(
                     (certificate: Certificate.Entity) =>
-                        certificate.owner === producingAsset.owner.address &&
-                        certificate.assetId.toString() === producingAsset.id
+                        certificate.owner === asset.owner.address &&
+                        certificate.assetId.toString() === asset.id
                 ),
                 organizationName: (await new User(
-                    producingAsset.owner.address,
+                    asset.owner.address,
                     this.props.conf as any
                 ).sync()).organization
             })
@@ -171,38 +163,41 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
         });
     }
 
-    async getPaginatedData({ pageSize, offset }) {
-        const producingAssets: ProducingAsset.Entity[] = this.props.producingAssets;
-        const enrichedProducingAssetData = await this.enrichProducingAssetData(producingAssets);
+    filters: ICustomFilterDefinition[] = [
+        {
+            property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}asset.offChainProperties.facilityName::${RECORD_INDICATOR}organizationName`,
+            label: 'Search',
+            input: {
+                type: CustomFilterInputType.string
+            },
+            search: true
+        }
+    ]
 
-        const filteredEnrichedAssetData = enrichedProducingAssetData.filter(
-            (enrichedProducingAssetData: IEnrichedProducingAssetData) => {
-                return (
-                    !this.props.switchedToOrganization ||
-                    enrichedProducingAssetData.producingAsset.owner.address ===
-                        this.props.currentUser.id
-                );
-            }
-        );
+    async getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+        const assets = this.props.producingAssets;
+        const enrichedAssetData = await this.enrichProducingAssetData(assets);
+
+        const filteredEnrichedAssetData = enrichedAssetData.filter(record => this.checkRecordPassesFilters(record, filters));
 
         const total = filteredEnrichedAssetData.length;
 
         const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
 
         const formattedPaginatedData = paginatedData.map(
-            (enrichedProducingAssetData: IEnrichedProducingAssetData) => {
-                const producingAsset = enrichedProducingAssetData.producingAsset;
+            (enrichedRecordData) => {
+                const asset = enrichedRecordData.asset;
 
                 return [
-                    producingAsset.id,
-                    enrichedProducingAssetData.organizationName,
-                    producingAsset.offChainProperties.facilityName,
-                    producingAsset.offChainProperties.city +
+                    asset.id,
+                    enrichedRecordData.organizationName,
+                    asset.offChainProperties.facilityName,
+                    asset.offChainProperties.city +
                         ', ' +
-                        producingAsset.offChainProperties.country,
-                    ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                    producingAsset.offChainProperties.capacityWh / 1000,
-                    producingAsset.lastSmartMeterReadWh / 1000
+                        asset.offChainProperties.country,
+                    ProducingAsset.Type[asset.offChainProperties.assetType],
+                    asset.offChainProperties.capacityWh / 1000,
+                    asset.lastSmartMeterReadWh / 1000
                 ];
             }
         );
@@ -261,7 +256,7 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
 
         return (
             <div className="ProductionWrapper">
-                <Table
+                <AdvancedTable
                     header={TableHeader}
                     footer={TableFooter}
                     operationClicked={this.operationClicked}
@@ -271,6 +266,7 @@ export class ProducingAssetTable extends PaginatedLoader<ProducingAssetTableProp
                     loadPage={this.loadPage}
                     total={this.state.total}
                     pageSize={this.state.pageSize}
+                    filters={this.filters}
                 />
 
                 <RequestIRECsModal
