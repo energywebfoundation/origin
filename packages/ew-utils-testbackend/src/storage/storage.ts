@@ -25,9 +25,13 @@ export class CustomStorage {
         });
     }
 
-    get(type: ENTITY, key: string) {
+    get(type: ENTITY, key?: string) {
         if (arguments.length > 2) {
             throw new Error('Storage::get()::Too many arguments passed');
+        }
+
+        if (key === undefined || key === null) {
+            return this._adapter.get(type);
         }
 
         return this._adapter.get(type)[key];

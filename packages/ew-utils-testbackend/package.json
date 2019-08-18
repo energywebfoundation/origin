@@ -8,7 +8,8 @@
     "build": "shx rm -rf dist/js && tsc",
     "lint": "tslint --fix  'src/**/*{.ts,.tsx}'",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "test": "rm -rf db.json && npm run build && mocha dist/js/test/ --timeout 60000"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,12 @@
     "js-beautify": "1.10.0"
   },
   "devDependencies": {
+    "@types/chai": "4.1.4",
+    "@types/mocha": "2.2.48",
+    "axios": "0.19.0",
+    "chai": "4.2.0",
     "lint-staged": "8.1.7",
+    "mocha": "6.2.0",
     "prettier": "1.17.1",
     "shx": "0.3.2",
     "tslint": "5.16.0",
