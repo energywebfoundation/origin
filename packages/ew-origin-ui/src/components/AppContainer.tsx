@@ -182,7 +182,6 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         const response = await axios.get(`${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`);
 
         const marketBlockchainProperties: Configuration.BlockchainProperties = (await marketCreateBlockchainProperties(
-            null,
             web3,
             response.data.marketContractLookup
         )) as any;
@@ -212,7 +211,6 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
 
         try {
             blockchainProperties = (await createBlockchainProperties(
-                null,
                 web3,
                 originIssuerContractLookupAddress
             ));
