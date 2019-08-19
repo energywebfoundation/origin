@@ -301,6 +301,8 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                             conf={this.props.conf}
                             certificates={this.props.certificates}
                             addSearchField={false}
+                            showSmartMeterReadings={false}
+                            showCertificates={false}
                         />
                     ) : null}
                     {selectedCertificate ? (

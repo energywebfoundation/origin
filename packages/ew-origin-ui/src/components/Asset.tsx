@@ -80,6 +80,8 @@ export class Asset extends React.Component<AssetProps> {
                 conf={this.props.conf}
                 certificates={this.props.certificates}
                 addSearchField={true}
+                showCertificates={true}
+                showSmartMeterReadings={true}
             />
         );
     }

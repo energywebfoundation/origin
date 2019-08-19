@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { Modal, Button, DropdownButton, MenuItem } from 'react-bootstrap';
-import './Modal.scss';
-import '../Block/Block.scss';
 import moment from 'moment';
-
 import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Currency, Configuration } from 'ew-utils-general-lib';
 import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
-
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, FilledInput, MenuItem, Select } from '@material-ui/core';
 import { showNotification, NotificationType } from '../../utils/notifications';
 
 interface IValidation {
@@ -204,68 +200,86 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         const facilityName = this.props.producingAsset ? this.props.producingAsset.offChainProperties.facilityName : '';
 
         return (
-            <Modal show={this.state.show} onHide={this.handleClose} animation={false} backdrop={true} backdropClassName="modal-backdrop">
-                <Modal.Header>
-                    <Modal.Title>{`Publish certificate #${certificateId} for sale`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="container">
-                    <div className="row">
-                        <div className="col">Facility</div>
-                        <div className="col">{facilityName}</div>
-                    </div>
+            <Dialog open={this.state.show} onClose={this.handleClose}>
+                <DialogTitle>{`Publish certificate #${certificateId} for sale`}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Facility"
+                        value={facilityName}
+                        fullWidth
+                        disabled
+                    />
 
-                    <div className="row">
-                        <div className="col">Date</div>
-                        <div className="col">{this.state.certCreationDate}</div>
-                    </div>
+                    <TextField
+                        label="Date"
+                        value={this.state.certCreationDate}
+                        fullWidth
+                        disabled
+                        className="mt-4"
+                    />
 
-                    <hr />
+                    <TextField
+                        label="kWh"
+                        value={this.state.kwh}
+                        type="number"
+                        placeholder="1"
+                        onChange={(e) => this.validateInputs(e)}
+                        className="mt-4"
+                        id="kwhInput"
+                        fullWidth
+                    />
 
-                    <div className="row">
-                        <div className="col vertical-align">kWh</div>
-                        <div className="col">
-                            <input className="modal-input" id="kwhInput" type="number" placeholder="1" value={this.state.kwh} onChange={(e) => this.validateInputs(e)} />
-                        </div>
-                    </div>
+                    <TextField
+                        label="Price"
+                        value={this.state.price}
+                        type="number"
+                        placeholder="1"
+                        onChange={(e) => this.validateInputs(e)}
+                        className="mt-4"
+                        id="priceInput"
+                        fullWidth
+                    />
 
-                    <div className="row">
-                        <div className="col vertical-align">Price</div>
-                        <div className="col">
-                            <input className="modal-input" id="priceInput" type="number" placeholder="1" value={this.state.price} onChange={(e) => this.validateInputs(e)} />
-                        </div>
-                    </div>
+                    <FormControl fullWidth={true} variant="filled" className="mt-4">
+                        <InputLabel>Currency</InputLabel>
+                        <Select
+                            value={this.state.currency} 
+                            onChange={(e) => this.setState({ currency: e.target.value as any })}
+                            fullWidth
+                            variant="filled"
+                            input={<FilledInput />}
+                        >
+                                {this.availableCurrencies.map(currency => <MenuItem key={currency} value={currency}>{currency}</MenuItem>)}
+                        </Select>
+                    </FormControl>
 
-                    <div className="row">
-                        <div className="col vertical-align">Currency</div>
-                        <div className="col">
-                            <DropdownButton
-                                id="currencySelectInput"
-                                bsStyle="default"
-                                title={this.state.currency}
-                                onSelect={(eventKey) => this.setState({ currency: eventKey })}
-                            >
-                                {this.availableCurrencies.map(currency => <MenuItem key={currency} eventKey={currency}>{currency}</MenuItem>)}
-                            </DropdownButton>
-
-                            {this.isErc20Sale &&
-                                <input id="tokenAddressInput" className="modal-input" type="text" placeholder="<ERC20 Token Address>" value={this.state.erc20TokenAddress} onChange={(e) => this.validateInputs(e)} />
-                            }
-                        </div>
-                    </div>
+                    {this.isErc20Sale &&
+                        <TextField
+                            label="ERC20 Token Address"
+                            value={this.state.erc20TokenAddress}
+                            placeholder="<ERC20 Token Address>"
+                            onChange={(e) => this.validateInputs(e)}
+                            className="mt-4"
+                            id="tokenAddressInput"
+                            fullWidth
+                        />
+                    }
 
                     <div className="text-danger">
                         {!this.state.validation.price && <div>Price is invalid</div>}
-                        {!this.state.validation.kwh && <div>kwH value is invalid</div>}
+                        {!this.state.validation.kwh && <div>kWh value is invalid</div>}
                         {this.isErc20Sale && !this.state.validation.erc20TokenAddress && <div>Token address is invalid</div>}
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={this.handleClose} className="modal-button modal-button-cancel">Cancel</Button>
-                    <Button variant="primary" onClick={this.publishForSale} className="modal-button modal-button-publish" disabled={!this.isFormValid}>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.publishForSale} color="primary" disabled={!this.isFormValid}>
                         Publish for sale
                     </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
         );
     }
   }

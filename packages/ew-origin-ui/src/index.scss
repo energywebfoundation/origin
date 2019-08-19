@@ -1,5 +1,9 @@
-@import './styles/variables.scss';
+@import "./styles/variables.scss";
 @import "./styles/toastr.scss";
+
+$body-bg: none;
+$body-color: $bootstrapBodyColor;
+@import "./styles/bootstrap.scss";
 
 .vertical-align {
     display: flex;

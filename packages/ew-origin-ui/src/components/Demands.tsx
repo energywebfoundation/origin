@@ -34,24 +34,11 @@ export interface IDemandsProps {
     baseUrl: string;
 }
 
-export interface IDemandState {
-    switchedToOrganization: boolean;
-}
-
-export class Demands extends React.Component<IDemandsProps, IDemandState> {
+export class Demands extends React.Component<IDemandsProps> {
     constructor(props) {
         super(props);
 
-        this.state = { switchedToOrganization: false };
-
-        this.onFilterOrganization = this.onFilterOrganization.bind(this);
         this.DemandTable = this.DemandTable.bind(this);
-    }
-
-    onFilterOrganization(index: number) {
-        this.setState({
-            switchedToOrganization: index !== 0
-        });
     }
 
     DemandTable() {
@@ -62,32 +49,16 @@ export class Demands extends React.Component<IDemandsProps, IDemandState> {
                 currentUser={this.props.currentUser}
                 demands={this.props.demands}
                 consumingAssets={this.props.consumingAssets}
-                switchedToOrganization={this.state.switchedToOrganization}
                 baseUrl={this.props.baseUrl}
             />
         );
     }
 
     render() {
-        const organizations = this.props.currentUser
-            ? ['All Organizations', this.props.currentUser.organization]
-            : ['All Organizations'];
-
         const DemandsMenu = {
             key: 'demands',
             label: 'Demands',
-            component: this.DemandTable,
-            buttons: [
-                // {
-                //     type: 'date-range',
-                // },
-                {
-                    type: 'dropdown',
-                    label: 'All Organizations',
-                    face: ['filter', 'icon'],
-                    content: organizations
-                }
-            ]
+            component: this.DemandTable
         };
 
         return (
@@ -97,7 +68,6 @@ export class Demands extends React.Component<IDemandsProps, IDemandState> {
                 </div>
 
                 <PageContent
-                    onFilterOrganization={this.onFilterOrganization}
                     menu={DemandsMenu}
                     redirectPath={'/' + this.props.baseUrl + '/demands'}
                 />

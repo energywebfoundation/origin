@@ -15,11 +15,11 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Button, DropdownButton, MenuItem, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import Toggle from 'react-toggle';
-import DatePicker from 'react-date-picker';
+import { DatePicker } from "@material-ui/pickers";
 import renderHTML from 'react-render-html';
-import moment from 'moment';
+import { Moment } from 'moment';
 import { PeriodToSeconds } from '../DemandTable';
 import { TimeFrame } from 'ew-utils-general-lib';
 import { Pagination } from './Pagination';
@@ -27,10 +27,10 @@ import { ArrowDropUp, ArrowDropDown } from '@material-ui/icons';
 
 import './toggle.scss';
 import './Table.scss';
-import './datepicker.scss';
 import { ActionIcon } from '../icons/ActionIcon';
 import { ICustomFilter } from './FiltersHeader';
 import { deepEqual } from '../../utils/Helper';
+import { TextField, FormControl, InputLabel, Select, FilledInput, MenuItem } from '@material-ui/core';
 
 export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
@@ -176,7 +176,8 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     handleDropdown = (key, itemInput) => {
-        return (value => {
+        return (event => {
+            const value = event.target.value;
             const { data } = this.props;
             if (itemInput.labelKey) {
                 const items = data[itemInput.data];
@@ -197,11 +198,8 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     handleToggle = (key, index) => {
-        const stateKey = 'toggle_' + key;
-
         return (() => {
             const { state } = this;
-            // state[stateKey] = state[stateKey] ? false : true
             this.setState(state);
 
             if (index !== undefined) {
@@ -228,11 +226,12 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     handleDate = key => {
-        return (date => {
-            const output = moment(date).format('DD MMM YY');
-            this.setState({ [key]: date, ['date_' + key]: output });
+        return ((momentObject: Moment) => {
+            const dateObject = momentObject.toDate();
+            const output = momentObject.format('DD MMM YY');
+            this.setState({ [key]: dateObject, ['date_' + key]: output });
             const newInputs = { ...this.state.inputs };
-            newInputs[key] = moment(date).unix();
+            newInputs[key] = momentObject.unix();
 
             this.setState(
                 {
@@ -511,62 +510,63 @@ export class Table extends React.Component<ITableProps, IState> {
                                             <td className={`Actions Input`}>
                                                 {item.input.type === 'text' &&
                                                     item.key !== 'totalDemand' && (
-                                                        <div>
-                                                            <input
-                                                                onChange={handleInput(item.key)}
-                                                            />
-                                                        </div>
+                                                        <TextField
+                                                            onChange={handleInput(item.key)}
+                                                            value={state[item.key]}
+                                                            label={item.label}
+                                                            fullWidth
+                                                            variant="filled"
+                                                        />
                                                     )}
                                                 {item.input.type === 'text' &&
                                                     item.key === 'totalDemand' && (
-                                                        <div>
-                                                            <input
-                                                                value={this.state.totalEnergy}
-                                                                readOnly={true}
-                                                            />
-                                                        </div>
+                                                        <TextField
+                                                            value={this.state.totalEnergy}
+                                                            label={item.label}
+                                                            fullWidth
+                                                            variant="filled"
+                                                            disabled
+                                                        />
                                                     )}
                                                 {item.input.type === 'number' && (
                                                     // TO-DO: Deprecate the use of input type number after POC
-                                                    <div>
-                                                        <input type="number"
-                                                            onChange={handleInput(item.key)}
-                                                        />
-                                                    </div>
+                                                    <TextField
+                                                        onChange={handleInput(item.key)}
+                                                        value={state[item.key]}
+                                                        label={item.label}
+                                                        fullWidth
+                                                        variant="filled"
+                                                        type="number"
+                                                    />
                                                 )}
-                                                {item.input.type === 'date' && (
-                                                    <div>
-                                                        <input
-                                                            className="Date"
-                                                            value={
-                                                                state['date_' + item.key] ||
-                                                                'Pick a date'
-                                                            }
-                                                        />
-                                                        <DatePicker
-                                                            onChange={handleDate(item.key)}
-                                                            value={state[item.key]}
-                                                        />
-                                                    </div>
+                                                {item.input.type === 'date' && (                                                
+                                                    <DatePicker
+                                                        onChange={handleDate(item.key)}
+                                                        value={state[item.key] || null}
+                                                        fullWidth
+                                                        variant="inline"
+                                                        inputVariant="filled"
+                                                        label={item.label}
+                                                    />
                                                 )}
                                                 {item.input.type === 'select' && (
-                                                    <DropdownButton
-                                                        bsStyle="default"
-                                                        title={
-                                                            (item.input.labelKey
-                                                                ? state['dropdown_' + item.key]
-                                                                : state[item.key]) ||
-                                                            `Choose ${item.label}`
-                                                        }
-                                                        onSelect={handleDropdown(
-                                                            item.key,
-                                                            item.input
-                                                        )}
-                                                    >
-                                                        {item.input.key
-                                                            ? data[item.input.data].map(opt => (
+                                                    <FormControl fullWidth={true} variant="filled">
+                                                        <InputLabel>Choose {item.label}</InputLabel>
+                                                        <Select
+                                                            onChange={handleDropdown(
+                                                                item.key,
+                                                                item.input
+                                                            )}
+                                                            fullWidth={true}
+                                                            variant="filled"
+                                                            value={state[item.key]}
+                                                            input={<FilledInput />}
+                                                        >
+                                                            {item.input.key
+                                                            ? data[item.input.data].map((opt, index) => (
                                                                   <MenuItem
-                                                                      eventKey={opt[item.input.key]}
+                                                                    key={index}
+                                                                    value={opt[item.input.key]}
                                                                   >
                                                                       {opt[item.input.labelKey]}
                                                                   </MenuItem>
@@ -574,14 +574,15 @@ export class Table extends React.Component<ITableProps, IState> {
                                                             : data[item.input.data].map(
                                                                   (opt, index) => (
                                                                       <MenuItem
-                                                                          eventKey={opt}
                                                                           key={index}
+                                                                          value={opt}
                                                                       >
                                                                           {opt}
                                                                       </MenuItem>
                                                                   )
                                                               )}
-                                                    </DropdownButton>
+                                                        </Select>
+                                                    </FormControl>
                                                 )}
                                             </td>
                                         </tr>

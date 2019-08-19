@@ -38,6 +38,20 @@ import './AppContainer.scss';
 import { Demands } from './Demands';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { 
+    currentUserUpdated,
+    configurationUpdated,
+    demandCreatedOrUpdated,
+    demandDeleted,
+    producingAssetCreatedOrUpdated,
+    certificateCreatedOrUpdated,
+    consumingAssetCreatedOrUpdated
+ } from '../features/actions';
+import { withRouter } from 'react-router-dom';
+import { ErrorComponent } from './ErrorComponent';
+import { LoadingComponent } from './LoadingComponent';
 
 export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3030';
 
@@ -47,11 +61,20 @@ interface IAppContainerProps extends IStoreState {
     location: any;
 }
 
+interface IAppContainerState {
+    loading: boolean;
+    error: string;
+}
+
 function isDemandDeleted(demand: Demand.Entity) {
     return !demand || !demand.demandOwner;
 }
 
-export class AppContainer extends React.Component<IAppContainerProps, {}> {
+enum ERROR {
+    WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
+}
+
+class AppContainerClass extends React.Component<IAppContainerProps, IAppContainerState> {
     constructor(props: IAppContainerProps) {
         super(props);
 
@@ -59,6 +82,11 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
         this.DemandTable = this.DemandTable.bind(this);
         this.Admin = this.Admin.bind(this);
         this.Asset = this.Asset.bind(this);
+
+        this.state = {
+            loading: true,
+            error: null
+        };
     }
 
     async initEventHandler(conf: Configuration.Entity): Promise<void> {
@@ -163,7 +191,7 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
     }
 
     async initConf(originIssuerContractLookupAddress: string): Promise<Configuration.Entity> {
-        let web3: any = null;
+        let web3: Web3 = null;
         const params: any = queryString.parse(this.props.location.search);
 
         if (params.rpc) {
@@ -180,35 +208,53 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
             web3 = new Web3(web3.currentProvider);
         }
 
-        const blockchainProperties: Configuration.BlockchainProperties = (await createBlockchainProperties(
-            null,
-            web3,
-            originIssuerContractLookupAddress
-        )) as any;
+        let blockchainProperties: Configuration.BlockchainProperties;
 
-        blockchainProperties.marketLogicInstance = await this.getMarketLogicInstance(
-            originIssuerContractLookupAddress,
-            web3
-        );
+        try {
+            blockchainProperties = (await createBlockchainProperties(
+                null,
+                web3,
+                originIssuerContractLookupAddress
+            ));
 
-        return {
-            blockchainProperties,
-            offChainDataSource: {
-                baseUrl: API_BASE_URL
-            },
+            blockchainProperties.marketLogicInstance = await this.getMarketLogicInstance(
+                originIssuerContractLookupAddress,
+                web3
+            );
 
-            logger: Winston.createLogger({
-                level: 'debug',
-                format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-                transports: [new Winston.transports.Console({ level: 'silly' })]
-            })
-        };
+            this.setState({
+                error: null,
+                loading: false
+            });
+    
+            return {
+                blockchainProperties,
+                offChainDataSource: {
+                    baseUrl: API_BASE_URL
+                },
+    
+                logger: Winston.createLogger({
+                    level: 'debug',
+                    format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
+                    transports: [new Winston.transports.Console({ level: 'silly' })]
+                })
+            };
+        } catch (error) {
+            console.error('Error in AppContainer::initConf', error);
+            this.setState({
+                loading: false,
+                error: ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS
+            });
+        }
     }
 
     async componentDidMount(): Promise<void> {
-        const conf: Configuration.Entity = await this.initConf(
-            this.props.match.params.contractAddress
-        );
+        const conf = await this.initConf(this.props.match.params.contractAddress);
+
+        if (!conf) {
+            return;
+        }
+
         this.props.actions.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
 
@@ -292,12 +338,14 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
     }
 
     render(): JSX.Element {
-        if (this.props.configuration == null) {
-            return (
-                <div>
-                    <p>loading...</p>
-                </div>
-            );
+        const { error, loading } = this.state;
+
+        if (error) {
+            return <ErrorComponent message={error} />;
+        }
+
+        if (this.props.configuration === null || loading) {
+            return <LoadingComponent />;
         }
 
         const contractAddress = this.props.match.params.contractAddress;
@@ -336,3 +384,21 @@ export class AppContainer extends React.Component<IAppContainerProps, {}> {
         );
     }
 }
+
+export const AppContainer = connect(
+    (state: IStoreState) => state,
+    dispatch => ({
+        actions: bindActionCreators(
+            {
+                currentUserUpdated,
+                configurationUpdated,
+                demandCreatedOrUpdated,
+                demandDeleted,
+                producingAssetCreatedOrUpdated,
+                certificateCreatedOrUpdated,
+                consumingAssetCreatedOrUpdated
+            },
+            dispatch
+        )
+    })
+)(withRouter(AppContainerClass));

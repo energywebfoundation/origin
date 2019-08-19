@@ -1,26 +1,15 @@
 import * as React from "react";
 import { mount } from "enzyme";
 import { AppContainer } from "../components/AppContainer";
-import { bindActionCreators, applyMiddleware } from 'redux';
-import { connect } from 'react-redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import reducer from '../reducers';
 import { migrateUserRegistryContracts, UserLogic, buildRights, Role } from "ew-user-registry-lib";
 import { ProducingAsset, migrateAssetRegistryContracts, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from "ew-asset-registry-lib";
 import { IStoreState } from "../types";
 import createSagaMiddleware from "redux-saga";
 import sagas from "../features/sagas";
-import { 
-    currentUserUpdated,
-    configurationUpdated,
-    demandCreatedOrUpdated,
-    demandDeleted,
-    producingAssetCreatedOrUpdated,
-    certificateCreatedOrUpdated,
-    consumingAssetCreatedOrUpdated
- } from '../features/actions';
 
 import { OverlayTrigger } from 'react-bootstrap';
 import { startAPI } from 'ew-utils-testbackend/dist/js/src/api'; 
@@ -250,37 +239,14 @@ describe('Application[E2E]', () => {
     
         Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
             sagaMiddleware.run(sagas[saga]);
-        });
-    
-        const mapDispatchToProps = dispatch => ({
-            actions: bindActionCreators(
-                {
-                    currentUserUpdated,
-                    configurationUpdated,
-                    demandCreatedOrUpdated,
-                    demandDeleted,
-                    producingAssetCreatedOrUpdated,
-                    certificateCreatedOrUpdated,
-                    consumingAssetCreatedOrUpdated
-                },
-                dispatch
-            ),
-            
-        });
-    
-        const mapStateToProps = state => {
-            return state;
-        };
+        })
     
         const renderedApp = mount(
             <Provider store={store}>
                 <MemoryRouter initialEntries={[`/${CONTRACT}/assets/?rpc=http://localhost:8545`]}>
                     <Route
                         path="/:contractAddress/"
-                        component={connect(
-                            mapStateToProps,
-                            mapDispatchToProps
-                        )(AppContainer)}
+                        component={AppContainer}
                     />
                 </MemoryRouter>
             </Provider>

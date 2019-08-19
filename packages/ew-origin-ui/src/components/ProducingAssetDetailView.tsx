@@ -45,6 +45,8 @@ export interface IDetailViewProps {
     producingAssets: ProducingAsset.Entity[];
     addSearchField: boolean;
     currentUser: User;
+    showSmartMeterReadings: boolean;
+    showCertificates: boolean;
 }
 
 export interface IDetailViewState {
@@ -305,7 +307,7 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                         <div className="PageContentWrapper">
                             {pageBody}
 
-                            <div className="PageBody p-4">
+                            {this.props.showSmartMeterReadings && <div className="PageBody p-4">
                                 <div className="PageBodyTitle">
                                     Smart meter readings
                                 </div>
@@ -327,19 +329,23 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>}
                         </div>
-                        <br/><br/>
-                        <CertificateTable
-                            conf={this.props.conf}
-                            certificates={this.props.certificates.filter((c: Certificate.Entity) => c.assetId.toString() === this.props.id.toString())}
-                            producingAssets={this.props.producingAssets}
-                            currentUser={this.props.currentUser}
-                            baseUrl={this.props.baseUrl}
-                            selectedState={SelectedState.ForSale}
-                            demand={null}
-                            hiddenColumns={['Asset Type', 'Commissioning Date', 'Town, Country']}
-                        />
+                        {this.props.showCertificates &&
+                            <>
+                            <br/><br/>
+                            <CertificateTable
+                                conf={this.props.conf}
+                                certificates={this.props.certificates.filter((c: Certificate.Entity) => c.assetId.toString() === this.props.id.toString())}
+                                producingAssets={this.props.producingAssets}
+                                currentUser={this.props.currentUser}
+                                baseUrl={this.props.baseUrl}
+                                selectedState={SelectedState.ForSale}
+                                demand={null}
+                                hiddenColumns={['Asset Type', 'Commissioning Date', 'Town, Country']}
+                            />
+                            </>
+                        }
                     </>
                 }
             </div>

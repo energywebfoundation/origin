@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import './Modal.scss';
-import '../Block/Block.scss';
-import moment from 'moment';
-
+import moment, { Moment } from 'moment';
 import { Configuration } from 'ew-utils-general-lib';
 import { CertificateLogic } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
-
 import { showNotification, NotificationType } from '../../utils/notifications';
-import DatePicker from 'react-date-picker';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
+import { DatePicker } from "@material-ui/pickers";
 
 interface IRequestIRECsModalProps {
     conf: Configuration.Entity;
@@ -21,7 +17,7 @@ interface IRequestIRECsModalProps {
 interface IRequestIRECsModalState {
     show: boolean;
     fromDate: Date;
-    toDate: Date;
+    toDate: Moment;
     reads: any[];
 }
 
@@ -37,7 +33,7 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         this.state = {
             show: props.showModal,
             fromDate: moment().toDate(),
-            toDate: this.setMaxTimeInDay(moment().toDate()),
+            toDate: this.setMaxTimeInDay(moment()),
             reads: []
         };
     }
@@ -80,8 +76,14 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         this.handleClose();
     }
 
-    isFormValid() {
-        return this.state.fromDate <= this.state.toDate;
+    isFormValid(): boolean {
+        const { fromDate, toDate } = this.state;
+
+        if (!fromDate || !toDate) {
+            return false;
+        }
+
+        return fromDate <= toDate.toDate();
     }
 
     handleClose() {
@@ -89,13 +91,13 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         this.setState({ show: false });
     }
 
-    setMaxTimeInDay(date) {
-        return moment(date).hours(23).minutes(59).seconds(59).milliseconds(999).toDate();
+    setMaxTimeInDay(date: Moment): Moment {
+        return date.hours(23).minutes(59).seconds(59).milliseconds(999);
     }
 
-    async handleToDateChange(date) {
+    async handleToDateChange(date: Moment) {
         this.setState({
-            'toDate': this.setMaxTimeInDay(date),
+            toDate: this.setMaxTimeInDay(date),
             energy: this.getEnergy(this.state.fromDate, date)
         } as any);
     }
@@ -119,54 +121,43 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         const assetId = this.props.producingAsset ? this.props.producingAsset.id : '';
 
         return (
-            <Modal show={this.state.show} onHide={this.handleClose} animation={false} backdrop={true} backdropClassName="modal-backdrop">
-                <Modal.Header>
-                    <Modal.Title>{`Request I-RECs for Asset #${assetId}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="container">
-                    <div className="row">
-                        <div className="col">From</div>
-                        <div className="col">
-                            {moment(this.state.fromDate).format('YYYY-MM-DD')}
-                        </div>
-                    </div>
+            <Dialog open={this.state.show} onClose={this.handleClose}>
+                <DialogTitle>{`Request I-RECs for Asset #${assetId}`}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="From"
+                        value={moment(this.state.fromDate).format('YYYY-MM-DD')}
+                        fullWidth
+                        disabled
+                    />
 
-                    <br/>
+                    <DatePicker
+                        label={'To'}
+                        value={this.state.toDate}
+                        onChange={this.handleToDateChange}
+                        variant="inline"
+                        inputVariant="filled"
+                        className="mt-4"
+                        fullWidth
+                    />
 
-                    <div className="row">
-                        <div className="col">To</div>
-                        <div className="col">
-                            <input
-                                className="Date modal-input"
-                                value={
-                                    moment(this.state.toDate).format('YYYY-MM-DD') ||
-                                    'Pick a date'
-                                }
-                                readOnly={true}
-                            />
-                            <DatePicker
-                                onChange={this.handleToDateChange}
-                                value={this.state.toDate}
-                            />
-                        </div>
-                    </div>
-
-                    <br/>
-
-                    <div className="row">
-                        <div className="col">kWh</div>
-                        <div className="col">{this.getEnergy(this.state.fromDate, this.state.toDate) / 1000}</div>
-                    </div>
-
-                    <hr />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={this.handleClose} className="modal-button modal-button-cancel">Cancel</Button>
-                    <Button variant="primary" onClick={this.requestIRECs} className="modal-button modal-button-publish" disabled={!this.isFormValid()}>
+                    <TextField
+                        label="kWh"
+                        value={this.getEnergy(this.state.fromDate, this.state.toDate) / 1000}
+                        className="mt-4"
+                        fullWidth
+                        disabled
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.requestIRECs} color="primary" disabled={!this.isFormValid()}>
                         Request
                     </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
         );
     }
   }

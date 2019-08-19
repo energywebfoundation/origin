@@ -35,13 +35,11 @@ export interface IDemandTableProps {
     producingAssets: ProducingAsset.Entity[];
     consumingAssets: ConsumingAsset.Entity[];
     currentUser: User;
-    switchedToOrganization: boolean;
     baseUrl: string;
 }
 
 export interface IDemandTableState extends IPaginatedLoaderState {
     showMatchingSupply: number;
-    switchedToOrganization: boolean;
 }
 
 export interface IEnrichedDemandData {
@@ -66,19 +64,11 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
 
         this.state = {
             ...getInitialPaginatedLoaderState(),
-            showMatchingSupply: null,
-            switchedToOrganization: false
+            showMatchingSupply: null
         };
 
-        this.switchToOrganization = this.switchToOrganization.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
         this.showMatchingSupply = this.showMatchingSupply.bind(this);
-    }
-
-    switchToOrganization(switchedToOrganization: boolean) {
-        this.setState({
-            switchedToOrganization
-        });
     }
 
     async enrichData(demands: Demand.Entity[]) : Promise<IEnrichedDemandData[]> {

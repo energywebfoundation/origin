@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import './Modal.scss';
-import '../Block/Block.scss';
 import moment from 'moment';
-
 import { Configuration } from 'ew-utils-general-lib';
 import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
-
 import { showNotification, NotificationType } from '../../utils/notifications';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 
 interface IValidation {
     kwh: boolean;
@@ -128,45 +124,44 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
         const facilityName = this.props.producingAsset ? this.props.producingAsset.offChainProperties.facilityName : '';
 
         return (
-            <Modal show={this.state.show} onHide={this.handleClose} animation={false} backdrop={true} backdropClassName="modal-backdrop">
-                <Modal.Header>
-                    <Modal.Title>{`Buy certificate #${certificateId}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="container">
-                    <div className="row">
-                        <div className="col">Facility</div>
-                        <div className="col">
-                            {facilityName}
-                        </div>
-                    </div>
+            <Dialog open={this.state.show} onClose={this.handleClose}>
+                <DialogTitle>Buy certificate #{certificateId}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Facility"
+                        value={facilityName}
+                        fullWidth
+                        disabled
+                    />
 
-                    <br/>
+                    <TextField
+                        label="Date"
+                        value={date}
+                        fullWidth
+                        disabled
+                        className="mt-4"
+                    />
 
-                    <div className="row">
-                        <div className="col">Date</div>
-                        <div className="col">
-                            {date}
-                        </div>
-                    </div>
-
-                    <br/>
-
-                    <div className="row">
-                        <div className="col">kWh</div>
-                        <div className="col">
-                            <input className="modal-input" id="kwhInput" placeholder="1" value={this.state.kwh} onChange={(e) => this.validateInputs(e)} />
-                        </div>
-                    </div>
-
-                    <hr />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={this.handleClose} className="modal-button modal-button-cancel">Cancel</Button>
-                    <Button variant="primary" onClick={this.buyCertificate} className="modal-button modal-button-publish" disabled={!this.isFormValid()}>
+                    <TextField
+                        label="kWh"
+                        value={this.state.kwh}
+                        type="number"
+                        placeholder="1"
+                        onChange={(e) => this.validateInputs(e)}
+                        className="mt-4"
+                        id="kwhInput"
+                        fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.buyCertificate} color="primary" disabled={!this.isFormValid()}>
                         Buy
                     </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
         );
     }
   }

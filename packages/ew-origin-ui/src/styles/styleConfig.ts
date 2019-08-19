@@ -25,7 +25,7 @@ export const DEFAULT_MATERIAL_THEME = () => {
             primary: STYLE_CONFIG.WHITE,
             secondary: STYLE_CONFIG.TEXT_COLOR_DEFAULT,
             hint: '#f50057',
-            disabled: '#f50057'
+            disabled: STYLE_CONFIG.TEXT_COLOR_DEFAULT
         }
         },
         overrides: {

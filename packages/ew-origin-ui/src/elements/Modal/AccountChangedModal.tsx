@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import './Modal.scss';
-
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { IStoreState } from '../../types';
 import { bindActionCreators } from 'redux';
@@ -13,7 +11,7 @@ interface AccountChangedModalProps {
     disableAccountChangedModal: TDisableAccountChangedModal;
 }
 
-export class AccountChangedModalClass extends React.Component<AccountChangedModalProps, any> {
+class AccountChangedModalClass extends React.Component<AccountChangedModalProps> {
     constructor(props: AccountChangedModalProps) {
         super(props);
 
@@ -29,26 +27,21 @@ export class AccountChangedModalClass extends React.Component<AccountChangedModa
     }
 
     render() {
-
         return (
-            <Modal show={this.props.show} onHide={this.handleClose} animation={false} backdrop="static" backdropClassName="modal-backdrop">
-                <Modal.Header>
-                    <Modal.Title>{`Account changed`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="container">
-                    <div className="row">
-                        <div className="col">Account changed, please refresh the page in order to switch to a new account.</div>
-                    </div>
-
-                    <hr />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={this.handleClose} className="modal-button modal-button-cancel">Cancel</Button>
-                    <Button variant="primary" onClick={this.refreshPage} className="modal-button modal-button-publish">
+            <Dialog open={this.props.show} onClose={this.handleClose}>
+                <DialogTitle>Account changed</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Account changed, please refresh the page in order to switch to a new account.</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.refreshPage} color="primary">
                         Refresh page
                     </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
         );
     }
   }

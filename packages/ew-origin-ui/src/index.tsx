@@ -21,23 +21,12 @@ import { AppContainer } from './components/AppContainer';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 import './index.scss';
 import createSagaMiddleware from 'redux-saga';
 import sagas from './features/sagas';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { IStoreState } from './types';
-import { 
-    currentUserUpdated,
-    configurationUpdated,
-    demandCreatedOrUpdated,
-    demandDeleted,
-    producingAssetCreatedOrUpdated,
-    certificateCreatedOrUpdated,
-    consumingAssetCreatedOrUpdated
- } from './features/actions';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
@@ -67,25 +56,6 @@ Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
     sagaMiddleware.run(sagas[saga]);
 });
 
-const mapDispatchToProps = dispatch => ({
-    actions: bindActionCreators(
-        {
-            currentUserUpdated,
-            configurationUpdated,
-            demandCreatedOrUpdated,
-            demandDeleted,
-            producingAssetCreatedOrUpdated,
-            certificateCreatedOrUpdated,
-            consumingAssetCreatedOrUpdated
-        },
-        dispatch
-    )
-});
-
-const mapStateToProps = state => {
-    return state;
-};
-
 ReactDOM.render(
     <MuiThemeProvider theme={DEFAULT_MATERIAL_THEME()}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -93,10 +63,7 @@ ReactDOM.render(
                 <BrowserRouter>
                     <Route
                         path="/:contractAddress/"
-                        component={connect(
-                            mapStateToProps,
-                            mapDispatchToProps
-                        )(AppContainer)}
+                        component={AppContainer}
                     />
                 </BrowserRouter>
             </Provider>
