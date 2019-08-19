@@ -6,6 +6,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe",
+                "email": "useradmin@mailinator.com",
                 "organization": "UserAdmin Organization",
                 "street": "Main Street",
                 "number": "1",
@@ -23,6 +24,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Two",
+                "email": "issuer@mailinator.com",
                 "organization": "Issuer",
                 "street": "Main Street",
                 "number": "2",
@@ -40,6 +42,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Three",
+                "email": "agreementadmin@mailinator.com",
                 "organization": "AgreementAdmin Organization",
                 "street": "Main Street",
                 "number": "3",
@@ -57,6 +60,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Four",
+                "email": "assetmanager@mailinator.com",
                 "organization": "AssetManager Organization",
                 "street": "Main Street",
                 "number": "4",
@@ -74,6 +78,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Five",
+                "email": "assetmanager2@mailinator.com",
                 "organization": "AssetManager Second Organization",
                 "street": "Main Street",
                 "number": "5",
@@ -91,6 +96,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Six",
+                "email": "trader@mailinator.com",
                 "organization": "Trader Organization",
                 "street": "Main Street",
                 "number": "6",
@@ -108,6 +114,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Seven",
+                "email": "matcher@mailinator.com",
                 "organization": "Matcher Organization",
                 "street": "Main Street",
                 "number": "7",

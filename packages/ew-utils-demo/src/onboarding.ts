@@ -16,6 +16,7 @@
 
 import * as Asset from 'ew-asset-registry-lib';
 import * as GeneralLib from 'ew-utils-general-lib';
+import { User, IUserPropertiesOnChain, IUserPropertiesOffChain } from 'ew-user-registry-lib';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -34,16 +35,26 @@ export const onboardDemo = async (
 
     switch (action.type) {
         case 'CREATE_ACCOUNT':
-            await conf.blockchainProperties.userLogicInstance.setUser(
-                action.data.address,
-                action.data.organization,
-                { privateKey: adminPK }
-            );
-            await conf.blockchainProperties.userLogicInstance.setRoles(
-                action.data.address,
-                action.data.rights,
-                { privateKey: adminPK }
-            );
+            const userPropsOnChain: IUserPropertiesOnChain = {
+                id: action.data.address,
+                active: true,
+                roles: action.data.rights,
+                organization: action.data.organization
+            };
+    
+            const userPropsOffchain: IUserPropertiesOffChain = {
+                firstName: action.data.firstName,
+                surname: action.data.surname,
+                email: action.data.email,
+                street: action.data.street,
+                number: action.data.number,
+                zip: action.data.zip,
+                city: action.data.city,
+                country: action.data.country,
+                state: action.data.state
+            };
+    
+            await User.CREATE_USER(userPropsOnChain, userPropsOffchain, conf);
 
             conf.logger.info('Onboarded a new user: ' + action.data.address);
             conf.logger.verbose(

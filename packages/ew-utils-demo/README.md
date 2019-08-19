@@ -106,6 +106,7 @@ usage: command to onboard a new user <br>
 params:
 * <code>firstName</code>: the first name of a user
 * <code>surname</code>: the surname of a user
+* <code>email</code>: the email of a user
 * <code>organization</code>: the organization of a user
 * <code>street</code> the streetname of the organization
 * <code>number</code> the housenumber of the organization
@@ -126,6 +127,7 @@ Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organizat
     "data": {
         "firstName": "John",
         "surname": "Doe",
+        "email": "useradmin@example.com",
         "organization": "UserAdmin Organization",
         "street": "Main Street",
         "number": "1",
