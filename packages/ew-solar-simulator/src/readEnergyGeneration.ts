@@ -121,18 +121,20 @@ async function getEnergyMeasurements(
                 if (!energyMeasurement.energy || energyMeasurement.energy < 0) {
                     continue;
                 }
+
+                const roundedEnergy = Math.round(energyMeasurement.energy);
     
                 const previousRead = await getProducingAssetSmartMeterRead(asset.id);
                 const time = parseTime(energyMeasurement.measurementTime);
     
                 await saveProducingAssetSmartMeterRead(
-                    previousRead + energyMeasurement.energy,
+                    previousRead + roundedEnergy,
                     asset.id,
                     time.unix(),
                     asset.smartMeterPrivateKey
                 );
     
-                console.log(`[Asset ID: ${asset.id}]::Save Energy Read of: ${Math.round(energyMeasurement.energy)}Wh - [${time.format()}]`);
+                console.log(`[Asset ID: ${asset.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${time.format()}]`);
             }
         }
 
