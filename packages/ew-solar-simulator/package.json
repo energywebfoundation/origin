@@ -7,7 +7,8 @@
     "start-consuming-api": "node dist/js/src/readEnergyGeneration.js",
     "import-irec-assets": "node dist/js/src/importIRECAssets.js",
     "fund-assets-smart-meters": "node dist/js/src/fundAssets.js",
-    "build": "tsc",
+    "build-ts": "tsc",
+    "build": "node scripts/build.js",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "./node_modules/.bin/tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'"
