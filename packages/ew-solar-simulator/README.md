@@ -51,9 +51,37 @@ I-REC lists all public registered assets in https://registry.irecservices.com/Pu
 
 We have created 2 scripts to allow easy import of those assets.
 
-- download CSV file from https://registry.irecservices.com/Public/ReportDevices/
-- `npm run import-irec-assets -- -i <path to your csv file>` to generate updated `config/config.json` with I-REC assets based on input CSV. For e.g `npm run import-irec-assets -- -i irec-example/irec-thailand.csv`
-- `npm run fund-assets-smart-meters -- -f <private key> -v <ewf>` to fund all assets in `config/config.json` with default 1 EWF token
+#### import-irec-assets script
+
+```
+Usage: npm run import-irec-assets -- [options]
+
+Options:
+  -i, --input <path>       input I-REC csv file
+  -o, --owner <address>    address of the asset owner
+  -m, --matcher <address>  address of the asset matcher
+  -h, --help               output usage information
+```
+
+As an outcome of running this script we will receive 2 products:
+
+1. new `config/config.json` with updated `assets` field based on input CSV file
+2. json console output with commands necessary to setup demo environement https://github.com/energywebfoundation/ew-utils-demo/blob/master/config/demo-config.json
+
+
+#### fund-assets-smart-meters script
+
+```
+Usage: npm run fund-assets-smart-meters -- [options]
+
+Options:
+  -f, --fundingAccount <string>  funding account private key
+  -v, --value <ewt>              value of the funding tx (default: 1EWT) (default: "1")
+  -h, --help                     output usage information
+```
+
+Before we can setup the demo environement, newly generated smart meters wallets have to be funded with EWF token. Script is using `config/config.json` `WEB3_URL` variable to connect to given web3 endpoint.
+
 
 ## Docker
 
