@@ -74,7 +74,7 @@ const processAssets = async parsedContent => {
         const registrationDate = asset['Registration Date'];
         const latitude = parseFloat(asset.Latitude);
         const longitude = parseFloat(asset.Longitude);
-        const assetType = asset['Primary Fuel'].split(':')[1].trim();
+        const assetType = asset.Technology.split(':')[1].trim();
 
         const account = web3.eth.accounts.create();
 
