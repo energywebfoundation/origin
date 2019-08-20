@@ -39,7 +39,14 @@ const ENERGY_UNIT_TO_RATIO_MAPPING = {
     [ENERGY_UNIT.gigawattHour]: 1e-9
 };
 
-function processRows(rows: TableRowType[], maxCapacity: number, timeStart: moment.Moment, timeEnd: moment.Moment, accumulated: boolean, energyUnit: ENERGY_UNIT = ENERGY_UNIT.wattHour) {
+function processRows(
+    rows: TableRowType[],
+    maxCapacity: number,
+    timeStart: moment.Moment,
+    timeEnd: moment.Moment,
+    accumulated: boolean,
+    energyUnit: ENERGY_UNIT = ENERGY_UNIT.wattHour
+) {
     const parsedRows = [];
     const currentYear = moment().year();
 
@@ -76,11 +83,11 @@ function processRows(rows: TableRowType[], maxCapacity: number, timeStart: momen
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
             const time = parseRowTime(row);
-    
+
             if (!checkTimeInBounds(time)) {
                 continue;
             }
-    
+
             parsedRows[0].energy += calculateRowEnergy(row[1]);
             parsedRows[0].measurementTime = time.format();
         }
@@ -92,7 +99,7 @@ function processRows(rows: TableRowType[], maxCapacity: number, timeStart: momen
             if (!checkTimeInBounds(time)) {
                 continue;
             }
-    
+
             parsedRows.push({
                 energy: calculateRowEnergy(row[1]),
                 measurementTime: time.format()
@@ -111,10 +118,14 @@ async function getData() {
     }
 
     return new Promise(async resolve => {
-        csv.parse(await fs.readFile(`${__dirname}/../config/data.csv`),  { columns: false, trim: true }, function(err, rows) {
-            DATA = rows;
-            resolve(rows);
-        });
+        csv.parse(
+            await fs.readFile(`${__dirname}/../config/data.csv`),
+            { columns: false, trim: true },
+            function(err, rows) {
+                DATA = rows;
+                resolve(rows);
+            }
+        );
     });
 }
 
@@ -122,11 +133,11 @@ export async function startAPI() {
     const app = express();
 
     app.use(cors());
-    
+
     app.use(bodyParser.json());
-    
+
     app.use(cors());
-    
+
     app.options('*', cors());
 
     app.get('/asset/:id/energy', async (req, res) => {
@@ -137,7 +148,8 @@ export async function startAPI() {
         try {
             assetData = CONFIG.assets.find(a => a.id === req.params.id);
         } catch (error) {
-            console.log('error', error)
+            console.log('error', error);
+
             return res.status(404).json({
                 error: 'ASSET_NOT_FOUND',
                 message: `Asset not found.`
@@ -151,13 +163,20 @@ export async function startAPI() {
         const accumulated = req.query.accumulated === 'true';
 
         const rows = await getData();
-        
-        let filteredReads = processRows(rows, assetData.maxCapacity, timeStart, timeEnd, accumulated, assetData.energyUnit);
+
+        let filteredReads = processRows(
+            rows,
+            assetData.maxCapacity,
+            timeStart,
+            timeEnd,
+            accumulated,
+            assetData.energyUnit
+        );
 
         if (LIMIT !== -1) {
             filteredReads = filteredReads.slice(0, LIMIT);
         }
-        
+
         return res.json(filteredReads);
     });
 
@@ -169,7 +188,8 @@ export async function startAPI() {
         try {
             assetData = CONFIG.assets.find(a => a.id === req.params.id);
         } catch (error) {
-            console.log('error', error)
+            console.log('error', error);
+
             return res.status(404).json({
                 error: 'ASSET_NOT_FOUND',
                 message: `Asset not found.`
@@ -187,10 +207,10 @@ export async function startAPI() {
             energy_unit: assetData.energy_unit,
             is_accumulated: assetData.is_accumulated
         };
-        
+
         return res.json(response);
     });
-    
+
     return app.listen(PORT);
 }
 

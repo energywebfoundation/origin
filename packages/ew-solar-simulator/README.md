@@ -45,6 +45,16 @@ Time,E/Cap ratio (kWh/kW),5 MW example (kWh)
 01.01.2015 07:45,0.000664,3.32
 ```
 
+### How to import I-REC public assets
+
+I-REC lists all public registered assets in https://registry.irecservices.com/Public/ReportDevices/ where you can filter and download public assets as CSV file.
+
+We have created 2 scripts to allow easy import of those assets.
+
+- download CSV file from https://registry.irecservices.com/Public/ReportDevices/
+- `npm run import-irec-assets -- -i <path to your csv file>` to generate updated `config/config.json` with I-REC assets based on input CSV. For e.g `npm run import-irec-assets -- -i irec-example/irec-thailand.csv`
+- `npm run fund-assets-smart-meters -- -f <private key>` to fund all assets in `config/config.json` with default 1 EWF token
+
 ## Docker
 
 After making sure you've configured everything properly, run:
