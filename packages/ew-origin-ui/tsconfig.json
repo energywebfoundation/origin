@@ -1,20 +1,8 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "noImplicitAny": false,
-        "module": "commonjs",
-        "target": "es6",
-        "jsx": "react",
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "lib": ["es2017", "dom"]
+        "outDir": "./dist/js"
     },
-    "include": [
-        "./src/**/*"
-    ],
-    "exclude": [
-        "./src/__tests__/**/*"
-    ]
+    "include": ["./src/**/*"],
+    "exclude": ["./src/__tests__/**/*"]
 }
