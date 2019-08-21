@@ -44,9 +44,6 @@
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@types/chai": "4.1.4",
-    "@types/mocha": "2.2.48",
-    "@types/node": "9.6.28",
     "@types/web3": "1.0.14",
     "ethlint": "1.2.4",
     "fs-extra": "8.0.1",

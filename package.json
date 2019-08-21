@@ -2,6 +2,9 @@
   "name": "root",
   "private": true,
   "devDependencies": {
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.2",
     "chai": "^4.2.0",
     "lerna": "^3.16.4",
     "mocha": "^6.2.0",
