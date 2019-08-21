@@ -38,7 +38,7 @@
   "devDependencies": {
     "@types/node": "9.6.48",
     "@types/web3": "1.0.14",
-    "ganache-cli": "6.3.0",
+    "ganache-cli": "6.6.0",
     "lint-staged": "8.1.7"
   },
   "lint-staged": {
