@@ -52,7 +52,6 @@
     "fs-extra": "8.0.1",
     "ganache-cli": "6.4.4",
     "lint-staged": "8.1.7",
-    "mocha": "5.2.0",
     "moment": "2.24.0",
     "truffle": "5.0.18",
     "truffle-flattener": "1.3.0",
