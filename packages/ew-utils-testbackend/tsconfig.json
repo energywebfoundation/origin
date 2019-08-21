@@ -1,24 +1,8 @@
 {
-    "compilerOptions": {
-        "rootDir": "./",
-        "outDir": "./dist/js",
-        "sourceMap": true,
-        "noImplicitAny": false,
-        "declaration": true,
-        "module": "CommonJS",
-        "target": "es6",
-        "jsx": "react",
-        "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "lib": [
-            "es2017",
-            "dom"
-        ]
-    },
-    "include": [
-        "./test/*",
-        "./src/**/*",
-        "./env.json"
-    ]
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./dist/js"
+  },
+  "include": ["./test/*", "./src/**/*", "./env.json"]
 }
