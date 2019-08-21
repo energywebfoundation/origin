@@ -1,0 +1,31 @@
+version: '3'
+services:
+  web:
+    build: .
+    volumes:
+      - shared:/dockerBuildDirectory/packages/ew-origin-ui
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - shared:/var/www/html
+      - ./packages/ew-origin-ui/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
+  backend:
+    build: .
+    command: yarn run:backend
+    ports:
+      - 3030:3030
+    networks:
+      - app-network
+    volumes:
+      - ./db.json:/dockerBuildDirectory/db.json
+volumes:
+  shared:
+networks:
+  app-network:
+    driver: bridge

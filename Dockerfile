@@ -8,13 +8,11 @@ RUN apk add --no-cache python && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --upgrade pip setuptools && \
     rm -r /root/.cache
-RUN apk add --no-cache git
+RUN apk add --no-cache git && \
+    npm install -g yarn
 
-COPY package.json /tmp/package.json
-RUN cd /tmp && rm -rf /tmp/node_modules/websocket && npm config set unsafe-perm true && npm install
-RUN mkdir -p /src && cp -a /tmp/node_modules /src
+WORKDIR /dockerBuildDirectory
+COPY . /dockerBuildDirectory
 
-WORKDIR /src
-COPY . /src
-
-RUN npm run build
+RUN yarn
+RUN yarn build
