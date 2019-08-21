@@ -1,6 +1,7 @@
 {
   "name": "ew-utils-demo",
   "version": "1.0.1",
+  "private": true,
   "description": "showcases the working of origin release B in a variety of situations.",
   "main": "dist/js/index.js",
   "types": "dist/js/index.d.ts",

@@ -1,6 +1,7 @@
 {
   "name": "ew-origin-ui",
   "version": "0.0.1",
+  "private": true,
   "directories": {
     "test": "test"
   },
