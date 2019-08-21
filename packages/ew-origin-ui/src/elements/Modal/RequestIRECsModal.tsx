@@ -4,8 +4,15 @@ import { Configuration } from 'ew-utils-general-lib';
 import { CertificateLogic } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
-import { DatePicker } from "@material-ui/pickers";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField
+} from '@material-ui/core';
+import { DatePicker } from '@material-ui/pickers';
 
 interface IRequestIRECsModalProps {
     conf: Configuration.Entity;
@@ -21,7 +28,10 @@ interface IRequestIRECsModalState {
     reads: any[];
 }
 
-export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, IRequestIRECsModalState> {
+export class RequestIRECsModal extends React.Component<
+    IRequestIRECsModalProps,
+    IRequestIRECsModalState
+> {
     constructor(props, context) {
         super(props, context);
 
@@ -44,13 +54,18 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         });
     }
 
-    async componentDidUpdate(prevProps : IRequestIRECsModalProps) {
-        if (this.props.producingAsset && (this.props.producingAsset !== prevProps.producingAsset)) {
+    async componentDidUpdate(prevProps: IRequestIRECsModalProps) {
+        if (this.props.producingAsset && this.props.producingAsset !== prevProps.producingAsset) {
             const reads = await this.props.producingAsset.getSmartMeterReads();
 
-            const certificateLogic : CertificateLogic = this.props.conf.blockchainProperties.certificateLogicInstance;
+            const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+                .certificateLogicInstance;
 
-            const requestedSMReadsLength = Number(await certificateLogic.getAssetRequestedCertsForSMReadsLength(Number(this.props.producingAsset.id)));
+            const requestedSMReadsLength = Number(
+                await certificateLogic.getAssetRequestedCertsForSMReadsLength(
+                    Number(this.props.producingAsset.id)
+                )
+            );
 
             const fromDate = moment.unix(reads[requestedSMReadsLength].timestamp).toDate();
 
@@ -62,12 +77,16 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
     }
 
     async requestIRECs() {
-        const certificateLogic : CertificateLogic = this.props.conf.blockchainProperties.certificateLogicInstance;
+        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+            .certificateLogicInstance;
 
         const readsInRange = this.getReadsInTimeRange(this.state.fromDate, this.state.toDate);
         const lastReadIndex = this.state.reads.indexOf(readsInRange[readsInRange.length - 1]);
 
-        await certificateLogic.requestCertificates(Number(this.props.producingAsset.id), lastReadIndex);
+        await certificateLogic.requestCertificates(
+            Number(this.props.producingAsset.id),
+            lastReadIndex
+        );
 
         const energy = this.getEnergy(this.state.fromDate, this.state.toDate) / 1000;
 
@@ -92,7 +111,11 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
     }
 
     setMaxTimeInDay(date: Moment): Moment {
-        return date.hours(23).minutes(59).seconds(59).milliseconds(999);
+        return date
+            .hours(23)
+            .minutes(59)
+            .seconds(59)
+            .milliseconds(999);
     }
 
     async handleToDateChange(date: Moment) {
@@ -106,7 +129,9 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
         const fromTimestamp = moment(fromDate).unix();
         const toTimestamp = moment(toDate).unix();
 
-        return this.state.reads.filter(read => Number(read.timestamp) <= toTimestamp && Number(read.timestamp) >= fromTimestamp);
+        return this.state.reads.filter(
+            read => Number(read.timestamp) <= toTimestamp && Number(read.timestamp) >= fromTimestamp
+        );
     }
 
     getEnergy(fromDate, toDate) {
@@ -153,11 +178,15 @@ export class RequestIRECsModal extends React.Component<IRequestIRECsModalProps, 
                     <Button onClick={this.handleClose} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={this.requestIRECs} color="primary" disabled={!this.isFormValid()}>
+                    <Button
+                        onClick={this.requestIRECs}
+                        color="primary"
+                        disabled={!this.isFormValid()}
+                    >
                         Request
                     </Button>
                 </DialogActions>
             </Dialog>
         );
     }
-  }
+}

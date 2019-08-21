@@ -173,23 +173,21 @@ export class Entity extends TradableEntity.Entity implements ICertificateSpecifi
     }
 
     async buyCertificate(wh?: number): Promise<TransactionReceipt> {
-        const logic: CertificateLogic = this.configuration.blockchainProperties.certificateLogicInstance;
+        const logic: CertificateLogic = this.configuration.blockchainProperties
+            .certificateLogicInstance;
         const id: number = Number(this.id);
 
         if (wh) {
             let splitAndBuyCertificateCall;
             if (this.configuration.blockchainProperties.activeUser.privateKey) {
-                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(
-                    id,
-                    wh,
-                    { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-                );
+                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(id, wh, {
+                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+                });
             } else {
-                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(
-                    id,
-                    wh,
-                    { from: this.configuration.blockchainProperties.activeUser.address, privateKey: '' }
-                );
+                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(id, wh, {
+                    from: this.configuration.blockchainProperties.activeUser.address,
+                    privateKey: ''
+                });
             }
 
             const txResult = await splitAndBuyCertificateCall;
@@ -209,15 +207,14 @@ export class Entity extends TradableEntity.Entity implements ICertificateSpecifi
         }
 
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return logic.buyCertificate(
-                id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
+            return logic.buyCertificate(id, {
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            });
         } else {
-            return logic.buyCertificate(
-                id,
-                { from: this.configuration.blockchainProperties.activeUser.address, privateKey: '' }
-            );
+            return logic.buyCertificate(id, {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: ''
+            });
         }
     }
 
@@ -256,7 +253,9 @@ export class Entity extends TradableEntity.Entity implements ICertificateSpecifi
         tokenAddressOrCurrency: string | Currency,
         wh?: number
     ): Promise<void> {
-        const isErc20Sale = this.configuration.blockchainProperties.web3.utils.isAddress(tokenAddressOrCurrency);
+        const isErc20Sale = this.configuration.blockchainProperties.web3.utils.isAddress(
+            tokenAddressOrCurrency
+        );
         const isFiatSale = Currency[tokenAddressOrCurrency] !== undefined;
 
         let certificate;
@@ -268,13 +267,17 @@ export class Entity extends TradableEntity.Entity implements ICertificateSpecifi
         const certificateEnergy = Number(this.powerInW);
         const saleParams = {
             onChainPrice: isErc20Sale ? Math.floor(price) : 0,
-            tokenAddress: isErc20Sale ? tokenAddressOrCurrency : '0x0000000000000000000000000000000000000000',
+            tokenAddress: isErc20Sale
+                ? tokenAddressOrCurrency
+                : '0x0000000000000000000000000000000000000000',
             offChainPrice: isFiatSale ? Math.floor(price * 100) : 0,
             offChainCurrency: isFiatSale ? tokenAddressOrCurrency : Currency.NONE
         };
 
         if (wh > certificateEnergy || wh <= 0) {
-            throw Error(`Invalid energy request: Certificate ${this.id} has ${certificateEnergy} Wh, but user requested ${wh} Wh.`);
+            throw Error(
+                `Invalid energy request: Certificate ${this.id} has ${certificateEnergy} Wh, but user requested ${wh} Wh.`
+            );
         }
 
         if (wh === undefined || wh === certificateEnergy) {

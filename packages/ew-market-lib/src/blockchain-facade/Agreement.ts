@@ -115,7 +115,7 @@ export const getAgreementListLength = async (configuration: GeneralLib.Configura
 export const getAllAgreements = async (configuration: GeneralLib.Configuration.Entity) => {
     const agreementsPromises = Array(parseInt(await getAgreementListLength(configuration)))
         .fill(null)
-        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
 
     return (await Promise.all(agreementsPromises)).filter(promise => promise.initialized);
 };

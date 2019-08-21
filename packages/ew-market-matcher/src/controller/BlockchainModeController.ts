@@ -84,9 +84,13 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerAgreement(newAggreement: Agreement.Entity) {
-        const allowed : boolean = Boolean(newAggreement.allowedMatcher.find(
-            (matcherAddress: string) => matcherAddress && (matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase())
-        ))
+        const allowed: boolean = Boolean(
+            newAggreement.allowedMatcher.find(
+                (matcherAddress: string) =>
+                    matcherAddress &&
+                    matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()
+            )
+        );
 
         if (allowed) {
             if (
@@ -162,9 +166,7 @@ export class BlockchainModeController extends Controller {
     async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
         const demand = this.getDemand(agreement.demandId.toString());
         logger.debug(
-            `Transferring certificate to ${demand.demandOwner} with account ${
-                this.conf.blockchainProperties.activeUser.address
-            }`
+            `Transferring certificate to ${demand.demandOwner} with account ${this.conf.blockchainProperties.activeUser.address}`
         );
         await certificate.transferFrom(demand.demandOwner);
 
@@ -206,9 +208,7 @@ export class BlockchainModeController extends Controller {
     async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
         logger.info(`Matched certificate #${certificate.id} to demand #${demand.id}`);
         logger.debug(
-            `Transferring certificate to ${demand.demandOwner} with account ${
-                this.conf.blockchainProperties.activeUser.address
-            }`
+            `Transferring certificate to ${demand.demandOwner} with account ${this.conf.blockchainProperties.activeUser.address}`
         );
         await certificate.transferFrom(demand.demandOwner);
     }

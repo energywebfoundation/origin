@@ -21,7 +21,13 @@ import 'mocha';
 import Web3 = require('web3');
 import * as GeneralLib from 'ew-utils-general-lib';
 import { logger } from '../Logger';
-import { UserContractLookup, UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    UserContractLookup,
+    UserLogic,
+    migrateUserRegistryContracts,
+    buildRights,
+    Role
+} from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetConsumingRegistryLogic,
@@ -83,25 +89,29 @@ describe('Market-Facade', () => {
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, buildRights([
-            Role.UserAdmin,
-            Role.AssetAdmin,
-            Role.AssetManager,
-            Role.Trader,
-            Role.Matcher
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(
+            accountDeployment,
+            buildRights([
+                Role.UserAdmin,
+                Role.AssetAdmin,
+                Role.AssetManager,
+                Role.Trader,
+                Role.Matcher
+            ]),
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(accountTrader, buildRights([
-            Role.Trader
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(assetOwnerAddress, buildRights([
-            Role.AssetManager
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
+            privateKey: privateKeyDeployment
+        });
     });
 
     it('should deploy asset-registry contracts', async () => {
@@ -129,7 +139,7 @@ describe('Market-Facade', () => {
     describe('Demand-Facade', () => {
         const START_TIME = '1559466472732';
         const END_TIME = '1559466492732';
-        
+
         it('should create a demand', async () => {
             conf = {
                 blockchainProperties: {
@@ -282,11 +292,7 @@ describe('Market-Facade', () => {
 
             assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
 
-            const asset = await ProducingAsset.createAsset(
-                assetProps,
-                assetPropsOffChain,
-                conf
-            );
+            const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         });
 
         it('should onboard an supply', async () => {

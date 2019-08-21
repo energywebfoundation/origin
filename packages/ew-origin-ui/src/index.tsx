@@ -42,15 +42,10 @@ const sagaMiddleware = createSagaMiddleware();
 if (IS_PRODUCTION) {
     middleware = applyMiddleware(sagaMiddleware);
 } else {
-    middleware = composeWithDevTools(
-        applyMiddleware(sagaMiddleware)
-    );
+    middleware = composeWithDevTools(applyMiddleware(sagaMiddleware));
 }
 
-const store = createStore<IStoreState>(
-    reducer,
-    middleware
-);
+const store = createStore<IStoreState>(reducer, middleware);
 
 Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
     sagaMiddleware.run(sagas[saga]);
@@ -61,10 +56,7 @@ ReactDOM.render(
         <MuiPickersUtilsProvider utils={MomentUtils}>
             <Provider store={store}>
                 <BrowserRouter>
-                    <Route
-                        path="/:contractAddress/"
-                        component={AppContainer}
-                    />
+                    <Route path="/:contractAddress/" component={AppContainer} />
                 </BrowserRouter>
             </Provider>
         </MuiPickersUtilsProvider>

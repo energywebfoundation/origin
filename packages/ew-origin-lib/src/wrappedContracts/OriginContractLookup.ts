@@ -70,7 +70,11 @@ export class OriginContractLookup extends GeneralFunctions {
         _originDB: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.init(_assetRegistry, _originLogicRegistry, _originDB);
+        const method = this.web3Contract.methods.init(
+            _assetRegistry,
+            _originLogicRegistry,
+            _originDB
+        );
 
         return await this.send(method, txParams);
     }

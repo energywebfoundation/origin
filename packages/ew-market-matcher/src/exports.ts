@@ -96,8 +96,4 @@ const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
     }
 };
 
-export {
-    MatcherLogic,
-    METHOD_NOT_IMPLEMENTED,
-    startMatcher
-};
+export { MatcherLogic, METHOD_NOT_IMPLEMENTED, startMatcher };

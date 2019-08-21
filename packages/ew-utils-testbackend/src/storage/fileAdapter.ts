@@ -18,9 +18,7 @@ export class FileAdapter extends MemoryAdapter {
             if (storageFile) {
                 this._storage = JSON.parse(storageFile);
             }
-        } catch (error) {
-
-        }
+        } catch (error) {}
     }
 
     async persist() {

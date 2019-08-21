@@ -25,7 +25,11 @@ export interface IPaginatedLoaderFetchDataReturnValues {
 }
 
 export interface IPaginatedLoader {
-    getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters) : Promise<IPaginatedLoaderFetchDataReturnValues>
+    getPaginatedData({
+        pageSize,
+        offset,
+        filters
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>;
 }
 
 export const PAGINATED_LOADER_INITIAL_STATE: IPaginatedLoaderState = {
@@ -39,7 +43,10 @@ export function getInitialPaginatedLoaderState(): IPaginatedLoaderState {
     return JSON.parse(JSON.stringify(PAGINATED_LOADER_INITIAL_STATE));
 }
 
-export abstract class PaginatedLoader<Props extends IPaginatedLoaderProps, State extends IPaginatedLoaderState> extends Component<Props, State> implements IPaginatedLoader {
+export abstract class PaginatedLoader<
+    Props extends IPaginatedLoaderProps,
+    State extends IPaginatedLoaderState
+> extends Component<Props, State> implements IPaginatedLoader {
     protected _isMounted: boolean = false;
 
     constructor(props: Props) {
@@ -58,27 +65,25 @@ export abstract class PaginatedLoader<Props extends IPaginatedLoaderProps, State
         this._isMounted = false;
     }
 
-    abstract getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>
+    abstract getPaginatedData({
+        pageSize,
+        offset,
+        filters
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues>;
 
     async loadPage(page: number, filters?: ICustomFilter[]) {
-        const {
-            pageSize
-        } = this.state;
+        const { pageSize } = this.state;
 
         const offset = (page - 1) * pageSize;
 
-        const {
-            paginatedData,
-            formattedPaginatedData,
-            total
-        } = await this.getPaginatedData({
+        const { paginatedData, formattedPaginatedData, total } = await this.getPaginatedData({
             pageSize,
             offset,
             filters
         });
 
         if (!this._isMounted) {
-          return;
+            return;
         }
 
         this.setState({

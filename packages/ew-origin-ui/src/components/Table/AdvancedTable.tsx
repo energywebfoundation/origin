@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { Table, ITableProps, TableOnSelectFunction } from './Table';
-import { ColumnBatchActions, IBatchableAction, CustomCounterGeneratorFunction } from './ColumnBatchActions';
+import {
+    ColumnBatchActions,
+    IBatchableAction,
+    CustomCounterGeneratorFunction
+} from './ColumnBatchActions';
 import { FiltersHeader, ICustomFilterDefinition, ICustomFilter } from './FiltersHeader';
 
 interface IState {
@@ -10,7 +14,7 @@ interface IState {
 interface IProps extends ITableProps {
     onSelect?: TableOnSelectFunction;
     batchableActions?: IBatchableAction[];
-    customSelectCounterGenerator?: CustomCounterGeneratorFunction
+    customSelectCounterGenerator?: CustomCounterGeneratorFunction;
     filters?: ICustomFilterDefinition[];
 }
 
@@ -90,38 +94,39 @@ export class AdvancedTable extends React.Component<IProps, IState> {
             toggleSort
         } = this.props;
 
-        const {
-            selectedIndexes
-        } = this.state;
+        const { selectedIndexes } = this.state;
 
-        return <>
-            <FiltersHeader
-                filters={filters}
-                filtersChanged={this.filtersChanged}
-            />
-            
-            <ColumnBatchActions
-                batchableActions={batchableActions}
-                selectedIndexes={selectedIndexes}
-                customCounterGenerator={customSelectCounterGenerator}
-            />
-            <Table
-                operationClicked={operationClicked}
-                classNames={['bare-font', 'bare-padding']}
-                header={header}
-                footer={footer}
-                actions={actions}
-                data={data}
-                actionWidth={actionWidth}
-                operations={operations}
-                loadPage={loadPage}
-                total={total}
-                pageSize={pageSize}
-                onSelect={batchableActions && batchableActions.length ? this.itemSelectionChanged : null}
-                currentSort={currentSort}
-                sortAscending={sortAscending}
-                toggleSort={toggleSort}
-            />
-        </>
+        return (
+            <>
+                <FiltersHeader filters={filters} filtersChanged={this.filtersChanged} />
+
+                <ColumnBatchActions
+                    batchableActions={batchableActions}
+                    selectedIndexes={selectedIndexes}
+                    customCounterGenerator={customSelectCounterGenerator}
+                />
+                <Table
+                    operationClicked={operationClicked}
+                    classNames={['bare-font', 'bare-padding']}
+                    header={header}
+                    footer={footer}
+                    actions={actions}
+                    data={data}
+                    actionWidth={actionWidth}
+                    operations={operations}
+                    loadPage={loadPage}
+                    total={total}
+                    pageSize={pageSize}
+                    onSelect={
+                        batchableActions && batchableActions.length
+                            ? this.itemSelectionChanged
+                            : null
+                    }
+                    currentSort={currentSort}
+                    sortAscending={sortAscending}
+                    toggleSort={toggleSort}
+                />
+            </>
+        );
     }
 }

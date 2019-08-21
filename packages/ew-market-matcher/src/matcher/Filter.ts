@@ -50,9 +50,7 @@ export const filterAgreements = async (
     }
 
     logger.verbose(
-        `${filteredAgreements.length} from ${
-            agreements.length
-        } are a possible fit for certificate #${certificate.id}`
+        `${filteredAgreements.length} from ${agreements.length} are a possible fit for certificate #${certificate.id}`
     );
 
     return filteredAgreements;
@@ -89,21 +87,13 @@ const checkFit = async (
     const asset = controller.getProducingAsset(certificate.assetId.toString());
 
     logger.debug(
-        `${loggerPrefix}originator: ${filterSpec.originator}, asset type: ${
-            filterSpec.demand.offChainProperties.assettype
-        }, compliance: ${filterSpec.demand.offChainProperties.registryCompliance}, country ${
-            filterSpec.demand.offChainProperties.locationCountry
-        }, region: ${filterSpec.demand.offChainProperties.locationRegion}, producing asset: ${
-            filterSpec.demand.offChainProperties.productingAsset
-        }`
+        `${loggerPrefix}originator: ${filterSpec.originator}, asset type: ${filterSpec.demand.offChainProperties.assettype}, compliance: ${filterSpec.demand.offChainProperties.registryCompliance}, country ${filterSpec.demand.offChainProperties.locationCountry}, region: ${filterSpec.demand.offChainProperties.locationRegion}, producing asset: ${filterSpec.demand.offChainProperties.productingAsset}`
     );
 
     if (filterSpec.end < currentTime || filterSpec.start > currentTime) {
         fit = false;
         logger.debug(
-            `${loggerPrefix}is outdated. (current time: ${currentTime}, start time: ${
-                filterSpec.start
-            }, end time: ${filterSpec.end}`
+            `${loggerPrefix}is outdated. (current time: ${currentTime}, start time: ${filterSpec.start}, end time: ${filterSpec.end}`
         );
     }
 

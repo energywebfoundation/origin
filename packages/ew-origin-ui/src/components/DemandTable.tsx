@@ -27,7 +27,14 @@ import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { deleteDemand } from 'ew-market-lib/dist/js/src/blockchain-facade/Demand';
-import { IPaginatedLoaderState, PaginatedLoader, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
+import {
+    IPaginatedLoaderState,
+    PaginatedLoader,
+    DEFAULT_PAGE_SIZE,
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues,
+    getInitialPaginatedLoaderState
+} from './Table/PaginatedLoader';
 
 export interface IDemandTableProps {
     conf: Configuration.Entity;
@@ -71,24 +78,24 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         this.showMatchingSupply = this.showMatchingSupply.bind(this);
     }
 
-    async enrichData(demands: Demand.Entity[]) : Promise<IEnrichedDemandData[]> {
+    async enrichData(demands: Demand.Entity[]): Promise<IEnrichedDemandData[]> {
         const promises = demands.map(async (demand: Demand.Entity) => {
             const result: IEnrichedDemandData = {
                 demand,
                 producingAsset: null,
                 consumingAsset: null,
-                demandOwner: await (new User(demand.demandOwner, this.props.conf)).sync()
+                demandOwner: await new User(demand.demandOwner, this.props.conf).sync()
             };
 
             if (demand.offChainProperties) {
-                if (typeof(demand.offChainProperties.productingAsset) !== 'undefined') {
+                if (typeof demand.offChainProperties.productingAsset !== 'undefined') {
                     result.producingAsset = this.props.producingAssets.find(
                         (asset: ProducingAsset.Entity) =>
                             asset.id === demand.offChainProperties.productingAsset.toString()
                     );
                 }
 
-                if (typeof(demand.offChainProperties.consumingAsset) !== 'undefined') {
+                if (typeof demand.offChainProperties.consumingAsset !== 'undefined') {
                     result.consumingAsset = this.props.consumingAssets.find(
                         (asset: ConsumingAsset.Entity) =>
                             asset.id === demand.offChainProperties.consumingAsset.toString()
@@ -148,7 +155,10 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         });
     }
 
-    async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+    async getPaginatedData({
+        pageSize,
+        offset
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const { demands } = this.props;
         const enrichedData = await this.enrichData(demands);
 
@@ -159,24 +169,44 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         const formattedPaginatedData = paginatedData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
                 const demand = enrichedDemandData.demand;
-                const overallDemand = Math.ceil(
-                    (parseInt(demand.offChainProperties.endTime, 10) - parseInt(demand.offChainProperties.startTime, 10)) / PeriodToSeconds[demand.offChainProperties.timeframe] / 1000)
-                        * (demand.offChainProperties.targetWhPerPeriod / 1000);
+                const overallDemand =
+                    Math.ceil(
+                        (parseInt(demand.offChainProperties.endTime, 10) -
+                            parseInt(demand.offChainProperties.startTime, 10)) /
+                            PeriodToSeconds[demand.offChainProperties.timeframe] /
+                            1000
+                    ) *
+                    (demand.offChainProperties.targetWhPerPeriod / 1000);
 
                 return [
                     demand.id,
                     enrichedDemandData.demandOwner.organization,
-                    (moment(demand.offChainProperties.startTime, 'x')).format('DD MMM YY') + ' - ' +
-                        (moment(demand.offChainProperties.endTime, 'x')).format('DD MMM YY'),
+                    moment(demand.offChainProperties.startTime, 'x').format('DD MMM YY') +
+                        ' - ' +
+                        moment(demand.offChainProperties.endTime, 'x').format('DD MMM YY'),
                     this.getCountryRegionText(demand),
-                    typeof(demand.offChainProperties.assettype) !== 'undefined' ? AssetType[demand.offChainProperties.assettype] : NO_VALUE_TEXT,
-                    typeof(demand.offChainProperties.registryCompliance) !== 'undefined' ? Compliance[demand.offChainProperties.registryCompliance] : NO_VALUE_TEXT,
-                    typeof(demand.offChainProperties.timeframe) !== 'undefined' ? TimeFrame[demand.offChainProperties.timeframe] : NO_VALUE_TEXT,
-                    typeof(demand.offChainProperties.productingAsset) !== 'undefined' ? demand.offChainProperties.productingAsset : NO_VALUE_TEXT,
-                    typeof(demand.offChainProperties.consumingAsset) !== 'undefined' ? demand.offChainProperties.consumingAsset : NO_VALUE_TEXT,
-                    typeof(demand.offChainProperties.minCO2Offset) !== 'undefined' ? demand.offChainProperties.minCO2Offset.toLocaleString() : 0,
+                    typeof demand.offChainProperties.assettype !== 'undefined'
+                        ? AssetType[demand.offChainProperties.assettype]
+                        : NO_VALUE_TEXT,
+                    typeof demand.offChainProperties.registryCompliance !== 'undefined'
+                        ? Compliance[demand.offChainProperties.registryCompliance]
+                        : NO_VALUE_TEXT,
+                    typeof demand.offChainProperties.timeframe !== 'undefined'
+                        ? TimeFrame[demand.offChainProperties.timeframe]
+                        : NO_VALUE_TEXT,
+                    typeof demand.offChainProperties.productingAsset !== 'undefined'
+                        ? demand.offChainProperties.productingAsset
+                        : NO_VALUE_TEXT,
+                    typeof demand.offChainProperties.consumingAsset !== 'undefined'
+                        ? demand.offChainProperties.consumingAsset
+                        : NO_VALUE_TEXT,
+                    typeof demand.offChainProperties.minCO2Offset !== 'undefined'
+                        ? demand.offChainProperties.minCO2Offset.toLocaleString()
+                        : 0,
                     (demand.offChainProperties.targetWhPerPeriod / 1000).toLocaleString(),
-                    `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${Currency[demand.offChainProperties.currency]}`,
+                    `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
+                        Currency[demand.offChainProperties.currency]
+                    }`,
                     overallDemand
                 ];
             }
@@ -198,7 +228,10 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
     render() {
         if (this.state.showMatchingSupply !== null) {
             return (
-                <Redirect push={true} to={`/${this.props.baseUrl}/certificates/for_demand/${this.state.showMatchingSupply}`} />
+                <Redirect
+                    push={true}
+                    to={`/${this.props.baseUrl}/certificates/for_demand/${this.state.showMatchingSupply}`}
+                />
             );
         }
 

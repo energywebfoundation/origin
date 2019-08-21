@@ -33,7 +33,10 @@ export interface ISmartMeterReadingsChartState {
     readings: ProducingAsset.ISmartMeterRead[];
 }
 
-export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadingsChartProps, ISmartMeterReadingsChartState> {
+export class SmartMeterReadingsChart extends React.Component<
+    ISmartMeterReadingsChartProps,
+    ISmartMeterReadingsChartState
+> {
     constructor(props: ISmartMeterReadingsChartProps) {
         super(props);
 
@@ -54,7 +57,8 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
                 tooltips: {
                     callbacks: {
                         label: (tooltipItem, data) => {
-                            const tooltipValue = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                            const tooltipValue =
+                                data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
                             return parseInt(tooltipValue).toLocaleString();
                         }
@@ -83,9 +87,9 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
     }
 
     changeSelectedTimeFrame(increment: boolean = true) {
-        const { selectedTimeFrame: {
-            timeframe, endDate
-        } } = this.state;
+        const {
+            selectedTimeFrame: { timeframe, endDate }
+        } = this.state;
 
         let measurementUnit;
 
@@ -112,9 +116,10 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
     }
 
     get formattedReadings() {
-        const { readings, selectedTimeFrame: {
-            endDate, timeframe
-        } } = this.state;
+        const {
+            readings,
+            selectedTimeFrame: { endDate, timeframe }
+        } = this.state;
         const formatted = [];
 
         let measurementUnit;
@@ -166,7 +171,10 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
             }
 
             formatted.push({
-                label: measurementUnit !== 'hour' ? currentDate.format(keyFormat) : `${currentDate.format(keyFormat)}:00`,
+                label:
+                    measurementUnit !== 'hour'
+                        ? currentDate.format(keyFormat)
+                        : `${currentDate.format(keyFormat)}:00`,
                 color: STYLE_CONFIG.PRIMARY_COLOR,
                 value: totalEnergy
             });
@@ -178,14 +186,16 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
     }
 
     get currentRangeInfo(): string {
-        const { selectedTimeFrame: {
-            timeframe, endDate
-        } } = this.state;
+        const {
+            selectedTimeFrame: { timeframe, endDate }
+        } = this.state;
 
         const endDateRef = moment(endDate);
 
         if (timeframe === TIMEFRAME.WEEK) {
-            return `${endDateRef.startOf('week').format('D MMM YYYY')} - ${endDateRef.endOf('week').format('D MMM YYYY')}`;
+            return `${endDateRef.startOf('week').format('D MMM YYYY')} - ${endDateRef
+                .endOf('week')
+                .format('D MMM YYYY')}`;
         } else if (timeframe === TIMEFRAME.MONTH) {
             return endDateRef.format('MMM YYYY');
         } else if (timeframe === TIMEFRAME.YEAR) {
@@ -210,10 +220,11 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
         };
 
         const timeFrameButtons = Object.keys(TIMEFRAME).map((timeframe, index) => {
-            const onClick = () => this.setSelectedTimeFrame({
-                timeframe: TIMEFRAME[timeframe],
-                endDate: moment().toDate()
-            });
+            const onClick = () =>
+                this.setSelectedTimeFrame({
+                    timeframe: TIMEFRAME[timeframe],
+                    endDate: moment().toDate()
+                });
 
             const isCurrentlySelected = selectedTimeFrame.timeframe === TIMEFRAME[timeframe];
 
@@ -247,9 +258,7 @@ export class SmartMeterReadingsChart extends React.Component<ISmartMeterReadings
                     </div>
 
                     <div className="col-lg-8">
-                        <ButtonGroup className="btn-switcher">
-                            {timeFrameButtons}
-                        </ButtonGroup>
+                        <ButtonGroup className="btn-switcher">{timeFrameButtons}</ButtonGroup>
                     </div>
 
                     <div className="col-lg-2">

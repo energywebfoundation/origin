@@ -10,13 +10,13 @@ export class CertificateLogic extends CertificateSpecificContract {
     constructor(web3: Web3, address?: string) {
         super(web3, address);
         this.web3Contract = address
-        ? new web3.eth.Contract(CertificateLogicJSON.abi, address)
-        : new web3.eth.Contract(
-              CertificateLogicJSON.abi,
-              (CertificateLogicJSON as any).networks.length > 0
-                  ? CertificateLogicJSON.networks[0]
-                  : null
-          );
+            ? new web3.eth.Contract(CertificateLogicJSON.abi, address)
+            : new web3.eth.Contract(
+                  CertificateLogicJSON.abi,
+                  (CertificateLogicJSON as any).networks.length > 0
+                      ? CertificateLogicJSON.networks[0]
+                      : null
+              );
     }
 
     async getAllLogCreatedCertificateEvents(eventFilter?: SearchLog) {
@@ -256,8 +256,19 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async splitAndPublishForSale(_certificateId: number, _energy: number, _price: number, _tokenAddress: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.splitAndPublishForSale(_certificateId, _energy, _price, _tokenAddress);
+    async splitAndPublishForSale(
+        _certificateId: number,
+        _energy: number,
+        _price: number,
+        _tokenAddress: string,
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.splitAndPublishForSale(
+            _certificateId,
+            _energy,
+            _price,
+            _tokenAddress
+        );
 
         return await this.send(method, txParams);
     }
@@ -364,8 +375,17 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async publishForSale(_certificateId: number, _price: number, _tokenAddress: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.publishForSale(_certificateId, _price, _tokenAddress);
+    async publishForSale(
+        _certificateId: number,
+        _price: number,
+        _tokenAddress: string,
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.publishForSale(
+            _certificateId,
+            _price,
+            _tokenAddress
+        );
 
         return await this.send(method, txParams);
     }

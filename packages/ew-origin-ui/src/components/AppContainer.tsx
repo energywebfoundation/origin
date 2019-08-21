@@ -40,7 +40,7 @@ import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { 
+import {
     currentUserUpdated,
     configurationUpdated,
     demandCreatedOrUpdated,
@@ -48,7 +48,7 @@ import {
     producingAssetCreatedOrUpdated,
     certificateCreatedOrUpdated,
     consumingAssetCreatedOrUpdated
- } from '../features/actions';
+} from '../features/actions';
 import { withRouter } from 'react-router-dom';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
@@ -147,16 +147,18 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         );
 
         demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-            const demandAlreadyExists = this.props.demands.some(d => d.id === event.returnValues._demandId);
+            const demandAlreadyExists = this.props.demands.some(
+                d => d.id === event.returnValues._demandId
+            );
 
             if (demandAlreadyExists) {
                 return;
             }
 
-            const demand = await (new Demand.Entity(
+            const demand = await new Demand.Entity(
                 event.returnValues._demandId,
-                this.props.configuration).sync()
-            );
+                this.props.configuration
+            ).sync();
 
             if (!isDemandDeleted(demand)) {
                 this.props.actions.demandCreatedOrUpdated(demand);
@@ -165,10 +167,10 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
 
         demandContractEventHandler.onEvent('deletedDemand', async (event: any) =>
             this.props.actions.demandDeleted(
-                await (new Demand.Entity(
+                await new Demand.Entity(
                     event.returnValues._demandId,
-                    this.props.configuration).sync()
-                )
+                    this.props.configuration
+                ).sync()
             )
         );
 
@@ -179,7 +181,9 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
     }
 
     async getMarketLogicInstance(originIssuerContractLookupAddress: string, web3: Web3) {
-        const response = await axios.get(`${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`);
+        const response = await axios.get(
+            `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`
+        );
 
         const marketBlockchainProperties: Configuration.BlockchainProperties = (await marketCreateBlockchainProperties(
             web3,
@@ -210,10 +214,10 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         let blockchainProperties: Configuration.BlockchainProperties;
 
         try {
-            blockchainProperties = (await createBlockchainProperties(
+            blockchainProperties = await createBlockchainProperties(
                 web3,
                 originIssuerContractLookupAddress
-            ));
+            );
 
             blockchainProperties.marketLogicInstance = await this.getMarketLogicInstance(
                 originIssuerContractLookupAddress,
@@ -224,16 +228,19 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
                 error: null,
                 loading: false
             });
-    
+
             return {
                 blockchainProperties,
                 offChainDataSource: {
                     baseUrl: API_BASE_URL
                 },
-    
+
                 logger: Winston.createLogger({
                     level: 'debug',
-                    format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
+                    format: Winston.format.combine(
+                        Winston.format.colorize(),
+                        Winston.format.simple()
+                    ),
                     transports: [new Winston.transports.Console({ level: 'silly' })]
                 })
             };
@@ -350,32 +357,17 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
 
         return (
             <div className={`AppWrapper ${false ? 'Profile--open' : ''}`}>
-                <Header
-                    currentUser={this.props.currentUser}
-                    baseUrl={contractAddress}
-                />
+                <Header currentUser={this.props.currentUser} baseUrl={contractAddress} />
                 <Switch>
-                    <Route
-                        path={`/${contractAddress}/assets/`}
-                        component={this.Asset}
-                    />
+                    <Route path={`/${contractAddress}/assets/`} component={this.Asset} />
                     <Route
                         path={`/${contractAddress}/certificates/`}
                         component={this.CertificateTable}
                     />
-                    <Route
-                        path={`/${contractAddress}/admin/`}
-                        component={this.Admin}
-                    />
-                    <Route
-                        path={`/${contractAddress}/demands/`}
-                        component={this.DemandTable}
-                    />
+                    <Route path={`/${contractAddress}/admin/`} component={this.Admin} />
+                    <Route path={`/${contractAddress}/demands/`} component={this.DemandTable} />
 
-                    <Route
-                        path={`/${contractAddress}`}
-                        component={this.Asset}
-                    />
+                    <Route path={`/${contractAddress}`} component={this.Asset} />
                 </Switch>
                 <AccountChangedModal />
             </div>

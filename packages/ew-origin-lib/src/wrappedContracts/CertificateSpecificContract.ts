@@ -4,7 +4,7 @@ import CertificateSpecificContractJSON from '../../build/contracts/CertificateSp
 
 export class CertificateSpecificContract extends GeneralFunctions {
     web3: Web3;
-    buildFile : any = CertificateSpecificContractJSON;
+    buildFile: any = CertificateSpecificContractJSON;
 
     constructor(web3: Web3, address?: string) {
         super(
@@ -21,28 +21,43 @@ export class CertificateSpecificContract extends GeneralFunctions {
     }
 
     async getAssetRequestedCertsForSMReadsLength(_assetId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAssetRequestedCertsForSMReadsLength(_assetId).call(txParams);
+        return await this.web3Contract.methods
+            .getAssetRequestedCertsForSMReadsLength(_assetId)
+            .call(txParams);
     }
 
     async getCertificationRequests(txParams?: SpecialTx) {
-        const length = await this.web3Contract.methods.getCertificationRequestsLength().call(txParams);
+        const length = await this.web3Contract.methods
+            .getCertificationRequestsLength()
+            .call(txParams);
 
         const certificationRequests = [];
         for (let i = 0; i < length; i++) {
-            certificationRequests.push(await this.web3Contract.methods.certificationRequests(i).call(txParams));
+            certificationRequests.push(
+                await this.web3Contract.methods.certificationRequests(i).call(txParams)
+            );
         }
 
         return certificationRequests;
     }
 
-    async requestCertificates(_assetId: number, limitingSmartMeterReadIndex: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.requestCertificates(_assetId, limitingSmartMeterReadIndex);
+    async requestCertificates(
+        _assetId: number,
+        limitingSmartMeterReadIndex: number,
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.requestCertificates(
+            _assetId,
+            limitingSmartMeterReadIndex
+        );
 
         return await this.send(method, txParams);
     }
 
     async approveCertificationRequest(_certicationRequestIndex: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.approveCertificationRequest(_certicationRequestIndex);
+        const method = this.web3Contract.methods.approveCertificationRequest(
+            _certicationRequestIndex
+        );
 
         return await this.send(method, txParams);
     }

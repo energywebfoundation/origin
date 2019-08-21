@@ -199,9 +199,7 @@ export class SimulationModeController extends Controller {
 
         logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
         logger.debug(
-            `Set Wh for Agreement ${agreement.id} in period ${
-                agreement.matcherOffChainProperties.currentPeriod
-            } to ${agreement.matcherOffChainProperties.currentWh} Wh`
+            `Set Wh for Agreement ${agreement.id} in period ${agreement.matcherOffChainProperties.currentPeriod} to ${agreement.matcherOffChainProperties.currentWh} Wh`
         );
     }
 
@@ -240,9 +238,7 @@ export class SimulationModeController extends Controller {
     ): boolean {
         if (expectedMatch[key] !== match[key]) {
             logger.debug(
-                `Match #${expectedMatchIndex}: ${key} (${
-                    match[key]
-                }) does not equal expected ${key} (${expectedMatch[key]}) ${LogSymbols.error}`
+                `Match #${expectedMatchIndex}: ${key} (${match[key]}) does not equal expected ${key} (${expectedMatch[key]}) ${LogSymbols.error}`
             );
 
             return false;

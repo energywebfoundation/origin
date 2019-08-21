@@ -1,5 +1,9 @@
 import { getPropertyByPath, deepEqual } from '../../utils/Helper';
-import { IPaginatedLoaderFilteredState, PaginatedLoaderFiltered, getInitialPaginatedLoaderFilteredState } from './PaginatedLoaderFiltered';
+import {
+    IPaginatedLoaderFilteredState,
+    PaginatedLoaderFiltered,
+    getInitialPaginatedLoaderFilteredState
+} from './PaginatedLoaderFiltered';
 
 export interface IPaginatedLoaderFilteredSortedState extends IPaginatedLoaderFilteredState {
     currentSort: string[];
@@ -18,7 +22,10 @@ export function getInitialPaginatedLoaderFilteredSortedState(): IPaginatedLoader
     return JSON.parse(JSON.stringify(PAGINATED_LOADER_FILTERED_SORTED_INITIAL_STATE));
 }
 
-export abstract class PaginatedLoaderFilteredSorted<Props extends IPaginatedLoaderFilteredSortedProps, State extends IPaginatedLoaderFilteredSortedState> extends PaginatedLoaderFiltered<Props, State> {
+export abstract class PaginatedLoaderFilteredSorted<
+    Props extends IPaginatedLoaderFilteredSortedProps,
+    State extends IPaginatedLoaderFilteredSortedState
+> extends PaginatedLoaderFiltered<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -26,36 +33,35 @@ export abstract class PaginatedLoaderFilteredSorted<Props extends IPaginatedLoad
     }
 
     sortData(records: any) {
-        const {
-            currentSort,
-            sortAscending
-        } = this.state;
+        const { currentSort, sortAscending } = this.state;
 
-        return records.sort((a, b) => {
-            return currentSort.map(field => {
-                const direction = sortAscending ? 1 : -1;
+        return records.sort((a, b) => {
+            return currentSort
+                .map(field => {
+                    const direction = sortAscending ? 1 : -1;
 
-                let aPropertyValue;
-                let bPropertyValue;
+                    let aPropertyValue;
+                    let bPropertyValue;
 
-                if (Array.isArray(field) && field.length === 2) {
-                    aPropertyValue = field[1](getPropertyByPath(a, field[0]));
-                    bPropertyValue = field[1](getPropertyByPath(b, field[0]));
-                } else {
-                    aPropertyValue = getPropertyByPath(a, field);
-                    bPropertyValue = getPropertyByPath(b, field);
-                }
+                    if (Array.isArray(field) && field.length === 2) {
+                        aPropertyValue = field[1](getPropertyByPath(a, field[0]));
+                        bPropertyValue = field[1](getPropertyByPath(b, field[0]));
+                    } else {
+                        aPropertyValue = getPropertyByPath(a, field);
+                        bPropertyValue = getPropertyByPath(b, field);
+                    }
 
-                if (aPropertyValue > bPropertyValue) {
-                    return direction;
-                }
+                    if (aPropertyValue > bPropertyValue) {
+                        return direction;
+                    }
 
-                if (aPropertyValue < bPropertyValue) {
-                    return -direction;
-                }
+                    if (aPropertyValue < bPropertyValue) {
+                        return -direction;
+                    }
 
-                return 0;
-            }).reduce((a, b) => a ? a : b, 0);
+                    return 0;
+                })
+                .reduce((a, b) => (a ? a : b), 0);
         });
     }
 

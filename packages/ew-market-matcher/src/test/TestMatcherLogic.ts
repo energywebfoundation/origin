@@ -64,7 +64,9 @@ describe('Test Matcher Logic', async () => {
 
             const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
             when(mockedCertificate.powerInW).thenReturn(testCertificate.powerInW);
-            when(mockedCertificate.offChainSettlementOptions).thenReturn(testCertificate.offChainSettlementOptions);
+            when(mockedCertificate.offChainSettlementOptions).thenReturn(
+                testCertificate.offChainSettlementOptions
+            );
             when(mockedCertificate.acceptedToken).thenReturn(testCertificate.acceptedToken);
 
             const certificate: Certificate.Entity = instance(mockedCertificate);
@@ -77,7 +79,11 @@ describe('Test Matcher Logic', async () => {
                 demandsToTest.push(demandInstance);
             }
 
-            const matchedDemands = await findMatchingDemandsForCertificate(certificate, conf, demandsToTest);
+            const matchedDemands = await findMatchingDemandsForCertificate(
+                certificate,
+                conf,
+                demandsToTest
+            );
             assert.lengthOf(matchedDemands, numShouldMatch);
         });
     });
@@ -164,7 +170,9 @@ describe('Test Matcher Logic', async () => {
             for (const certificate of testCertificates) {
                 const mockedCertificate: Certificate.Entity = mock(Certificate.Entity);
                 when(mockedCertificate.powerInW).thenReturn(certificate.powerInW);
-                when(mockedCertificate.offChainSettlementOptions).thenReturn(certificate.offChainSettlementOptions);
+                when(mockedCertificate.offChainSettlementOptions).thenReturn(
+                    certificate.offChainSettlementOptions
+                );
                 when(mockedCertificate.acceptedToken).thenReturn(certificate.acceptedToken);
                 when(mockedCertificate.forSale).thenReturn(certificate.forSale);
 
@@ -172,7 +180,11 @@ describe('Test Matcher Logic', async () => {
                 certificatesToTest.push(certificateInstance);
             }
 
-            const matchedCertificates = await findMatchingCertificatesForDemand(demand, conf, certificatesToTest);
+            const matchedCertificates = await findMatchingCertificatesForDemand(
+                demand,
+                conf,
+                certificatesToTest
+            );
             assert.lengthOf(matchedCertificates, numShouldMatch);
         });
     });
@@ -223,7 +235,11 @@ describe('Test Matcher Logic', async () => {
                 suppliesToTest.push(supplyInstance);
             }
 
-            const matchedSupplies = await findMatchingSuppliesForDemand(demand, conf, suppliesToTest);
+            const matchedSupplies = await findMatchingSuppliesForDemand(
+                demand,
+                conf,
+                suppliesToTest
+            );
             assert.lengthOf(matchedSupplies, numShouldMatch);
         });
     });
@@ -235,11 +251,7 @@ describe('Test Matcher Logic', async () => {
                 assetId: 0
             };
 
-            const testAgreements = [
-                { supplyId: 1 },
-                { supplyId: 2 },
-                { supplyId: 3 }
-            ];
+            const testAgreements = [{ supplyId: 1 }, { supplyId: 2 }, { supplyId: 3 }];
 
             const expectedMatches = 1;
 
@@ -257,7 +269,11 @@ describe('Test Matcher Logic', async () => {
                 agreementsToTest.push(agreementInstance);
             }
 
-            const matchedAgreements = await findMatchingAgreementsForCertificate(certificate, conf, agreementsToTest);
+            const matchedAgreements = await findMatchingAgreementsForCertificate(
+                certificate,
+                conf,
+                agreementsToTest
+            );
             assert.lengthOf(matchedAgreements, expectedMatches);
         });
     });

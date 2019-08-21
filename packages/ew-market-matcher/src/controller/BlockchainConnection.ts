@@ -147,9 +147,7 @@ export const initEventHandling = async (controller: Controller, conf: Configurat
 
     marketContractEventHandler.onEvent('LogAgreementFullySigned', async event => {
         console.log(
-            `\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${
-                event.returnValues._agreementId
-            }, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
+            `\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
         );
 
         const newAgreement = await new Agreement.Entity(

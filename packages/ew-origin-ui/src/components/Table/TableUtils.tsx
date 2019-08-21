@@ -27,15 +27,21 @@ const getKey = lbl => {
     return sp.join('_');
 };
 
-const generateHeader = (label, width?: string | number, right = false, body = false, sortProperties: string[] = null) : ITableHeaderData => {
+const generateHeader = (
+    label,
+    width?: string | number,
+    right = false,
+    body = false,
+    sortProperties: string[] = null
+): ITableHeaderData => {
     const style: CSSProperties = {};
 
     if (right) {
         style.textAlign = 'right';
     }
 
-    if (typeof(width) !== 'undefined') {
-        if (typeof(width) === 'number') {
+    if (typeof width !== 'undefined') {
+        if (typeof width === 'number') {
             style.width = `${width}px`;
         } else {
             style.width = width;

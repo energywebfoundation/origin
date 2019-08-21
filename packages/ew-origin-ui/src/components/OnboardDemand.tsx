@@ -47,31 +47,31 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
 
         const transformedInput = { ...input };
 
-        if (typeof(transformedInput.timeframe) !== 'undefined') {
+        if (typeof transformedInput.timeframe !== 'undefined') {
             transformedInput.timeframe = TimeFrame[transformedInput.timeframe];
         }
-        if (typeof(transformedInput.assettype) !== 'undefined') {
+        if (typeof transformedInput.assettype !== 'undefined') {
             transformedInput.assettype = AssetType[transformedInput.assettype];
         }
-        if (typeof(transformedInput.consumingAsset) !== 'undefined') {
+        if (typeof transformedInput.consumingAsset !== 'undefined') {
             transformedInput.consumingAsset = parseInt(transformedInput.consumingAsset, 10);
         }
-        if (typeof(transformedInput.minCO2Offset) !== 'undefined') {
+        if (typeof transformedInput.minCO2Offset !== 'undefined') {
             transformedInput.minCO2Offset = parseInt(transformedInput.minCO2Offset, 10);
         }
-        if (typeof(transformedInput.productingAsset) !== 'undefined') {
+        if (typeof transformedInput.productingAsset !== 'undefined') {
             transformedInput.productingAsset = parseInt(transformedInput.productingAsset, 10);
         }
-        if (typeof(transformedInput.targetWhPerPeriod) !== 'undefined') {
+        if (typeof transformedInput.targetWhPerPeriod !== 'undefined') {
             transformedInput.targetWhPerPeriod = parseInt(transformedInput.targetWhPerPeriod, 10);
         }
 
         transformedInput.targetWhPerPeriod = transformedInput.targetWhPerPeriod * 1000;
 
-        if (typeof(transformedInput.startTime) !== 'undefined') {
+        if (typeof transformedInput.startTime !== 'undefined') {
             transformedInput.startTime = (transformedInput.startTime * 1000).toString();
         }
-        if (typeof(transformedInput.endTime) !== 'undefined') {
+        if (typeof transformedInput.endTime !== 'undefined') {
             transformedInput.endTime = (transformedInput.endTime * 1000).toString();
         }
 
@@ -111,8 +111,10 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
             demandOffChainProps.locationRegion = transformedInput.locationRegion;
         }
 
-        if (typeof(transformedInput.registryCompliance) !== 'undefined') {
-            demandOffChainProps.registryCompliance = Compliance[transformedInput.registryCompliance] as any as Compliance;
+        if (typeof transformedInput.registryCompliance !== 'undefined') {
+            demandOffChainProps.registryCompliance = (Compliance[
+                transformedInput.registryCompliance
+            ] as any) as Compliance;
         }
 
         const demandProps: Demand.IDemandOnChainProperties = {
@@ -136,7 +138,7 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
     }
 
     render() {
-        const Tables : ITableAdminHeaderData[] = [
+        const Tables: ITableAdminHeaderData[] = [
             {
                 header: 'General'
             },
@@ -329,7 +331,7 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
                 <Table
                     type="admin"
                     header={Tables}
-                    data={{ assetTypes, compliances, timeframes, currencies}}
+                    data={{ assetTypes, compliances, timeframes, currencies }}
                 />
             </div>
         );

@@ -8,7 +8,14 @@ import { CertificateLogic } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { User, Role } from 'ew-user-registry-lib';
 import { showNotification, NotificationType } from '../utils/notifications';
-import { PaginatedLoader, IPaginatedLoaderState, DEFAULT_PAGE_SIZE, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
+import {
+    PaginatedLoader,
+    IPaginatedLoaderState,
+    DEFAULT_PAGE_SIZE,
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues,
+    getInitialPaginatedLoaderState
+} from './Table/PaginatedLoader';
 
 interface ICertificateTableProps {
     conf: Configuration.Entity;
@@ -21,7 +28,10 @@ enum OPERATIONS {
     APPROVE = 'Approve'
 }
 
-export class CertificationRequestsTable extends PaginatedLoader<ICertificateTableProps, IPaginatedLoaderState> {
+export class CertificationRequestsTable extends PaginatedLoader<
+    ICertificateTableProps,
+    IPaginatedLoaderState
+> {
     constructor(props: ICertificateTableProps) {
         super(props);
 
@@ -36,7 +46,10 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
         }
     }
 
-    async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+    async getPaginatedData({
+        pageSize,
+        offset
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         if (!this.props.currentUser) {
             return {
                 formattedPaginatedData: [],
@@ -49,7 +62,8 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
 
         const isIssuer = this.props.currentUser.isRole(Role.Issuer);
 
-        const certificateLogic : CertificateLogic = this.props.conf.blockchainProperties.certificateLogicInstance;
+        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+            .certificateLogicInstance;
 
         const requests = await certificateLogic.getCertificationRequests();
 
@@ -63,28 +77,29 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
             if (
                 (view === 'pending' && Number(request.status) !== 0) ||
                 (view === 'approved' && Number(request.status) !== 1) ||
-                (!isIssuer && this.props.currentUser.id.toLowerCase() !== asset.owner.address.toLowerCase())
+                (!isIssuer &&
+                    this.props.currentUser.id.toLowerCase() !== asset.owner.address.toLowerCase())
             ) {
                 continue;
             }
 
             const reads = await asset.getSmartMeterReads();
 
-            const energy = reads.slice(request.readsStartIndex, Number(request.readsEndIndex) + 1).reduce((a, b) => a + Number(b.energy), 0);
+            const energy = reads
+                .slice(request.readsStartIndex, Number(request.readsEndIndex) + 1)
+                .reduce((a, b) => a + Number(b.energy), 0);
 
             paginatedData.push(request);
             formattedPaginatedData.push([
                 i,
                 asset.offChainProperties.facilityName,
-                asset.offChainProperties.city +
-                        ', ' +
-                        asset.offChainProperties.country,
+                asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
                 ProducingAsset.Type[asset.offChainProperties.assetType],
                 asset.offChainProperties.capacityWh / 1000,
                 energy / 1000
             ]);
         }
-        
+
         const total = paginatedData.length;
 
         paginatedData = paginatedData.slice(offset, offset + pageSize);
@@ -94,9 +109,9 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
             formattedPaginatedData,
             paginatedData,
             total
-        }
+        };
     }
-   
+
     render() {
         const defaultWidth = 106;
         const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
@@ -126,9 +141,7 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
         const isIssuer = this.props.currentUser && this.props.currentUser.isRole(Role.Issuer);
 
         if (isIssuer && !this.props.approvedOnly) {
-            operations = [
-                OPERATIONS.APPROVE
-            ];
+            operations = [OPERATIONS.APPROVE];
         }
 
         return (
@@ -151,7 +164,8 @@ export class CertificationRequestsTable extends PaginatedLoader<ICertificateTabl
     }
 
     async approve(id: number) {
-        const certificateLogic : CertificateLogic = this.props.conf.blockchainProperties.certificateLogicInstance;
+        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+            .certificateLogicInstance;
 
         try {
             this.props.conf.blockchainProperties.activeUser = {

@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 
-import marker from '../../assets/marker.svg';	
+import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
 import hydro from '../../assets/icon_hydro.svg';
@@ -97,10 +97,7 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                     });
                 }
                 this.setState({
-                    owner: await new User(
-                        selectedAsset.owner.address,
-                        props.conf as any
-                    ).sync()
+                    owner: await new User(selectedAsset.owner.address, props.conf as any).sync()
                 });
             }
         }
@@ -151,11 +148,9 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                         label:
                             'Asset Type' +
                             getOffChainText('assetType', selectedAsset.offChainProperties),
-                        data:
-                            ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
+                        data: ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
                         image:
-                            ProducingAsset.Type.Wind ===
-                            selectedAsset.offChainProperties.assetType
+                            ProducingAsset.Type.Wind === selectedAsset.offChainProperties.assetType
                                 ? wind
                                 : ProducingAsset.Type.Solar ===
                                   selectedAsset.offChainProperties.assetType
@@ -228,7 +223,7 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                         <tbody>
                             {data.map((row: any) => (
                                 <tr key={row.key}>
-                                    {row.map((col) => {
+                                    {row.map(col => {
                                         if (
                                             col.isAdditionalInformation &&
                                             !this.props.addSearchField
@@ -249,18 +244,18 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                                                 {col.image &&
                                                     (col.type !== 'map' ? (
                                                         <div className={`Image`}>
-                                                            <img src={col.image} />	
-                                                            {col.type === 'map' && (	
-                                                                <img	
-                                                                    src={marker as any}	
-                                                                    className="Marker"	
-                                                                />	
-                                                            )}	
-                                                        </div>	
-                                                    ) : (	
-                                                        <div className={`Image Map`}>	
-                                                            <MapContainer asset={selectedAsset} />	
-                                                        </div>	
+                                                            <img src={col.image} />
+                                                            {col.type === 'map' && (
+                                                                <img
+                                                                    src={marker as any}
+                                                                    className="Marker"
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`Image Map`}>
+                                                            <MapContainer asset={selectedAsset} />
+                                                        </div>
                                                     ))}
                                                 {col.description && (
                                                     <div className="Description">
@@ -285,76 +280,78 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                         <input
                             onChange={this.onInputChange}
                             defaultValue={
-                                this.props.id || this.props.id === 0
-                                    ? this.props.id.toString()
-                                    : ''
+                                this.props.id || this.props.id === 0 ? this.props.id.toString() : ''
                             }
                         />
 
                         <Link
                             className="btn btn-primary find-asset-button"
-                            to={`/${this.props.baseUrl}/assets/producing_detail_view/${
-                                this.state.newId
-                            }`}
+                            to={`/${this.props.baseUrl}/assets/producing_detail_view/${this.state.newId}`}
                         >
                             Find Asset
                         </Link>
                     </div>
                 )}
 
-                {selectedAsset && 
+                {selectedAsset && (
                     <>
                         <div className="PageContentWrapper">
                             {pageBody}
 
-                            {this.props.showSmartMeterReadings && <div className="PageBody p-4">
-                                <div className="PageBodyTitle">
-                                    Smart meter readings
-                                </div>
+                            {this.props.showSmartMeterReadings && (
+                                <div className="PageBody p-4">
+                                    <div className="PageBodyTitle">Smart meter readings</div>
 
-                                <div className="container-fluid">
-                                    <div className="row">
-                                        <div className="col-lg-4">
-                                            <SmartMeterReadingsTable
-                                                conf={this.props.conf}
-                                                producingAsset={selectedAsset}
-                                            />
-                                        </div>
+                                    <div className="container-fluid">
+                                        <div className="row">
+                                            <div className="col-lg-4">
+                                                <SmartMeterReadingsTable
+                                                    conf={this.props.conf}
+                                                    producingAsset={selectedAsset}
+                                                />
+                                            </div>
 
-                                        <div className="col-lg-8">
-                                            <SmartMeterReadingsChart
-                                                conf={this.props.conf}
-                                                producingAsset={selectedAsset}
-                                            />
+                                            <div className="col-lg-8">
+                                                <SmartMeterReadingsChart
+                                                    conf={this.props.conf}
+                                                    producingAsset={selectedAsset}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>}
+                            )}
                         </div>
-                        {this.props.showCertificates &&
+                        {this.props.showCertificates && (
                             <>
-                            <br/><br/>
-                            <CertificateTable
-                                conf={this.props.conf}
-                                certificates={this.props.certificates.filter((c: Certificate.Entity) => c.assetId.toString() === this.props.id.toString())}
-                                producingAssets={this.props.producingAssets}
-                                currentUser={this.props.currentUser}
-                                baseUrl={this.props.baseUrl}
-                                selectedState={SelectedState.ForSale}
-                                demand={null}
-                                hiddenColumns={['Asset Type', 'Commissioning Date', 'Town, Country']}
-                            />
+                                <br />
+                                <br />
+                                <CertificateTable
+                                    conf={this.props.conf}
+                                    certificates={this.props.certificates.filter(
+                                        (c: Certificate.Entity) =>
+                                            c.assetId.toString() === this.props.id.toString()
+                                    )}
+                                    producingAssets={this.props.producingAssets}
+                                    currentUser={this.props.currentUser}
+                                    baseUrl={this.props.baseUrl}
+                                    selectedState={SelectedState.ForSale}
+                                    demand={null}
+                                    hiddenColumns={[
+                                        'Asset Type',
+                                        'Commissioning Date',
+                                        'Town, Country'
+                                    ]}
+                                />
                             </>
-                        }
+                        )}
                     </>
-                }
+                )}
             </div>
         );
     }
 }
 
-export const ProducingAssetDetailView = connect(
-    (state: IStoreState) => ({
-        currentUser: state.currentUser
-    })
-)(ProducingAssetDetailViewClass);
+export const ProducingAssetDetailView = connect((state: IStoreState) => ({
+    currentUser: state.currentUser
+}))(ProducingAssetDetailViewClass);

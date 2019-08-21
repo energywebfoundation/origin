@@ -17,10 +17,7 @@
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import {
-    UserLogic,
-    UserContractLookup
-} from '..';
+import { UserLogic, UserContractLookup } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { UserProperties, UserPropertiesOffChain, User } from '../blockchain-facade/Users/User';
 import { Configuration } from 'ew-utils-general-lib';

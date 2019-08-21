@@ -5,7 +5,14 @@ import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField
+} from '@material-ui/core';
 
 interface IValidation {
     kwh: boolean;
@@ -25,7 +32,10 @@ interface BuyCertificateModalState {
     validation: IValidation;
 }
 
-export class BuyCertificateModal extends React.Component<BuyCertificateModalProps, BuyCertificateModalState> {
+export class BuyCertificateModal extends React.Component<
+    BuyCertificateModalProps,
+    BuyCertificateModalState
+> {
     constructor(props, context) {
         super(props, context);
 
@@ -49,8 +59,8 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
         });
     }
 
-    async componentDidUpdate(prevProps : BuyCertificateModalProps) {
-        if (this.props.certificate && (this.props.certificate !== prevProps.certificate)) {
+    async componentDidUpdate(prevProps: BuyCertificateModalProps) {
+        if (this.props.certificate && this.props.certificate !== prevProps.certificate) {
             this.setState({
                 kwh: this.props.certificate.powerInW / 1000,
                 validation: {
@@ -64,7 +74,10 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
         const { certificate } = this.props;
 
         if (certificate) {
-            if ((certificate.acceptedToken as any) as string !== '0x0000000000000000000000000000000000000000') {
+            if (
+                ((certificate.acceptedToken as any) as string) !==
+                '0x0000000000000000000000000000000000000000'
+            ) {
                 const erc20TestToken = new Erc20TestToken(
                     this.props.conf.blockchainProperties.web3,
                     (certificate.acceptedToken as any) as string
@@ -78,7 +91,10 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
 
             await certificate.buyCertificate(this.state.kwh * 1000);
 
-            showNotification(`Certificates for ${this.state.kwh} kWh have been bought.`, NotificationType.Success);
+            showNotification(
+                `Certificates for ${this.state.kwh} kWh have been bought.`,
+                NotificationType.Success
+            );
         } else {
             showNotification(`Unable to buy certificates.`, NotificationType.Error);
         }
@@ -87,15 +103,16 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
     }
 
     validateInputs(event) {
-        const countDecimals = value => value % 1 ? value.toString().split('.')[1].length : 0;
+        const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);
 
         switch (event.target.id) {
             case 'kwhInput':
                 const kwh = Number(event.target.value);
-                const kwhValid = !isNaN(kwh)
-                    && kwh >= 0.001
-                    && kwh <= this.props.certificate.powerInW / 1000
-                    && countDecimals(kwh) <= 3;
+                const kwhValid =
+                    !isNaN(kwh) &&
+                    kwh >= 0.001 &&
+                    kwh <= this.props.certificate.powerInW / 1000 &&
+                    countDecimals(kwh) <= 3;
 
                 this.setState({
                     kwh: event.target.value,
@@ -120,34 +137,27 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
 
     render() {
         const certificateId = this.props.certificate ? this.props.certificate.id : '';
-        const date = this.props.certificate ? moment.unix(this.props.certificate.creationTime).format('YYYY-MM-DD') : '';
-        const facilityName = this.props.producingAsset ? this.props.producingAsset.offChainProperties.facilityName : '';
+        const date = this.props.certificate
+            ? moment.unix(this.props.certificate.creationTime).format('YYYY-MM-DD')
+            : '';
+        const facilityName = this.props.producingAsset
+            ? this.props.producingAsset.offChainProperties.facilityName
+            : '';
 
         return (
             <Dialog open={this.state.show} onClose={this.handleClose}>
                 <DialogTitle>Buy certificate #{certificateId}</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Facility"
-                        value={facilityName}
-                        fullWidth
-                        disabled
-                    />
+                    <TextField label="Facility" value={facilityName} fullWidth disabled />
 
-                    <TextField
-                        label="Date"
-                        value={date}
-                        fullWidth
-                        disabled
-                        className="mt-4"
-                    />
+                    <TextField label="Date" value={date} fullWidth disabled className="mt-4" />
 
                     <TextField
                         label="kWh"
                         value={this.state.kwh}
                         type="number"
                         placeholder="1"
-                        onChange={(e) => this.validateInputs(e)}
+                        onChange={e => this.validateInputs(e)}
                         className="mt-4"
                         id="kwhInput"
                         fullWidth
@@ -157,11 +167,15 @@ export class BuyCertificateModal extends React.Component<BuyCertificateModalProp
                     <Button onClick={this.handleClose} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={this.buyCertificate} color="primary" disabled={!this.isFormValid()}>
+                    <Button
+                        onClick={this.buyCertificate}
+                        color="primary"
+                        disabled={!this.isFormValid()}
+                    >
                         Buy
                     </Button>
                 </DialogActions>
             </Dialog>
         );
     }
-  }
+}

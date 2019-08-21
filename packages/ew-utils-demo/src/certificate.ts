@@ -36,20 +36,28 @@ export const certificateDemo = async (
 
     const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
-    const certificateLogic : CertificateLogic = conf.blockchainProperties.certificateLogicInstance;
+    const certificateLogic: CertificateLogic = conf.blockchainProperties.certificateLogicInstance;
 
     switch (action.type) {
         case 'APPROVE_CERTIFICATION_REQUEST':
             console.log('-----------------------------------------------------------');
 
             try {
-                await certificateLogic.approveCertificationRequest(action.data.certificationRequestIndex, {
-                    privateKey: action.data.issuerPK
-                });
+                await certificateLogic.approveCertificationRequest(
+                    action.data.certificationRequestIndex,
+                    {
+                        privateKey: action.data.issuerPK
+                    }
+                );
 
-                conf.logger.info(`Certification request #${action.data.certificationRequestIndex} approved`);
+                conf.logger.info(
+                    `Certification request #${action.data.certificationRequestIndex} approved`
+                );
             } catch (e) {
-                conf.logger.error(`Could not approve certification request #${action.data.certificationRequestIndex}\n`, e);
+                conf.logger.error(
+                    `Could not approve certification request #${action.data.certificationRequestIndex}\n`,
+                    e
+                );
             }
 
             console.log('-----------------------------------------------------------\n');
@@ -64,7 +72,11 @@ export const certificateDemo = async (
 
             try {
                 let asset = await new ProducingAsset.Entity(action.data.assetId, conf).sync();
-                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash, action.data.timestamp || 0);
+                await asset.saveSmartMeterRead(
+                    action.data.meterreading,
+                    action.data.filehash,
+                    action.data.timestamp || 0
+                );
                 asset = await asset.sync();
                 conf.logger.verbose('Producing smart meter reading saved');
             } catch (e) {
@@ -84,7 +96,11 @@ export const certificateDemo = async (
 
             try {
                 let asset = await new ConsumingAsset.Entity(action.data.assetId, conf).sync();
-                await asset.saveSmartMeterRead(action.data.meterreading, action.data.filehash, action.data.timestamp || 0);
+                await asset.saveSmartMeterRead(
+                    action.data.meterreading,
+                    action.data.filehash,
+                    action.data.timestamp || 0
+                );
                 asset = await asset.sync();
                 conf.logger.verbose('Consuming meter reading saved');
             } catch (e) {
@@ -137,10 +153,7 @@ export const certificateDemo = async (
                     'Asset Owner Balance(BEFORE): ' +
                         (await TradableEntity.getBalance(action.data.addressTo, conf))
                 );
-                const certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                const certificate = await new Certificate.Entity(action.data.certId, conf).sync();
                 await certificate.transferFrom(action.data.addressTo);
                 conf.logger.info('Certificate Transferred');
                 conf.logger.verbose(
@@ -167,10 +180,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
                 await certificate.splitCertificate(action.data.splitValue);
                 certificate = await certificate.sync();
 
@@ -196,10 +206,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.setOnChainDirectPurchasePrice(action.data.price);
                 certificate = await certificate.sync();
@@ -223,10 +230,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.publishForSale(action.data.price, erc20TestAddress);
                 certificate = await certificate.sync();
@@ -246,10 +250,7 @@ export const certificateDemo = async (
                 privateKey: action.data.certificateOwnerPK
             };
             try {
-                let certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.publishForSale(action.data.price, Currency[action.data.currency]);
                 certificate = await certificate.sync();
@@ -267,13 +268,22 @@ export const certificateDemo = async (
             const assetId = Number(action.data.assetId);
 
             try {
-                await certificateLogic.requestCertificates(assetId, action.data.lastRequestedSMRead, {
-                    privateKey: action.data.assetOwnerPK
-                });
+                await certificateLogic.requestCertificates(
+                    assetId,
+                    action.data.lastRequestedSMRead,
+                    {
+                        privateKey: action.data.assetOwnerPK
+                    }
+                );
 
-                conf.logger.info(`Requested certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}`);
+                conf.logger.info(
+                    `Requested certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}`
+                );
             } catch (e) {
-                conf.logger.error(`Could not request certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}\n`, e);
+                conf.logger.error(
+                    `Could not request certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}\n`,
+                    e
+                );
             }
 
             console.log('-----------------------------------------------------------\n');
@@ -287,10 +297,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.unpublishForSale();
                 certificate = await certificate.sync();
@@ -326,10 +333,7 @@ export const certificateDemo = async (
                     'Buyer Balance(BEFORE): ' +
                         (await TradableEntity.getBalance(action.data.buyer, conf))
                 );
-                const certificate = await new Certificate.Entity(
-                    action.data.certId,
-                    conf
-                ).sync();
+                const certificate = await new Certificate.Entity(action.data.certId, conf).sync();
                 await certificate.buyCertificate();
                 conf.logger.info('Certificate Bought');
                 conf.logger.verbose(
@@ -361,7 +365,9 @@ export const certificateDemo = async (
                         erc20TestAddress
                     );
 
-                    const currentAllowance = Number(await token.allowance(action.data.buyer, cert.owner));
+                    const currentAllowance = Number(
+                        await token.allowance(action.data.buyer, cert.owner)
+                    );
                     const price = Number(cert.onChainDirectPurchasePrice);
 
                     await token.approve(cert.owner, currentAllowance + price, {
@@ -373,17 +379,26 @@ export const certificateDemo = async (
                         `Buyer Balance ${await token.symbol()} (BEFORE): ` +
                             (await token.balanceOf(action.data.buyer))
                     );
-                    conf.logger.verbose(`Allowance: ${await token.allowance(action.data.buyer, cert.owner)}`);
+                    conf.logger.verbose(
+                        `Allowance: ${await token.allowance(action.data.buyer, cert.owner)}`
+                    );
                 }
             }
 
             try {
-                await conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(action.data.certificateIds, {
-                    from: action.data.buyer
-                });
-                conf.logger.info(`Certificates ${action.data.certificateIds.join(', ')} bought on bulk`);
+                await conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(
+                    action.data.certificateIds,
+                    {
+                        from: action.data.buyer
+                    }
+                );
+                conf.logger.info(
+                    `Certificates ${action.data.certificateIds.join(', ')} bought on bulk`
+                );
             } catch (e) {
-                conf.logger.error(`Could not bulk buy Certificates ${action.data.certificateIds.join(', ')}\n` + e);
+                conf.logger.error(
+                    `Could not bulk buy Certificates ${action.data.certificateIds.join(', ')}\n` + e
+                );
             }
 
             console.log('-----------------------------------------------------------\n');

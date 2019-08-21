@@ -108,15 +108,14 @@ export class AgreementLogic extends GeneralFunctions {
         _supplyId: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .createAgreement(
-                _propertiesDocumentHash,
-                _documentDBURL,
-                _matcherPropertiesDocumentHash,
-                _matcherDBURL,
-                _demandId,
-                _supplyId
-            );
+        const method = this.web3Contract.methods.createAgreement(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _matcherPropertiesDocumentHash,
+            _matcherDBURL,
+            _demandId,
+            _supplyId
+        );
 
         return await this.send(method, txParams);
     }
@@ -161,7 +160,11 @@ export class AgreementLogic extends GeneralFunctions {
         _matcherDBURL: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setMatcherProperties(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
+        const method = this.web3Contract.methods.setMatcherProperties(
+            _agreementId,
+            _matcherPropertiesDocumentHash,
+            _matcherDBURL
+        );
 
         return await this.send(method, txParams);
     }

@@ -24,72 +24,79 @@ export interface IOnChainProperties extends Asset.IOnChainProperties {
     certificatesUsedForWh: number;
 }
 
-export const createAsset =
-    async (assetProperties: IOnChainProperties,
-           assetPropertiesOffChain: Asset.IOffChainProperties,
-           configuration: Configuration.Entity): Promise<Asset.Entity> => {
-        const consumingAsset = new Entity(null, configuration);
-        const offChainStorageProperties =
-            consumingAsset.prepareEntityCreation(assetProperties, assetPropertiesOffChain, AssetPropertiesOffchainSchema);
+export const createAsset = async (
+    assetProperties: IOnChainProperties,
+    assetPropertiesOffChain: Asset.IOffChainProperties,
+    configuration: Configuration.Entity
+): Promise<Asset.Entity> => {
+    const consumingAsset = new Entity(null, configuration);
+    const offChainStorageProperties = consumingAsset.prepareEntityCreation(
+        assetProperties,
+        assetPropertiesOffChain,
+        AssetPropertiesOffchainSchema
+    );
 
-        if (configuration.offChainDataSource) {
-            assetProperties.url = consumingAsset.getUrl();
-            assetProperties.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    if (configuration.offChainDataSource) {
+        assetProperties.url = consumingAsset.getUrl();
+        assetProperties.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    }
+
+    const tx = await configuration.blockchainProperties.consumingAssetLogicInstance.createAsset(
+        assetProperties.smartMeter.address,
+        assetProperties.owner.address,
+        assetProperties.active,
+        assetProperties.matcher.map(matcher => matcher.address),
+        assetProperties.propertiesDocumentHash,
+        assetProperties.url,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
         }
+    );
 
-        const tx = await configuration.blockchainProperties.consumingAssetLogicInstance.createAsset(
-            assetProperties.smartMeter.address,
-            assetProperties.owner.address,
-            assetProperties.active,
-            assetProperties.matcher.map((matcher) => matcher.address),
-            assetProperties.propertiesDocumentHash,
-            assetProperties.url,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            });
+    consumingAsset.id = configuration.blockchainProperties.web3.utils
+        .hexToNumber(tx.logs[0].topics[1])
+        .toString();
 
-        consumingAsset.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
+    await consumingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 
-        await consumingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
+    if (configuration.logger) {
+        configuration.logger.info(`Consuming asset ${consumingAsset.id} created`);
+    }
 
-        if (configuration.logger) {
-            configuration.logger.info(`Consuming asset ${consumingAsset.id} created`);
-        }
-
-        return consumingAsset.sync();
-
-    };
+    return consumingAsset.sync();
+};
 
 export const getAssetListLength = async (configuration: Configuration.Entity) => {
-
-    return parseInt(await configuration.blockchainProperties.consumingAssetLogicInstance.getAssetListLength(), 10);
+    return parseInt(
+        await configuration.blockchainProperties.consumingAssetLogicInstance.getAssetListLength(),
+        10
+    );
 };
 
 export const getAllAssets = async (configuration: Configuration.Entity) => {
-
     const assetsPromises = Array(await getAssetListLength(configuration))
         .fill(null)
-        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
 
     return Promise.all(assetsPromises);
-
 };
 
 export const getAllAssetsOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
-    return (await getAllAssets(configuration))
-        .filter((asset: Entity) => asset.owner.address.toLowerCase() === owner.toLowerCase());
+    return (await getAllAssets(configuration)).filter(
+        (asset: Entity) => asset.owner.address.toLowerCase() === owner.toLowerCase()
+    );
 };
 
 export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
-
     getUrl(): string {
-
         return `${this.configuration.offChainDataSource.baseUrl}/ConsumingAsset`;
     }
 
     async sync(): Promise<Entity> {
-        const asset = await this.configuration.blockchainProperties.consumingAssetLogicInstance.getAssetById(this.id);
+        const asset = await this.configuration.blockchainProperties.consumingAssetLogicInstance.getAssetById(
+            this.id
+        );
 
         if (this.id != null) {
             this.smartMeter = { address: asset.assetGeneral.smartMeter };
@@ -112,7 +119,7 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
     }
 
     async saveSmartMeterRead(
-        newMeterReading: number, 
+        newMeterReading: number,
         fileHash: string,
         timestamp: number = moment().unix()
     ): Promise<TransactionReceipt> {
@@ -122,10 +129,9 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
                 newMeterReading,
                 fileHash,
                 timestamp,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        }
-        else {
+        } else {
             return this.configuration.blockchainProperties.consumingAssetLogicInstance.saveSmartMeterRead(
                 this.id,
                 newMeterReading,
@@ -134,7 +140,5 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
                 { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
-
     }
-
 }

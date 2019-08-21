@@ -76,7 +76,11 @@ export class MarketDB extends GeneralFunctions {
         _matcherDBURL: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setMatcherPropertiesAndURL(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
+        const method = this.web3Contract.methods.setMatcherPropertiesAndURL(
+            _agreementId,
+            _matcherPropertiesDocumentHash,
+            _matcherDBURL
+        );
 
         return await this.send(method, txParams);
     }
@@ -87,7 +91,11 @@ export class MarketDB extends GeneralFunctions {
         _assetId: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.createSupply(_propertiesDocumentHash, _documentDBURL, _assetId);
+        const method = this.web3Contract.methods.createSupply(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _assetId
+        );
 
         return await this.send(method, txParams);
     }
@@ -112,7 +120,11 @@ export class MarketDB extends GeneralFunctions {
         _demandOwner: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.createDemand(_propertiesDocumentHash, _documentDBURL, _demandOwner);
+        const method = this.web3Contract.methods.createDemand(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _demandOwner
+        );
 
         return await this.send(method, txParams);
     }
@@ -148,15 +160,14 @@ export class MarketDB extends GeneralFunctions {
         _supplyId: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .createAgreementDB(
-                _propertiesDocumentHash,
-                _documentDBURL,
-                _matcherPropertiesDocumentHash,
-                _matcherDBURL,
-                _demandId,
-                _supplyId
-            );
+        const method = this.web3Contract.methods.createAgreementDB(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _matcherPropertiesDocumentHash,
+            _matcherDBURL,
+            _demandId,
+            _supplyId
+        );
 
         return await this.send(method, txParams);
     }

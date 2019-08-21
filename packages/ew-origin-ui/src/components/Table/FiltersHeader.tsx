@@ -61,10 +61,10 @@ export class FiltersHeader extends Component<IProps, IState> {
         const { processedFilters } = this.state;
         const index = processedFilters.indexOf(targetFilter);
 
-        const updatedFilter: ICustomFilter  = {
+        const updatedFilter: ICustomFilter = {
             ...targetFilter,
             selectedValue
-        }
+        };
 
         const updatedFilters = [
             ...processedFilters.slice(0, index),
@@ -116,10 +116,7 @@ export class FiltersHeader extends Component<IProps, IState> {
     }
 
     render() {
-        const {
-            menuShown,
-            processedFilters
-        } = this.state;
+        const { menuShown, processedFilters } = this.state;
 
         if (processedFilters.length === 0) {
             return null;
@@ -129,24 +126,45 @@ export class FiltersHeader extends Component<IProps, IState> {
 
         const standardFilters = processedFilters.filter(f => !f.search);
 
-        return <>
-            {searchFilter && <div className="pb-4">
-                <IndividualFilter filter={searchFilter} changeFilterValue={this.changeFilterValue} />
-            </div>}
-            
-            {standardFilters.length > 0 && <div className="FiltersHeader">
-                <div className={`Filter ${menuShown ? 'Filter-opened' : ''}`} onClick={() => this.setState({ menuShown: !menuShown })}>
-                    <div className="Filter_icon"><FilterIcon /></div>
-                    Filter
-                </div>
-                {menuShown && <div className="Filter_menu">
-                    {standardFilters.map((filter, index) => {
-                        return <div className="Filter_menu_item" key={index}>
-                            <IndividualFilter filter={filter} changeFilterValue={this.changeFilterValue} />
+        return (
+            <>
+                {searchFilter && (
+                    <div className="pb-4">
+                        <IndividualFilter
+                            filter={searchFilter}
+                            changeFilterValue={this.changeFilterValue}
+                        />
+                    </div>
+                )}
+
+                {standardFilters.length > 0 && (
+                    <div className="FiltersHeader">
+                        <div
+                            className={`Filter ${menuShown ? 'Filter-opened' : ''}`}
+                            onClick={() => this.setState({ menuShown: !menuShown })}
+                        >
+                            <div className="Filter_icon">
+                                <FilterIcon />
+                            </div>
+                            Filter
                         </div>
-                    })}
-                </div>}
-            </div>}
-        </>
+                        {menuShown && (
+                            <div className="Filter_menu">
+                                {standardFilters.map((filter, index) => {
+                                    return (
+                                        <div className="Filter_menu_item" key={index}>
+                                            <IndividualFilter
+                                                filter={filter}
+                                                changeFilterValue={this.changeFilterValue}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </>
+        );
     }
 }

@@ -1,4 +1,4 @@
-import { GeneralActions } from "./actions";
+import { GeneralActions } from './actions';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
@@ -13,10 +13,10 @@ const defaultState: IGeneralState = {
 export default function reducer(state = defaultState, action): IGeneralState {
     switch (action.type) {
         case GeneralActions.showAccountChangedModal:
-            return {...state, accountChangedModalVisible: true};
+            return { ...state, accountChangedModalVisible: true };
 
         case GeneralActions.hideAccountChangedModal:
-            return {...state, accountChangedModalVisible: false};
+            return { ...state, accountChangedModalVisible: false };
 
         case GeneralActions.disableAccountChangedModal:
             return {
@@ -24,7 +24,7 @@ export default function reducer(state = defaultState, action): IGeneralState {
                 accountChangedModalVisible: false,
                 accountChangedModalEnabled: false
             };
-    
+
         default:
             return state;
     }

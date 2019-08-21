@@ -53,10 +53,11 @@ describe('MarketContractLookup', () => {
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, buildRights([
-            Role.UserAdmin,
-            Role.AssetAdmin
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(
+            accountDeployment,
+            buildRights([Role.UserAdmin, Role.AssetAdmin]),
+            { privateKey: privateKeyDeployment }
+        );
 
         const userContractLookupAddr = (userContracts as any).UserContractLookup;
 

@@ -43,34 +43,22 @@ export class Header extends React.Component<IHeaderProps, {}> {
                     </NavLink>
                     <Nav className="NavMenu">
                         <li>
-                            <NavLink
-                                to={`/${baseUrl}/assets`}
-                                activeClassName="active"
-                            >
+                            <NavLink to={`/${baseUrl}/assets`} activeClassName="active">
                                 Assets
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink
-                                to={`/${baseUrl}/certificates`}
-                                activeClassName="active"
-                            >
+                            <NavLink to={`/${baseUrl}/certificates`} activeClassName="active">
                                 Certificates
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink
-                                to={`/${baseUrl}/demands`}
-                                activeClassName="active"
-                            >
+                            <NavLink to={`/${baseUrl}/demands`} activeClassName="active">
                                 Demands
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink
-                                to={`/${baseUrl}/admin`}
-                                activeClassName="active"
-                            >
+                            <NavLink to={`/${baseUrl}/admin`} activeClassName="active">
                                 Admin
                             </NavLink>
                         </li>

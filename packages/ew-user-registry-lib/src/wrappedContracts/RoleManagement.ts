@@ -18,7 +18,7 @@ export function buildRights(roles: Role[]): number {
 
     return roles.reduce((a, b) => {
         return a | Math.pow(2, b);
-    },                  0);
+    }, 0);
 }
 
 export class RoleManagement extends GeneralFunctions {
@@ -31,7 +31,9 @@ export class RoleManagement extends GeneralFunctions {
                 ? new web3.eth.Contract(RoleManagementJSON.abi, address)
                 : new web3.eth.Contract(
                       RoleManagementJSON.abi,
-                      (RoleManagementJSON as any).networks.length > 0 ? RoleManagementJSON.networks[0] : null
+                      (RoleManagementJSON as any).networks.length > 0
+                          ? RoleManagementJSON.networks[0]
+                          : null
                   )
         );
         this.web3 = web3;

@@ -5,8 +5,18 @@ import { assert } from 'chai';
 import { Configuration, TimeFrame, Currency, AssetType, Compliance } from 'ew-utils-general-lib';
 import { UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
 import { Certificate, CertificateLogic, migrateCertificateRegistryContracts } from 'ew-origin-lib';
-import { migrateAssetRegistryContracts, AssetProducingRegistryLogic, ProducingAsset } from 'ew-asset-registry-lib';
-import { MarketLogic, migrateMarketRegistryContracts, Demand, Supply, Agreement } from 'ew-market-lib';
+import {
+    migrateAssetRegistryContracts,
+    AssetProducingRegistryLogic,
+    ProducingAsset
+} from 'ew-asset-registry-lib';
+import {
+    MarketLogic,
+    migrateMarketRegistryContracts,
+    Demand,
+    Supply,
+    Agreement
+} from 'ew-market-lib';
 
 import { logger } from '../Logger';
 import { startMatcher } from '../exports';
@@ -50,7 +60,7 @@ describe('Test Matcher', async () => {
 
     const matcherConf: SchemaDefs.IMatcherConf = {
         dataSource: {
-            type: ('BLOCKCHAIN' as SchemaDefs.BlockchainDataSourceType),
+            type: 'BLOCKCHAIN' as SchemaDefs.BlockchainDataSourceType,
             web3Url: PROVIDER_URL,
             offChainDataSourceUrl: BACKEND_URL,
             marketContractLookupAddress: '',
@@ -61,7 +71,7 @@ describe('Test Matcher', async () => {
             }
         },
         matcherSpecification: {
-            type: ('CONFIGURABLE_REFERENCE' as SchemaDefs.MatcherType),
+            type: 'CONFIGURABLE_REFERENCE' as SchemaDefs.MatcherType,
             matcherConfigFile: 'example-conf/simple-hierarchy-rule.json'
         }
     };
@@ -73,31 +83,35 @@ describe('Test Matcher', async () => {
         userLogic = new UserLogic(web3 as Web3, (userContracts as any).UserLogic);
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, buildRights([
-            Role.UserAdmin,
-            Role.AssetAdmin,
-            Role.AssetManager,
-            Role.Trader,
-            Role.Matcher
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(
+            accountDeployment,
+            buildRights([
+                Role.UserAdmin,
+                Role.AssetAdmin,
+                Role.AssetManager,
+                Role.Trader,
+                Role.Matcher
+            ]),
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(accountTrader, buildRights([
-            Role.Trader
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(assetOwnerAddress, buildRights([
-            Role.AssetManager
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(issuerAccount, buildRights([
-            Role.Issuer
-        ]),                      { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
+            privateKey: privateKeyDeployment
+        });
     }).timeout(5000);
 
     it('should deploy asset-registry contracts', async () => {
@@ -221,11 +235,7 @@ describe('Test Matcher', async () => {
             typeOfPublicSupport: ''
         };
 
-        asset = await ProducingAsset.createAsset(
-            assetProps,
-            assetPropsOffChain,
-            conf
-        );
+        asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
@@ -317,7 +327,7 @@ describe('Test Matcher', async () => {
 
             let certificate = await new Certificate.Entity('0', conf).sync();
 
-            await certificate.publishForSale(1,  Currency.USD);
+            await certificate.publishForSale(1, Currency.USD);
             certificate = await certificate.sync();
 
             assert.isTrue(certificate.forSale);

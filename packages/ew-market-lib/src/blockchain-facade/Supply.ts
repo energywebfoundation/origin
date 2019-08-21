@@ -36,7 +36,7 @@ export const getSupplyListLength = async (configuration: GeneralLib.Configuratio
 export const getAllSupplies = async (configuration: GeneralLib.Configuration.Entity) => {
     const suppliesPromises = Array(parseInt(await getSupplyListLength(configuration)))
         .fill(null)
-        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
 
     return (await Promise.all(suppliesPromises)).filter(promise => promise.initialized);
 };

@@ -4,7 +4,19 @@ import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Currency, Configuration } from 'ew-utils-general-lib';
 import { Certificate } from 'ew-origin-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, FilledInput, MenuItem, Select } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField,
+    FormControl,
+    InputLabel,
+    FilledInput,
+    MenuItem,
+    Select
+} from '@material-ui/core';
 import { showNotification, NotificationType } from '../../utils/notifications';
 
 interface IValidation {
@@ -34,7 +46,10 @@ interface IPublishForSaleModalState {
 
 const ERC20CURRENCY = 'ERC20 Token';
 
-class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPublishForSaleModalState> {
+class PublishForSaleModal extends React.Component<
+    IPublishForSaleModalProps,
+    IPublishForSaleModalState
+> {
     constructor(props, context) {
         super(props, context);
 
@@ -47,7 +62,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         this.state = {
             show: props.showModal,
             minKwh,
-            kwh: props.certificate ? (props.certificate.powerInW / 1000) : minKwh,
+            kwh: props.certificate ? props.certificate.powerInW / 1000 : minKwh,
             price: 1,
             currency: this.availableCurrencies[0],
             erc20TokenAddress: '',
@@ -62,7 +77,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
 
     componentWillReceiveProps(newProps: IPublishForSaleModalProps) {
         this.setState({
-            show: newProps.showModal,
+            show: newProps.showModal
         });
     }
 
@@ -89,7 +104,10 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
         if (this.isFormValid) {
             if (certificate.forSale) {
                 this.handleClose();
-                showNotification(`Certificate ${certificate.id} has already been published for sale.`, NotificationType.Error);
+                showNotification(
+                    `Certificate ${certificate.id} has already been published for sale.`,
+                    NotificationType.Error
+                );
 
                 return;
             }
@@ -106,15 +124,16 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
     }
 
     async validateInputs(event) {
-        const countDecimals = value => value % 1 ? value.toString().split('.')[1].length : 0;
+        const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);
 
         switch (event.target.id) {
             case 'kwhInput':
                 const kwh = Number(event.target.value);
-                const kwhValid = !isNaN(kwh)
-                    && kwh >= this.state.minKwh
-                    && kwh <= this.props.certificate.powerInW / 1000
-                    && countDecimals(kwh) <= 3;
+                const kwhValid =
+                    !isNaN(kwh) &&
+                    kwh >= this.state.minKwh &&
+                    kwh <= this.props.certificate.powerInW / 1000 &&
+                    countDecimals(kwh) <= 3;
 
                 this.setState({
                     kwh: event.target.value,
@@ -127,9 +146,10 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                 break;
             case 'priceInput':
                 const price = Number(event.target.value);
-                const priceValid = !isNaN(price)
-                    && price > 0
-                    && countDecimals(price) <= (this.isErc20Sale ? 0 : 2);
+                const priceValid =
+                    !isNaN(price) &&
+                    price > 0 &&
+                    countDecimals(price) <= (this.isErc20Sale ? 0 : 2);
 
                 this.setState({
                     price: event.target.value,
@@ -142,11 +162,16 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                 break;
             case 'tokenAddressInput':
                 const givenAddress = event.target.value;
-                const isAddress = this.props.conf.blockchainProperties.web3.utils.isAddress(givenAddress);
+                const isAddress = this.props.conf.blockchainProperties.web3.utils.isAddress(
+                    givenAddress
+                );
                 let isInitializedToken = true;
 
                 if (isAddress) {
-                    const token = new Erc20TestToken(this.props.conf.blockchainProperties.web3, givenAddress);
+                    const token = new Erc20TestToken(
+                        this.props.conf.blockchainProperties.web3,
+                        givenAddress
+                    );
 
                     try {
                         await token.web3Contract.methods.symbol().call();
@@ -197,18 +222,15 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
 
     render() {
         const certificateId = this.props.certificate ? this.props.certificate.id : '';
-        const facilityName = this.props.producingAsset ? this.props.producingAsset.offChainProperties.facilityName : '';
+        const facilityName = this.props.producingAsset
+            ? this.props.producingAsset.offChainProperties.facilityName
+            : '';
 
         return (
             <Dialog open={this.state.show} onClose={this.handleClose}>
                 <DialogTitle>{`Publish certificate #${certificateId} for sale`}</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Facility"
-                        value={facilityName}
-                        fullWidth
-                        disabled
-                    />
+                    <TextField label="Facility" value={facilityName} fullWidth disabled />
 
                     <TextField
                         label="Date"
@@ -223,7 +245,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                         value={this.state.kwh}
                         type="number"
                         placeholder="1"
-                        onChange={(e) => this.validateInputs(e)}
+                        onChange={e => this.validateInputs(e)}
                         className="mt-4"
                         id="kwhInput"
                         fullWidth
@@ -234,7 +256,7 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                         value={this.state.price}
                         type="number"
                         placeholder="1"
-                        onChange={(e) => this.validateInputs(e)}
+                        onChange={e => this.validateInputs(e)}
                         className="mt-4"
                         id="priceInput"
                         fullWidth
@@ -243,45 +265,55 @@ class PublishForSaleModal extends React.Component<IPublishForSaleModalProps, IPu
                     <FormControl fullWidth={true} variant="filled" className="mt-4">
                         <InputLabel>Currency</InputLabel>
                         <Select
-                            value={this.state.currency} 
-                            onChange={(e) => this.setState({ currency: e.target.value as any })}
+                            value={this.state.currency}
+                            onChange={e => this.setState({ currency: e.target.value as any })}
                             fullWidth
                             variant="filled"
                             input={<FilledInput />}
                         >
-                                {this.availableCurrencies.map(currency => <MenuItem key={currency} value={currency}>{currency}</MenuItem>)}
+                            {this.availableCurrencies.map(currency => (
+                                <MenuItem key={currency} value={currency}>
+                                    {currency}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
 
-                    {this.isErc20Sale &&
+                    {this.isErc20Sale && (
                         <TextField
                             label="ERC20 Token Address"
                             value={this.state.erc20TokenAddress}
                             placeholder="<ERC20 Token Address>"
-                            onChange={(e) => this.validateInputs(e)}
+                            onChange={e => this.validateInputs(e)}
                             className="mt-4"
                             id="tokenAddressInput"
                             fullWidth
                         />
-                    }
+                    )}
 
                     <div className="text-danger">
                         {!this.state.validation.price && <div>Price is invalid</div>}
                         {!this.state.validation.kwh && <div>kWh value is invalid</div>}
-                        {this.isErc20Sale && !this.state.validation.erc20TokenAddress && <div>Token address is invalid</div>}
+                        {this.isErc20Sale && !this.state.validation.erc20TokenAddress && (
+                            <div>Token address is invalid</div>
+                        )}
                     </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleClose} color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={this.publishForSale} color="primary" disabled={!this.isFormValid}>
+                    <Button
+                        onClick={this.publishForSale}
+                        color="primary"
+                        disabled={!this.isFormValid}
+                    >
                         Publish for sale
                     </Button>
                 </DialogActions>
             </Dialog>
         );
     }
-  }
+}
 
 export { PublishForSaleModal };

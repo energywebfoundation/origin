@@ -25,10 +25,19 @@ import { Configuration } from 'ew-utils-general-lib';
 import { ProducingAsset } from 'ew-asset-registry-lib';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
-import { PaginatedLoaderFiltered, IPaginatedLoaderFilteredState, getInitialPaginatedLoaderFilteredState, FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderFiltered';
+import {
+    PaginatedLoaderFiltered,
+    IPaginatedLoaderFilteredState,
+    getInitialPaginatedLoaderFilteredState,
+    FILTER_SPECIAL_TYPES,
+    RECORD_INDICATOR
+} from './Table/PaginatedLoaderFiltered';
 import { AdvancedTable } from './Table/AdvancedTable';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
+import {
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues
+} from './Table/PaginatedLoader';
 
 export interface ProducingAssetTableProps {
     conf: Configuration.Entity;
@@ -55,7 +64,10 @@ enum OPERATIONS {
     SHOW_DETAILS = 'Show Details'
 }
 
-export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetTableProps, IProducingAssetTableState> {    
+export class ProducingAssetTable extends PaginatedLoaderFiltered<
+    ProducingAssetTableProps,
+    IProducingAssetTableState
+> {
     constructor(props: ProducingAssetTableProps) {
         super(props);
 
@@ -63,7 +75,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetT
             ...getInitialPaginatedLoaderFilteredState(),
             detailViewForAssetId: null,
             requestIRECsModalAsset: null,
-            showRequestIRECsModal: false,
+            showRequestIRECsModal: false
         };
 
         this.operationClicked = this.operationClicked.bind(this);
@@ -76,21 +88,19 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetT
         }
     }
 
-    async enrichProducingAssetData(producingAssets: ProducingAsset.Entity[]): Promise<IEnrichedProducingAssetData[]> {
-        const promises = producingAssets.map(
-            async (asset) => ({
-                asset,
-                notSoldCertificates: this.props.certificates.filter(
-                    (certificate: Certificate.Entity) =>
-                        certificate.owner === asset.owner.address &&
-                        certificate.assetId.toString() === asset.id
-                ),
-                organizationName: (await new User(
-                    asset.owner.address,
-                    this.props.conf as any
-                ).sync()).organization
-            })
-        );
+    async enrichProducingAssetData(
+        producingAssets: ProducingAsset.Entity[]
+    ): Promise<IEnrichedProducingAssetData[]> {
+        const promises = producingAssets.map(async asset => ({
+            asset,
+            notSoldCertificates: this.props.certificates.filter(
+                (certificate: Certificate.Entity) =>
+                    certificate.owner === asset.owner.address &&
+                    certificate.assetId.toString() === asset.id
+            ),
+            organizationName: (await new User(asset.owner.address, this.props.conf as any).sync())
+                .organization
+        }));
 
         return Promise.all(promises);
     }
@@ -106,24 +116,31 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetT
                 });
                 break;
         }
-        
     }
 
     async requestIRECs(id: number) {
         const asset: ProducingAsset.Entity = this.props.producingAssets.find(
             (a: ProducingAsset.Entity) => a.id === id.toString()
         );
-        
-        let isOwner = asset.owner && asset.owner.address.toLowerCase() === this.props.currentUser.id.toLowerCase();
+
+        let isOwner =
+            asset.owner &&
+            asset.owner.address.toLowerCase() === this.props.currentUser.id.toLowerCase();
         if (!isOwner) {
-            showNotification(`You need to own the asset to request I-RECs.`, NotificationType.Error);
+            showNotification(
+                `You need to own the asset to request I-RECs.`,
+                NotificationType.Error
+            );
 
             return;
         }
 
         let hasRights = this.props.currentUser.isRole(Role.AssetManager);
         if (!hasRights) {
-            showNotification(`You need to have Asset Manager role to request I-RECs.`, NotificationType.Error);
+            showNotification(
+                `You need to have Asset Manager role to request I-RECs.`,
+                NotificationType.Error
+            );
 
             return;
         }
@@ -131,17 +148,26 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetT
         const reads = await asset.getSmartMeterReads();
 
         if (reads.length === 0) {
-            showNotification(`There are no smart meter reads for this asset.`, NotificationType.Error);
+            showNotification(
+                `There are no smart meter reads for this asset.`,
+                NotificationType.Error
+            );
 
             return;
         }
 
-        const certificateLogic : CertificateLogic = this.props.conf.blockchainProperties.certificateLogicInstance;
+        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+            .certificateLogicInstance;
 
-        const lastRequestedSMReadIndex = Number(await certificateLogic.getAssetRequestedCertsForSMReadsLength(Number(asset.id)));
+        const lastRequestedSMReadIndex = Number(
+            await certificateLogic.getAssetRequestedCertsForSMReadsLength(Number(asset.id))
+        );
 
         if (reads.length === lastRequestedSMReadIndex) {
-            showNotification(`You have already requested certificates for all smart meter reads for this asset.`, NotificationType.Error);
+            showNotification(
+                `You have already requested certificates for all smart meter reads for this asset.`,
+                NotificationType.Error
+            );
 
             return;
         }
@@ -172,36 +198,38 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetT
             },
             search: true
         }
-    ]
+    ];
 
-    async getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+    async getPaginatedData({
+        pageSize,
+        offset,
+        filters
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const assets = this.props.producingAssets;
         const enrichedAssetData = await this.enrichProducingAssetData(assets);
 
-        const filteredEnrichedAssetData = enrichedAssetData.filter(record => this.checkRecordPassesFilters(record, filters));
+        const filteredEnrichedAssetData = enrichedAssetData.filter(record =>
+            this.checkRecordPassesFilters(record, filters)
+        );
 
         const total = filteredEnrichedAssetData.length;
 
         const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
 
-        const formattedPaginatedData = paginatedData.map(
-            (enrichedRecordData) => {
-                const asset = enrichedRecordData.asset;
+        const formattedPaginatedData = paginatedData.map(enrichedRecordData => {
+            const asset = enrichedRecordData.asset;
 
-                return [
-                    asset.id,
-                    enrichedRecordData.organizationName,
-                    asset.offChainProperties.facilityName,
-                    asset.offChainProperties.city +
-                        ', ' +
-                        asset.offChainProperties.country,
-                    ProducingAsset.Type[asset.offChainProperties.assetType],
-                    asset.offChainProperties.capacityWh / 1000,
-                    asset.lastSmartMeterReadWh / 1000
-                ];
-            }
-        );
-        
+            return [
+                asset.id,
+                enrichedRecordData.organizationName,
+                asset.offChainProperties.facilityName,
+                asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+                ProducingAsset.Type[asset.offChainProperties.assetType],
+                asset.offChainProperties.capacityWh / 1000,
+                asset.lastSmartMeterReadWh / 1000
+            ];
+        });
+
         return {
             formattedPaginatedData,
             paginatedData,
@@ -246,9 +274,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<ProducingAssetT
             generateFooter('Meter Read (kWh)')
         ];
 
-        const operations = [
-            OPERATIONS.SHOW_DETAILS
-        ];
+        const operations = [OPERATIONS.SHOW_DETAILS];
 
         if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
             operations.push(OPERATIONS.REQUEST_IRECS);

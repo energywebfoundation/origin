@@ -78,7 +78,10 @@ export class CertificateDB extends GeneralFunctions {
         _escrow: string[],
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(_entityId, _escrow);
+        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(
+            _entityId,
+            _escrow
+        );
 
         return await this.send(method, txParams);
     }
@@ -113,7 +116,11 @@ export class CertificateDB extends GeneralFunctions {
         _approve: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setTradableEntityOwnerAndAddApproval(_entityId, _owner, _approve);
+        const method = this.web3Contract.methods.setTradableEntityOwnerAndAddApproval(
+            _entityId,
+            _owner,
+            _approve
+        );
 
         return await this.send(method, txParams);
     }
@@ -123,7 +130,10 @@ export class CertificateDB extends GeneralFunctions {
         _newOwnerChangeCounter: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setOwnerChangeCounter(_certificateId, _newOwnerChangeCounter);
+        const method = this.web3Contract.methods.setOwnerChangeCounter(
+            _certificateId,
+            _newOwnerChangeCounter
+        );
 
         return await this.send(method, txParams);
     }
@@ -153,15 +163,14 @@ export class CertificateDB extends GeneralFunctions {
         _maxOwnerChanges: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .createCertificateRaw(
-                _assetId,
-                _powerInW,
-                _escrow,
-                _assetOwner,
-                _lastSmartMeterReadFileHash,
-                _maxOwnerChanges
-            );
+        const method = this.web3Contract.methods.createCertificateRaw(
+            _assetId,
+            _powerInW,
+            _escrow,
+            _assetOwner,
+            _lastSmartMeterReadFileHash,
+            _maxOwnerChanges
+        );
 
         return await this.send(method, txParams);
     }
@@ -213,7 +222,10 @@ export class CertificateDB extends GeneralFunctions {
         _newMaxOwnerChanges: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setMaxOwnerChanges(_certificateId, _newMaxOwnerChanges);
+        const method = this.web3Contract.methods.setMaxOwnerChanges(
+            _certificateId,
+            _newMaxOwnerChanges
+        );
 
         return await this.send(method, txParams);
     }
@@ -247,7 +259,10 @@ export class CertificateDB extends GeneralFunctions {
     }
 
     async setCertificateSpecific(_certificateId: number, _certificate: any, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setCertificateSpecific(_certificateId, _certificate);
+        const method = this.web3Contract.methods.setCertificateSpecific(
+            _certificateId,
+            _certificate
+        );
 
         return await this.send(method, txParams);
     }
@@ -275,7 +290,12 @@ export class CertificateDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async publishForSale(_entityId: number, _price: number, _tokenAddress: string, txParams?: SpecialTx) {
+    async publishForSale(
+        _entityId: number,
+        _price: number,
+        _tokenAddress: string,
+        txParams?: SpecialTx
+    ) {
         const method = this.web3Contract.methods.publishForSale(_entityId, _price, _tokenAddress);
 
         return await this.send(method, txParams);
@@ -310,7 +330,10 @@ export class CertificateDB extends GeneralFunctions {
         _newCounter: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setOwnerChangeCounterResetEscrow(_certificateId, _newCounter);
+        const method = this.web3Contract.methods.setOwnerChangeCounterResetEscrow(
+            _certificateId,
+            _newCounter
+        );
 
         return await this.send(method, txParams);
     }

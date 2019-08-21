@@ -93,16 +93,13 @@ export const deleteDemand = async (
 ): Promise<boolean> => {
     let success = true;
 
-    const demand = await (new Entity(demandId.toString(), configuration)).sync();
+    const demand = await new Entity(demandId.toString(), configuration).sync();
 
     try {
-        await configuration.blockchainProperties.marketLogicInstance.deleteDemand(
-            demandId,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey
-            }
-            );
+        await configuration.blockchainProperties.marketLogicInstance.deleteDemand(demandId, {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
+        });
         await demand.deleteFromOffChainStorage();
     } catch (e) {
         success = false;
@@ -134,7 +131,8 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     }
 
     getUrl(): string {
-        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance.web3Contract._address;
+        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
+            .web3Contract._address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/Demand/${marketLogicAddress}`;
     }
@@ -165,13 +163,16 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
 }
 
 export const getAllDemandsListLength = async (configuration: GeneralLib.Configuration.Entity) => {
-    return parseInt(await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(), 10);
+    return parseInt(
+        await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(),
+        10
+    );
 };
 
 export const getAllDemands = async (configuration: GeneralLib.Configuration.Entity) => {
     const demandsPromises = Array(await getAllDemandsListLength(configuration))
         .fill(null)
-        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
 
     return (await Promise.all(demandsPromises)).filter(promise => promise.initialized);
 };

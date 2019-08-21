@@ -76,7 +76,10 @@ export class EnergyDB extends GeneralFunctions {
         _escrow: string[],
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(_entityId, _escrow);
+        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(
+            _entityId,
+            _escrow
+        );
 
         return await this.send(method, txParams);
     }
@@ -99,7 +102,11 @@ export class EnergyDB extends GeneralFunctions {
         _approve: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setTradableEntityOwnerAndAddApproval(_entityId, _owner, _approve);
+        const method = this.web3Contract.methods.setTradableEntityOwnerAndAddApproval(
+            _entityId,
+            _owner,
+            _approve
+        );
 
         return await this.send(method, txParams);
     }
@@ -142,14 +149,13 @@ export class EnergyDB extends GeneralFunctions {
         _onChainDirectPurchasePrice: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .createTradableEntityEntry(
-                _assetId,
-                _owner,
-                _powerInW,
-                _acceptedToken,
-                _onChainDirectPurchasePrice
-            );
+        const method = this.web3Contract.methods.createTradableEntityEntry(
+            _assetId,
+            _owner,
+            _powerInW,
+            _acceptedToken,
+            _onChainDirectPurchasePrice
+        );
 
         return await this.send(method, txParams);
     }

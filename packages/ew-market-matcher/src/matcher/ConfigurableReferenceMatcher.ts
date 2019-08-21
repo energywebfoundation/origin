@@ -18,7 +18,10 @@ import { Certificate } from 'ew-origin-lib';
 import { Agreement, Demand } from 'ew-market-lib';
 
 import { Matcher } from './Matcher';
-import { findMatchingDemandsForCertificate, findMatchingAgreementsForCertificate } from './MatcherLogic';
+import {
+    findMatchingDemandsForCertificate,
+    findMatchingAgreementsForCertificate
+} from './MatcherLogic';
 import { Controller } from '../controller/Controller';
 import * as ConfigurationFileInterpreter from './ConfigurationFileInterpreter';
 import * as RuleConf from '../schema-defs/RuleConf';
@@ -44,7 +47,11 @@ export class ConfigurableReferenceMatcher extends Matcher {
     ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
         logger.debug(`Scanning ${agreements.length} agreements for a match.`);
 
-        const matchingAgreements = await findMatchingAgreementsForCertificate(certificate, this.controller.conf, agreements);
+        const matchingAgreements = await findMatchingAgreementsForCertificate(
+            certificate,
+            this.controller.conf,
+            agreements
+        );
 
         if (matchingAgreements.length === 0) {
             logger.info('Found no matching agreement for certificate #' + certificate.id);
@@ -117,7 +124,11 @@ export class ConfigurableReferenceMatcher extends Matcher {
     ): Promise<{ split: boolean; demand: Demand.Entity }> {
         logger.debug(`Scanning ${demands.length} demands for a match.`);
 
-        const matchedDemands = await findMatchingDemandsForCertificate(certificate, this.controller.conf, demands);
+        const matchedDemands = await findMatchingDemandsForCertificate(
+            certificate,
+            this.controller.conf,
+            demands
+        );
 
         if (matchedDemands.length === 0) {
             logger.info('Found no matching demands for certificate #' + certificate.id);
@@ -136,7 +147,9 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 continue;
             }
 
-            logger.debug(`Certificate ${certificate.id} too large (${offeredPower}) for demand ${demand.id} (${requiredPower}). Splitting...`);
+            logger.debug(
+                `Certificate ${certificate.id} too large (${offeredPower}) for demand ${demand.id} (${requiredPower}). Splitting...`
+            );
 
             if (requiredPower > 0) {
                 await this.controller.splitCertificate(certificate, requiredPower);
@@ -160,14 +173,8 @@ export class ConfigurableReferenceMatcher extends Matcher {
             return 0;
         }
 
-        const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(
-            unequalProperty,
-            a
-        );
-        const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(
-            unequalProperty,
-            b
-        );
+        const valueA = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, a);
+        const valueB = ConfigurationFileInterpreter.getSimpleRankingMappedValue(unequalProperty, b);
 
         return unequalProperty.preferHigherValues ? valueB - valueA : valueA - valueB;
     }

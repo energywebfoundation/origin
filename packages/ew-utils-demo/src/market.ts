@@ -69,7 +69,9 @@ export const marketDemo = async (demoFile?: string) => {
 
     // set the admin account as an asset admin
     await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
-    await userLogic.setRoles(adminAccount.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), { privateKey: adminPK });
+    await userLogic.setRoles(adminAccount.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), {
+        privateKey: adminPK
+    });
 
     // initialize variables for storing timeframe and currency
     let timeFrame;
@@ -126,9 +128,14 @@ export const marketDemo = async (demoFile?: string) => {
                     await erc20token.transfer(action.data.address, action.data.amount, {
                         privateKey: adminPK
                     });
-                    conf.logger.info(`Transferred ${action.data.amount} of ${tokenSymbol} tokens to ${action.data.address}`);
+                    conf.logger.info(
+                        `Transferred ${action.data.amount} of ${tokenSymbol} tokens to ${action.data.address}`
+                    );
                 } catch (e) {
-                    conf.logger.error(`Could not transfer ${action.data.amount} ${tokenSymbol} tokens to ${action.data.address}\n` + e);
+                    conf.logger.error(
+                        `Could not transfer ${action.data.amount} ${tokenSymbol} tokens to ${action.data.address}\n` +
+                            e
+                    );
                 }
 
                 console.log('-----------------------------------------------------------\n');

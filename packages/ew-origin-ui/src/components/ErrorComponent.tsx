@@ -8,9 +8,11 @@ interface Props {
 
 export class ErrorComponent extends Component<Props> {
     render() {
-        return <div className="Error">
-            <ErrorOutline className="Error_icon" />
-            <div className="Error_message">{this.props.message}</div>
-        </div>
+        return (
+            <div className="Error">
+                <ErrorOutline className="Error_icon" />
+                <div className="Error_message">{this.props.message}</div>
+            </div>
+        );
     }
 }

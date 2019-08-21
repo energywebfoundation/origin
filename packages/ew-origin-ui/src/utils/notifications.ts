@@ -15,6 +15,10 @@ const DEFAULT_OPTIONS: INotificationOptions = {
     timeOut: 6000
 };
 
-export function showNotification(message: string, type: NotificationType = NotificationType.Info, options: INotificationOptions = DEFAULT_OPTIONS): void {
+export function showNotification(
+    message: string,
+    type: NotificationType = NotificationType.Info,
+    options: INotificationOptions = DEFAULT_OPTIONS
+): void {
     toastr[type.toLowerCase()](message, type, options);
 }

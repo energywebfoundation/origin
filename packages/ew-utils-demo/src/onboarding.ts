@@ -41,7 +41,7 @@ export const onboardDemo = async (
                 roles: action.data.rights,
                 organization: action.data.organization
             };
-    
+
             const userPropsOffchain: IUserPropertiesOffChain = {
                 firstName: action.data.firstName,
                 surname: action.data.surname,
@@ -53,7 +53,7 @@ export const onboardDemo = async (
                 country: action.data.country,
                 state: action.data.state
             };
-    
+
             await User.CREATE_USER(userPropsOnChain, userPropsOffchain, conf);
 
             conf.logger.info('Onboarded a new user: ' + action.data.address);

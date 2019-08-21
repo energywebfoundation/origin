@@ -17,7 +17,7 @@
 import * as React from 'react';
 
 import moment from 'moment';
-import marker from '../../assets/marker.svg';	
+import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import { Link } from 'react-router-dom';
 import { Certificate } from 'ew-origin-lib';
@@ -112,18 +112,18 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                         data: this.state.owner ? this.state.owner.organization : ''
                     },
 
-                    {	
-                        label:	
-                            'Geo Location' +	
-                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),	
-                        data:	
-                            selectedAsset.offChainProperties.gpsLatitude +	
-                            ', ' +	
-                            selectedAsset.offChainProperties.gpsLongitude,	
-                        image: map,	
-                        type: 'map',	
-                        rowspan: 3,	
-                        colspan: 2	
+                    {
+                        label:
+                            'Geo Location' +
+                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
+                        data:
+                            selectedAsset.offChainProperties.gpsLatitude +
+                            ', ' +
+                            selectedAsset.offChainProperties.gpsLongitude,
+                        image: map,
+                        type: 'map',
+                        rowspan: 3,
+                        colspan: 2
                     },
 
                     {
@@ -166,9 +166,7 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
 
                     <Link
                         className="btn btn-primary find-asset-button"
-                        to={`/${this.props.baseUrl}/assets/consuming_detail_view/${
-                            this.state.newId
-                        }`}
+                        to={`/${this.props.baseUrl}/assets/consuming_detail_view/${this.state.newId}`}
                     >
                         Find Asset
                     </Link>
@@ -196,21 +194,23 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                                                         {col.tip && <span>{col.tip}</span>}
                                                     </div>
                                                     {col.image &&
-                                                    (col.type !== 'map' ? (
-                                                        <div className={`Image`}>
-                                                            <img src={col.image} />	
-                                                            {col.type === 'map' && (	
-                                                                <img	
-                                                                    src={marker as any}	
-                                                                    className="Marker"	
-                                                                />	
-                                                            )}	
-                                                        </div>	
-                                                    ) : (	
-                                                        <div className={`Image Map`}>	
-                                                            <MapContainer asset={selectedAsset} />	
-                                                        </div>	
-                                                    ))}
+                                                        (col.type !== 'map' ? (
+                                                            <div className={`Image`}>
+                                                                <img src={col.image} />
+                                                                {col.type === 'map' && (
+                                                                    <img
+                                                                        src={marker as any}
+                                                                        className="Marker"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <div className={`Image Map`}>
+                                                                <MapContainer
+                                                                    asset={selectedAsset}
+                                                                />
+                                                            </div>
+                                                        ))}
                                                     {col.description && (
                                                         <div className="Description">
                                                             {col.description}

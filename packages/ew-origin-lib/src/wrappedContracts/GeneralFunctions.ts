@@ -122,12 +122,14 @@ export class GeneralFunctions {
         let methodGas;
 
         if (params.privateKey) {
-            const privateKey = params.privateKey.startsWith('0x') ? params.privateKey : '0x' + params.privateKey;
+            const privateKey = params.privateKey.startsWith('0x')
+                ? params.privateKey
+                : '0x' + params.privateKey;
 
             params.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
         }
 
-        params.from = params.from || (await this.web3.eth.getAccounts())[0]
+        params.from = params.from || (await this.web3.eth.getAccounts())[0];
 
         try {
             methodGas = await method.estimateGas({

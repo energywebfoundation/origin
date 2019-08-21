@@ -5,7 +5,6 @@
       "node_modules/tslint-lines-between-class-members"
     ],
     "rules": {
-      "no-unused-expression": true,
       "no-unused-variable": true,
       "class-name": true,
       "comment-format": [
@@ -44,7 +43,6 @@
       "curly": true,
       "export-name": false,
       "import-name": false,
-      "no-any": true,
       "prefer-type-cast": false,
       "no-default-export": true,
       "no-relative-imports": false,

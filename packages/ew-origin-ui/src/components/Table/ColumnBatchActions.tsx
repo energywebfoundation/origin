@@ -3,7 +3,7 @@ import './ColumnBatchActions.scss';
 
 export interface IBatchableAction {
     label: string;
-    handler: Function; 
+    handler: Function;
 }
 
 export type CustomCounterGeneratorFunction = (selectedIndexes: number[]) => string;
@@ -11,7 +11,7 @@ export type CustomCounterGeneratorFunction = (selectedIndexes: number[]) => stri
 interface IProps {
     selectedIndexes: number[];
     batchableActions: IBatchableAction[];
-    customCounterGenerator?: CustomCounterGeneratorFunction; 
+    customCounterGenerator?: CustomCounterGeneratorFunction;
 }
 
 export class ColumnBatchActions extends Component<IProps> {
@@ -20,10 +20,7 @@ export class ColumnBatchActions extends Component<IProps> {
     }
 
     get counter(): string {
-        const {
-            customCounterGenerator,
-            selectedIndexes
-        } = this.props;
+        const { customCounterGenerator, selectedIndexes } = this.props;
 
         if (customCounterGenerator) {
             return customCounterGenerator(selectedIndexes);
@@ -33,22 +30,25 @@ export class ColumnBatchActions extends Component<IProps> {
     }
 
     render() {
-        const {
-            batchableActions,
-            selectedIndexes
-        } = this.props;
+        const { batchableActions, selectedIndexes } = this.props;
 
         return selectedIndexes.length ? (
             <div className="ColumnBatchActions">
                 <span className="ColumnBatchActions_counter">{this.counter}</span>
                 <div className="ColumnBatchActions_list">
-                    {batchableActions.map(action => 
-                        <div onClick={() => this.handleAction(action)} className="ColumnBatchActions_list_item" key={action.label}>
+                    {batchableActions.map(action => (
+                        <div
+                            onClick={() => this.handleAction(action)}
+                            className="ColumnBatchActions_list_item"
+                            key={action.label}
+                        >
                             {action.label}
                         </div>
-                    )}
+                    ))}
                 </div>
             </div>
-        ) : '';
+        ) : (
+            ''
+        );
     }
 }

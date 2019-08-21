@@ -10,16 +10,21 @@ async function main() {
     await marketDemo();
 
     if (contractConfig && contractConfig.originContractLookup) {
-       fetch(`${CONFIG.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${contractConfig.originContractLookup.toLowerCase()}`, {
-           body: JSON.stringify({
-               marketContractLookup: contractConfig.marketContractLookup.toLowerCase(),
-           }),
-           method: 'PUT',
-           headers: {
-               'Content-Type': 'application/json',
-           }
-       });
-   }
+        fetch(
+            `${
+                CONFIG.API_BASE_URL
+            }/OriginContractLookupMarketLookupMapping/${contractConfig.originContractLookup.toLowerCase()}`,
+            {
+                body: JSON.stringify({
+                    marketContractLookup: contractConfig.marketContractLookup.toLowerCase()
+                }),
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+    }
 }
 
 main();

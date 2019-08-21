@@ -32,11 +32,11 @@ export const createBlockchainProperties = async (
         originContractLookupAddress
     );
 
-    const assetBlockchainProperties: Configuration.BlockchainProperties = (await assetCreateBlockchainProperties(
+    const assetBlockchainProperties: Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
         logger,
         web3,
         await originLookupContractInstance.assetContractLookup()
-    ));
+    );
 
     return {
         certificateLogicInstance: new CertificateLogic(

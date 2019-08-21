@@ -71,14 +71,13 @@ export class AssetContractLookup extends GeneralFunctions {
         _assetConsumingDB: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .init(
-                _userRegistry,
-                _assetProducingRegistry,
-                _assetConsumingRegistry,
-                _assetProducingDB,
-                _assetConsumingDB
-            );
+        const method = this.web3Contract.methods.init(
+            _userRegistry,
+            _assetProducingRegistry,
+            _assetConsumingRegistry,
+            _assetProducingDB,
+            _assetConsumingDB
+        );
         const transactionParams = await this.buildTransactionParams(method, txParams);
 
         return await this.send(method, transactionParams);
@@ -111,7 +110,10 @@ export class AssetContractLookup extends GeneralFunctions {
         _assetConsumingRegistry: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.update(_assetProducingRegistry, _assetConsumingRegistry);
+        const method = this.web3Contract.methods.update(
+            _assetProducingRegistry,
+            _assetConsumingRegistry
+        );
 
         return await this.send(method, txParams);
     }

@@ -93,7 +93,10 @@ export class AssetConsumingDB extends GeneralFunctions {
         _lastSmartMeterReadWh: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setLastSmartMeterReadWh(_assetId, _lastSmartMeterReadWh);
+        const method = this.web3Contract.methods.setLastSmartMeterReadWh(
+            _assetId,
+            _lastSmartMeterReadWh
+        );
 
         return await this.send(method, txParams);
     }
@@ -127,7 +130,10 @@ export class AssetConsumingDB extends GeneralFunctions {
         _lastSmartMeterReadFileHash: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setLastSmartMeterReadFileHash(_assetId, _lastSmartMeterReadFileHash);
+        const method = this.web3Contract.methods.setLastSmartMeterReadFileHash(
+            _assetId,
+            _lastSmartMeterReadFileHash
+        );
 
         return await this.send(method, txParams);
     }
@@ -137,7 +143,10 @@ export class AssetConsumingDB extends GeneralFunctions {
         _marketLookupContract: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setMarketLookupContract(_assetId, _marketLookupContract);
+        const method = this.web3Contract.methods.setMarketLookupContract(
+            _assetId,
+            _marketLookupContract
+        );
 
         return await this.send(method, txParams);
     }
@@ -148,7 +157,11 @@ export class AssetConsumingDB extends GeneralFunctions {
         _lastSmartMeterReadFileHash: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setSmartMeterRead(_assetId, _lastSmartMeterReadWh, _lastSmartMeterReadFileHash);
+        const method = this.web3Contract.methods.setSmartMeterRead(
+            _assetId,
+            _lastSmartMeterReadWh,
+            _lastSmartMeterReadFileHash
+        );
 
         return await this.send(method, txParams);
     }

@@ -36,7 +36,6 @@ export interface UserPropertiesOffChain {
 }
 
 export class User extends BlockchainDataModelEntity.Entity implements UserProperties {
-
     static async CREATE_USER(
         userProperties: UserProperties,
         userPropertiesOffChain: UserPropertiesOffChain,
@@ -97,7 +96,7 @@ export class User extends BlockchainDataModelEntity.Entity implements UserProper
         return this;
     }
 
-    isRole(role : Role) : boolean {
+    isRole(role: Role): boolean {
         if (!this.roles) {
             return false;
         }

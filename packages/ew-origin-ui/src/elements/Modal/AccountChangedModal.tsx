@@ -1,9 +1,19 @@
 import * as React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    DialogContentText
+} from '@material-ui/core';
 import { connect } from 'react-redux';
 import { IStoreState } from '../../types';
 import { bindActionCreators } from 'redux';
-import { disableAccountChangedModal, TDisableAccountChangedModal } from '../../features/general/actions';
+import {
+    disableAccountChangedModal,
+    TDisableAccountChangedModal
+} from '../../features/general/actions';
 import { getAccountChangedModalVisible } from '../../features/general/selectors';
 
 interface AccountChangedModalProps {
@@ -31,7 +41,10 @@ class AccountChangedModalClass extends React.Component<AccountChangedModalProps>
             <Dialog open={this.props.show} onClose={this.handleClose}>
                 <DialogTitle>Account changed</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>Account changed, please refresh the page in order to switch to a new account.</DialogContentText>
+                    <DialogContentText>
+                        Account changed, please refresh the page in order to switch to a new
+                        account.
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleClose} color="secondary">
@@ -44,13 +57,17 @@ class AccountChangedModalClass extends React.Component<AccountChangedModalProps>
             </Dialog>
         );
     }
-  }
+}
 
 export const AccountChangedModal = connect(
     (state: IStoreState) => ({
         show: getAccountChangedModalVisible(state)
     }),
-    dispatch => bindActionCreators({
-        disableAccountChangedModal
-    }, dispatch)
+    dispatch =>
+        bindActionCreators(
+            {
+                disableAccountChangedModal
+            },
+            dispatch
+        )
 )(AccountChangedModalClass);

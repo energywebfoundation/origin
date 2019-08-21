@@ -28,14 +28,14 @@ export enum Type {
     Wind,
     Solar,
     RunRiverHydro,
-    BiomassGas,
+    BiomassGas
 }
 
 export enum Compliance {
     none,
     IREC,
     EEC,
-    TIGR,
+    TIGR
 }
 
 export interface IOnChainProperties extends Asset.IOnChainProperties {
@@ -50,63 +50,69 @@ export interface IOffChainProperties extends Asset.IOffChainProperties {
 }
 
 export const getAssetListLength = async (configuration: Configuration.Entity) => {
-
-    return parseInt(await configuration.blockchainProperties.producingAssetLogicInstance.getAssetListLength(), 10);
+    return parseInt(
+        await configuration.blockchainProperties.producingAssetLogicInstance.getAssetListLength(),
+        10
+    );
 };
 
 export const getAllAssets = async (configuration: Configuration.Entity) => {
-
     const assetsPromises = Array(await getAssetListLength(configuration))
         .fill(null)
-        .map((item, index) => (new Entity(index.toString(), configuration)).sync());
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
 
     return Promise.all(assetsPromises);
-
 };
 
 export const getAllAssetsOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
-    return (await getAllAssets(configuration))
-        .filter((asset: Entity) => asset.owner.address.toLowerCase() === owner.toLowerCase());
+    return (await getAllAssets(configuration)).filter(
+        (asset: Entity) => asset.owner.address.toLowerCase() === owner.toLowerCase()
+    );
 };
 
-export const createAsset =
-    async (assetPropertiesOnChain: IOnChainProperties,
-           assetPropertiesOffChain: IOffChainProperties,
-           configuration: Configuration.Entity): Promise<Entity> => {
-        const producingAsset = new Entity(null, configuration);
-        const offChainStorageProperties =
-            producingAsset.prepareEntityCreation(assetPropertiesOnChain, assetPropertiesOffChain, ProducingAssetPropertiesOffchainSchema);
+export const createAsset = async (
+    assetPropertiesOnChain: IOnChainProperties,
+    assetPropertiesOffChain: IOffChainProperties,
+    configuration: Configuration.Entity
+): Promise<Entity> => {
+    const producingAsset = new Entity(null, configuration);
+    const offChainStorageProperties = producingAsset.prepareEntityCreation(
+        assetPropertiesOnChain,
+        assetPropertiesOffChain,
+        ProducingAssetPropertiesOffchainSchema
+    );
 
-        if (configuration.offChainDataSource) {
-            assetPropertiesOnChain.url = producingAsset.getUrl();
-            assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    if (configuration.offChainDataSource) {
+        assetPropertiesOnChain.url = producingAsset.getUrl();
+        assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    }
+
+    const tx = await configuration.blockchainProperties.producingAssetLogicInstance.createAsset(
+        assetPropertiesOnChain.smartMeter.address,
+        assetPropertiesOnChain.owner.address,
+        assetPropertiesOnChain.active,
+        assetPropertiesOnChain.matcher.map(matcher => matcher.address),
+        assetPropertiesOnChain.propertiesDocumentHash,
+        assetPropertiesOnChain.url,
+        assetPropertiesOnChain.maxOwnerChanges,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
         }
+    );
 
-        const tx = await configuration.blockchainProperties.producingAssetLogicInstance.createAsset(
-            assetPropertiesOnChain.smartMeter.address,
-            assetPropertiesOnChain.owner.address,
-            assetPropertiesOnChain.active,
-            assetPropertiesOnChain.matcher.map((matcher) => matcher.address),
-            assetPropertiesOnChain.propertiesDocumentHash,
-            assetPropertiesOnChain.url,
-            assetPropertiesOnChain.maxOwnerChanges,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey,
-            },
-        );
+    producingAsset.id = configuration.blockchainProperties.web3.utils
+        .hexToNumber(tx.logs[0].topics[1])
+        .toString();
 
-        producingAsset.id = configuration.blockchainProperties.web3.utils.hexToNumber(tx.logs[0].topics[1]).toString();
+    await producingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 
-        await producingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
+    if (configuration.logger) {
+        configuration.logger.info(`Producing asset ${producingAsset.id} created`);
+    }
 
-        if (configuration.logger) {
-            configuration.logger.info(`Producing asset ${producingAsset.id} created`);
-        }
-
-        return producingAsset.sync();
-
-    };
+    return producingAsset.sync();
+};
 
 export interface ISmartMeterRead {
     energy: number;
@@ -114,22 +120,23 @@ export interface ISmartMeterRead {
 }
 
 export class Entity extends Asset.Entity implements IOnChainProperties {
-
     certificatesCreatedForWh: number;
     lastSmartMeterCO2OffsetRead: number;
     maxOwnerChanges: number;
     offChainProperties: IOffChainProperties;
 
     getUrl(): string {
-        const producingAssetLogicAddress = this.configuration.blockchainProperties.producingAssetLogicInstance.web3Contract._address;
-    
+        const producingAssetLogicAddress = this.configuration.blockchainProperties
+            .producingAssetLogicInstance.web3Contract._address;
+
         return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset/${producingAssetLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-
-            const asset = await this.configuration.blockchainProperties.producingAssetLogicInstance.getAssetById(this.id);
+            const asset = await this.configuration.blockchainProperties.producingAssetLogicInstance.getAssetById(
+                this.id
+            );
 
             this.smartMeter = { address: asset.assetGeneral.smartMeter };
             this.owner = { address: asset.assetGeneral.owner };
@@ -146,35 +153,38 @@ export class Entity extends Asset.Entity implements IOnChainProperties {
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Producing asset ${this.id} synced`);
             }
-
         }
 
         return this;
     }
 
-    async saveSmartMeterRead(meterReading: number, filehash: string, timestamp: number = moment().unix()): Promise<TransactionReceipt> {
+    async saveSmartMeterRead(
+        meterReading: number,
+        filehash: string,
+        timestamp: number = moment().unix()
+    ): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
                 timestamp,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey },
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        }
-        else {
+        } else {
             return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
                 timestamp,
-                { from: this.configuration.blockchainProperties.activeUser.address },
+                { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
     }
 
-    async getSmartMeterReads() : Promise<ISmartMeterRead[]> {
-        const logic : AssetProducingRegistryLogic = this.configuration.blockchainProperties.producingAssetLogicInstance;
+    async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
+        const logic: AssetProducingRegistryLogic = this.configuration.blockchainProperties
+            .producingAssetLogicInstance;
 
         return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map(read => ({
             energy: Number(read.energy),

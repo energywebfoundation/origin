@@ -69,7 +69,11 @@ export class MarketContractLookup extends GeneralFunctions {
         _marketDB: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.init(_assetRegistry, _marketLogicRegistry, _marketDB);
+        const method = this.web3Contract.methods.init(
+            _assetRegistry,
+            _marketLogicRegistry,
+            _marketDB
+        );
 
         return await this.send(method, txParams);
     }

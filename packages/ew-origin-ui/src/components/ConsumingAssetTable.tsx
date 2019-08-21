@@ -23,8 +23,17 @@ import TableUtils from './Table/TableUtils';
 import { Configuration } from 'ew-utils-general-lib';
 import { Demand } from 'ew-market-lib';
 import { ConsumingAsset } from 'ew-asset-registry-lib';
-import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from './Table/PaginatedLoader';
-import { IPaginatedLoaderFilteredState, getInitialPaginatedLoaderFilteredState, FILTER_SPECIAL_TYPES, RECORD_INDICATOR, PaginatedLoaderFiltered } from './Table/PaginatedLoaderFiltered';
+import {
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues
+} from './Table/PaginatedLoader';
+import {
+    IPaginatedLoaderFilteredState,
+    getInitialPaginatedLoaderFilteredState,
+    FILTER_SPECIAL_TYPES,
+    RECORD_INDICATOR,
+    PaginatedLoaderFiltered
+} from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import { AdvancedTable } from './Table/AdvancedTable';
 
@@ -46,7 +55,10 @@ interface IEnrichedConsumingAssetData {
     organizationName: string;
 }
 
-export class ConsumingAssetTable extends PaginatedLoaderFiltered<ConsumingAssetTableProps, IConsumingAssetTableState> {
+export class ConsumingAssetTable extends PaginatedLoaderFiltered<
+    ConsumingAssetTableProps,
+    IConsumingAssetTableState
+> {
     constructor(props: ConsumingAssetTableProps) {
         super(props);
 
@@ -67,38 +79,40 @@ export class ConsumingAssetTable extends PaginatedLoaderFiltered<ConsumingAssetT
             },
             search: true
         }
-    ]
+    ];
 
-    async getPaginatedData({ pageSize, offset, filters }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+    async getPaginatedData({
+        pageSize,
+        offset,
+        filters
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const assets = this.props.consumingAssets;
         const enrichedAssetData = await this.enrichedConsumingAssetData(assets);
 
-        const filteredEnrichedAssetData = enrichedAssetData.filter(record => this.checkRecordPassesFilters(record, filters));
+        const filteredEnrichedAssetData = enrichedAssetData.filter(record =>
+            this.checkRecordPassesFilters(record, filters)
+        );
 
         const total = filteredEnrichedAssetData.length;
 
         const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
 
-        const formattedPaginatedData = paginatedData.map(
-            (enrichedRecordData) => {
-                const asset = enrichedRecordData.asset;
+        const formattedPaginatedData = paginatedData.map(enrichedRecordData => {
+            const asset = enrichedRecordData.asset;
 
-                return [
-                    asset.id,
-                    enrichedRecordData.organizationName,
-                    asset.offChainProperties.facilityName,
-                    asset.offChainProperties.city +
-                        ', ' +
-                        asset.offChainProperties.country,
-                    asset.offChainProperties.capacityWh
-                        ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
-                        : '-',
-                    (asset.lastSmartMeterReadWh / 1000).toLocaleString(),
-                    (asset.certificatesUsedForWh / 1000).toLocaleString()
-                ];
-            }
-        );
-        
+            return [
+                asset.id,
+                enrichedRecordData.organizationName,
+                asset.offChainProperties.facilityName,
+                asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+                asset.offChainProperties.capacityWh
+                    ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
+                    : '-',
+                (asset.lastSmartMeterReadWh / 1000).toLocaleString(),
+                (asset.certificatesUsedForWh / 1000).toLocaleString()
+            ];
+        });
+
         return {
             formattedPaginatedData,
             paginatedData,
@@ -112,16 +126,14 @@ export class ConsumingAssetTable extends PaginatedLoaderFiltered<ConsumingAssetT
         }
     }
 
-    async enrichedConsumingAssetData(consumingAssets: ConsumingAsset.Entity[]): Promise<IEnrichedConsumingAssetData[]> {
-        const promises = consumingAssets.map(
-            async (asset: ConsumingAsset.Entity) => ({
-                asset,
-                organizationName: (await new User(
-                    asset.owner.address,
-                    this.props.conf as any
-                ).sync()).organization
-            })
-        );
+    async enrichedConsumingAssetData(
+        consumingAssets: ConsumingAsset.Entity[]
+    ): Promise<IEnrichedConsumingAssetData[]> {
+        const promises = consumingAssets.map(async (asset: ConsumingAsset.Entity) => ({
+            asset,
+            organizationName: (await new User(asset.owner.address, this.props.conf as any).sync())
+                .organization
+        }));
 
         return Promise.all(promises);
     }

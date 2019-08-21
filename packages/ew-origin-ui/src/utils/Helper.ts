@@ -40,22 +40,22 @@ export function dataTestSelector(value, name = 'data-test') {
 
 export function getPropertyByPath(obj, path) {
     return path.split('.').reduce((prev, curr) => {
-        return prev ? prev[curr] : null
+        return prev ? prev[curr] : null;
     }, obj || self);
 }
 
 export function indexOfEnd(baseString: string, searchString: string) {
     const index = baseString.indexOf(searchString);
-    
+
     return index == -1 ? -1 : index + searchString.length;
 }
 
 export function deepEqual(a: any, b: any) {
-    if (typeof(a) !== typeof(b)) {
+    if (typeof a !== typeof b) {
         return false;
     }
 
-    if (typeof(a) === 'object') {
+    if (typeof a === 'object') {
         return JSON.stringify(a) === JSON.stringify(b);
     }
 

@@ -99,20 +99,24 @@ export class Certificates extends React.Component<ICertificatesProps> {
     }
 
     PendingCertificationRequests() {
-        return <CertificationRequestsTable
-            conf={this.props.conf}
-            producingAssets={this.props.producingAssets}
-            currentUser={this.props.currentUser}
-        />
+        return (
+            <CertificationRequestsTable
+                conf={this.props.conf}
+                producingAssets={this.props.producingAssets}
+                currentUser={this.props.currentUser}
+            />
+        );
     }
 
     ApprovedCertificationRequests() {
-        return <CertificationRequestsTable
-            conf={this.props.conf}
-            producingAssets={this.props.producingAssets}
-            currentUser={this.props.currentUser}
-            approvedOnly={true}
-        />
+        return (
+            <CertificationRequestsTable
+                conf={this.props.conf}
+                producingAssets={this.props.producingAssets}
+                currentUser={this.props.currentUser}
+                approvedOnly={true}
+            />
+        );
     }
 
     render() {
@@ -160,7 +164,7 @@ export class Certificates extends React.Component<ICertificatesProps> {
                 label: 'For Demand',
                 component: null,
                 show: false
-            },
+            }
         ];
 
         const defaultRedirect = {
@@ -203,9 +207,9 @@ export class Certificates extends React.Component<ICertificatesProps> {
                                 matches[0].component = () =>
                                     this.CertificateDetailView(id ? parseInt(id, 10) : id);
                             } else if (key === 'for_demand') {
-                                matches[0].component = () => this.ForDemandCertificates(id ? parseInt(id, 10) : id);
+                                matches[0].component = () =>
+                                    this.ForDemandCertificates(id ? parseInt(id, 10) : id);
                             }
-
                         }
 
                         return (
@@ -220,21 +224,13 @@ export class Certificates extends React.Component<ICertificatesProps> {
                 <Route
                     exact={true}
                     path={`/${this.props.baseUrl}/certificates`}
-                    render={props => (
-                        <Redirect
-                            to={defaultRedirect}
-                        />
-                    )}
+                    render={props => <Redirect to={defaultRedirect} />}
                 />
 
                 <Route
                     exact={true}
                     path={`/${this.props.baseUrl}/`}
-                    render={props => (
-                        <Redirect
-                            to={defaultRedirect}
-                        />
-                    )}
+                    render={props => <Redirect to={defaultRedirect} />}
                 />
             </div>
         );

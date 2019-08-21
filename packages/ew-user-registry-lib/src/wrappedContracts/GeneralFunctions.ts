@@ -122,7 +122,9 @@ export class GeneralFunctions {
         let methodGas;
 
         if (params.privateKey) {
-            const privateKey = params.privateKey.startsWith('0x') ? params.privateKey : '0x' + params.privateKey;
+            const privateKey = params.privateKey.startsWith('0x')
+                ? params.privateKey
+                : '0x' + params.privateKey;
 
             params.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
         }

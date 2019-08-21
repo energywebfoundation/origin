@@ -3,7 +3,14 @@ import { Erc20TestToken } from 'ew-erc-test-contracts';
 import { Configuration } from 'ew-utils-general-lib';
 import { Certificate } from 'ew-origin-lib';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    DialogContentText
+} from '@material-ui/core';
 
 interface IBuyCertificateBulkModalProps {
     conf: Configuration.Entity;
@@ -16,7 +23,10 @@ interface IBuyCertificateBulkModalState {
     show: boolean;
 }
 
-export class BuyCertificateBulkModal extends React.Component<IBuyCertificateBulkModalProps, IBuyCertificateBulkModalState> {
+export class BuyCertificateBulkModal extends React.Component<
+    IBuyCertificateBulkModalProps,
+    IBuyCertificateBulkModalState
+> {
     constructor(props, context) {
         super(props, context);
 
@@ -57,7 +67,10 @@ export class BuyCertificateBulkModal extends React.Component<IBuyCertificateBulk
         }
 
         const certificateIds: string[] = this.props.certificates.map(cert => cert.id);
-        await this.props.conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(certificateIds, { from });
+        await this.props.conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(
+            certificateIds,
+            { from }
+        );
 
         showNotification(`Certificates have been bought.`, NotificationType.Success);
         this.handleClose();
@@ -93,4 +106,4 @@ export class BuyCertificateBulkModal extends React.Component<IBuyCertificateBulk
             </Dialog>
         );
     }
-  }
+}

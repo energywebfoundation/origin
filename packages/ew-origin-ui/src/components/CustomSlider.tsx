@@ -7,11 +7,11 @@ export const CustomSlider = withStyles(CUSTOM_SLIDER_STYLE)(Slider);
 
 export function CustomSliderThumbComponent(props) {
     return (
-      <span {...props}>
-          {props.children}
-        <span className="bar" />
-        <span className="bar" />
-        <span className="bar" />
-      </span>
+        <span {...props}>
+            {props.children}
+            <span className="bar" />
+            <span className="bar" />
+            <span className="bar" />
+        </span>
     );
-  }
+}

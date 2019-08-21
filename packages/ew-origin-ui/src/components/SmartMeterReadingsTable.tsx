@@ -7,14 +7,23 @@ import { ProducingAsset } from 'ew-asset-registry-lib';
 import './SmartMeterReadingsTable.scss';
 import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
-import { IPaginatedLoaderState, PaginatedLoader, IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues, getInitialPaginatedLoaderState } from './Table/PaginatedLoader';
+import {
+    IPaginatedLoaderState,
+    PaginatedLoader,
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues,
+    getInitialPaginatedLoaderState
+} from './Table/PaginatedLoader';
 
 export interface ISmartMeterReadingsTableProps {
     conf: Configuration.Entity;
     producingAsset: ProducingAsset.Entity;
 }
 
-export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadingsTableProps, IPaginatedLoaderState> {
+export class SmartMeterReadingsTable extends PaginatedLoader<
+    ISmartMeterReadingsTableProps,
+    IPaginatedLoaderState
+> {
     constructor(props: ISmartMeterReadingsTableProps) {
         super(props);
 
@@ -24,7 +33,10 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
         };
     }
 
-    async getPaginatedData({ pageSize, offset }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
+    async getPaginatedData({
+        pageSize,
+        offset
+    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const readings = await this.props.producingAsset.getSmartMeterReads();
 
         const data = [];
@@ -55,7 +67,7 @@ export class SmartMeterReadingsTable extends PaginatedLoader<ISmartMeterReadings
         const TableHeader = [
             generateHeader('#', 50),
             generateHeader('Time', 100),
-            generateHeader('Smart Meter Value', 100, true),
+            generateHeader('Smart Meter Value', 100, true)
         ];
 
         return (

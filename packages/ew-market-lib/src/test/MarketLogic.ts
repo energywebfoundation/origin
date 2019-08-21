@@ -18,7 +18,13 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
-import { migrateUserRegistryContracts, UserLogic, UserContractLookup, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    migrateUserRegistryContracts,
+    UserLogic,
+    UserContractLookup,
+    buildRights,
+    Role
+} from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetContractLookup,
@@ -217,15 +223,15 @@ describe('MarketLogic', () => {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setRoles(accountTrader, buildRights([
-            Role.Trader
-        ]), { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(accountTrader2, buildRights([
-            Role.Trader
-        ]), { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(accountAssetOwner, buildRights([
-            Role.AssetManager
-        ]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
+            privateKey: privateKeyDeployment
+        });
+        await userLogic.setRoles(accountTrader2, buildRights([Role.Trader]), {
+            privateKey: privateKeyDeployment
+        });
+        await userLogic.setRoles(accountAssetOwner, buildRights([Role.AssetManager]), {
+            privateKey: privateKeyDeployment
+        });
     });
 
     it('should fail when trying to create a demand as assetOwner', async () => {

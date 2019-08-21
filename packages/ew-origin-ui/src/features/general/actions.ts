@@ -4,19 +4,19 @@ export enum GeneralActions {
     disableAccountChangedModal = 'DISABLE_ACCOUNT_CHANGED_MODAL'
 }
 
-export type TShowAccountChangedModal = typeof showAccountChangedModal; 
+export type TShowAccountChangedModal = typeof showAccountChangedModal;
 
 export const showAccountChangedModal = () => ({
     type: GeneralActions.showAccountChangedModal
 });
 
-export type THideAccountChangedModal = typeof hideAccountChangedModal; 
+export type THideAccountChangedModal = typeof hideAccountChangedModal;
 
 export const hideAccountChangedModal = () => ({
     type: GeneralActions.hideAccountChangedModal
 });
 
-export type TDisableAccountChangedModal = typeof disableAccountChangedModal; 
+export type TDisableAccountChangedModal = typeof disableAccountChangedModal;
 
 export const disableAccountChangedModal = () => ({
     type: GeneralActions.disableAccountChangedModal

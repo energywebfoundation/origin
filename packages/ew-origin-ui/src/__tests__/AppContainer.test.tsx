@@ -1,40 +1,43 @@
-import * as React from "react";
-import { mount } from "enzyme";
-import { AppContainer } from "../components/AppContainer";
+import * as React from 'react';
+import { mount } from 'enzyme';
+import { AppContainer } from '../components/AppContainer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from '../reducers';
-import { migrateUserRegistryContracts, UserLogic, buildRights, Role } from "ew-user-registry-lib";
-import { ProducingAsset, migrateAssetRegistryContracts, AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from "ew-asset-registry-lib";
-import { IStoreState } from "../types";
-import createSagaMiddleware from "redux-saga";
-import sagas from "../features/sagas";
+import { migrateUserRegistryContracts, UserLogic, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    ProducingAsset,
+    migrateAssetRegistryContracts,
+    AssetProducingRegistryLogic,
+    AssetConsumingRegistryLogic
+} from 'ew-asset-registry-lib';
+import { IStoreState } from '../types';
+import createSagaMiddleware from 'redux-saga';
+import sagas from '../features/sagas';
 
 import { OverlayTrigger } from 'react-bootstrap';
-import { startAPI } from 'ew-utils-testbackend/dist/js/src/api'; 
+import { startAPI } from 'ew-utils-testbackend/dist/js/src/api';
 
 import Web3 from 'web3';
 
- import {
-     migrateCertificateRegistryContracts, CertificateLogic
- } from 'ew-origin-lib';
-import { migrateMarketRegistryContracts, MarketLogic } from "ew-market-lib";
-import { Configuration } from "ew-utils-general-lib";
+import { migrateCertificateRegistryContracts, CertificateLogic } from 'ew-origin-lib';
+import { migrateMarketRegistryContracts, MarketLogic } from 'ew-market-lib';
+import { Configuration } from 'ew-utils-general-lib';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';
-import { dataTestSelector } from "../utils/Helper";
-import axios from "axios";
+import { dataTestSelector } from '../utils/Helper';
+import axios from 'axios';
 
 const wait = (ms: number) => {
     return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
-}
+};
 
 const API_BASE_URL = 'http://localhost:3030';
 
-jest.setTimeout(80000)
+jest.setTimeout(80000);
 
 let ganacheServer, apiServer;
 
@@ -53,14 +56,14 @@ const startGanache = async () => {
                 ganacheServer
             });
         });
-    })
+    });
 };
 
 const deployDemo = async () => {
     const connectionConfig = {
         web3: 'http://localhost:8545',
         deployKey: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
-    }
+    };
 
     const adminPK = connectionConfig.deployKey;
     const web3 = new Web3(connectionConfig.web3);
@@ -71,29 +74,33 @@ const deployDemo = async () => {
             privateKey: adminPK
         },
         ASSET_MANAGER: {
-            address: "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-            privateKey: "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
+            address: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
+            privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac'
         },
         SMART_METER: {
             address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
             privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
         }
-    }
+    };
 
     const logger = Winston.createLogger({
         level: 'debug',
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
-    
+
     const userContracts: any = await migrateUserRegistryContracts(web3, adminPK);
-    const assetContracts : any = await migrateAssetRegistryContracts(web3, userContracts.UserContractLookup, adminPK);
-    const originContracts : any = await migrateCertificateRegistryContracts(
+    const assetContracts: any = await migrateAssetRegistryContracts(
+        web3,
+        userContracts.UserContractLookup,
+        adminPK
+    );
+    const originContracts: any = await migrateCertificateRegistryContracts(
         web3,
         assetContracts.AssetContractLookup,
         adminPK
     );
-    const marketContracts : any = await migrateMarketRegistryContracts(
+    const marketContracts: any = await migrateMarketRegistryContracts(
         web3,
         assetContracts.AssetContractLookup,
         adminPK
@@ -124,9 +131,9 @@ const deployDemo = async () => {
     await axios.put(
         `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${deployResult.originContractLookup.toLowerCase()}`,
         {
-            marketContractLookup: deployResult.marketContractLookup.toLowerCase(),
+            marketContractLookup: deployResult.marketContractLookup.toLowerCase()
         }
-    )
+    );
 
     const userLogic = new UserLogic(web3, deployResult.userLogic);
     const assetProducingRegistryLogic = new AssetProducingRegistryLogic(
@@ -160,18 +167,18 @@ const deployDemo = async () => {
     };
 
     await userLogic.setUser(ACCOUNTS.ADMIN.address, 'admin', { privateKey: adminPK });
-    await userLogic.setRoles(ACCOUNTS.ADMIN.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), { privateKey: adminPK });
-
-    await userLogic.setUser(
-        ACCOUNTS.ASSET_MANAGER.address,
-        'Asset Manager organization',
-        { privateKey: adminPK }
-    );
     await userLogic.setRoles(
-        ACCOUNTS.ASSET_MANAGER.address,
-        buildRights([Role.AssetManager]),
+        ACCOUNTS.ADMIN.address,
+        buildRights([Role.UserAdmin, Role.AssetAdmin]),
         { privateKey: adminPK }
     );
+
+    await userLogic.setUser(ACCOUNTS.ASSET_MANAGER.address, 'Asset Manager organization', {
+        privateKey: adminPK
+    });
+    await userLogic.setRoles(ACCOUNTS.ASSET_MANAGER.address, buildRights([Role.AssetManager]), {
+        privateKey: adminPK
+    });
 
     const assetProducingProps: ProducingAsset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
@@ -204,11 +211,7 @@ const deployDemo = async () => {
     };
 
     try {
-        await ProducingAsset.createAsset(
-            assetProducingProps,
-            assetProducingPropsOffChain,
-            conf
-        );
+        await ProducingAsset.createAsset(assetProducingProps, assetProducingPropsOffChain, conf);
     } catch (error) {
         throw new Error(error);
     }
@@ -229,82 +232,78 @@ describe('Application[E2E]', () => {
 
     it('correctly navigates to producing asset details', async () => {
         const sagaMiddleware = createSagaMiddleware();
-    
+
         const middleware = applyMiddleware(sagaMiddleware);
-    
-        const store = createStore<IStoreState>(
-            reducer,
-            middleware
-        );
-    
+
+        const store = createStore<IStoreState>(reducer, middleware);
+
         Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
             sagaMiddleware.run(sagas[saga]);
-        })
-    
+        });
+
         const renderedApp = mount(
             <Provider store={store}>
                 <MemoryRouter initialEntries={[`/${CONTRACT}/assets/?rpc=http://localhost:8545`]}>
-                    <Route
-                        path="/:contractAddress/"
-                        component={AppContainer}
-                    />
+                    <Route path="/:contractAddress/" component={AppContainer} />
                 </MemoryRouter>
             </Provider>
-        )
-    
+        );
+
         await wait(10000);
-    
+
         await renderedApp.update();
 
         expect(renderedApp.find('.ViewProfile').text()).toBe('admin');
 
         expect(renderedApp.find('table tbody tr td').map(el => el.text())).toEqual([
-            "0",
-            "Asset Manager organization",
-            "Wuthering Heights Windfarm",
-            "Warsaw, Poland",
-            "Wind",
-            "0",
-            "0",
-            ""
+            '0',
+            'Asset Manager organization',
+            'Wuthering Heights Windfarm',
+            'Warsaw, Poland',
+            'Wind',
+            '0',
+            '0',
+            ''
         ]);
 
-        expect(renderedApp.find(dataTestSelector('pagination-helper-text')).text()).toBe('Showing 1 to 1 of 1 entries')
-    
+        expect(renderedApp.find(dataTestSelector('pagination-helper-text')).text()).toBe(
+            'Showing 1 to 1 of 1 entries'
+        );
+
         // Navigate to Show Details
 
         renderedApp.find(OverlayTrigger).simulate('focus');
-    
+
         // Click show details
         (document.body.querySelector('.popover-item') as any).click();
-    
+
         await renderedApp.update();
 
         expect(renderedApp.find('table tbody tr td div').map(el => el.text())).toEqual([
-            "Facility Name",
-            "Wuthering Heights Windfarm ",
-            "Asset Owner",
-            " ",
-            "Certified by Registry (private)",
-            "IREC ",
-            "Other Green Attributes (private)",
-            " ",
-            "Asset Type (private)",
-            "Wind ",
-            "",
-            "Meter Read",
-            "0 kWh",
-            "Public Support (private)",
-            " ",
-            "Commissioning Date (private)",
-            "Jan 70 ",
-            "Nameplate Capacity (private)",
-            "0 kW",
-            "Geo Location (private)",
-            ",  ",
-            "",
-            "",
-            "" 
+            'Facility Name',
+            'Wuthering Heights Windfarm ',
+            'Asset Owner',
+            ' ',
+            'Certified by Registry (private)',
+            'IREC ',
+            'Other Green Attributes (private)',
+            ' ',
+            'Asset Type (private)',
+            'Wind ',
+            '',
+            'Meter Read',
+            '0 kWh',
+            'Public Support (private)',
+            ' ',
+            'Commissioning Date (private)',
+            'Jan 70 ',
+            'Nameplate Capacity (private)',
+            '0 kW',
+            'Geo Location (private)',
+            ',  ',
+            '',
+            '',
+            ''
         ]);
 
         renderedApp.unmount();
@@ -313,4 +312,4 @@ describe('Application[E2E]', () => {
 
         apiServer.close();
     });
-})
+});

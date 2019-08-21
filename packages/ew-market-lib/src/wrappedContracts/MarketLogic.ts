@@ -62,15 +62,14 @@ export class MarketLogic extends GeneralFunctions {
         _supplyId: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .createAgreement(
-                _propertiesDocumentHash,
-                _documentDBURL,
-                _matcherPropertiesDocumentHash,
-                _matcherDBURL,
-                _demandId,
-                _supplyId
-            );
+        const method = this.web3Contract.methods.createAgreement(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _matcherPropertiesDocumentHash,
+            _matcherDBURL,
+            _demandId,
+            _supplyId
+        );
 
         return await this.send(method, txParams);
     }
@@ -85,10 +84,7 @@ export class MarketLogic extends GeneralFunctions {
         return await this.web3Contract.methods.getDemand(_demandId).call(txParams);
     }
 
-    async deleteDemand(
-        _demandId: number,
-        txParams?: SpecialTx
-    ) {
+    async deleteDemand(_demandId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.deleteDemand(_demandId);
 
         return await this.send(method, txParams);
@@ -116,7 +112,11 @@ export class MarketLogic extends GeneralFunctions {
         _assetId: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.createSupply(_propertiesDocumentHash, _documentDBURL, _assetId);
+        const method = this.web3Contract.methods.createSupply(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _assetId
+        );
 
         return await this.send(method, txParams);
     }
@@ -139,7 +139,11 @@ export class MarketLogic extends GeneralFunctions {
         _matcherDBURL: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setMatcherProperties(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
+        const method = this.web3Contract.methods.setMatcherProperties(
+            _agreementId,
+            _matcherPropertiesDocumentHash,
+            _matcherDBURL
+        );
 
         return await this.send(method, txParams);
     }
@@ -161,7 +165,10 @@ export class MarketLogic extends GeneralFunctions {
         _documentDBURL: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.createDemand(_propertiesDocumentHash, _documentDBURL);
+        const method = this.web3Contract.methods.createDemand(
+            _propertiesDocumentHash,
+            _documentDBURL
+        );
 
         return await this.send(method, txParams);
     }

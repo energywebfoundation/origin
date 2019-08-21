@@ -3,24 +3,34 @@ import { Certificate } from 'ew-origin-lib';
 import { Supply, Demand, Agreement } from 'ew-market-lib';
 
 function certificateMatchesDemand(certificate: Certificate.Entity, demand: Demand.Entity): boolean {
-    const isOffChainSettlement = (certificate.acceptedToken as any) === '0x0000000000000000000000000000000000000000';
+    const isOffChainSettlement =
+        (certificate.acceptedToken as any) === '0x0000000000000000000000000000000000000000';
 
-    const certCurrency: Currency | string = isOffChainSettlement ? Currency[certificate.offChainSettlementOptions.currency] : certificate.acceptedToken;
-    const certPricePerMwh: number = (
-        (isOffChainSettlement ? certificate.offChainSettlementOptions.price : certificate.onChainDirectPurchasePrice )
-        / certificate.powerInW
-    ) * 1e6;
+    const certCurrency: Currency | string = isOffChainSettlement
+        ? Currency[certificate.offChainSettlementOptions.currency]
+        : certificate.acceptedToken;
+    const certPricePerMwh: number =
+        ((isOffChainSettlement
+            ? certificate.offChainSettlementOptions.price
+            : certificate.onChainDirectPurchasePrice) /
+            certificate.powerInW) *
+        1e6;
 
-    return demand.offChainProperties.targetWhPerPeriod <= Number(certificate.powerInW)
-        && certPricePerMwh <= demand.offChainProperties.maxPricePerMwh
-        && certCurrency === Currency[demand.offChainProperties.currency.toString()];
+    return (
+        demand.offChainProperties.targetWhPerPeriod <= Number(certificate.powerInW) &&
+        certPricePerMwh <= demand.offChainProperties.maxPricePerMwh &&
+        certCurrency === Currency[demand.offChainProperties.currency.toString()]
+    );
 }
 
 function supplyMatchesDemand(supply: Supply.Entity, demand: Demand.Entity): boolean {
-    const supplyPricePerMwh = (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
+    const supplyPricePerMwh =
+        (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
 
-    return demand.offChainProperties.targetWhPerPeriod <= supply.offChainProperties.availableWh
-        && supplyPricePerMwh <= demand.offChainProperties.maxPricePerMwh;
+    return (
+        demand.offChainProperties.targetWhPerPeriod <= supply.offChainProperties.availableWh &&
+        supplyPricePerMwh <= demand.offChainProperties.maxPricePerMwh
+    );
 }
 
 async function findMatchingDemandsForCertificate(
@@ -44,16 +54,18 @@ async function findMatchingCertificatesForDemand(
         certs = await Certificate.getActiveCertificates(conf);
     }
 
-    return certs.filter(certificate => certificate.forSale && certificateMatchesDemand(certificate, demand));
+    return certs.filter(
+        certificate => certificate.forSale && certificateMatchesDemand(certificate, demand)
+    );
 }
 
-async function findMatchingAgreementsForCertificate (
+async function findMatchingAgreementsForCertificate(
     certificate: Certificate.Entity,
     conf: Configuration.Entity,
     agreements?: Agreement.Entity[]
 ): Promise<Agreement.Entity[]> {
     if (!agreements) {
-        agreements =  await Agreement.getAllAgreements(conf);
+        agreements = await Agreement.getAllAgreements(conf);
     }
 
     return agreements.filter(async (agreement: Agreement.Entity) => {

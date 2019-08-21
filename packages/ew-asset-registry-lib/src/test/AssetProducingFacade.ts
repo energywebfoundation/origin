@@ -20,18 +20,27 @@ import Web3 from 'web3';
 import 'mocha';
 import { Configuration } from 'ew-utils-general-lib';
 import { logger } from '../Logger';
-import { UserContractLookup, UserLogic, migrateUserRegistryContracts, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    UserContractLookup,
+    UserLogic,
+    migrateUserRegistryContracts,
+    buildRights,
+    Role
+} from 'ew-user-registry-lib';
 import { migrateAssetRegistryContracts, AssetProducingRegistryLogic } from '..';
 import { ProducingAsset } from '..';
 import moment from 'moment';
 
 describe('AssetProducing Facade', () => {
-    const configFile = JSON.parse(fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8'));
+    const configFile = JSON.parse(
+        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+    );
 
     const web3 = new Web3(configFile.develop.web3);
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x') ?
-        configFile.develop.deployKey : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
+        ? configFile.develop.deployKey
+        : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
@@ -64,44 +73,58 @@ describe('AssetProducing Facade', () => {
 
     it('should deploy user-registry contracts', async () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-        userContractLookupAddr =
-            (userContracts as any).UserContractLookup;
-        userLogic =
-            new UserLogic(web3, (userContracts as any).UserLogic);
+        userContractLookupAddr = (userContracts as any).UserContractLookup;
+        userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
 
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
-        await userLogic.setRoles(accountDeployment, buildRights([Role.UserAdmin, Role.AssetAdmin]), { privateKey: privateKeyDeployment });
+        await userLogic.setRoles(
+            accountDeployment,
+            buildRights([Role.UserAdmin, Role.AssetAdmin]),
+            { privateKey: privateKeyDeployment }
+        );
 
-        userContractLookup = new UserContractLookup(web3,
-                                                    userContractLookupAddr);
-
+        userContractLookup = new UserContractLookup(web3, userContractLookupAddr);
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts(web3, userContractLookupAddr, privateKeyDeployment);
-        assetProducingLogic = new AssetProducingRegistryLogic(web3, (deployedContracts as any).AssetProducingRegistryLogic);
+        const deployedContracts = await migrateAssetRegistryContracts(
+            web3,
+            userContractLookupAddr,
+            privateKeyDeployment
+        );
+        assetProducingLogic = new AssetProducingRegistryLogic(
+            web3,
+            (deployedContracts as any).AssetProducingRegistryLogic
+        );
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', { privateKey: privateKeyDeployment });
-        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager, Role.AssetAdmin]), { privateKey: privateKeyDeployment });
+        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
+            privateKey: privateKeyDeployment
+        });
+        await userLogic.setRoles(
+            assetOwnerAddress,
+            buildRights([Role.AssetManager, Role.AssetAdmin]),
+            { privateKey: privateKeyDeployment }
+        );
     });
 
     it('should onboard a new asset', async () => {
         conf = {
             blockchainProperties: {
                 activeUser: {
-                    address: accountDeployment, privateKey: privateKeyDeployment,
+                    address: accountDeployment,
+                    privateKey: privateKeyDeployment
                 },
                 producingAssetLogicInstance: assetProducingLogic,
                 userLogicInstance: userLogic,
-                web3,
+                web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030',
+                baseUrl: 'http://localhost:3030'
             },
-            logger,
+            logger
         };
 
         const FACILITY_NAME = 'Wuthering Heights Windfarm';
@@ -115,7 +138,7 @@ describe('AssetProducing Facade', () => {
             matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null,
-            maxOwnerChanges: 3,
+            maxOwnerChanges: 3
         };
 
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -143,25 +166,26 @@ describe('AssetProducing Facade', () => {
         delete asset.proofs;
         delete asset.propertiesDocumentHash;
 
-        assert.deepEqual({
-            id: '0',
-            initialized: true,
-            smartMeter: { address: assetSmartmeter },
-            owner: { address: assetOwnerAddress },
-            lastSmartMeterReadWh: '0',
-            active: true,
-            lastSmartMeterReadFileHash: '',
-            matcher: [{ address: [matcher] }],
-            offChainProperties: assetPropsOffChain,
-            maxOwnerChanges: '3',
-            url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`
-        } as any,        asset);
+        assert.deepEqual(
+            {
+                id: '0',
+                initialized: true,
+                smartMeter: { address: assetSmartmeter },
+                owner: { address: assetOwnerAddress },
+                lastSmartMeterReadWh: '0',
+                active: true,
+                lastSmartMeterReadFileHash: '',
+                matcher: [{ address: [matcher] }],
+                offChainProperties: assetPropsOffChain,
+                maxOwnerChanges: '3',
+                url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`
+            } as any,
+            asset
+        );
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
-
     });
 
     it('should fail when trying to onboard the same asset again', async () => {
-
         const assetProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
@@ -171,7 +195,7 @@ describe('AssetProducing Facade', () => {
             matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null,
-            maxOwnerChanges: 3,
+            maxOwnerChanges: 3
         };
 
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -200,14 +224,14 @@ describe('AssetProducing Facade', () => {
             assert.include(ex.message, 'smartmeter does already exist');
         }
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
-
     });
 
     it('should log a new meterreading', async () => {
         conf.blockchainProperties.activeUser = {
-            address: assetSmartmeter, privateKey: assetSmartmeterPK,
+            address: assetSmartmeter,
+            privateKey: assetSmartmeterPK
         };
-        let asset = await (new ProducingAsset.Entity('0', conf).sync());
+        let asset = await new ProducingAsset.Entity('0', conf).sync();
 
         await asset.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
 
@@ -218,7 +242,7 @@ describe('AssetProducing Facade', () => {
 
         delete asset.propertiesDocumentHash;
 
-        assert.deepEqual((asset) as any, {
+        assert.deepEqual(asset as any, {
             id: '0',
             initialized: true,
             smartMeter: { address: assetSmartmeter },
@@ -229,8 +253,7 @@ describe('AssetProducing Facade', () => {
             matcher: [{ address: [matcher] }],
             url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`,
             maxOwnerChanges: '3',
-            offChainProperties:
-            {
+            offChainProperties: {
                 operationalSince: 0,
                 capacityWh: 10,
                 country: 'USA',
@@ -248,20 +271,20 @@ describe('AssetProducing Facade', () => {
                 facilityName: 'Wuthering Heights Windfarm'
             }
         });
-
     });
 
     describe('getSmartMeterReads', () => {
         it('should correctly return reads', async () => {
-            let asset = await (new ProducingAsset.Entity('0', conf).sync());
+            let asset = await new ProducingAsset.Entity('0', conf).sync();
 
             const reads = await asset.getSmartMeterReads();
 
-            assert.deepEqual(reads, [{
-                energy: 100,
-                timestamp: SM_READ_TIMESTAMP
-            }]);
+            assert.deepEqual(reads, [
+                {
+                    energy: 100,
+                    timestamp: SM_READ_TIMESTAMP
+                }
+            ]);
         });
-    })
-
+    });
 });

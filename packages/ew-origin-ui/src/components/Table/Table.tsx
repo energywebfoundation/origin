@@ -17,7 +17,7 @@
 import * as React from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
 import Toggle from 'react-toggle';
-import { DatePicker } from "@material-ui/pickers";
+import { DatePicker } from '@material-ui/pickers';
 import renderHTML from 'react-render-html';
 import { Moment } from 'moment';
 import { PeriodToSeconds } from '../DemandTable';
@@ -30,7 +30,14 @@ import './Table.scss';
 import { ActionIcon } from '../icons/ActionIcon';
 import { ICustomFilter } from './FiltersHeader';
 import { deepEqual } from '../../utils/Helper';
-import { TextField, FormControl, InputLabel, Select, FilledInput, MenuItem } from '@material-ui/core';
+import {
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    FilledInput,
+    MenuItem
+} from '@material-ui/core';
 
 export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
@@ -155,13 +162,13 @@ export class Table extends React.Component<ITableProps, IState> {
         }
 
         for (let key of Object.keys(ret)) {
-            if (ret[key] && typeof(ret[key]) === 'number') {
+            if (ret[key] && typeof ret[key] === 'number') {
                 ret[key] = Math.round(ret[key] * 1000) / 1000;
             }
         }
 
         return ret;
-    }
+    };
 
     async loadPage(page: number) {
         await this.props.loadPage(page);
@@ -195,7 +202,7 @@ export class Table extends React.Component<ITableProps, IState> {
 
             this.setState({ inputs: newInputs }, this.saveTotalEnergy);
         }).bind(this);
-    }
+    };
 
     handleToggle = (key, index) => {
         return (() => {
@@ -209,7 +216,7 @@ export class Table extends React.Component<ITableProps, IState> {
                 this.setState({ inputs: newInputs });
             }
         }).bind(this);
-    }
+    };
 
     handleInput = key => {
         return (e => {
@@ -223,7 +230,7 @@ export class Table extends React.Component<ITableProps, IState> {
                 this.saveTotalEnergy
             );
         }).bind(this);
-    }
+    };
 
     handleDate = key => {
         return ((momentObject: Moment) => {
@@ -240,7 +247,7 @@ export class Table extends React.Component<ITableProps, IState> {
                 this.saveTotalEnergy
             );
         }).bind(this);
-    }
+    };
 
     saveTotalEnergy() {
         this.setState({
@@ -305,114 +312,149 @@ export class Table extends React.Component<ITableProps, IState> {
             <div className="TableWrapper">
                 {type === 'data' && (
                     <>
-                    <table className={(classNames || []).join(' ')}>
-                        <thead>
-                            <tr>
-                                {this.props.onSelect && <th style={{ width: '30px' }} />}
-                                {header.map((item: ITableHeaderData) => {
-                                    return (
-                                        <th style={item.style} key={item.key}>
-                                            {item.sortProperties ?
-                                                <div onClick={() => this.props.toggleSort(item.sortProperties)} className="Table_head_columnHeader-clickable">
-                                                    {item.label}
-                                                    {deepEqual(item.sortProperties, currentSort) ?
-                                                        (sortAscending ?
-                                                            <ArrowDropUp className="Table_head_columnHeader_sortIcon" /> :
-                                                            <ArrowDropDown className="Table_head_columnHeader_sortIcon" />)
-                                                        : ''
-                                                    }
-                                                </div>
-                                                :
-                                                renderHTML(renderText(item.label))
-                                            }
-                                        </th>
-                                    );
-                                })}
-                                {actions && (
-                                    <th style={{ width: actionWidth || 72.89 }} className="Actions">
-                                        {renderHTML(renderText('Actions'))}
-                                    </th>
-                                )}
-                            </tr>
-                        </thead>
-                        {footer.length > 0 &&
-                            <tfoot>
+                        <table className={(classNames || []).join(' ')}>
+                            <thead>
                                 <tr>
-                                    {footer.map(item => {
+                                    {this.props.onSelect && <th style={{ width: '30px' }} />}
+                                    {header.map((item: ITableHeaderData) => {
                                         return (
-                                            <td
-                                                colSpan={(item.colspan + (this.props.onSelect ? 1 : 0) || 1)}
-                                                className={`Total ${item.hide ? 'Hide' : 'Show'}`}
-                                                style={item.style || {}}
-                                                key={item.key}
-                                            >
-                                                {renderHTML(renderText(item.label || totalTableColumnSum[item.key]))}
-                                            </td>
+                                            <th style={item.style} key={item.key}>
+                                                {item.sortProperties ? (
+                                                    <div
+                                                        onClick={() =>
+                                                            this.props.toggleSort(
+                                                                item.sortProperties
+                                                            )
+                                                        }
+                                                        className="Table_head_columnHeader-clickable"
+                                                    >
+                                                        {item.label}
+                                                        {deepEqual(
+                                                            item.sortProperties,
+                                                            currentSort
+                                                        ) ? (
+                                                            sortAscending ? (
+                                                                <ArrowDropUp className="Table_head_columnHeader_sortIcon" />
+                                                            ) : (
+                                                                <ArrowDropDown className="Table_head_columnHeader_sortIcon" />
+                                                            )
+                                                        ) : (
+                                                            ''
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    renderHTML(renderText(item.label))
+                                                )}
+                                            </th>
                                         );
                                     })}
-                                    {actions && <td className="Actions" />}
+                                    {actions && (
+                                        <th
+                                            style={{ width: actionWidth || 72.89 }}
+                                            className="Actions"
+                                        >
+                                            {renderHTML(renderText('Actions'))}
+                                        </th>
+                                    )}
                                 </tr>
-                            </tfoot>
-                        }
-                        <tbody>
-                            {data.map((row, rowIndex) => {
-                                return (
-                                    <tr key={row[0]}>
-                                        {this.props.onSelect && 
-                                            <td className="selectRow">
-                                                <div className="custom-control custom-checkbox">
-                                                    <input
-                                                        type="checkbox"
-                                                        className="custom-control-input"
-                                                        id={'selectbox' + row[0]}
-                                                        onChange={e => this.props.onSelect(rowIndex, e.target.checked)}
-                                                    />
-                                                    <label className="custom-control-label" htmlFor={'selectbox' + row[0]} />
-                                                </div>
-                                            </td>
-                                        }
-                                        {header.map((item: ITableHeaderData, colIndex) => {
+                            </thead>
+                            {footer.length > 0 && (
+                                <tfoot>
+                                    <tr>
+                                        {footer.map(item => {
                                             return (
                                                 <td
-                                                    key={item.key}
-                                                    style={
-                                                        { ...item.style, ...item.styleBody } || {}
+                                                    colSpan={
+                                                        item.colspan +
+                                                            (this.props.onSelect ? 1 : 0) || 1
                                                     }
-                                                    className={`${
-                                                        item.styleBody.opacity ? 'Active' : ''
+                                                    className={`Total ${
+                                                        item.hide ? 'Hide' : 'Show'
                                                     }`}
+                                                    style={item.style || {}}
+                                                    key={item.key}
                                                 >
-                                                    {renderHTML(renderText(row[colIndex]))}
+                                                    {renderHTML(
+                                                        renderText(
+                                                            item.label ||
+                                                                totalTableColumnSum[item.key]
+                                                        )
+                                                    )}
                                                 </td>
                                             );
                                         })}
-                                        {actions && (
-                                            <td className="Actions">
-                                                {operations.length > 0 && (
-                                                    <OverlayTrigger
-                                                        trigger="focus"
-                                                        placement="bottom"
-                                                        overlay={popoverFocus(row[0])}
-                                                    >
-                                                        <Button>
-                                                            <ActionIcon />
-                                                        </Button>
-                                                    </OverlayTrigger>
-                                                )}
-                                            </td>
-                                        )}
+                                        {actions && <td className="Actions" />}
                                     </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                    <Pagination
-                        displayedEntriesLength={data.length}
-                        currentPage={this.state.currentPage}
-                        loadPage={this.loadPage}
-                        pageSize={this.props.pageSize}
-                        total={this.props.total}
-                    />        
+                                </tfoot>
+                            )}
+                            <tbody>
+                                {data.map((row, rowIndex) => {
+                                    return (
+                                        <tr key={row[0]}>
+                                            {this.props.onSelect && (
+                                                <td className="selectRow">
+                                                    <div className="custom-control custom-checkbox">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="custom-control-input"
+                                                            id={'selectbox' + row[0]}
+                                                            onChange={e =>
+                                                                this.props.onSelect(
+                                                                    rowIndex,
+                                                                    e.target.checked
+                                                                )
+                                                            }
+                                                        />
+                                                        <label
+                                                            className="custom-control-label"
+                                                            htmlFor={'selectbox' + row[0]}
+                                                        />
+                                                    </div>
+                                                </td>
+                                            )}
+                                            {header.map((item: ITableHeaderData, colIndex) => {
+                                                return (
+                                                    <td
+                                                        key={item.key}
+                                                        style={
+                                                            { ...item.style, ...item.styleBody } ||
+                                                            {}
+                                                        }
+                                                        className={`${
+                                                            item.styleBody.opacity ? 'Active' : ''
+                                                        }`}
+                                                    >
+                                                        {renderHTML(renderText(row[colIndex]))}
+                                                    </td>
+                                                );
+                                            })}
+                                            {actions && (
+                                                <td className="Actions">
+                                                    {operations.length > 0 && (
+                                                        <OverlayTrigger
+                                                            trigger="focus"
+                                                            placement="bottom"
+                                                            overlay={popoverFocus(row[0])}
+                                                        >
+                                                            <Button>
+                                                                <ActionIcon />
+                                                            </Button>
+                                                        </OverlayTrigger>
+                                                    )}
+                                                </td>
+                                            )}
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                        <Pagination
+                            displayedEntriesLength={data.length}
+                            currentPage={this.state.currentPage}
+                            loadPage={this.loadPage}
+                            pageSize={this.props.pageSize}
+                            total={this.props.total}
+                        />
                     </>
                 )}
                 {type === 'admin' && (
@@ -427,7 +469,7 @@ export class Table extends React.Component<ITableProps, IState> {
                             </tr>
                         </thead>
                         <tbody>
-                            {header.map((item : ITableAdminHeaderData) => {
+                            {header.map((item: ITableAdminHeaderData) => {
                                 return item.header ? (
                                     <tr
                                         key={item.key}
@@ -539,7 +581,7 @@ export class Table extends React.Component<ITableProps, IState> {
                                                         type="number"
                                                     />
                                                 )}
-                                                {item.input.type === 'date' && (                                                
+                                                {item.input.type === 'date' && (
                                                     <DatePicker
                                                         onChange={handleDate(item.key)}
                                                         value={state[item.key] || null}
@@ -563,24 +605,35 @@ export class Table extends React.Component<ITableProps, IState> {
                                                             input={<FilledInput />}
                                                         >
                                                             {item.input.key
-                                                            ? data[item.input.data].map((opt, index) => (
-                                                                  <MenuItem
-                                                                    key={index}
-                                                                    value={opt[item.input.key]}
-                                                                  >
-                                                                      {opt[item.input.labelKey]}
-                                                                  </MenuItem>
-                                                              ))
-                                                            : data[item.input.data].map(
-                                                                  (opt, index) => (
-                                                                      <MenuItem
-                                                                          key={index}
-                                                                          value={opt}
-                                                                      >
-                                                                          {opt}
-                                                                      </MenuItem>
+                                                                ? data[item.input.data].map(
+                                                                      (opt, index) => (
+                                                                          <MenuItem
+                                                                              key={index}
+                                                                              value={
+                                                                                  opt[
+                                                                                      item.input.key
+                                                                                  ]
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  opt[
+                                                                                      item.input
+                                                                                          .labelKey
+                                                                                  ]
+                                                                              }
+                                                                          </MenuItem>
+                                                                      )
                                                                   )
-                                                              )}
+                                                                : data[item.input.data].map(
+                                                                      (opt, index) => (
+                                                                          <MenuItem
+                                                                              key={index}
+                                                                              value={opt}
+                                                                          >
+                                                                              {opt}
+                                                                          </MenuItem>
+                                                                      )
+                                                                  )}
                                                         </Select>
                                                     </FormControl>
                                                 )}

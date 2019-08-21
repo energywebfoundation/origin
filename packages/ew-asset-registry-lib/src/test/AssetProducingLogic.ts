@@ -82,9 +82,13 @@ describe('AssetProducingLogic', () => {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setRoles(accountDeployment, buildRights([Role.UserAdmin, Role.AssetAdmin]), {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.setRoles(
+            accountDeployment,
+            buildRights([Role.UserAdmin, Role.AssetAdmin]),
+            {
+                privateKey: privateKeyDeployment
+            }
+        );
 
         const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -209,9 +213,13 @@ describe('AssetProducingLogic', () => {
         await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager, Role.AssetAdmin]), {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.setRoles(
+            assetOwnerAddress,
+            buildRights([Role.AssetManager, Role.AssetAdmin]),
+            {
+                privateKey: privateKeyDeployment
+            }
+        );
     });
 
     it('should not deploy an asset as user', async () => {

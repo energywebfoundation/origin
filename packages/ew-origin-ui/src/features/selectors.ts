@@ -1,3 +1,3 @@
-import { IStoreState } from "../types";
+import { IStoreState } from '../types';
 
 export const getConfiguration = (state: IStoreState) => state.configuration;

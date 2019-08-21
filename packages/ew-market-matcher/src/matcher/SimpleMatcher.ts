@@ -43,7 +43,7 @@ export class SimpleMatcher extends Matcher {
     async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
-    ): Promise<{ split: boolean, demand: Demand.Entity }> {
+    ): Promise<{ split: boolean; demand: Demand.Entity }> {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 

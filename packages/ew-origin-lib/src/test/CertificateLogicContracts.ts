@@ -20,14 +20,25 @@ import 'mocha';
 import Web3 from 'web3';
 import moment from 'moment';
 
-import { migrateUserRegistryContracts, UserLogic, UserContractLookup, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    migrateUserRegistryContracts,
+    UserLogic,
+    UserContractLookup,
+    buildRights,
+    Role
+} from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
 import { deploy } from 'ew-utils-deployment';
-import { TestReceiver, Erc20TestToken, Erc20TestTokenJSON, Erc721TestReceiverJSON } from 'ew-erc-test-contracts';
+import {
+    TestReceiver,
+    Erc20TestToken,
+    Erc20TestTokenJSON,
+    Erc721TestReceiverJSON
+} from 'ew-erc-test-contracts';
 
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
@@ -92,10 +103,11 @@ describe('CertificateLogic', () => {
                 privateKey: privateKeyDeployment
             });
 
-            await userLogic.setRoles(accountDeployment, buildRights([
-                Role.UserAdmin,
-                Role.AssetAdmin
-            ]),                      { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(
+                accountDeployment,
+                buildRights([Role.UserAdmin, Role.AssetAdmin]),
+                { privateKey: privateKeyDeployment }
+            );
 
             const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -283,24 +295,27 @@ describe('CertificateLogic', () => {
                 privateKey: privateKeyDeployment
             });
 
-            await userLogic.setRoles(testreceiver.web3Contract._address, buildRights([
-                Role.Trader
-            ]),                      {
+            await userLogic.setRoles(
+                testreceiver.web3Contract._address,
+                buildRights([Role.Trader]),
+                {
+                    privateKey: privateKeyDeployment
+                }
+            );
+            await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
                 privateKey: privateKeyDeployment
             });
-            await userLogic.setRoles(accountTrader, buildRights([
-                Role.Trader
-            ]),                      { privateKey: privateKeyDeployment });
-            await userLogic.setRoles(accountAssetOwner, buildRights([
-                Role.AssetManager,
-                Role.Trader
-            ]),                      { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(
+                accountAssetOwner,
+                buildRights([Role.AssetManager, Role.Trader]),
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
 
-            await userLogic.setRoles(issuerAccount, buildRights([
-                Role.Issuer
-            ]),                      { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
+                privateKey: privateKeyDeployment
+            });
         });
 
         it('should onboard an asset', async () => {
@@ -769,7 +784,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retireEvent[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retireEvent[0].returnValues, {
                     0: '1',
-                    _certificateId: '1',
+                    _certificateId: '1'
                 });
             });
 
@@ -1185,7 +1200,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retireEvent[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retireEvent[0].returnValues, {
                     0: '3',
-                    _certificateId: '3',
+                    _certificateId: '3'
                 });
 
                 assert.equal(await certificateLogic.getCertificateListLength(), 4);
@@ -1513,7 +1528,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retireEvent[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retireEvent[0].returnValues, {
                     0: '4',
-                    _certificateId: '4',
+                    _certificateId: '4'
                 });
 
                 assert.equal(await certificateLogic.getCertificateListLength(), 5);
@@ -1882,9 +1897,9 @@ describe('CertificateLogic', () => {
                 await userLogic.setUser(matcherAccount, 'matcherAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(matcherAccount, buildRights([
-                    Role.Trader
-                ]),                      { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should transfer certificate #5 as matcher', async () => {
@@ -2278,9 +2293,9 @@ describe('CertificateLogic', () => {
                 await userLogic.setUser(approvedAccount, 'approvedAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(approvedAccount, buildRights([
-                    Role.Trader
-                ]),                      { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(approvedAccount, buildRights([Role.Trader]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should transfer certificate#8 with approved account', async () => {
@@ -3102,7 +3117,7 @@ describe('CertificateLogic', () => {
                 assert.equal(retiredEvents[0].event, 'LogCertificateRetired');
                 assert.deepEqual(retiredEvents[0].returnValues, {
                     0: '14',
-                    _certificateId: '14',
+                    _certificateId: '14'
                 });
             });
 
@@ -3271,7 +3286,9 @@ describe('CertificateLogic', () => {
             });
 
             it('should set certificate for sale', async () => {
-                await certificateLogic.publishForSale(15, 0, erc20Test.web3Contract._address, { privateKey: assetOwnerPK });
+                await certificateLogic.publishForSale(15, 0, erc20Test.web3Contract._address, {
+                    privateKey: assetOwnerPK
+                });
                 const cert = await certificateLogic.getCertificate(15);
 
                 assert.isTrue(cert.tradableEntity.forSale);

@@ -206,16 +206,15 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         _numOwnerChanges: number,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods
-            .createAsset(
-                _smartMeter,
-                _owner,
-                _active,
-                _matcher,
-                _propertiesDocumentHash,
-                _url,
-                _numOwnerChanges
-            );
+        const method = this.web3Contract.methods.createAsset(
+            _smartMeter,
+            _owner,
+            _active,
+            _matcher,
+            _propertiesDocumentHash,
+            _url,
+            _numOwnerChanges
+        );
 
         return await this.send(method, txParams);
     }
@@ -225,7 +224,10 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         _marketContractLookup: string,
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.setMarketLookupContract(_assetId, _marketContractLookup);
+        const method = this.web3Contract.methods.setMarketLookupContract(
+            _assetId,
+            _marketContractLookup
+        );
 
         return await this.send(method, txParams);
     }
@@ -261,7 +263,12 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         _timestamp: number = moment().unix(),
         txParams?: SpecialTx
     ) {
-        const method = this.web3Contract.methods.saveSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, _timestamp);
+        const method = this.web3Contract.methods.saveSmartMeterRead(
+            _assetId,
+            _newMeterRead,
+            _lastSmartMeterReadFileHash,
+            _timestamp
+        );
 
         return await this.send(method, txParams);
     }

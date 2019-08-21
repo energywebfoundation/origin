@@ -1,6 +1,5 @@
-import { startAPI } from "./api";
+import { startAPI } from './api';
 
 (async () => {
     await startAPI();
-})()
-
+})();

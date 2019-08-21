@@ -19,14 +19,25 @@ import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
 
-import { migrateUserRegistryContracts, UserLogic, UserContractLookup, buildRights, Role } from 'ew-user-registry-lib';
+import {
+    migrateUserRegistryContracts,
+    UserLogic,
+    UserContractLookup,
+    buildRights,
+    Role
+} from 'ew-user-registry-lib';
 import {
     migrateAssetRegistryContracts,
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from 'ew-asset-registry-lib';
 import { deploy } from 'ew-utils-deployment';
-import { Erc20TestToken, Erc20TestTokenJSON, Erc721TestReceiverJSON, TestReceiver } from 'ew-erc-test-contracts';
+import {
+    Erc20TestToken,
+    Erc20TestTokenJSON,
+    Erc721TestReceiverJSON,
+    TestReceiver
+} from 'ew-erc-test-contracts';
 
 import { migrateEnergyBundleContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
@@ -93,16 +104,17 @@ describe('EnergyCertificateBundleLogic', () => {
                 privateKey: privateKeyDeployment
             });
 
-            await userLogic.setRoles(accountDeployment, buildRights([
-                Role.UserAdmin,
-                Role.AssetAdmin
-            ]),                      { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(
+                accountDeployment,
+                buildRights([Role.UserAdmin, Role.AssetAdmin]),
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
 
-            await userLogic.setRoles(issuerAccount, buildRights([
-                Role.Issuer
-            ]),                      { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
+                privateKey: privateKeyDeployment
+            });
 
             const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
@@ -308,13 +320,14 @@ describe('EnergyCertificateBundleLogic', () => {
                 privateKey: privateKeyDeployment
             });
 
-            await userLogic.setRoles(accountTrader, buildRights([
-                Role.Trader
-            ]),                      { privateKey: privateKeyDeployment });
-            await userLogic.setRoles(accountAssetOwner, buildRights([
-                Role.AssetManager,
-                Role.Trader
-            ]),                      { privateKey: privateKeyDeployment });
+            await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
+                privateKey: privateKeyDeployment
+            });
+            await userLogic.setRoles(
+                accountAssetOwner,
+                buildRights([Role.AssetManager, Role.Trader]),
+                { privateKey: privateKeyDeployment }
+            );
         });
 
         it('should onboard an asset', async () => {
@@ -364,7 +377,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     100,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -372,9 +385,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(0, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    0,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -773,7 +789,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     200,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -781,9 +797,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(1, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    1,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1040,7 +1059,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     300,
                     'lastSmartMeterReadFileHash',
-                    0, 
+                    0,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -1048,9 +1067,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(2, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    2,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1433,7 +1455,8 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     400,
-                    'lastSmartMeterReadFileHash', 0, 
+                    'lastSmartMeterReadFileHash',
+                    0,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -1441,9 +1464,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(3, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    3,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1624,7 +1650,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     500,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -1632,9 +1658,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(4, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    4,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1758,7 +1787,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     600,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -1766,9 +1795,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(5, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    5,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -1939,7 +1971,9 @@ describe('EnergyCertificateBundleLogic', () => {
                 await userLogic.setUser(matcherAccount, 'matcherAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(matcherAccount, buildRights([]), { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(matcherAccount, buildRights([]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should throw trying to call safeTransferFrom certificate#3 without data and new matcher to an a regular contract', async () => {
@@ -1963,9 +1997,9 @@ describe('EnergyCertificateBundleLogic', () => {
                 await userLogic.setUser(matcherAccount, 'matcherAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(matcherAccount, buildRights([
-                    Role.Trader
-                ]),                      { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should transfer certificate#5 with new matcher', async () => {
@@ -2039,7 +2073,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     700,
-                    'lastSmartMeterReadFileHash', 
+                    'lastSmartMeterReadFileHash',
                     1,
                     { privateKey: assetSmartmeterPK }
                 );
@@ -2048,9 +2082,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(6, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    6,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2218,7 +2255,9 @@ describe('EnergyCertificateBundleLogic', () => {
                 await userLogic.setUser(matcherAccount, 'matcherAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(matcherAccount, buildRights([]), { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(matcherAccount, buildRights([]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should throw trying to call safeTransferFrom certificate#3 with data and new matcher to an a regular contract', async () => {
@@ -2242,9 +2281,9 @@ describe('EnergyCertificateBundleLogic', () => {
                 await userLogic.setUser(matcherAccount, 'matcherAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(matcherAccount, buildRights([
-                    Role.Trader
-                ]),                      { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should transfer certificate#6 with new matcher', async () => {
@@ -2327,9 +2366,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(7, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    7,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2503,9 +2545,9 @@ describe('EnergyCertificateBundleLogic', () => {
                 await userLogic.setUser(approvedAccount, 'approvedAccount', {
                     privateKey: privateKeyDeployment
                 });
-                await userLogic.setRoles(approvedAccount, buildRights([
-                    Role.Trader
-                ]),                      { privateKey: privateKeyDeployment });
+                await userLogic.setRoles(approvedAccount, buildRights([Role.Trader]), {
+                    privateKey: privateKeyDeployment
+                });
             });
 
             it('should log energy (Bundle #8)', async () => {
@@ -2513,7 +2555,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     900,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -2521,9 +2563,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(8, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    8,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -2771,7 +2816,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1000,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -2779,9 +2824,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(9, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    9,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -3026,7 +3074,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1100,
                     'lastSmartMeterReadFileHash',
-                    10, 
+                    10,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -3039,9 +3087,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(10, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    10,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 assert.equal(event.event, 'LogNewMeterRead');
 
@@ -3227,7 +3278,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1200,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -3235,9 +3286,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(11, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    11,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -3444,7 +3498,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1300,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -3459,9 +3513,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(12, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    12,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 if (isGanache) {
                     const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
@@ -3660,7 +3717,8 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     1400,
-                    'lastSmartMeterReadFileHash', 0, 
+                    'lastSmartMeterReadFileHash',
+                    0,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -3668,9 +3726,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(13, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    13,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -4022,7 +4083,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     0,
                     1500,
                     'lastSmartMeterReadFileHash',
-                    1, 
+                    1,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -4030,9 +4091,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(14, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    14,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,
@@ -4223,11 +4287,13 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: privateKeyDeployment
                 });
 
-                await userLogic.setRoles(testreceiver.web3Contract._address, buildRights([
-                    Role.Trader
-                ]),                      {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.setRoles(
+                    testreceiver.web3Contract._address,
+                    buildRights([Role.Trader]),
+                    {
+                        privateKey: privateKeyDeployment
+                    }
+                );
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract._address,
                     testreceiver.web3Contract._address,
@@ -4313,7 +4379,8 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await assetRegistry.saveSmartMeterRead(
                     0,
                     1600,
-                    'lastSmartMeterReadFileHash', 0, 
+                    'lastSmartMeterReadFileHash',
+                    0,
                     { privateKey: assetSmartmeterPK }
                 );
 
@@ -4321,9 +4388,12 @@ describe('EnergyCertificateBundleLogic', () => {
                     privateKey: assetOwnerPK
                 });
 
-                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(15, {
-                    privateKey: issuerPK
-                });
+                const approveTx = await energyCertificateBundleLogic.approveCertificationRequest(
+                    15,
+                    {
+                        privateKey: issuerPK
+                    }
+                );
 
                 const event = (await assetRegistry.getAllLogNewMeterReadEvents({
                     fromBlock: tx.blockNumber,

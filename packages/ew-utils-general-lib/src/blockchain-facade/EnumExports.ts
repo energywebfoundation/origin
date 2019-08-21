@@ -1,29 +1,29 @@
 export enum TimeFrame {
-  yearly,
-  monthly,
-  daily,
-  hourly,
-  halfHourly,
+    yearly,
+    monthly,
+    daily,
+    hourly,
+    halfHourly
 }
 
 export enum Currency {
-  NONE,
-  EUR,
-  USD,
-  SGD,
-  THB
+    NONE,
+    EUR,
+    USD,
+    SGD,
+    THB
 }
 
 export enum AssetType {
-  Wind,
-  Solar,
-  RunRiverHydro,
-  BiomassGas
+    Wind,
+    Solar,
+    RunRiverHydro,
+    BiomassGas
 }
 
 export enum Compliance {
-  none,
-  IREC,
-  EEC,
-  TIGR
+    none,
+    IREC,
+    EEC,
+    TIGR
 }

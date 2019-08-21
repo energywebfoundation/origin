@@ -26,11 +26,15 @@ export default function reducer(state = defaultState, action) {
         case Actions.demandCreatedOrUpdated:
             demandIndex = state.findIndex((d: Demand.Entity) => d.id === action.demand.id);
 
-            return demandIndex === -1 ? [...state, action.demand] : [...state.slice(0, demandIndex), action.demand, ...state.slice(demandIndex + 1)];
+            return demandIndex === -1
+                ? [...state, action.demand]
+                : [...state.slice(0, demandIndex), action.demand, ...state.slice(demandIndex + 1)];
         case Actions.demandDeleted:
             demandIndex = state.findIndex((d: Demand.Entity) => d.id === action.demand.id);
 
-            return demandIndex === -1 ? state : [...state.slice(0, demandIndex), ...state.slice(demandIndex + 1)];
+            return demandIndex === -1
+                ? state
+                : [...state.slice(0, demandIndex), ...state.slice(demandIndex + 1)];
 
         default:
             return state;

@@ -42,7 +42,6 @@ export interface IOffChainProperties {
 
 export abstract class Entity extends BlockchainDataModelEntity.Entity
     implements IOnChainProperties {
-
     offChainProperties: IOffChainProperties;
     certificatesUsedForWh: number;
     smartMeter: Configuration.EthAccount;
@@ -63,5 +62,4 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
 
         this.initialized = false;
     }
-
 }

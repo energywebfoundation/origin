@@ -17,38 +17,36 @@
 import { Configuration } from 'ew-utils-general-lib';
 import * as Winston from 'winston';
 import Web3 from 'web3';
-import { createBlockchainProperties as userCreateBlockchainProperties} from 'ew-user-registry-lib';
+import { createBlockchainProperties as userCreateBlockchainProperties } from 'ew-user-registry-lib';
 import { AssetContractLookup, AssetConsumingRegistryLogic, AssetProducingRegistryLogic } from '..';
 
 export const createBlockchainProperties = async (
     logger: Winston.Logger,
     web3: Web3,
-    assetContractLookupAddress: string,
+    assetContractLookupAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
-
     const assetLookupContractInstance: AssetContractLookup = new AssetContractLookup(
         web3,
-        assetContractLookupAddress);
+        assetContractLookupAddress
+    );
 
-    const userBlockchainProperties: Configuration.BlockchainProperties =
-        await userCreateBlockchainProperties(
-            logger,
-            web3 as any,
-            await assetLookupContractInstance.userRegistry(),
-        ) as any;
+    const userBlockchainProperties: Configuration.BlockchainProperties = (await userCreateBlockchainProperties(
+        logger,
+        web3 as any,
+        await assetLookupContractInstance.userRegistry()
+    )) as any;
 
     return {
         consumingAssetLogicInstance: new AssetConsumingRegistryLogic(
             web3,
-            await assetLookupContractInstance.assetConsumingRegistry(),
+            await assetLookupContractInstance.assetConsumingRegistry()
         ),
         producingAssetLogicInstance: new AssetProducingRegistryLogic(
             web3,
-            await assetLookupContractInstance.assetProducingRegistry(),
-            ),
+            await assetLookupContractInstance.assetProducingRegistry()
+        ),
         userLogicInstance: userBlockchainProperties.userLogicInstance,
 
-        web3: web3 as any,
-
+        web3: web3 as any
     };
 };

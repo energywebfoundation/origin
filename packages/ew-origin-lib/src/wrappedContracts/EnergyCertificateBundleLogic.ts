@@ -10,15 +10,15 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     constructor(web3: Web3, address?: string) {
         super(web3, address);
-        
+
         this.web3Contract = address
-        ? new web3.eth.Contract(EnergyCertificateBundleLogicJSON.abi, address)
-        : new web3.eth.Contract(
-              EnergyCertificateBundleLogicJSON.abi,
-              (EnergyCertificateBundleLogicJSON as any).networks.length > 0
-                  ? EnergyCertificateBundleLogicJSON.networks[0]
-                  : null
-          )
+            ? new web3.eth.Contract(EnergyCertificateBundleLogicJSON.abi, address)
+            : new web3.eth.Contract(
+                  EnergyCertificateBundleLogicJSON.abi,
+                  (EnergyCertificateBundleLogicJSON as any).networks.length > 0
+                      ? EnergyCertificateBundleLogicJSON.networks[0]
+                      : null
+              );
         this.web3 = web3;
     }
 
