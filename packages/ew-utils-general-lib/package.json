@@ -45,7 +45,7 @@
     "fs-extra": "8.0.1",
     "ganache-cli": "6.1.8",
     "lint-staged": "8.1.7",
-    "truffle": "5.0.17"
+    "truffle": "5.0.18"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
