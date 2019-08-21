@@ -4,10 +4,12 @@ Experimental monorepo for EWF projects - currently Origin exclusive
 
 ## Installation
 
-- `git clone` the repo
+- `git clone`
 - `yarn`
 - 🥂
 
-## Development flow
+## Build
 
-...
+- `yarn build`
+
+## Development flow
