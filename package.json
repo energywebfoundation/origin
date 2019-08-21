@@ -18,8 +18,10 @@
   },
   "scripts": {
     "build": "lerna run build",
+    "lint": "lerna run lint --parallel --stream",
     "run:ui": "lerna run start --scope ew-origin-ui --stream",
-    "lint": "lerna run lint --parallel --stream"
+    "test": "yarn run test:ui",
+    "test:ui": "lerna run test --scope ew-origin-ui --stream"
   },
   "workspaces": [
     "packages/*"
