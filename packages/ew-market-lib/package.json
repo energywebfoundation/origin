@@ -51,7 +51,6 @@
     "@types/mocha": "2.2.48",
     "@types/node": "9.6.48",
     "@types/web3": "1.0.14",
-    "chai": "4.2.0",
     "ethlint": "1.2.4",
     "ew-utils-testbackend": "1.0.1-alpha.4",
     "fs-extra": "8.0.1",
