@@ -10,6 +10,7 @@
   "scripts": {
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
+    "build": "./scripts/build.js",
     "build-ts": "rm -rf dist/js && tsc",
     "start-test-backend": "rm -rf db.json && node node_modules/ew-utils-testbackend/dist/js/src/index.js",
     "test": "npm run build-ts && mocha dist/js/src/test/ --timeout 60000",
