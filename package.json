@@ -6,7 +6,8 @@
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "run:ui": "lerna run start --scope ew-origin-ui --stream"
   },
   "workspaces": [
     "packages/*"

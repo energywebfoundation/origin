@@ -5,7 +5,7 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node --max-old-space-size=8192 node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack/dev.config.js --output-public-path=/dist/ -d --watch",
+    "start": "node --max-old-space-size=8192 ./node_modules/.bin/webpack-dev-server --config webpack/dev.config.js --output-public-path=/dist/ -d --watch",
     "build": "node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
     "build-full": "webpack --config webpack/prod.config.js",
     "lint": "&& tslint 'src/**/*{.ts,.tsx}'",
@@ -91,8 +91,5 @@
     "web3": "1.0.0-beta.37",
     "webpack": "4.30.0",
     "winston": "3.2.1"
-  },
-  "resolutions": {
-    "@types/react": "16.8.16"
   }
 }
