@@ -9,6 +9,7 @@ RUN apk add --no-cache python && \
     pip install --upgrade pip setuptools && \
     rm -r /root/.cache
 RUN apk add --no-cache git && \
+    npm config set unsafe-perm true && \
     npm install -g yarn
 
 WORKDIR /dockerBuildDirectory
