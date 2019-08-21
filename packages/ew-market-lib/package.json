@@ -47,9 +47,6 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@types/chai": "4.1.7",
-    "@types/mocha": "2.2.48",
-    "@types/node": "9.6.48",
     "@types/web3": "1.0.14",
     "ethlint": "1.2.4",
     "ew-utils-testbackend": "1.0.1-alpha.4",
