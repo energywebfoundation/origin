@@ -5,6 +5,9 @@
     "lerna": "^3.16.4",
     "typescript": "^3.5.3"
   },
+  "scripts": {
+    "build": "lerna run build"
+  },
   "workspaces": [
     "packages/*"
   ]
