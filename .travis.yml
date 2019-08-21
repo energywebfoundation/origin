@@ -1,0 +1,14 @@
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+    - '10.0.0'
+
+cache:
+    yarn: true
+    directories:
+        - node_modules
+
+install:
+    - yarn
+    - yarn build
