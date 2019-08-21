@@ -6,7 +6,6 @@ Experimental monorepo for EWF projects - currently Origin exclusive
 
 - `git clone` the repo
 - `yarn`
-- `lerna bootstrap`
 - 🥂
 
 ## Development flow
