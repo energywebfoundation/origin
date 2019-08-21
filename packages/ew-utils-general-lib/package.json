@@ -1,32 +1,36 @@
 {
   "name": "ew-utils-general-lib",
-  "version": "1.0.2-alpha.4",
   "description": "",
-  "main": "dist/js/index.js",
-  "types": "dist/js/index.d.ts",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "compile": "truffle compile",
-    "deploy-contracts": "truffle migrate",
-    "build": "rm -rf dist/js && tsc",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
-    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
-    "prepare": "node scripts/build.js"
-  },
+  "license": "GPL-3.0",
+  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
+  "homepage": "https://github.com/energywebfoundation/ew-utils-general-lib#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/ew-utils-general-lib.git"
   },
-  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
-  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/energywebfoundation/ew-utils-general-lib"
   },
-  "homepage": "https://github.com/energywebfoundation/ew-utils-general-lib#readme",
+  "version": "1.0.2-alpha.4",
+  "main": "dist/js/index.js",
+  "files": [
+    "contracts",
+    "dist"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "rm -rf dist/js && tsc",
+    "compile": "truffle compile",
+    "deploy-contracts": "truffle migrate",
+    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
+    "prepare": "node scripts/build.js",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+  },
+  "types": "dist/js/index.d.ts",
   "dependencies": {
     "axios": "0.18.0",
     "ew-utils-general-precise-proofs": "0.3.0",
@@ -41,10 +45,8 @@
     "fs-extra": "8.0.1",
     "ganache-cli": "6.1.8",
     "lint-staged": "8.1.7",
-    "truffle": "5.0.17",
-    "typescript-json-schema": "0.31.0"
+    "truffle": "5.0.17"
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts",
   "lint-staged": {
     "*.{ts,tsx}": [
       "tslint --fix",
@@ -52,8 +54,5 @@
       "git add"
     ]
   },
-  "files": [
-    "contracts",
-    "dist"
-  ]
+  "postinstall": "rm -f node_modules/web3/index.d.ts"
 }
