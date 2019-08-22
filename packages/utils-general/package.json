@@ -56,5 +56,9 @@
     ]
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
-  "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d"
+  "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
+  "publishConfig" : {
+    "access" : "public",
+    "registry": "https://registry.npmjs.org"
+  },
 }
