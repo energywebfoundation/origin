@@ -1,0 +1,60 @@
+{
+  "name": "@energyweb/asset-registry",
+  "description": "",
+  "license": "GPL-3.0",
+  "author": "",
+  "homepage": "https://github.com/energywebfoundation/ewf-monorepo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/ewf-monorepo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/ewf-monorepo/issues"
+  },
+  "version": "1.1.0",
+  "main": "dist/js/src/index.js",
+  "files": [
+    "contracts",
+    "dist"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "./scripts/build.js",
+    "build-and-deploy": "npm run build && npm run deploy-contracts",
+    "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts IOffChainProperties > schemas/AssetPropertiesOffChain.schema.json ",
+    "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties > schemas/ProducingAssetPropertiesOffChain.schema.json",
+    "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
+    "build-schemas": "npm run build-schema:AssetPropertiesOffChain && npm run build-schema:ProducingAssetPropertiesOffChain && cp -R schemas dist/schemas",
+    "build-ts": "npm run build-schemas && rm -rf dist/js && tsc",
+    "compile": "truffle compile",
+    "compile-contracts": "node build/ts/utils/deployment/compile",
+    "deploy-contracts": "truffle migrate",
+    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
+    "prepare": "node scripts/build.js",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
+    "start-test-backend": "node node_modules/@energyweb/utils-general-testbackend/dist/js/src/index.js",
+    "test": "npm run build-schemas && npm run build-ts && mocha dist/js/src/test/ --timeout 60000",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+  },
+  "types": "dist/js/src/index.d.ts",
+  "dependencies": {
+    "@energyweb/user-registry": "1.1.0",
+    "@energyweb/utils-general": "1.1.0",
+    "moment": "2.24.0",
+    "web3": "1.0.0-beta.37",
+    "winston": "3.2.1"
+  },
+  "devDependencies": {
+    "@types/web3": "1.0.14",
+    "ethlint": "1.2.4",
+    "@energyweb/utils-testbackend": "1.1.0",
+    "fs-extra": "8.0.1",
+    "ganache-cli": "6.6.0",
+    "lint-staged": "8.1.7",
+    "truffle": "5.0.18"
+  },
+  "postinstall": "rm -f node_modules/web3/index.d.ts"
+}
