@@ -49,8 +49,8 @@ async function executeCommand(command, directory) {
 async function run() {
   console.log('EW-UTILS-GENERAL-LIB: Building...');
 
-  await executeCommand('npm run compile', ROOT_DIRECTORY)
-  await executeCommand('npm run build-ts', ROOT_DIRECTORY)
+  await executeCommand('yarn compile', ROOT_DIRECTORY)
+  await executeCommand('yarn build-ts', ROOT_DIRECTORY)
 
   console.log('EW-UTILS-GENERAL-LIB: Done.');
 }

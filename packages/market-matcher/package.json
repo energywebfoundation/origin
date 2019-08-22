@@ -14,7 +14,8 @@
   "version": "1.1.0",
   "main": "dist/js/src/exports.js",
   "scripts": {
-    "build": "rm -rf dist/ && npm run generate-schemas && tsc && cp -R schemas dist/js/schemas",
+    "build": "scripts/build.js",
+    "build-ts": "rm -rf dist/ && npm run generate-schemas && tsc && cp -R schemas dist/js/schemas",
     "debug": "node --inspect-brk dist/js/src/index.js",
     "generate-conf-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IMatcherConf > schemas/conf.schema.json",
     "generate-rule-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IRuleConf > schemas/rule.schema.json",
@@ -22,7 +23,7 @@
     "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json ISimulationFlow > schemas/simulation-description.schema.json",
     "lint": "./node_modules/.bin/tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
-    "prepare": "node scripts/build.js",
+    "prepare": "scripts/build.js",
     "start": "npm run build && node dist/js/src/index.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "start-test-backend": "node node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
@@ -31,14 +32,14 @@
   },
   "types": "dist/js/src/exports.d.ts",
   "dependencies": {
-    "@types/log-symbols": "2.0.0",
-    "@types/mathjs": "3.21.0",
-    "ethereumjs-tx": "1.3.4",
     "@energyweb/asset-registry": "1.1.0",
     "@energyweb/market": "1.1.0",
     "@energyweb/origin": "1.1.0",
     "@energyweb/user-registry": "1.1.0",
     "@energyweb/utils-general": "1.1.0",
+    "@types/log-symbols": "2.0.0",
+    "@types/mathjs": "3.21.0",
+    "ethereumjs-tx": "1.3.4",
     "ganache-cli": "6.6.0",
     "jsonschema": "1.2.4",
     "log-symbols": "2.2.0",
@@ -46,9 +47,9 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
+    "@energyweb/utils-testbackend": "1.1.0",
     "@types/web3": "1.0.14",
     "chai": "4.1.2",
-    "@energyweb/utils-testbackend": "1.1.0",
     "fs-extra": "8.0.1",
     "json-schema-to-typescript": "5.5.0",
     "json2ts": "0.0.7",
@@ -63,5 +64,6 @@
       "git add"
     ]
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d"
 }

@@ -21,12 +21,13 @@
     "test": "test"
   },
   "scripts": {
-    "build": "rm -rf dist/js && tsc",
+    "build": "scripts/build.js",
+    "build-ts": "rm -rf dist/js && tsc",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
-    "prepare": "node scripts/build.js",
+    "prepare": "scripts/build.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'"
   },
@@ -54,5 +55,6 @@
       "git add"
     ]
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d"
 }
