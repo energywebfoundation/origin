@@ -14,19 +14,20 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
+import { Configuration, BlockchainDataModelEntity } from 'ew-utils-general-lib';
 import { Role } from '../../wrappedContracts/RoleManagement';
 
-export interface UserProperties {
+export interface IUserPropertiesOnChain {
     id: string;
     organization: string;
     roles: number;
     active?: boolean;
 }
 
-export interface UserPropertiesOffChain {
+export interface IUserPropertiesOffChain {
     firstName: string;
     surname: string;
+    email: string;
     street: string;
     number: string;
     zip: string;
@@ -35,10 +36,11 @@ export interface UserPropertiesOffChain {
     state: string;
 }
 
-export class User extends BlockchainDataModelEntity.Entity implements UserProperties {
+export class User extends BlockchainDataModelEntity.Entity implements IUserPropertiesOnChain {
+
     static async CREATE_USER(
-        userProperties: UserProperties,
-        userPropertiesOffChain: UserPropertiesOffChain,
+        userProperties: IUserPropertiesOnChain,
+        userPropertiesOffChain: IUserPropertiesOffChain,
         configuration: Configuration.Entity
     ): Promise<User> {
         await configuration.blockchainProperties.userLogicInstance.setUser(

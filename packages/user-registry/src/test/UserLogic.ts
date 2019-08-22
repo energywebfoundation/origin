@@ -235,7 +235,10 @@ describe('UserLogic', () => {
             privateKey: privateKeyDeployment
         });
 
-        assert.equal(await userLogic.getRolesRights(TEST_ACCOUNT), rights);
+        assert.equal(
+            await userLogic.getRolesRights(TEST_ACCOUNT),
+            rights
+        );
 
         assert.equal(await userLogic.isRole(Role.UserAdmin, TEST_ACCOUNT), false);
         assert.equal(await userLogic.isRole(Role.AssetAdmin, TEST_ACCOUNT), false);

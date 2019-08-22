@@ -14,16 +14,14 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as EwGeneralLib from '@energyweb/utils-general';
-import * as Winston from 'winston';
+import { Configuration } from 'ew-utils-general-lib';
 import Web3 from 'web3';
-import { UserContractLookupJSON, UserContractLookup, UserLogic } from '..';
+import {  UserContractLookup, UserLogic } from '..';
 
 export const createBlockchainProperties = async (
-    logger: Winston.Logger,
     web3: Web3,
     userLookupContractAddress: string
-): Promise<EwGeneralLib.Configuration.BlockchainProperties> => {
+): Promise<Configuration.BlockchainProperties> => {
     const userLookupContractInstance: any = new UserContractLookup(web3, userLookupContractAddress);
     const userRegistryLogicAddress: string = await userLookupContractInstance.userRegistry();
 
