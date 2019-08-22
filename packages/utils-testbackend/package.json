@@ -5,7 +5,7 @@
   "main": "dist/js/index.js",
   "scripts": {
     "start": "node dist/js/src/index.js",
-    "build": "shx rm -rf dist/js && tsc",
+    "build": "rm -rf dist/js && tsc",
     "lint": "tslint --fix  'src/**/*{.ts,.tsx}'",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "prepare": "npm run build",
@@ -30,8 +30,7 @@
   },
   "devDependencies": {
     "axios": "0.19.0",
-    "lint-staged": "8.1.7",
-    "shx": "0.3.2"
+    "lint-staged": "8.1.7"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
