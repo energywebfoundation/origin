@@ -15,7 +15,6 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
 import Web3 from 'web3';
-import * as Winston from 'winston';
 
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
@@ -23,7 +22,6 @@ import { createBlockchainProperties as assetCreateBlockchainProperties } from '@
 import { CertificateLogic, OriginContractLookup } from '..';
 
 export const createBlockchainProperties = async (
-    logger: Winston.Logger,
     web3: Web3,
     originContractLookupAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
@@ -33,7 +31,6 @@ export const createBlockchainProperties = async (
     );
 
     const assetBlockchainProperties: Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
-        logger,
         web3,
         await originLookupContractInstance.assetContractLookup()
     );

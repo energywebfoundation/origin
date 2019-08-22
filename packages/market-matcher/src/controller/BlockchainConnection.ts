@@ -77,12 +77,10 @@ export const createBlockchainConf = async (
 ): Promise<Configuration.Entity> => {
     const web3 = new Web3(blockchainSectionConfFile.web3Url);
     const marketConf = await marketCreateBlockchainProperties(
-        logger,
         web3,
         blockchainSectionConfFile.marketContractLookupAddress
     );
     const originConf = await issuerCreateBlockchainProperties(
-        logger,
         web3,
         blockchainSectionConfFile.originContractLookupAddress
     );

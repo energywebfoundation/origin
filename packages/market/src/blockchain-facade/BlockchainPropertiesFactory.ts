@@ -15,13 +15,11 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as EwGeneralLib from '@energyweb/utils-general';
-import * as Winston from 'winston';
 import Web3 from 'web3';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
 import { MarketContractLookup, MarketLogic } from '..';
 
 export const createBlockchainProperties = async (
-    logger: Winston.Logger,
     web3: Web3,
     marketContractLookupAddress: string
 ): Promise<EwGeneralLib.Configuration.BlockchainProperties> => {
@@ -30,11 +28,10 @@ export const createBlockchainProperties = async (
         marketContractLookupAddress
     );
 
-    const assetBlockchainProperties: EwGeneralLib.Configuration.BlockchainProperties = (await assetCreateBlockchainProperties(
-        logger,
-        web3 as any,
+    const assetBlockchainProperties: EwGeneralLib.Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
+        web3,
         await marketLookupContractInstance.assetContractLookup()
-    )) as any;
+    );
 
     return {
         consumingAssetLogicInstance: assetBlockchainProperties.consumingAssetLogicInstance,
