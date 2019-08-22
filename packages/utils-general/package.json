@@ -21,7 +21,8 @@
     "test": "test"
   },
   "scripts": {
-    "build": "rm -rf dist/js && tsc",
+    "build": "scripts/build.js",
+    "build-ts": "rm -rf dist/js && tsc",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
