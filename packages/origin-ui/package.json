@@ -11,6 +11,7 @@
     "lint": "&& tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
     "start": "node --max-old-space-size=8192 ./node_modules/.bin/webpack-dev-server --config webpack/dev.config.js -d --watch",
+    "start-all": "yarn start",
     "test": "jest",
     "test-watch": "jest -u --watchAll",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'"

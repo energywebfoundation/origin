@@ -22,6 +22,7 @@
     "run:demo": "lerna run start --scope @energyweb/utils-demo --stream",
     "run:backend": "lerna run start --scope @energyweb/utils-testbackend --stream",
     "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
+    "run:origin": "lerna run start-all --scope @energyweb/origin-ui --scope @energyweb/utils-demo --parallel",
     "test": "yarn run test:ui",
     "test:ui": "lerna run test --scope @energyweb/origin-ui --stream"
   },
