@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Configuration } from 'ew-utils-general-lib';
+import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import {  UserContractLookup, UserLogic } from '..';
 

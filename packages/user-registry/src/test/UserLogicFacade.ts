@@ -23,7 +23,7 @@ import {
 } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { IUserPropertiesOnChain, IUserPropertiesOffChain, User } from '../blockchain-facade/Users/User';
-import { Configuration } from 'ew-utils-general-lib';
+import { Configuration } from '@energyweb/utils-general';
 import { logger } from '../blockchain-facade/Logger';
 import Web3 from 'web3';
 import { buildRights, Role } from '../wrappedContracts/RoleManagement';

@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import { Configuration, BlockchainDataModelEntity } from 'ew-utils-general-lib';
+import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { Role } from '../../wrappedContracts/RoleManagement';
 
 export interface IUserPropertiesOnChain {

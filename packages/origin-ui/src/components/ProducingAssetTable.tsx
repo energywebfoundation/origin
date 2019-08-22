@@ -16,7 +16,7 @@
 
 import * as React from 'react';
 
-import { Certificate, CertificateLogic } from 'ew-origin-lib';
+import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { ITableHeaderData } from './Table/Table';
