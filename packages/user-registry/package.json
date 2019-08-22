@@ -36,8 +36,8 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "ew-utils-deployment": "0.3.0",
     "@energyweb/utils-general": "1.1.0",
+    "ew-utils-deployment": "0.3.0",
     "typedarray-to-buffer": "3.1.5",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
@@ -58,5 +58,6 @@
       "git add"
     ]
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "gitHead": "1fc2ebcd5709ccdceb50585e834ce7c53f8f279a"
 }

@@ -54,5 +54,6 @@
       "git add"
     ]
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "gitHead": "1fc2ebcd5709ccdceb50585e834ce7c53f8f279a"
 }
