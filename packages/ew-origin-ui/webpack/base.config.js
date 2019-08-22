@@ -1,4 +1,6 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
     entry: "./src/index.tsx",
@@ -14,14 +16,22 @@ module.exports = {
 
     devServer: {
         port: 3000,
-        historyApiFallback: true,
-        inline: true
+        compress: true,
+        historyApiFallback: true
     },
 
     plugins: [
         new ExtractTextPlugin({
             filename: 'styles.css',
             allChunks: true
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Origin',
+        favicon: 'favicon.ico',
+        template: './src/index.ejs',
+        meta: {
+            viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
+        }
       })
     ],
     module: {
