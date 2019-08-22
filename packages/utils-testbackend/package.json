@@ -8,7 +8,7 @@
     "build": "rm -rf dist/js && tsc",
     "lint": "tslint --fix  'src/**/*{.ts,.tsx}'",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "prepare": "npm run build",
+    "prepare": "yarn build",
     "test": "rm -rf db.json && npm run build && mocha dist/js/test/ --timeout 60000"
   },
   "repository": {
