@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import fs from 'fs-extra';
 import moment from 'moment';
-import csv from 'csv';
+import parse from 'csv-parse/lib/sync';
 import CONFIG from '../config/config.json';
 
 const PORT = CONFIG.config.SIMULATION.PORT || 3031;
@@ -20,7 +20,7 @@ enum ENERGY_UNIT {
 }
 
 interface IAssetGetResponse {
-    id: number;
+    id: string;
     role: string;
     manufacturer: string;
     model: string;
@@ -117,16 +117,8 @@ async function getData() {
         return DATA;
     }
 
-    return new Promise(async resolve => {
-        csv.parse(
-            await fs.readFile(`${__dirname}/../config/data.csv`),
-            { columns: false, trim: true },
-            function(err, rows) {
-                DATA = rows;
-                resolve(rows);
-            }
-        );
-    });
+    const fileContent = await fs.readFile(`${__dirname}/../config/data.csv`);
+    DATA = parse(fileContent, { columns: false, trim: true });
 }
 
 export async function startAPI() {
@@ -143,13 +135,9 @@ export async function startAPI() {
     app.get('/asset/:id/energy', async (req, res) => {
         console.log(`GET - /asset/${req.params.id}/energy`);
 
-        let assetData;
+        const asset = CONFIG.assets.find(a => a.id === req.params.id);
 
-        try {
-            assetData = CONFIG.assets.find(a => a.id === req.params.id);
-        } catch (error) {
-            console.log('error', error);
-
+        if (!asset) {
             return res.status(404).json({
                 error: 'ASSET_NOT_FOUND',
                 message: `Asset not found.`
@@ -166,11 +154,11 @@ export async function startAPI() {
 
         let filteredReads = processRows(
             rows,
-            assetData.maxCapacity,
+            asset.maxCapacity,
             timeStart,
             timeEnd,
             accumulated,
-            assetData.energyUnit
+            ENERGY_UNIT[asset.energy_unit]
         );
 
         if (LIMIT !== -1) {
@@ -183,13 +171,9 @@ export async function startAPI() {
     app.get('/asset/:id', async (req, res) => {
         console.log(`GET - /asset/${req.params.id}`);
 
-        let assetData;
+        const asset = CONFIG.assets.find(a => a.id === req.params.id);
 
-        try {
-            assetData = CONFIG.assets.find(a => a.id === req.params.id);
-        } catch (error) {
-            console.log('error', error);
-
+        if (!asset) {
             return res.status(404).json({
                 error: 'ASSET_NOT_FOUND',
                 message: `Asset not found.`
@@ -197,15 +181,15 @@ export async function startAPI() {
         }
 
         const response: IAssetGetResponse = {
-            id: assetData.id.toString(),
-            role: assetData.role,
-            manufacturer: assetData.manufacturer,
-            model: assetData.model,
-            serial_number: assetData.serial_number,
-            latitude: assetData.latitude,
-            longitude: assetData.longitude,
-            energy_unit: assetData.energy_unit,
-            is_accumulated: assetData.is_accumulated
+            id: asset.id.toString(),
+            role: asset.role,
+            manufacturer: asset.manufacturer,
+            model: asset.model,
+            serial_number: asset.serial_number,
+            latitude: asset.latitude,
+            longitude: asset.longitude,
+            energy_unit: ENERGY_UNIT[asset.energy_unit],
+            is_accumulated: asset.is_accumulated
         };
 
         return res.json(response);

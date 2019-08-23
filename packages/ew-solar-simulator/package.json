@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "start-simulation": "node dist/js/src/simulateEnergyGeneration.js",
-    "start-consuming-api": "node dist/js/src/readEnergyGeneration.js",
+    "start-simulation": "node dist/js/src/simulatorService.js",
+    "start-consuming-api": "node dist/js/src/consumerService.js",
     "import-irec-assets": "node dist/js/src/importIRECAssets.js",
     "fund-assets-smart-meters": "node dist/js/src/fundAssets.js",
     "build-ts": "tsc",
