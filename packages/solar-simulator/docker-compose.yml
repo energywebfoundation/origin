@@ -1,0 +1,15 @@
+version: '3'
+services:
+  simulation:
+    build: .
+    command: npm run start-simulation
+    volumes:
+      - ./config/config.json:/src/config/config.json
+  
+  consumer:
+    build: .
+    command: npm run start-consuming-api
+    volumes:
+      - ./config/config.json:/src/config/config.json
+    links:
+      - simulation
