@@ -17,7 +17,7 @@ import createSagaMiddleware from 'redux-saga';
 import sagas from '../features/sagas';
 
 import { OverlayTrigger } from 'react-bootstrap';
-import { startAPI } from 'ew-utils-testbackend/dist/js/src/api';
+import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 
 import Web3 from 'web3';
 
