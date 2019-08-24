@@ -30,7 +30,7 @@ import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { MapContainer } from './MapContainer';
+import { AssetMap } from './AssetMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
@@ -254,7 +254,7 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                                                         </div>
                                                     ) : (
                                                         <div className={`Image Map`}>
-                                                            <MapContainer asset={selectedAsset} />
+                                                            <AssetMap assets={[selectedAsset]} />
                                                         </div>
                                                     ))}
                                                 {col.description && (

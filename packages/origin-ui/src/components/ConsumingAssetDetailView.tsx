@@ -27,7 +27,7 @@ import { ConsumingAsset } from '@energyweb/asset-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from '@energyweb/utils-general';
-import { MapContainer } from './MapContainer';
+import { AssetMap } from './AssetMap';
 
 export interface IDetailViewProps {
     conf: Configuration.Entity;
@@ -69,6 +69,10 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
     }
 
     async getOwner(props: IDetailViewProps): Promise<void> {
+        if (typeof(props.id) === 'undefined') {
+            return;
+        }
+
         const selectedAsset: ConsumingAsset.Entity = props.consumingAssets.find(
             (c: ConsumingAsset.Entity) => c.id === props.id.toString()
         );
@@ -206,8 +210,8 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                                                             </div>
                                                         ) : (
                                                             <div className={`Image Map`}>
-                                                                <MapContainer
-                                                                    asset={selectedAsset}
+                                                                <AssetMap
+                                                                    assets={[selectedAsset]}
                                                                 />
                                                             </div>
                                                         ))}

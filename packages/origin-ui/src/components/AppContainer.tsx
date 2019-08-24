@@ -30,7 +30,7 @@ import { User } from '@energyweb/user-registry';
 
 import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
-import { IStoreState, IActions } from '../types';
+import { IStoreState } from '../types';
 import { Header } from './Header';
 import { Asset } from './Asset';
 import { Admin } from './Admin';
@@ -52,14 +52,40 @@ import {
 import { withRouter } from 'react-router-dom';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
+import { TSetOriginContractLookupAddress, setOriginContractLookupAddress } from '../features/contracts/actions';
+import { getBaseURL, getConfiguration, constructBaseURL, getCurrentUser } from '../features/selectors';
+import { getAssetsLink, getCertificatesLink, getAdminLink, getDemandsLink } from '../utils/routing';
 
 export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3030';
 
-interface IAppContainerProps extends IStoreState {
-    actions: IActions;
+interface RouterProps {
     match: any;
     location: any;
+    history: any;
 }
+
+interface StateProps {
+    baseURL: string;
+    certificates: Certificate.Entity[];
+    configuration: Configuration.Entity;
+    consumingAssets: ConsumingAsset.Entity[];
+    currentUser: User;
+    demands: Demand.Entity[];
+    producingAssets: ProducingAsset.Entity[];
+}
+
+interface DispatchProps {
+    certificateCreatedOrUpdated: Function;
+    currentUserUpdated: Function;
+    consumingAssetCreatedOrUpdated: Function;
+    demandCreatedOrUpdated: Function;
+    demandDeleted: Function;
+    producingAssetCreatedOrUpdated: Function;
+    configurationUpdated: Function;
+    setOriginContractLookupAddress: TSetOriginContractLookupAddress;
+}
+
+type Props = RouterProps & StateProps & DispatchProps;
 
 interface IAppContainerState {
     loading: boolean;
@@ -74,8 +100,8 @@ enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
 }
 
-class AppContainerClass extends React.Component<IAppContainerProps, IAppContainerState> {
-    constructor(props: IAppContainerProps) {
+class AppContainerClass extends React.Component<Props, IAppContainerState> {
+    constructor(props: Props) {
         super(props);
 
         this.CertificateTable = this.CertificateTable.bind(this);
@@ -97,7 +123,7 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         );
 
         certificateContractEventHandler.onEvent('LogCertificateRetired', async (event: any) =>
-            this.props.actions.certificateCreatedOrUpdated(
+            this.props.certificateCreatedOrUpdated(
                 await new Certificate.Entity(
                     event.returnValues._certificateId,
                     this.props.configuration
@@ -106,7 +132,7 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         );
 
         certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) =>
-            this.props.actions.certificateCreatedOrUpdated(
+            this.props.certificateCreatedOrUpdated(
                 await new Certificate.Entity(
                     event.returnValues._certificateId,
                     this.props.configuration
@@ -115,7 +141,7 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         );
 
         certificateContractEventHandler.onEvent('Transfer', async (event: any) => {
-            this.props.actions.certificateCreatedOrUpdated(
+            this.props.certificateCreatedOrUpdated(
                 await new Certificate.Entity(
                     event.returnValues._tokenId,
                     this.props.configuration
@@ -124,7 +150,7 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         });
 
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            this.props.actions.certificateCreatedOrUpdated(
+            this.props.certificateCreatedOrUpdated(
                 await new Certificate.Entity(
                     event.returnValues._entityId,
                     this.props.configuration
@@ -133,7 +159,7 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         });
 
         certificateContractEventHandler.onEvent('LogUnpublishForSale', async (event: any) => {
-            this.props.actions.certificateCreatedOrUpdated(
+            this.props.certificateCreatedOrUpdated(
                 await new Certificate.Entity(
                     event.returnValues._entityId,
                     this.props.configuration
@@ -161,12 +187,12 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
             ).sync();
 
             if (!isDemandDeleted(demand)) {
-                this.props.actions.demandCreatedOrUpdated(demand);
+                this.props.demandCreatedOrUpdated(demand);
             }
         });
 
         demandContractEventHandler.onEvent('deletedDemand', async (event: any) =>
-            this.props.actions.demandDeleted(
+            this.props.demandDeleted(
                 await new Demand.Entity(
                     event.returnValues._demandId,
                     this.props.configuration
@@ -253,38 +279,72 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
         }
     }
 
+    async getOriginContractLookupAddressFromAPI() : Promise<string> {
+        const response = await axios.get(
+            `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/`
+        );
+
+        if (!response.data) {
+            return null;
+        }
+
+        const originContracts = Object.keys(response.data);
+
+        if (originContracts.length > 0) {
+            return originContracts[originContracts.length - 1];
+        }
+    }
+
     async componentDidMount(): Promise<void> {
-        const conf = await this.initConf(this.props.match.params.contractAddress);
+        let contractAddress = this.props.match.params.contractAddress;
+
+        if (contractAddress) {
+            this.props.setOriginContractLookupAddress(contractAddress);
+        } else {
+            contractAddress = await this.getOriginContractLookupAddressFromAPI();
+
+            if (contractAddress) {
+                this.props.setOriginContractLookupAddress(contractAddress);
+
+                this.props.history.push(constructBaseURL(contractAddress));
+            } else {
+                this.setState({
+                    error: ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS
+                });
+            }
+        }
+        
+        const conf = await this.initConf(contractAddress);
 
         if (!conf) {
             return;
         }
 
-        this.props.actions.configurationUpdated(conf);
+        this.props.configurationUpdated(conf);
         const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
 
         const currentUser: User =
             accounts.length > 0 ? await new User(accounts[0], conf as any).sync() : null;
 
         (await ProducingAsset.getAllAssets(conf)).forEach((p: ProducingAsset.Entity) =>
-            this.props.actions.producingAssetCreatedOrUpdated(p)
+            this.props.producingAssetCreatedOrUpdated(p)
         );
 
         (await ConsumingAsset.getAllAssets(conf)).forEach((c: ConsumingAsset.Entity) =>
-            this.props.actions.consumingAssetCreatedOrUpdated(c)
+            this.props.consumingAssetCreatedOrUpdated(c)
         );
 
         (await Demand.getAllDemands(conf)).forEach((d: Demand.Entity) => {
             if (!isDemandDeleted(d)) {
-                this.props.actions.demandCreatedOrUpdated(d);
+                this.props.demandCreatedOrUpdated(d);
             }
         });
 
         (await Certificate.getActiveCertificates(conf)).forEach((certificate: Certificate.Entity) =>
-            this.props.actions.certificateCreatedOrUpdated(certificate)
+            this.props.certificateCreatedOrUpdated(certificate)
         );
 
-        this.props.actions.currentUserUpdated(
+        this.props.currentUserUpdated(
             currentUser !== null && currentUser.active ? currentUser : null
         );
 
@@ -343,31 +403,33 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
     }
 
     render(): JSX.Element {
+        const {
+            baseURL,
+            configuration
+        } = this.props;
         const { error, loading } = this.state;
 
         if (error) {
             return <ErrorComponent message={error} />;
         }
 
-        if (this.props.configuration === null || loading) {
+        if (configuration === null || loading) {
             return <LoadingComponent />;
         }
 
-        const contractAddress = this.props.match.params.contractAddress;
-
         return (
-            <div className={`AppWrapper ${false ? 'Profile--open' : ''}`}>
-                <Header currentUser={this.props.currentUser} baseUrl={contractAddress} />
+            <div className={`AppWrapper`}>
+                <Header />
                 <Switch>
-                    <Route path={`/${contractAddress}/assets/`} component={this.Asset} />
+                    <Route path={getAssetsLink(baseURL)} component={this.Asset} />
                     <Route
-                        path={`/${contractAddress}/certificates/`}
+                        path={getCertificatesLink(baseURL)}
                         component={this.CertificateTable}
                     />
-                    <Route path={`/${contractAddress}/admin/`} component={this.Admin} />
-                    <Route path={`/${contractAddress}/demands/`} component={this.DemandTable} />
+                    <Route path={getAdminLink(baseURL)} component={this.Admin} />
+                    <Route path={getDemandsLink(baseURL)} component={this.DemandTable} />
 
-                    <Route path={`/${contractAddress}`} component={this.Asset} />
+                    <Route path={baseURL} component={this.Asset} />
                 </Switch>
                 <AccountChangedModal />
             </div>
@@ -376,19 +438,26 @@ class AppContainerClass extends React.Component<IAppContainerProps, IAppContaine
 }
 
 export const AppContainer = connect(
-    (state: IStoreState) => state,
-    dispatch => ({
-        actions: bindActionCreators(
-            {
-                currentUserUpdated,
-                configurationUpdated,
-                demandCreatedOrUpdated,
-                demandDeleted,
-                producingAssetCreatedOrUpdated,
-                certificateCreatedOrUpdated,
-                consumingAssetCreatedOrUpdated
-            },
-            dispatch
-        )
-    })
+    (state: IStoreState) => ({
+        baseURL: getBaseURL(state),
+        certificates: state.certificates,
+        configuration: getConfiguration(state),
+        consumingAssets: state.consumingAssets,
+        currentUser: getCurrentUser(state),
+        demands: state.demands,
+        producingAssets: state.producingAssets
+    }),
+    dispatch => bindActionCreators(
+        {
+            currentUserUpdated,
+            configurationUpdated,
+            demandCreatedOrUpdated,
+            demandDeleted,
+            producingAssetCreatedOrUpdated,
+            certificateCreatedOrUpdated,
+            consumingAssetCreatedOrUpdated,
+            setOriginContractLookupAddress
+        },
+        dispatch
+    )
 )(withRouter(AppContainerClass));

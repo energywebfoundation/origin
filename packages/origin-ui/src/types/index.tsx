@@ -20,6 +20,7 @@ import { Certificate } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 import { Demand } from '@energyweb/market';
 import { IGeneralState } from '../features/general/reducer';
+import { IContractsState } from '../features/contracts/reducer';
 
 export interface IStoreState {
     configuration: Configuration.Entity;
@@ -29,14 +30,5 @@ export interface IStoreState {
     demands: Demand.Entity[];
     currentUser: User;
     general: IGeneralState;
-}
-
-export interface IActions {
-    certificateCreatedOrUpdated: Function;
-    currentUserUpdated: Function;
-    consumingAssetCreatedOrUpdated: Function;
-    demandCreatedOrUpdated: Function;
-    demandDeleted: Function;
-    producingAssetCreatedOrUpdated: Function;
-    configurationUpdated: Function;
+    contracts: IContractsState;
 }

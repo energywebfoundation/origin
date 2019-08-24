@@ -15,7 +15,6 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Nav } from 'react-bootstrap';
 
 import { NavLink, Redirect, Route } from 'react-router-dom';
 
@@ -72,21 +71,20 @@ export class Admin extends React.Component<AdminProps, {}> {
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu">
+                    <ul className="NavMenu nav">
                         {AdminMenu.map(menu => {
                             return (
                                 <li>
                                     <NavLink
                                         exact={true}
                                         to={`/${baseUrl}/admin/${menu.key}`}
-                                        activeClassName="active"
                                     >
                                         {menu.label}
                                     </NavLink>
                                 </li>
                             );
                         })}
-                    </Nav>
+                    </ul>
                 </div>
 
                 <Route

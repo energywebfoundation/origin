@@ -21,6 +21,7 @@ import demands from './Demand';
 import configuration from './Configuration';
 import currentUser from './User';
 import general from '../features/general/reducer';
+import contracts from '../features/contracts/reducer';
 import { combineReducers } from 'redux';
 import { IStoreState } from '../types';
 
@@ -31,7 +32,8 @@ const reducers = combineReducers<IStoreState>({
     demands,
     general,
     currentUser,
-    configuration
+    configuration,
+    contracts
 });
 
 export default reducers;

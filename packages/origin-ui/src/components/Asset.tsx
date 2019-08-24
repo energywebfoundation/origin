@@ -18,7 +18,6 @@ import * as React from 'react';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
 import { ProducingAssetTable } from './ProducingAssetTable';
 import { ConsumingAssetTable } from './ConsumingAssetTable';
 import { PageContent } from '../elements/PageContent/PageContent';
@@ -27,6 +26,7 @@ import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
 import { Configuration } from '@energyweb/utils-general';
 import { Demand } from '@energyweb/market';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
+import { AssetMap } from './AssetMap';
 
 export interface AssetProps {
     conf: Configuration.Entity;
@@ -44,6 +44,7 @@ export class Asset extends React.Component<AssetProps> {
 
         this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this);
         this.ProducingAssetTable = this.ProducingAssetTable.bind(this);
+        this.ProductionMap = this.ProductionMap.bind(this);
     }
 
     ProducingAssetTable(): JSX.Element {
@@ -55,6 +56,12 @@ export class Asset extends React.Component<AssetProps> {
                 currentUser={this.props.currentUser}
                 baseUrl={this.props.baseUrl}
             />
+        );
+    }
+
+    ProductionMap(): JSX.Element {
+        return (
+            <AssetMap height='700px' />
         );
     }
 
@@ -106,6 +113,11 @@ export class Asset extends React.Component<AssetProps> {
                 component: this.ProducingAssetTable
             },
             {
+                key: 'production-map',
+                label: 'Production Map',
+                component: this.ProductionMap
+            },
+            {
                 key: 'consumption',
                 label: 'Consumption List',
                 component: this.ConsumingAssetTable
@@ -125,20 +137,19 @@ export class Asset extends React.Component<AssetProps> {
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu">
+                    <ul className="NavMenu nav">
                         {AssetsMenu.map(menu => {
                             return (
                                 <li key={menu.key}>
                                     <NavLink
                                         to={`/${this.props.baseUrl}/assets/${menu.key}`}
-                                        activeClassName="active"
                                     >
                                         {menu.label}
                                     </NavLink>
                                 </li>
                             );
                         })}
-                    </Nav>
+                    </ul>
                 </div>
 
                 <Route

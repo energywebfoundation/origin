@@ -16,7 +16,6 @@
 
 import * as React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
 
 import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
@@ -176,14 +175,13 @@ export class Certificates extends React.Component<ICertificatesProps> {
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu">
+                    <ul className="NavMenu nav">
                         {CertificatesMenu.map(menu => {
                             if (menu.show) {
                                 return (
                                     <li key={menu.key}>
                                         <NavLink
                                             to={`/${this.props.baseUrl}/certificates/${menu.key}`}
-                                            activeClassName="active"
                                         >
                                             {menu.label}
                                         </NavLink>
@@ -191,7 +189,7 @@ export class Certificates extends React.Component<ICertificatesProps> {
                                 );
                             }
                         })}
-                    </Nav>
+                    </ul>
                 </div>
 
                 <Route

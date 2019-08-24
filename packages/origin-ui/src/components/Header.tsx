@@ -15,54 +15,57 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Nav } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
-
+import { NavLink, withRouter } from 'react-router-dom';
 import { User } from '@energyweb/user-registry';
-
 import logo from '../../assets/logo.svg';
-
 import { AccountCircle } from '@material-ui/icons';
 
 import './Header.scss';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getBaseURL, getCurrentUser } from '../features/selectors';
+import { getAssetsLink, getCertificatesLink, getDemandsLink, getAdminLink } from '../utils/routing';
 
-export interface IHeaderProps {
+interface StateProps {
     currentUser: User;
-    baseUrl: string;
+    baseURL: string;
 }
 
-export class Header extends React.Component<IHeaderProps, {}> {
+type Props = StateProps;
+
+class HeaderClass extends React.Component<Props> {
     render() {
-        const { baseUrl, currentUser } = this.props;
+        const { baseURL, currentUser } = this.props;
 
         return (
             <div className="HeaderWrapper">
                 <div className="Header">
-                    <NavLink to="/assets" activeClassName="active">
+                    <NavLink to={getAssetsLink(baseURL)}>
                         <img src={logo} />
                     </NavLink>
-                    <Nav className="NavMenu">
+                    <ul className="NavMenu nav">
                         <li>
-                            <NavLink to={`/${baseUrl}/assets`} activeClassName="active">
+                            <NavLink to={getAssetsLink(baseURL)}>
                                 Assets
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${baseUrl}/certificates`} activeClassName="active">
+                            <NavLink to={getCertificatesLink(baseURL)}>
                                 Certificates
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${baseUrl}/demands`} activeClassName="active">
+                            <NavLink to={getDemandsLink(baseURL)}>
                                 Demands
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={`/${baseUrl}/admin`} activeClassName="active">
+                            <NavLink to={getAdminLink(baseURL)}>
                                 Admin
                             </NavLink>
                         </li>
-                    </Nav>
+                    </ul>
+                    
                     <div className="ViewProfile">
                         <AccountCircle className="ViewProfile_icon" color="primary" />
                         {currentUser ? currentUser.organization : 'Guest'}
@@ -72,3 +75,10 @@ export class Header extends React.Component<IHeaderProps, {}> {
         );
     }
 }
+
+export const Header = withRouter(connect(
+    (state: IStoreState) => ({
+        baseURL: getBaseURL(state),
+        currentUser: getCurrentUser(state)
+    })
+)(HeaderClass));

@@ -15,13 +15,10 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Nav } from 'react-bootstrap';
-
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-
 import { PageContent } from '../elements/PageContent/PageContent';
 import { DemandTable } from './DemandTable';
 
@@ -64,7 +61,7 @@ export class Demands extends React.Component<IDemandsProps> {
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu" />
+                    <ul className="NavMenu nav"></ul>
                 </div>
 
                 <PageContent
