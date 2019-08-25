@@ -15,11 +15,6 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { Configuration } from '@energyweb/utils-general';
-import { Demand } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
 import { Certificates } from './Certificates';
 import { Route, Switch, withRouter, RouteComponentProps } from 'react-router-dom';
 import { IStoreState } from '../types';
@@ -37,109 +32,41 @@ import {
     TSetOriginContractLookupAddress,
     setOriginContractLookupAddress
 } from '../features/contracts/actions';
-import { getBaseURL, getConfiguration, getCurrentUser } from '../features/selectors';
+import { getBaseURL } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getAdminLink, getDemandsLink } from '../utils/routing';
-import { getOriginContractLookupAddress } from '../features/contracts/selectors';
 import { getError, getLoading } from '../features/general/selectors';
 
-interface MatchParams {
+interface IMatchParams {
     contractAddress?: string;
 }
 
-interface StateProps {
+interface IStateProps {
     baseURL: string;
-    certificates: Certificate.Entity[];
-    configuration: Configuration.Entity;
-    consumingAssets: ConsumingAsset.Entity[];
-    currentUser: User;
-    demands: Demand.Entity[];
     error: string;
     loading: boolean;
-    originContractLookupAddress: string;
-    producingAssets: ProducingAsset.Entity[];
 }
 
-interface DispatchProps {
+interface IDispatchProps {
     setOriginContractLookupAddress: TSetOriginContractLookupAddress;
 }
 
-type Props = RouteComponentProps<MatchParams> & StateProps & DispatchProps;
+type Props = RouteComponentProps<IMatchParams> & IStateProps & IDispatchProps;
 
 class AppContainerClass extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props);
-
-        this.CertificateTable = this.CertificateTable.bind(this);
-        this.DemandTable = this.DemandTable.bind(this);
-        this.Admin = this.Admin.bind(this);
-        this.Asset = this.Asset.bind(this);
-    }
-
     async componentDidMount(): Promise<void> {
         let contractAddress = this.props.match.params.contractAddress;
 
         this.props.setOriginContractLookupAddress(contractAddress);
     }
 
-    Asset() {
-        return (
-            <Asset
-                certificates={this.props.certificates}
-                producingAssets={this.props.producingAssets}
-                demands={this.props.demands}
-                consumingAssets={this.props.consumingAssets}
-                conf={this.props.configuration}
-                currentUser={this.props.currentUser}
-                baseUrl={this.props.match.params.contractAddress}
-            />
-        );
-    }
-
-    CertificateTable() {
-        return (
-            <Certificates
-                baseUrl={this.props.match.params.contractAddress}
-                producingAssets={this.props.producingAssets}
-                certificates={this.props.certificates}
-                demands={this.props.demands}
-                conf={this.props.configuration}
-                currentUser={this.props.currentUser}
-            />
-        );
-    }
-
-    DemandTable() {
-        return (
-            <Demands
-                conf={this.props.configuration}
-                demands={this.props.demands}
-                consumingAssets={this.props.consumingAssets}
-                producingAssets={this.props.producingAssets}
-                currentUser={this.props.currentUser}
-                baseUrl={this.props.match.params.contractAddress}
-            />
-        );
-    }
-
-    Admin() {
-        return (
-            <Admin
-                conf={this.props.configuration}
-                currentUser={this.props.currentUser}
-                producingAssets={this.props.producingAssets}
-                baseUrl={this.props.match.params.contractAddress}
-            />
-        );
-    }
-
     render(): JSX.Element {
-        const { baseURL, configuration, error, loading } = this.props;
+        const { baseURL, error, loading } = this.props;
 
         if (error) {
             return <ErrorComponent message={error} />;
         }
 
-        if (configuration === null || loading) {
+        if (loading) {
             return <LoadingComponent />;
         }
 
@@ -147,12 +74,12 @@ class AppContainerClass extends React.Component<Props> {
             <div className={`AppWrapper`}>
                 <Header />
                 <Switch>
-                    <Route path={getAssetsLink(baseURL)} component={this.Asset} />
-                    <Route path={getCertificatesLink(baseURL)} component={this.CertificateTable} />
-                    <Route path={getAdminLink(baseURL)} component={this.Admin} />
-                    <Route path={getDemandsLink(baseURL)} component={this.DemandTable} />
+                    <Route path={getAssetsLink(baseURL)} component={Asset} />
+                    <Route path={getCertificatesLink(baseURL)} component={Certificates} />
+                    <Route path={getAdminLink(baseURL)} component={Admin} />
+                    <Route path={getDemandsLink(baseURL)} component={Demands} />
 
-                    <Route path={baseURL} component={this.Asset} />
+                    <Route path={baseURL} component={Asset} />
                 </Switch>
                 <AccountChangedModal />
             </div>
@@ -160,18 +87,11 @@ class AppContainerClass extends React.Component<Props> {
     }
 }
 
-export const AppContainer = connect(
-    (state: IStoreState) => ({
+export const AppContainer = withRouter(connect(
+    (state: IStoreState): IStateProps => ({
         baseURL: getBaseURL(state),
-        certificates: state.certificates,
-        configuration: getConfiguration(state),
-        consumingAssets: state.consumingAssets,
-        currentUser: getCurrentUser(state),
-        demands: state.demands,
         error: getError(state),
-        loading: getLoading(state),
-        originContractLookupAddress: getOriginContractLookupAddress(state),
-        producingAssets: state.producingAssets
+        loading: getLoading(state)
     }),
     dispatch =>
         bindActionCreators(
@@ -180,4 +100,4 @@ export const AppContainer = connect(
             },
             dispatch
         )
-)(withRouter(AppContainerClass));
+)(AppContainerClass));

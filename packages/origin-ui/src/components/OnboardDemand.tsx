@@ -21,14 +21,17 @@ import { AssetType, TimeFrame, Compliance, Currency, Configuration } from '@ener
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand } from '@energyweb/market';
 import { showNotification, NotificationType } from '../utils/notifications';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getConfiguration, getCurrentUser, getProducingAssets } from '../features/selectors';
 
-export interface IOnboardDemandProps {
+interface IStateProps {
     configuration: Configuration.Entity;
     currentUser: User;
     producingAssets: ProducingAsset.Entity[];
 }
 
-export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
+class OnboardDemandClass extends React.Component<IStateProps> {
     constructor(props) {
         super(props);
         this.createDemand = this.createDemand.bind(this);
@@ -337,3 +340,11 @@ export class OnboardDemand extends React.Component<IOnboardDemandProps, {}> {
         );
     }
 }
+
+export const OnboardDemand = connect(
+    (state: IStoreState): IStateProps => ({
+        configuration: getConfiguration(state),
+        currentUser: getCurrentUser(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(OnboardDemandClass);

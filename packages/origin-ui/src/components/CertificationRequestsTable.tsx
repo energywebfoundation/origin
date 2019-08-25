@@ -1,7 +1,5 @@
 import * as React from 'react';
-
 import { Configuration } from '@energyweb/utils-general';
-
 import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { CertificateLogic } from '@energyweb/origin';
@@ -11,28 +9,35 @@ import { showNotification, NotificationType } from '../utils/notifications';
 import {
     PaginatedLoader,
     IPaginatedLoaderState,
-    DEFAULT_PAGE_SIZE,
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     getInitialPaginatedLoaderState
 } from './Table/PaginatedLoader';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getCurrentUser, getProducingAssets, getConfiguration } from '../features/selectors';
 
-interface ICertificateTableProps {
-    conf: Configuration.Entity;
-    producingAssets: ProducingAsset.Entity[];
-    currentUser: User;
+interface IOwnProps {
     approvedOnly?: boolean;
 }
+
+interface IStateProps {
+    configuration: Configuration.Entity;
+    producingAssets: ProducingAsset.Entity[];
+    currentUser: User;
+}
+
+type Props = IOwnProps & IStateProps;
 
 enum OPERATIONS {
     APPROVE = 'Approve'
 }
 
-export class CertificationRequestsTable extends PaginatedLoader<
-    ICertificateTableProps,
+class CertificationRequestsTableClass extends PaginatedLoader<
+    Props,
     IPaginatedLoaderState
 > {
-    constructor(props: ICertificateTableProps) {
+    constructor(props: Props) {
         super(props);
 
         this.state = getInitialPaginatedLoaderState();
@@ -62,7 +67,7 @@ export class CertificationRequestsTable extends PaginatedLoader<
 
         const isIssuer = this.props.currentUser.isRole(Role.Issuer);
 
-        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+        const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
             .certificateLogicInstance;
 
         const requests = await certificateLogic.getCertificationRequests();
@@ -164,11 +169,11 @@ export class CertificationRequestsTable extends PaginatedLoader<
     }
 
     async approve(id: number) {
-        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+        const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
             .certificateLogicInstance;
 
         try {
-            this.props.conf.blockchainProperties.activeUser = {
+            this.props.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
             };
 
@@ -193,3 +198,11 @@ export class CertificationRequestsTable extends PaginatedLoader<
         }
     }
 }
+
+export const CertificationRequestsTable = connect(
+    (state: IStoreState): IStateProps => ({
+        configuration: getConfiguration(state),
+        currentUser: getCurrentUser(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(CertificationRequestsTableClass);

@@ -15,13 +15,11 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { ITableHeaderData } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { Configuration } from '@energyweb/utils-general';
-import { Demand } from '@energyweb/market';
 import { ConsumingAsset } from '@energyweb/asset-registry';
 import {
     IPaginatedLoaderFetchDataParameters,
@@ -36,14 +34,15 @@ import {
 } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import { AdvancedTable } from './Table/AdvancedTable';
+import { getConsumingAssetDetailLink } from '../utils/routing';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getConfiguration, getConsumingAssets, getBaseURL } from '../features/selectors';
 
-interface ConsumingAssetTableProps {
-    conf: Configuration.Entity;
+interface IStateProps {
+    configuration: Configuration.Entity;
     consumingAssets: ConsumingAsset.Entity[];
-    demands: Demand.Entity[];
-    certificates: Certificate.Entity[];
-    currentUser: User;
-    baseUrl: string;
+    baseURL: string;
 }
 
 interface IConsumingAssetTableState extends IPaginatedLoaderFilteredState {
@@ -55,11 +54,11 @@ interface IEnrichedConsumingAssetData {
     organizationName: string;
 }
 
-export class ConsumingAssetTable extends PaginatedLoaderFiltered<
-    ConsumingAssetTableProps,
+class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
+    IStateProps,
     IConsumingAssetTableState
 > {
-    constructor(props: ConsumingAssetTableProps) {
+    constructor(props: IStateProps) {
         super(props);
 
         this.state = {
@@ -120,7 +119,7 @@ export class ConsumingAssetTable extends PaginatedLoaderFiltered<
         };
     }
 
-    async componentDidUpdate(newProps: ConsumingAssetTableProps) {
+    async componentDidUpdate(newProps: IStateProps) {
         if (newProps.consumingAssets !== this.props.consumingAssets) {
             await this.loadPage(1);
         }
@@ -131,7 +130,7 @@ export class ConsumingAssetTable extends PaginatedLoaderFiltered<
     ): Promise<IEnrichedConsumingAssetData[]> {
         const promises = consumingAssets.map(async (asset: ConsumingAsset.Entity) => ({
             asset,
-            organizationName: (await new User(asset.owner.address, this.props.conf as any).sync())
+            organizationName: (await new User(asset.owner.address, this.props.configuration as any).sync())
                 .organization
         }));
 
@@ -149,12 +148,7 @@ export class ConsumingAssetTable extends PaginatedLoaderFiltered<
             return (
                 <Redirect
                     push={true}
-                    to={
-                        '/' +
-                        this.props.baseUrl +
-                        '/assets/consuming_detail_view/' +
-                        this.state.detailViewForAssetId
-                    }
+                    to={getConsumingAssetDetailLink(this.props.baseURL, this.state.detailViewForAssetId)}
                 />
             );
         }
@@ -201,3 +195,11 @@ export class ConsumingAssetTable extends PaginatedLoaderFiltered<
         );
     }
 }
+
+export const ConsumingAssetTable = connect(
+    (state: IStoreState): IStateProps => ({
+        configuration: getConfiguration(state),
+        consumingAssets: getConsumingAssets(state),
+        baseURL: getBaseURL(state)
+    })
+)(ConsumingAssetTableClass);

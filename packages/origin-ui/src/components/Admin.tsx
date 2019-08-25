@@ -15,44 +15,26 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-
 import { NavLink, Redirect, Route } from 'react-router-dom';
-
 import { PageContent } from '../elements/PageContent/PageContent';
 import { OnboardDemand } from './OnboardDemand';
-import { User } from '@energyweb/user-registry';
-import { ProducingAsset } from '@energyweb/asset-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { getAdminLink } from '../utils/routing';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getBaseURL } from '../features/selectors';
 
-export interface AdminProps {
-    conf: Configuration.Entity;
-    currentUser: User;
-    producingAssets: ProducingAsset.Entity[];
-    baseUrl: string;
+
+interface IStateProps {
+    baseURL: string;
 }
 
-export class Admin extends React.Component<AdminProps, {}> {
-    constructor(props) {
-        super(props);
-        this.OnboardDemand = this.OnboardDemand.bind(this);
-    }
-
-    OnboardDemand() {
-        return (
-            <OnboardDemand
-                configuration={this.props.conf}
-                currentUser={this.props.currentUser}
-                producingAssets={this.props.producingAssets}
-            />
-        );
-    }
-
+class AdminClass extends React.Component<IStateProps> {
     render() {
         const AdminMenu = [
             {
                 key: 'onboard_demand',
                 label: 'Onboard demand',
-                component: this.OnboardDemand
+                component: OnboardDemand
             },
             {
                 key: 'onboard_user',
@@ -66,7 +48,7 @@ export class Admin extends React.Component<AdminProps, {}> {
             }
         ];
 
-        const baseUrl = this.props.baseUrl;
+        const baseURL = this.props.baseURL;
 
         return (
             <div className="PageWrapper">
@@ -77,7 +59,7 @@ export class Admin extends React.Component<AdminProps, {}> {
                                 <li>
                                     <NavLink
                                         exact={true}
-                                        to={`/${baseUrl}/admin/${menu.key}`}
+                                        to={`${getAdminLink(baseURL)}/${menu.key}`}
                                     >
                                         {menu.label}
                                     </NavLink>
@@ -88,7 +70,7 @@ export class Admin extends React.Component<AdminProps, {}> {
                 </div>
 
                 <Route
-                    path={`/${baseUrl}/admin/:key`}
+                    path={`${getAdminLink(baseURL)}/:key`}
                     render={props => {
                         const key = props.match.params.key;
                         const matches = AdminMenu.filter(item => {
@@ -98,19 +80,25 @@ export class Admin extends React.Component<AdminProps, {}> {
                         return (
                             <PageContent
                                 menu={matches.length > 0 ? matches[0] : null}
-                                redirectPath={`${baseUrl}/admin`}
+                                redirectPath={getAdminLink(baseURL)}
                             />
                         );
                     }}
                 />
                 <Route
                     exact={true}
-                    path={`/${baseUrl}/admin`}
+                    path={getAdminLink(baseURL)}
                     render={() => (
-                        <Redirect to={{ pathname: `/${baseUrl}/admin/${AdminMenu[0].key}` }} />
+                        <Redirect to={{ pathname: `${getAdminLink(baseURL)}/${AdminMenu[0].key}` }} />
                     )}
                 />
             </div>
         );
     }
 }
+
+export const Admin = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state)
+    })
+)(AdminClass);

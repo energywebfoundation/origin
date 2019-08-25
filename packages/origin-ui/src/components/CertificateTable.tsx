@@ -44,17 +44,27 @@ import {
     IPaginatedLoaderFilteredSortedState,
     getInitialPaginatedLoaderFilteredSortedState
 } from './Table/PaginatedLoaderFilteredSorted';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getBaseURL, getCertificates, getConfiguration, getCurrentUser, getProducingAssets } from '../features/selectors';
+import { getCertificateDetailLink } from '../utils/routing';
 
-export interface ICertificateTableProps {
-    conf: Configuration.Entity;
-    certificates: Certificate.Entity[];
-    producingAssets: ProducingAsset.Entity[];
-    currentUser: User;
-    baseUrl: string;
-    selectedState: SelectedState;
+interface IOwnProps {
+    certificates?: Certificate.Entity[];
     demand?: Demand.Entity;
     hiddenColumns?: string[];
+    selectedState: SelectedState;
 }
+
+interface IStateProps {
+    certificates: Certificate.Entity[];
+    configuration: Configuration.Entity;
+    producingAssets: ProducingAsset.Entity[];
+    currentUser: User;
+    baseURL: string;
+}
+
+type Props = IOwnProps & IStateProps;
 
 export interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
@@ -167,11 +177,11 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
     }
 ];
 
-export class CertificateTable extends PaginatedLoaderFilteredSorted<
-    ICertificateTableProps,
+class CertificateTableClass extends PaginatedLoaderFilteredSorted<
+    Props,
     ICertificatesState
 > {
-    constructor(props: ICertificateTableProps) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -217,7 +227,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
         await super.componentDidMount();
     }
 
-    async componentDidUpdate(newProps: ICertificateTableProps) {
+    async componentDidUpdate(newProps: Props) {
         if (newProps.certificates !== this.props.certificates) {
             await this.loadPage(1);
         }
@@ -341,7 +351,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
                 certificate,
                 producingAsset,
                 assetTypeLabel: ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                certificateOwner: await new User(certificate.owner, this.props.conf as any).sync(),
+                certificateOwner: await new User(certificate.owner, this.props.configuration as any).sync(),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
@@ -354,7 +364,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
     async initMatchingCertificates(demand: Demand.Entity) {
         const matchedCertificates: Certificate.Entity[] = await MatcherLogic.findMatchingCertificatesForDemand(
             demand,
-            this.props.conf,
+            this.props.configuration,
             this.props.certificates
         );
 
@@ -367,7 +377,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
             certificate.acceptedToken !== '0x0000000000000000000000000000000000000000'
         ) {
             const token = new Erc20TestToken(
-                this.props.conf.blockchainProperties.web3,
+                this.props.configuration.blockchainProperties.web3,
                 certificate.acceptedToken
             );
 
@@ -579,7 +589,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
             if (!asset) {
                 asset = await new ProducingAsset.Entity(
                     certificate.assetId.toString(),
-                    this.props.conf
+                    this.props.configuration
                 ).sync();
             }
 
@@ -607,7 +617,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
                 url: ''
             };
 
-            await Demand.createDemand(onChainProperties, offChainProperties, this.props.conf);
+            await Demand.createDemand(onChainProperties, offChainProperties, this.props.configuration);
         }
     }
 
@@ -791,7 +801,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
             return (
                 <Redirect
                     push={true}
-                    to={`/${this.props.baseUrl}/certificates/detail_view/${detailViewForCertificateId}`}
+                    to={getCertificateDetailLink(this.props.baseURL, detailViewForCertificateId)}
                 />
             );
         }
@@ -879,7 +889,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
                 />
 
                 <PublishForSaleModal
-                    conf={this.props.conf}
+                    conf={this.props.configuration}
                     certificate={this.state.sellModalForCertificate}
                     producingAsset={
                         this.state.sellModalForCertificate
@@ -894,7 +904,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
                 />
 
                 <BuyCertificateModal
-                    conf={this.props.conf}
+                    conf={this.props.configuration}
                     certificate={buyModalForCertificate}
                     producingAsset={buyModalForProducingAsset}
                     showModal={showBuyModal}
@@ -902,7 +912,7 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
                 />
 
                 <BuyCertificateBulkModal
-                    conf={this.props.conf}
+                    conf={this.props.configuration}
                     certificates={selectedCertificates}
                     showModal={showBuyBulkModal}
                     callback={this.hideBuyBulkModal}
@@ -911,3 +921,11 @@ export class CertificateTable extends PaginatedLoaderFilteredSorted<
         );
     }
 }
+
+export const CertificateTable = connect((state: IStoreState, ownProps: IOwnProps): IStateProps => ({
+    baseURL: getBaseURL(state),
+    certificates: ownProps.certificates || getCertificates(state),
+    configuration: getConfiguration(state),
+    currentUser: getCurrentUser(state),
+    producingAssets: getProducingAssets(state)
+}))(CertificateTableClass);

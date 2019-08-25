@@ -25,7 +25,6 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
-
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from '@energyweb/utils-general';
@@ -36,27 +35,33 @@ import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
+import { getProducingAssetDetailLink } from '../utils/routing';
+import { getBaseURL, getCertificates, getConfiguration, getProducingAssets } from '../features/selectors';
 
-export interface IDetailViewProps {
-    conf: Configuration.Entity;
-    id: number;
-    baseUrl: string;
+interface IStateProps {
+    baseURL: string;
     certificates: Certificate.Entity[];
+    configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
+}
+
+interface IOwnProps {
+    id: number;
     addSearchField: boolean;
-    currentUser: User;
     showSmartMeterReadings: boolean;
     showCertificates: boolean;
 }
 
-export interface IDetailViewState {
+interface State {
     newId: number;
     owner: User;
     notSoldCertificates: number;
 }
 
-class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, IDetailViewState> {
-    constructor(props: IDetailViewProps) {
+type Props = IOwnProps & IStateProps;
+
+class ProducingAssetDetailViewClass extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             newId: null,
@@ -74,11 +79,11 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
         await this.getOwner(this.props);
     }
 
-    async componentWillReceiveProps(newProps: IDetailViewProps): Promise<void> {
+    async componentWillReceiveProps(newProps: Props): Promise<void> {
         await this.getOwner(newProps);
     }
 
-    async getOwner(props: IDetailViewProps): Promise<void> {
+    async getOwner(props: Props): Promise<void> {
         if (props.id !== null && props.id !== undefined) {
             const selectedAsset = props.producingAssets.find(
                 (p: ProducingAsset.Entity) => p.id === props.id.toString()
@@ -97,7 +102,7 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                     });
                 }
                 this.setState({
-                    owner: await new User(selectedAsset.owner.address, props.conf as any).sync()
+                    owner: await new User(selectedAsset.owner.address, props.configuration as any).sync()
                 });
             }
         }
@@ -286,7 +291,7 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
 
                         <Link
                             className="btn btn-primary find-asset-button"
-                            to={`/${this.props.baseUrl}/assets/producing_detail_view/${this.state.newId}`}
+                            to={getProducingAssetDetailLink(this.props.baseURL, this.state.newId)}
                         >
                             Find Asset
                         </Link>
@@ -306,14 +311,14 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                                         <div className="row">
                                             <div className="col-lg-4">
                                                 <SmartMeterReadingsTable
-                                                    conf={this.props.conf}
+                                                    conf={this.props.configuration}
                                                     producingAsset={selectedAsset}
                                                 />
                                             </div>
 
                                             <div className="col-lg-8">
                                                 <SmartMeterReadingsChart
-                                                    conf={this.props.conf}
+                                                    conf={this.props.configuration}
                                                     producingAsset={selectedAsset}
                                                 />
                                             </div>
@@ -327,14 +332,10 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
                                 <br />
                                 <br />
                                 <CertificateTable
-                                    conf={this.props.conf}
                                     certificates={this.props.certificates.filter(
                                         (c: Certificate.Entity) =>
                                             c.assetId.toString() === this.props.id.toString()
                                     )}
-                                    producingAssets={this.props.producingAssets}
-                                    currentUser={this.props.currentUser}
-                                    baseUrl={this.props.baseUrl}
                                     selectedState={SelectedState.ForSale}
                                     demand={null}
                                     hiddenColumns={[
@@ -352,6 +353,9 @@ class ProducingAssetDetailViewClass extends React.Component<IDetailViewProps, ID
     }
 }
 
-export const ProducingAssetDetailView = connect((state: IStoreState) => ({
-    currentUser: state.currentUser
+export const ProducingAssetDetailView = connect((state: IStoreState): IStateProps => ({
+    baseURL: getBaseURL(state),
+    certificates: getCertificates(state),
+    configuration: getConfiguration(state),
+    producingAssets: getProducingAssets(state)
 }))(ProducingAssetDetailViewClass);

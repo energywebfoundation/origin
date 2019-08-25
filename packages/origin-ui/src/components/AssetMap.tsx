@@ -11,17 +11,17 @@ import { getProducingAssetDetailLink } from '../utils/routing';
 import { getBaseURL } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 
-interface OwnProps {
+interface IOwnProps {
     assets?: Asset.Entity[];
     height?: string;
 }
 
-interface StateProps {
+interface IStateProps {
     baseURL: string;
     configuration: Configuration.Entity;
 }
 
-type Props = OwnProps & StateProps;
+type Props = IOwnProps & IStateProps;
 
 interface State {
     assetHighlighted: Asset.Entity;
@@ -160,7 +160,7 @@ class AssetMapClass extends React.Component<Props, State> {
     }
 }
 
-export const AssetMap = connect((state: IStoreState, ownProps: OwnProps) => ({
+export const AssetMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
     assets: ownProps.assets || state.producingAssets,
     baseURL: getBaseURL(state),
     configuration: state.configuration

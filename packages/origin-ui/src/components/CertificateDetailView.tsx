@@ -21,19 +21,28 @@ import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
-
 import './DetailView.scss';
 import { Configuration } from '@energyweb/utils-general';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getBaseURL, getCertificates, getConfiguration, getProducingAssets } from '../features/selectors';
+import { getProducingAssetDetailLink, getCertificateDetailLink } from '../utils/routing';
 
-export interface DetailViewProps {
-    conf: Configuration.Entity;
+
+interface IOwnProps {
     id: number;
-    baseUrl: string;
+}
+
+interface IStateProps {
+    configuration: Configuration.Entity;
+    baseURL: string;
     certificates: Certificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
 }
 
-export interface DetailViewState {
+type Props = IOwnProps & IStateProps;
+
+interface DetailViewState {
     newId: number;
     owner: User;
     events: EnrichedEvent[];
@@ -46,10 +55,8 @@ export interface EnrichedEvent {
     timestamp: number;
 }
 
-const TableWidth = [210, 210, 210, 210, 407];
-
-export class CertificateDetailView extends React.Component<DetailViewProps, DetailViewState> {
-    constructor(props: DetailViewProps) {
+class CertificateDetailViewClass extends React.Component<Props, DetailViewState> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             newId: null,
@@ -67,11 +74,11 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
         this.init(this.props);
     }
 
-    componentWillReceiveProps(newProps: DetailViewProps) {
+    componentWillReceiveProps(newProps: Props) {
         this.init(newProps);
     }
 
-    init(props: DetailViewProps) {
+    init(props: Props) {
         if (props.id !== null && props.id !== undefined) {
             const selectedCertificate: Certificate.Entity = props.certificates.find(
                 (c: Certificate.Entity) => c.id === props.id.toString()
@@ -84,16 +91,16 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
         }
     }
 
-    async getOwner(props: DetailViewProps, selectedCertificate: Certificate.Entity, cb) {
+    async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
         this.setState(
             {
-                owner: await new User(selectedCertificate.owner, props.conf as any).sync()
+                owner: await new User(selectedCertificate.owner, props.configuration as any).sync()
             },
             cb
         );
     }
 
-    async enrichEvent(props: DetailViewProps, selectedCertificate: Certificate.Entity) {
+    async enrichEvent(props: Props, selectedCertificate: Certificate.Entity) {
         const asset = this.props.producingAssets.find(
             (p: ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
         );
@@ -111,7 +118,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                     case 'LogCreatedCertificate':
                         const organization = (await new User(
                             event.returnValues.owner,
-                            props.conf as any
+                            props.configuration as any
                         ).sync()).organization;
                         label = 'Certificate Created';
                         description = 'Certificate created by asset ' + selectedCertificate.assetId;
@@ -128,16 +135,16 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                             label = 'Set Initial Owner';
                             description = (await new User(
                                 (event as any).returnValues._to,
-                                props.conf as any
+                                props.configuration as any
                             ).sync()).organization;
                         } else {
                             const newOwner = (await new User(
                                 (event as any).returnValues._to,
-                                props.conf as any
+                                props.configuration as any
                             ).sync()).organization;
                             const oldOwner = (await new User(
                                 (event as any).returnValues._from,
-                                props.conf as any
+                                props.configuration as any
                             ).sync()).organization;
                             label = 'Certificate Owner Change';
                             description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
@@ -158,7 +165,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                     txHash: event.transactionHash,
                     label,
                     description,
-                    timestamp: (await props.conf.blockchainProperties.web3.eth.getBlock(
+                    timestamp: (await props.configuration.blockchainProperties.web3.eth.getBlock(
                         event.blockNumber
                     )).timestamp
                 };
@@ -223,7 +230,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                     {
                         label: 'Producing Asset Id',
                         data: asset.id,
-                        link: `/${this.props.baseUrl}/assets/producing_detail_view/${asset.id}`
+                        link: getProducingAssetDetailLink(this.props.baseURL, asset.id)
                     },
 
                     {
@@ -250,7 +257,7 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
 
                     <Link
                         className="btn btn-primary find-asset-button"
-                        to={`/${this.props.baseUrl}/certificates/detail_view/${this.state.newId}`}
+                        to={getCertificateDetailLink(this.props.baseURL, this.state.newId)}
                     >
                         Find Certificate
                     </Link>
@@ -296,10 +303,6 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
                     {selectedCertificate ? (
                         <ProducingAssetDetailView
                             id={selectedCertificate.assetId}
-                            baseUrl={this.props.baseUrl}
-                            producingAssets={this.props.producingAssets}
-                            conf={this.props.conf}
-                            certificates={this.props.certificates}
                             addSearchField={false}
                             showSmartMeterReadings={false}
                             showCertificates={false}
@@ -318,6 +321,9 @@ export class CertificateDetailView extends React.Component<DetailViewProps, Deta
     }
 }
 
-const addCommas = intNum => {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-};
+export const CertificateDetailView = connect((state: IStoreState): IStateProps => ({
+    baseURL: getBaseURL(state),
+    certificates: getCertificates(state),
+    configuration: getConfiguration(state),
+    producingAssets: getProducingAssets(state)
+}))(CertificateDetailViewClass);

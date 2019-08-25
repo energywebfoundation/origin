@@ -30,20 +30,25 @@ import { deleteDemand } from '@energyweb/market/dist/js/src/blockchain-facade/De
 import {
     IPaginatedLoaderState,
     PaginatedLoader,
-    DEFAULT_PAGE_SIZE,
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     getInitialPaginatedLoaderState
 } from './Table/PaginatedLoader';
+import { getCertificatesForDemandLink } from '../utils/routing';
+import { getConfiguration, getConsumingAssets, getProducingAssets, getCurrentUser, getBaseURL, getDemands } from '../features/selectors';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
 
-export interface IDemandTableProps {
-    conf: Configuration.Entity;
+interface IStateProps {
+    configuration: Configuration.Entity;
     demands: Demand.Entity[];
     producingAssets: ProducingAsset.Entity[];
     consumingAssets: ConsumingAsset.Entity[];
     currentUser: User;
-    baseUrl: string;
+    baseURL: string;
 }
+
+type Props = IStateProps;
 
 export interface IDemandTableState extends IPaginatedLoaderState {
     showMatchingSupply: number;
@@ -65,8 +70,8 @@ enum OPERATIONS {
     SUPPLIES = 'Show supplies for demand'
 }
 
-export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTableState> {
-    constructor(props: IDemandTableProps) {
+class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -84,7 +89,7 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
                 demand,
                 producingAsset: null,
                 consumingAsset: null,
-                demandOwner: await new User(demand.demandOwner, this.props.conf).sync()
+                demandOwner: await new User(demand.demandOwner, this.props.configuration).sync()
             };
 
             if (demand.offChainProperties) {
@@ -137,10 +142,10 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
 
     async deleteDemand(id: number) {
         try {
-            this.props.conf.blockchainProperties.activeUser = {
+            this.props.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
             };
-            await deleteDemand(id, this.props.conf);
+            await deleteDemand(id, this.props.configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
         } catch (error) {
@@ -219,7 +224,7 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         };
     }
 
-    async componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps: Props) {
         if (prevProps.demands.length !== this.props.demands.length) {
             this.loadPage(1);
         }
@@ -230,7 +235,7 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
             return (
                 <Redirect
                     push={true}
-                    to={`/${this.props.baseUrl}/certificates/for_demand/${this.state.showMatchingSupply}`}
+                    to={getCertificatesForDemandLink(this.props.baseURL, this.state.showMatchingSupply)}
                 />
             );
         }
@@ -284,3 +289,14 @@ export class DemandTable extends PaginatedLoader<IDemandTableProps, IDemandTable
         );
     }
 }
+
+export const DemandTable = connect(
+    (state: IStoreState): IStateProps => ({
+        configuration: getConfiguration(state),
+        consumingAssets: getConsumingAssets(state),
+        demands: getDemands(state),
+        producingAssets: getProducingAssets(state),
+        currentUser: getCurrentUser(state),
+        baseURL: getBaseURL(state)
+    })
+)(DemandTableClass);
