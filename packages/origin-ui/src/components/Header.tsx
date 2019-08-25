@@ -15,7 +15,7 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from '@energyweb/user-registry';
 import logo from '../../assets/logo.svg';
 import { AccountCircle } from '@material-ui/icons';
@@ -31,7 +31,7 @@ interface StateProps {
     baseURL: string;
 }
 
-type Props = StateProps;
+type Props = RouteComponentProps & StateProps;
 
 class HeaderClass extends React.Component<Props> {
     render() {

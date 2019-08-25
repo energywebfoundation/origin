@@ -15,21 +15,13 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import Web3 from 'web3';
-import * as queryString from 'query-string';
-import * as Winston from 'winston';
-
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import {
-    Demand,
-    createBlockchainProperties as marketCreateBlockchainProperties
-} from '@energyweb/market';
-import { Certificate, createBlockchainProperties } from '@energyweb/origin';
+import { Configuration } from '@energyweb/utils-general';
+import { Demand } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
-
 import { Certificates } from './Certificates';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter, RouteComponentProps } from 'react-router-dom';
 import { IStoreState } from '../types';
 import { Header } from './Header';
 import { Asset } from './Asset';
@@ -37,39 +29,21 @@ import { Admin } from './Admin';
 import './AppContainer.scss';
 import { Demands } from './Demands';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-    currentUserUpdated,
-    configurationUpdated,
-    demandCreatedOrUpdated,
-    demandDeleted,
-    producingAssetCreatedOrUpdated,
-    certificateCreatedOrUpdated,
-    consumingAssetCreatedOrUpdated
-} from '../features/actions';
-import { withRouter } from 'react-router-dom';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
 import {
     TSetOriginContractLookupAddress,
     setOriginContractLookupAddress
 } from '../features/contracts/actions';
-import {
-    getBaseURL,
-    getConfiguration,
-    constructBaseURL,
-    getCurrentUser
-} from '../features/selectors';
+import { getBaseURL, getConfiguration, getCurrentUser } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getAdminLink, getDemandsLink } from '../utils/routing';
+import { getOriginContractLookupAddress } from '../features/contracts/selectors';
+import { getError, getLoading } from '../features/general/selectors';
 
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3030';
-
-interface RouterProps {
-    match: any;
-    location: any;
-    history: any;
+interface MatchParams {
+    contractAddress?: string;
 }
 
 interface StateProps {
@@ -79,36 +53,19 @@ interface StateProps {
     consumingAssets: ConsumingAsset.Entity[];
     currentUser: User;
     demands: Demand.Entity[];
+    error: string;
+    loading: boolean;
+    originContractLookupAddress: string;
     producingAssets: ProducingAsset.Entity[];
 }
 
 interface DispatchProps {
-    certificateCreatedOrUpdated: Function;
-    currentUserUpdated: Function;
-    consumingAssetCreatedOrUpdated: Function;
-    demandCreatedOrUpdated: Function;
-    demandDeleted: Function;
-    producingAssetCreatedOrUpdated: Function;
-    configurationUpdated: Function;
     setOriginContractLookupAddress: TSetOriginContractLookupAddress;
 }
 
-type Props = RouterProps & StateProps & DispatchProps;
+type Props = RouteComponentProps<MatchParams> & StateProps & DispatchProps;
 
-interface IAppContainerState {
-    loading: boolean;
-    error: string;
-}
-
-function isDemandDeleted(demand: Demand.Entity) {
-    return !demand || !demand.demandOwner;
-}
-
-enum ERROR {
-    WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
-}
-
-class AppContainerClass extends React.Component<Props, IAppContainerState> {
+class AppContainerClass extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
 
@@ -116,247 +73,12 @@ class AppContainerClass extends React.Component<Props, IAppContainerState> {
         this.DemandTable = this.DemandTable.bind(this);
         this.Admin = this.Admin.bind(this);
         this.Asset = this.Asset.bind(this);
-
-        this.state = {
-            loading: true,
-            error: null
-        };
-    }
-
-    async initEventHandler(conf: Configuration.Entity): Promise<void> {
-        const currentBlockNumber: number = await conf.blockchainProperties.web3.eth.getBlockNumber();
-        const certificateContractEventHandler: ContractEventHandler = new ContractEventHandler(
-            conf.blockchainProperties.certificateLogicInstance,
-            currentBlockNumber
-        );
-
-        certificateContractEventHandler.onEvent('LogCertificateRetired', async (event: any) =>
-            this.props.certificateCreatedOrUpdated(
-                await new Certificate.Entity(
-                    event.returnValues._certificateId,
-                    this.props.configuration
-                ).sync()
-            )
-        );
-
-        certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) =>
-            this.props.certificateCreatedOrUpdated(
-                await new Certificate.Entity(
-                    event.returnValues._certificateId,
-                    this.props.configuration
-                ).sync()
-            )
-        );
-
-        certificateContractEventHandler.onEvent('Transfer', async (event: any) => {
-            this.props.certificateCreatedOrUpdated(
-                await new Certificate.Entity(
-                    event.returnValues._tokenId,
-                    this.props.configuration
-                ).sync()
-            );
-        });
-
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            this.props.certificateCreatedOrUpdated(
-                await new Certificate.Entity(
-                    event.returnValues._entityId,
-                    this.props.configuration
-                ).sync()
-            );
-        });
-
-        certificateContractEventHandler.onEvent('LogUnpublishForSale', async (event: any) => {
-            this.props.certificateCreatedOrUpdated(
-                await new Certificate.Entity(
-                    event.returnValues._entityId,
-                    this.props.configuration
-                ).sync()
-            );
-        });
-
-        const demandContractEventHandler: ContractEventHandler = new ContractEventHandler(
-            conf.blockchainProperties.marketLogicInstance,
-            currentBlockNumber
-        );
-
-        demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-            const demandAlreadyExists = this.props.demands.some(
-                d => d.id === event.returnValues._demandId
-            );
-
-            if (demandAlreadyExists) {
-                return;
-            }
-
-            const demand = await new Demand.Entity(
-                event.returnValues._demandId,
-                this.props.configuration
-            ).sync();
-
-            if (!isDemandDeleted(demand)) {
-                this.props.demandCreatedOrUpdated(demand);
-            }
-        });
-
-        demandContractEventHandler.onEvent('deletedDemand', async (event: any) =>
-            this.props.demandDeleted(
-                await new Demand.Entity(
-                    event.returnValues._demandId,
-                    this.props.configuration
-                ).sync()
-            )
-        );
-
-        const eventHandlerManager: EventHandlerManager = new EventHandlerManager(4000, conf);
-        eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-        eventHandlerManager.registerEventHandler(demandContractEventHandler);
-        eventHandlerManager.start();
-    }
-
-    async getMarketLogicInstance(originIssuerContractLookupAddress: string, web3: Web3) {
-        const response = await axios.get(
-            `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`
-        );
-
-        const marketBlockchainProperties: Configuration.BlockchainProperties = (await marketCreateBlockchainProperties(
-            web3,
-            response.data.marketContractLookup
-        )) as any;
-
-        return marketBlockchainProperties.marketLogicInstance;
-    }
-
-    async initConf(originIssuerContractLookupAddress: string): Promise<Configuration.Entity> {
-        let web3: Web3 = null;
-        const params: any = queryString.parse(this.props.location.search);
-
-        if (params.rpc) {
-            web3 = new Web3(params.rpc);
-        } else if ((window as any).ethereum) {
-            web3 = new Web3((window as any).ethereum);
-            try {
-                // Request account access if needed
-                await (window as any).ethereum.enable();
-            } catch (error) {
-                // User denied account access...
-            }
-        } else if ((window as any).web3) {
-            web3 = new Web3(web3.currentProvider);
-        }
-
-        let blockchainProperties: Configuration.BlockchainProperties;
-
-        try {
-            blockchainProperties = await createBlockchainProperties(
-                web3,
-                originIssuerContractLookupAddress
-            );
-
-            blockchainProperties.marketLogicInstance = await this.getMarketLogicInstance(
-                originIssuerContractLookupAddress,
-                web3
-            );
-
-            this.setState({
-                error: null,
-                loading: false
-            });
-
-            return {
-                blockchainProperties,
-                offChainDataSource: {
-                    baseUrl: API_BASE_URL
-                },
-
-                logger: Winston.createLogger({
-                    level: 'debug',
-                    format: Winston.format.combine(
-                        Winston.format.colorize(),
-                        Winston.format.simple()
-                    ),
-                    transports: [new Winston.transports.Console({ level: 'silly' })]
-                })
-            };
-        } catch (error) {
-            console.error('Error in AppContainer::initConf', error);
-            this.setState({
-                loading: false,
-                error: ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS
-            });
-        }
-    }
-
-    async getOriginContractLookupAddressFromAPI(): Promise<string> {
-        const response = await axios.get(
-            `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/`
-        );
-
-        if (!response.data) {
-            return null;
-        }
-
-        const originContracts = Object.keys(response.data);
-
-        if (originContracts.length > 0) {
-            return originContracts[originContracts.length - 1];
-        }
     }
 
     async componentDidMount(): Promise<void> {
         let contractAddress = this.props.match.params.contractAddress;
 
-        if (contractAddress) {
-            this.props.setOriginContractLookupAddress(contractAddress);
-        } else {
-            contractAddress = await this.getOriginContractLookupAddressFromAPI();
-
-            if (contractAddress) {
-                this.props.setOriginContractLookupAddress(contractAddress);
-
-                this.props.history.push(constructBaseURL(contractAddress));
-            } else {
-                this.setState({
-                    error: ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS
-                });
-            }
-        }
-
-        const conf = await this.initConf(contractAddress);
-
-        if (!conf) {
-            return;
-        }
-
-        this.props.configurationUpdated(conf);
-        const accounts: string[] = await conf.blockchainProperties.web3.eth.getAccounts();
-
-        const currentUser: User =
-            accounts.length > 0 ? await new User(accounts[0], conf as any).sync() : null;
-
-        (await ProducingAsset.getAllAssets(conf)).forEach((p: ProducingAsset.Entity) =>
-            this.props.producingAssetCreatedOrUpdated(p)
-        );
-
-        (await ConsumingAsset.getAllAssets(conf)).forEach((c: ConsumingAsset.Entity) =>
-            this.props.consumingAssetCreatedOrUpdated(c)
-        );
-
-        (await Demand.getAllDemands(conf)).forEach((d: Demand.Entity) => {
-            if (!isDemandDeleted(d)) {
-                this.props.demandCreatedOrUpdated(d);
-            }
-        });
-
-        (await Certificate.getActiveCertificates(conf)).forEach((certificate: Certificate.Entity) =>
-            this.props.certificateCreatedOrUpdated(certificate)
-        );
-
-        this.props.currentUserUpdated(
-            currentUser !== null && currentUser.active ? currentUser : null
-        );
-
-        this.initEventHandler(conf);
+        this.props.setOriginContractLookupAddress(contractAddress);
     }
 
     Asset() {
@@ -411,8 +133,7 @@ class AppContainerClass extends React.Component<Props, IAppContainerState> {
     }
 
     render(): JSX.Element {
-        const { baseURL, configuration } = this.props;
-        const { error, loading } = this.state;
+        const { baseURL, configuration, error, loading } = this.props;
 
         if (error) {
             return <ErrorComponent message={error} />;
@@ -447,18 +168,14 @@ export const AppContainer = connect(
         consumingAssets: state.consumingAssets,
         currentUser: getCurrentUser(state),
         demands: state.demands,
+        error: getError(state),
+        loading: getLoading(state),
+        originContractLookupAddress: getOriginContractLookupAddress(state),
         producingAssets: state.producingAssets
     }),
     dispatch =>
         bindActionCreators(
             {
-                currentUserUpdated,
-                configurationUpdated,
-                demandCreatedOrUpdated,
-                demandDeleted,
-                producingAssetCreatedOrUpdated,
-                certificateCreatedOrUpdated,
-                consumingAssetCreatedOrUpdated,
                 setOriginContractLookupAddress
             },
             dispatch

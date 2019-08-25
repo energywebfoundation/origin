@@ -22,7 +22,8 @@ import { Configuration } from '@energyweb/utils-general';
 
 export enum Actions {
     certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
-    demandCreatedOrUpdated = 'DEMAND_CREATED_OR_UPDATED',
+    demandCreated = 'DEMAND_CREATED',
+    demandUpdated = 'DEMAND_UPDATED',
     demandDeleted = 'DEMAND_DELETED',
     producingAssetCreatedOrUpdated = 'PRODUCING_ASSET_CREATED_OR_UPDATED',
     consumingAssetCreatedOrUpdated = 'CONSUMING_ASSET_CREATED_OR_UPDATED',
@@ -35,8 +36,13 @@ export const certificateCreatedOrUpdated = (certificate: Certificate.Entity): an
     certificate
 });
 
-export const demandCreatedOrUpdated = (demand: Demand.Entity) => ({
-    type: Actions.demandCreatedOrUpdated,
+export const demandCreated = (demand: Demand.Entity) => ({
+    type: Actions.demandCreated,
+    demand
+});
+
+export const demandUpdated = (demand: Demand.Entity) => ({
+    type: Actions.demandUpdated,
     demand
 });
 

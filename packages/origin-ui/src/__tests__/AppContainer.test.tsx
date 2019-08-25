@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { AppContainer } from '../components/AppContainer';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { createRootReducer } from '../reducers';
@@ -32,8 +32,8 @@ import * as Winston from 'winston';
 import ganache from 'ganache-cli';
 import { dataTestSelector } from '../utils/Helper';
 import axios from 'axios';
-import { routerMiddleware } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
+import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
+import { createMemoryHistory } from 'history';
 
 const wait = (ms: number) => {
     return new Promise(resolve => {
@@ -239,7 +239,9 @@ describe('Application[E2E]', () => {
     it('correctly navigates to producing asset details', async () => {
         const sagaMiddleware = createSagaMiddleware();
 
-        const history = createBrowserHistory();
+        const history = createMemoryHistory({
+            initialEntries: [`/${CONTRACT}/assets/?rpc=http://localhost:8545`]
+        });
 
         const middleware = applyMiddleware(routerMiddleware(history), sagaMiddleware);
 
@@ -251,9 +253,9 @@ describe('Application[E2E]', () => {
 
         const renderedApp = mount(
             <Provider store={store}>
-                <MemoryRouter initialEntries={[`/${CONTRACT}/assets/?rpc=http://localhost:8545`]}>
+                <ConnectedRouter history={history}>
                     <Route path="/:contractAddress/" component={AppContainer} />
-                </MemoryRouter>
+                </ConnectedRouter>
             </Provider>
         );
 
