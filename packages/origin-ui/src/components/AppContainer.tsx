@@ -52,8 +52,16 @@ import {
 import { withRouter } from 'react-router-dom';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
-import { TSetOriginContractLookupAddress, setOriginContractLookupAddress } from '../features/contracts/actions';
-import { getBaseURL, getConfiguration, constructBaseURL, getCurrentUser } from '../features/selectors';
+import {
+    TSetOriginContractLookupAddress,
+    setOriginContractLookupAddress
+} from '../features/contracts/actions';
+import {
+    getBaseURL,
+    getConfiguration,
+    constructBaseURL,
+    getCurrentUser
+} from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getAdminLink, getDemandsLink } from '../utils/routing';
 
 export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3030';
@@ -279,7 +287,7 @@ class AppContainerClass extends React.Component<Props, IAppContainerState> {
         }
     }
 
-    async getOriginContractLookupAddressFromAPI() : Promise<string> {
+    async getOriginContractLookupAddressFromAPI(): Promise<string> {
         const response = await axios.get(
             `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/`
         );
@@ -313,7 +321,7 @@ class AppContainerClass extends React.Component<Props, IAppContainerState> {
                 });
             }
         }
-        
+
         const conf = await this.initConf(contractAddress);
 
         if (!conf) {
@@ -403,10 +411,7 @@ class AppContainerClass extends React.Component<Props, IAppContainerState> {
     }
 
     render(): JSX.Element {
-        const {
-            baseURL,
-            configuration
-        } = this.props;
+        const { baseURL, configuration } = this.props;
         const { error, loading } = this.state;
 
         if (error) {
@@ -422,10 +427,7 @@ class AppContainerClass extends React.Component<Props, IAppContainerState> {
                 <Header />
                 <Switch>
                     <Route path={getAssetsLink(baseURL)} component={this.Asset} />
-                    <Route
-                        path={getCertificatesLink(baseURL)}
-                        component={this.CertificateTable}
-                    />
+                    <Route path={getCertificatesLink(baseURL)} component={this.CertificateTable} />
                     <Route path={getAdminLink(baseURL)} component={this.Admin} />
                     <Route path={getDemandsLink(baseURL)} component={this.DemandTable} />
 
@@ -447,17 +449,18 @@ export const AppContainer = connect(
         demands: state.demands,
         producingAssets: state.producingAssets
     }),
-    dispatch => bindActionCreators(
-        {
-            currentUserUpdated,
-            configurationUpdated,
-            demandCreatedOrUpdated,
-            demandDeleted,
-            producingAssetCreatedOrUpdated,
-            certificateCreatedOrUpdated,
-            consumingAssetCreatedOrUpdated,
-            setOriginContractLookupAddress
-        },
-        dispatch
-    )
+    dispatch =>
+        bindActionCreators(
+            {
+                currentUserUpdated,
+                configurationUpdated,
+                demandCreatedOrUpdated,
+                demandDeleted,
+                producingAssetCreatedOrUpdated,
+                certificateCreatedOrUpdated,
+                consumingAssetCreatedOrUpdated,
+                setOriginContractLookupAddress
+            },
+            dispatch
+        )
 )(withRouter(AppContainerClass));

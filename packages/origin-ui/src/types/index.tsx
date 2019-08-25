@@ -21,6 +21,7 @@ import { Configuration } from '@energyweb/utils-general';
 import { Demand } from '@energyweb/market';
 import { IGeneralState } from '../features/general/reducer';
 import { IContractsState } from '../features/contracts/reducer';
+import { RouterState } from 'connected-react-router';
 
 export interface IStoreState {
     configuration: Configuration.Entity;
@@ -31,4 +32,5 @@ export interface IStoreState {
     currentUser: User;
     general: IGeneralState;
     contracts: IContractsState;
+    router: RouterState;
 }

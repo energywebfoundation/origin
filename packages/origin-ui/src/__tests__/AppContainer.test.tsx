@@ -4,15 +4,19 @@ import { AppContainer } from '../components/AppContainer';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from '../reducers';
-import { migrateUserRegistryContracts, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { createRootReducer } from '../reducers';
+import {
+    migrateUserRegistryContracts,
+    UserLogic,
+    buildRights,
+    Role
+} from '@energyweb/user-registry';
 import {
     ProducingAsset,
     migrateAssetRegistryContracts,
     AssetProducingRegistryLogic,
     AssetConsumingRegistryLogic
 } from '@energyweb/asset-registry';
-import { IStoreState } from '../types';
 import createSagaMiddleware from 'redux-saga';
 import sagas from '../features/sagas';
 
@@ -28,6 +32,8 @@ import * as Winston from 'winston';
 import ganache from 'ganache-cli';
 import { dataTestSelector } from '../utils/Helper';
 import axios from 'axios';
+import { routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
 
 const wait = (ms: number) => {
     return new Promise(resolve => {
@@ -233,9 +239,11 @@ describe('Application[E2E]', () => {
     it('correctly navigates to producing asset details', async () => {
         const sagaMiddleware = createSagaMiddleware();
 
-        const middleware = applyMiddleware(sagaMiddleware);
+        const history = createBrowserHistory();
 
-        const store = createStore<IStoreState>(reducer, middleware);
+        const middleware = applyMiddleware(routerMiddleware(history), sagaMiddleware);
+
+        const store = createStore(createRootReducer(history), middleware);
 
         Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
             sagaMiddleware.run(sagas[saga]);
@@ -301,7 +309,6 @@ describe('Application[E2E]', () => {
             '0 kW',
             'Geo Location (private)',
             ',  ',
-            '',
             '',
             ''
         ]);

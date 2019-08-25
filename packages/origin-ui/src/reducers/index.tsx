@@ -24,8 +24,9 @@ import general from '../features/general/reducer';
 import contracts from '../features/contracts/reducer';
 import { combineReducers } from 'redux';
 import { IStoreState } from '../types';
+import { connectRouter } from 'connected-react-router'
 
-const reducers = combineReducers<IStoreState>({
+export const createRootReducer = (history) => combineReducers<IStoreState>({
     certificates,
     producingAssets,
     consumingAssets,
@@ -33,7 +34,6 @@ const reducers = combineReducers<IStoreState>({
     general,
     currentUser,
     configuration,
-    contracts
+    contracts,
+    router: connectRouter(history)
 });
-
-export default reducers;

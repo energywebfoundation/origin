@@ -53,7 +53,7 @@ class AssetMapClass extends React.Component<Props, State> {
         if (this.map !== map) {
             this.map = map;
         }
-        
+
         if (assets.length === 0 || !map) {
             return;
         }
@@ -69,8 +69,10 @@ class AssetMapClass extends React.Component<Props, State> {
             const latitude = parseFloat(asset.offChainProperties.gpsLatitude);
             const longitude = parseFloat(asset.offChainProperties.gpsLongitude);
 
-            bounds.north = latitude > bounds.north || bounds.north === null ? latitude : bounds.north;
-            bounds.south = latitude < bounds.south || bounds.south === null ? latitude : bounds.south;
+            bounds.north =
+                latitude > bounds.north || bounds.north === null ? latitude : bounds.north;
+            bounds.south =
+                latitude < bounds.south || bounds.south === null ? latitude : bounds.south;
 
             bounds.east = longitude > bounds.east || bounds.east === null ? longitude : bounds.east;
             bounds.west = longitude < bounds.west || bounds.west === null ? longitude : bounds.west;
@@ -86,19 +88,19 @@ class AssetMapClass extends React.Component<Props, State> {
     render() {
         const { assets, height = '250px', baseURL } = this.props;
         const { assetHighlighted, owner } = this.state;
-        const defaultCenter = assets.length > 0 ? {
-            lat: parseFloat(assets[0].offChainProperties.gpsLatitude),
-            lng: parseFloat(assets[0].offChainProperties.gpsLongitude)
-        } : {
-            lat: 0,
-            lng: 0
-        };
+        const defaultCenter =
+            assets.length > 0
+                ? {
+                      lat: parseFloat(assets[0].offChainProperties.gpsLatitude),
+                      lng: parseFloat(assets[0].offChainProperties.gpsLongitude)
+                  }
+                : {
+                      lat: 0,
+                      lng: 0
+                  };
 
         return (
-            <LoadScriptNext
-                googleMapsApiKey={APIKEY}
-                loadingElement={<CircularProgress />}
-            >
+            <LoadScriptNext googleMapsApiKey={APIKEY} loadingElement={<CircularProgress />}>
                 <GoogleMap
                     center={defaultCenter}
                     zoom={10}
@@ -108,52 +110,58 @@ class AssetMapClass extends React.Component<Props, State> {
                     mapTypeId="hybrid"
                     onLoad={map => this.updateBounds(map)}
                 >
-                    {assets.map((asset, index) => <React.Fragment key={index}>
-                        <Marker
-                            position={{
-                                lat: parseFloat(asset.offChainProperties.gpsLatitude),
-                                lng: parseFloat(asset.offChainProperties.gpsLongitude)
-                            }}
-                            onClick={() => this.showWindowForAsset(asset)}
-                        />
-                    </React.Fragment>
-                    )}
+                    {assets.map((asset, index) => (
+                        <React.Fragment key={index}>
+                            <Marker
+                                position={{
+                                    lat: parseFloat(asset.offChainProperties.gpsLatitude),
+                                    lng: parseFloat(asset.offChainProperties.gpsLongitude)
+                                }}
+                                onClick={() => this.showWindowForAsset(asset)}
+                            />
+                        </React.Fragment>
+                    ))}
 
-                    {assetHighlighted && owner && <InfoWindow
-                        position={{
-                            lat: parseFloat(assetHighlighted.offChainProperties.gpsLatitude),
-                            lng: parseFloat(assetHighlighted.offChainProperties.gpsLongitude)
-                        }}
-                        onCloseClick={() => this.setState({
-                            assetHighlighted: null,
-                            owner: null
-                        })}
+                    {assetHighlighted && owner && (
+                        <InfoWindow
+                            position={{
+                                lat: parseFloat(assetHighlighted.offChainProperties.gpsLatitude),
+                                lng: parseFloat(assetHighlighted.offChainProperties.gpsLongitude)
+                            }}
+                            onCloseClick={() =>
+                                this.setState({
+                                    assetHighlighted: null,
+                                    owner: null
+                                })
+                            }
                         >
-                        <div style={{
-                            color: 'black'
-                        }}>
-                            <b>{assetHighlighted.offChainProperties.facilityName}</b>
-                            <br/><br/>
-                            Owner: {owner.organization}
-                            <br/><br/>
-                            <Link
-                                to={getProducingAssetDetailLink(baseURL, assetHighlighted.id)}
+                            <div
+                                style={{
+                                    color: 'black'
+                                }}
                             >
-                                See more
-                            </Link>
-                        </div>
-                    </InfoWindow>}
-                    
+                                <b>{assetHighlighted.offChainProperties.facilityName}</b>
+                                <br />
+                                <br />
+                                Owner: {owner.organization}
+                                <br />
+                                <br />
+                                <Link
+                                    to={getProducingAssetDetailLink(baseURL, assetHighlighted.id)}
+                                >
+                                    See more
+                                </Link>
+                            </div>
+                        </InfoWindow>
+                    )}
                 </GoogleMap>
             </LoadScriptNext>
         );
     }
 }
 
-export const AssetMap = connect(
-    (state: IStoreState, ownProps: OwnProps) => ({
-        assets: ownProps.assets || state.producingAssets,
-        baseURL: getBaseURL(state),
-        configuration: state.configuration
-    })
-)(AssetMapClass);
+export const AssetMap = connect((state: IStoreState, ownProps: OwnProps) => ({
+    assets: ownProps.assets || state.producingAssets,
+    baseURL: getBaseURL(state),
+    configuration: state.configuration
+}))(AssetMapClass);

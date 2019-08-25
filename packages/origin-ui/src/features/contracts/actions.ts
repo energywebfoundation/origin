@@ -9,7 +9,9 @@ export interface TSetOriginContractLookupAddressAction {
 
 export type TSetOriginContractLookupAddress = typeof setOriginContractLookupAddress;
 
-export const setOriginContractLookupAddress = (payload: TSetOriginContractLookupAddressAction['payload']) => ({
+export const setOriginContractLookupAddress = (
+    payload: TSetOriginContractLookupAddressAction['payload']
+) => ({
     type: ContractsActions.setOriginContractLookupAddress,
     payload
 });
