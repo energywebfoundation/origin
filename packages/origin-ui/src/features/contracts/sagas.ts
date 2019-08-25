@@ -275,6 +275,7 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
 
                 yield call(initEventHandler);
             } catch (error) {
+                console.error('ContractsSaga::Error when initializing configuration', error);
                 yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
                 yield put(setLoading(false));
             }

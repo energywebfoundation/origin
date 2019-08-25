@@ -54,7 +54,7 @@ type Props = RouteComponentProps<IMatchParams> & IStateProps & IDispatchProps;
 
 class AppContainerClass extends React.Component<Props> {
     async componentDidMount(): Promise<void> {
-        let contractAddress = this.props.match.params.contractAddress;
+        const contractAddress = this.props.match.params.contractAddress;
 
         this.props.setOriginContractLookupAddress(contractAddress);
     }

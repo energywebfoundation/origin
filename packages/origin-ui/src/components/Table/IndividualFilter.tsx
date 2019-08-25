@@ -12,6 +12,7 @@ import {
     Chip
 } from '@material-ui/core';
 import { Moment } from 'moment';
+import { dataTest } from '../../utils/Helper';
 
 interface IProps {
     filter: ICustomFilter;
@@ -25,7 +26,7 @@ export class IndividualFilter extends Component<IProps> {
         if (!filter) {
             return null;
         }
-
+        
         switch (filter.input.type) {
             case CustomFilterInputType.string:
                 return (
@@ -36,6 +37,7 @@ export class IndividualFilter extends Component<IProps> {
                             label={filter.label}
                             fullWidth={true}
                             variant="filled"
+                            {...dataTest(`${filter.label}-textfield`)}
                         />
                     </FormControl>
                 );
