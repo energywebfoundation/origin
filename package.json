@@ -29,5 +29,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "engines": {
+    "node": "10"
+  }
 }
