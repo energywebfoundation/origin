@@ -15,63 +15,44 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Nav } from 'react-bootstrap';
-
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { User } from '@energyweb/user-registry';
-import { Demand } from '@energyweb/market';
-import { Configuration } from '@energyweb/utils-general';
-
 import { PageContent } from '../elements/PageContent/PageContent';
 import { DemandTable } from './DemandTable';
+import { connect } from 'react-redux';
+import { getDemandsLink } from '../utils/routing';
+import { IStoreState } from '../types';
+import { getBaseURL } from '../features/selectors';
 
-export interface IDemandsProps {
-    conf: Configuration.Entity;
-    demands: Demand.Entity[];
-    producingAssets: ProducingAsset.Entity[];
-    consumingAssets: ConsumingAsset.Entity[];
-    currentUser: User;
-    baseUrl: string;
+interface IStateProps {
+    baseURL: string;
 }
 
-export class Demands extends React.Component<IDemandsProps> {
-    constructor(props) {
-        super(props);
+type Props = IStateProps;
 
-        this.DemandTable = this.DemandTable.bind(this);
-    }
-
-    DemandTable() {
-        return (
-            <DemandTable
-                conf={this.props.conf}
-                producingAssets={this.props.producingAssets}
-                currentUser={this.props.currentUser}
-                demands={this.props.demands}
-                consumingAssets={this.props.consumingAssets}
-                baseUrl={this.props.baseUrl}
-            />
-        );
-    }
-
+class DemandsClass extends React.Component<Props> {
     render() {
         const DemandsMenu = {
             key: 'demands',
             label: 'Demands',
-            component: this.DemandTable
+            component: DemandTable
         };
 
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu" />
+                    <ul className="NavMenu nav"></ul>
                 </div>
 
                 <PageContent
                     menu={DemandsMenu}
-                    redirectPath={'/' + this.props.baseUrl + '/demands'}
+                    redirectPath={getDemandsLink(this.props.baseURL)}
                 />
             </div>
         );
     }
 }
+
+export const Demands = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state)
+    })
+)(DemandsClass);

@@ -15,70 +15,29 @@
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
 import * as React from 'react';
-import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
-import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Route, NavLink, Redirect, withRouter, RouteComponentProps } from 'react-router-dom';
 import { ProducingAssetTable } from './ProducingAssetTable';
 import { ConsumingAssetTable } from './ConsumingAssetTable';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
-import { Configuration } from '@energyweb/utils-general';
-import { Demand } from '@energyweb/market';
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
+import { AssetMap } from './AssetMap';
+import { IStoreState } from '../types';
+import { getBaseURL } from '../features/selectors';
+import { getAssetsLink } from '../utils/routing';
 
-export interface AssetProps {
-    conf: Configuration.Entity;
-    certificates: Certificate.Entity[];
-    producingAssets: ProducingAsset.Entity[];
-    consumingAssets: ConsumingAsset.Entity[];
-    currentUser: User;
-    baseUrl: string;
-    demands: Demand.Entity[];
+interface IStateProps {
+    baseURL: string;
 }
 
-export class Asset extends React.Component<AssetProps> {
-    constructor(props: AssetProps) {
-        super(props);
+type Props = RouteComponentProps & IStateProps;
 
-        this.ConsumingAssetTable = this.ConsumingAssetTable.bind(this);
-        this.ProducingAssetTable = this.ProducingAssetTable.bind(this);
-    }
-
-    ProducingAssetTable(): JSX.Element {
-        return (
-            <ProducingAssetTable
-                certificates={this.props.certificates}
-                producingAssets={this.props.producingAssets}
-                conf={this.props.conf}
-                currentUser={this.props.currentUser}
-                baseUrl={this.props.baseUrl}
-            />
-        );
-    }
-
-    ConsumingAssetTable(): JSX.Element {
-        return (
-            <ConsumingAssetTable
-                certificates={this.props.certificates}
-                demands={this.props.demands}
-                consumingAssets={this.props.consumingAssets}
-                conf={this.props.conf}
-                currentUser={this.props.currentUser}
-                baseUrl={this.props.baseUrl}
-            />
-        );
-    }
-
+class AssetClass extends React.Component<Props> {
     ProductionDetailView(id: number): JSX.Element {
         return (
             <ProducingAssetDetailView
                 id={id}
-                baseUrl={this.props.baseUrl}
-                producingAssets={this.props.producingAssets}
-                conf={this.props.conf}
-                certificates={this.props.certificates}
                 addSearchField={true}
                 showCertificates={true}
                 showSmartMeterReadings={true}
@@ -90,25 +49,28 @@ export class Asset extends React.Component<AssetProps> {
         return (
             <ConsumingAssetDetailView
                 id={id}
-                baseUrl={this.props.baseUrl}
-                consumingAssets={this.props.consumingAssets}
-                conf={this.props.conf}
-                certificates={this.props.certificates}
             />
         );
     }
 
     render(): JSX.Element {
+        const { baseURL } = this.props;
+
         const AssetsMenu = [
             {
                 key: 'production',
                 label: 'Production List',
-                component: this.ProducingAssetTable
+                component: ProducingAssetTable
+            },
+            {
+                key: 'production-map',
+                label: 'Production Map',
+                component: () => <AssetMap height='700px' />
             },
             {
                 key: 'consumption',
                 label: 'Consumption List',
-                component: this.ConsumingAssetTable
+                component: ConsumingAssetTable
             },
             {
                 key: 'producing_detail_view',
@@ -125,24 +87,23 @@ export class Asset extends React.Component<AssetProps> {
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu">
+                    <ul className="NavMenu nav">
                         {AssetsMenu.map(menu => {
                             return (
                                 <li key={menu.key}>
                                     <NavLink
-                                        to={`/${this.props.baseUrl}/assets/${menu.key}`}
-                                        activeClassName="active"
+                                        to={`${getAssetsLink(baseURL)}/${menu.key}`}
                                     >
                                         {menu.label}
                                     </NavLink>
                                 </li>
                             );
                         })}
-                    </Nav>
+                    </ul>
                 </div>
 
                 <Route
-                    path={'/' + this.props.baseUrl + '/assets/:key/:id?'}
+                    path={`${getAssetsLink(baseURL)}/:key/:id?`}
                     render={props => {
                         const key = props.match.params.key;
                         const id = props.match.params.id;
@@ -160,26 +121,26 @@ export class Asset extends React.Component<AssetProps> {
                         return (
                             <PageContent
                                 menu={matches.length > 0 ? matches[0] : null}
-                                redirectPath={'/' + this.props.baseUrl + '/assets'}
+                                redirectPath={getAssetsLink(baseURL)}
                             />
                         );
                     }}
                 />
                 <Route
                     exact={true}
-                    path={'/' + this.props.baseUrl + '/assets'}
-                    render={props => (
+                    path={getAssetsLink(baseURL)}
+                    render={() => (
                         <Redirect
-                            to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }}
+                            to={{ pathname: `${getAssetsLink(baseURL)}/${AssetsMenu[0].key}` }}
                         />
                     )}
                 />
                 <Route
                     exact={true}
-                    path={'/' + this.props.baseUrl + '/'}
-                    render={props => (
+                    path={`${baseURL}/`}
+                    render={() => (
                         <Redirect
-                            to={{ pathname: `/${this.props.baseUrl}/assets/${AssetsMenu[0].key}` }}
+                            to={{ pathname: `${getAssetsLink(baseURL)}/${AssetsMenu[0].key}` }}
                         />
                     )}
                 />
@@ -187,3 +148,9 @@ export class Asset extends React.Component<AssetProps> {
         );
     }
 }
+
+export const Asset = withRouter(connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state)
+    })
+)(AssetClass));

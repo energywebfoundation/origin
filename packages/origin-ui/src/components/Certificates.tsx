@@ -16,30 +16,27 @@
 
 import * as React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
-
-import { Certificate } from '@energyweb/origin';
-import { ProducingAsset } from '@energyweb/asset-registry';
 import { User, Role } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-import { Configuration } from '@energyweb/utils-general';
-
 import { PageContent } from '../elements/PageContent/PageContent';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { CertificateDetailView } from './CertificateDetailView';
 import { CertificationRequestsTable } from './CertificationRequestsTable';
+import { getCertificatesLink } from '../utils/routing';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getBaseURL, getCurrentUser, getDemands } from '../features/selectors';
 
-export interface ICertificatesProps {
-    conf: Configuration.Entity;
-    certificates: Certificate.Entity[];
-    producingAssets: ProducingAsset.Entity[];
+interface IStateProps {
     demands: Demand.Entity[];
     currentUser: User;
-    baseUrl: string;
+    baseURL: string;
 }
 
-export class Certificates extends React.Component<ICertificatesProps> {
-    constructor(props: ICertificatesProps) {
+type Props = IStateProps;
+
+class CertificatesClass extends React.Component<Props> {
+    constructor(props: Props) {
         super(props);
 
         this.CertificateTable = this.CertificateTable.bind(this);
@@ -47,8 +44,6 @@ export class Certificates extends React.Component<ICertificatesProps> {
         this.ForSaleCertificates = this.ForSaleCertificates.bind(this);
         this.ClaimedCertificates = this.ClaimedCertificates.bind(this);
         this.ForDemandCertificates = this.ForDemandCertificates.bind(this);
-        this.PendingCertificationRequests = this.PendingCertificationRequests.bind(this);
-        this.ApprovedCertificationRequests = this.ApprovedCertificationRequests.bind(this);
     }
 
     CertificateTable(key: SelectedState, demandId?: number) {
@@ -59,11 +54,6 @@ export class Certificates extends React.Component<ICertificatesProps> {
 
         return (
             <CertificateTable
-                conf={this.props.conf}
-                certificates={this.props.certificates}
-                producingAssets={this.props.producingAssets}
-                currentUser={this.props.currentUser}
-                baseUrl={this.props.baseUrl}
                 selectedState={key}
                 demand={demand}
             />
@@ -74,10 +64,6 @@ export class Certificates extends React.Component<ICertificatesProps> {
         return (
             <CertificateDetailView
                 id={id}
-                baseUrl={this.props.baseUrl}
-                producingAssets={this.props.producingAssets}
-                conf={this.props.conf}
-                certificates={this.props.certificates}
             />
         );
     }
@@ -96,27 +82,6 @@ export class Certificates extends React.Component<ICertificatesProps> {
 
     ForDemandCertificates(demandId: number) {
         return this.CertificateTable(SelectedState.ForDemand, demandId);
-    }
-
-    PendingCertificationRequests() {
-        return (
-            <CertificationRequestsTable
-                conf={this.props.conf}
-                producingAssets={this.props.producingAssets}
-                currentUser={this.props.currentUser}
-            />
-        );
-    }
-
-    ApprovedCertificationRequests() {
-        return (
-            <CertificationRequestsTable
-                conf={this.props.conf}
-                producingAssets={this.props.producingAssets}
-                currentUser={this.props.currentUser}
-                approvedOnly={true}
-            />
-        );
     }
 
     render() {
@@ -150,13 +115,15 @@ export class Certificates extends React.Component<ICertificatesProps> {
             {
                 key: 'pending',
                 label: 'Pending',
-                component: this.PendingCertificationRequests,
+                component: CertificationRequestsTable,
                 show: true
             },
             {
                 key: 'approved',
                 label: 'Approved',
-                component: this.ApprovedCertificationRequests,
+                component: () => <CertificationRequestsTable
+                    approvedOnly={true}
+                />,
                 show: isIssuer
             },
             {
@@ -168,7 +135,7 @@ export class Certificates extends React.Component<ICertificatesProps> {
         ];
 
         const defaultRedirect = {
-            pathname: `/${this.props.baseUrl}/certificates/${
+            pathname: `${getCertificatesLink(this.props.baseURL)}/${
                 isIssuer ? CertificatesMenu[4].key : CertificatesMenu[0].key
             }`
         };
@@ -176,14 +143,13 @@ export class Certificates extends React.Component<ICertificatesProps> {
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <Nav className="NavMenu">
+                    <ul className="NavMenu nav">
                         {CertificatesMenu.map(menu => {
                             if (menu.show) {
                                 return (
                                     <li key={menu.key}>
                                         <NavLink
-                                            to={`/${this.props.baseUrl}/certificates/${menu.key}`}
-                                            activeClassName="active"
+                                            to={`${getCertificatesLink(this.props.baseURL)}/${menu.key}`}
                                         >
                                             {menu.label}
                                         </NavLink>
@@ -191,11 +157,11 @@ export class Certificates extends React.Component<ICertificatesProps> {
                                 );
                             }
                         })}
-                    </Nav>
+                    </ul>
                 </div>
 
                 <Route
-                    path={`/${this.props.baseUrl}/certificates/:key/:id?`}
+                    path={`${getCertificatesLink(this.props.baseURL)}/:key/:id?`}
                     render={props => {
                         const key = props.match.params.key;
                         const id = props.match.params.id;
@@ -215,7 +181,7 @@ export class Certificates extends React.Component<ICertificatesProps> {
                         return (
                             <PageContent
                                 menu={matches.length > 0 ? matches[0] : null}
-                                redirectPath={`/${this.props.baseUrl}/certificates`}
+                                redirectPath={getCertificatesLink(this.props.baseURL)}
                             />
                         );
                     }}
@@ -223,16 +189,24 @@ export class Certificates extends React.Component<ICertificatesProps> {
 
                 <Route
                     exact={true}
-                    path={`/${this.props.baseUrl}/certificates`}
-                    render={props => <Redirect to={defaultRedirect} />}
+                    path={getCertificatesLink(this.props.baseURL)}
+                    render={() => <Redirect to={defaultRedirect} />}
                 />
 
                 <Route
                     exact={true}
-                    path={`/${this.props.baseUrl}/`}
-                    render={props => <Redirect to={defaultRedirect} />}
+                    path={`${this.props.baseURL}/`}
+                    render={() => <Redirect to={defaultRedirect} />}
                 />
             </div>
         );
     }
 }
+
+export const Certificates = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state),
+        currentUser: getCurrentUser(state),
+        demands: getDemands(state)
+    })
+)(CertificatesClass);

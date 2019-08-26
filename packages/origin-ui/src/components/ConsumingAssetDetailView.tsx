@@ -23,19 +23,27 @@ import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { ConsumingAsset } from '@energyweb/asset-registry';
-
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
 import { Configuration } from '@energyweb/utils-general';
-import { MapContainer } from './MapContainer';
+import { AssetMap } from './AssetMap';
+import { getConsumingAssetDetailLink } from '../utils/routing';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getBaseURL, getCertificates, getConfiguration, getConsumingAssets } from '../features/selectors';
 
-export interface IDetailViewProps {
-    conf: Configuration.Entity;
+interface IOwnProps {
     id: number;
-    baseUrl: string;
+}
+
+interface IStateProps {
+    baseURL: string;
     certificates: Certificate.Entity[];
+    configuration: Configuration.Entity;
     consumingAssets: ConsumingAsset.Entity[];
 }
+
+type Props = IOwnProps & IStateProps;
 
 export interface IDetailViewState {
     newId: number;
@@ -43,10 +51,8 @@ export interface IDetailViewState {
     notSoldCertificates: number;
 }
 
-const TableWidth: number[] = [210, 210, 210, 210, 407];
-
-export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, IDetailViewState> {
-    constructor(props: IDetailViewProps) {
+class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewState> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             newId: null,
@@ -64,11 +70,15 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
         await this.getOwner(this.props);
     }
 
-    async componentWillReceiveProps(newProps: IDetailViewProps): Promise<void> {
+    async componentWillReceiveProps(newProps: Props): Promise<void> {
         await this.getOwner(newProps);
     }
 
-    async getOwner(props: IDetailViewProps): Promise<void> {
+    async getOwner(props: Props): Promise<void> {
+        if (typeof(props.id) === 'undefined') {
+            return;
+        }
+
         const selectedAsset: ConsumingAsset.Entity = props.consumingAssets.find(
             (c: ConsumingAsset.Entity) => c.id === props.id.toString()
         );
@@ -86,7 +96,7 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                 });
             }
             this.setState({
-                owner: await new User(selectedAsset.owner.address, props.conf as any).sync()
+                owner: await new User(selectedAsset.owner.address, props.configuration as any).sync()
             });
         }
     }
@@ -166,7 +176,7 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
 
                     <Link
                         className="btn btn-primary find-asset-button"
-                        to={`/${this.props.baseUrl}/assets/consuming_detail_view/${this.state.newId}`}
+                        to={getConsumingAssetDetailLink(this.props.baseURL, this.state.newId)}
                     >
                         Find Asset
                     </Link>
@@ -206,8 +216,8 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
                                                             </div>
                                                         ) : (
                                                             <div className={`Image Map`}>
-                                                                <MapContainer
-                                                                    asset={selectedAsset}
+                                                                <AssetMap
+                                                                    assets={[selectedAsset]}
                                                                 />
                                                             </div>
                                                         ))}
@@ -230,6 +240,9 @@ export class ConsumingAssetDetailView extends React.Component<IDetailViewProps, 
     }
 }
 
-const addCommas = intNum => {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-};
+export const ConsumingAssetDetailView = connect((state: IStoreState): IStateProps => ({
+    baseURL: getBaseURL(state),
+    certificates: getCertificates(state),
+    configuration: getConfiguration(state),
+    consumingAssets: getConsumingAssets(state)
+}))(ConsumingAssetDetailViewClass);

@@ -38,16 +38,22 @@ import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
 } from './Table/PaginatedLoader';
+import { getProducingAssetDetailLink } from '../utils/routing';
+import { connect } from 'react-redux';
+import { IStoreState } from '../types';
+import { getConfiguration, getCertificates, getProducingAssets, getCurrentUser, getBaseURL } from '../features/selectors';
 
-export interface ProducingAssetTableProps {
-    conf: Configuration.Entity;
+interface IStateProps {
+    configuration: Configuration.Entity;
     certificates: Certificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
     currentUser: User;
-    baseUrl: string;
+    baseURL: string;
 }
 
-export interface IEnrichedProducingAssetData {
+type Props = IStateProps;
+
+interface IEnrichedProducingAssetData {
     asset: ProducingAsset.Entity;
     organizationName: string;
     notSoldCertificates: Certificate.Entity[];
@@ -64,11 +70,11 @@ enum OPERATIONS {
     SHOW_DETAILS = 'Show Details'
 }
 
-export class ProducingAssetTable extends PaginatedLoaderFiltered<
-    ProducingAssetTableProps,
+class ProducingAssetTableClass extends PaginatedLoaderFiltered<
+    Props,
     IProducingAssetTableState
 > {
-    constructor(props: ProducingAssetTableProps) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -82,7 +88,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<
         this.hideRequestIRECsModal = this.hideRequestIRECsModal.bind(this);
     }
 
-    async componentDidUpdate(newProps: ProducingAssetTableProps) {
+    async componentDidUpdate(newProps: Props) {
         if (newProps.producingAssets !== this.props.producingAssets) {
             await this.loadPage(1);
         }
@@ -98,7 +104,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<
                     certificate.owner === asset.owner.address &&
                     certificate.assetId.toString() === asset.id
             ),
-            organizationName: (await new User(asset.owner.address, this.props.conf as any).sync())
+            organizationName: (await new User(asset.owner.address, this.props.configuration as any).sync())
                 .organization
         }));
 
@@ -156,7 +162,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<
             return;
         }
 
-        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+        const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
             .certificateLogicInstance;
 
         const lastRequestedSMReadIndex = Number(
@@ -242,12 +248,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<
             return (
                 <Redirect
                     push={true}
-                    to={
-                        '/' +
-                        this.props.baseUrl +
-                        '/assets/producing_detail_view/' +
-                        this.state.detailViewForAssetId
-                    }
+                    to={getProducingAssetDetailLink(this.props.baseURL, this.state.detailViewForAssetId.toString())}
                 />
             );
         }
@@ -296,7 +297,7 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<
                 />
 
                 <RequestIRECsModal
-                    conf={this.props.conf}
+                    conf={this.props.configuration}
                     producingAsset={this.state.requestIRECsModalAsset}
                     showModal={this.state.showRequestIRECsModal}
                     callback={this.hideRequestIRECsModal}
@@ -305,3 +306,13 @@ export class ProducingAssetTable extends PaginatedLoaderFiltered<
         );
     }
 }
+
+export const ProducingAssetTable = connect(
+    (state: IStoreState): IStateProps => ({
+        configuration: getConfiguration(state),
+        certificates: getCertificates(state),
+        producingAssets: getProducingAssets(state),
+        currentUser: getCurrentUser(state),
+        baseURL: getBaseURL(state)
+    })
+)(ProducingAssetTableClass);
