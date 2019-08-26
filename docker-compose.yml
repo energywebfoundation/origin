@@ -24,6 +24,17 @@ services:
       - app-network
     volumes:
       - ./db.json:/dockerBuildDirectory/db.json
+
+  simulation:
+    build: .
+    command: yarn run:simulation:server
+
+  consumer:
+    build: .
+    command: yarn run:simulation:consumer
+    links:
+      - simulation
+
 volumes:
   shared:
 networks:
