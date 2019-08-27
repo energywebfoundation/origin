@@ -28,13 +28,10 @@ import { METHOD_NOT_IMPLEMENTED } from '../exports';
 export class BlockchainModeController extends Controller {
     public conf: Configuration.Entity;
 
-    private simulationFlow: SimulationFlowDef.ISimulationFlow;
-    private matches: SimulationFlowDef.IMatch[];
     private date: number;
 
     constructor(conf: Configuration.Entity, matcherAddress: string) {
         super();
-        this.matches = [];
         this.agreements = [];
         this.demands = [];
         this.supplies = [];
@@ -47,7 +44,7 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerProducingAsset(newAsset: ProducingAsset.Entity) {
-        const producingAsset = this.producingAssets.find(
+        const producingAsset = this.producingAssets.some(
             (asset: ProducingAsset.Entity) => asset.id === newAsset.id
         );
 
@@ -58,7 +55,7 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerDemand(newDemand: Demand.Entity) {
-        const foundDemand = this.demands.find(
+        const foundDemand = this.demands.some(
             (demand: Demand.Entity) => demand.id === newDemand.id
         );
 
@@ -69,7 +66,7 @@ export class BlockchainModeController extends Controller {
     }
 
     async registerSupply(newSupply: Supply.Entity) {
-        const foundSupply = this.supplies.find(
+        const foundSupply = this.supplies.some(
             (supply: Supply.Entity) => supply.id === newSupply.id
         );
 
@@ -83,26 +80,23 @@ export class BlockchainModeController extends Controller {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async registerAgreement(newAggreement: Agreement.Entity) {
-        const allowed: boolean = Boolean(
-            newAggreement.allowedMatcher.find(
-                (matcherAddress: string) =>
-                    matcherAddress &&
-                    matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()
-            )
+    async registerAgreement(newAgreement: Agreement.Entity) {
+        const allowed = newAgreement.allowedMatcher.some(
+            (matcherAddress: string) =>
+                matcherAddress && matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()
         );
 
         if (allowed) {
             if (
-                !this.agreements.find(
-                    (aggreement: Agreement.Entity) => newAggreement.id === aggreement.id
+                !this.agreements.some(
+                    (agreement: Agreement.Entity) => newAgreement.id === agreement.id
                 )
             ) {
-                this.agreements.push(newAggreement);
-                logger.verbose('Registered new agreement #' + newAggreement.id);
+                this.agreements.push(newAgreement);
+                logger.verbose('Registered new agreement #' + newAgreement.id);
             }
         } else {
-            logger.verbose('This instance is not an machter for agreement #' + newAggreement.id);
+            logger.verbose('This instance is not an matcher for agreement #' + newAgreement.id);
         }
     }
 

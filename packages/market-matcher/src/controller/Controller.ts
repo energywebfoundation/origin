@@ -64,7 +64,7 @@ export abstract class Controller {
 
     abstract async matchAgreement(
         certificate: Certificate.Entity,
-        aggreement: Agreement.Entity
+        agreement: Agreement.Entity
     ): Promise<void>;
 
     abstract async matchDemand(
@@ -82,7 +82,7 @@ export abstract class Controller {
 
     abstract async registerConsumingAsset(newAsset: ConsumingAsset.Entity): Promise<void>;
 
-    abstract async registerAgreement(aggreement: Agreement.Entity): Promise<void>;
+    abstract async registerAgreement(agreement: Agreement.Entity): Promise<void>;
 
     abstract async registerDemand(demand: Demand.Entity): Promise<void>;
 

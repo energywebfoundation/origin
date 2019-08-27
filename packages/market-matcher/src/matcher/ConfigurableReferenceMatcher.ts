@@ -77,14 +77,11 @@ export class ConfigurableReferenceMatcher extends Matcher {
                 agreement.offChainProperties.timeframe
             );
             const demand = this.controller.getDemand(agreement.demandId.toString());
-            const neededWhForCurrentPeriod =
-                agreement.matcherOffChainProperties.currentPeriod === currentPeriod
-                    ? demand.offChainProperties.targetWhPerPeriod >
-                      agreement.matcherOffChainProperties.currentWh
-                        ? demand.offChainProperties.targetWhPerPeriod -
-                          agreement.matcherOffChainProperties.currentWh
-                        : 0
-                    : demand.offChainProperties.targetWhPerPeriod;
+            const neededWhForCurrentPeriod = this.calculateNeededEnergy(
+                agreement,
+                demand,
+                currentPeriod
+            );
 
             if (
                 certificate.creationTime < agreement.offChainProperties.start ||
@@ -161,11 +158,25 @@ export class ConfigurableReferenceMatcher extends Matcher {
         return { split: false, demand: null };
     }
 
+    private calculateNeededEnergy(
+        agreement: Agreement.Entity,
+        demand: Demand.Entity,
+        currentPeriod: number
+    ) {
+        const { targetWhPerPeriod } = demand.offChainProperties;
+
+        if (agreement.matcherOffChainProperties.currentPeriod === currentPeriod) {
+            const missingEnergy = targetWhPerPeriod - agreement.matcherOffChainProperties.currentWh;
+
+            return Math.max(missingEnergy, 0);
+        }
+
+        return targetWhPerPeriod;
+    }
+
     private sortAgreements(a: Agreement.Entity, b: Agreement.Entity) {
         // TODO: change
-        const rule = this.ruleConf.rule as RuleConf.ISimpleHierarchyRule;
-
-        const unequalProperty = rule.relevantProperties.find(
+        const unequalProperty = this.ruleConf.rule.relevantProperties.find(
             (property: RuleConf.ISimpleHierarchyRelevantProperty) =>
                 a[property.name] !== b[property.name]
         );

@@ -32,47 +32,37 @@ export const handleFlowAction = async (
     switch (simulationFlowAction.type) {
         case SimulationFlowDef.Agreement.RegisterAgreementActionType.RegisterAgreement:
             await simulationModeController.registerAgreement(
-                SimulationFlowDef.Agreement.agreementDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Agreement.IAgreementData
-                )
+                SimulationFlowDef.Agreement.agreementDataToEntity(simulationFlowAction.data)
             );
             break;
         case SimulationFlowDef.Demand.RegisterDemandActionType.RegisterDemand:
             await simulationModeController.registerDemand(
-                SimulationFlowDef.Demand.demandDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Demand.IDemandData
-                )
+                SimulationFlowDef.Demand.demandDataToEntity(simulationFlowAction.data)
             );
             break;
         case SimulationFlowDef.Supply.RegisterSupplyActionType.RegisterSupply:
             await simulationModeController.registerSupply(
-                SimulationFlowDef.Supply.supplyDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Supply.ISupplyData
-                )
+                SimulationFlowDef.Supply.supplyDataToEntity(simulationFlowAction.data)
             );
             break;
         case SimulationFlowDef.ProducingAsset.RegisterProducingAssetActionType
             .RegisterProducingAsset:
             await simulationModeController.registerProducingAsset(
                 SimulationFlowDef.ProducingAsset.producingAssetDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.ProducingAsset.IProducingAssetData
+                    simulationFlowAction.data
                 )
             );
             break;
         case SimulationFlowDef.Certificate.RegisterCertificateActionType.RegisterCertificate:
             await simulationModeController.matchTrigger(
-                SimulationFlowDef.Certificate.certificateDataToEntity(
-                    simulationFlowAction.data as SimulationFlowDef.Certificate.ICertificateData
-                )
+                SimulationFlowDef.Certificate.certificateDataToEntity(simulationFlowAction.data)
             );
             break;
         case SimulationFlowDef.Sleep.SleepActionType.Sleep:
             await sleep(simulationFlowAction.data.ms);
             break;
         case SimulationFlowDef.Date.SetDateActionType.SetDate:
-            simulationModeController.setDataSourceTime(
-                simulationFlowAction.data as SimulationFlowDef.Date.IDateData
-            );
+            simulationModeController.setDataSourceTime(simulationFlowAction.data);
             break;
         default:
             throw new Error(

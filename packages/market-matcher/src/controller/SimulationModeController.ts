@@ -96,21 +96,15 @@ export class SimulationModeController extends Controller {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async registerAgreement(newAggreement: Agreement.Entity) {
-        const allowed = newAggreement.allowedMatcher.find(
-            (matcherAddress: string) => matcherAddress === this.matcherAddress
-        )
-            ? true
-            : false;
+    async registerAgreement(newAgreement: Agreement.Entity) {
+        const allowed = newAgreement.allowedMatcher.some(
+            matcherAddress => matcherAddress === this.matcherAddress
+        );
 
         if (allowed) {
-            if (
-                !this.agreements.find(
-                    (aggreement: Agreement.Entity) => newAggreement.id === aggreement.id
-                )
-            ) {
-                this.agreements.push(newAggreement);
-                logger.verbose('Registered new agreement #' + newAggreement.id);
+            if (!this.agreements.some(agreement => newAgreement.id === agreement.id)) {
+                this.agreements.push(newAgreement);
+                logger.verbose('Registered new agreement #' + newAgreement.id);
             }
         } else {
             throw new Error('Agreement does not allow this matcher.');
