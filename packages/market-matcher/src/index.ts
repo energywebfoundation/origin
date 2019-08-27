@@ -24,7 +24,7 @@ const main = async () => {
         const conf: SchemaDefs.IMatcherConf = JSON.parse(
             fs.readFileSync(process.argv[2], 'utf8').toString()
         );
-        await startMatcher(conf);
+        await startMatcher(conf)
     }
 };
 
