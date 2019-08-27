@@ -24,6 +24,8 @@
     "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
     "run:origin": "lerna run start-all --scope @energyweb/origin-ui --scope @energyweb/utils-demo --parallel",
     "run:ganache": "lerna run start-ganache --scope @energyweb/utils-demo --stream",
+    "run:simulation:server": "lerna run start-simulation --scope @energyweb/solar-simulator --stream",
+    "run:simulation:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
     "test": "yarn run test:ui",
     "test:ui": "lerna run test --scope @energyweb/origin-ui --stream"
   },

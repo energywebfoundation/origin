@@ -28,7 +28,6 @@ interface IAssetGetResponse {
     latitude: number;
     longitude: number;
     energy_unit: ENERGY_UNIT;
-    is_accumulated: boolean;
 }
 
 const ENERGY_UNIT_TO_RATIO_MAPPING = {
@@ -188,8 +187,7 @@ export async function startAPI() {
             serial_number: asset.serial_number,
             latitude: asset.latitude,
             longitude: asset.longitude,
-            energy_unit: ENERGY_UNIT[asset.energy_unit],
-            is_accumulated: asset.is_accumulated
+            energy_unit: ENERGY_UNIT[asset.energy_unit]
         };
 
         return res.json(response);
