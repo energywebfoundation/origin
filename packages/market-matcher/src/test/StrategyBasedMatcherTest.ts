@@ -1,8 +1,33 @@
-import { AssetProducingRegistryLogic, migrateAssetRegistryContracts, ProducingAsset } from '@energyweb/asset-registry';
-import { Agreement, Demand, MarketLogic, migrateMarketRegistryContracts, Supply } from '@energyweb/market';
-import { Certificate, CertificateLogic, migrateCertificateRegistryContracts } from '@energyweb/origin';
-import { buildRights, migrateUserRegistryContracts, Role, UserLogic } from '@energyweb/user-registry';
-import { AssetType, Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
+import {
+    AssetProducingRegistryLogic,
+    migrateAssetRegistryContracts,
+    ProducingAsset
+} from '@energyweb/asset-registry';
+import {
+    Agreement,
+    Demand,
+    MarketLogic,
+    migrateMarketRegistryContracts,
+    Supply
+} from '@energyweb/market';
+import {
+    Certificate,
+    CertificateLogic,
+    migrateCertificateRegistryContracts
+} from '@energyweb/origin';
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    UserLogic
+} from '@energyweb/user-registry';
+import {
+    AssetType,
+    Compliance,
+    Configuration,
+    Currency,
+    TimeFrame
+} from '@energyweb/utils-general';
 import { assert } from 'chai';
 import Web3 from 'web3';
 
@@ -14,7 +39,7 @@ const PROVIDER_URL = 'http://localhost:8545';
 const BACKEND_URL = 'http://localhost:3030';
 const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-describe('Test Matcher', async () => {
+describe('Test StrategyBasedMatcher', async () => {
     const web3 = new Web3(PROVIDER_URL);
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
@@ -59,8 +84,7 @@ describe('Test Matcher', async () => {
             }
         },
         matcherSpecification: {
-            type: 'CONFIGURABLE_REFERENCE' as SchemaDefs.MatcherType,
-            matcherConfigFile: 'example-conf/simple-hierarchy-rule.json'
+            type: SchemaDefs.MatcherType.Strategy
         }
     };
 

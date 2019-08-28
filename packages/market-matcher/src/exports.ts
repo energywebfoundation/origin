@@ -28,6 +28,8 @@ import { BlockchainModeController } from './controller/BlockchainModeController'
 import { createBlockchainConf } from './controller/BlockchainConnection';
 import { logger } from './Logger';
 import * as MatcherLogic from './matcher/MatcherLogic';
+import { StrategyBasedMatcher } from './matcher/StrategyBasedMatcher';
+import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
 
 const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';
 
@@ -48,6 +50,9 @@ const buildMatcher = (
         case SchemaDefs.MatcherType.Simple:
             return new SimpleMatcher();
 
+        case SchemaDefs.MatcherType.Strategy:
+            return new StrategyBasedMatcher(new LowestPriceStrategy());
+
         default:
             throw new Error('Unknown matcher type.');
     }
@@ -59,18 +64,13 @@ const buildController = async (
     logger.verbose('Data source type is ' + dataSource.type);
     switch (dataSource.type) {
         case SchemaDefs.BlockchainDataSourceType.Blockchain:
-            const blockchainDataSource = dataSource as SchemaDefs.IBlockchainDataSource;
-
             return new BlockchainModeController(
-                await createBlockchainConf(
-                    blockchainDataSource,
-                    blockchainDataSource.matcherAccount
-                ),
-                blockchainDataSource.matcherAccount.address
+                await createBlockchainConf(dataSource, dataSource.matcherAccount),
+                dataSource.matcherAccount.address
             );
 
         case SchemaDefs.SimulationDataSourceType.Simulation:
-            return new SimulationModeController(dataSource as SchemaDefs.ISimulationDataSource);
+            return new SimulationModeController(dataSource);
 
         default:
             throw new Error('Unknown data source type.');

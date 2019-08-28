@@ -23,7 +23,6 @@ import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 
 import { Matcher } from '../matcher/Matcher';
-import * as Filter from '../matcher/Filter';
 import { logger } from '../Logger';
 
 export abstract class Controller {
@@ -58,7 +57,6 @@ export abstract class Controller {
     }
 
     async matchTrigger(certificate: Certificate.Entity) {
-        // const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
         await this.matcher.match(certificate, this.agreements, this.demands);
     }
 
