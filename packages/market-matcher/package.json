@@ -15,7 +15,7 @@
     "main": "dist/js/src/exports.js",
     "scripts": {
         "build": "scripts/build.js",
-        "build-ts": "tsc --noEmitOnError",
+        "build-ts": "rm -rf dist && tsc",
         "debug": "node --inspect-brk dist/js/src/index.js",
         "generate-conf-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IMatcherConf > schemas/conf.schema.json",
         "generate-rule-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IRuleConf > schemas/rule.schema.json",

@@ -51,8 +51,8 @@ async function run() {
 
   await fs.ensureDir(`${ROOT_DIRECTORY}/dist/js`);
 
-  await executeCommand('yarn build-ts', ROOT_DIRECTORY)
   await executeCommand('yarn generate-schemas', ROOT_DIRECTORY)
+  await executeCommand('yarn build-ts', ROOT_DIRECTORY)
 
   if (!(await fs.pathExists(`${ROOT_DIRECTORY}/dist/js/src`))) {
     await fs.move(`${ROOT_DIRECTORY}/dist/js`, `${ROOT_DIRECTORY}/dist/js-temp`);
