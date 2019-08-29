@@ -43,6 +43,7 @@ import {
     IMatcherOffChainProperties
 } from '../blockchain-facade/Agreement';
 import { timingSafeEqual } from 'crypto';
+import { DemandStatus } from '../blockchain-facade/Demand';
 
 describe('Market-Facade', () => {
     const configFile = JSON.parse(
@@ -179,7 +180,8 @@ describe('Market-Facade', () => {
             const demandProps: Market.Demand.IDemandOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
-                demandOwner: conf.blockchainProperties.activeUser.address
+                demandOwner: conf.blockchainProperties.activeUser.address,
+                status: DemandStatus.ACTIVE
             };
             assert.equal(await Market.Demand.getDemandListLength(conf), 0);
 

@@ -1,6 +1,7 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 = require('web3');
 import MarketLogicJSON from '../../build/contracts/MarketLogic.json';
+import { DemandStatus } from '../blockchain-facade/Demand';
 
 const SUPPORTED_EVENTS = [
     'allEvents',
@@ -199,5 +200,11 @@ export class MarketLogic extends GeneralFunctions {
 
     async getAllDemandListLength(txParams?: SpecialTx) {
         return await this.web3Contract.methods.getAllDemandListLength().call(txParams);
+    }
+
+    async changeDemandStatus(_demandId: number, _status: DemandStatus, txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.changeDemandStatus(_demandId, _status);
+
+        return this.send(method, txParams);
     }
 }

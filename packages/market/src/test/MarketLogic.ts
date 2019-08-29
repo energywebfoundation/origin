@@ -35,6 +35,7 @@ import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
+import { DemandStatus } from '../blockchain-facade/Demand';
 
 const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
 
@@ -1154,5 +1155,22 @@ describe('MarketLogic', () => {
 
         // Demand list length should remain the same, because the elements in Solidity are not automatically shifted
         assert.equal(await marketLogic.getAllDemandListLength(), 3);
+    });
+
+    it('should be able to set demand status to paused when current status is active', async () => {
+        const demandId = 0;
+        const tx = await marketLogic.changeDemandStatus(demandId, DemandStatus.PAUSED, {
+            privateKey: traderPK
+        });
+
+        const events = await marketLogic.getEvents('DemandStatusChanged', {
+            fromBlock: tx.blockNumber,
+            toBlock: tx.blockNumber
+        });
+
+        assert.equal(events.length, 1);
+
+        const { _status } = await marketLogic.getDemand(demandId);
+        assert.equal(_status, DemandStatus.ACTIVE);
     });
 });

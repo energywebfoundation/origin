@@ -35,9 +35,14 @@ export interface IDemandOffChainProperties {
     endTime: string;
 }
 
+export enum DemandStatus {
+    ACTIVE, PAUSED, ARCHIVED
+}
+
 export interface IDemandOnChainProperties
     extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
     demandOwner: string;
+    status: DemandStatus;
 }
 
 export const getDemandListLength = async (
@@ -118,6 +123,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     offChainProperties: IDemandOffChainProperties;
     propertiesDocumentHash: string;
     url: string;
+    status: DemandStatus;
 
     demandOwner: string;
 
@@ -150,6 +156,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
             this.propertiesDocumentHash = demand._propertiesDocumentHash;
             this.url = demand._documentDBURL;
             this.demandOwner = demand._owner;
+            this.status = Number(demand._status);
             this.initialized = true;
             this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
 

@@ -22,12 +22,14 @@ import "../../contracts/Trading/AgreementDB.sol";
 /// @title The Database contract for the AgreementDB of Origin list
 /// @notice This contract only provides getter and setter methods and only its logic-contract is able to call the functions
 contract MarketDB is AgreementDB {
+    enum DemandStatus { ACTIVE, PAUSED, ARCHIVED }
 
     /// @notice struct for gather all information
     struct Demand {
         string propertiesDocumentHash;
         string documentDBURL;
         address demandOwner;
+        DemandStatus status;
     }
 
     struct Supply {
@@ -44,7 +46,7 @@ contract MarketDB is AgreementDB {
 
     /// @notice Constructor
     /// @param _owner The owner of the contract
-    constructor(address _owner) public Owned(_owner) {}
+    constructor(address _owner) public Owned(_owner) { }
 
 	/// @notice creates a demand
 	/// @param _propertiesDocumentHash the properties document hash
@@ -64,7 +66,8 @@ contract MarketDB is AgreementDB {
         allDemands.push(Demand({
             propertiesDocumentHash: _propertiesDocumentHash,
             documentDBURL: _documentDBURL,
-            demandOwner: _demandOwner
+            demandOwner: _demandOwner,
+            status: DemandStatus.ACTIVE
         }));
         _demandId = allDemands.length>0?allDemands.length-1:0;
     }
@@ -147,5 +150,15 @@ contract MarketDB is AgreementDB {
         returns (Supply memory)
     {
         return allSupply[_supplyId];
+    }
+
+    function setDemandStatus(uint _demandId, DemandStatus _status)
+        public
+        onlyOwner
+        returns (DemandStatus)
+    {
+        allDemands[_demandId].status = _status;
+
+        return _status;
     }
 }

@@ -23,10 +23,10 @@ import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol
 
 /// @title The logic contract for the AgreementDB of Origin list
 contract MarketLogic is AgreementLogic {
-
     event createdNewDemand(address _sender, uint indexed _demandId);
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event deletedDemand(address _sender, uint indexed _demandId);
+    event DemandStatusChanged(address _sender, uint indexed _demandId, MarketDB.DemandStatus indexed _status);
 
     /// @notice constructor
     constructor(
@@ -36,6 +36,7 @@ contract MarketLogic is AgreementLogic {
         AgreementLogic(_assetContractLookup,_marketContractLookup)
         public
     {
+
     }
 
 	/// @notice Function to create a demand
@@ -105,13 +106,15 @@ contract MarketLogic is AgreementLogic {
         returns (
             string memory _propertiesDocumentHash,
             string memory _documentDBURL,
-            address _owner
+            address _owner,
+            uint _status
         )
     {
         MarketDB.Demand memory demand = db.getDemand(_demandId);
         _propertiesDocumentHash = demand.propertiesDocumentHash;
         _documentDBURL = demand.documentDBURL;
         _owner = demand.demandOwner;
+        _status = uint(demand.status);
     }
 
 	/// @notice gets a supply
@@ -132,4 +135,23 @@ contract MarketLogic is AgreementLogic {
         _assetId = supply.assetId;
     }
 
+    function changeDemandStatus(uint _demandId, MarketDB.DemandStatus _status) 
+        external
+        onlyRole(RoleManagement.Role.Trader)
+        returns (MarketDB.DemandStatus)
+    {
+        MarketDB.Demand memory demand = db.getDemand(_demandId);
+
+        if (demand.status == _status) {
+            return _status;
+        }
+        if (demand.status == MarketDB.DemandStatus.ARCHIVED) {
+            return MarketDB.DemandStatus.ARCHIVED;
+        } 
+
+        MarketDB.DemandStatus status = db.setDemandStatus(_demandId, _status);
+        emit DemandStatusChanged(msg.sender, _demandId, status);
+        
+        return status;
+    }
 }

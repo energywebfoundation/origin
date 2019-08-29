@@ -614,7 +614,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
             const onChainProperties: Demand.IDemandOnChainProperties = {
                 demandOwner: asset.owner.address,
                 propertiesDocumentHash: '',
-                url: ''
+                url: '',
+                status: Demand.DemandStatus.ACTIVE
             };
 
             await Demand.createDemand(onChainProperties, offChainProperties, this.props.configuration);
