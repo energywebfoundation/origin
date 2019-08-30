@@ -197,6 +197,7 @@ describe('Market-Facade', () => {
                 initialized: true,
                 url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
+                status: 0,
                 offChainProperties: {
                     assettype: 3,
                     consumingAsset: 0,
@@ -234,6 +235,7 @@ describe('Market-Facade', () => {
                 initialized: true,
                 url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
+                status: 0,
                 offChainProperties: {
                     assettype: 3,
                     consumingAsset: 0,

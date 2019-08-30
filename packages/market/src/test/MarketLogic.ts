@@ -280,9 +280,11 @@ describe('MarketLogic', () => {
             0: 'propertiesDocumentHash',
             1: 'documentDBURL',
             2: accountTrader.toLowerCase(),
+            3: '0',
             _propertiesDocumentHash: 'propertiesDocumentHash',
             _documentDBURL: 'documentDBURL',
-            _owner: accountTrader.toLowerCase()
+            _owner: accountTrader.toLowerCase(),
+            _status: '0'
         });
     });
 
