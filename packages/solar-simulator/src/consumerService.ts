@@ -1,9 +1,9 @@
-import { ProducingAsset } from 'ew-asset-registry-lib';
-import { createBlockchainProperties as assetCreateBlockchainProperties } from 'ew-asset-registry-lib';
+import { ProducingAsset } from '@energyweb/asset-registry';
+import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
-import { Configuration } from 'ew-utils-general-lib';
+import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import axios from 'axios';
 import CONFIG from '../config/config.json';
@@ -38,7 +38,6 @@ async function getAssetConf()  {
     };
 
     conf.blockchainProperties = await assetCreateBlockchainProperties(
-        conf.logger,
         conf.blockchainProperties.web3,
         ASSET_CONTRACT_LOOKUP_ADDRESS
     );
