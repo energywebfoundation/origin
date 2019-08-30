@@ -76,12 +76,13 @@ describe('MarketLogic', () => {
     const testStatusChange = async (
         demandId: number,
         status: DemandStatus,
-        hasChanged: boolean
+        hasChanged: boolean,
+        user: string = traderPK
     ) => {
         const demand = await marketLogic.getDemand(demandId);
 
         const tx = await marketLogic.changeDemandStatus(demandId, status, {
-            privateKey: traderPK
+            privateKey: user
         });
 
         const { _status } = await marketLogic.getDemand(demandId);
@@ -1185,6 +1186,17 @@ describe('MarketLogic', () => {
 
     it('should not emit event when status not changed', async () => {
         await testStatusChange(0, DemandStatus.ACTIVE, false);
+    });
+
+    it('should not be able to change demand status when no demand owner', async () => {
+        let failed = false;
+        try {
+            await testStatusChange(0, DemandStatus.PAUSED, false, trader2PK);
+        } catch(e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
     });
 
     it('should be able to set demand status to paused when current status is active', async () => {

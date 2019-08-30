@@ -141,6 +141,7 @@ contract MarketLogic is AgreementLogic {
         returns (MarketDB.DemandStatus)
     {
         MarketDB.Demand memory demand = db.getDemand(_demandId);
+        require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
 
         if (demand.status == _status) {
             return _status;
