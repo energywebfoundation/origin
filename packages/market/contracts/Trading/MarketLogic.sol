@@ -26,7 +26,7 @@ contract MarketLogic is AgreementLogic {
     event createdNewDemand(address _sender, uint indexed _demandId);
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event deletedDemand(address _sender, uint indexed _demandId);
-    event DemandStatusChanged(address _sender, uint indexed _demandId, MarketDB.DemandStatus indexed _status);
+    event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
 
     /// @notice constructor
     constructor(
@@ -150,7 +150,7 @@ contract MarketLogic is AgreementLogic {
         } 
 
         MarketDB.DemandStatus status = db.setDemandStatus(_demandId, _status);
-        emit DemandStatusChanged(msg.sender, _demandId, status);
+        emit DemandStatusChanged(msg.sender, _demandId, uint16(status));
         
         return status;
     }

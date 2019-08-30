@@ -73,6 +73,28 @@ describe('MarketLogic', () => {
     const matcherPK = '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c';
     const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
 
+    const testStatusChange = async (
+        demandId: number,
+        status: DemandStatus,
+        hasChanged: boolean
+    ) => {
+        const demand = await marketLogic.getDemand(demandId);
+
+        const tx = await marketLogic.changeDemandStatus(demandId, status, {
+            privateKey: traderPK
+        });
+
+        const { _status } = await marketLogic.getDemand(demandId);
+        assert.equal(_status, hasChanged ? status : demand._status);
+
+        const events = await marketLogic.getEvents('DemandStatusChanged', {
+            fromBlock: tx.blockNumber,
+            toBlock: tx.blockNumber
+        });
+
+        assert.equal(events.length, hasChanged ? 1 : 0);
+    };
+
     it('should deploy the contracts', async () => {
         isGanache = true;
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
@@ -1150,29 +1172,35 @@ describe('MarketLogic', () => {
             0: '',
             1: '',
             2: ZERO_ADDR,
+            3: '0',
             _propertiesDocumentHash: '',
             _documentDBURL: '',
-            _owner: ZERO_ADDR
+            _owner: ZERO_ADDR,
+            _status: '0'
         });
 
         // Demand list length should remain the same, because the elements in Solidity are not automatically shifted
         assert.equal(await marketLogic.getAllDemandListLength(), 3);
     });
 
+    it('should not emit event when status not changed', async () => {
+        await testStatusChange(0, DemandStatus.ACTIVE, false);
+    });
+
     it('should be able to set demand status to paused when current status is active', async () => {
-        const demandId = 0;
-        const tx = await marketLogic.changeDemandStatus(demandId, DemandStatus.PAUSED, {
-            privateKey: traderPK
-        });
+        await testStatusChange(0, DemandStatus.PAUSED, true);
+    });
 
-        const events = await marketLogic.getEvents('DemandStatusChanged', {
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        });
+    it('should be able to set demand status to active when current status is paused', async () => {
+        await testStatusChange(0, DemandStatus.ACTIVE, true);
+    });
 
-        assert.equal(events.length, 1);
+    it('should be able to set demand status to archived when current status is active', async () => {
+        await testStatusChange(0, DemandStatus.ARCHIVED, true);
+    });
 
-        const { _status } = await marketLogic.getDemand(demandId);
-        assert.equal(_status, DemandStatus.ACTIVE);
+    it('should be not able to set demand status to active or paused when current status is archived', async () => {
+        await testStatusChange(0, DemandStatus.ACTIVE, false);
+        await testStatusChange(0, DemandStatus.PAUSED, false);
     });
 });
