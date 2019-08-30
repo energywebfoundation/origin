@@ -28,7 +28,7 @@
         "run:simulation:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
         "test": "yarn test:ui && yarn test:contracts",
         "test:ui": "lerna run test --scope @energyweb/origin-ui --stream",
-        "test:contracts": "lerna run --scope @energyweb/asset-registry --stream test-contracts && lerna run --scope @energyweb/origin --stream test-contracts && lerna run --scope @energyweb/user-registry --stream test-contracts && lerna run -scope @energyweb/market --stream yarn test-contracts"
+        "test:contracts": "lerna run --scope @energyweb/asset-registry --stream test-contracts && lerna run --scope @energyweb/origin --stream test-contracts && lerna run --scope @energyweb/user-registry --stream test-contracts && lerna run --scope @energyweb/market --stream test-contracts"
     },
     "workspaces": [
         "packages/*"
