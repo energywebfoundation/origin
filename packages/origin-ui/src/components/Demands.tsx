@@ -21,6 +21,9 @@ import { connect } from 'react-redux';
 import { getDemandsLink } from '../utils/routing';
 import { IStoreState } from '../types';
 import { getBaseURL } from '../features/selectors';
+import { OnboardDemand } from './OnboardDemand';
+import { NavLink } from 'react-router-dom';
+import { Route, Redirect } from 'react-router';
 
 interface IStateProps {
     baseURL: string;
@@ -30,21 +33,65 @@ type Props = IStateProps;
 
 class DemandsClass extends React.Component<Props> {
     render() {
-        const DemandsMenu = {
-            key: 'demands',
-            label: 'Demands',
-            component: DemandTable
-        };
+        const {
+            baseURL
+        } = this.props;
+        const DemandsMenu = [
+            {
+                key: 'list',
+                label: 'List',
+                component: DemandTable
+            },
+            {
+                key: 'create',
+                label: 'Create',
+                component: OnboardDemand
+            }
+        ];
 
         return (
             <div className="PageWrapper">
                 <div className="PageNav">
-                    <ul className="NavMenu nav"></ul>
+                    <ul className="NavMenu nav">
+                        {DemandsMenu.map(menu => {
+                            return (
+                                <li key={menu.key}>
+                                    <NavLink
+                                        exact={true}
+                                        to={`${getDemandsLink(baseURL)}/${menu.key}`}
+                                        activeClassName="active"
+                                    >
+                                        {menu.label}
+                                    </NavLink>
+                                </li>
+                            );
+                        })}
+                    </ul>
                 </div>
 
-                <PageContent
-                    menu={DemandsMenu}
-                    redirectPath={getDemandsLink(this.props.baseURL)}
+                <Route
+                    path={`${getDemandsLink(baseURL)}/:key`}
+                    render={props => {
+                        const key = props.match.params.key;
+                        const matches = DemandsMenu.filter(item => {
+                            return item.key === key;
+                        });
+
+                        return (
+                            <PageContent
+                                menu={matches.length > 0 ? matches[0] : null}
+                                redirectPath={getDemandsLink(baseURL)}
+                            />
+                        );
+                    }}
+                />
+
+                <Route
+                    exact={true}
+                    path={`${getDemandsLink(baseURL)}`}
+                    render={() => (
+                        <Redirect to={{ pathname: `${getDemandsLink(baseURL)}/${DemandsMenu[0].key}` }} />
+                    )}
                 />
             </div>
         );

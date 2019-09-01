@@ -6,10 +6,6 @@ export const getCertificatesLink = (baseURL: string) => {
     return `${baseURL}/certificates`;
 }
 
-export const getAdminLink = (baseURL: string) => {
-    return `${baseURL}/admin`;
-}
-
 export const getDemandsLink = (baseURL: string) => {
     return `${baseURL}/demands`;
 }
