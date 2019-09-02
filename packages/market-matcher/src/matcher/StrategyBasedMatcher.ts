@@ -117,15 +117,11 @@ export class StrategyBasedMatcher extends Matcher {
         const offeredPower = certificate.powerInW;
 
         for (const demand of matchedDemands) {
-            console.log(JSON.stringify(demand.offChainProperties));
             const requiredPower = demand.offChainProperties.targetWhPerPeriod;
 
             if (offeredPower < requiredPower) {
                 continue;
             }
-
-            console.log(typeof offeredPower);
-            console.log(typeof requiredPower);
 
             if (offeredPower === requiredPower) {
                 return { split: false, demand };
