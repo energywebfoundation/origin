@@ -25,7 +25,6 @@ import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol
 contract MarketLogic is AgreementLogic {
     event createdNewDemand(address _sender, uint indexed _demandId);
     event createdNewSupply(address _sender, uint indexed _supplyId);
-    event deletedDemand(address _sender, uint indexed _demandId);
     event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
 
     /// @notice constructor
@@ -64,8 +63,7 @@ contract MarketLogic is AgreementLogic {
         MarketDB.Demand memory demand = db.getDemand(_demandId);
         require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
 
-        db.deleteDemand(_demandId);
-        emit deletedDemand(msg.sender, _demandId);
+        changeDemandStatus(_demandId, MarketDB.DemandStatus.ARCHIVED);
     }
 
 	/// @notice Function to create a supply
@@ -136,7 +134,7 @@ contract MarketLogic is AgreementLogic {
     }
 
     function changeDemandStatus(uint _demandId, MarketDB.DemandStatus _status) 
-        external
+        public
         onlyRole(RoleManagement.Role.Trader)
         returns (MarketDB.DemandStatus)
     {

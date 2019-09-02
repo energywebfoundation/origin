@@ -98,14 +98,11 @@ export const deleteDemand = async (
 ): Promise<boolean> => {
     let success = true;
 
-    const demand = await new Entity(demandId.toString(), configuration).sync();
-
     try {
         await configuration.blockchainProperties.marketLogicInstance.deleteDemand(demandId, {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey
         });
-        await demand.deleteFromOffChainStorage();
     } catch (e) {
         success = false;
         throw e;

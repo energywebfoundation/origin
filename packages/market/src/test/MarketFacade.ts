@@ -13,37 +13,34 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
+import 'mocha';
 
+import {
+    AssetProducingRegistryLogic,
+    migrateAssetRegistryContracts,
+    ProducingAsset
+} from '@energyweb/asset-registry';
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    UserContractLookup,
+    UserLogic
+} from '@energyweb/user-registry';
+import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
-
-import 'mocha';
 import Web3 = require('web3');
-import * as GeneralLib from '@energyweb/utils-general';
-import { logger } from '../Logger';
-import {
-    UserContractLookup,
-    UserLogic,
-    migrateUserRegistryContracts,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import {
-    migrateAssetRegistryContracts,
-    AssetConsumingRegistryLogic,
-    AssetProducingRegistryLogic
-} from '@energyweb/asset-registry';
-import { MarketLogic } from '..';
-import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
+
 import * as Market from '..';
-import { ProducingAsset } from '@energyweb/asset-registry';
-import { deepEqual } from 'assert';
+import { MarketLogic } from '..';
 import {
     IAgreementOffChainProperties,
     IMatcherOffChainProperties
 } from '../blockchain-facade/Agreement';
-import { timingSafeEqual } from 'crypto';
 import { DemandStatus } from '../blockchain-facade/Demand';
+import { logger } from '../Logger';
+import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 
 describe('Market-Facade', () => {
     const configFile = JSON.parse(
@@ -713,7 +710,9 @@ describe('Market-Facade', () => {
 
         it('should get all demands even after a demand is deleted', async () => {
             const allDemands = await Market.Demand.getAllDemands(conf);
-            assert.equal(allDemands.length, 0);
+
+            assert.equal(allDemands.length, 1);
+            assert.equal(allDemands[0].status, DemandStatus.ARCHIVED);
         });
     });
 });

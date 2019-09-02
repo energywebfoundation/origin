@@ -172,6 +172,7 @@ function* initEventHandler() {
             });
         });
 
+        // TODO: Change to status changed
         demandContractEventHandler.onEvent('deletedDemand', async (event: any) =>
             emitter({
                 action: demandDeleted(

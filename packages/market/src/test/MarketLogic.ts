@@ -1162,22 +1162,22 @@ describe('MarketLogic', () => {
             privateKey: traderPK
         });
 
-        const deletedDemandEvents = await marketLogic.getEvents('deletedDemand', {
+        const archivedDemandStatusEvents = await marketLogic.getEvents('DemandStatusChanged', {
             fromBlock: txDelete.blockNumber,
             toBlock: txDelete.blockNumber
         });
-        assert.equal(deletedDemandEvents.length, 1);
+        assert.equal(archivedDemandStatusEvents.length, 1);
 
         const demandAfter = await marketLogic.getDemand(1);
         assert.deepEqual(demandAfter, {
-            0: '',
-            1: '',
-            2: ZERO_ADDR,
-            3: '0',
-            _propertiesDocumentHash: '',
-            _documentDBURL: '',
-            _owner: ZERO_ADDR,
-            _status: '0'
+            0: 'propertiesDocumentHash_2',
+            1: 'documentDBURL_2',
+            2: '0xaf9DdE98b6aeB2225bf87C2cB91c58833fbab2Ab',
+            3: DemandStatus.ARCHIVED.toString(),
+            _propertiesDocumentHash: 'propertiesDocumentHash_2',
+            _documentDBURL: 'documentDBURL_2',
+            _owner: '0xaf9DdE98b6aeB2225bf87C2cB91c58833fbab2Ab',
+            _status: DemandStatus.ARCHIVED.toString()
         });
 
         // Demand list length should remain the same, because the elements in Solidity are not automatically shifted
@@ -1192,7 +1192,7 @@ describe('MarketLogic', () => {
         let failed = false;
         try {
             await testStatusChange(0, DemandStatus.PAUSED, false, trader2PK);
-        } catch(e) {
+        } catch (e) {
             failed = true;
         }
 
