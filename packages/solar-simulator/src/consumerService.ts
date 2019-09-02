@@ -1,11 +1,11 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
+import { Configuration } from '@energyweb/utils-general';
+import axios from 'axios';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
-import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import axios from 'axios';
 import CONFIG from '../config/config.json';
 
 export function wait(milliseconds) {
@@ -59,7 +59,7 @@ async function getProducingAssetSmartMeterRead(
 ) {
     const conf = await getAssetConf();
 
-    let asset = await new ProducingAsset.Entity(assetId, conf).sync();
+    const asset = await new ProducingAsset.Entity(assetId, conf).sync();
 
     return parseInt(asset.lastSmartMeterReadWh as any as string, 10);
 }

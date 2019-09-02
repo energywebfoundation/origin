@@ -15,3 +15,6 @@ before_install:
 install:
     - yarn
     - yarn build
+
+script:
+    - yarn lint:simulator
