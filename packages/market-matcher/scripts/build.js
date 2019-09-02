@@ -6,65 +6,64 @@ const path = require('path');
 const fs = require('fs-extra');
 
 function relativePath(pathToAdd) {
-  return path.join(__dirname, pathToAdd);
+    return path.join(__dirname, pathToAdd);
 }
 
 function getRootDirectory() {
-  const PATHS_TO_TEST = [
-    relativePath('../')
-  ];
+    const PATHS_TO_TEST = [relativePath('../')];
 
-  for (const path of PATHS_TO_TEST) {
-    if (fs.existsSync(path)) {
-      return path;
+    for (const path of PATHS_TO_TEST) {
+        if (fs.existsSync(path)) {
+            return path;
+        }
     }
-  }
 
-  throw `Can't find contracts directory`;
+    throw `Can't find contracts directory`;
 }
 
 const ROOT_DIRECTORY = getRootDirectory();
 
 async function executeCommand(command, directory) {
-  const options = {};
+    const options = {};
 
-  if (directory) {
-    options.cwd = directory;
-  }
-
-  try {
-    const { stdout, stderr } = await exec(command, options);
-
-    console.log(stdout);
-    console.error(stderr);
-  } catch (error) {
-    if (error && error.stdout) {
-      console.error(error.stdout);
-    } else {
-      console.error(error);
+    if (directory) {
+        options.cwd = directory;
     }
-  }
+
+    try {
+        const { stdout, stderr } = await exec(command, options);
+
+        console.log(stdout);
+        console.error(stderr);
+    } catch (error) {
+        if (error && error.stdout) {
+            console.error(error.stdout);
+        } else {
+            console.error(error);
+        }
+        process.exit(1);
+    }
 }
 
 async function run() {
-  console.log('EW-MARKET-MATCHER-BUILD: Start...');
+    console.log('EW-MARKET-MATCHER-BUILD: Start...');
 
-  await fs.ensureDir(`${ROOT_DIRECTORY}/dist/js`);
-
-  await executeCommand('yarn generate-schemas', ROOT_DIRECTORY)
-  await executeCommand('yarn build-ts', ROOT_DIRECTORY)
-
-  if (!(await fs.pathExists(`${ROOT_DIRECTORY}/dist/js/src`))) {
-    await fs.move(`${ROOT_DIRECTORY}/dist/js`, `${ROOT_DIRECTORY}/dist/js-temp`);
     await fs.ensureDir(`${ROOT_DIRECTORY}/dist/js`);
-    await fs.move(`${ROOT_DIRECTORY}/dist/js-temp`, `${ROOT_DIRECTORY}/dist/js/src`);
-  }
 
-  if (!(await fs.pathExists(`${ROOT_DIRECTORY}/dist/js/schemas`))) {
-    await fs.move(`${ROOT_DIRECTORY}/schemas`, `${ROOT_DIRECTORY}/dist/js/schemas`);
-  }
+    await executeCommand('yarn generate-schemas', ROOT_DIRECTORY);
+    await executeCommand('yarn build-ts', ROOT_DIRECTORY);
 
-  console.log('EW-MARKET-MATCHER-BUILD: End');
+    if (!(await fs.pathExists(`${ROOT_DIRECTORY}/dist/js/src`))) {
+        await fs.move(`${ROOT_DIRECTORY}/dist/js`, `${ROOT_DIRECTORY}/dist/js-temp`);
+        await fs.ensureDir(`${ROOT_DIRECTORY}/dist/js`);
+        await fs.move(`${ROOT_DIRECTORY}/dist/js-temp`, `${ROOT_DIRECTORY}/dist/js/src`);
+    }
+
+    if (!(await fs.pathExists(`${ROOT_DIRECTORY}/dist/js/schemas`))) {
+        await fs.move(`${ROOT_DIRECTORY}/schemas`, `${ROOT_DIRECTORY}/dist/js/schemas`);
+    }
+
+    console.log('EW-MARKET-MATCHER-BUILD: End');
 }
 
 run();

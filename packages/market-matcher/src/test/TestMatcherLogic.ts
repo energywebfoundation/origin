@@ -1,7 +1,7 @@
 import { assert } from 'chai';
-import { mock, instance, when, spy, reset } from 'ts-mockito';
+import { mock, instance, when } from 'ts-mockito';
 
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 import { Demand, Agreement, Supply } from '@energyweb/market';
 
@@ -13,7 +13,7 @@ import {
 } from '../matcher/MatcherLogic';
 
 describe('Test Matcher Logic', async () => {
-    const mockedConfiguration: Configuration.Entity = mock(Configuration.Entity);
+    const mockedConfiguration = mock<Configuration.Entity>();
     const conf: Configuration.Entity = instance(mockedConfiguration);
 
     describe('findMatchingDemandsForCertificate', async () => {
@@ -24,7 +24,7 @@ describe('Test Matcher Logic', async () => {
                     price: 150,
                     currency: Currency.EUR
                 },
-                acceptedToken: '0x0000000000000000000000000000000000000000'
+                acceptedToken: 0x0
             };
 
             const testDemands = [
@@ -32,31 +32,46 @@ describe('Test Matcher Logic', async () => {
                 {
                     targetWhPerPeriod: 1.5e6,
                     maxPricePerMwh: 100,
-                    currency: Currency.USD
+                    currency: Currency.USD,
+                    startTime: '',
+                    endTime: '',
+                    timeframe: TimeFrame.daily
                 },
                 // Wh check should fail
                 {
                     targetWhPerPeriod: 1e5,
                     maxPricePerMwh: 100,
-                    currency: Currency.EUR
+                    currency: Currency.EUR,
+                    startTime: '',
+                    endTime: '',
+                    timeframe: TimeFrame.daily
                 },
                 // Price check should fail
                 {
                     targetWhPerPeriod: 1.5e6,
                     maxPricePerMwh: 200,
-                    currency: Currency.EUR
+                    currency: Currency.EUR,
+                    startTime: '',
+                    endTime: '',
+                    timeframe: TimeFrame.daily
                 },
                 // Currency check should fail
                 {
                     targetWhPerPeriod: 1e5,
                     maxPricePerMwh: 200,
-                    currency: Currency.USD
+                    currency: Currency.USD,
+                    startTime: '',
+                    endTime: '',
+                    timeframe: TimeFrame.daily
                 },
                 // All checks should pass
                 {
                     targetWhPerPeriod: 1e5,
                     maxPricePerMwh: 200,
-                    currency: Currency.EUR
+                    currency: Currency.EUR,
+                    startTime: '',
+                    endTime: '',
+                    timeframe: TimeFrame.daily
                 }
             ];
 
@@ -70,11 +85,12 @@ describe('Test Matcher Logic', async () => {
             when(mockedCertificate.acceptedToken).thenReturn(testCertificate.acceptedToken);
 
             const certificate: Certificate.Entity = instance(mockedCertificate);
-            const demandsToTest = [];
+            const demandsToTest:  Demand.Entity[] = [];
 
             for (const demand of testDemands) {
                 const mockedDemand: Demand.Entity = mock(Demand.Entity);
                 when(mockedDemand.offChainProperties).thenReturn(demand);
+                when(mockedDemand.status).thenReturn(Demand.DemandStatus.ACTIVE);
                 const demandInstance: Demand.Entity = instance(mockedDemand);
                 demandsToTest.push(demandInstance);
             }
@@ -93,7 +109,10 @@ describe('Test Matcher Logic', async () => {
             const testDemand = {
                 targetWhPerPeriod: 1e6,
                 maxPricePerMwh: 150,
-                currency: Currency.EUR
+                currency: Currency.EUR,
+                startTime: '',
+                endTime: '',
+                timeframe: TimeFrame.daily
             };
 
             const testCertificates = [
@@ -104,7 +123,7 @@ describe('Test Matcher Logic', async () => {
                         price: 200,
                         currency: Currency.EUR
                     },
-                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    acceptedToken: 0x0,
                     forSale: true
                 },
                 // Wh check should fail
@@ -114,7 +133,7 @@ describe('Test Matcher Logic', async () => {
                         price: 200,
                         currency: Currency.EUR
                     },
-                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    acceptedToken: 0x0,
                     forSale: true
                 },
                 // Price check should fail
@@ -124,7 +143,7 @@ describe('Test Matcher Logic', async () => {
                         price: 100,
                         currency: Currency.EUR
                     },
-                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    acceptedToken: 0x0,
                     forSale: true
                 },
                 // Currency check should fail
@@ -134,7 +153,7 @@ describe('Test Matcher Logic', async () => {
                         price: 100,
                         currency: Currency.USD
                     },
-                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    acceptedToken: 0x0,
                     forSale: true
                 },
                 // For sale check should fail
@@ -144,7 +163,7 @@ describe('Test Matcher Logic', async () => {
                         price: 100,
                         currency: Currency.EUR
                     },
-                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    acceptedToken: 0x0,
                     forSale: false
                 },
                 // All checks should pass
@@ -154,7 +173,7 @@ describe('Test Matcher Logic', async () => {
                         price: 100,
                         currency: Currency.EUR
                     },
-                    acceptedToken: '0x0000000000000000000000000000000000000000',
+                    acceptedToken: 0x0,
                     forSale: true
                 }
             ];
@@ -163,6 +182,7 @@ describe('Test Matcher Logic', async () => {
 
             const mockedDemand: Demand.Entity = mock(Demand.Entity);
             when(mockedDemand.offChainProperties).thenReturn(testDemand);
+            when(mockedDemand.status).thenReturn(Demand.DemandStatus.ACTIVE);
 
             const demand: Demand.Entity = instance(mockedDemand);
             const certificatesToTest = [];
@@ -193,35 +213,48 @@ describe('Test Matcher Logic', async () => {
         it('matches only when supply matches demand', async () => {
             const testDemand = {
                 targetWhPerPeriod: 1e6,
-                maxPricePerMwh: 150
+                maxPricePerMwh: 150,
+                currency: Currency.EUR,
+                startTime: '',
+                endTime: '',
+                timeframe: TimeFrame.daily
             };
 
             const testSupplies = [
                 // Both checks should fail
                 {
                     availableWh: 0.9e6,
-                    price: 200
+                    price: 200,
+                    currency: Currency.EUR,
+                    timeframe: TimeFrame.daily
                 },
                 // Wh check should fail
                 {
                     availableWh: 1.1e6,
-                    price: 200
+                    price: 200,
+                    currency: Currency.EUR,
+                    timeframe: TimeFrame.daily
                 },
                 // Price check should fail
                 {
                     availableWh: 0.9e6,
-                    price: 100
+                    price: 100,
+                    currency: Currency.EUR,
+                    timeframe: TimeFrame.daily
                 },
                 // Both checks should pass
                 {
                     availableWh: 1.1e6,
-                    price: 100
+                    price: 100,
+                    currency: Currency.EUR,
+                    timeframe: TimeFrame.daily
                 }
             ];
 
             const numShouldMatch = 1;
 
             const mockedDemand: Demand.Entity = mock(Demand.Entity);
+            when(mockedDemand.status).thenReturn(Demand.DemandStatus.ACTIVE);
             when(mockedDemand.offChainProperties).thenReturn(testDemand);
 
             const demand: Demand.Entity = instance(mockedDemand);

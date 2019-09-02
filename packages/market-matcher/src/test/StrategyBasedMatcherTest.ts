@@ -204,7 +204,8 @@ describe('Test StrategyBasedMatcher', async () => {
         const demandProps: Demand.IDemandOnChainProperties = {
             url: null,
             propertiesDocumentHash: null,
-            demandOwner: conf.blockchainProperties.activeUser.address
+            demandOwner: conf.blockchainProperties.activeUser.address,
+            status: Demand.DemandStatus.ACTIVE
         };
 
         await Demand.createDemand(demandProps, demandOffChainProps, conf);
