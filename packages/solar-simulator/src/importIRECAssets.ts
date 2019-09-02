@@ -10,7 +10,9 @@ const configLocation = 'config/config.json';
 
 let generatedAccountIndex = CONFIG.config.ACCOUNT_GENERATION.startIndex;
 function generateNextAccount() {
-    const key = hdkey.fromMasterSeed(bip39.mnemonicToSeedSync(CONFIG.config.ACCOUNT_GENERATION.mnemonic));
+    const key = hdkey.fromMasterSeed(
+        bip39.mnemonicToSeedSync(CONFIG.config.ACCOUNT_GENERATION.mnemonic)
+    );
 
     const derived = key.derivePath(`m/44'/60'/0'/0/${generatedAccountIndex}`);
 
@@ -91,7 +93,7 @@ const processAssets = async parsedContent => {
         const latitude = parseFloat(asset.Latitude);
         const longitude = parseFloat(asset.Longitude);
         const assetType = asset.Technology.split(':')[1].trim();
-        
+
         const account = generateNextAccount();
 
         console.log(`Generated smart meter address ${account.address}`);
