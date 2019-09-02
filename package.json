@@ -27,9 +27,10 @@
         "run:ganache": "lerna run start-ganache --scope @energyweb/utils-demo --stream",
         "run:simulation:server": "lerna run start-simulation --scope @energyweb/solar-simulator --stream",
         "run:simulation:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
-        "test": "yarn test:ui && yarn test:contracts",
+        "test": "yarn test:ui && yarn test:contracts && yarn test:matcher",
         "test:ui": "lerna run test --scope @energyweb/origin-ui --stream",
-        "test:contracts": "lerna run --scope @energyweb/asset-registry --stream test-contracts && lerna run --scope @energyweb/origin --stream test-contracts && lerna run --scope @energyweb/user-registry --stream test-contracts && lerna run --scope @energyweb/market --stream test-contracts"
+        "test:contracts": "lerna run --scope @energyweb/asset-registry --stream test-contracts && lerna run --scope @energyweb/origin --stream test-contracts && lerna run --scope @energyweb/user-registry --stream test-contracts && lerna run --scope @energyweb/market --stream test-contracts",
+        "test:matcher": "lerna run test --scope @energyweb/market-matcher --stream"
     },
     "workspaces": [
         "packages/*"
