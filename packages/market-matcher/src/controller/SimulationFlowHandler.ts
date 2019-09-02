@@ -13,10 +13,10 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import { SimulationModeController } from './SimulationModeController';
 import { logger } from '../Logger';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
+import { SimulationModeController } from './SimulationModeController';
+
 
 export const handleFlowAction = async (
     simulationModeController: SimulationModeController,

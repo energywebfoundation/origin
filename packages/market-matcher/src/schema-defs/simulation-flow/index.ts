@@ -13,14 +13,13 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import * as Sleep from './Sleep';
 import * as Agreement from './RegisterAgreement';
-import * as Date from './SetDate';
-import * as ProducingAsset from './RegisterProducingAsset';
 import * as Certificate from './RegisterCertificate';
 import * as Demand from './RegisterDemand';
+import * as ProducingAsset from './RegisterProducingAsset';
 import * as Supply from './RegisterSupply';
+import * as Date from './SetDate';
+import * as Sleep from './Sleep';
 
 interface IMatch {
     certificateId: string;

@@ -1,5 +1,6 @@
-import { IStrategy } from './IStrategy';
 import { Agreement } from '@energyweb/market';
+
+import { IStrategy } from './IStrategy';
 
 export class LowestPriceStrategy implements IStrategy {
     private priorities = [

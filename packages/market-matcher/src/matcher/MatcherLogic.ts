@@ -1,6 +1,6 @@
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Supply, Demand, Agreement } from '@energyweb/market';
+import { Configuration, Currency } from '@energyweb/utils-general';
 
 function certificateMatchesDemand(certificate: Certificate.Entity, demand: Demand.Entity): boolean {
     const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;

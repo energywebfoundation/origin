@@ -13,22 +13,21 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
-
 import * as fs from 'fs';
 
-import * as SchemaDefs from './schema-defs/MatcherConf';
-import { Matcher } from './matcher/Matcher';
-import { SimpleMatcher } from './matcher/SimpleMatcher';
-import { ConfigurableReferenceMatcher } from './matcher/ConfigurableReferenceMatcher';
-import { Controller } from './controller/Controller';
-import { SimulationModeController } from './controller/SimulationModeController';
 import * as ConfSchema from '../schemas/conf.schema.json';
 import * as RuleSchema from '../schemas/rule.schema.json';
-import { BlockchainModeController } from './controller/BlockchainModeController';
 import { createBlockchainConf } from './controller/BlockchainConnection';
+import { BlockchainModeController } from './controller/BlockchainModeController';
+import { Controller } from './controller/Controller';
+import { SimulationModeController } from './controller/SimulationModeController';
 import { logger } from './Logger';
+import { ConfigurableReferenceMatcher } from './matcher/ConfigurableReferenceMatcher';
+import { Matcher } from './matcher/Matcher';
 import * as MatcherLogic from './matcher/MatcherLogic';
+import { SimpleMatcher } from './matcher/SimpleMatcher';
 import { StrategyBasedMatcher } from './matcher/StrategyBasedMatcher';
+import * as SchemaDefs from './schema-defs/MatcherConf';
 import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
 
 const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';

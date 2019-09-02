@@ -1,17 +1,17 @@
-import { assert } from 'chai';
-import { mock, instance, when } from 'ts-mockito';
-
-import { Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
+import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Demand, Agreement, Supply } from '@energyweb/market';
+import { Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
+import { assert } from 'chai';
+import { instance, mock, when } from 'ts-mockito';
 
 import {
-    findMatchingDemandsForCertificate,
-    findMatchingCertificatesForDemand,
     findMatchingAgreementsForCertificate,
+    findMatchingCertificatesForDemand,
+    findMatchingDemandsForCertificate,
     findMatchingSuppliesForDemand
 } from '../matcher/MatcherLogic';
 
+// tslint:disable-next-line: no-big-function
 describe('Test Matcher Logic', async () => {
     const mockedConfiguration = mock<Configuration.Entity>();
     const conf: Configuration.Entity = instance(mockedConfiguration);
@@ -85,7 +85,7 @@ describe('Test Matcher Logic', async () => {
             when(mockedCertificate.acceptedToken).thenReturn(testCertificate.acceptedToken);
 
             const certificate: Certificate.Entity = instance(mockedCertificate);
-            const demandsToTest:  Demand.Entity[] = [];
+            const demandsToTest: Demand.Entity[] = [];
 
             for (const demand of testDemands) {
                 const mockedDemand: Demand.Entity = mock(Demand.Entity);

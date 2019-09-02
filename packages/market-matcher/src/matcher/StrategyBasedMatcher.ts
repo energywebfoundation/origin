@@ -19,11 +19,11 @@ export class StrategyBasedMatcher extends Matcher {
         this.strategy = strategy;
     }
 
-    setController(controller: Controller) {
+    public setController(controller: Controller) {
         this.controller = controller;
     }
 
-    async findMatchingAgreement(
+    public async findMatchingAgreement(
         certificate: Certificate.Entity,
         agreements: Agreement.Entity[]
     ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
@@ -96,7 +96,7 @@ export class StrategyBasedMatcher extends Matcher {
         }
     }
 
-    async findMatchingDemand(
+    public async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
     ): Promise<{ split: boolean; demand: Demand.Entity }> {
