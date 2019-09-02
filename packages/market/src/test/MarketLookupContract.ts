@@ -51,7 +51,13 @@ describe('MarketContractLookup', () => {
 
         const userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
-        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,

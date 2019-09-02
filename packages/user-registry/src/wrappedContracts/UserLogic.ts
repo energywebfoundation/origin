@@ -79,8 +79,19 @@ export class UserLogic extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setUser(_user: string, _organization: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setUser(_user, _organization);
+    async createUser(
+        _propertiesDocumentHash: string,
+        _documentDBURL: string,
+        _user: string,
+        _organization: string,
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.createUser(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _user,
+            _organization
+        );
 
         return await this.send(method, txParams);
     }

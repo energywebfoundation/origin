@@ -62,11 +62,15 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         db.setRoles(_admin, 2**uint(RoleManagement.Role.UserAdmin));
     }
 
-    /// @notice funciton that can be called to create a new user in the storage-contract, only executable for user-admins!
-    /// @notice if the user does not exists yet it will be creates, otherwise the older userdata will be overwritten
+    /// @notice function that can be called to create a new user in the storage-contract, only executable by user-admins!
+    /// @notice if the user does not exists yet it will be created, otherwise the older userdata will be overwritten
+	/// @param _propertiesDocumentHash document-hash with all the properties of the demand
+	/// @param _documentDBURL url-address of the demand
     /// @param _user address of the user
     /// @param _organization organization the user is representing
-    function setUser(
+    function createUser(
+        string calldata _propertiesDocumentHash,
+        string calldata _documentDBURL,
         address _user,
         string calldata _organization
     )
@@ -74,8 +78,13 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         onlyRole(RoleManagement.Role.UserAdmin)
     {
         bytes memory orgBytes = bytes(_organization);
-        require(orgBytes.length>0, "empty string");
-        db.setUser(_user, _organization);
+        require(orgBytes.length > 0, "empty string");
+        db.createUser(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _user,
+            _organization
+        );
     }
 
     /// @notice function to set / edit the rights of an user / account, only executable for Top-Admins!
@@ -111,17 +120,21 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
 
     /// @notice function to return all the data of an user
     /// @param _user user
-    /// @return returns firstName, surname, organization, street, number, zip, city, country, state, roles and the active-flag
+    /// @return returns user
     function getFullUser(address _user)
         external
         view
         returns (
+            string memory _propertiesDocumentHash,
+            string memory _documentDBURL,
             string memory _organization,
             uint _roles,
             bool _active
         )
     {
         UserDB.User memory user = db.getFullUser(_user);
+        _propertiesDocumentHash = user.propertiesDocumentHash;
+        _documentDBURL = user.documentDBURL;
         _organization = user.organization;
         _roles = user.roles;
         _active = user.active;

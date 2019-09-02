@@ -68,7 +68,13 @@ export const marketDemo = async (demoFile?: string) => {
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
     // set the admin account as an asset admin
-    await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
+    await userLogic.createUser(
+        'propertiesDocumentHash',
+        'documentDBURL',
+        adminAccount.address,
+        'admin',
+        { privateKey: adminPK }
+    );
     await userLogic.setRoles(adminAccount.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), {
         privateKey: adminPK
     });

@@ -172,16 +172,26 @@ const deployDemo = async () => {
         logger
     };
 
-    await userLogic.setUser(ACCOUNTS.ADMIN.address, 'admin', { privateKey: adminPK });
+    await userLogic.createUser(
+        'propertiesDocumentHash',
+        'documentDBURL',
+        ACCOUNTS.ADMIN.address,
+        'admin',
+        { privateKey: privateKeyDeployment }
+    );
     await userLogic.setRoles(
         ACCOUNTS.ADMIN.address,
         buildRights([Role.UserAdmin, Role.AssetAdmin]),
         { privateKey: adminPK }
     );
 
-    await userLogic.setUser(ACCOUNTS.ASSET_MANAGER.address, 'Asset Manager organization', {
-        privateKey: adminPK
-    });
+    await userLogic.createUser(
+        'propertiesDocumentHash',
+        'documentDBURL',
+        ACCOUNTS.ASSET_MANAGER.address,
+        'Asset Manager organization',
+        { privateKey: adminPK }
+    );
     await userLogic.setRoles(ACCOUNTS.ASSET_MANAGER.address, buildRights([Role.AssetManager]), {
         privateKey: adminPK
     });

@@ -78,9 +78,13 @@ describe('AssetConsumingLogic', () => {
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
-        await userLogic.setUser(accountDeployment, 'admin', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,
@@ -204,9 +208,13 @@ describe('AssetConsumingLogic', () => {
     it('should onboard tests-users', async () => {
         const userLogicAddress = await userContractLookup.userRegistry();
 
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            assetOwnerAddress,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
         await userLogic.setRoles(
             assetOwnerAddress,
             buildRights([Role.AssetManager, Role.AssetAdmin]),

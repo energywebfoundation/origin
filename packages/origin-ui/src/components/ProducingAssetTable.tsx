@@ -47,7 +47,7 @@ interface IStateProps {
     configuration: Configuration.Entity;
     certificates: Certificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
-    currentUser: User;
+    currentUser: User.Entity;
     baseURL: string;
 }
 
@@ -104,7 +104,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
                     certificate.owner === asset.owner.address &&
                     certificate.assetId.toString() === asset.id
             ),
-            organizationName: (await new User(asset.owner.address, this.props.configuration as any).sync())
+            organizationName: (await new User.Entity(asset.owner.address, this.props.configuration as any).sync())
                 .organization
         }));
 

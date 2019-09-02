@@ -99,9 +99,13 @@ describe('CertificateLogic', () => {
 
             userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
-            await userLogic.setUser(accountDeployment, 'admin', {
-                privateKey: privateKeyDeployment
-            });
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                accountDeployment,
+                'admin',
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setRoles(
                 accountDeployment,
@@ -287,13 +291,27 @@ describe('CertificateLogic', () => {
         });
 
         it('should set right roles to users', async () => {
-            await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
-            await userLogic.setUser(accountAssetOwner, 'assetOwner', {
-                privateKey: privateKeyDeployment
-            });
-            await userLogic.setUser(testreceiver.web3Contract._address, 'testreceiver', {
-                privateKey: privateKeyDeployment
-            });
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                accountTrader,
+                'trader',
+                { privateKey: privateKeyDeployment }
+            );
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                accountAssetOwner,
+                'assetOwner',
+                { privateKey: privateKeyDeployment }
+            );
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                testreceiver.web3Contract._address,
+                'testreceiver',
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setRoles(
                 testreceiver.web3Contract._address,
@@ -311,7 +329,13 @@ describe('CertificateLogic', () => {
                 { privateKey: privateKeyDeployment }
             );
 
-            await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                issuerAccount,
+                'issuer',
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
                 privateKey: privateKeyDeployment
@@ -1894,9 +1918,13 @@ describe('CertificateLogic', () => {
             });
 
             it('should set matcherAccount roles', async () => {
-                await userLogic.setUser(matcherAccount, 'matcherAccount', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    matcherAccount,
+                    'matcherAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
                     privateKey: privateKeyDeployment
                 });
@@ -2289,10 +2317,14 @@ describe('CertificateLogic', () => {
                 assert.isTrue(failed);
             });
 
-            it('should set approvedAccount roles', async () => {
-                await userLogic.setUser(approvedAccount, 'approvedAccount', {
-                    privateKey: privateKeyDeployment
-                });
+            it('should set approvedAccount roles', async () => 
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    approvedAccount,
+                    'approvedAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(approvedAccount, buildRights([Role.Trader]), {
                     privateKey: privateKeyDeployment
                 });

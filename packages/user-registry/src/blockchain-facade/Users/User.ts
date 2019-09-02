@@ -16,55 +16,80 @@
 
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { Role } from '../../wrappedContracts/RoleManagement';
+import UserOffChainPropertiesSchema from '../../../schemas/UserOffChainProperties.schema.json';
 
-export interface IUserPropertiesOnChain {
+export interface IUserOffChainProperties {
+    email: string;
+    firstName?: string;
+    surname?: string;
+    street?: string;
+    number?: string;
+    zip?: string;
+    city?: string;
+    country?: string;
+    state?: string;
+}
+
+export interface IUserOnChainProperties
+    extends BlockchainDataModelEntity.IOnChainProperties {
     id: string;
     organization: string;
     roles: number;
     active?: boolean;
 }
 
-export interface IUserPropertiesOffChain {
-    firstName: string;
-    surname: string;
-    email: string;
-    street: string;
-    number: string;
-    zip: string;
-    city: string;
-    country: string;
-    state: string;
-}
+export const createUser = async (
+    userPropertiesOnChain: IUserOnChainProperties,
+    userPropertiesOffChain: IUserOffChainProperties,
+    configuration: Configuration.Entity
+): Promise<Entity> => {
+    const user = new Entity(null, configuration);
 
-export class User extends BlockchainDataModelEntity.Entity implements IUserPropertiesOnChain {
+    const offChainStorageProperties = user.prepareEntityCreation(
+        userPropertiesOnChain,
+        userPropertiesOffChain,
+        UserOffChainPropertiesSchema,
+        user.getUrl()
+    );
 
-    static async CREATE_USER(
-        userProperties: IUserPropertiesOnChain,
-        userPropertiesOffChain: IUserPropertiesOffChain,
-        configuration: Configuration.Entity
-    ): Promise<User> {
-        await configuration.blockchainProperties.userLogicInstance.setUser(
-            userProperties.id,
-            userProperties.organization,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey
-            }
-        );
-        await configuration.blockchainProperties.userLogicInstance.setRoles(
-            userProperties.id,
-            userProperties.roles,
-            {
-                from: configuration.blockchainProperties.activeUser.address,
-                privateKey: configuration.blockchainProperties.activeUser.privateKey
-            }
-        );
-        if (configuration.logger) {
-            configuration.logger.info(`User ${userProperties.id} synced`);
-        }
-
-        return new User(userProperties.id, configuration).sync();
+    if (configuration.offChainDataSource) {
+        userPropertiesOnChain.url = user.getUrl();
+        userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
     }
+
+    await configuration.blockchainProperties.userLogicInstance.createUser(
+        userPropertiesOnChain.propertiesDocumentHash,
+        userPropertiesOnChain.url,
+        userPropertiesOnChain.id,
+        userPropertiesOnChain.organization,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
+        }
+    );
+
+    await configuration.blockchainProperties.userLogicInstance.setRoles(
+        userPropertiesOnChain.id,
+        userPropertiesOnChain.roles
+    );
+
+    user.id = userPropertiesOnChain.id;
+
+    await user.putToOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+
+    if (configuration.logger) {
+        configuration.logger.info(`User ${user.id} created`);
+    }
+
+    return user.sync();
+};
+
+export class Entity extends BlockchainDataModelEntity.Entity
+    implements IUserOnChainProperties {
+    offChainProperties: IUserOffChainProperties;
+    propertiesDocumentHash: string;
+    url: string;
+
     id: string;
 
     organization: string;
@@ -72,24 +97,36 @@ export class User extends BlockchainDataModelEntity.Entity implements IUserPrope
     active: boolean;
 
     configuration: Configuration.Entity;
+    initialized: boolean;
 
     constructor(accountAddress: string, configuration: Configuration.Entity) {
         super(accountAddress, configuration);
+
+        this.initialized = false;
     }
 
     getUrl(): string {
-        return 'http://localhost:3000/';
+        const userLogicInstanceAddress = this.configuration.blockchainProperties.userLogicInstance.web3Contract._address;
+
+        return `${this.configuration.offChainDataSource.baseUrl}/User/${userLogicInstanceAddress}`;
     }
 
-    async sync(): Promise<User> {
-        if (this.id) {
+    async sync(): Promise<Entity> {
+        if (this.id != null) {
             const userData = await this.configuration.blockchainProperties.userLogicInstance.getFullUser(
                 this.id
             );
 
+            this.propertiesDocumentHash = userData._propertiesDocumentHash;
+            this.url = userData._documentDBURL;
             this.organization = userData._organization;
             this.roles = parseInt(userData._roles, 10);
             this.active = userData._active;
+
+            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+
+            this.initialized = true;
+
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`User ${this.id} synced`);
             }
