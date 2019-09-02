@@ -172,14 +172,15 @@ function* initEventHandler() {
             });
         });
 
-        // TODO: Change to status changed
-        demandContractEventHandler.onEvent('deletedDemand', async (event: any) =>
-            emitter({
-                action: demandDeleted(
-                    await new Demand.Entity(event.returnValues._demandId, configuration).sync()
-                )
-            })
-        );
+        demandContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+            if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
+                emitter({
+                    action: demandDeleted(
+                        await new Demand.Entity(event.returnValues._demandId, configuration).sync()
+                    )
+                });
+            }
+        });
 
         return () => {
             eventHandlerManager.stop();
