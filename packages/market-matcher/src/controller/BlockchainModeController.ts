@@ -13,28 +13,24 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { Certificate } from '@energyweb/origin';
+import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Agreement, Demand, Supply } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 
-import { Controller } from './Controller';
+import { METHOD_NOT_IMPLEMENTED } from '../exports';
 import { logger } from '../Logger';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow';
-import { initMatchingManager, initEventHandling } from './BlockchainConnection';
-import { METHOD_NOT_IMPLEMENTED } from '../exports';
+import { initEventHandling, initMatchingManager } from './BlockchainConnection';
+import { Controller } from './Controller';
 
 export class BlockchainModeController extends Controller {
     public conf: Configuration.Entity;
 
-    private simulationFlow: SimulationFlowDef.ISimulationFlow;
-    private matches: SimulationFlowDef.IMatch[];
     private date: number;
 
     constructor(conf: Configuration.Entity, matcherAddress: string) {
         super();
-        this.matches = [];
         this.agreements = [];
         this.demands = [];
         this.supplies = [];
@@ -46,8 +42,8 @@ export class BlockchainModeController extends Controller {
         logger.verbose('Set matcher address to ' + this.matcherAddress);
     }
 
-    async registerProducingAsset(newAsset: ProducingAsset.Entity) {
-        const producingAsset = this.producingAssets.find(
+    public async registerProducingAsset(newAsset: ProducingAsset.Entity) {
+        const producingAsset = this.producingAssets.some(
             (asset: ProducingAsset.Entity) => asset.id === newAsset.id
         );
 
@@ -57,8 +53,8 @@ export class BlockchainModeController extends Controller {
         }
     }
 
-    async registerDemand(newDemand: Demand.Entity) {
-        const foundDemand = this.demands.find(
+    public async registerDemand(newDemand: Demand.Entity) {
+        const foundDemand = this.demands.some(
             (demand: Demand.Entity) => demand.id === newDemand.id
         );
 
@@ -68,8 +64,8 @@ export class BlockchainModeController extends Controller {
         }
     }
 
-    async registerSupply(newSupply: Supply.Entity) {
-        const foundSupply = this.supplies.find(
+    public async registerSupply(newSupply: Supply.Entity) {
+        const foundSupply = this.supplies.some(
             (supply: Supply.Entity) => supply.id === newSupply.id
         );
 
@@ -79,74 +75,71 @@ export class BlockchainModeController extends Controller {
         }
     }
 
-    async registerConsumingAsset(newAsset: ConsumingAsset.Entity) {
+    public async registerConsumingAsset(newAsset: ConsumingAsset.Entity) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async registerAgreement(newAggreement: Agreement.Entity) {
-        const allowed: boolean = Boolean(
-            newAggreement.allowedMatcher.find(
-                (matcherAddress: string) =>
-                    matcherAddress &&
-                    matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()
-            )
+    public async registerAgreement(newAgreement: Agreement.Entity) {
+        const allowed = newAgreement.allowedMatcher.some(
+            (matcherAddress: string) =>
+                matcherAddress && matcherAddress.toLowerCase() === this.matcherAddress.toLowerCase()
         );
 
         if (allowed) {
             if (
-                !this.agreements.find(
-                    (aggreement: Agreement.Entity) => newAggreement.id === aggreement.id
+                !this.agreements.some(
+                    (agreement: Agreement.Entity) => newAgreement.id === agreement.id
                 )
             ) {
-                this.agreements.push(newAggreement);
-                logger.verbose('Registered new agreement #' + newAggreement.id);
+                this.agreements.push(newAgreement);
+                logger.verbose('Registered new agreement #' + newAgreement.id);
             }
         } else {
-            logger.verbose('This instance is not an machter for agreement #' + newAggreement.id);
+            logger.verbose('This instance is not an matcher for agreement #' + newAgreement.id);
         }
     }
 
-    async removeProducingAsset(assetId: string) {
+    public async removeProducingAsset(assetId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async removeConsumingAsset(assetId: string) {
+    public async removeConsumingAsset(assetId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    getProducingAsset(assetId: string): ProducingAsset.Entity {
+    public getProducingAsset(assetId: string): ProducingAsset.Entity {
         return this.producingAssets.find((asset: ProducingAsset.Entity) => asset.id === assetId);
     }
 
-    getDemand(demandId: string): Demand.Entity {
+    public getDemand(demandId: string): Demand.Entity {
         return this.demands.find((demand: Demand.Entity) => demand.id === demandId);
     }
 
-    getSupply(supplyId: string): Supply.Entity {
+    public getSupply(supplyId: string): Supply.Entity {
         return this.supplies.find((supply: Supply.Entity) => supply.id === supplyId);
     }
 
-    getConsumingAsset(assetId: string): ConsumingAsset.Entity {
+    public getConsumingAsset(assetId: string): ConsumingAsset.Entity {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async createOrRefreshConsumingAsset(assetId: string) {
+    public async createOrRefreshConsumingAsset(assetId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    getAgreement(agreementId: string): Agreement.Entity {
+    public getAgreement(agreementId: string): Agreement.Entity {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async removeAgreement(agreementId: string) {
+    public async removeAgreement(agreementId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async getCurrentDataSourceTime(): Promise<number> {
+    public async getCurrentDataSourceTime(): Promise<number> {
         return this.date;
     }
 
-    setDataSourceTime(dateData: SimulationFlowDef.Date.IDateData) {
+    public setDataSourceTime(dateData: SimulationFlowDef.Date.IDateData) {
         const theDate = Date.UTC(
             dateData.year,
             dateData.month - 1,
@@ -159,11 +152,11 @@ export class BlockchainModeController extends Controller {
         logger.verbose('Set simulation time to ' + new Date(this.date * 1000).toUTCString());
     }
 
-    async handleUnmatchedCertificate(certificate: Certificate.Entity) {
+    public async handleUnmatchedCertificate(certificate: Certificate.Entity) {
         // TODO
     }
 
-    async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
+    public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
         const demand = this.getDemand(agreement.demandId.toString());
         logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.conf.blockchainProperties.activeUser.address}`
@@ -185,7 +178,7 @@ export class BlockchainModeController extends Controller {
         logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
     }
 
-    async splitCertificate(
+    public async splitCertificate(
         certificate: Certificate.Entity,
         whForFirstChild: number
     ): Promise<void> {
@@ -205,7 +198,7 @@ export class BlockchainModeController extends Controller {
         await this.matchTrigger(childCertificate2);
     }
 
-    async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
+    public async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
         logger.info(`Matched certificate #${certificate.id} to demand #${demand.id}`);
         logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.conf.blockchainProperties.activeUser.address}`
@@ -213,7 +206,7 @@ export class BlockchainModeController extends Controller {
         await certificate.transferFrom(demand.demandOwner);
     }
 
-    async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number> {
+    public async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number> {
         this.date = (await this.conf.blockchainProperties.web3.eth.getBlock('latest')).timestamp;
         switch (timeFrame) {
             case TimeFrame.yearly:
@@ -229,7 +222,7 @@ export class BlockchainModeController extends Controller {
         }
     }
 
-    async start() {
+    public async start() {
         await initMatchingManager(this, this.conf);
         initEventHandling(this, this.conf);
     }

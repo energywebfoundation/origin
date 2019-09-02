@@ -43,6 +43,7 @@ async function executeCommand(command, directory) {
     } else {
       console.error(error);
     }
+    process.exit(1);
   }
 }
 

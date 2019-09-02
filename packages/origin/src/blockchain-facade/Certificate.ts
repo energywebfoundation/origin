@@ -146,7 +146,7 @@ export class Entity extends TradableEntity.Entity implements ICertificateSpecifi
 
             this.assetId = cert.tradableEntity.assetId;
             this.owner = cert.tradableEntity.owner;
-            this.powerInW = cert.tradableEntity.powerInW;
+            this.powerInW = Number(cert.tradableEntity.powerInW);
             this.forSale = cert.tradableEntity.forSale;
             this.acceptedToken = cert.tradableEntity.acceptedToken;
             this.onChainDirectPurchasePrice = cert.tradableEntity.onChainDirectPurchasePrice;

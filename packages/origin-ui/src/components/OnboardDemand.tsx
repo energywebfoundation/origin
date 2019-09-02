@@ -123,7 +123,8 @@ class OnboardDemandClass extends React.Component<IStateProps> {
         const demandProps: Demand.IDemandOnChainProperties = {
             url: '',
             propertiesDocumentHash: '',
-            demandOwner: this.props.currentUser.id
+            demandOwner: this.props.currentUser.id,
+            status: Demand.DemandStatus.ACTIVE
         };
 
         try {

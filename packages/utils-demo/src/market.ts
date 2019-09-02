@@ -233,7 +233,8 @@ export const marketDemo = async (demoFile?: string) => {
                 const demandProps: Demand.IDemandOnChainProperties = {
                     url: '',
                     propertiesDocumentHash: '',
-                    demandOwner: action.data.trader
+                    demandOwner: action.data.trader,
+                    status: Demand.DemandStatus.ACTIVE
                 };
 
                 try {

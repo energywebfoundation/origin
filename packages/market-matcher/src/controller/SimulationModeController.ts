@@ -13,22 +13,20 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
+import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
+import { Agreement, Demand, Supply } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
+import { TimeFrame } from '@energyweb/utils-general';
 import * as fs from 'fs';
 import * as LogSymbols from 'log-symbols';
 
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { Certificate } from '@energyweb/origin';
-import { Agreement, Demand, Supply } from '@energyweb/market';
-import { TimeFrame } from '@energyweb/utils-general';
-
-import { Controller } from './Controller';
-import { ISimulationDataSource } from '../schema-defs/MatcherConf';
-import { logger } from '../Logger';
-import * as SimulationFlowHandler from './SimulationFlowHandler';
-import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
 import * as SimulationDescriptionSchema from '../../schemas/simulation-description.schema.json';
 import { METHOD_NOT_IMPLEMENTED } from '../exports';
+import { logger } from '../Logger';
+import { ISimulationDataSource } from '../schema-defs/MatcherConf';
+import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
+import { Controller } from './Controller';
+import * as SimulationFlowHandler from './SimulationFlowHandler';
 
 export class SimulationModeController extends Controller {
     private simulationFlow: SimulationFlowDef.ISimulationFlow;
@@ -59,7 +57,7 @@ export class SimulationModeController extends Controller {
         logger.verbose('Set matcher address to ' + this.matcherAddress);
     }
 
-    async registerProducingAsset(newAsset: ProducingAsset.Entity) {
+    public async registerProducingAsset(newAsset: ProducingAsset.Entity) {
         const producingAsset = this.producingAssets.find(
             (asset: ProducingAsset.Entity) => asset.id === newAsset.id
         );
@@ -70,7 +68,7 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async registerDemand(newDemand: Demand.Entity) {
+    public async registerDemand(newDemand: Demand.Entity) {
         const foundDemand = this.demands.find(
             (demand: Demand.Entity) => demand.id === newDemand.id
         );
@@ -81,7 +79,7 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async registerSupply(newSupply: Supply.Entity) {
+    public async registerSupply(newSupply: Supply.Entity) {
         const foundSupply = this.supplies.find(
             (supply: Supply.Entity) => supply.id === newSupply.id
         );
@@ -92,72 +90,66 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async registerConsumingAsset(newAsset: ConsumingAsset.Entity) {
+    public async registerConsumingAsset(newAsset: ConsumingAsset.Entity) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async registerAgreement(newAggreement: Agreement.Entity) {
-        const allowed = newAggreement.allowedMatcher.find(
-            (matcherAddress: string) => matcherAddress === this.matcherAddress
-        )
-            ? true
-            : false;
+    public async registerAgreement(newAgreement: Agreement.Entity) {
+        const allowed = newAgreement.allowedMatcher.some(
+            matcherAddress => matcherAddress === this.matcherAddress
+        );
 
         if (allowed) {
-            if (
-                !this.agreements.find(
-                    (aggreement: Agreement.Entity) => newAggreement.id === aggreement.id
-                )
-            ) {
-                this.agreements.push(newAggreement);
-                logger.verbose('Registered new agreement #' + newAggreement.id);
+            if (!this.agreements.some(agreement => newAgreement.id === agreement.id)) {
+                this.agreements.push(newAgreement);
+                logger.verbose('Registered new agreement #' + newAgreement.id);
             }
         } else {
             throw new Error('Agreement does not allow this matcher.');
         }
     }
 
-    async removeProducingAsset(assetId: string) {
+    public async removeProducingAsset(assetId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async removeConsumingAsset(assetId: string) {
+    public async removeConsumingAsset(assetId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    getProducingAsset(assetId: string): ProducingAsset.Entity {
+    public getProducingAsset(assetId: string): ProducingAsset.Entity {
         return this.producingAssets.find((asset: ProducingAsset.Entity) => asset.id === assetId);
     }
 
-    getDemand(demandId: string): Demand.Entity {
+    public getDemand(demandId: string): Demand.Entity {
         return this.demands.find((demand: Demand.Entity) => demand.id === demandId);
     }
 
-    getSupply(supplyId: string): Supply.Entity {
+    public getSupply(supplyId: string): Supply.Entity {
         return this.supplies.find((supply: Supply.Entity) => supply.id === supplyId);
     }
 
-    getConsumingAsset(assetId: string): ConsumingAsset.Entity {
+    public getConsumingAsset(assetId: string): ConsumingAsset.Entity {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async createOrRefreshConsumingAsset(assetId: string) {
+    public async createOrRefreshConsumingAsset(assetId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    getAgreement(agreementId: string): Agreement.Entity {
+    public getAgreement(agreementId: string): Agreement.Entity {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async removeAgreement(agreementId: string) {
+    public async removeAgreement(agreementId: string) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async getCurrentDataSourceTime(): Promise<number> {
+    public async getCurrentDataSourceTime(): Promise<number> {
         return this.date;
     }
 
-    setDataSourceTime(dateData: SimulationFlowDef.Date.IDateData) {
+    public setDataSourceTime(dateData: SimulationFlowDef.Date.IDateData) {
         const theDate = Date.UTC(
             dateData.year,
             dateData.month - 1,
@@ -170,7 +162,7 @@ export class SimulationModeController extends Controller {
         logger.verbose('Set simulation time to ' + new Date(this.date * 1000).toUTCString());
     }
 
-    async handleUnmatchedCertificate(certificate: Certificate.Entity) {
+    public async handleUnmatchedCertificate(certificate: Certificate.Entity) {
         this.matches.push({
             certificateId: certificate.id,
             agreementId: '-1',
@@ -178,7 +170,7 @@ export class SimulationModeController extends Controller {
         });
     }
 
-    async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
+    public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
         this.matches.push({
             agreementId: agreement.id,
             certificateId: certificate.id,
@@ -203,11 +195,11 @@ export class SimulationModeController extends Controller {
         );
     }
 
-    async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
+    public async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number> {
+    public async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number> {
         switch (timeFrame) {
             case TimeFrame.yearly:
                 return Math.floor((this.date - startDate) / (365 * 24 * 60 * 60));
@@ -222,7 +214,7 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async start() {
+    public async start() {
         for (const action of this.simulationFlow.flow) {
             await SimulationFlowHandler.handleFlowAction(this, action as any);
         }
@@ -230,7 +222,7 @@ export class SimulationModeController extends Controller {
         this.compareWithExpectedResults();
     }
 
-    compareExpectedResultField(
+    public compareExpectedResultField(
         expectedMatch: SimulationFlowDef.IMatch,
         match: SimulationFlowDef.IMatch,
         key: string,
@@ -247,7 +239,7 @@ export class SimulationModeController extends Controller {
         }
     }
 
-    async splitCertificate(
+    public async splitCertificate(
         certificate: Certificate.Entity,
         whForFirstChild: number
     ): Promise<void> {
@@ -255,8 +247,8 @@ export class SimulationModeController extends Controller {
             throw Error('whForFirstChild can not be smaller than powerInWh');
         }
 
-        const firstChildId = parseInt(certificate.id) + 1;
-        const secondChildId = parseInt(certificate.id) + 2;
+        const firstChildId = Number(certificate.id) + 1;
+        const secondChildId = Number(certificate.id) + 2;
 
         const firstChild = Object.assign(
             new Certificate.Entity(null, certificate.configuration),
@@ -281,7 +273,7 @@ export class SimulationModeController extends Controller {
         await this.matchTrigger(secondChild);
     }
 
-    compareWithExpectedResults() {
+    public compareWithExpectedResults() {
         let expectedResultFits = true;
 
         logger.info('Comparing results with expected results');

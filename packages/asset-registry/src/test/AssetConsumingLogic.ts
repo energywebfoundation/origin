@@ -374,7 +374,6 @@ describe('AssetConsumingLogic', () => {
             privateKey: assetSmartmeterPK
         });
 
-        const TIMESTAMP = moment().unix();
         const event = (await assetConsumingLogic.getAllLogNewMeterReadEvents({
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
@@ -386,11 +385,11 @@ describe('AssetConsumingLogic', () => {
             0: '0',
             1: '0',
             2: '100',
-            3: TIMESTAMP.toString(),
+            3: event.returnValues._timestamp,
             _assetId: '0',
             _oldMeterRead: '0',
             _newMeterRead: '100',
-            _timestamp: TIMESTAMP.toString()
+            _timestamp: event.returnValues._timestamp
         });
     });
 
@@ -440,7 +439,6 @@ describe('AssetConsumingLogic', () => {
             privateKey: assetSmartmeterPK
         });
 
-        const TIMESTAMP = moment().unix();
         const event = (await assetConsumingLogic.getAllLogNewMeterReadEvents({
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
@@ -451,11 +449,11 @@ describe('AssetConsumingLogic', () => {
             0: '0',
             1: '100',
             2: '200',
-            3: TIMESTAMP.toString(),
+            3: event.returnValues._timestamp,
             _assetId: '0',
             _oldMeterRead: '100',
             _newMeterRead: '200',
-            _timestamp: TIMESTAMP.toString()
+            _timestamp: event.returnValues._timestamp
         });
     });
 

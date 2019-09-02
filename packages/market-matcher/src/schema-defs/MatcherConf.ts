@@ -10,7 +10,8 @@ export enum SimulationDataSourceType {
 
 export enum MatcherType {
     Simple = 'SIMPLE',
-    ConfigurableReference = 'CONFIGURABLE_REFERENCE'
+    ConfigurableReference = 'CONFIGURABLE_REFERENCE',
+    Strategy = 'STRATEGY'
 }
 
 export interface IBlockchainDataSource {
