@@ -16,5 +16,9 @@ install:
     - yarn
     - yarn build
 
-script:
-    - yarn lint:simulator
+jobs:
+    include:
+    - stage: lint
+      script: yarn lint:simulator
+    - stage: test
+      script: yarn test
