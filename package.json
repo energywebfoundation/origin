@@ -18,6 +18,7 @@
         "typescript-json-schema": "^0.39.0"
     },
     "scripts": {
+        "bootstrap": "lerna bootstrap",
         "build": "lerna run build",
         "lint": "lerna run lint --parallel --stream",
         "lint:simulator": "lerna run lint --scope @energyweb/solar-simulator --stream",

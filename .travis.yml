@@ -13,7 +13,7 @@ before_install:
     - npm install -g yarn
 
 install:
-    - yarn
+    - yarn bootstrap
     - yarn build
     - yarn lint:simulator
 
