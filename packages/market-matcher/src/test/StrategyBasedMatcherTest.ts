@@ -347,7 +347,7 @@ describe('Test StrategyBasedMatcher', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
         });
 
-        it('certificate owner is the trader', async () => {
+        it('certificate owner is the trader after successful match', async () => {
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
                 privateKey: traderPK

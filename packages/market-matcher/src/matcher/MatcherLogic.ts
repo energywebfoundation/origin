@@ -3,7 +3,7 @@ import { Certificate } from '@energyweb/origin';
 import { Supply, Demand, Agreement } from '@energyweb/market';
 
 function certificateMatchesDemand(certificate: Certificate.Entity, demand: Demand.Entity): boolean {
-    const isOffChainSettlement = certificate.acceptedToken === 0x0;
+    const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
 
     const certCurrency: Currency | string = isOffChainSettlement
         ? Currency[certificate.offChainSettlementOptions.currency]
