@@ -10,10 +10,10 @@ cache:
         - node_modules
 
 before_install:
-    - npm install -g yarn lerna
+    - npm install -g yarn
 
 install:
-    - lerna bootstrap
+    - yarn
     - yarn build
     - yarn lint:simulator
 
