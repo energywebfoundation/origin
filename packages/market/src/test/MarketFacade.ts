@@ -85,7 +85,13 @@ describe('Market-Facade', () => {
         userContractLookupAddr = (userContracts as any).UserContractLookup;
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
-        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,
@@ -99,14 +105,25 @@ describe('Market-Facade', () => {
             { privateKey: privateKeyDeployment }
         );
 
-        await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountTrader,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            assetOwnerAddress,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
+
         await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
             privateKey: privateKeyDeployment
         });

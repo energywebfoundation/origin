@@ -101,7 +101,13 @@ describe('MarketLogic', () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
-        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
 
@@ -241,11 +247,27 @@ describe('MarketLogic', () => {
     });
 
     it('should set right roles to users', async () => {
-        await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
-        await userLogic.setUser(accountTrader2, 'trader', { privateKey: privateKeyDeployment });
-        await userLogic.setUser(accountAssetOwner, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountTrader,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountTrader2,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountAssetOwner,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment

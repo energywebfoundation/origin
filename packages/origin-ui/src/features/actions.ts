@@ -61,7 +61,7 @@ export const consumingAssetCreatedOrUpdated = (consumingAsset: ConsumingAsset.En
     consumingAsset
 });
 
-export const currentUserUpdated = (user: User): any => ({
+export const currentUserUpdated = (user: User.Entity): any => ({
     type: Actions.currentUserUpdated,
     user
 });

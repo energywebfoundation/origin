@@ -111,7 +111,13 @@ describe('CertificateLogic-Facade', () => {
         const userContracts = await migrateUserRegistryContracts(web3 as any, privateKeyDeployment);
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
-        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,
@@ -178,11 +184,21 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.setUser(accountAssetOwner, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountAssetOwner,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
 
-        await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountTrader,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
@@ -191,7 +207,13 @@ describe('CertificateLogic-Facade', () => {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            issuerAccount,
+            'issuer',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
             privateKey: privateKeyDeployment
@@ -986,9 +1008,13 @@ describe('CertificateLogic-Facade', () => {
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
-        await userLogic.setUser(testReceiverAddress, 'testReceiverAddress', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            testReceiverAddress,
+            'testReceiverAddress',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(testReceiverAddress, buildRights([Role.AssetManager]), {
             privateKey: privateKeyDeployment
@@ -1094,9 +1120,13 @@ describe('CertificateLogic-Facade', () => {
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
-        await userLogic.setUser(testReceiverAddress, 'testReceiverAddress', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            testReceiverAddress,
+            'testReceiverAddress',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(testReceiverAddress, buildRights([Role.AssetManager]), {
             privateKey: privateKeyDeployment

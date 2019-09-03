@@ -1,4 +1,5 @@
 export enum ENTITY {
+    USER = 'User',
     TRADABLE_ENTITY = 'TradableEntity',
     PRODUCING_ASSET = 'ProducingAsset',
     PRODUCING_ASSET_NOT_BOUND = 'ProducingAssetNotBound',

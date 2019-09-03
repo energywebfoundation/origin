@@ -24,6 +24,8 @@ import "@energyweb/utils-general/contracts/Msc/Owned.sol";
 contract UserDB is Owned {
 
     struct User {
+        string propertiesDocumentHash;
+        string documentDBURL;
         string organization;
         uint roles;
         bool active;
@@ -59,11 +61,15 @@ contract UserDB is Owned {
     }
 
     /// @notice function for creating, editing an user, it cannot be used to set a Role of an user
-    /// @notice if the user does not exists yet it will be creates, otherwise the older userdata will be overwritten
+    /// @notice if the user does not exists yet it will be created, otherwise the older userdata will be overwritten
     /// @dev the onlyOwner-modifier is used, so that only the logic-contract is allowed to write into the storage
     /// @param _user address of the user
     /// @param _organization organization the user is representing
-    function setUser(
+    /// @param _propertiesDocumentHash document-hash with all the properties of the demand
+	/// @param _documentDBURL url-address of the demand
+    function createUser(
+        string calldata _propertiesDocumentHash,
+        string calldata _documentDBURL,
         address _user,
         string calldata _organization
     )
@@ -71,6 +77,8 @@ contract UserDB is Owned {
         onlyOwner
     {
         User storage u = userList[_user];
+        u.propertiesDocumentHash = _propertiesDocumentHash;
+        u.documentDBURL = _documentDBURL;
         u.organization = _organization;
         u.active = true;
     }

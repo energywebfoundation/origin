@@ -15,5 +15,5 @@ before_script:
 script:
   # - npm run lint
   - npm run deploy-contracts
-  - npm run build-ts
+  - npm run build
   - npm test

@@ -47,7 +47,7 @@ type Props = IOwnProps & IStateProps;
 
 export interface IDetailViewState {
     newId: number;
-    owner: User;
+    owner: User.Entity;
     notSoldCertificates: number;
 }
 
@@ -96,7 +96,7 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
                 });
             }
             this.setState({
-                owner: await new User(selectedAsset.owner.address, props.configuration as any).sync()
+                owner: await new User.Entity(selectedAsset.owner.address, props.configuration as any).sync()
             });
         }
     }

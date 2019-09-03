@@ -224,9 +224,9 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
                     configuration.blockchainProperties.web3.eth.getAccounts
                 );
 
-                let currentUser: User;
+                let currentUser: User.Entity;
                 if (accounts.length > 0) {
-                    currentUser = new User(accounts[0], configuration);
+                    currentUser = new User.Entity(accounts[0], configuration);
 
                     currentUser = yield apply(currentUser, currentUser.sync, []);
                 }

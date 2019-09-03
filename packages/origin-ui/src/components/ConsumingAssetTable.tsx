@@ -130,7 +130,7 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
     ): Promise<IEnrichedConsumingAssetData[]> {
         const promises = consumingAssets.map(async (asset: ConsumingAsset.Entity) => ({
             asset,
-            organizationName: (await new User(asset.owner.address, this.props.configuration as any).sync())
+            organizationName: (await new User.Entity(asset.owner.address, this.props.configuration as any).sync())
                 .organization
         }));
 

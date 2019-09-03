@@ -44,7 +44,7 @@ type Props = IOwnProps & IStateProps;
 
 interface DetailViewState {
     newId: number;
-    owner: User;
+    owner: User.Entity;
     events: EnrichedEvent[];
 }
 
@@ -94,7 +94,7 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
     async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
         this.setState(
             {
-                owner: await new User(selectedCertificate.owner, props.configuration as any).sync()
+                owner: await new User.Entity(selectedCertificate.owner, props.configuration as any).sync()
             },
             cb
         );
@@ -116,7 +116,7 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
                         description = 'Logging by Asset #' + event.returnValues._assetId;
                         break;
                     case 'LogCreatedCertificate':
-                        const organization = (await new User(
+                        const organization = (await new User.Entity(
                             event.returnValues.owner,
                             props.configuration as any
                         ).sync()).organization;
@@ -133,16 +133,16 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
                             '0x0000000000000000000000000000000000000000'
                         ) {
                             label = 'Set Initial Owner';
-                            description = (await new User(
+                            description = (await new User.Entity(
                                 (event as any).returnValues._to,
                                 props.configuration as any
                             ).sync()).organization;
                         } else {
-                            const newOwner = (await new User(
+                            const newOwner = (await new User.Entity(
                                 (event as any).returnValues._to,
                                 props.configuration as any
                             ).sync()).organization;
-                            const oldOwner = (await new User(
+                            const oldOwner = (await new User.Entity(
                                 (event as any).returnValues._from,
                                 props.configuration as any
                             ).sync()).organization;

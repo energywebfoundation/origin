@@ -60,7 +60,7 @@ interface IStateProps {
     certificates: Certificate.Entity[];
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
-    currentUser: User;
+    currentUser: User.Entity;
     baseURL: string;
 }
 
@@ -68,7 +68,7 @@ type Props = IOwnProps & IStateProps;
 
 export interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
-    certificateOwner: User;
+    certificateOwner: User.Entity;
     producingAsset: ProducingAsset.Entity;
     acceptedCurrency: string;
     offChainSettlementOptions: TradableEntity.IOffChainSettlementOptions;
@@ -351,7 +351,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
                 certificate,
                 producingAsset,
                 assetTypeLabel: ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                certificateOwner: await new User(certificate.owner, this.props.configuration as any).sync(),
+                certificateOwner: await new User.Entity(certificate.owner, this.props.configuration as any).sync(),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement

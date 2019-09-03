@@ -22,7 +22,7 @@ import {
     UserContractLookup
 } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
-import { IUserPropertiesOnChain, IUserPropertiesOffChain, User } from '../blockchain-facade/Users/User';
+import { User } from '..';
 import { Configuration } from '@energyweb/utils-general';
 import { logger } from '../blockchain-facade/Logger';
 import Web3 from 'web3';
@@ -68,14 +68,16 @@ describe('UserLogic Facade', () => {
     });
 
     it('should create a user', async () => {
-        const userProps: IUserPropertiesOnChain = {
+        const userPropsOnChain: User.IUserOnChainProperties = {
+            url: null,
+            propertiesDocumentHash: null,
             id: user1,
             active: true,
             roles: RIGHTS,
             organization: 'Testorganization'
         };
 
-        const userPropsOffchain: IUserPropertiesOffChain = {
+        const userPropsOffChain: User.IUserOffChainProperties = {
             firstName: 'John',
             surname: 'Doe',
             email: 'john@doe.com',
@@ -96,63 +98,36 @@ describe('UserLogic Facade', () => {
                     privateKey: privateKeyDeployment
                 }
             },
+            offChainDataSource: {
+                baseUrl: 'http://localhost:3030'
+            },
             logger
         };
 
-        const user = await User.CREATE_USER(userProps, userPropsOffchain, conf);
+        await User.createUser(userPropsOnChain, userPropsOffChain, conf);
+
+        const user = await new User.Entity(user1, conf).sync();
 
         delete user.configuration;
         delete user.proofs;
+        delete user.propertiesDocumentHash;
+        delete user.url;
 
         assert.deepEqual(
             {
-                id: user1,
+                id: user1.toLowerCase(),
                 organization: 'Testorganization',
                 roles: RIGHTS,
-                active: true
+                active: true,
+                initialized: true,
+                offChainProperties: userPropsOffChain
             } as any,
             user
         );
     });
 
-    it('should return correct user', async () => {
-        const user = await new User(user1, conf).sync();
-
-        delete user.configuration;
-
-        assert.deepEqual(user, {
-            id: user1,
-            proofs: [],
-            organization: 'Testorganization',
-            roles: RIGHTS,
-            active: true
-        });
-
-        const emptyAccount = await new User(user2, conf).sync();
-        delete emptyAccount.configuration;
-
-        assert.deepEqual(emptyAccount, {
-            id: user2,
-            proofs: [],
-            organization: '',
-            roles: 0,
-            active: false
-        });
-
-        const adminAccount = await new User(accountDeployment, conf).sync();
-        delete adminAccount.configuration;
-
-        assert.deepEqual(adminAccount, {
-            id: accountDeployment,
-            proofs: [],
-            organization: '',
-            roles: 1,
-            active: false
-        });
-    });
-
     it('isRole should work correctly', async () => {
-        const user = await new User(user1, conf).sync();
+        const user = await new User.Entity(user1, conf).sync();
 
         assert.ok(user.isRole(Role.AssetManager));
         assert.ok(user.isRole(Role.Trader));
@@ -160,5 +135,21 @@ describe('UserLogic Facade', () => {
         assert.notOk(user.isRole(Role.AssetAdmin));
         assert.notOk(user.isRole(Role.Matcher));
         assert.notOk(user.isRole(Role.UserAdmin));
+    });
+
+    it('Should get offChainProperties correctly', async () => {
+        const user = await new User.Entity(user1, conf).sync();
+
+        assert.deepEqual(user.offChainProperties, {
+            city: 'Shelbyville',
+            country: 'US',
+            email: 'john@doe.com',
+            firstName: 'John',
+            number: '101',
+            state: 'FL',
+            street: 'Evergreen Terrace',
+            surname: 'Doe',
+            zip: '14789'
+        });
     });
 });

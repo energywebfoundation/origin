@@ -50,6 +50,7 @@ async function run() {
   console.log('EW-USER-REGISTRY-LIB: Building...');
 
   await executeCommand('yarn compile', ROOT_DIRECTORY)
+  await executeCommand('yarn build-schemas', ROOT_DIRECTORY)
   await executeCommand('yarn build-ts', ROOT_DIRECTORY)
 
   if (!(await fs.pathExists(`${ROOT_DIRECTORY}/dist/js/src`))) {
