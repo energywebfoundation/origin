@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { createRootReducer } from '../reducers';
 import {
+    User,
     migrateUserRegistryContracts,
     UserLogic,
     buildRights,
@@ -172,29 +173,47 @@ const deployDemo = async () => {
         logger
     };
 
-    await userLogic.createUser(
-        'propertiesDocumentHash',
-        'documentDBURL',
-        ACCOUNTS.ADMIN.address,
-        'admin',
-        { privateKey: adminPK }
-    );
-    await userLogic.setRoles(
-        ACCOUNTS.ADMIN.address,
-        buildRights([Role.UserAdmin, Role.AssetAdmin]),
-        { privateKey: adminPK }
-    );
+    const adminPropsOnChain: User.IUserOnChainProperties = {
+        propertiesDocumentHash: null,
+        url: null,
+        id: ACCOUNTS.ADMIN.address,
+        active: true,
+        roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
+        organization: 'admin'
+    };
+    const adminPropsOffChain: User.IUserOffChainProperties = {
+        firstName: 'Admin',
+        surname: 'User',
+        email: 'admin@example.com',
+        street: '',
+        number: '',
+        zip: '',
+        city: '',
+        country: '',
+        state: ''
+    };
+    await User.createUser(adminPropsOnChain, adminPropsOffChain, conf);
 
-    await userLogic.createUser(
-        'propertiesDocumentHash',
-        'documentDBURL',
-        ACCOUNTS.ASSET_MANAGER.address,
-        'Asset Manager organization',
-        { privateKey: adminPK }
-    );
-    await userLogic.setRoles(ACCOUNTS.ASSET_MANAGER.address, buildRights([Role.AssetManager]), {
-        privateKey: adminPK
-    });
+    const assetManagerPropsOnChain: User.IUserOnChainProperties = {
+        propertiesDocumentHash: null,
+        url: null,
+        id: ACCOUNTS.ASSET_MANAGER.address,
+        active: true,
+        roles: buildRights([Role.AssetManager]),
+        organization: 'Asset Manager organization'
+    };
+    const assetManagerPropsOffChain: User.IUserOffChainProperties = {
+        firstName: 'Asset',
+        surname: 'Manager',
+        email: 'assetmanager@example.com',
+        street: '',
+        number: '',
+        zip: '',
+        city: '',
+        country: '',
+        state: ''
+    };
+    await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
 
     const assetProducingProps: ProducingAsset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
