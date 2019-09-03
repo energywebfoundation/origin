@@ -164,7 +164,7 @@ describe('Market-Facade', () => {
                 consumingAsset: 0,
                 locationCountry: 'string',
                 locationRegion: 'string',
-                assettype: GeneralLib.AssetType.BiomassGas,
+                assettype: GeneralLib.AssetType.Solar,
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',

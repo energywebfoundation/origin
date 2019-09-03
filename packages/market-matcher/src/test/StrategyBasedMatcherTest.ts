@@ -192,7 +192,7 @@ describe('Test StrategyBasedMatcher', async () => {
             consumingAsset: 0,
             locationCountry: 'string',
             locationRegion: 'string',
-            assettype: AssetType.BiomassGas,
+            assettype: AssetType.Solar,
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
