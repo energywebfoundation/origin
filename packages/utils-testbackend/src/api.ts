@@ -10,6 +10,7 @@ export async function startAPI() {
     const app = express();
 
     app.use(cors());
+    app.set('case sensitive routing', false);
 
     const storage = new CustomStorage(
         [

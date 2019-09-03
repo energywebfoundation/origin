@@ -100,6 +100,10 @@ export class Entity extends BlockchainDataModelEntity.Entity
     initialized: boolean;
 
     constructor(accountAddress: string, configuration: Configuration.Entity) {
+        if (accountAddress) {
+            accountAddress = accountAddress.toLowerCase();
+        }
+
         super(accountAddress, configuration);
 
         this.initialized = false;
