@@ -1,10 +1,10 @@
 {
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
-        "composite": true,
         "outDir": "./dist/",
         "module": "es2015",
         "moduleResolution": "node",
+        "declaration": false
     },
     "include": ["./src/**/*"],
     "exclude": ["./src/__tests__/**/*"],
