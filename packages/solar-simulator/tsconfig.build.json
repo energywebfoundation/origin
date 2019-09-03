@@ -1,12 +1,17 @@
 {
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
+        "composite": true,
         "outDir": "./dist/js",
-        "types": [
-            "node"
-        ]
+        "types": ["node"]
     },
-    "include": [
-        "./src/**/*"
+    "include": ["./src/**/*"],
+    "references": [
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../asset-registry/tsconfig.build.json"
+        }
     ]
 }

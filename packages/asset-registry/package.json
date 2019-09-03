@@ -39,7 +39,8 @@
     "test": "npm run build-schemas && npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
-    "clean": "rm -rf build dist"
+    "clean": "rm -rf build dist",
+    "build:static": "yarn compile && yarn build-schemas"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {

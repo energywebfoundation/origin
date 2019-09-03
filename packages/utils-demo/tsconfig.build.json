@@ -1,9 +1,28 @@
 {
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
-        "outDir": "./dist/js",
+        "composite": true,
+        "outDir": "./dist/js"
     },
-    "include": [
-        "src/**/*"
+    "include": ["src/**/*"],
+    "references": [
+        {
+            "path": "../user-registry/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../asset-registry/tsconfig.build.json"
+        },
+        {
+            "path": "../market/tsconfig.build.json"
+        },
+        {
+            "path": "../origin/tsconfig.build.json"
+        },
+        {
+            "path": "../test-backend/tsconfig.build.json"
+        }
     ]
 }

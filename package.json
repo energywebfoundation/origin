@@ -20,6 +20,8 @@
     "scripts": {
         "build": "lerna run build",
         "lint": "lerna run lint --parallel --stream",
+        "clean": "lerna run clean --parallel",
+        "build:static": "lerna run build:static --parallel",
         "run:demo": "lerna run start --scope @energyweb/utils-demo --stream",
         "run:backend": "lerna run start --scope @energyweb/utils-testbackend --stream",
         "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",

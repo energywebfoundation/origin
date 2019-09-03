@@ -30,7 +30,8 @@
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn build && mocha --exit dist/js/src/test/\"",
         "test-ts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn generate-schemas && mocha --exit -r ts-node/register src/test/*.ts\"",
-        "clean": "rm -rf build dist"
+        "clean": "rm -rf build dist",
+        "build:static": "yarn generate-schemas"
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
