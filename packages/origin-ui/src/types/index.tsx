@@ -29,7 +29,7 @@ export interface IStoreState {
     consumingAssets: ConsumingAsset.Entity[];
     certificates: Certificate.Entity[];
     demands: Demand.Entity[];
-    currentUser: User;
+    currentUser: User.Entity;
     general: IGeneralState;
     contracts: IContractsState;
     router: RouterState;

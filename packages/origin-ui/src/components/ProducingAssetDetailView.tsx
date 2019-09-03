@@ -54,7 +54,7 @@ interface IOwnProps {
 
 interface State {
     newId: number;
-    owner: User;
+    owner: User.Entity;
     notSoldCertificates: number;
 }
 
@@ -102,7 +102,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
                     });
                 }
                 this.setState({
-                    owner: await new User(selectedAsset.owner.address, props.configuration as any).sync()
+                    owner: await new User.Entity(selectedAsset.owner.address, props.configuration as any).sync()
                 });
             }
         }

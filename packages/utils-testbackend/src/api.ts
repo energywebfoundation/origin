@@ -10,9 +10,11 @@ export async function startAPI() {
     const app = express();
 
     app.use(cors());
+    app.set('case sensitive routing', false);
 
     const storage = new CustomStorage(
         [
+            ENTITY.USER,
             ENTITY.TRADABLE_ENTITY,
             ENTITY.PRODUCING_ASSET,
             ENTITY.PRODUCING_ASSET_NOT_BOUND,
@@ -96,6 +98,8 @@ export async function startAPI() {
             res.send('success');
         });
     }
+
+    createRoutesForEntityBoundToContract(app, ENTITY.USER);
     createRoutesForEntityBoundToContract(app, ENTITY.TRADABLE_ENTITY);
     createRoutesForEntityBoundToContract(app, ENTITY.PRODUCING_ASSET);
     createRoutesForEntityBoundToContract(app, ENTITY.DEMAND);

@@ -100,9 +100,13 @@ describe('EnergyCertificateBundleLogic', () => {
 
             userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
-            await userLogic.setUser(accountDeployment, 'admin', {
-                privateKey: privateKeyDeployment
-            });
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                accountDeployment,
+                'admin',
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setRoles(
                 accountDeployment,
@@ -110,7 +114,13 @@ describe('EnergyCertificateBundleLogic', () => {
                 { privateKey: privateKeyDeployment }
             );
 
-            await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                issuerAccount,
+                'issuer',
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
                 privateKey: privateKeyDeployment
@@ -315,10 +325,20 @@ describe('EnergyCertificateBundleLogic', () => {
         });
 
         it('should set right roles to users', async () => {
-            await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
-            await userLogic.setUser(accountAssetOwner, 'assetOwner', {
-                privateKey: privateKeyDeployment
-            });
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                accountTrader,
+                'trader',
+                { privateKey: privateKeyDeployment }
+            );
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                accountAssetOwner,
+                'assetOwner',
+                { privateKey: privateKeyDeployment }
+            );
 
             await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
                 privateKey: privateKeyDeployment
@@ -1968,9 +1988,13 @@ describe('EnergyCertificateBundleLogic', () => {
             });
 
             it('should reset matcherAccount roles to 0', async () => {
-                await userLogic.setUser(matcherAccount, 'matcherAccount', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    matcherAccount,
+                    'matcherAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(matcherAccount, buildRights([]), {
                     privateKey: privateKeyDeployment
                 });
@@ -1994,9 +2018,13 @@ describe('EnergyCertificateBundleLogic', () => {
             });
 
             it('should reset matcherAccount roles to trader', async () => {
-                await userLogic.setUser(matcherAccount, 'matcherAccount', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    matcherAccount,
+                    'matcherAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
                     privateKey: privateKeyDeployment
                 });
@@ -2252,9 +2280,13 @@ describe('EnergyCertificateBundleLogic', () => {
             });
 
             it('should reset matcherAccount roles to 0', async () => {
-                await userLogic.setUser(matcherAccount, 'matcherAccount', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    matcherAccount,
+                    'matcherAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(matcherAccount, buildRights([]), {
                     privateKey: privateKeyDeployment
                 });
@@ -2278,9 +2310,13 @@ describe('EnergyCertificateBundleLogic', () => {
             });
 
             it('should reset matcherAccount roles to trader', async () => {
-                await userLogic.setUser(matcherAccount, 'matcherAccount', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    matcherAccount,
+                    'matcherAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
                     privateKey: privateKeyDeployment
                 });
@@ -2542,9 +2578,13 @@ describe('EnergyCertificateBundleLogic', () => {
             });
 
             it('should set role to approved account', async () => {
-                await userLogic.setUser(approvedAccount, 'approvedAccount', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    approvedAccount,
+                    'approvedAccount',
+                    { privateKey: privateKeyDeployment }
+                );
                 await userLogic.setRoles(approvedAccount, buildRights([Role.Trader]), {
                     privateKey: privateKeyDeployment
                 });
@@ -4283,9 +4323,13 @@ describe('EnergyCertificateBundleLogic', () => {
             });
 
             it('should be able to transfer bundle again + auto retire #2', async () => {
-                await userLogic.setUser(testreceiver.web3Contract._address, 'TestReceiver', {
-                    privateKey: privateKeyDeployment
-                });
+                await userLogic.createUser(
+                    'propertiesDocumentHash',
+                    'documentDBURL',
+                    testreceiver.web3Contract._address,
+                    'TestReceiver',
+                    { privateKey: privateKeyDeployment }
+                );
 
                 await userLogic.setRoles(
                     testreceiver.web3Contract._address,

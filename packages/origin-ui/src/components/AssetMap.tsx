@@ -25,7 +25,7 @@ type Props = IOwnProps & IStateProps;
 
 interface State {
     assetHighlighted: Asset.Entity;
-    owner: User;
+    owner: User.Entity;
 }
 
 class AssetMapClass extends React.Component<Props, State> {
@@ -43,7 +43,7 @@ class AssetMapClass extends React.Component<Props, State> {
     async showWindowForAsset(asset: Asset.Entity) {
         this.setState({
             assetHighlighted: asset,
-            owner: await new User(asset.owner.address, this.props.configuration as any).sync()
+            owner: await new User.Entity(asset.owner.address, this.props.configuration as any).sync()
         });
     }
 

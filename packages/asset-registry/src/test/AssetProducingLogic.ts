@@ -78,9 +78,13 @@ describe('AssetProducingLogic', () => {
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
-        await userLogic.setUser(accountDeployment, 'admin', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,
@@ -210,9 +214,13 @@ describe('AssetProducingLogic', () => {
 
         //  userLogic = new UserLogic(web3, userLogicAddress);
 
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            assetOwnerAddress,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
         await userLogic.setRoles(
             assetOwnerAddress,
             buildRights([Role.AssetManager, Role.AssetAdmin]),

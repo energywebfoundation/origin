@@ -29,7 +29,7 @@ import { getBaseURL, getCurrentUser, getDemands } from '../features/selectors';
 
 interface IStateProps {
     demands: Demand.Entity[];
-    currentUser: User;
+    currentUser: User.Entity;
     baseURL: string;
 }
 

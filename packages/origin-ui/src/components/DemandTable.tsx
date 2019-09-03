@@ -44,7 +44,7 @@ interface IStateProps {
     demands: Demand.Entity[];
     producingAssets: ProducingAsset.Entity[];
     consumingAssets: ConsumingAsset.Entity[];
-    currentUser: User;
+    currentUser: User.Entity;
     baseURL: string;
 }
 
@@ -56,7 +56,7 @@ export interface IDemandTableState extends IPaginatedLoaderState {
 
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
-    demandOwner: User;
+    demandOwner: User.Entity;
     consumingAsset?: ConsumingAsset.Entity;
     producingAsset?: ProducingAsset.Entity;
 }
@@ -89,7 +89,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                 demand,
                 producingAsset: null,
                 consumingAsset: null,
-                demandOwner: await new User(demand.demandOwner, this.props.configuration).sync()
+                demandOwner: await new User.Entity(demand.demandOwner, this.props.configuration).sync()
             };
 
             if (demand.offChainProperties) {

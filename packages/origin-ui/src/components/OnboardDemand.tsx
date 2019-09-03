@@ -27,7 +27,7 @@ import { getConfiguration, getCurrentUser, getProducingAssets } from '../feature
 
 interface IStateProps {
     configuration: Configuration.Entity;
-    currentUser: User;
+    currentUser: User.Entity;
     producingAssets: ProducingAsset.Entity[];
 }
 
