@@ -13,7 +13,10 @@
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
-    "dist"
+    "dist/js/build",
+    "dist/js/src",
+    "dist/js/schemas",
+    "dist/schemas"
   ],
   "directories": {
     "test": "test"

@@ -14,7 +14,8 @@
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
-    "dist"
+    "dist/js/build",
+    "dist/js/src"
   ],
   "directories": {
     "test": "test"
