@@ -1,5 +1,5 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import AssetProducingDBJSON from '../../build/contracts/AssetProducingDB.json';
 
 export class AssetProducingDB extends GeneralFunctions {

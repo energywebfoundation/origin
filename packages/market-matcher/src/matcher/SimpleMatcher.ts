@@ -17,7 +17,7 @@ import { Agreement, Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 
 import { Controller } from '../controller/Controller';
-import { METHOD_NOT_IMPLEMENTED } from '../exports';
+import { METHOD_NOT_IMPLEMENTED } from '..';
 import { Matcher } from './Matcher';
 
 export class SimpleMatcher extends Matcher {

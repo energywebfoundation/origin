@@ -1,0 +1,23 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js"
+    },
+    "include": ["./src/**/*", "./dist/ts/**/*", "./build/**/*.json"],
+    "references": [
+        {
+            "path": "../user-registry/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../asset-registry/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-testbackend/tsconfig.build.json"
+        }
+    ]
+}

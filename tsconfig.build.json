@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+      "sourceMap": true,
+      "noImplicitAny": false,
+      "declaration": true,
+      "module": "CommonJS",
+      "target": "es2018",
+      "jsx": "react",
+      "allowSyntheticDefaultImports": true,
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "lib": [
+          "es2018",
+          "dom"
+      ],
+      "skipLibCheck": true
+  }
+}

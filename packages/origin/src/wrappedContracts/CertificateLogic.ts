@@ -1,5 +1,5 @@
 import { SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 import { CertificateSpecificContract } from './CertificateSpecificContract';
 

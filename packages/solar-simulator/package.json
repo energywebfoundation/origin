@@ -9,7 +9,8 @@
     "fund-assets-smart-meters": "ts-node src/fundAssets.ts",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'"
+    "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
+    "clean": "rm -rf dist"
   },
   "author": "",
   "license": "GPLv3",

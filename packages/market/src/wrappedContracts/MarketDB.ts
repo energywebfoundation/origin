@@ -1,10 +1,5 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import * as fs from 'fs';
-import * as path from 'path';
-import Web3 = require('web3');
-import { Tx, BlockType } from 'web3/eth/types';
-import { TransactionReceipt, Logs } from 'web3/types';
-import { JsonRPCResponse } from 'web3/providers';
+import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
+import Web3 from 'web3';
 import MarketDBJSON from '../../build/contracts/MarketDB.json';
 
 export class MarketDB extends GeneralFunctions {

@@ -1,5 +1,5 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import UserDBJSON from '../../build/contracts/UserDB.json';
 
 export class UserDB extends GeneralFunctions {

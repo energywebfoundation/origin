@@ -20,8 +20,8 @@ import { TimeFrame } from '@energyweb/utils-general';
 import * as fs from 'fs';
 import * as LogSymbols from 'log-symbols';
 
+import { METHOD_NOT_IMPLEMENTED } from '..';
 import * as SimulationDescriptionSchema from '../../schemas/simulation-description.schema.json';
-import { METHOD_NOT_IMPLEMENTED } from '../exports';
 import { logger } from '../Logger';
 import { ISimulationDataSource } from '../schema-defs/MatcherConf';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';

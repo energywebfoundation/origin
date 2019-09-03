@@ -1,0 +1,31 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "declaration": false
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["./src/__tests__/**/*"],
+    "references": [
+        {
+            "path": "../user-registry/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../asset-registry/tsconfig.build.json"
+        },
+        {
+            "path": "../market/tsconfig.build.json"
+        },
+        {
+            "path": "../origin/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-testbackend/tsconfig.build.json"
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-import { EthAccount } from '@energyweb/utils-general/dist/js/blockchain-facade/Configuration';
+import { Configuration } from '@energyweb/utils-general';
 
 export enum BlockchainDataSourceType {
     Blockchain = 'BLOCKCHAIN'
@@ -20,7 +20,7 @@ export interface IBlockchainDataSource {
     offChainDataSourceUrl: string;
     marketContractLookupAddress: string;
     originContractLookupAddress: string;
-    matcherAccount: EthAccount;
+    matcherAccount: Configuration.EthAccount;
 }
 
 export interface ISimulationDataSource {
