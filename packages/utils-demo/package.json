@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild-ts": "rm -rf build/ts",
     "build": "npm run build-ts",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "deploy-empty": "npm run build-ts && node dist/js/deployEmpty",
     "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
     "start": "npm run build-ts && node dist/js/test",

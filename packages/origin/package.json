@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "./scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "clean": "rm -rf dist build db.json",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",

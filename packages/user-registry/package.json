@@ -24,7 +24,7 @@
     "build": "./scripts/build.js",
     "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
     "prebuild-ts": "rm -rf dist/js",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",

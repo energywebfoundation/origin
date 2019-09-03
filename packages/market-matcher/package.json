@@ -15,7 +15,7 @@
     "main": "dist/js/src/index.js",
     "scripts": {
         "build": "scripts/build.js",
-        "build-ts": "rm -rf dist && tsc -b tsconfig.build.json",
+        "build-ts": "rm -rf dist && tsc -b tsconfig.build.json --verbose --pretty",
         "debug": "node --inspect-brk dist/js/src/main.js",
         "generate-conf-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IMatcherConf > schemas/conf.schema.json",
         "generate-rule-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IRuleConf > schemas/rule.schema.json",

@@ -22,7 +22,7 @@
             "path": "../origin/tsconfig.build.json"
         },
         {
-            "path": "../test-backend/tsconfig.build.json"
+            "path": "../utils-testbackend/tsconfig.build.json"
         }
     ]
 }

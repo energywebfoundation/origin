@@ -12,7 +12,7 @@
     "url": "https://github.com/energywebfoundation/ewf-monorepo/issues"
   },
   "version": "1.1.0",
-  "main": "dist/js/index.js",
+  "main": "dist/js/src/index.js",
   "files": [
     "contracts",
     "dist"
@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
