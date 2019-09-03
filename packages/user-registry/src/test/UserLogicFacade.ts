@@ -120,7 +120,7 @@ describe('UserLogic Facade', () => {
 
         delete user.configuration;
 
-        assert.deepEqual(user, {
+        assert.deepEqual<Partial<User>>(user, {
             id: user1,
             proofs: [],
             organization: 'Testorganization',
@@ -131,7 +131,7 @@ describe('UserLogic Facade', () => {
         const emptyAccount = await new User(user2, conf).sync();
         delete emptyAccount.configuration;
 
-        assert.deepEqual(emptyAccount, {
+        assert.deepEqual<Partial<User>>(emptyAccount, {
             id: user2,
             proofs: [],
             organization: '',
@@ -142,7 +142,7 @@ describe('UserLogic Facade', () => {
         const adminAccount = await new User(accountDeployment, conf).sync();
         delete adminAccount.configuration;
 
-        assert.deepEqual(adminAccount, {
+        assert.deepEqual<Partial<User>>(adminAccount, {
             id: accountDeployment,
             proofs: [],
             organization: '',

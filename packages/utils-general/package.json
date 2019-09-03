@@ -2,7 +2,6 @@
   "name": "@energyweb/utils-general",
   "description": "",
   "license": "GPL-3.0",
-  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
   "homepage": "https://github.com/energywebfoundation/ewf-monorepo/packages/utils-general#readme",
   "repository": {
     "type": "git",
