@@ -80,7 +80,7 @@ export abstract class Entity {
         if (this.configuration.offChainDataSource) {
             const axiosurl = url ? url : this.getUrl();
 
-            await axios.put(`${axiosurl}/${this.id}`, {
+            await axios.put(`${axiosurl}/${this.id.toLowerCase()}`, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema
@@ -109,9 +109,15 @@ export abstract class Entity {
 
     async getOffChainProperties(hash: string, url?: string, debug?: boolean): Promise<any> {
         if (this.configuration.offChainDataSource) {
+            console.log(this.id)
             const axiosurl = url ? url : this.getUrl();
             const data = (await axios.get(`${axiosurl}/${this.id}`)).data;
             const offChainProperties = data.properties;
+
+            console.log({
+                data,
+                url: `${axiosurl}/${this.id}`
+            });
             this.generateAndAddProofs(data.properties, debug, data.salts);
 
             this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);
@@ -139,7 +145,7 @@ export abstract class Entity {
 
             if (theProof) {
                 if (!PreciseProofs.verifyProof(rootHash, theProof, schema)) {
-                    throw new Error(`Proof for property ${key} is invalid.`);
+                    throw new Error(`Proof ${JSON.stringify(theProof)} for property ${key} is invalid.`);
                 }
             } else {
                 throw new Error(`Could not find proof for property ${key}`);

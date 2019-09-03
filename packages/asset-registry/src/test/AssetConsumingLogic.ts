@@ -451,8 +451,9 @@ describe('AssetConsumingLogic', () => {
             fromBlock: tx.blockNumber,
             toBlock: tx.blockNumber
         }))[0];
-        assert.equal(event.event, 'LogNewMeterRead');
+        const TIMESTAMP = moment().unix();
 
+        assert.equal(event.event, 'LogNewMeterRead');
         assert.deepEqual(event.returnValues, {
             0: '0',
             1: '100',

@@ -97,16 +97,19 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
     async enrichProducingAssetData(
         producingAssets: ProducingAsset.Entity[]
     ): Promise<IEnrichedProducingAssetData[]> {
-        const promises = producingAssets.map(async asset => ({
-            asset,
-            notSoldCertificates: this.props.certificates.filter(
-                (certificate: Certificate.Entity) =>
-                    certificate.owner === asset.owner.address &&
-                    certificate.assetId.toString() === asset.id
-            ),
-            organizationName: (await new User.Entity(asset.owner.address, this.props.configuration as any).sync())
-                .organization
-        }));
+        const promises = producingAssets.map(async asset => {
+            const user = await new User.Entity(asset.owner.address, this.props.configuration).sync();
+
+            return {
+                asset,
+                notSoldCertificates: this.props.certificates.filter(
+                    (certificate: Certificate.Entity) =>
+                        certificate.owner === asset.owner.address &&
+                        certificate.assetId.toString() === asset.id
+                ),
+                organizationName: user.organization
+            };
+        });
 
         return Promise.all(promises);
     }
