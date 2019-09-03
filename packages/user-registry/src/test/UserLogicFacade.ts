@@ -126,42 +126,6 @@ describe('UserLogic Facade', () => {
         );
     });
 
-    it('should return correct user', async () => {
-        const user = await new User.Entity(user1, conf).sync();
-
-        delete user.configuration;
-
-        assert.deepEqual<Partial<User.Entity>>(user, {
-            id: user1,
-            proofs: [],
-            organization: 'Testorganization',
-            roles: RIGHTS,
-            active: true
-        });
-
-        const emptyAccount = await new User.Entity(user2, conf).sync();
-        delete emptyAccount.configuration;
-
-        assert.deepEqual<Partial<User.Entity>>(emptyAccount, {
-            id: user2,
-            proofs: [],
-            organization: '',
-            roles: 0,
-            active: false
-        });
-
-        const adminAccount = await new User.Entity(accountDeployment, conf).sync();
-        delete adminAccount.configuration;
-
-        assert.deepEqual<Partial<User.Entity>>(adminAccount, {
-            id: accountDeployment,
-            proofs: [],
-            organization: '',
-            roles: 1,
-            active: false
-        });
-    });
-
     it('isRole should work correctly', async () => {
         const user = await new User.Entity(user1, conf).sync();
 
