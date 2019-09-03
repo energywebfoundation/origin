@@ -37,8 +37,7 @@
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "clean": "rm -rf build dist",
-    "build:static": "yarn compile"
+    "build:static": "yarn compile",
     "test-contracts": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run prebuild-schemas && npm run build-schema:UserPropertiesOffChain && cp -R schemas dist/schemas",
