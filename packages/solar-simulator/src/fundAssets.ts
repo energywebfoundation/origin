@@ -1,6 +1,6 @@
+import BN from 'bn.js';
 import program from 'commander';
 import Web3 from 'web3';
-import BN from 'bn.js';
 
 import CONFIG from '../config/config.json';
 
