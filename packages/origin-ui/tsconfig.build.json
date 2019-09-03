@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "declaration": false,
+        "moduleResolution": "node",
+        "module": "es2015",
+        "target": "es2018"
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["./src/__tests__/**/*"]
+}

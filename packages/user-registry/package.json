@@ -24,7 +24,7 @@
     "build": "./scripts/build.js",
     "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
     "prebuild-ts": "rm -rf dist/js",
-    "build-ts": "rm -rf dist/js && tsc",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
@@ -33,7 +33,8 @@
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-contracts": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"yarn test\""
+    "test-contracts": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"yarn test\"",
+    "clean": "rm -rf build dist"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {

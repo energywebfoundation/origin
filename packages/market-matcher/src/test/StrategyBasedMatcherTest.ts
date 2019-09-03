@@ -31,7 +31,7 @@ import {
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { startMatcher } from '../exports';
+import { startMatcher } from '..';
 import { logger } from '../Logger';
 import * as SchemaDefs from '../schema-defs/MatcherConf';
 

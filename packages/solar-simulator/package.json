@@ -11,7 +11,8 @@
     "build": "scripts/build.js",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "./node_modules/.bin/tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'"
+    "lint-fix": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
+    "clean": "rm -rf dist"
   },
   "author": "",
   "license": "GPLv3",

@@ -18,7 +18,7 @@ import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 
-import { METHOD_NOT_IMPLEMENTED } from '../exports';
+import { METHOD_NOT_IMPLEMENTED } from '..';
 import { logger } from '../Logger';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow';
 import { initEventHandling, initMatchingManager } from './BlockchainConnection';

@@ -22,8 +22,8 @@
   },
   "scripts": {
     "build": "./scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc",
-    "clean": "rm -rf node_modules dist build db.json",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json",
+    "clean": "rm -rf dist build db.json",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "flatten-contracts": "truffle-flattener contracts/Origin/* > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",

@@ -12,19 +12,87 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+// @authors: slock.it GmbH, Heiko Burkhardt, heiko.burkhardt@slock.it
 import * as fs from 'fs';
 
-import { startMatcher } from './exports';
+import * as ConfSchema from '../schemas/conf.schema.json';
+import * as RuleSchema from '../schemas/rule.schema.json';
+import { createBlockchainConf } from './controller/BlockchainConnection';
+import { BlockchainModeController } from './controller/BlockchainModeController';
+import { Controller } from './controller/Controller';
+import { SimulationModeController } from './controller/SimulationModeController';
+import { logger } from './Logger';
+import { ConfigurableReferenceMatcher } from './matcher/ConfigurableReferenceMatcher';
+import { Matcher } from './matcher/Matcher';
+import * as MatcherLogic from './matcher/MatcherLogic';
+import { SimpleMatcher } from './matcher/SimpleMatcher';
+import { StrategyBasedMatcher } from './matcher/StrategyBasedMatcher';
 import * as SchemaDefs from './schema-defs/MatcherConf';
+import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
 
-const main = async () => {
-    if (process.argv[2]) {
-        const conf: SchemaDefs.IMatcherConf = JSON.parse(
-            fs.readFileSync(process.argv[2], 'utf8').toString()
-        );
-        await startMatcher(conf);
+const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';
+
+const buildMatcher = (
+    matcherSpecification:
+        | SchemaDefs.IBlockchainMatcherSpecification
+        | SchemaDefs.ISimulationMatcherSpecification
+): Matcher => {
+    switch (matcherSpecification.type) {
+        case SchemaDefs.MatcherType.ConfigurableReference:
+            const matcherConfig = JSON.parse(
+                fs.readFileSync(matcherSpecification.matcherConfigFile, 'utf-8')
+            );
+            Controller.validateJson(matcherConfig, RuleSchema, 'Rule file');
+
+            return new ConfigurableReferenceMatcher(matcherConfig);
+
+        case SchemaDefs.MatcherType.Simple:
+            return new SimpleMatcher();
+
+        case SchemaDefs.MatcherType.Strategy:
+            return new StrategyBasedMatcher(new LowestPriceStrategy());
+
+        default:
+            throw new Error('Unknown matcher type.');
     }
 };
 
-main();
+const buildController = async (
+    dataSource: SchemaDefs.IBlockchainDataSource | SchemaDefs.ISimulationDataSource
+): Promise<Controller> => {
+    logger.verbose('Data source type is ' + dataSource.type);
+    switch (dataSource.type) {
+        case SchemaDefs.BlockchainDataSourceType.Blockchain:
+            return new BlockchainModeController(
+                await createBlockchainConf(dataSource, dataSource.matcherAccount),
+                dataSource.matcherAccount.address
+            );
+
+        case SchemaDefs.SimulationDataSourceType.Simulation:
+            return new SimulationModeController(dataSource);
+
+        default:
+            throw new Error('Unknown data source type.');
+    }
+};
+
+const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
+    logger.info('Matcher application started.');
+
+    if (conf) {
+        try {
+            Controller.validateJson(conf, ConfSchema, 'Config file');
+            const matcher = buildMatcher(conf.matcherSpecification);
+            const controller = await buildController(conf.dataSource);
+            matcher.setController(controller);
+            controller.setMatcher(matcher);
+            controller.start();
+        } catch (e) {
+            logger.error(e.message);
+        }
+    } else {
+        throw new Error('No config specified');
+    }
+};
+
+export { MatcherLogic, METHOD_NOT_IMPLEMENTED, startMatcher };
