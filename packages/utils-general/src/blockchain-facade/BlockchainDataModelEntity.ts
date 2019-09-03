@@ -109,15 +109,9 @@ export abstract class Entity {
 
     async getOffChainProperties(hash: string, url?: string, debug?: boolean): Promise<any> {
         if (this.configuration.offChainDataSource) {
-            console.log(this.id)
             const axiosurl = url ? url : this.getUrl();
-            const data = (await axios.get(`${axiosurl}/${this.id}`)).data;
+            const data = (await axios.get(`${axiosurl}/${this.id.toLowerCase()}`)).data;
             const offChainProperties = data.properties;
-
-            console.log({
-                data,
-                url: `${axiosurl}/${this.id}`
-            });
             this.generateAndAddProofs(data.properties, debug, data.salts);
 
             this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);

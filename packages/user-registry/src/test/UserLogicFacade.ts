@@ -115,7 +115,7 @@ describe('UserLogic Facade', () => {
 
         assert.deepEqual(
             {
-                id: user1,
+                id: user1.toLowerCase(),
                 organization: 'Testorganization',
                 roles: RIGHTS,
                 active: true,
