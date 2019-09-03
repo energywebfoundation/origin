@@ -104,10 +104,11 @@ describe('UserLogic Facade', () => {
             logger
         };
 
-        const user = await User.createUser(userPropsOnChain, userPropsOffChain, conf);
+        await User.createUser(userPropsOnChain, userPropsOffChain, conf);
+
+        const user = await new User.Entity(user1, conf).sync();
 
         delete user.configuration;
-        delete user.offChainProperties;
         delete user.proofs;
         delete user.propertiesDocumentHash;
         delete user.url;
@@ -118,28 +119,11 @@ describe('UserLogic Facade', () => {
                 organization: 'Testorganization',
                 roles: RIGHTS,
                 active: true,
-                initialized: true
+                initialized: true,
+                offChainProperties: userPropsOffChain
             } as any,
             user
         );
-    });
-
-    it('should return correct user', async () => {
-        const user = await new User.Entity(user1, conf).sync();
-
-        delete user.configuration;
-        delete user.offChainProperties;
-        delete user.proofs;
-        delete user.propertiesDocumentHash;
-        delete user.url;
-
-        assert.deepEqual(user, {
-            id: user1,
-            organization: 'Testorganization',
-            roles: RIGHTS,
-            active: true,
-            initialized: true
-        });
     });
 
     it('isRole should work correctly', async () => {

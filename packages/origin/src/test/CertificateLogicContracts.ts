@@ -2317,7 +2317,7 @@ describe('CertificateLogic', () => {
                 assert.isTrue(failed);
             });
 
-            it('should set approvedAccount roles', async () => 
+            it('should set approvedAccount roles', async () => {
                 await userLogic.createUser(
                     'propertiesDocumentHash',
                     'documentDBURL',

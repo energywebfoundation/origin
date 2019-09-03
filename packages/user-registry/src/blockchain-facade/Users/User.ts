@@ -106,13 +106,13 @@ export class Entity extends BlockchainDataModelEntity.Entity
     }
 
     getUrl(): string {
-        const userLogicInstanceAddress = this.configuration.blockchainProperties.userLogicInstance.web3Contract._address;
+        const userLogicInstanceAddress = this.configuration.blockchainProperties.userLogicInstance.web3Contract._address.toLowerCase();
 
         return `${this.configuration.offChainDataSource.baseUrl}/User/${userLogicInstanceAddress}`;
     }
 
     async sync(): Promise<Entity> {
-        if (this.id != null) {
+        if (this.id !== null) {
             const userData = await this.configuration.blockchainProperties.userLogicInstance.getFullUser(
                 this.id
             );

@@ -177,7 +177,7 @@ const deployDemo = async () => {
         'documentDBURL',
         ACCOUNTS.ADMIN.address,
         'admin',
-        { privateKey: privateKeyDeployment }
+        { privateKey: adminPK }
     );
     await userLogic.setRoles(
         ACCOUNTS.ADMIN.address,

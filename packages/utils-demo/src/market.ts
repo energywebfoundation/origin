@@ -19,7 +19,7 @@ import Web3 from 'web3';
 
 import { deployERC20TestToken, Erc20TestToken } from 'ew-erc-test-contracts';
 import { Configuration, AssetType, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
-import { UserLogic, Role, buildRights } from '@energyweb/user-registry';
+import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from '@energyweb/asset-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
@@ -67,18 +67,6 @@ export const marketDemo = async (demoFile?: string) => {
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
-    // set the admin account as an asset admin
-    await userLogic.createUser(
-        'propertiesDocumentHash',
-        'documentDBURL',
-        adminAccount.address,
-        'admin',
-        { privateKey: adminPK }
-    );
-    await userLogic.setRoles(adminAccount.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), {
-        privateKey: adminPK
-    });
-
     // initialize variables for storing timeframe and currency
     let timeFrame;
     let currency;
@@ -104,6 +92,30 @@ export const marketDemo = async (demoFile?: string) => {
         },
         logger
     };
+
+
+    const userPropsOnChain: User.IUserOnChainProperties = {
+        propertiesDocumentHash: null,
+        url: null,
+        id: adminAccount.address,
+        active: true,
+        roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
+        organization: 'admin'
+    };
+
+    const userPropsOffChain: User.IUserOffChainProperties = {
+        firstName: 'Admin',
+        surname: 'User',
+        email: 'admin@example.com',
+        street: '',
+        number: '',
+        zip: '',
+        city: '',
+        country: '',
+        state: ''
+    };
+
+    await User.createUser(userPropsOnChain, userPropsOffChain, conf);
 
     const actionsArray = demoConfig.flow;
 

@@ -104,7 +104,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
                     certificate.owner === asset.owner.address &&
                     certificate.assetId.toString() === asset.id
             ),
-            organizationName: (await new User.Entity(asset.owner.address, this.props.configuration as any).sync())
+            organizationName: (await new User.Entity(asset.owner.address.toLowerCase(), this.props.configuration as any).sync())
                 .organization
         }));
 
