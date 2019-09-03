@@ -11,17 +11,35 @@ Consists of 2 services:
 
 This is a service that simulates API for getting energy data. Based on asset configuration it returns mock data for solar assets, based on real data for whole year in 15-mins intervals. Simulation service exposes it's API for HTTP requests that Consumer service is using.
 
+Run:
+```
+yarn start-simulation
+```
+
+or from the root of monorepo:
+
+```
+yarn run:simulator:server
+```
+
 ### Consumer
 
 Queries Simulation service for energy data for configured assets, and if it sees that there are new energy entries, it writes them to Origin blockchain smart-contracts as smart meter reads.
 
-## Install
+Run:
+```
+yarn start-consuming-api
+```
 
-- `npm install`
+or from the root of monorepo:
+
+```
+yarn run:simulator:consumer
+```
 
 ## Configuration
 
-To run simulator and consumer services you need to deploy Origin first. For more info check [Docker deployment](https://github.com/energywebfoundation/origin/wiki/Docker-Deployment).
+To run simulator and consumer services you need to deploy Origin first.
 
 ### General
 
@@ -54,7 +72,7 @@ We have created 2 scripts to allow easy import of those assets.
 #### import-irec-assets script
 
 ```
-Usage: npm run import-irec-assets -- [options]
+Usage: yarn import-irec-assets -- [options]
 
 Options:
   -i, --input <path>       input I-REC csv file
@@ -72,7 +90,7 @@ As an outcome of running this script we will receive 2 products:
 #### fund-assets-smart-meters script
 
 ```
-Usage: npm run fund-assets-smart-meters -- [options]
+Usage: yarn fund-assets-smart-meters -- [options]
 
 Options:
   -f, --fundingAccount <string>  funding account private key
@@ -81,19 +99,3 @@ Options:
 ```
 
 Before we can setup the demo environement, newly generated smart meters wallets have to be funded with EWF token. Script is using `config/config.json` `WEB3_URL` variable to connect to given web3 endpoint.
-
-
-## Docker
-
-After making sure you've configured everything properly, run:
-
-```
-docker-compose up -d
-```
-
-If you'd like to inspect logs run:
-
-```
-docker-compose logs simulation
-docker-compose logs consumer
-```
