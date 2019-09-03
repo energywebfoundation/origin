@@ -13,21 +13,18 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
+import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
+import { Agreement, Demand, Supply } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import * as Jsonschema from 'jsonschema';
 import * as LogSymbols from 'log-symbols';
 
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { Certificate } from '@energyweb/origin';
-import { Agreement, Demand, Supply } from '@energyweb/market';
-import { Configuration, TimeFrame } from '@energyweb/utils-general';
-
-import { Matcher } from '../matcher/Matcher';
-import * as Filter from '../matcher/Filter';
 import { logger } from '../Logger';
+import { Matcher } from '../matcher/Matcher';
 
 export abstract class Controller {
-    static validateJson(input: any, schema: any, description: string) {
+    public static validateJson(input: any, schema: any, description: string) {
         const validationResult = Jsonschema.validate(input, schema);
         if (validationResult.valid) {
             logger.verbose(`${description} file is valid ${LogSymbols.success}`);
@@ -44,72 +41,76 @@ export abstract class Controller {
         }
     }
 
-    agreements: Agreement.Entity[];
-    demands: Demand.Entity[];
-    supplies: Supply.Entity[];
-    producingAssets: ProducingAsset.Entity[];
-    matcherAddress: string;
-    conf: Configuration.Entity;
+    public conf: Configuration.Entity;
+    public matcherAddress: string;
 
+    protected agreements: Agreement.Entity[];
+    protected demands: Demand.Entity[];
+    protected supplies: Supply.Entity[];
+    protected producingAssets: ProducingAsset.Entity[];
     protected matcher: Matcher;
 
-    setMatcher(matcher: Matcher) {
+    public setMatcher(matcher: Matcher) {
         this.matcher = matcher;
     }
 
-    async matchTrigger(certificate: Certificate.Entity) {
-        // const filteredAgreements = await Filter.filterAgreements(this, this.agreements, certificate);
+    public async matchTrigger(certificate: Certificate.Entity) {
         await this.matcher.match(certificate, this.agreements, this.demands);
     }
 
-    abstract async matchAgreement(
+    public abstract async matchAgreement(
         certificate: Certificate.Entity,
-        aggreement: Agreement.Entity
+        agreement: Agreement.Entity
     ): Promise<void>;
 
-    abstract async matchDemand(
+    public abstract async matchDemand(
         certificate: Certificate.Entity,
         demand: Demand.Entity
     ): Promise<void>;
 
-    abstract async getCurrentDataSourceTime(): Promise<number>;
+    public abstract async getCurrentDataSourceTime(): Promise<number>;
 
-    abstract start(): void;
+    public abstract start(): void;
 
-    abstract async handleUnmatchedCertificate(certificate: Certificate.Entity): Promise<void>;
+    public abstract async handleUnmatchedCertificate(
+        certificate: Certificate.Entity
+    ): Promise<void>;
 
-    abstract async registerProducingAsset(newAsset: ProducingAsset.Entity): Promise<void>;
+    public abstract async registerProducingAsset(newAsset: ProducingAsset.Entity): Promise<void>;
 
-    abstract async registerConsumingAsset(newAsset: ConsumingAsset.Entity): Promise<void>;
+    public abstract async registerConsumingAsset(newAsset: ConsumingAsset.Entity): Promise<void>;
 
-    abstract async registerAgreement(aggreement: Agreement.Entity): Promise<void>;
+    public abstract async registerAgreement(agreement: Agreement.Entity): Promise<void>;
 
-    abstract async registerDemand(demand: Demand.Entity): Promise<void>;
+    public abstract async registerDemand(demand: Demand.Entity): Promise<void>;
 
-    abstract async registerSupply(supply: Supply.Entity): Promise<void>;
+    public abstract async registerSupply(supply: Supply.Entity): Promise<void>;
 
-    abstract async removeProducingAsset(assetId: string): Promise<void>;
+    public abstract async removeProducingAsset(assetId: string): Promise<void>;
 
-    abstract async removeConsumingAsset(assetId: string): Promise<void>;
+    public abstract async removeConsumingAsset(assetId: string): Promise<void>;
 
-    abstract async removeAgreement(agreementId: string): Promise<void>;
+    public abstract async removeAgreement(agreementId: string): Promise<void>;
 
-    abstract getProducingAsset(assetId: string): ProducingAsset.Entity;
+    public abstract getProducingAsset(assetId: string): ProducingAsset.Entity;
 
-    abstract getConsumingAsset(assetId: string): ConsumingAsset.Entity;
+    public abstract getConsumingAsset(assetId: string): ConsumingAsset.Entity;
 
-    abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
+    public abstract async createOrRefreshConsumingAsset(assetId: string): Promise<void>;
 
-    abstract async splitCertificate(
+    public abstract async splitCertificate(
         certificate: Certificate.Entity,
         whForFirstChils: number
     ): Promise<void>;
 
-    abstract async getCurrentPeriod(startDate: number, timeFrame: TimeFrame): Promise<number>;
+    public abstract async getCurrentPeriod(
+        startDate: number,
+        timeFrame: TimeFrame
+    ): Promise<number>;
 
-    abstract getAgreement(agreementId: string): Agreement.Entity;
+    public abstract getAgreement(agreementId: string): Agreement.Entity;
 
-    abstract getDemand(demandId: string): Demand.Entity;
+    public abstract getDemand(demandId: string): Demand.Entity;
 
-    abstract getSupply(supplyId: string): Supply.Entity;
+    public abstract getSupply(supplyId: string): Supply.Entity;
 }

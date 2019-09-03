@@ -13,11 +13,10 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import * as fs from 'fs';
-import * as SchemaDefs from './schema-defs/MatcherConf';
+
 import { startMatcher } from './exports';
-import { logger } from './Logger';
+import * as SchemaDefs from './schema-defs/MatcherConf';
 
 const main = async () => {
     if (process.argv[2]) {

@@ -1,38 +1,41 @@
 {
-  "name": "root",
-  "private": true,
-  "devDependencies": {
-    "@types/chai": "^4.2.0",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.7.2",
-    "chai": "^4.2.0",
-    "lerna": "^3.16.4",
-    "mocha": "^6.2.0",
-    "prettier": "^1.18.2",
-    "tslint": "^5.19.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-lines-between-class-members": "^1.3.6",
-    "tslint-sonarts": "^1.9.0",
-    "typescript": "^3.5.3",
-    "typescript-json-schema": "^0.39.0"
-  },
-  "scripts": {
-    "build": "lerna run build",
-    "lint": "lerna run lint --parallel --stream",
-    "run:demo": "lerna run start --scope @energyweb/utils-demo --stream",
-    "run:backend": "lerna run start --scope @energyweb/utils-testbackend --stream",
-    "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
-    "run:origin": "lerna run start-all --scope @energyweb/origin-ui --scope @energyweb/utils-demo --parallel",
-    "run:ganache": "lerna run start-ganache --scope @energyweb/utils-demo --stream",
-    "run:simulation:server": "lerna run start-simulation --scope @energyweb/solar-simulator --stream",
-    "run:simulation:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
-    "test": "yarn run test:ui",
-    "test:ui": "lerna run test --scope @energyweb/origin-ui --stream"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "engines": {
-    "node": "10"
-  }
+    "name": "root",
+    "private": true,
+    "devDependencies": {
+        "@types/chai": "^4.2.0",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.7.2",
+        "chai": "^4.2.0",
+        "lerna": "^3.16.4",
+        "mocha": "^6.2.0",
+        "prettier": "^1.18.2",
+        "ts-node": "^8.3.0",
+        "tslint": "^5.19.0",
+        "tslint-config-prettier": "^1.18.0",
+        "tslint-lines-between-class-members": "^1.3.6",
+        "tslint-sonarts": "^1.9.0",
+        "typescript": "^3.5.3",
+        "typescript-json-schema": "^0.39.0"
+    },
+    "scripts": {
+        "build": "lerna run build",
+        "lint": "lerna run lint --parallel --stream",
+        "run:demo": "lerna run start --scope @energyweb/utils-demo --stream",
+        "run:backend": "lerna run start --scope @energyweb/utils-testbackend --stream",
+        "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
+        "run:origin": "lerna run start-all --scope @energyweb/origin-ui --scope @energyweb/utils-demo --parallel",
+        "run:ganache": "lerna run start-ganache --scope @energyweb/utils-demo --stream",
+        "run:simulation:server": "lerna run start-simulation --scope @energyweb/solar-simulator --stream",
+        "run:simulation:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
+        "test": "yarn test:ui && yarn test:contracts && yarn test:matcher",
+        "test:ui": "lerna run test --scope @energyweb/origin-ui --stream",
+        "test:contracts": "lerna run --scope @energyweb/asset-registry --stream test-contracts && lerna run --scope @energyweb/origin --stream test-contracts && lerna run --scope @energyweb/user-registry --stream test-contracts && lerna run --scope @energyweb/market --stream test-contracts",
+        "test:matcher": "lerna run test --scope @energyweb/market-matcher --stream"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "engines": {
+        "node": "10"
+    }
 }

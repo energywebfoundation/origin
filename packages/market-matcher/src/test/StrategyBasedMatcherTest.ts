@@ -1,32 +1,46 @@
-import * as fs from 'fs';
-import Web3 from 'web3';
-import { assert } from 'chai';
-
-import { Configuration, TimeFrame, Currency, AssetType, Compliance } from '@energyweb/utils-general';
-import { UserLogic, migrateUserRegistryContracts, buildRights, Role } from '@energyweb/user-registry';
-import { Certificate, CertificateLogic, migrateCertificateRegistryContracts } from '@energyweb/origin';
 import {
-    migrateAssetRegistryContracts,
     AssetProducingRegistryLogic,
+    migrateAssetRegistryContracts,
     ProducingAsset
 } from '@energyweb/asset-registry';
 import {
+    Agreement,
+    Demand,
     MarketLogic,
     migrateMarketRegistryContracts,
-    Demand,
-    Supply,
-    Agreement
+    Supply
 } from '@energyweb/market';
+import {
+    Certificate,
+    CertificateLogic,
+    migrateCertificateRegistryContracts
+} from '@energyweb/origin';
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    UserLogic
+} from '@energyweb/user-registry';
+import {
+    AssetType,
+    Compliance,
+    Configuration,
+    Currency,
+    TimeFrame
+} from '@energyweb/utils-general';
+import { assert } from 'chai';
+import Web3 from 'web3';
 
-import { logger } from '../Logger';
 import { startMatcher } from '../exports';
+import { logger } from '../Logger';
 import * as SchemaDefs from '../schema-defs/MatcherConf';
 
 const PROVIDER_URL = 'http://localhost:8545';
 const BACKEND_URL = 'http://localhost:3030';
 const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-describe('Test Matcher', async () => {
+// tslint:disable-next-line: no-big-function
+describe('Test StrategyBasedMatcher', async () => {
     const web3 = new Web3(PROVIDER_URL);
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
@@ -49,8 +63,8 @@ describe('Test Matcher', async () => {
     const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
 
-    const assetSmartmeterPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
-    const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
+    const assetSmartMeterPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
+    const assetSmartMeter = web3.eth.accounts.privateKeyToAccount(assetSmartMeterPK).address;
 
     const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
@@ -71,8 +85,7 @@ describe('Test Matcher', async () => {
             }
         },
         matcherSpecification: {
-            type: 'CONFIGURABLE_REFERENCE' as SchemaDefs.MatcherType,
-            matcherConfigFile: 'example-conf/simple-hierarchy-rule.json'
+            type: SchemaDefs.MatcherType.Strategy
         }
     };
 
@@ -80,7 +93,7 @@ describe('Test Matcher', async () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
         userContractLookupAddr = (userContracts as any).UserContractLookup;
 
-        userLogic = new UserLogic(web3 as Web3, (userContracts as any).UserLogic);
+        userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
         await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
 
         await userLogic.setRoles(
@@ -147,7 +160,7 @@ describe('Test Matcher', async () => {
             assetContractLookupAddr,
             privateKeyDeployment
         );
-        marketLogic = new MarketLogic(web3 as any, (deployedContracts as any).MarketLogic);
+        marketLogic = new MarketLogic(web3, (deployedContracts as any).MarketLogic);
         marketContractLookupAddr = (deployedContracts as any).MarketContractLookup;
         (matcherConf.dataSource as SchemaDefs.IBlockchainDataSource).marketContractLookupAddress = marketContractLookupAddr;
     });
@@ -171,7 +184,7 @@ describe('Test Matcher', async () => {
             logger
         };
 
-        const demandOffchainProps: Demand.IDemandOffChainProperties = {
+        const demandOffChainProps: Demand.IDemandOffChainProperties = {
             timeframe: TimeFrame.hourly,
             maxPricePerMwh: 150,
             currency: Currency.USD,
@@ -192,10 +205,11 @@ describe('Test Matcher', async () => {
         const demandProps: Demand.IDemandOnChainProperties = {
             url: null,
             propertiesDocumentHash: null,
-            demandOwner: conf.blockchainProperties.activeUser.address
+            demandOwner: conf.blockchainProperties.activeUser.address,
+            status: Demand.DemandStatus.ACTIVE
         };
 
-        await Demand.createDemand(demandProps, demandOffchainProps, conf);
+        await Demand.createDemand(demandProps, demandOffChainProps, conf);
         assert.equal(await Demand.getDemandListLength(conf), 1);
     });
 
@@ -206,7 +220,7 @@ describe('Test Matcher', async () => {
         };
 
         const assetProps: ProducingAsset.IOnChainProperties = {
-            smartMeter: { address: assetSmartmeter },
+            smartMeter: { address: assetSmartMeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
@@ -299,8 +313,8 @@ describe('Test Matcher', async () => {
     describe('Demand matching tests', () => {
         it('creates a smart meter reading', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetSmartmeter,
-                privateKey: assetSmartmeterPK
+                address: assetSmartMeter,
+                privateKey: assetSmartMeterPK
             };
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();
@@ -334,7 +348,7 @@ describe('Test Matcher', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
         });
 
-        it('certificate owner is the trader', async () => {
+        it('certificate owner is the trader after successful match', async () => {
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
                 privateKey: traderPK
@@ -399,8 +413,8 @@ describe('Test Matcher', async () => {
 
         it('creates a smart meter reading', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetSmartmeter,
-                privateKey: assetSmartmeterPK
+                address: assetSmartMeter,
+                privateKey: assetSmartMeterPK
             };
 
             const producingAsset = await new ProducingAsset.Entity(asset.id, conf).sync();

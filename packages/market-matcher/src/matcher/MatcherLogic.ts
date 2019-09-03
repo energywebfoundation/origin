@@ -1,10 +1,9 @@
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Supply, Demand, Agreement } from '@energyweb/market';
+import { Configuration, Currency } from '@energyweb/utils-general';
 
 function certificateMatchesDemand(certificate: Certificate.Entity, demand: Demand.Entity): boolean {
-    const isOffChainSettlement =
-        (certificate.acceptedToken as any) === '0x0000000000000000000000000000000000000000';
+    const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
 
     const certCurrency: Currency | string = isOffChainSettlement
         ? Currency[certificate.offChainSettlementOptions.currency]
@@ -17,6 +16,7 @@ function certificateMatchesDemand(certificate: Certificate.Entity, demand: Deman
         1e6;
 
     return (
+        demand.status === Demand.DemandStatus.ACTIVE &&
         demand.offChainProperties.targetWhPerPeriod <= Number(certificate.powerInW) &&
         certPricePerMwh <= demand.offChainProperties.maxPricePerMwh &&
         certCurrency === Currency[demand.offChainProperties.currency.toString()]
@@ -28,6 +28,7 @@ function supplyMatchesDemand(supply: Supply.Entity, demand: Demand.Entity): bool
         (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
 
     return (
+        demand.status === Demand.DemandStatus.ACTIVE &&
         demand.offChainProperties.targetWhPerPeriod <= supply.offChainProperties.availableWh &&
         supplyPricePerMwh <= demand.offChainProperties.maxPricePerMwh
     );

@@ -13,26 +13,26 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
+import { Agreement, Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Demand, Agreement } from '@energyweb/market';
+
 import { Controller } from '../controller/Controller';
 import { logger } from '../Logger';
 
 export abstract class Matcher {
     protected controller: Controller;
 
-    abstract async findMatchingAgreement(
+    public abstract async findMatchingAgreement(
         certificate: Certificate.Entity,
         agreements: Agreement.Entity[]
     ): Promise<{ split: boolean; agreement: Agreement.Entity }>;
 
-    abstract async findMatchingDemand(
+    public abstract async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
     ): Promise<{ split: boolean; demand: Demand.Entity }>;
 
-    async match(
+    public async match(
         certificate: Certificate.Entity,
         agreements: Agreement.Entity[],
         demands: Demand.Entity[]
@@ -68,5 +68,5 @@ export abstract class Matcher {
         return false;
     }
 
-    abstract setController(controller: Controller): void;
+    public abstract setController(controller: Controller): void;
 }

@@ -13,15 +13,15 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import { Matcher } from './Matcher';
-import { Controller } from '../controller/Controller';
-import { Certificate } from '@energyweb/origin';
 import { Agreement, Demand } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
+
+import { Controller } from '../controller/Controller';
 import { METHOD_NOT_IMPLEMENTED } from '../exports';
+import { Matcher } from './Matcher';
 
 export class SimpleMatcher extends Matcher {
-    static SLEEP(ms: number) {
+    public static SLEEP(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
@@ -29,29 +29,29 @@ export class SimpleMatcher extends Matcher {
         super();
     }
 
-    setController(controller: Controller): void {
+    public setController(controller: Controller): void {
         this.controller = controller;
     }
 
-    async findMatchingAgreement(
+    public async findMatchingAgreement(
         certificate: Certificate.Entity,
         agreements: Agreement.Entity[]
     ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    async findMatchingDemand(
+    public async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
     ): Promise<{ split: boolean; demand: Demand.Entity }> {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    matchDemand(certificate: Certificate.Entity, demand: Demand.Entity[]) {
+    public matchDemand(certificate: Certificate.Entity, demand: Demand.Entity[]) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 
-    matchAgreement(certificate: Certificate.Entity, agreements: Agreement.Entity[]) {
+    public matchAgreement(certificate: Certificate.Entity, agreements: Agreement.Entity[]) {
         throw new Error(METHOD_NOT_IMPLEMENTED);
     }
 }
