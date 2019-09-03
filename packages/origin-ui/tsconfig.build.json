@@ -3,10 +3,8 @@
     "compilerOptions": {
         "composite": true,
         "outDir": "./dist/",
-        "declaration": false,
-        "moduleResolution": "node",
         "module": "es2015",
-        "target": "es2018"
+        "moduleResolution": "node",
     },
     "include": ["./src/**/*"],
     "exclude": ["./src/__tests__/**/*"],

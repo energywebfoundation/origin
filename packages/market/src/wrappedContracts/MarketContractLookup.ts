@@ -1,5 +1,5 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import MarketContractLookupJSON from '../../build/contracts/MarketContractLookup.json';
 
 export class MarketContractLookup extends GeneralFunctions {

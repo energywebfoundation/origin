@@ -1,5 +1,5 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import AgreementLogicJSON from '../../build/contracts/AgreementLogic.json';
 
 export class AgreementLogic extends GeneralFunctions {

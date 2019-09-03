@@ -30,7 +30,7 @@ import {
 import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import Web3 = require('web3');
+import Web3 from 'web3';
 
 import * as Market from '..';
 import { MarketLogic } from '..';
