@@ -89,20 +89,20 @@ export const AssetType = {
     'Process gas': 1 << 45
 };
 
-export interface IAssetStructure {
+export interface IAssetTypeStructure {
     type: string;
-    subType?: IAssetStructure[];
+    subType?: IAssetTypeStructure[];
 }
 
 export interface IAssetService {
-    AssetTypes: IAssetStructure[];
+    AssetTypes: IAssetTypeStructure[];
     encode(assetTypes: string[]): number;
     decode(assetType: number): IterableIterator<string>;
     includes(current: number, requested: number): boolean;
 }
 
 export class IRECAssetService implements IAssetService {
-    public get AssetTypes(): IAssetStructure[] {
+    public get AssetTypes(): IAssetTypeStructure[] {
         return [
             {
                 type: 'Solar',

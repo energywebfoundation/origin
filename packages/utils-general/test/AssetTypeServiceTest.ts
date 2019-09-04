@@ -31,4 +31,20 @@ describe('AssetTypeService tests', () => {
         assert.isTrue(hasSolar);
         assert.isFalse(hasPhotoVoltaic);
     });
+
+    it('should decode flags', () => {
+        const assetTypeService = new IRECAssetService();
+
+        const encoded = AssetType.Solar | AssetType.Concentration | AssetType.Thermal;
+
+        const decoded = Array.from(assetTypeService.decode(encoded));
+
+        const hasSolar = decoded.includes('Solar');
+        const hasThermal = decoded.includes('Thermal');
+        const hasWind = decoded.includes('Wind');
+
+        assert.isTrue(hasSolar);
+        assert.isTrue(hasThermal);
+        assert.isFalse(hasWind);
+    });
 });
