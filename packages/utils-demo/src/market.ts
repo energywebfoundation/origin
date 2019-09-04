@@ -175,9 +175,7 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.traderPK
                 };
 
-                const assetTypeConfig =
-                    AssetType[action.data.assettype] >= 0 ? action.data.assettype : undefined;
-
+                const assetTypeConfig = AssetType[action.data.assettype];
                 const assetCompliance =
                     Compliance[action.data.registryCompliance as keyof typeof Compliance];
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];

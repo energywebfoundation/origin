@@ -81,24 +81,9 @@ export const onboardDemo = async (
                 maxOwnerChanges: action.data.maxOwnerChanges
             };
 
-            const assetTypeConfig = AssetType[action.data.assetType as keyof typeof AssetType];
-
-            let assetCompliance;
-
-            switch (action.data.complianceRegistry) {
-                case 'IREC':
-                    assetCompliance = Asset.ProducingAsset.Compliance.IREC;
-                    break;
-                case 'EEC':
-                    assetCompliance = Asset.ProducingAsset.Compliance.EEC;
-                    break;
-                case 'TIGR':
-                    assetCompliance = Asset.ProducingAsset.Compliance.TIGR;
-                    break;
-                default:
-                    assetCompliance = Asset.ProducingAsset.Compliance.none;
-                    break;
-            }
+            const assetTypeConfig = AssetType[action.data.assetType];
+            const assetCompliance =
+                GeneralLib.Compliance[action.data.assetType as keyof typeof GeneralLib.Compliance];
 
             const assetProducingPropsOffChain: Asset.ProducingAsset.IOffChainProperties = {
                 operationalSince: action.data.operationalSince,

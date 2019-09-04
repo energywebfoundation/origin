@@ -301,8 +301,8 @@ describe('Market-Facade', () => {
                 houseNumber: '42',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
-                assetType: ProducingAsset.Type.Wind,
-                complianceRegistry: ProducingAsset.Compliance.EEC,
+                assetType: GeneralLib.AssetType.Wind,
+                complianceRegistry: GeneralLib.Compliance.EEC,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: ''

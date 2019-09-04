@@ -31,7 +31,7 @@ import {
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from '@energyweb/asset-registry';
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Configuration, Currency, AssetType, Compliance } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import {
     deployERC20TestToken,
@@ -245,8 +245,8 @@ describe('CertificateLogic-Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: ProducingAsset.Type.Wind,
-            complianceRegistry: ProducingAsset.Compliance.EEC,
+            assetType: AssetType.Wind,
+            complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: ''
         };

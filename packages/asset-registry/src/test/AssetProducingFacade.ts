@@ -1,36 +1,22 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+import 'mocha';
 
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    UserContractLookup,
+    UserLogic
+} from '@energyweb/user-registry';
+import { AssetType, Configuration, Compliance } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import Web3 from 'web3';
-import 'mocha';
-import { Configuration } from '@energyweb/utils-general';
-import { logger } from '../Logger';
-import {
-    UserContractLookup,
-    UserLogic,
-    migrateUserRegistryContracts,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import { migrateAssetRegistryContracts, AssetProducingRegistryLogic } from '..';
-import { ProducingAsset } from '..';
 import moment from 'moment';
+import Web3 from 'web3';
 
+import { AssetProducingRegistryLogic, migrateAssetRegistryContracts, ProducingAsset } from '..';
+import { logger } from '../Logger';
+
+// tslint:disable-next-line: no-big-function
 describe('AssetProducing Facade', () => {
     const configFile = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
@@ -49,13 +35,6 @@ describe('AssetProducing Facade', () => {
     let userContractLookupAddr: string;
     let assetProducingLogic: AssetProducingRegistryLogic;
     let userLogic: UserLogic;
-
-    /*
-    let assetContractLookup: AssetContractLookup;
-    let assetProducingLogic: AssetProducingRegistryLogic;
-    let assetProducingDB: AssetProducingDB;
-    let assetConsumingDB: AssetConsumingDB;
-    */
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -162,8 +141,8 @@ describe('AssetProducing Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: ProducingAsset.Type.Wind,
-            complianceRegistry: ProducingAsset.Compliance.EEC,
+            assetType: AssetType.Wind,
+            complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             facilityName: FACILITY_NAME
@@ -219,8 +198,8 @@ describe('AssetProducing Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: ProducingAsset.Type.Wind,
-            complianceRegistry: ProducingAsset.Compliance.EEC,
+            assetType: AssetType.Wind,
+            complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             facilityName: 'Wuthering Heights Windfarm'
@@ -229,14 +208,14 @@ describe('AssetProducing Facade', () => {
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
 
         try {
-            const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+            await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         } catch (ex) {
-            assert.include(ex.message, 'smartmeter does already exist');
+            assert.include(ex.message, 'smart meter does already exist');
         }
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
-    it('should log a new meterreading', async () => {
+    it('should log a new meter reading', async () => {
         conf.blockchainProperties.activeUser = {
             address: assetSmartmeter,
             privateKey: assetSmartmeterPK
@@ -274,8 +253,8 @@ describe('AssetProducing Facade', () => {
                 houseNumber: '42',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
-                assetType: 0,
-                complianceRegistry: 2,
+                assetType: AssetType.Wind,
+                complianceRegistry: Compliance.EEC,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: 'Wuthering Heights Windfarm'
@@ -285,8 +264,7 @@ describe('AssetProducing Facade', () => {
 
     describe('getSmartMeterReads', () => {
         it('should correctly return reads', async () => {
-            let asset = await new ProducingAsset.Entity('0', conf).sync();
-
+            const asset = await new ProducingAsset.Entity('0', conf).sync();
             const reads = await asset.getSmartMeterReads();
 
             assert.deepEqual(reads, [

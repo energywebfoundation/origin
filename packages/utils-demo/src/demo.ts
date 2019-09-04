@@ -143,8 +143,7 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.traderPK
                 };
 
-                const assetTypeConfig =
-                    AssetType[action.data.assettype] >= 0 ? action.data.assettype : undefined;
+                const assetTypeConfig = AssetType[action.data.assettype];
                 const assetCompliance =
                     Compliance[action.data.registryCompliance as keyof typeof Compliance];
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
@@ -242,7 +241,7 @@ export const marketDemo = async (demoFile?: string) => {
 
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
                 currency = Currency[action.data.currency as keyof typeof Currency];
-                
+
                 const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
                     start: action.data.startTime,
                     end: action.data.endTime,
