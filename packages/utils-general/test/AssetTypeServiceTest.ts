@@ -11,7 +11,7 @@ describe('AssetTypeService tests', () => {
     it('should encode multiple flags', () => {
         const assetTypeService = new IRECAssetService();
 
-        const encoded = assetTypeService.encode([AssetType.Solar, AssetType.Concentration]);
+        const encoded = assetTypeService.encode(['Solar', 'Concentration']);
 
         const expectedResult = AssetType.Solar | AssetType.Concentration;
 
@@ -25,11 +25,8 @@ describe('AssetTypeService tests', () => {
 
         const encoded = AssetType.Solar | AssetType.Concentration | AssetType.Thermal;
 
-        const hasSolar = assetTypeService.includes(encoded, [AssetType.Solar]);
-        const hasPhotoVoltaic = assetTypeService.includes(encoded, [
-            AssetType.Solar,
-            AssetType.Photovoltaic
-        ]);
+        const hasSolar = assetTypeService.includes(encoded, AssetType.Solar);
+        const hasPhotoVoltaic = assetTypeService.includes(encoded, AssetType.Photovoltaic);
 
         assert.isTrue(hasSolar);
         assert.isFalse(hasPhotoVoltaic);

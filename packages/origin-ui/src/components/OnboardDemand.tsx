@@ -292,9 +292,7 @@ const regionOptions = Object.keys(REGIONS_PROVINCES_MAP).map(label => ({
 }));
 
 interface IStateProps {
-    configuration: Configuration.Entity;
     currentUser: User.Entity;
-    producingAssets: ProducingAsset.Entity[];
 }
 
 interface IState {
