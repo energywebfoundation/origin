@@ -24,7 +24,7 @@ export class EventServiceProvider implements IEventServiceProvider {
         this.listeners = [];
 
         const emailAdapter = new MandrillEmailAdapter(process.env.MANDRILL_API_KEY);
-        this.emailService = new EmailServiceProvider(emailAdapter, 'no-reply@energyweb.org');
+        this.emailService = new EmailServiceProvider(emailAdapter, 'origin-no-reply@energyweb.org');
     }
 
     public async start() {
