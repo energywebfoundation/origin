@@ -27,6 +27,7 @@ module.exports = {
         "@typescript-eslint/interface-name-prefix": ["error", {
             "prefixWithI": "always"
         }],
+        "@typescript-eslint/no-unused-vars": "error",
         "no-await-in-loop": "off",
         "no-plusplus": "off",
         "no-console": "off",
