@@ -273,7 +273,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "assetId": "0",
                 "meterreading": 100000,
                 "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
                 "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
@@ -284,7 +284,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "assetId": "0",
                 "meterreading": 500000,
                 "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
                 "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
@@ -295,7 +295,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "assetId": "0",
                 "meterreading": 800000,
                 "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
                 "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
@@ -305,7 +305,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "assetId": "0",
                 "meterreading": 900000,
                 "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
                 "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",

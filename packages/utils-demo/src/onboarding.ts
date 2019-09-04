@@ -17,6 +17,7 @@
 import * as Asset from '@energyweb/asset-registry';
 import * as GeneralLib from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
+import { AssetType } from '@energyweb/utils-general';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -80,21 +81,7 @@ export const onboardDemo = async (
                 maxOwnerChanges: action.data.maxOwnerChanges
             };
 
-            let assetTypeConfig;
-
-            switch (action.data.assetType) {
-                case 'Wind':
-                    assetTypeConfig = Asset.ProducingAsset.Type.Wind;
-                    break;
-                case 'Solar':
-                    assetTypeConfig = Asset.ProducingAsset.Type.Solar;
-                    break;
-                case 'RunRiverHydro':
-                    assetTypeConfig = Asset.ProducingAsset.Type.RunRiverHydro;
-                    break;
-                case 'BiomassGas':
-                    assetTypeConfig = Asset.ProducingAsset.Type.BiomassGas;
-            }
+            const assetTypeConfig = AssetType[action.data.assetType as keyof typeof AssetType];
 
             let assetCompliance;
 

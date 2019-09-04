@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { User, Role } from '@energyweb/user-registry';
-import { Currency } from '@energyweb/utils-general';
+import { Currency, IRECAssetService } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { Paper, Typography, FormControl, InputLabel, FilledInput, MenuItem, Grid, Button, Tooltip } from '@material-ui/core';
 import { getEnumValues } from '../utils/Helper';
@@ -104,156 +104,8 @@ const REGIONS_PROVINCES_MAP = {
     ]
 };
 
-const TYPES = [
-    {
-        type: 'Solar',
-        nested: [
-            // 'Unspecified',
-            {
-                type: 'Photovoltaic',
-                nested: [
-                    // 'Unspecified',
-                    'Roof mounted',
-                    'Ground mounted'
-                ]
-            },
-            {
-                type: 'Concentration',
-                nested: [
-                    //     'Unspecified'
-                ]
-            }
-        ]
-    },
-    {
-        type: 'Wind',
-        nested: [
-            'Onshore',
-            'Offshore'
-        ]
-    },
-    {
-        type: 'Hydro-electric Head',
-        nested: [
-            // 'Unspecified',
-            {
-                type: 'Run-of-river head installation',
-                nested: [
-                    //     'Unspecified'
-                ]
-            },
-            {
-                type: 'Storage head installation',
-                nested: [
-                    //     'Unspecified'
-                ]
-            },
-            {
-                type: 'Pure pumped storage head installation',
-                nested: [
-                    //     'Unspecified'
-                ]
-            },
-            {
-                type: 'Mixed pumped storage head',
-                nested: [
-                    //     'Unspecified'
-                ]
-            }
-        ]
-    },
-    {
-        type: 'Marine',
-        nested: [
-            {
-                type: 'Tidal',
-                nested: [
-                    'Inshore',
-                    'Offshore'
-                ]
-            },
-            {
-                type: 'Wave',
-                nested: [
-                    'Onshore',
-                    'Offshore'
-                ]
-            },
-            'Currents',
-            'Pressure',
-            'Thermal'
-        ]
-    },
-    {
-        type: 'Solid',
-        nested: [
-            {
-                type: 'Muncipal waste',
-                nested: [
-                    'Biogenic'
-                ]
-            },
-            {
-                type: 'Industrial and commercial waste',
-                nested: [
-                    'Biogenic'
-                ]
-            },
-            {
-                type: 'Wood',
-                nested: [
-                    'Forestry products',
-                    'Forestry by-products & waste'
-                ]
-            },
-            'Animal fats',
-            {
-                type: 'Biomass from agriculture',
-                nested: [
-                    'Agricultural products',
-                    'Agricultural by-products & waste'
-                ]
-            },
-        ]
-    },
-    {
-        type: 'Liquid',
-        nested: [
-            'Municipal biodegradable waste',
-            'Black liquor',
-            'Pure plant oil',
-            'Waste plant oil',
-            {
-                type: 'Refined vegetable oil',
-                nested: [
-                    'Biodiesel (mono-alkyl ester)',
-                    'Biogasoline (C6-C12 hydrocarbon)'
-                ]
-            }
-        ]
-    },
-    {
-        type: 'Gaseous',
-        nested: [
-            'Landfill gas',
-            'Sewage gas',
-            {
-                type: 'Agricultural gas',
-                nested: [
-                    'Animal manure',
-                    'Energy crops'
-                ]
-            },
-            'Gas from organic waste digestion',
-            {
-                type: 'Process gas',
-                nested: [
-                    'Biogenic'
-                ]
-            }
-        ]
-    }
-];
+const irecAssetService = new IRECAssetService();
+const TYPES = irecAssetService.AssetTypes;
 
 enum Timeframe {
     day,
@@ -396,25 +248,23 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                 continue;
             }
 
-            levelTwoTypes.push(...levelOneType.nested.map(levelTwoType => ({
-                value: typeof (levelTwoType) === 'string' ? levelTwoType : levelTwoType.type,
-                label: `${levelOneType.type} - ${typeof (levelTwoType) === 'string' ? levelTwoType : levelTwoType.type}`
+            levelTwoTypes.push(...levelOneType.subType.map(levelTwoType => ({
+                value: levelTwoType.type,
+                label: `${levelOneType.type} - ${levelTwoType.type}`
             })));
 
-            for (const levelTwoType of levelOneType.nested) {
-                const levelTwoTypeSelected = (selectedTypesLevelTwo ? selectedTypesLevelTwo : []).find(type => type.value === (typeof (levelTwoType) === 'string' ? levelTwoType : levelTwoType.type));
+            for (const levelTwoType of levelOneType.subType) {
+                const levelTwoTypeSelected = (selectedTypesLevelTwo ? selectedTypesLevelTwo : []).find(type => type.value === levelTwoType.type);
 
-                if (!levelTwoTypeSelected || typeof (levelTwoType) === 'string') {
+                if (!levelTwoTypeSelected || !levelTwoType.subType) {
                     continue;
                 }
 
-                levelThreeTypes.push(...levelTwoType.nested.map(type => ({
-                    value: type,
-                    label: `${levelOneType.type} - ${levelTwoType.type} - ${type}`
+                levelThreeTypes.push(...levelTwoType.subType.map(levelThreeType => ({
+                    value: levelThreeType.type,
+                    label: `${levelOneType.type} - ${levelTwoType.type} - ${levelThreeType.type}`
                 })));
             }
-
-            levelOneType.nested.map(levelTwoType => typeof (levelTwoType) === 'string' ? '' : levelTwoType.nested)
         }
 
         return { levelTwoTypes, levelThreeTypes };
