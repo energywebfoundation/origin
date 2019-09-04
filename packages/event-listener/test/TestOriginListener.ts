@@ -30,15 +30,18 @@ describe('Origin Listener Tests', async () => {
         const emailAdapter = new TestEmailAdapter();
         const emailService = new EmailServiceProvider(emailAdapter, 'from@energyweb.org');
 
+        const NOTIFICATION_INTERVAL = SCAN_INTERVAL;
+
         const listener: IOriginEventListener = new OriginEventListener(
             originContract,
             web3,
-            emailService
+            emailService,
+            NOTIFICATION_INTERVAL
         );
 
         await listener.start();
 
-        await sleep(SCAN_INTERVAL);
+        await sleep(NOTIFICATION_INTERVAL + 1000);
 
         assert.equal(emailService.sentCounter, 1);
 
