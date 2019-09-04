@@ -10,7 +10,8 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "precommit": "lint-staged"
   },
   "author": "",
   "license": "GPLv3",
@@ -30,9 +31,12 @@
     "ganache-cli": "6.5.0",
     "moment": "2.24.0",
     "moment-timezone": "0.5.26",
-    "winston": "3.2.1",
-    "web3": "1.0.0-beta.37"
+    "web3": "1.0.0-beta.37",
+    "winston": "3.2.1"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "lint-staged": "9.2.5"
+  }
 }
