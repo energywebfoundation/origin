@@ -6,9 +6,14 @@ export interface IEmail {
     html: string;
 }
 
+export interface IEmailResponse {
+    success: boolean;
+    error: any;
+}
+
 export interface IEmailServiceProvider {
     adapter: IEmailAdapter;
-    send: (email: IEmail) => Promise<boolean>;
+    send: (email: IEmail) => Promise<IEmailResponse>;
 }
 
 export class EmailServiceProvider implements IEmailServiceProvider {
@@ -22,10 +27,13 @@ export class EmailServiceProvider implements IEmailServiceProvider {
         this.fromEmail = fromEmail;
     }
 
-    public async send(email: IEmail): Promise<boolean> {
-        const sent = await this.adapter.send(this.fromEmail, email);
-        this.sentCounter += 1;
+    public async send(email: IEmail): Promise<IEmailResponse> {
+        const response: IEmailResponse = await this.adapter.send(this.fromEmail, email);
 
-        return sent;
+        if (response.success) {
+            this.sentCounter += 1;
+        }
+
+        return response;
     }
 }

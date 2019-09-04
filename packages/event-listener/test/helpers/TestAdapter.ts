@@ -1,14 +1,17 @@
+import { IEmail, IEmailResponse } from '../../src/services/email.service';
 import { IEmailAdapter } from '../../src/services/email/IEmailAdapter';
-import { IEmail } from '../../src/services/email.service';
 
 export class TestEmailAdapter implements IEmailAdapter {
-    async send(
+    public async send(
         from: string,
         email: IEmail
-    ): Promise<boolean> {
+    ): Promise<IEmailResponse> {
         console.log(`Sent test email from ${from}`);
         console.log(email);
 
-        return true;
+        return {
+            success: true,
+            error: null
+        };
     }
 }

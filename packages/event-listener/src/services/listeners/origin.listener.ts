@@ -5,7 +5,7 @@ import { User } from '@energyweb/user-registry';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 
 import { initOriginConfig } from '../../config/origin.config';
-import { IEmail, IEmailServiceProvider } from '../email.service';
+import { IEmail, IEmailResponse, IEmailServiceProvider } from '../email.service';
 import { IEventListener } from './IEventListener';
 
 import { SCAN_INTERVAL } from '../../index';
@@ -60,13 +60,15 @@ export class OriginEventListener implements IOriginEventListener {
             const newCertificate = await new Certificate.Entity(certId, this.conf).sync();
             const certOwner = await new User.Entity(newCertificate.owner, this.conf as any).sync();
 
-            const certOwnerEmail = certOwner.offChainProperties.email
+            const certOwnerEmail = certOwner.offChainProperties.email;
 
             if (this.newCertificateCounters[certOwnerEmail]) {
                 this.newCertificateCounters[certOwnerEmail] += 1;
             } else {
                 this.newCertificateCounters[certOwnerEmail] = 1;
             }
+
+            this.conf.logger.info(`<${certOwnerEmail}> New certificate approved. Buffered emails count: ${this.newCertificateCounters[certOwnerEmail]}`);
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
@@ -79,9 +81,10 @@ export class OriginEventListener implements IOriginEventListener {
         this.conf.logger.info(`Started listener for ${this.originLookupAddress}`);
     }
 
-    public notifyOwnersOfNewCertificates() {
+    public async notifyOwnersOfNewCertificates() {
         for (const ownerEmail in this.newCertificateCounters) {
             if (this.newCertificateCounters[ownerEmail] > 0) {
+
                 this.conf.logger.info(`Sending email to ${ownerEmail}...`);
 
                 const emailTemplate: IEmail = {
@@ -94,7 +97,13 @@ export class OriginEventListener implements IOriginEventListener {
                     `
                 };
     
-                this.emailService.send(emailTemplate);
+                const response: IEmailResponse = await this.emailService.send(emailTemplate);
+
+                if (!response.success) {
+                    this.conf.logger.error(`Unable to send email to ${ownerEmail}: ${response.error}`);
+                    return;
+                }
+
                 this.conf.logger.info('Sent.');
             }
         }

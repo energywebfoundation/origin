@@ -1,7 +1,7 @@
-import { IEmailAdapter } from './IEmailAdapter';
 import mandrill from 'mandrill-api/mandrill';
 
-import { IEmail } from '../email.service';
+import { IEmailAdapter } from './IEmailAdapter';
+import { IEmail, IEmailResponse } from '../email.service';
 
 export class MandrillEmailAdapter implements IEmailAdapter {
     private mandrill;
@@ -10,10 +10,10 @@ export class MandrillEmailAdapter implements IEmailAdapter {
         this.mandrill = new mandrill.Mandrill(apiKey);
     }
 
-    async send(
+    public async send(
         from: string,
         email: IEmail
-    ): Promise<boolean> {
+    ): Promise<IEmailResponse> {
         const { to, subject, html } = email;
 
         const toFormatted = to.map(toAddress => {
@@ -29,11 +29,31 @@ export class MandrillEmailAdapter implements IEmailAdapter {
             subject,
             from_email: from,
             from_name: 'Energy Web Origin',
-            to: toFormatted
+            to: toFormatted,
+            headers: {
+                'Reply-To': process.env.EMAIL_REPLY_TO
+            },
+            merge: true,
+            tags: [
+                "Mandrill automatic email"
+            ]
         };
 
-        const result = await this.mandrill.messages.send({ message, async: true });
+        const result = await this.sendMandrill(message);
 
-        return result === 'sent';
+        return {
+            success: result[0].status === 'sent',
+            error: result[0].reject_reason ? `Mandrill Error: ${result[0].reject_reason}` : null
+        };
+    }
+
+    private sendMandrill(message) {
+        return new Promise((resolve, reject) => {
+            this.mandrill.messages.send({
+                message,
+                async: true,
+                ip_pool: "Main Pool"
+            }, resolve, reject)
+        })
     }
 }
