@@ -80,7 +80,7 @@ export abstract class Entity {
         if (this.configuration.offChainDataSource) {
             const axiosurl = url ? url : this.getUrl();
 
-            await axios.put(`${axiosurl}/${this.id.toLowerCase()}`, {
+            await axios.put(`${axiosurl}/${String(this.id).toLowerCase()}`, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema
@@ -110,7 +110,7 @@ export abstract class Entity {
     async getOffChainProperties(hash: string, url?: string, debug?: boolean): Promise<any> {
         if (this.configuration.offChainDataSource) {
             const axiosurl = url ? url : this.getUrl();
-            const data = (await axios.get(`${axiosurl}/${this.id.toLowerCase()}`)).data;
+            const data = (await axios.get(`${axiosurl}/${String(this.id).toLowerCase()}`)).data;
             const offChainProperties = data.properties;
             this.generateAndAddProofs(data.properties, debug, data.salts);
 
