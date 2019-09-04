@@ -38,7 +38,7 @@ describe('Event Service Tests', async () => {
 
         await eventService.start();
 
-        assert.equal(eventService.trackers.length, 2);
+        assert.equal(eventService.listeners.length, 2);
         eventService.stop();
     });
 });

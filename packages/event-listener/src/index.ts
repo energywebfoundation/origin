@@ -22,6 +22,6 @@ export const SCAN_INTERVAL = 3000;
     );
 
     setInterval(async () => {
-        await eventService.refreshTrackerList();
+        await eventService.refreshListenerList();
     }, SCAN_INTERVAL);
 })();

@@ -8,12 +8,12 @@ import { IOriginEventListener, OriginEventListener } from './listeners/origin.li
 export interface IEventServiceProvider {
     apiUrl: string;
     web3: Web3;
-    trackers: IOriginEventListener[];
+    listeners: IOriginEventListener[];
 }
 
 export class EventServiceProvider implements IEventServiceProvider {
     public apiUrl: string;
-    public trackers: IOriginEventListener[];
+    public listeners: IOriginEventListener[];
     public web3: Web3;
 
     public emailService: IEmailServiceProvider;
@@ -21,59 +21,59 @@ export class EventServiceProvider implements IEventServiceProvider {
     constructor (apiUrl: string, web3: Web3) {
         this.apiUrl = apiUrl;
         this.web3 = web3;
-        this.trackers = [];
+        this.listeners = [];
 
         const emailAdapter = new MandrillEmailAdapter(process.env.MANDRILL_API_KEY);
         this.emailService = new EmailServiceProvider(emailAdapter, 'no-reply@energyweb.org');
     }
 
     public async start() {
-        await this.refreshTrackerList();
-        await this.startInactiveTrackers();
+        await this.refreshListenerList();
+        await this.startInactiveListeners();
     }
 
-    public async refreshTrackerList() {
+    public async refreshListenerList() {
         const result = await axios.get(`${this.apiUrl}/OriginContractLookupMarketLookupMapping/`);
 
         const latestOriginContracts = Object.keys(result.data);
-        const currentlyTrackingContracts = this.trackers.map(tracker => tracker.originLookupAddress);
+        const currentlyListeningContracts = this.listeners.map(listener => listener.originLookupAddress);
 
-        // Add any trackers from backend if missing
+        // Add any listener from backend if missing
         for (const contract of latestOriginContracts) {
-            if (!currentlyTrackingContracts.includes(contract)) {
+            if (!currentlyListeningContracts.includes(contract)) {
                 const listener: IOriginEventListener = new OriginEventListener(
                     contract,
                     this.web3,
                     this.emailService
                 );
 
-                this.trackers.push(listener);
+                this.listeners.push(listener);
             }
         }
 
-        // Remove trackers if deleted from backend
-        for (const [i, tracker] of this.trackers.entries()) {
-            if (!latestOriginContracts.includes(tracker.originLookupAddress)) {
-                tracker.stop();
-                this.trackers.splice(i, 1);
+        // Remove listeners if deleted from backend
+        for (const [i, listener] of this.listeners.entries()) {
+            if (!latestOriginContracts.includes(listener.originLookupAddress)) {
+                listener.stop();
+                this.listeners.splice(i, 1);
             }
         }
 
-        this.startInactiveTrackers();
+        this.startInactiveListeners();
     }
 
     public stop() {
-        for (const tracker of this.trackers) {
-            if (tracker.started) {
-                tracker.stop();
+        for (const listener of this.listeners) {
+            if (listener.started) {
+                listener.stop();
             }
         }
     }
 
-    private async startInactiveTrackers() {
-        for (const tracker of this.trackers) {
-            if (!tracker.started) {
-                await tracker.start();
+    private async startInactiveListeners() {
+        for (const listener of this.listeners) {
+            if (!listener.started) {
+                await listener.start();
             }
         }
     }

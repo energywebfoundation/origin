@@ -12,7 +12,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-describe('Origin Tracker Tests', async () => {
+describe('Origin Listener Tests', async () => {
     dotenv.config({
         path: '.env.dev'
     });
@@ -24,24 +24,24 @@ describe('Origin Tracker Tests', async () => {
         originContract = resultDeploy1.deployResult.originContractLookup;
     });
 
-    it('an email is sent from OriginEventTracker', async () => {
+    it('an email is sent from OriginEventListener', async () => {
         const web3 = new Web3(process.env.WEB3);
 
         const emailAdapter = new TestEmailAdapter();
         const emailService = new EmailServiceProvider(emailAdapter, 'from@energyweb.org');
 
-        const tracker: IOriginEventListener = new OriginEventListener(
+        const listener: IOriginEventListener = new OriginEventListener(
             originContract,
             web3,
             emailService
         );
 
-        await tracker.start();
+        await listener.start();
 
         await sleep(SCAN_INTERVAL);
 
         assert.equal(emailService.sentCounter, 1);
 
-        tracker.stop();
+        listener.stop();
     });
 });

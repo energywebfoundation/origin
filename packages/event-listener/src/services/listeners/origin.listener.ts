@@ -70,7 +70,7 @@ export class OriginEventListener implements IOriginEventListener {
         this.manager.start();
 
         this.started = true;
-        this.conf.logger.info('Started tracker for  ' + this.originLookupAddress);
+        this.conf.logger.info('Started listener for  ' + this.originLookupAddress);
     }
 
     public stop(): void {
