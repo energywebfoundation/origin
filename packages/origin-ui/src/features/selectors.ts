@@ -15,8 +15,8 @@ export const getCertificates = (state: IStoreState) => state.certificates;
 
 export const getBaseURL = (state: IStoreState) => {
     return constructBaseURL(getOriginContractLookupAddress(state));
-}
+};
 
 export const constructBaseURL = (originContractLookupAddress: string) => {
     return `/${originContractLookupAddress}`;
-}
+};

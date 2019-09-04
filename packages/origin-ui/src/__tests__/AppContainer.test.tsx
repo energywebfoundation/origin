@@ -46,7 +46,8 @@ const API_BASE_URL = 'http://localhost:3030';
 
 jest.setTimeout(80000);
 
-let ganacheServer, apiServer;
+let ganacheServer;
+let apiServer;
 
 const startGanache = async () => {
     return new Promise(resolve => {
@@ -290,7 +291,7 @@ describe('Application[E2E]', () => {
 
         await wait(10000);
 
-        await renderedApp.update();
+        renderedApp.update();
 
         expect(renderedApp.find('.ViewProfile').text()).toBe('admin');
 
@@ -316,7 +317,7 @@ describe('Application[E2E]', () => {
         // Click show details
         (document.body.querySelector('.popover-item') as any).click();
 
-        await renderedApp.update();
+        renderedApp.update();
 
         expect(renderedApp.find('table tbody tr td div').map(el => el.text())).toEqual([
             'Facility Name',

@@ -1,10 +1,124 @@
 {
     "defaultSeverity": "error",
     "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-sonarts"],
-    "rulesDirectory": [
-      "node_modules/tslint-lines-between-class-members"
-    ],
     "rules": {
-      "object-literal-sort-keys": false
+      "object-literal-sort-keys": false,
+      "object-literal-shorthand": false,
+      "no-nested-template-literals": false,
+      "class-name": true,
+      "forin": false,
+      "comment-format": [
+        true,
+        "check-space"
+      ],
+      "indent": [
+        true,
+        "spaces",
+        4
+      ],
+      "no-console": false,
+      "max-line-length": false,
+      "radix": false,
+      "ordered-imports": false,
+      "no-trailing-whitespace": false,
+      "no-small-switch": false,
+      "no-string-literal": false,
+      "prefer-for-of": false,
+      "prefer-template": [
+        false,
+        "allow-single-concat"
+      ],
+      "no-big-function": false,
+      "no-import-side-effect": false,
+      "no-require-imports": true,
+      "import-spacing": true,
+      "typedef": true,
+      "react-unused-props-and-state": false,
+      "interface-name": [
+        false,
+        "always-prefix"
+      ],
+      "member-access": false,
+      "member-ordering": false,
+      "react-tsx-curly-spacing": [
+        false
+      ],
+      "curly": true,
+      "export-name": false,
+      "import-name": false,
+      "no-any": false,
+      "prefer-type-cast": false,
+      "no-relative-imports": false,
+      "no-duplicate-variable": false,
+      "no-duplicate-string": false,
+      "no-consecutive-blank-lines": false,
+      "no-commented-code": false,
+      "no-eval": false,
+      "no-empty": false,
+      "no-increment-decrement": false,
+      "no-internal-module": true,
+      "no-identical-functions": false,
+      "no-unsafe-finally": true,
+      "no-var-keyword": true,
+      "newline-before-return": true,
+      "strict-boolean-expressions": false,
+      "only-arrow-functions": false,
+      "array-type": false,
+      "no-useless-cast": false,
+      "no-invalid-await": false,
+      "no-misleading-array-reverse": false,
+      "react-a11y-anchors": false,
+      "react-a11y-role-has-required-aria-props": false,
+      "one-variable-per-declaration": false,
+      "one-line": [
+        true,
+        "check-open-brace",
+        "check-whitespace"
+      ],
+      "quotemark": [
+        false,
+        "single",
+        "jsx-double"
+      ],
+      "align": [
+        false,
+        "parameters",
+        "statements",
+        "arguments"
+      ],
+      "max-func-body-length": false,
+      "max-classes-per-file": false,
+      "no-function-expression": false,
+      "mocha-no-side-effect-code": false,
+      "no-shadowed-variable": false,
+      "cognitive-complexity": false,
+      "triple-equals": [
+        true,
+        "allow-null-check"
+      ],
+      "underscore-consistent-invocation": false,
+      "typedef-whitespace": [
+        false,
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        }
+      ],
+      "variable-name": [
+        true,
+        "ban-keywords"
+      ],
+      "ban-types": false,
+      "whitespace": [
+        true,
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-separator",
+        "check-type"
+      ]
     }
-  }
+}

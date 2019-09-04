@@ -44,7 +44,7 @@ export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 export interface ITableProps {
     header: Array<ITableHeaderData | ITableAdminHeaderData>;
     data: any;
-    loadPage?: (page: number, filters?: ICustomFilter[]) => void;
+    loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
     footer?: any;
@@ -161,7 +161,7 @@ export class Table extends React.Component<ITableProps, IState> {
             }
         }
 
-        for (let key of Object.keys(ret)) {
+        for (const key of Object.keys(ret)) {
             if (ret[key] && typeof ret[key] === 'number') {
                 ret[key] = Math.round(ret[key] * 1000) / 1000;
             }

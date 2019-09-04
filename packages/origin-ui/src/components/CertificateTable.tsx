@@ -46,7 +46,13 @@ import {
 } from './Table/PaginatedLoaderFilteredSorted';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCertificates, getConfiguration, getCurrentUser, getProducingAssets } from '../features/selectors';
+import {
+    getBaseURL,
+    getCertificates,
+    getConfiguration,
+    getCurrentUser,
+    getProducingAssets
+} from '../features/selectors';
 import { getCertificateDetailLink } from '../utils/routing';
 
 interface IOwnProps {
@@ -177,10 +183,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
     }
 ];
 
-class CertificateTableClass extends PaginatedLoaderFilteredSorted<
-    Props,
-    ICertificatesState
-> {
+class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
     constructor(props: Props) {
         super(props);
 
@@ -351,7 +354,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
                 certificate,
                 producingAsset,
                 assetTypeLabel: ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                certificateOwner: await new User.Entity(certificate.owner, this.props.configuration as any).sync(),
+                certificateOwner: await new User.Entity(certificate.owner, this.props
+                    .configuration as any).sync(),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
@@ -568,9 +572,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
         if (certificate) {
-            const asset = this.props.producingAssets.find(
-                (a: ProducingAsset.Entity) => a.id === certificate.assetId.toString()
-            );
             // const logEvent = (await asset.getEventWithFileHash(certificate.dataLog))[0];
             // console.log(logEvent);
             // window.open('https://tobalaba.etherscan.com/tx/' + logEvent.transactionHash, logEvent.transactionHash);
@@ -618,7 +619,11 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
                 status: Demand.DemandStatus.ACTIVE
             };
 
-            await Demand.createDemand(onChainProperties, offChainProperties, this.props.configuration);
+            await Demand.createDemand(
+                onChainProperties,
+                offChainProperties,
+                this.props.configuration
+            );
         }
     }
 
@@ -642,7 +647,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
                 0
             ) / 1000;
 
-        const filters = [
+        return [
             {
                 property: `${RECORD_INDICATOR}producingAsset.offChainProperties.assetType`,
                 label: 'Asset Type',
@@ -718,8 +723,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
         ].filter(
             filter => !this.props.hiddenColumns || !this.props.hiddenColumns.includes(filter.label)
         );
-
-        return filters;
     }
 
     async operationClicked(key: string, id: number) {
@@ -923,10 +926,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
     }
 }
 
-export const CertificateTable = connect((state: IStoreState, ownProps: IOwnProps): IStateProps => ({
-    baseURL: getBaseURL(state),
-    certificates: ownProps.certificates || getCertificates(state),
-    configuration: getConfiguration(state),
-    currentUser: getCurrentUser(state),
-    producingAssets: getProducingAssets(state)
-}))(CertificateTableClass);
+export const CertificateTable = connect(
+    (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
+        baseURL: getBaseURL(state),
+        certificates: ownProps.certificates || getCertificates(state),
+        configuration: getConfiguration(state),
+        currentUser: getCurrentUser(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(CertificateTableClass);

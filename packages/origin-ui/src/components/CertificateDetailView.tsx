@@ -25,9 +25,13 @@ import './DetailView.scss';
 import { Configuration } from '@energyweb/utils-general';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCertificates, getConfiguration, getProducingAssets } from '../features/selectors';
+import {
+    getBaseURL,
+    getCertificates,
+    getConfiguration,
+    getProducingAssets
+} from '../features/selectors';
 import { getProducingAssetDetailLink, getCertificateDetailLink } from '../utils/routing';
-
 
 interface IOwnProps {
     id: number;
@@ -94,17 +98,16 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
     async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
         this.setState(
             {
-                owner: await new User.Entity(selectedCertificate.owner, props.configuration as any).sync()
+                owner: await new User.Entity(
+                    selectedCertificate.owner,
+                    props.configuration as any
+                ).sync()
             },
             cb
         );
     }
 
     async enrichEvent(props: Props, selectedCertificate: Certificate.Entity) {
-        const asset = this.props.producingAssets.find(
-            (p: ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
-        );
-
         const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
             async (event: any) => {
                 let label;
@@ -116,10 +119,6 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
                         description = 'Logging by Asset #' + event.returnValues._assetId;
                         break;
                     case 'LogCreatedCertificate':
-                        const organization = (await new User.Entity(
-                            event.returnValues.owner,
-                            props.configuration as any
-                        ).sync()).organization;
                         label = 'Certificate Created';
                         description = 'Certificate created by asset ' + selectedCertificate.assetId;
                         break;
@@ -321,9 +320,11 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
     }
 }
 
-export const CertificateDetailView = connect((state: IStoreState): IStateProps => ({
-    baseURL: getBaseURL(state),
-    certificates: getCertificates(state),
-    configuration: getConfiguration(state),
-    producingAssets: getProducingAssets(state)
-}))(CertificateDetailViewClass);
+export const CertificateDetailView = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state),
+        certificates: getCertificates(state),
+        configuration: getConfiguration(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(CertificateDetailViewClass);

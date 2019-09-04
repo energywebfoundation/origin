@@ -1,0 +1,7 @@
+{
+  "*.{ts,tsx}": [
+    "prettier --write --config ../../.prettierrc --config-precedence file-override",
+    "yarn run lint",
+    "git add"
+  ]
+}

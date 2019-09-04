@@ -20,7 +20,7 @@ describe('package.json', () => {
     it('devDependencies should not contain any non-exact versions', () => {
         const deps = packageJSON.devDependencies as any;
 
-        for (let depName in deps) {
+        for (const depName in deps) {
             const depVersion = deps[depName];
 
             nonExactPrefixes.forEach(badPrefix => {
