@@ -213,7 +213,7 @@ describe('Market-Facade', () => {
                 demandOwner: accountTrader,
                 status: 0,
                 offChainProperties: {
-                    assettype: 3,
+                    assettype: GeneralLib.AssetType.Solar,
                     consumingAsset: 0,
                     currency: GeneralLib.Currency.USD,
                     locationCountry: 'string',
@@ -251,7 +251,7 @@ describe('Market-Facade', () => {
                 demandOwner: accountTrader,
                 status: 0,
                 offChainProperties: {
-                    assettype: 3,
+                    assettype: GeneralLib.AssetType.Solar,
                     consumingAsset: 0,
                     currency: GeneralLib.Currency.USD,
                     locationCountry: 'string',
@@ -310,7 +310,7 @@ describe('Market-Facade', () => {
 
             assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
 
-            const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+            await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         });
 
         it('should onboard an supply', async () => {
