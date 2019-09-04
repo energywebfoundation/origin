@@ -4,7 +4,7 @@ import Web3 from 'web3';
 
 import { SCAN_INTERVAL } from '../src/index';
 import { EmailServiceProvider } from '../src/services/email.service';
-import { OriginEventTracker } from '../src/services/event/OriginEventTracker';
+import { IOriginEventListener, OriginEventListener } from '../src/services/listeners/origin.listener';
 import { deployDemo } from './helpers/deployDemo';
 import { TestEmailAdapter } from './helpers/TestAdapter';
 
@@ -30,7 +30,7 @@ describe('Origin Tracker Tests', async () => {
         const emailAdapter = new TestEmailAdapter();
         const emailService = new EmailServiceProvider(emailAdapter, 'from@energyweb.org');
 
-        const tracker: OriginEventTracker = new OriginEventTracker(
+        const tracker: IOriginEventListener = new OriginEventListener(
             originContract,
             web3,
             emailService

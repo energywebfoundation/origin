@@ -3,17 +3,17 @@ import Web3 from 'web3';
 
 import { EmailServiceProvider, IEmailServiceProvider } from './email.service';
 import { MandrillEmailAdapter } from './email/mandrill.adapter';
-import { OriginEventTracker } from './event/OriginEventTracker';
+import { IOriginEventListener, OriginEventListener } from './listeners/origin.listener';
 
 export interface IEventServiceProvider {
     apiUrl: string;
     web3: Web3;
-    trackers: OriginEventTracker[];
+    trackers: IOriginEventListener[];
 }
 
 export class EventServiceProvider implements IEventServiceProvider {
     public apiUrl: string;
-    public trackers: OriginEventTracker[];
+    public trackers: IOriginEventListener[];
     public web3: Web3;
 
     public emailService: IEmailServiceProvider;
@@ -41,13 +41,13 @@ export class EventServiceProvider implements IEventServiceProvider {
         // Add any trackers from backend if missing
         for (const contract of latestOriginContracts) {
             if (!currentlyTrackingContracts.includes(contract)) {
-                const tracker: OriginEventTracker = new OriginEventTracker(
+                const listener: IOriginEventListener = new OriginEventListener(
                     contract,
                     this.web3,
                     this.emailService
                 );
 
-                this.trackers.push(tracker);
+                this.trackers.push(listener);
             }
         }
 

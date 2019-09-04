@@ -6,7 +6,7 @@ import { createBlockchainProperties as marketCreateBlockchainProperties } from '
 import { createBlockchainProperties } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 
-export const initConfig = async (originLookupAddress: string, web3: Web3): Promise<Configuration.Entity> => {
+export const initOriginConfig = async (originLookupAddress: string, web3: Web3): Promise<Configuration.Entity> => {
     const blockchainProperties: Configuration.BlockchainProperties = (await createBlockchainProperties(
         web3,
         originLookupAddress

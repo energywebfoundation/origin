@@ -4,12 +4,12 @@ import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 
-import { initConfig } from '../../config/initConfig';
+import { initOriginConfig } from '../../config/origin.config';
 import { IEmail, IEmailServiceProvider } from '../email.service';
 
 import { SCAN_INTERVAL } from '../../index';
 
-interface IOriginEventTracker {
+export interface IOriginEventListener {
     originLookupAddress: string;
     web3: Web3;
     started: boolean;
@@ -17,7 +17,7 @@ interface IOriginEventTracker {
     start: () => Promise<void>;
 }
 
-export class OriginEventTracker implements IOriginEventTracker {
+export class OriginEventListener implements IOriginEventListener {
     public originLookupAddress: string;
     public web3: Web3;
     public started: boolean;
@@ -39,7 +39,7 @@ export class OriginEventTracker implements IOriginEventTracker {
     }
 
     public async start(): Promise<void> {
-        this.conf = await initConfig(this.originLookupAddress, this.web3);
+        this.conf = await initOriginConfig(this.originLookupAddress, this.web3);
 
         const currentBlockNumber = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
@@ -49,12 +49,12 @@ export class OriginEventTracker implements IOriginEventTracker {
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const certId = event.returnValues._certificateId;
-            console.log(`Event: LogCreatedCertificate certificate #${certId}`);
+            this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
 
             const newCertificate = await new Certificate.Entity(certId, this.conf).sync();
             const certOwner = await new User.Entity(newCertificate.owner, this.conf as any).sync();
 
-            console.log(`Sending email to ${certOwner.offChainProperties.email}...`);
+            this.conf.logger.info(`Sending email to ${certOwner.offChainProperties.email}...`);
             const email: IEmail = {
                 to: [certOwner.offChainProperties.email],
                 subject: `${certId}`,
@@ -62,7 +62,7 @@ export class OriginEventTracker implements IOriginEventTracker {
             };
 
             this.emailService.send(email);
-            console.log('Sent.');
+            this.conf.logger.info('Sent.');
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
@@ -70,7 +70,7 @@ export class OriginEventTracker implements IOriginEventTracker {
         this.manager.start();
 
         this.started = true;
-        console.log('Started tracker for  ' + this.originLookupAddress);
+        this.conf.logger.info('Started tracker for  ' + this.originLookupAddress);
     }
 
     public stop(): void {
