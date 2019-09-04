@@ -37,7 +37,7 @@ describe('AssetTypeService tests', () => {
 
         const encoded = AssetType.Solar | AssetType.Concentration | AssetType.Thermal;
 
-        const decoded = Array.from(assetTypeService.decode(encoded));
+        const decoded = assetTypeService.decode(encoded);
 
         const hasSolar = decoded.includes('Solar');
         const hasThermal = decoded.includes('Thermal');

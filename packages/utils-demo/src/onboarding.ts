@@ -68,6 +68,7 @@ export const onboardDemo = async (
 
         case 'CREATE_PRODUCING_ASSET':
             console.log('-----------------------------------------------------------');
+            console.log(action);
 
             const assetProducingProps: Asset.ProducingAsset.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
@@ -83,7 +84,10 @@ export const onboardDemo = async (
 
             const assetTypeConfig = AssetType[action.data.assetType];
             const assetCompliance =
-                GeneralLib.Compliance[action.data.assetType as keyof typeof GeneralLib.Compliance];
+                GeneralLib.Compliance[action.data.complianceRegistry as keyof typeof GeneralLib.Compliance];
+
+            console.log(`assetTypeConfig=${assetTypeConfig}`);
+            console.log(`assetCompliance=${assetCompliance}`);
 
             const assetProducingPropsOffChain: Asset.ProducingAsset.IOffChainProperties = {
                 operationalSince: action.data.operationalSince,

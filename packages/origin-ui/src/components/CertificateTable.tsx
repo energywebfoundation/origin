@@ -13,45 +13,28 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import * as React from 'react';
-import { Redirect } from 'react-router-dom';
-import moment from 'moment';
-
-import { Certificate, TradableEntity } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-import {
-    Configuration,
-    TimeFrame,
-    Currency,
-    AssetType,
-    Compliance
-} from '@energyweb/utils-general';
 import { MatcherLogic } from '@energyweb/market-matcher';
-
-import TableUtils from './Table/TableUtils';
-import { showNotification, NotificationType } from '../utils/notifications';
-import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
-import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
-import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
+import { Certificate, TradableEntity } from '@energyweb/origin';
+import { User } from '@energyweb/user-registry';
+import {
+    AssetType,
+    Compliance,
+    Configuration,
+    Currency,
+    IRECAssetService,
+    TimeFrame
+} from '@energyweb/utils-general';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
-import {
-    IPaginatedLoaderFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues
-} from './Table/PaginatedLoader';
-import { IBatchableAction } from './Table/ColumnBatchActions';
-import { AdvancedTable } from './Table/AdvancedTable';
-import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { RECORD_INDICATOR, FILTER_SPECIAL_TYPES } from './Table/PaginatedLoaderFiltered';
-import {
-    PaginatedLoaderFilteredSorted,
-    IPaginatedLoaderFilteredSortedState,
-    getInitialPaginatedLoaderFilteredSortedState
-} from './Table/PaginatedLoaderFilteredSorted';
+import moment from 'moment';
+import * as React from 'react';
 import { connect } from 'react-redux';
-import { IStoreState } from '../types';
+import { Redirect } from 'react-router-dom';
+
+import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
+import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
+import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import {
     getBaseURL,
     getCertificates,
@@ -59,7 +42,23 @@ import {
     getCurrentUser,
     getProducingAssets
 } from '../features/selectors';
+import { IStoreState } from '../types';
+import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
+import { AdvancedTable } from './Table/AdvancedTable';
+import { IBatchableAction } from './Table/ColumnBatchActions';
+import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
+import {
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues
+} from './Table/PaginatedLoader';
+import { FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderFiltered';
+import {
+    getInitialPaginatedLoaderFilteredSortedState,
+    IPaginatedLoaderFilteredSortedState,
+    PaginatedLoaderFilteredSorted
+} from './Table/PaginatedLoaderFilteredSorted';
+import TableUtils from './Table/TableUtils';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -140,7 +139,9 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
         label: 'Asset Type',
         sortProperties: ['assetTypeLabel'],
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-            AssetType[enrichedData.producingAsset.offChainProperties.assetType]
+            new IRECAssetService().decode(
+                enrichedData.producingAsset.offChainProperties.assetType
+            )[0]
     },
     {
         label: 'Commissioning Date',
@@ -188,6 +189,8 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
 ];
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
+    private IRECAssetService = new IRECAssetService();
+    
     constructor(props: Props) {
         super(props);
 
@@ -357,7 +360,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel: AssetType[producingAsset.offChainProperties.assetType],
+                assetTypeLabel: this.IRECAssetService.decode(producingAsset.offChainProperties.assetType)[0],
                 certificateOwner: await new User.Entity(certificate.owner, this.props
                     .configuration as any).sync(),
                 offChainSettlementOptions,
@@ -670,7 +673,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                             value: AssetType.Wind
                         },
                         {
-                            label: 'Biomass Gas',
+                            label: 'Agricultural gas',
                             value: AssetType['Agricultural gas']
                         },
                         {

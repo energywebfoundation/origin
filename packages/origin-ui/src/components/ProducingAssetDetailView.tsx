@@ -27,7 +27,7 @@ import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
-import { AssetType, Compliance, Configuration } from '@energyweb/utils-general';
+import { AssetType, Compliance, Configuration, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { AssetMap } from './AssetMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
@@ -61,6 +61,8 @@ interface State {
 type Props = IOwnProps & IStateProps;
 
 class ProducingAssetDetailViewClass extends React.Component<Props, State> {
+    private IRECAssetService = new IRECAssetService();
+    
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -153,7 +155,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
                         label:
                             'Asset Type' +
                             getOffChainText('assetType', selectedAsset.offChainProperties),
-                        data: AssetType[selectedAsset.offChainProperties.assetType],
+                        data: this.IRECAssetService.decode(selectedAsset.offChainProperties.assetType)[0],
                         image:
                             AssetType.Wind === selectedAsset.offChainProperties.assetType
                                 ? wind

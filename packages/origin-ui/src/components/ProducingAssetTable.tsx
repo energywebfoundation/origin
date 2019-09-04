@@ -21,7 +21,7 @@ import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { ITableHeaderData } from './Table/Table';
 import TableUtils from './Table/TableUtils';
-import { Configuration, AssetType } from '@energyweb/utils-general';
+import { Configuration, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
@@ -74,6 +74,8 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
     Props,
     IProducingAssetTableState
 > {
+    private IRECAssetService = new IRECAssetService();
+
     constructor(props: Props) {
         super(props);
 
@@ -233,7 +235,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
                 enrichedRecordData.organizationName,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                AssetType[asset.offChainProperties.assetType],
+                this.IRECAssetService.decode(asset.offChainProperties.assetType)[0], //TODO: handle multiple asset types
                 asset.offChainProperties.capacityWh / 1000,
                 asset.lastSmartMeterReadWh / 1000
             ];

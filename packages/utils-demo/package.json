@@ -13,7 +13,7 @@
     "deploy-empty": "yarn build-ts && node dist/js/deployEmpty",
     "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
     "start": "yarn build-ts && node dist/js/src/test",
-    "start-all": "npx concurrently -n eth,backend,deploy \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn start\"",
+    "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,backend,deploy \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn start\"",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "yarn build-ts && node dist/js/src/test",

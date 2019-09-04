@@ -18,7 +18,7 @@ import * as React from 'react';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
-import { Configuration, TimeFrame, Compliance, AssetType, Currency } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Compliance, AssetType, Currency, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
@@ -71,6 +71,8 @@ enum OPERATIONS {
 }
 
 class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
+    private IRECAssetService = new IRECAssetService();
+    
     constructor(props: Props) {
         super(props);
 
@@ -191,7 +193,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                         moment(demand.offChainProperties.endTime, 'x').format('DD MMM YY'),
                     this.getCountryRegionText(demand),
                     typeof demand.offChainProperties.assettype !== 'undefined'
-                        ? AssetType[demand.offChainProperties.assettype]
+                        ? this.IRECAssetService.decode(demand.offChainProperties.assettype)[0]
                         : NO_VALUE_TEXT,
                     typeof demand.offChainProperties.registryCompliance !== 'undefined'
                         ? Compliance[demand.offChainProperties.registryCompliance]

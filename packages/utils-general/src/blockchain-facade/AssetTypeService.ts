@@ -97,7 +97,7 @@ export interface IAssetTypeStructure {
 export interface IAssetService {
     AssetTypes: IAssetTypeStructure[];
     encode(assetTypes: string[]): number;
-    decode(assetType: number): IterableIterator<string>;
+    decode(assetType: number): string[];
     includes(current: number, requested: number): boolean;
 }
 
@@ -220,14 +220,17 @@ export class IRECAssetService implements IAssetService {
         return assetTypes.map(type => AssetType[type]).reduce((prev, current) => (prev |= current));
     }
 
-    *decode(assetType: number) {
+    decode(assetType: number) {
+        const res: string[] = [];
         for (const type in AssetType) {
             const value = AssetType[type];
 
             if ((assetType & value) === value) {
-                yield type;
+                res.push(type);
             }
         }
+
+        return res;
     }
 
     includes(current: number, requested: number): boolean {
