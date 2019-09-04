@@ -8,6 +8,7 @@ import { ProducingAssetTable } from '../components/ProducingAssetTable';
 import { producingAssetCreatedOrUpdated } from '../features/actions';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { dataTestSelector } from '../utils/Helper';
+import { AssetType } from '@energyweb/utils-general';
 
 const flushPromises = () => new Promise(setImmediate);
 
@@ -18,7 +19,7 @@ jest.mock('@energyweb/user-registry', () => {
                 sync() {
                     return {
                         organization: 'Example Organization'
-                    }
+                    };
                 }
             }
         }
@@ -48,13 +49,13 @@ describe('ProducingAssetTable', () => {
                 owner: {
                     address: '0x0'
                 },
-                offChainProperties: {
+                offChainProperties: ({
                     facilityName: 'Wuthering Heights facility',
-                    assetType: ProducingAsset.Type.Solar,
+                    assetType: AssetType.Solar,
                     city: 'Sopot',
                     country: 'Poland',
                     capacityWh: 9876543
-                } as Partial<ProducingAsset.IOffChainProperties> as any,
+                } as Partial<ProducingAsset.IOffChainProperties>) as any,
                 lastSmartMeterReadWh: 7777
             },
             {
@@ -69,16 +70,16 @@ describe('ProducingAssetTable', () => {
                 owner: {
                     address: '0x0'
                 },
-                offChainProperties: {
+                offChainProperties: ({
                     facilityName: 'Biomass Energy Facility',
-                    assetType: ProducingAsset.Type.BiomassGas,
+                    assetType: AssetType['Agricultural gas'],
                     city: 'Amsterdam',
                     country: 'Netherlands',
                     capacityWh: 736123
-                } as Partial<ProducingAsset.IOffChainProperties> as any,
+                } as Partial<ProducingAsset.IOffChainProperties>) as any,
                 lastSmartMeterReadWh: 312
             }
-        ]
+        ];
 
         for (const asset of producingAssets) {
             store.dispatch(producingAssetCreatedOrUpdated(asset as ProducingAsset.Entity));
@@ -104,44 +105,50 @@ describe('ProducingAssetTable', () => {
             '7.777',
             '',
             // next asset
-            "1",
-            "Example Organization",
-            "Biomass Energy Facility",
-            "Amsterdam, Netherlands",
-            "BiomassGas",
-            "736.123",
-            "0.312",
-            ""
+            '1',
+            'Example Organization',
+            'Biomass Energy Facility',
+            'Amsterdam, Netherlands',
+            'BiomassGas',
+            '736.123',
+            '0.312',
+            ''
         ]);
 
         expect(rendered.find('table tfoot tr td').map(el => el.text())).toEqual([
-            'Total', '8.089', ''
+            'Total',
+            '8.089',
+            ''
         ]);
 
-        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe('Showing 1 to 2 of 2 entries');
+        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe(
+            'Showing 1 to 2 of 2 entries'
+        );
 
         const searchInput = rendered.find(`${dataTestSelector('Search-textfield')} input`);
 
-        searchInput.simulate('change', { target: { value: 'Biomass' } })
+        searchInput.simulate('change', { target: { value: 'Biomass' } });
 
         await flushPromises();
 
         rendered.update();
 
         expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
-            "1",
-            "Example Organization",
-            "Biomass Energy Facility",
-            "Amsterdam, Netherlands",
-            "BiomassGas",
-            "736.123",
-            "0.312",
-            ""
+            '1',
+            'Example Organization',
+            'Biomass Energy Facility',
+            'Amsterdam, Netherlands',
+            'BiomassGas',
+            '736.123',
+            '0.312',
+            ''
         ]);
 
-        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe('Showing 1 to 1 of 1 entries');
+        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe(
+            'Showing 1 to 1 of 1 entries'
+        );
 
-        searchInput.simulate('change', { target: { value: 'Wuthering Heights' } })
+        searchInput.simulate('change', { target: { value: 'Wuthering Heights' } });
 
         await flushPromises();
 
@@ -158,6 +165,8 @@ describe('ProducingAssetTable', () => {
             ''
         ]);
 
-        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe('Showing 1 to 1 of 1 entries');
+        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe(
+            'Showing 1 to 1 of 1 entries'
+        );
     });
 });

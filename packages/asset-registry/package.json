@@ -30,7 +30,7 @@
     "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties > schemas/ProducingAssetPropertiesOffChain.schema.json",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "yarn build-schema:AssetPropertiesOffChain && yarn build-schema:ProducingAssetPropertiesOffChain && cp -R schemas dist/schemas",
-    "build-ts": "yarn build-schemas && rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "build-ts": "yarn build-schemas && tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",

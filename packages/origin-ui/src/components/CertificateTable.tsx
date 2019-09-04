@@ -22,7 +22,13 @@ import { Certificate, TradableEntity } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-import { Configuration, TimeFrame, Currency } from '@energyweb/utils-general';
+import {
+    Configuration,
+    TimeFrame,
+    Currency,
+    AssetType,
+    Compliance
+} from '@energyweb/utils-general';
 import { MatcherLogic } from '@energyweb/market-matcher';
 
 import TableUtils from './Table/TableUtils';
@@ -46,7 +52,13 @@ import {
 } from './Table/PaginatedLoaderFilteredSorted';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCertificates, getConfiguration, getCurrentUser, getProducingAssets } from '../features/selectors';
+import {
+    getBaseURL,
+    getCertificates,
+    getConfiguration,
+    getCurrentUser,
+    getProducingAssets
+} from '../features/selectors';
 import { getCertificateDetailLink } from '../utils/routing';
 
 interface IOwnProps {
@@ -128,7 +140,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
         label: 'Asset Type',
         sortProperties: ['assetTypeLabel'],
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-            ProducingAsset.Type[enrichedData.producingAsset.offChainProperties.assetType]
+            AssetType[enrichedData.producingAsset.offChainProperties.assetType]
     },
     {
         label: 'Commissioning Date',
@@ -151,9 +163,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
     {
         label: 'Compliance',
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-            ProducingAsset.Compliance[
-                enrichedData.producingAsset.offChainProperties.complianceRegistry
-            ]
+            Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry]
     },
     {
         label: 'Owner',
@@ -177,10 +187,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
     }
 ];
 
-class CertificateTableClass extends PaginatedLoaderFilteredSorted<
-    Props,
-    ICertificatesState
-> {
+class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
     constructor(props: Props) {
         super(props);
 
@@ -350,8 +357,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel: ProducingAsset.Type[producingAsset.offChainProperties.assetType],
-                certificateOwner: await new User.Entity(certificate.owner, this.props.configuration as any).sync(),
+                assetTypeLabel: AssetType[producingAsset.offChainProperties.assetType],
+                certificateOwner: await new User.Entity(certificate.owner, this.props
+                    .configuration as any).sync(),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
@@ -618,7 +626,11 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
                 status: Demand.DemandStatus.ACTIVE
             };
 
-            await Demand.createDemand(onChainProperties, offChainProperties, this.props.configuration);
+            await Demand.createDemand(
+                onChainProperties,
+                offChainProperties,
+                this.props.configuration
+            );
         }
     }
 
@@ -651,26 +663,26 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
                     availableOptions: [
                         {
                             label: 'Solar',
-                            value: ProducingAsset.Type.Solar
+                            value: AssetType.Solar
                         },
                         {
                             label: 'Wind',
-                            value: ProducingAsset.Type.Wind
+                            value: AssetType.Wind
                         },
                         {
                             label: 'Biomass Gas',
-                            value: ProducingAsset.Type.BiomassGas
+                            value: AssetType['Agricultural gas']
                         },
                         {
                             label: 'Hydro',
-                            value: ProducingAsset.Type.RunRiverHydro
+                            value: AssetType['Run-of-river head installation']
                         }
                     ],
                     defaultOptions: [
-                        ProducingAsset.Type.Solar,
-                        ProducingAsset.Type.Wind,
-                        ProducingAsset.Type.BiomassGas,
-                        ProducingAsset.Type.RunRiverHydro
+                        AssetType.Solar,
+                        AssetType.Wind,
+                        AssetType['Agricultural gas'],
+                        AssetType['Run-of-river head installation']
                     ]
                 }
             },
@@ -923,10 +935,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<
     }
 }
 
-export const CertificateTable = connect((state: IStoreState, ownProps: IOwnProps): IStateProps => ({
-    baseURL: getBaseURL(state),
-    certificates: ownProps.certificates || getCertificates(state),
-    configuration: getConfiguration(state),
-    currentUser: getCurrentUser(state),
-    producingAssets: getProducingAssets(state)
-}))(CertificateTableClass);
+export const CertificateTable = connect(
+    (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
+        baseURL: getBaseURL(state),
+        certificates: ownProps.certificates || getCertificates(state),
+        configuration: getConfiguration(state),
+        currentUser: getCurrentUser(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(CertificateTableClass);

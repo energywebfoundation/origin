@@ -21,7 +21,7 @@ import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { ITableHeaderData } from './Table/Table';
 import TableUtils from './Table/TableUtils';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, AssetType } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
@@ -233,7 +233,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
                 enrichedRecordData.organizationName,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                ProducingAsset.Type[asset.offChainProperties.assetType],
+                AssetType[asset.offChainProperties.assetType],
                 asset.offChainProperties.capacityWh / 1000,
                 asset.lastSmartMeterReadWh / 1000
             ];

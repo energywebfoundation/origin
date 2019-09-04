@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",

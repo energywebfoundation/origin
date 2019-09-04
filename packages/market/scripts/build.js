@@ -50,6 +50,7 @@ async function executeCommand(command, directory) {
 async function run() {
   console.log('EW-MARKET-LIB-BUILD: Start...');
 
+  await executeCommand('yarn clean', ROOT_DIRECTORY)
   await executeCommand('yarn compile', ROOT_DIRECTORY)
 
   await fs.ensureDir(`${ROOT_DIRECTORY}/dist/js`);

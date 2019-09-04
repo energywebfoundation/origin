@@ -5,7 +5,8 @@
   "main": "dist/js/src/index.js",
   "scripts": {
     "start": "node dist/js/src/index.js",
-    "build": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "build": "yarn clean && yarn build-ts",
+    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "lint": "tslint --fix  'src/**/*{.ts,.tsx}'",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "prepare": "yarn build",

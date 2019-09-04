@@ -23,6 +23,7 @@
         "lint": "lerna run lint --parallel --stream",
         "clean": "lerna run clean --parallel",
         "build:static": "lerna run build:static --parallel",
+        "build:ts": "lerna run build-ts --stream",
         "lint:simulator": "lerna run lint --scope @energyweb/solar-simulator --stream",
         "lint-fix:simulator": "lerna run lint-fix --scope @energyweb/solar-simulator --stream",
         "prettier:simulator": "lerna run prettier --scope @energyweb/solar-simulator --stream",

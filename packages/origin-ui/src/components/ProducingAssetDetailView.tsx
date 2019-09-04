@@ -27,7 +27,7 @@ import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
-import { Configuration } from '@energyweb/utils-general';
+import { AssetType, Compliance, Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { AssetMap } from './AssetMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
@@ -134,7 +134,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
                             'Certified by Registry' +
                             getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
                         data:
-                            ProducingAsset.Compliance[
+                            Compliance[
                                 selectedAsset.offChainProperties.complianceRegistry
                             ]
                     },
@@ -153,11 +153,11 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
                         label:
                             'Asset Type' +
                             getOffChainText('assetType', selectedAsset.offChainProperties),
-                        data: ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
+                        data: AssetType[selectedAsset.offChainProperties.assetType],
                         image:
-                            ProducingAsset.Type.Wind === selectedAsset.offChainProperties.assetType
+                            AssetType.Wind === selectedAsset.offChainProperties.assetType
                                 ? wind
-                                : ProducingAsset.Type.Solar ===
+                                : AssetType.Solar ===
                                   selectedAsset.offChainProperties.assetType
                                 ? solar
                                 : hydro,

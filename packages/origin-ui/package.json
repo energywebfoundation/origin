@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
+    "build-ts": "yarn build",
     "build-full": "webpack --config webpack/prod.config.js",
     "lint": "&& tslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",

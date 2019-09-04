@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, AssetType } from '@energyweb/utils-general';
 import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { CertificateLogic } from '@energyweb/origin';
@@ -99,7 +99,7 @@ class CertificationRequestsTableClass extends PaginatedLoader<
                 i,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                ProducingAsset.Type[asset.offChainProperties.assetType],
+                AssetType[asset.offChainProperties.assetType], //TODO: multiple asset types encoded
                 asset.offChainProperties.capacityWh / 1000,
                 energy / 1000
             ]);

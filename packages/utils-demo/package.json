@@ -8,9 +8,8 @@
     "test": "test"
   },
   "scripts": {
-    "prebuild-ts": "rm -rf build/ts",
-    "build": "yarn build-ts",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "build": "yarn clean && yarn build-ts",
+    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "deploy-empty": "yarn build-ts && node dist/js/deployEmpty",
     "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
     "start": "yarn build-ts && node dist/js/src/test",
