@@ -53,7 +53,7 @@ export interface ITableProps {
     classNames?: string[];
     type?: any;
     operations?: any[];
-    operationClicked?: Function;
+    operationClicked?: (key: string | number, id?: number) => void;
     onSelect?: TableOnSelectFunction;
     currentSort?: string[];
     sortAscending?: boolean;
@@ -72,7 +72,7 @@ export interface ITableAdminHeaderData {
     header?: any;
     footer?: any;
     data?: any;
-    footerClick?: Function;
+    footerClick?: (inputs: any) => void;
     key?: string;
 }
 
@@ -295,7 +295,7 @@ export class Table extends React.Component<ITableProps, IState> {
         const popoverFocus = (id: number) => (
             <Popover id="popover-trigger-focus">
                 <div className="popover-wrapper">
-                    {operations.map(o => (
+                    {operations.map((o: string) => (
                         <div
                             key={o}
                             onClick={() => operationClicked(o, id)}

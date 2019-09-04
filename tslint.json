@@ -1,21 +1,12 @@
 {
     "defaultSeverity": "error",
-    "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-sonarts"],
+    "extends": ["tslint:recommended", "tslint-sonarts", "tslint-config-prettier"],
     "rules": {
       "object-literal-sort-keys": false,
       "object-literal-shorthand": false,
       "no-nested-template-literals": false,
       "class-name": true,
       "forin": false,
-      "comment-format": [
-        true,
-        "check-space"
-      ],
-      "indent": [
-        true,
-        "spaces",
-        4
-      ],
       "no-console": false,
       "max-line-length": false,
       "radix": false,
@@ -110,15 +101,6 @@
       "variable-name": [
         true,
         "ban-keywords"
-      ],
-      "ban-types": false,
-      "whitespace": [
-        true,
-        "check-branch",
-        "check-decl",
-        "check-operator",
-        "check-separator",
-        "check-type"
       ]
     }
 }
