@@ -25,7 +25,6 @@ import {
     createBlockchainProperties as issuerCreateBlockchainProperties
 } from '@energyweb/origin';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import { EthAccount } from '@energyweb/utils-general/dist/js/blockchain-facade/Configuration';
 import Web3 from 'web3';
 
 import { logger } from '../Logger';
@@ -67,7 +66,7 @@ export const initMatchingManager = async (controller: Controller, conf: Configur
 
 export const createBlockchainConf = async (
     blockchainSectionConfFile: IBlockchainDataSource,
-    matcherAccount: EthAccount
+    matcherAccount: Configuration.EthAccount
 ): Promise<Configuration.Entity> => {
     const web3 = new Web3(blockchainSectionConfFile.web3Url);
     const marketConf = await marketCreateBlockchainProperties(

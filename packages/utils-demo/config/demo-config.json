@@ -130,8 +130,8 @@
         {
             "type": "CREATE_PRODUCING_ASSET",
             "data": {
-                "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
-                "smartMeterPK": "191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
+                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
                 "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "matcher": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
                 "operationalSince": 1514764800,
@@ -160,12 +160,12 @@
         {
             "type": "CREATE_PRODUCING_ASSET",
             "data": {
-                "smartMeter": "0x62538bc93b486acd189513164babac3543a2ce16",
-                "smartMeterPK": "094eaa66c712a1a308b2bd1189cc200613d856b399d502c1e68f25649970a5b0",
+                "smartMeter": "0x7942d95A7DA329C1De09b5437dCEd7Bf68EEC0F6",
+                "smartMeterPK": "0xfd59741dab6ba03ed19a7810f8d852cb3ac57e3f816f8131c47bdf863c978ab8",
                 "owner": "0xfd863c662307fcf0c15f0b9f74f1d06544f19908",
                 "matcher": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
                 "operationalSince": 1483228800,
-                "capacityWh": 10,
+                "capacityWh": 70000,
                 "lastSmartMeterReadWh": 0,
                 "active": true,
                 "lastSmartMeterReadFileHash": "",
@@ -190,8 +190,8 @@
         {
             "type": "CREATE_PRODUCING_ASSET",
             "data": {
-                "smartMeter": "0x3409c66069b3c4933c654beeaa136cc5ce6d7bd0",
-                "smartMeterPK": "554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed",
+                "smartMeter": "0x30e69056aAADEE6A3B9ee98afBd34eb6c10d8556",
+                "smartMeterPK": "0xc49bbcd1f71568b55d1ad85bae035b94df402f875a7a6d32ff100fc7e6bb6e33",
                 "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "matcher": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
                 "operationalSince": 1514764800,
@@ -275,8 +275,8 @@
             "data": {
                 "assetId": 0,
                 "meterreading": 100000,
-                "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
-                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
+                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
                 "filehash": "newMeterRead",
                 "timestamp": "1560988800"
             }
@@ -286,8 +286,8 @@
             "data": {
                 "assetId": 0,
                 "meterreading": 500000,
-                "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
-                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
+                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
                 "filehash": "newMeterRead",
                 "timestamp": "1560989800"
             }
@@ -297,8 +297,8 @@
             "data": {
                 "assetId": 0,
                 "meterreading": 800000,
-                "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
-                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
+                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
                 "filehash": "newMeterRead"
             }
         },
@@ -307,8 +307,8 @@
             "data": {
                 "assetId": 0,
                 "meterreading": 900000,
-                "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
-                "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
+                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
+                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
                 "filehash": "newMeterRead"
             }
         },

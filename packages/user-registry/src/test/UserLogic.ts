@@ -121,8 +121,12 @@ describe('UserLogic', () => {
             await userLogic.getFullUser('0x1000000000000000000000000000000000000005'),
             {
                 0: '',
-                1: '0',
-                2: false,
+                1: '',
+                2: '',
+                3: '0',
+                4: false,
+                _documentDBURL: '',
+                _propertiesDocumentHash: '',
                 _organization: '',
                 _roles: '0',
                 _active: false
@@ -144,16 +148,25 @@ describe('UserLogic', () => {
     });
 
     it('should return correct values for an existing user', async () => {
-        await userLogic.setUser('0x1000000000000000000000000000000000000005', 'TestOrganization', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            '0x1000000000000000000000000000000000000005',
+            'TestOrganization', {
+                privateKey: privateKeyDeployment
+            }
+        );
 
         assert.deepEqual(
             await userLogic.getFullUser('0x1000000000000000000000000000000000000005'),
             {
-                0: 'TestOrganization',
-                1: '0',
-                2: true,
+                0: 'propertiesDocumentHash',
+                1: 'documentDBURL',
+                2: 'TestOrganization',
+                3: '0',
+                4: true,
+                _propertiesDocumentHash: 'propertiesDocumentHash',
+                _documentDBURL: 'documentDBURL',
                 _organization: 'TestOrganization',
                 _roles: '0',
                 _active: true
@@ -186,9 +199,13 @@ describe('UserLogic', () => {
         assert.deepEqual(
             await userLogic.getFullUser('0x1000000000000000000000000000000000000005'),
             {
-                0: 'TestOrganization',
-                1: '1',
-                2: true,
+                0: 'propertiesDocumentHash',
+                1: 'documentDBURL',
+                2: 'TestOrganization',
+                3: '1',
+                4: true,
+                _propertiesDocumentHash: 'propertiesDocumentHash',
+                _documentDBURL: 'documentDBURL',
                 _organization: 'TestOrganization',
                 _roles: '1',
                 _active: true
@@ -227,7 +244,7 @@ describe('UserLogic', () => {
 
         const rights = buildRights([Role.AssetManager, Role.Trader]);
 
-        await userLogic.setUser(TEST_ACCOUNT, 'TestOrganization', {
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', TEST_ACCOUNT, 'TestOrganization', {
             privateKey: privateKeyDeployment
         });
 

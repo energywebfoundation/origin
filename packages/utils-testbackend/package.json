@@ -2,14 +2,15 @@
   "name": "@energyweb/utils-testbackend",
   "version": "1.1.0",
   "description": "",
-  "main": "dist/js/index.js",
+  "main": "dist/js/src/index.js",
   "scripts": {
     "start": "node dist/js/src/index.js",
-    "build": "rm -rf dist/js && tsc",
+    "build": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "lint": "tslint --fix  'src/**/*{.ts,.tsx}'",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "prepare": "yarn build",
-    "test": "rm -rf db.json && npm run build && mocha dist/js/test/ --timeout 60000"
+    "test": "rm -rf db.json && npm run build && mocha dist/js/test/ --timeout 60000",
+    "clean": "rm -rf dist"
   },
   "repository": {
     "type": "git",

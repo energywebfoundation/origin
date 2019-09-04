@@ -2,7 +2,6 @@
   "name": "@energyweb/utils-general",
   "description": "",
   "license": "GPL-3.0",
-  "author": "slock.it GmbH; Martin Kuechler, martin.kuechler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it",
   "homepage": "https://github.com/energywebfoundation/ewf-monorepo/packages/utils-general#readme",
   "repository": {
     "type": "git",
@@ -12,17 +11,18 @@
     "url": "https://github.com/energywebfoundation/ewf-monorepo/issues"
   },
   "version": "1.1.0",
-  "main": "dist/js/index.js",
+  "main": "dist/js/src/index.js",
   "files": [
     "contracts",
-    "dist"
+    "dist/js/build",
+    "dist/js/src"
   ],
   "directories": {
     "test": "test"
   },
   "scripts": {
     "build": "scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
@@ -30,9 +30,11 @@
     "prepare": "scripts/build.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-ts": "mocha -r ts-node/register test/*"
+    "test-ts": "mocha -r ts-node/register test/*",
+    "clean": "rm -rf build dist",
+    "build:static": "yarn compile"
   },
-  "types": "dist/js/index.d.ts",
+  "types": "dist/js/src/index.d.ts",
   "dependencies": {
     "axios": "0.19.0",
     "ew-utils-general-precise-proofs": "0.3.0",

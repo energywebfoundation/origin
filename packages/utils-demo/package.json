@@ -10,15 +10,16 @@
   "scripts": {
     "prebuild-ts": "rm -rf build/ts",
     "build": "npm run build-ts",
-    "build-ts": "rm -rf dist/js && tsc",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "deploy-empty": "npm run build-ts && node dist/js/deployEmpty",
     "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
-    "start": "npm run build-ts && node dist/js/test",
+    "start": "npm run build-ts && node dist/js/src/test",
     "start-all": "npx concurrently -n eth,backend,deploy \"npm run start-ganache\" \"npm run start-test-backend\" \"npm run start\"",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -h 0.0.0.0",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
-    "test": "npm run build-ts && node dist/js/test",
-    "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+    "test": "npm run build-ts && node dist/js/src/test",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "clean": "rm -rf dist"
   },
   "types": "dist/js/index.d.ts",
   "dependencies": {

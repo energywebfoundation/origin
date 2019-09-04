@@ -15,15 +15,16 @@
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
-    "dist"
+    "dist/js/build",
+    "dist/js/src"
   ],
   "directories": {
     "test": "test"
   },
   "scripts": {
     "build": "./scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc",
-    "clean": "rm -rf node_modules dist build db.json",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "clean": "rm -rf dist build db.json",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "flatten-contracts": "truffle-flattener contracts/Origin/* > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
@@ -34,7 +35,8 @@
     "start-test-backend": "rm -rf db.json && node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\""
+    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
+    "build:static": "yarn compile"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {

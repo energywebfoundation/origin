@@ -1,5 +1,5 @@
 import { SpecialTx, SearchLog } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 
 import EnergyCertificateBundleLogicJSON from '../../build/contracts/EnergyCertificateBundleLogic.json';
 import { CertificateSpecificContract } from './CertificateSpecificContract';

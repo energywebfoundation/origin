@@ -16,7 +16,7 @@
 
 import * as Asset from '@energyweb/asset-registry';
 import * as GeneralLib from '@energyweb/utils-general';
-import { User, IUserPropertiesOnChain, IUserPropertiesOffChain } from '@energyweb/user-registry';
+import { User } from '@energyweb/user-registry';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -35,14 +35,16 @@ export const onboardDemo = async (
 
     switch (action.type) {
         case 'CREATE_ACCOUNT':
-            const userPropsOnChain: IUserPropertiesOnChain = {
+            const userPropsOnChain: User.IUserOnChainProperties = {
+                propertiesDocumentHash: null,
+                url: null,
                 id: action.data.address,
                 active: true,
                 roles: action.data.rights,
                 organization: action.data.organization
             };
 
-            const userPropsOffchain: IUserPropertiesOffChain = {
+            const userPropsOffChain: User.IUserOffChainProperties = {
                 firstName: action.data.firstName,
                 surname: action.data.surname,
                 email: action.data.email,
@@ -54,7 +56,7 @@ export const onboardDemo = async (
                 state: action.data.state
             };
 
-            await User.CREATE_USER(userPropsOnChain, userPropsOffchain, conf);
+            await User.createUser(userPropsOnChain, userPropsOffChain, conf);
 
             conf.logger.info('Onboarded a new user: ' + action.data.address);
             conf.logger.verbose(

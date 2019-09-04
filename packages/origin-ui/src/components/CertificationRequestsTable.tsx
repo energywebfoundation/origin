@@ -24,7 +24,7 @@ interface IOwnProps {
 interface IStateProps {
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
-    currentUser: User;
+    currentUser: User.Entity;
 }
 
 type Props = IOwnProps & IStateProps;

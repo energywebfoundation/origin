@@ -27,7 +27,7 @@ import { getBaseURL, getCurrentUser } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 
 interface StateProps {
-    currentUser: User;
+    currentUser: User.Entity;
     baseURL: string;
 }
 

@@ -1,5 +1,5 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import RoleManagementJSON from '../../build/contracts/RoleManagement.json';
 
 export enum Role {

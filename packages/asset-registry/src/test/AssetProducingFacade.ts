@@ -76,7 +76,13 @@ describe('AssetProducing Facade', () => {
         userContractLookupAddr = (userContracts as any).UserContractLookup;
         userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
 
-        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,
@@ -100,9 +106,13 @@ describe('AssetProducing Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            assetOwnerAddress,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
         await userLogic.setRoles(
             assetOwnerAddress,
             buildRights([Role.AssetManager, Role.AssetAdmin]),

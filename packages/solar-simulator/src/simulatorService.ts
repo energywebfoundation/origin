@@ -1,9 +1,9 @@
-import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import parse from 'csv-parse/lib/sync';
+import express from 'express';
 import fs from 'fs-extra';
 import moment from 'moment';
-import parse from 'csv-parse/lib/sync';
 import CONFIG from '../config/config.json';
 
 const PORT = CONFIG.config.SIMULATION.PORT || 3031;
@@ -118,6 +118,8 @@ async function getData() {
 
     const fileContent = await fs.readFile(`${__dirname}/../config/data.csv`);
     DATA = parse(fileContent, { columns: false, trim: true });
+
+    return DATA;
 }
 
 export async function startAPI() {

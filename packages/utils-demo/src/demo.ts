@@ -31,6 +31,13 @@ import { deployERC20TestToken } from 'ew-erc-test-contracts';
 import * as fs from 'fs';
 import Web3 from 'web3';
 
+import { deployERC20TestToken } from 'ew-erc-test-contracts';
+import { Configuration, AssetType, Currency, Compliance, TimeFrame } from '@energyweb/utils-general';
+import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
+import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from '@energyweb/asset-registry';
+import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
+import { CertificateLogic } from '@energyweb/origin';
+
 import { certificateDemo } from './certificate';
 import { CONFIG } from './config';
 import { logger } from './Logger';
@@ -74,12 +81,6 @@ export const marketDemo = async (demoFile?: string) => {
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
-    // set the admin account as an asset admin
-    await userLogic.setUser(adminAccount.address, 'admin', { privateKey: adminPK });
-    await userLogic.setRoles(adminAccount.address, buildRights([Role.UserAdmin, Role.AssetAdmin]), {
-        privateKey: adminPK
-    });
-
     // initialize variables for storing timeframe and currency
     let timeFrame;
     let currency;
@@ -105,6 +106,29 @@ export const marketDemo = async (demoFile?: string) => {
         },
         logger
     };
+
+    const userPropsOnChain: User.IUserOnChainProperties = {
+        propertiesDocumentHash: null,
+        url: null,
+        id: adminAccount.address,
+        active: true,
+        roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
+        organization: 'admin'
+    };
+
+    const userPropsOffChain: User.IUserOffChainProperties = {
+        firstName: 'Admin',
+        surname: 'User',
+        email: 'admin@example.com',
+        street: '',
+        number: '',
+        zip: '',
+        city: '',
+        country: '',
+        state: ''
+    };
+
+    await User.createUser(userPropsOnChain, userPropsOffChain, conf);
 
     const actionsArray = demoConfig.flow;
 

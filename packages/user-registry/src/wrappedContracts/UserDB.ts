@@ -1,5 +1,5 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
-import Web3 = require('web3');
+import Web3 from 'web3';
 import UserDBJSON from '../../build/contracts/UserDB.json';
 
 export class UserDB extends GeneralFunctions {
@@ -69,8 +69,19 @@ export class UserDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setUser(_user: string, _organization: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setUser(_user, _organization);
+    async createUser(
+        _propertiesDocumentHash: string,
+        _documentDBURL: string,
+        _user: string,
+        _organization: string, 
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.createUser(
+            _propertiesDocumentHash,
+            _documentDBURL,
+            _user,
+            _organization
+        );
 
         return await this.send(method, txParams);
     }

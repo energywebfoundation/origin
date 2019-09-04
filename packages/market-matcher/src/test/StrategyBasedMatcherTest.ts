@@ -31,7 +31,7 @@ import {
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { startMatcher } from '../exports';
+import { startMatcher } from '..';
 import { logger } from '../Logger';
 import * as SchemaDefs from '../schema-defs/MatcherConf';
 
@@ -94,7 +94,13 @@ describe('Test StrategyBasedMatcher', async () => {
         userContractLookupAddr = (userContracts as any).UserContractLookup;
 
         userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
-        await userLogic.setUser(accountDeployment, 'admin', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(
             accountDeployment,
@@ -108,19 +114,36 @@ describe('Test StrategyBasedMatcher', async () => {
             { privateKey: privateKeyDeployment }
         );
 
-        await userLogic.setUser(accountTrader, 'trader', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountTrader,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
+
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setUser(assetOwnerAddress, 'assetOwner', {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            assetOwnerAddress,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
         await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
             privateKey: privateKeyDeployment
         });
 
-        await userLogic.setUser(issuerAccount, 'issuer', { privateKey: privateKeyDeployment });
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            issuerAccount,
+            'issuer',
+            { privateKey: privateKeyDeployment }
+        );
 
         await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
             privateKey: privateKeyDeployment

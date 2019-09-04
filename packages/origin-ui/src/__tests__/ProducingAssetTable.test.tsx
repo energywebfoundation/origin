@@ -13,14 +13,16 @@ const flushPromises = () => new Promise(setImmediate);
 
 jest.mock('@energyweb/user-registry', () => {
     return {
-      User: class User {
-          sync() {
-              return {
-                  organization: 'Example Organization'
-              }
-          }
-      }
-    }
+        User: {
+            Entity: class Entity {
+                sync() {
+                    return {
+                        organization: 'Example Organization'
+                    }
+                }
+            }
+        }
+    };
 });
 
 describe('ProducingAssetTable', () => {

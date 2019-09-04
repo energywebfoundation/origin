@@ -15,7 +15,10 @@
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
-    "dist"
+    "dist/js/build",
+    "dist/js/src",
+    "dist/js/schemas",
+    "dist/schemas"
   ],
   "directories": {
     "test": "test"
@@ -27,7 +30,7 @@
     "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties > schemas/ProducingAssetPropertiesOffChain.schema.json",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run build-schema:AssetPropertiesOffChain && npm run build-schema:ProducingAssetPropertiesOffChain && cp -R schemas dist/schemas",
-    "build-ts": "npm run build-schemas && rm -rf dist/js && tsc",
+    "build-ts": "npm run build-schemas && rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",
@@ -38,7 +41,9 @@
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "npm run build-schemas && npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\""
+    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
+    "clean": "rm -rf build dist",
+    "build:static": "yarn compile && yarn build-schemas"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
