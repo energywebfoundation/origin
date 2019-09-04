@@ -95,7 +95,7 @@ const renderText = (data, tag = 'div') => {
 };
 
 export class Table extends React.Component<ITableProps, IState> {
-    isMounted = false;
+    isMountedIndicator = false;
 
     constructor(props) {
         super(props);
@@ -143,11 +143,11 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     componentDidMount() {
-        this.isMounted = true;
+        this.isMountedIndicator = true;
     }
 
     componentWillUnmount() {
-        this.isMounted = false;
+        this.isMountedIndicator = false;
     }
 
     calculateTotal = (data, keys) => {
@@ -181,7 +181,7 @@ export class Table extends React.Component<ITableProps, IState> {
     async loadPage(page: number) {
         await this.props.loadPage(page);
 
-        if (!this.isMounted) {
+        if (!this.isMountedIndicator) {
             return;
         }
 
