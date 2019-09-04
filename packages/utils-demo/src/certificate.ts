@@ -71,7 +71,10 @@ export const certificateDemo = async (
             };
 
             try {
-                let asset = await new ProducingAsset.Entity(action.data.assetId, conf).sync();
+                let asset = await new ProducingAsset.Entity(
+                    (action.data.assetId as string),
+                    conf
+                ).sync();
                 await asset.saveSmartMeterRead(
                     action.data.meterreading,
                     action.data.filehash,
