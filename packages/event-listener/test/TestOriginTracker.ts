@@ -6,9 +6,9 @@ import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 
 import { SCAN_INTERVAL } from '../src/index';
 import { EmailServiceProvider } from '../src/services/email.service';
-import { TestEmailAdapter } from '../src/services/email/test.adapter';
 import { OriginEventTracker } from '../src/services/event/OriginEventTracker';
 import { deployDemo } from './helpers/deployDemo';
+import { TestEmailAdapter } from './helpers/TestAdapter';
 
 import ganache from 'ganache-cli';
 

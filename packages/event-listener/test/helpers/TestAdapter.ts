@@ -1,5 +1,5 @@
-import { IEmailAdapter } from './IEmailAdapter';
-import { IEmail } from '../email.service';
+import { IEmailAdapter } from '../../src/services/email/IEmailAdapter';
+import { IEmail } from '../../src/services/email.service';
 
 export class TestEmailAdapter implements IEmailAdapter {
     async send(
