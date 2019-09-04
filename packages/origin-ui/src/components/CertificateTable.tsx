@@ -109,9 +109,6 @@ export enum OPERATIONS {
     RETURN_TO_INBOX = 'Return to Inbox',
     CLAIM = 'Claim',
     BUY = 'Buy',
-    SHOW_CLAIMING_TX = 'Show Claiming Transaction',
-    SHOW_CREATION_TX = 'Show Certificate Creation Transaction',
-    SHOW_LOGGING_TX = 'Show Initial Logging Transaction',
     SHOW_DETAILS = 'Show Certificate Details'
 }
 
@@ -211,8 +208,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         this.publishForSale = this.publishForSale.bind(this);
         this.claimCertificate = this.claimCertificate.bind(this);
         this.operationClicked = this.operationClicked.bind(this);
-        this.showTxClaimed = this.showTxClaimed.bind(this);
-        this.showCertCreated = this.showCertCreated.bind(this);
         this.showCertificateDetails = this.showCertificateDetails.bind(this);
         this.getTokenSymbol = this.getTokenSymbol.bind(this);
         this.buyCertificateBulk = this.buyCertificateBulk.bind(this);
@@ -291,9 +286,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const total = sortedEnrichedData.length;
 
         const formattedPaginatedData = paginatedData.map(
-            (enrichedData: IEnrichedCertificateData) => {
+            (enrichedDataItem: IEnrichedCertificateData) => {
                 const certificateDataToShow = this.visibleColumns.map(column =>
-                    column.displayValue(enrichedData)
+                    column.displayValue(enrichedDataItem)
                 );
 
                 if (this.state.shouldShowPrice) {
@@ -305,16 +300,16 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     certificateDataToShow.splice(
                         certificateDataToShow.length - 1,
                         0,
-                        enrichedData.isOffChainSettlement
+                        enrichedDataItem.isOffChainSettlement
                             ? formatter
-                                  .format(enrichedData.offChainSettlementOptions.price / 100)
+                                  .format(enrichedDataItem.offChainSettlementOptions.price / 100)
                                   .replace('$', '')
-                            : enrichedData.certificate.onChainDirectPurchasePrice
+                            : enrichedDataItem.certificate.onChainDirectPurchasePrice
                     );
                     certificateDataToShow.splice(
                         certificateDataToShow.length - 1,
                         0,
-                        enrichedData.acceptedCurrency
+                        enrichedDataItem.acceptedCurrency
                     );
                 }
 
@@ -385,7 +380,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate.acceptedToken
             );
 
-            return await token.web3Contract.methods.symbol().call();
+            return token.web3Contract.methods.symbol().call();
         }
 
         return null;
@@ -544,40 +539,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
     }
 
-    async showTxClaimed(certificateId: number) {
-        const certificate: Certificate.Entity = this.props.certificates.find(
-            (cert: Certificate.Entity) => cert.id === certificateId.toString()
-        );
-        if (certificate) {
-            // TODO:
-            // const claimedEvent = (await certificate.getCertificateEvents()).find((e) => e.event === 'LogRetireRequest');
-            // window.open('https://tobalaba.etherscan.com/tx/' + claimedEvent.transactionHash, claimedEvent.transactionHash);
-        }
-    }
-
-    async showCertCreated(certificateId: number) {
-        const certificate: Certificate.Entity = this.props.certificates.find(
-            (cert: Certificate.Entity) => cert.id === certificateId.toString()
-        );
-
-        if (certificate) {
-            // TODO
-            // const createdEvent = (await certificate.getCertificateEvents()).find((e) => e.event === 'LogCreatedCertificate');
-            // window.open('https://tobalaba.etherscan.com/tx/' + createdEvent.transactionHash, createdEvent.transactionHash);
-        }
-    }
-
-    async showInitialLoggingTx(certificateId: number) {
-        const certificate = this.props.certificates.find(
-            (cert: Certificate.Entity) => cert.id === certificateId.toString()
-        );
-        if (certificate) {
-            // const logEvent = (await asset.getEventWithFileHash(certificate.dataLog))[0];
-            // console.log(logEvent);
-            // window.open('https://tobalaba.etherscan.com/tx/' + logEvent.transactionHash, logEvent.transactionHash);
-        }
-    }
-
     async createDemandForCertificate(certificateId: number) {
         const certificate = this.props.certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
@@ -602,8 +563,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 consumingAsset: 0,
                 locationCountry: asset.offChainProperties.country,
                 locationRegion: asset.offChainProperties.region,
-                // assettype: asset.offChainProperties.assetType,
-                // minCO2Offset: ((certificate.offChainProperties.coSaved * 1000) / certificate.powerInW) / 10,
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 targetWhPerPeriod: certificate.powerInW,
@@ -739,15 +698,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             case OPERATIONS.BUY:
                 await this.buyCertificate(id);
                 break;
-            case OPERATIONS.SHOW_CLAIMING_TX:
-                this.showTxClaimed(id);
-                break;
-            case OPERATIONS.SHOW_CREATION_TX:
-                this.showCertCreated(id);
-                break;
-            case OPERATIONS.SHOW_LOGGING_TX:
-                // this.showInitialLoggingTx(id);
-                break;
             case OPERATIONS.SHOW_DETAILS:
                 this.showCertificateDetails(id);
                 break;
@@ -857,19 +807,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     handler: this.buyCertificateBulk
                 });
                 break;
-            case SelectedState.Claimed:
-                operations.push(OPERATIONS.SHOW_CLAIMING_TX);
-                break;
             case SelectedState.ForDemand:
                 operations.push(OPERATIONS.BUY);
                 break;
         }
 
-        operations.push(
-            OPERATIONS.SHOW_CREATION_TX,
-            OPERATIONS.SHOW_LOGGING_TX,
-            OPERATIONS.SHOW_DETAILS
-        );
+        operations.push(OPERATIONS.SHOW_DETAILS);
 
         return (
             <div className="CertificateTableWrapper">

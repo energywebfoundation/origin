@@ -36,7 +36,12 @@ import { CertificateTable, SelectedState } from './CertificateTable';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getProducingAssetDetailLink } from '../utils/routing';
-import { getBaseURL, getCertificates, getConfiguration, getProducingAssets } from '../features/selectors';
+import {
+    getBaseURL,
+    getCertificates,
+    getConfiguration,
+    getProducingAssets
+} from '../features/selectors';
 
 interface IStateProps {
     baseURL: string;
@@ -52,7 +57,7 @@ interface IOwnProps {
     showCertificates: boolean;
 }
 
-interface State {
+interface IState {
     newId: number;
     owner: User.Entity;
     notSoldCertificates: number;
@@ -60,7 +65,7 @@ interface State {
 
 type Props = IOwnProps & IStateProps;
 
-class ProducingAssetDetailViewClass extends React.Component<Props, State> {
+class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -79,7 +84,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
         await this.getOwner(this.props);
     }
 
-    async componentWillReceiveProps(newProps: Props): Promise<void> {
+    async UNSAFE_componentWillReceiveProps(newProps: Props): Promise<void> {
         await this.getOwner(newProps);
     }
 
@@ -102,7 +107,10 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
                     });
                 }
                 this.setState({
-                    owner: await new User.Entity(selectedAsset.owner.address, props.configuration as any).sync()
+                    owner: await new User.Entity(
+                        selectedAsset.owner.address,
+                        props.configuration as any
+                    ).sync()
                 });
             }
         }
@@ -353,9 +361,11 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
     }
 }
 
-export const ProducingAssetDetailView = connect((state: IStoreState): IStateProps => ({
-    baseURL: getBaseURL(state),
-    certificates: getCertificates(state),
-    configuration: getConfiguration(state),
-    producingAssets: getProducingAssets(state)
-}))(ProducingAssetDetailViewClass);
+export const ProducingAssetDetailView = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state),
+        certificates: getCertificates(state),
+        configuration: getConfiguration(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(ProducingAssetDetailViewClass);

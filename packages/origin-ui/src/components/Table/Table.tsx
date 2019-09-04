@@ -86,8 +86,16 @@ interface IState {
     [x: number]: any;
 }
 
+const addCommas = intNum => {
+    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+};
+
+const renderText = (data, tag = 'div') => {
+    return `<${tag}>${Number(data) ? addCommas(data) : data}</${tag}>`;
+};
+
 export class Table extends React.Component<ITableProps, IState> {
-    _isMounted = false;
+    isMounted = false;
 
     constructor(props) {
         super(props);
@@ -135,11 +143,11 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     componentDidMount() {
-        this._isMounted = true;
+        this.isMounted = true;
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        this.isMounted = false;
     }
 
     calculateTotal = (data, keys) => {
@@ -173,7 +181,7 @@ export class Table extends React.Component<ITableProps, IState> {
     async loadPage(page: number) {
         await this.props.loadPage(page);
 
-        if (!this._isMounted) {
+        if (!this.isMounted) {
             return;
         }
 
@@ -183,7 +191,7 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     handleDropdown = (key, itemInput) => {
-        return (event => {
+        return event => {
             const value = event.target.value;
             const { data } = this.props;
             if (itemInput.labelKey) {
@@ -201,11 +209,11 @@ export class Table extends React.Component<ITableProps, IState> {
             newInputs[key] = value;
 
             this.setState({ inputs: newInputs }, this.saveTotalEnergy);
-        }).bind(this);
+        };
     };
 
     handleToggle = (key, index) => {
-        return (() => {
+        return () => {
             const { state } = this;
             this.setState(state);
 
@@ -215,11 +223,11 @@ export class Table extends React.Component<ITableProps, IState> {
 
                 this.setState({ inputs: newInputs });
             }
-        }).bind(this);
+        };
     };
 
     handleInput = key => {
-        return (e => {
+        return e => {
             const newInputs = { ...this.state.inputs };
             newInputs[key] = e.target.value;
 
@@ -229,11 +237,11 @@ export class Table extends React.Component<ITableProps, IState> {
                 },
                 this.saveTotalEnergy
             );
-        }).bind(this);
+        };
     };
 
     handleDate = key => {
-        return ((momentObject: Moment) => {
+        return (momentObject: Moment) => {
             const dateObject = momentObject.toDate();
             const output = momentObject.format('DD MMM YY');
             this.setState({ [key]: dateObject, ['date_' + key]: output });
@@ -246,7 +254,7 @@ export class Table extends React.Component<ITableProps, IState> {
                 },
                 this.saveTotalEnergy
             );
-        }).bind(this);
+        };
     };
 
     saveTotalEnergy() {
@@ -285,7 +293,7 @@ export class Table extends React.Component<ITableProps, IState> {
             classNames,
             type = 'data',
             operations = [],
-            operationClicked = () => {},
+            operationClicked = () => null,
             currentSort,
             sortAscending
         } = props;
@@ -490,43 +498,47 @@ export class Table extends React.Component<ITableProps, IState> {
                                         </th>
                                     </tr>
                                 ) : (
-                                    item.data.map(item => (
-                                        <tr key={item.key}>
+                                    item.data.map(nestedItem => (
+                                        <tr key={nestedItem.key}>
                                             <td className="Actions Label">
                                                 {renderHTML(
                                                     renderText(
-                                                        item.label.length ? item.label + ':' : ''
+                                                        nestedItem.label.length
+                                                            ? nestedItem.label + ':'
+                                                            : ''
                                                     )
                                                 )}
                                             </td>
                                             <td
                                                 className={`Actions ToggleLabel ${
-                                                    state['toggle_' + item.key] ||
-                                                    (item.toggle.ref &&
-                                                        state['toggle_' + item.toggle.ref])
+                                                    state['toggle_' + nestedItem.key] ||
+                                                    (nestedItem.toggle.ref &&
+                                                        state['toggle_' + nestedItem.toggle.ref])
                                                         ? 'Disabled'
                                                         : 'Active'
                                                 }`}
                                             >
                                                 {renderHTML(
                                                     renderText(
-                                                        item.toggle.hide ? '' : item.toggle.label
+                                                        nestedItem.toggle.hide
+                                                            ? ''
+                                                            : nestedItem.toggle.label
                                                     )
                                                 )}
                                             </td>
                                             <td className={`Actions Toggle`}>
-                                                {item.toggle.hide ? (
+                                                {nestedItem.toggle.hide ? (
                                                     <div />
                                                 ) : (
                                                     <div>
                                                         <Toggle
                                                             defaultChecked={
-                                                                item.toggle.default || false
+                                                                nestedItem.toggle.default || false
                                                             }
                                                             icons={false}
                                                             onChange={handleToggle(
-                                                                item.key,
-                                                                item.toggle.index
+                                                                nestedItem.key,
+                                                                nestedItem.toggle.index
                                                             )}
                                                         />
                                                     </div>
@@ -534,97 +546,101 @@ export class Table extends React.Component<ITableProps, IState> {
                                             </td>
                                             <td
                                                 className={`Actions ToggleDescription ${
-                                                    state['toggle_' + item.key] ||
-                                                    (item.toggle.ref &&
-                                                        state['toggle_' + item.toggle.ref])
+                                                    state['toggle_' + nestedItem.key] ||
+                                                    (nestedItem.toggle.ref &&
+                                                        state['toggle_' + nestedItem.toggle.ref])
                                                         ? 'Active'
                                                         : 'Disabled'
                                                 }`}
                                             >
                                                 {renderHTML(
                                                     renderText(
-                                                        item.toggle.description.length
-                                                            ? item.toggle.description + ':'
+                                                        nestedItem.toggle.description.length
+                                                            ? nestedItem.toggle.description + ':'
                                                             : ''
                                                     )
                                                 )}
                                             </td>
                                             <td className={`Actions Input`}>
-                                                {item.input.type === 'text' &&
-                                                    item.key !== 'totalDemand' && (
+                                                {nestedItem.input.type === 'text' &&
+                                                    nestedItem.key !== 'totalDemand' && (
                                                         <TextField
-                                                            onChange={handleInput(item.key)}
-                                                            value={state[item.key]}
-                                                            label={item.label}
+                                                            onChange={handleInput(nestedItem.key)}
+                                                            value={state[nestedItem.key]}
+                                                            label={nestedItem.label}
                                                             fullWidth
                                                             variant="filled"
                                                         />
                                                     )}
-                                                {item.input.type === 'text' &&
-                                                    item.key === 'totalDemand' && (
+                                                {nestedItem.input.type === 'text' &&
+                                                    nestedItem.key === 'totalDemand' && (
                                                         <TextField
                                                             value={this.state.totalEnergy}
-                                                            label={item.label}
+                                                            label={nestedItem.label}
                                                             fullWidth
                                                             variant="filled"
                                                             disabled
                                                         />
                                                     )}
-                                                {item.input.type === 'number' && (
+                                                {nestedItem.input.type === 'number' && (
                                                     // TO-DO: Deprecate the use of input type number after POC
                                                     <TextField
-                                                        onChange={handleInput(item.key)}
-                                                        value={state[item.key]}
-                                                        label={item.label}
+                                                        onChange={handleInput(nestedItem.key)}
+                                                        value={state[nestedItem.key]}
+                                                        label={nestedItem.label}
                                                         fullWidth
                                                         variant="filled"
                                                         type="number"
                                                     />
                                                 )}
-                                                {item.input.type === 'date' && (
+                                                {nestedItem.input.type === 'date' && (
                                                     <DatePicker
-                                                        onChange={handleDate(item.key)}
-                                                        value={state[item.key] || null}
+                                                        onChange={handleDate(nestedItem.key)}
+                                                        value={state[nestedItem.key] || null}
                                                         fullWidth
                                                         variant="inline"
                                                         inputVariant="filled"
-                                                        label={item.label}
+                                                        label={nestedItem.label}
                                                     />
                                                 )}
-                                                {item.input.type === 'select' && (
+                                                {nestedItem.input.type === 'select' && (
                                                     <FormControl fullWidth={true} variant="filled">
-                                                        <InputLabel>Choose {item.label}</InputLabel>
+                                                        <InputLabel>
+                                                            Choose {nestedItem.label}
+                                                        </InputLabel>
                                                         <Select
                                                             onChange={handleDropdown(
-                                                                item.key,
-                                                                item.input
+                                                                nestedItem.key,
+                                                                nestedItem.input
                                                             )}
                                                             fullWidth={true}
                                                             variant="filled"
-                                                            value={state[item.key]}
+                                                            value={state[nestedItem.key]}
                                                             input={<FilledInput />}
                                                         >
-                                                            {item.input.key
-                                                                ? data[item.input.data].map(
+                                                            {nestedItem.input.key
+                                                                ? data[nestedItem.input.data].map(
                                                                       (opt, index) => (
                                                                           <MenuItem
                                                                               key={index}
                                                                               value={
                                                                                   opt[
-                                                                                      item.input.key
+                                                                                      nestedItem
+                                                                                          .input.key
                                                                                   ]
                                                                               }
                                                                           >
                                                                               {
                                                                                   opt[
-                                                                                      item.input
+                                                                                      nestedItem
+                                                                                          .input
                                                                                           .labelKey
                                                                                   ]
                                                                               }
                                                                           </MenuItem>
                                                                       )
                                                                   )
-                                                                : data[item.input.data].map(
+                                                                : data[nestedItem.input.data].map(
                                                                       (opt, index) => (
                                                                           <MenuItem
                                                                               key={index}
@@ -649,11 +665,3 @@ export class Table extends React.Component<ITableProps, IState> {
         );
     }
 }
-
-const renderText = (data, tag = 'div') => {
-    return `<${tag}>${Number(data) ? addCommas(data) : data}</${tag}>`;
-};
-
-const addCommas = intNum => {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-};

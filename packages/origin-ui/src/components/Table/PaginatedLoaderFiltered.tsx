@@ -1,4 +1,3 @@
-import { ReactText } from 'react';
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import {
     PaginatedLoader,
@@ -46,15 +45,15 @@ function getIndividualPropertyFilterValue(record: any, property: string) {
 }
 
 const FILTER_PROPERTY_PROCESSING_FUNCTIONS = {
-    [FILTER_SPECIAL_TYPES.COMBINE]: function(record: any, ...properties: string[]) {
+    [FILTER_SPECIAL_TYPES.COMBINE](record: any, ...properties: string[]) {
         return properties
             .map(property => getIndividualPropertyFilterValue(record, property))
             .join('');
     },
-    [FILTER_SPECIAL_TYPES.DATE_YEAR]: function(record: any, property: string) {
+    [FILTER_SPECIAL_TYPES.DATE_YEAR](record: any, property: string) {
         return moment.unix(parseInt(getIndividualPropertyFilterValue(record, property), 10)).year();
     },
-    [FILTER_SPECIAL_TYPES.DIVIDE]: function(record: any, ...properties: string[]) {
+    [FILTER_SPECIAL_TYPES.DIVIDE](record: any, ...properties: string[]) {
         return properties
             .map(property => getIndividualPropertyFilterValue(record, property))
             .reduce((a, b, index) => (index === 0 ? a : a / b));

@@ -12,7 +12,6 @@
     "build": "npm run build-ts",
     "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
     "deploy-empty": "npm run build-ts && node dist/js/deployEmpty",
-    "lint": "./node_modules/.bin/tslint --fix 'src/**/*{.ts,.tsx}'",
     "start": "npm run build-ts && node dist/js/src/test",
     "start-all": "npx concurrently -n eth,backend,deploy \"npm run start-ganache\" \"npm run start-test-backend\" \"npm run start\"",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
@@ -40,15 +39,7 @@
   "devDependencies": {
     "@types/node": "9.6.48",
     "@types/web3": "1.0.14",
-    "ganache-cli": "6.6.0",
-    "lint-staged": "8.1.7"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "tslint --fix",
-      "prettier --write --config ./.prettierrc --config-precedence file-override",
-      "git add"
-    ]
+    "ganache-cli": "6.6.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts"
 }

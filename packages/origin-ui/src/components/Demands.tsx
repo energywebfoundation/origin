@@ -42,10 +42,7 @@ class DemandsClass extends React.Component<Props> {
                     <ul className="NavMenu nav"></ul>
                 </div>
 
-                <PageContent
-                    menu={DemandsMenu}
-                    redirectPath={getDemandsLink(this.props.baseURL)}
-                />
+                <PageContent menu={DemandsMenu} redirectPath={getDemandsLink(this.props.baseURL)} />
             </div>
         );
     }

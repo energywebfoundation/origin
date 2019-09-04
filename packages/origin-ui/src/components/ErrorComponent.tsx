@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import './ErrorComponent.scss';
 import { ErrorOutline } from '@material-ui/icons';
 
-interface Props {
+interface IProps {
     message: string;
 }
 
-export class ErrorComponent extends Component<Props> {
+export class ErrorComponent extends Component<IProps> {
     render() {
         return (
             <div className="Error">

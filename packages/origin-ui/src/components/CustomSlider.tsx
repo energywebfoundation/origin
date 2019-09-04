@@ -5,7 +5,11 @@ import { CUSTOM_SLIDER_STYLE } from '../styles/styleConfig';
 
 export const CustomSlider = withStyles(CUSTOM_SLIDER_STYLE)(Slider);
 
-export function CustomSliderThumbComponent(props) {
+interface IOwnProps {
+    children: React.ReactNode;
+}
+
+export function CustomSliderThumbComponent(props: IOwnProps) {
     return (
         <span {...props}>
             {props.children}

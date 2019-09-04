@@ -39,10 +39,8 @@ export class AdvancedTable extends React.Component<IProps, IState> {
             if (!selectedIndexes.includes(index)) {
                 selectedIndexes = [...selectedIndexes, index];
             }
-        } else {
-            if (selectedIndexes.includes(index)) {
-                selectedIndexes = selectedIndexes.filter(selectedIndex => selectedIndex !== index);
-            }
+        } else if (selectedIndexes.includes(index)) {
+            selectedIndexes = selectedIndexes.filter(selectedIndex => selectedIndex !== index);
         }
 
         this.setState({

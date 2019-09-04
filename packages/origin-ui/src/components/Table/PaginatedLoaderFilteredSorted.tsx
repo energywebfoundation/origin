@@ -61,7 +61,7 @@ export abstract class PaginatedLoaderFilteredSorted<
 
                     return 0;
                 })
-                .reduce((a, b) => (a ? a : b), 0);
+                .reduce((previous, next) => previous || next, 0);
         });
     }
 

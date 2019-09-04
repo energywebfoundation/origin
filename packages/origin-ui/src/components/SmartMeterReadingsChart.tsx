@@ -60,7 +60,7 @@ export class SmartMeterReadingsChart extends React.Component<
                             const tooltipValue =
                                 data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-                            return parseInt(tooltipValue).toLocaleString();
+                            return parseInt(tooltipValue, 10).toLocaleString();
                         }
                     }
                 }
@@ -86,7 +86,7 @@ export class SmartMeterReadingsChart extends React.Component<
         this.setState({ selectedTimeFrame: timeframe });
     }
 
-    changeSelectedTimeFrame(increment: boolean = true) {
+    changeSelectedTimeFrame(increment = true) {
         const {
             selectedTimeFrame: { timeframe, endDate }
         } = this.state;
@@ -240,7 +240,7 @@ export class SmartMeterReadingsChart extends React.Component<
             );
         });
 
-        graphOptions['title'] = {
+        (graphOptions as any).title = {
             display: true,
             text: this.currentRangeInfo
         };
