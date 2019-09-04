@@ -38,7 +38,7 @@
         "test:contracts": "lerna run --scope @energyweb/asset-registry --stream test-contracts && lerna run --scope @energyweb/origin --stream test-contracts && lerna run --scope @energyweb/user-registry --stream test-contracts && lerna run --scope @energyweb/market --stream test-contracts",
         "test:matcher": "lerna run test --scope @energyweb/market-matcher --stream",
         "test:user-registry": "lerna run test --scope @energyweb/user-registry --stream",
-        "test:event-listener": "lerna run test --scope @energyweb/event-listener --stream"
+        "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream"
     },
     "workspaces": [
         "packages/*"
