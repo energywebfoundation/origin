@@ -61,16 +61,16 @@ const parseAddress = (country, address) => {
             zip,
             region
         };
-    } else {
-        console.log(`country ${country} not implemented`);
-
-        return {
-            street: '',
-            city: '',
-            zip: '',
-            region: ''
-        };
     }
+
+    console.log(`country ${country} not implemented`);
+
+    return {
+        street: '',
+        city: '',
+        zip: '',
+        region: ''
+    };
 };
 
 const processAssets = async parsedContent => {

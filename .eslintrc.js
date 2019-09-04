@@ -23,6 +23,17 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/interface-name-prefix": ["error", {
+            "prefixWithI": "always"
+        }],
+        "no-await-in-loop": "off",
+        "no-plusplus": "off",
+        "no-console": "off",
+        "no-continue": "off",
+        "import/prefer-default-export": "off",
+        "no-restricted-syntax": "off",
+        "no-constant-condition": "off"
     },
     "settings": {
         "import/resolver": {

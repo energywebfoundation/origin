@@ -1,5 +1,7 @@
-import { ProducingAsset } from '@energyweb/asset-registry';
-import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
+import {
+    createBlockchainProperties as assetCreateBlockchainProperties,
+    ProducingAsset
+} from '@energyweb/asset-registry';
 import { Configuration } from '@energyweb/utils-general';
 import axios from 'axios';
 import { Moment } from 'moment';
@@ -61,6 +63,7 @@ async function getProducingAssetSmartMeterRead(assetId: string) {
 
     const asset = await new ProducingAsset.Entity(assetId, conf).sync();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return parseInt((asset.lastSmartMeterReadWh as any) as string, 10);
 }
 
@@ -91,7 +94,7 @@ async function saveProducingAssetSmartMeterRead(
             `Producing asset ${assetId} smart meter reading saved: ${meterReading}`
         );
     } catch (e) {
-        conf.logger.error('Could not save smart meter reading for producing asset\n' + e);
+        conf.logger.error(`Could not save smart meter reading for producing asset\n${e}`);
     }
 
     console.log('-----------------------------------------------------------\n');
@@ -102,11 +105,9 @@ async function getEnergyMeasurements(
     startTime: Moment,
     endTime: Moment
 ): Promise<IEnergyMeasurement[]> {
-    const url =
-        ENERGY_API_BASE_URL +
-        `/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
-            startTime.format()
-        )}&timeEnd=${encodeURIComponent(endTime.format())}`;
+    const url = `${ENERGY_API_BASE_URL}/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
+        startTime.format()
+    )}&timeEnd=${encodeURIComponent(endTime.format())}`;
 
     console.log(`GET ${url}`);
 

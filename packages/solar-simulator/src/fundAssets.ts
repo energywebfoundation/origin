@@ -24,6 +24,7 @@ if (!hasCorrectPrivateKey) {
     process.exit(1);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const processAssets = async (assets: any[]) => {
     const fundingAccount = web3.eth.accounts.privateKeyToAccount(program.fundingAccount);
     const value = web3.utils.toWei(program.value);
