@@ -1,0 +1,70 @@
+{
+    "name": "@energyweb/event-listener",
+    "description": "",
+    "license": "GPLv3",
+    "author": "",
+    "homepage": "https://github.com/energywebfoundation/ewf-monorepo/packages/event-listener#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/ewf-monorepo.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/ewf-monorepo/issues"
+    },
+    "version": "1.1.0",
+    "main": "dist/js/src/index.js",
+    "scripts": {
+        "start": "npm run build && node dist/js/src/index.js",
+        "build": "shx rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+        "lint": "tslint 'src/**/*{.ts,.tsx}'",
+        "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "prepare": "npm run build",
+        "test": "rm -rf db.json && npm run build && mocha dist/js/test/ --timeout 60000",
+        "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
+        "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
+        "clean": "rm -rf dist"
+    },
+    "types": "dist/js/src/exports.d.ts",
+    "dependencies": {
+        "@energyweb/asset-registry": "1.1.0",
+        "@energyweb/user-registry": "1.1.0",
+        "@energyweb/market": "1.1.0",
+        "@energyweb/origin": "1.1.0",
+        "@energyweb/utils-general": "1.1.0",
+        "@energyweb/utils-testbackend": "1.1.0",
+        "body-parser": "1.19.0",
+        "cors": "2.8.5",
+        "express": "4.16.4",
+        "fs-extra": "8.0.1",
+        "js-beautify": "1.10.0",
+        "mandrill-api": "1.0.45",
+        "nodemailer": "6.3.0",
+        "web3": "1.0.0-beta.37"
+    },
+    "devDependencies": {
+        "@types/web3": "1.0.14",
+        "axios": "0.19.0",
+        "dotenv": "8.0.0",
+        "ganache-cli": "6.6.0",
+        "lint-staged": "8.1.7",
+        "mocha": "6.2.0",
+        "shx": "0.3.2",
+        "source-map-support": "0.5.13",
+        "winston": "3.2.1"
+    },
+    "lint-staged": {
+        "*.{ts,tsx}": [
+            "tslint --fix",
+            "prettier --write --config ./.prettierrc --config-precedence file-override",
+            "git add"
+        ]
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "files": [
+        "dist/js/src"
+    ]
+}

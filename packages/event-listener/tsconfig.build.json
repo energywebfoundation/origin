@@ -1,0 +1,24 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "./dist/js",
+        "types": ["mocha"]
+    },
+    "include": ["./src/**/*", "./test/**/*"],
+    "references": [
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../market/tsconfig.build.json"
+        },
+        {
+            "path": "../origin/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-testbackend/tsconfig.build.json"
+        }
+    ]
+}
