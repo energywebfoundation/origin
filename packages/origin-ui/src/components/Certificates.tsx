@@ -52,20 +52,11 @@ class CertificatesClass extends React.Component<Props> {
             demand = this.props.demands.find((d: Demand.Entity) => d.id === demandId.toString());
         }
 
-        return (
-            <CertificateTable
-                selectedState={key}
-                demand={demand}
-            />
-        );
+        return <CertificateTable selectedState={key} demand={demand} />;
     }
 
     CertificateDetailView(id: number) {
-        return (
-            <CertificateDetailView
-                id={id}
-            />
-        );
+        return <CertificateDetailView id={id} />;
     }
 
     InboxCertificates() {
@@ -121,9 +112,7 @@ class CertificatesClass extends React.Component<Props> {
             {
                 key: 'approved',
                 label: 'Approved',
-                component: () => <CertificationRequestsTable
-                    approvedOnly={true}
-                />,
+                component: () => <CertificationRequestsTable approvedOnly={true} />,
                 show: isIssuer
             },
             {
@@ -146,13 +135,13 @@ class CertificatesClass extends React.Component<Props> {
                     <ul className="NavMenu nav">
                         {CertificatesMenu.map(menu => {
                             if (menu.show) {
+                                const link = `${getCertificatesLink(this.props.baseURL)}/${
+                                    menu.key
+                                }`;
+
                                 return (
                                     <li key={menu.key}>
-                                        <NavLink
-                                            to={`${getCertificatesLink(this.props.baseURL)}/${menu.key}`}
-                                        >
-                                            {menu.label}
-                                        </NavLink>
+                                        <NavLink to={link}>{menu.label}</NavLink>
                                     </li>
                                 );
                             }

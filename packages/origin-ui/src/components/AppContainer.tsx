@@ -87,17 +87,19 @@ class AppContainerClass extends React.Component<Props> {
     }
 }
 
-export const AppContainer = withRouter(connect(
-    (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state),
-        error: getError(state),
-        loading: getLoading(state)
-    }),
-    dispatch =>
-        bindActionCreators(
-            {
-                setOriginContractLookupAddress
-            },
-            dispatch
-        )
-)(AppContainerClass));
+export const AppContainer = withRouter(
+    connect(
+        (state: IStoreState): IStateProps => ({
+            baseURL: getBaseURL(state),
+            error: getError(state),
+            loading: getLoading(state)
+        }),
+        dispatch =>
+            bindActionCreators(
+                {
+                    setOriginContractLookupAddress
+                },
+                dispatch
+            )
+    )(AppContainerClass)
+);

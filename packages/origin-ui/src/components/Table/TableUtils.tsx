@@ -20,6 +20,7 @@ import { ITableHeaderData } from './Table';
 const getKey = lbl => {
     const trimLabel = lbl
         .replace(/ \(.*\)/g, '')
+        // eslint-disable-next-line no-useless-escape
         .replace(/\<.*\>/g, '')
         .replace(/'/g, '');
     const sp = trimLabel.split(' ').map(e => (e.indexOf('(') === -1 ? e.toLowerCase() : ''));

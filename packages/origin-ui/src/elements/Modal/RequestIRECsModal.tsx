@@ -48,7 +48,7 @@ export class RequestIRECsModal extends React.Component<
         };
     }
 
-    componentWillReceiveProps(newProps: IRequestIRECsModalProps) {
+    UNSAFE_componentWillReceiveProps(newProps: IRequestIRECsModalProps) {
         this.setState({
             show: newProps.showModal
         });

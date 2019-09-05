@@ -25,9 +25,13 @@ import './DetailView.scss';
 import { Configuration } from '@energyweb/utils-general';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCertificates, getConfiguration, getProducingAssets } from '../features/selectors';
+import {
+    getBaseURL,
+    getCertificates,
+    getConfiguration,
+    getProducingAssets
+} from '../features/selectors';
 import { getProducingAssetDetailLink, getCertificateDetailLink } from '../utils/routing';
-
 
 interface IOwnProps {
     id: number;
@@ -42,20 +46,20 @@ interface IStateProps {
 
 type Props = IOwnProps & IStateProps;
 
-interface DetailViewState {
+interface IDetailViewState {
     newId: number;
     owner: User.Entity;
-    events: EnrichedEvent[];
+    events: IEnrichedEvent[];
 }
 
-export interface EnrichedEvent {
+export interface IEnrichedEvent {
     txHash: string;
     label: string;
     description: string;
     timestamp: number;
 }
 
-class CertificateDetailViewClass extends React.Component<Props, DetailViewState> {
+class CertificateDetailViewClass extends React.Component<Props, IDetailViewState> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -74,7 +78,7 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
         this.init(this.props);
     }
 
-    componentWillReceiveProps(newProps: Props) {
+    UNSAFE_componentWillReceiveProps(newProps: Props) {
         this.init(newProps);
     }
 
@@ -94,17 +98,16 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
     async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
         this.setState(
             {
-                owner: await new User.Entity(selectedCertificate.owner, props.configuration as any).sync()
+                owner: await new User.Entity(
+                    selectedCertificate.owner,
+                    props.configuration as any
+                ).sync()
             },
             cb
         );
     }
 
     async enrichEvent(props: Props, selectedCertificate: Certificate.Entity) {
-        const asset = this.props.producingAssets.find(
-            (p: ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
-        );
-
         const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
             async (event: any) => {
                 let label;
@@ -116,10 +119,6 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
                         description = 'Logging by Asset #' + event.returnValues._assetId;
                         break;
                     case 'LogCreatedCertificate':
-                        const organization = (await new User.Entity(
-                            event.returnValues.owner,
-                            props.configuration as any
-                        ).sync()).organization;
                         label = 'Certificate Created';
                         description = 'Certificate created by asset ' + selectedCertificate.assetId;
                         break;
@@ -190,7 +189,7 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
         let data;
         let events = [];
         if (selectedCertificate) {
-            events = this.state.events.reverse().map((event: EnrichedEvent) => (
+            events = this.state.events.reverse().map((event: IEnrichedEvent) => (
                 <p key={event.txHash}>
                     <span className="timestamp text-muted">
                         {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
@@ -321,9 +320,11 @@ class CertificateDetailViewClass extends React.Component<Props, DetailViewState>
     }
 }
 
-export const CertificateDetailView = connect((state: IStoreState): IStateProps => ({
-    baseURL: getBaseURL(state),
-    certificates: getCertificates(state),
-    configuration: getConfiguration(state),
-    producingAssets: getProducingAssets(state)
-}))(CertificateDetailViewClass);
+export const CertificateDetailView = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state),
+        certificates: getCertificates(state),
+        configuration: getConfiguration(state),
+        producingAssets: getProducingAssets(state)
+    })
+)(CertificateDetailViewClass);

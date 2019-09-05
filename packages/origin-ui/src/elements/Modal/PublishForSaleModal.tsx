@@ -75,7 +75,7 @@ class PublishForSaleModal extends React.Component<
         };
     }
 
-    componentWillReceiveProps(newProps: IPublishForSaleModalProps) {
+    UNSAFE_componentWillReceiveProps(newProps: IPublishForSaleModalProps) {
         this.setState({
             show: newProps.showModal
         });

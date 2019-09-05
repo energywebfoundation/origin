@@ -23,12 +23,12 @@ interface IStateProps {
 
 type Props = IOwnProps & IStateProps;
 
-interface State {
+interface IState {
     assetHighlighted: Asset.Entity;
     owner: User.Entity;
 }
 
-class AssetMapClass extends React.Component<Props, State> {
+class AssetMapClass extends React.Component<Props, IState> {
     map: any = null;
 
     constructor(props) {
@@ -43,7 +43,8 @@ class AssetMapClass extends React.Component<Props, State> {
     async showWindowForAsset(asset: Asset.Entity) {
         this.setState({
             assetHighlighted: asset,
-            owner: await new User.Entity(asset.owner.address, this.props.configuration as any).sync()
+            owner: await new User.Entity(asset.owner.address, this.props
+                .configuration as any).sync()
         });
     }
 

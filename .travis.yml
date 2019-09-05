@@ -16,5 +16,6 @@ install:
     - yarn
     - yarn build
     - yarn lint:simulator
+    - yarn lint:ui
 
 script: yarn test

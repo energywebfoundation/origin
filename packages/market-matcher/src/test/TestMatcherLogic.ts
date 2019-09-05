@@ -11,7 +11,6 @@ import {
     findMatchingSuppliesForDemand
 } from '../matcher/MatcherLogic';
 
-// tslint:disable-next-line: no-big-function
 describe('Test Matcher Logic', async () => {
     const mockedConfiguration = mock<Configuration.Entity>();
     const conf: Configuration.Entity = instance(mockedConfiguration);

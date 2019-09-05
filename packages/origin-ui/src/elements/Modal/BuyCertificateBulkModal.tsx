@@ -38,7 +38,7 @@ export class BuyCertificateBulkModal extends React.Component<
         };
     }
 
-    componentWillReceiveProps(newProps: IBuyCertificateBulkModalProps) {
+    UNSAFE_componentWillReceiveProps(newProps: IBuyCertificateBulkModalProps) {
         this.setState({
             show: newProps.showModal
         });

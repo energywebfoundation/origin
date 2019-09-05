@@ -23,7 +23,6 @@ import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getBaseURL } from '../features/selectors';
 
-
 interface IStateProps {
     baseURL: string;
 }
@@ -56,7 +55,7 @@ class AdminClass extends React.Component<IStateProps> {
                     <ul className="NavMenu nav">
                         {AdminMenu.map(menu => {
                             return (
-                                <li>
+                                <li key={menu.key}>
                                     <NavLink
                                         exact={true}
                                         to={`${getAdminLink(baseURL)}/${menu.key}`}
@@ -89,7 +88,9 @@ class AdminClass extends React.Component<IStateProps> {
                     exact={true}
                     path={getAdminLink(baseURL)}
                     render={() => (
-                        <Redirect to={{ pathname: `${getAdminLink(baseURL)}/${AdminMenu[0].key}` }} />
+                        <Redirect
+                            to={{ pathname: `${getAdminLink(baseURL)}/${AdminMenu[0].key}` }}
+                        />
                     )}
                 />
             </div>

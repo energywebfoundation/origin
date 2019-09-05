@@ -17,7 +17,13 @@
 import * as React from 'react';
 import { Table, ITableAdminHeaderData } from './Table/Table';
 import { User } from '@energyweb/user-registry';
-import { AssetType, TimeFrame, Compliance, Currency, Configuration } from '@energyweb/utils-general';
+import {
+    AssetType,
+    TimeFrame,
+    Compliance,
+    Currency,
+    Configuration
+} from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand } from '@energyweb/market';
 import { showNotification, NotificationType } from '../utils/notifications';
@@ -69,7 +75,7 @@ class OnboardDemandClass extends React.Component<IStateProps> {
             transformedInput.targetWhPerPeriod = parseInt(transformedInput.targetWhPerPeriod, 10);
         }
 
-        transformedInput.targetWhPerPeriod = transformedInput.targetWhPerPeriod * 1000;
+        transformedInput.targetWhPerPeriod *= 1000;
 
         if (typeof transformedInput.startTime !== 'undefined') {
             transformedInput.startTime = (transformedInput.startTime * 1000).toString();

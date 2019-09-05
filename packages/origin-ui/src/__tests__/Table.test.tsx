@@ -15,7 +15,7 @@ it('correctly renders Table component', async () => {
     const HEADER_DEFINITION = [`Header1`, `Header2`];
 
     const generateData = (columnsAmount: number, rowsAmount: number): string[][] => {
-        let dataDefinition = [];
+        const dataDefinition = [];
 
         for (let i = 0; i < rowsAmount; i++) {
             const columnsDefinition = [];

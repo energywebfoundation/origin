@@ -18,7 +18,7 @@ interface IValidation {
     kwh: boolean;
 }
 
-interface BuyCertificateModalProps {
+interface IBuyCertificateModalProps {
     conf: Configuration.Entity;
     producingAsset: ProducingAsset.Entity;
     certificate: Certificate.Entity;
@@ -26,15 +26,15 @@ interface BuyCertificateModalProps {
     callback: () => void;
 }
 
-interface BuyCertificateModalState {
+interface IBuyCertificateModalState {
     show: boolean;
     kwh: number;
     validation: IValidation;
 }
 
 export class BuyCertificateModal extends React.Component<
-    BuyCertificateModalProps,
-    BuyCertificateModalState
+    IBuyCertificateModalProps,
+    IBuyCertificateModalState
 > {
     constructor(props, context) {
         super(props, context);
@@ -53,13 +53,13 @@ export class BuyCertificateModal extends React.Component<
         };
     }
 
-    componentWillReceiveProps(newProps: BuyCertificateModalProps) {
+    UNSAFE_componentWillReceiveProps(newProps: IBuyCertificateModalProps) {
         this.setState({
             show: newProps.showModal
         });
     }
 
-    async componentDidUpdate(prevProps: BuyCertificateModalProps) {
+    async componentDidUpdate(prevProps: IBuyCertificateModalProps) {
         if (this.props.certificate && this.props.certificate !== prevProps.certificate) {
             this.setState({
                 kwh: this.props.certificate.powerInW / 1000,

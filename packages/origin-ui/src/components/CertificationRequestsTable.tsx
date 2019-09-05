@@ -33,10 +33,7 @@ enum OPERATIONS {
     APPROVE = 'Approve'
 }
 
-class CertificationRequestsTableClass extends PaginatedLoader<
-    Props,
-    IPaginatedLoaderState
-> {
+class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedLoaderState> {
     constructor(props: Props) {
         super(props);
 
