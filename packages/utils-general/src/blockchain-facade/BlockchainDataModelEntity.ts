@@ -36,6 +36,10 @@ export abstract class Entity {
     proofs: PreciseProofs.Proof[];
 
     constructor(id: string, configuration: Configuration.Entity) {
+        if (typeof id !== 'string' && id !== null) {
+            throw Error('An ID of an Entity should always be of type string.');
+        }
+
         this.id = id;
         this.configuration = configuration;
         this.proofs = [];
