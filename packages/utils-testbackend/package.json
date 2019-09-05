@@ -7,7 +7,7 @@
     "start": "node dist/js/src/index.js",
     "build": "tsc -b tsconfig.build.json --verbose --pretty",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test": "rm -rf db.json && yarn build && mocha dist/js/test/ --timeout 60000",
+    "test": "rm -rf db.json && mocha dist/js/test/ --timeout 60000",
     "clean": "rm -rf dist"
   },
   "repository": {

@@ -28,4 +28,12 @@ before_install:
 install:
     - yarn
 
-script: yarn build && yarn lint && yarn test
+# script: yarn build && yarn lint && yarn test
+
+jobs:
+  include:	
+    - stage: "Tests"	
+      name: "User & Asset Registry Tests"	
+      script: yarn build:user-asset-registry && yarn test:user-registry && yarn test:asset-registry	
+    - name: "Linting + Other Tests"    	
+      script: yarn build && yarn lint && yarn test:origin && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:event-listener

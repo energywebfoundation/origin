@@ -34,7 +34,7 @@
     "start-test-backend": "rm -rf db.json && node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
+    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
     "build:static": "yarn compile"
   },
   "types": "dist/js/src/index.d.ts",
@@ -60,8 +60,8 @@
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
-  "publishConfig" : {
-    "access" : "public",
+  "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   }
 }
