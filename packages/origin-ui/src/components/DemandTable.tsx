@@ -18,7 +18,7 @@ import * as React from 'react';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
-import { Configuration, TimeFrame, Compliance, AssetType, Currency, IRECAssetService } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Compliance, Currency, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
@@ -193,7 +193,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                         moment(demand.offChainProperties.endTime, 'x').format('DD MMM YY'),
                     this.getCountryRegionText(demand),
                     typeof demand.offChainProperties.assettype !== 'undefined'
-                        ? this.IRECAssetService.decode(demand.offChainProperties.assettype)[0]
+                        ? demand.offChainProperties.assettype[0] //TODO: handle multiple asset types
                         : NO_VALUE_TEXT,
                     typeof demand.offChainProperties.registryCompliance !== 'undefined'
                         ? Compliance[demand.offChainProperties.registryCompliance]

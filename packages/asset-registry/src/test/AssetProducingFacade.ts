@@ -7,7 +7,7 @@ import {
     UserContractLookup,
     UserLogic
 } from '@energyweb/user-registry';
-import { AssetType, Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
 import moment from 'moment';
@@ -141,7 +141,7 @@ describe('AssetProducing Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: AssetType.Wind,
+            assetType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
@@ -198,7 +198,7 @@ describe('AssetProducing Facade', () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: AssetType.Wind,
+            assetType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
@@ -210,7 +210,7 @@ describe('AssetProducing Facade', () => {
         try {
             await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         } catch (ex) {
-            assert.include(ex.message, 'smart meter does already exist');
+            assert.include(ex.message, 'smartmeter does already exist');
         }
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
@@ -253,7 +253,7 @@ describe('AssetProducing Facade', () => {
                 houseNumber: '42',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
-                assetType: AssetType.Wind,
+                assetType: 'Wind',
                 complianceRegistry: Compliance.EEC,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',

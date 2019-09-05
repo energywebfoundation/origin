@@ -1,50 +1,86 @@
-import { IRECAssetService, AssetType } from '../src/blockchain-facade/AssetTypeService';
+import { IRECAssetService } from '../src/blockchain-facade/AssetTypeService';
 import { assert } from 'chai';
 
 describe('AssetTypeService tests', () => {
-    it('should return asset type structure', () => {
-        const assetTypeService = new IRECAssetService();
+    const assetTypeService = new IRECAssetService();
 
+    it('should return asset type structure', () => {
         assert.isNotNull(assetTypeService.AssetTypes);
     });
 
-    it('should encode multiple flags', () => {
-        const assetTypeService = new IRECAssetService();
+    it('should encode asset types', () => {
+        const encoded = assetTypeService.encode([
+            ['Solar', 'Concentration'],
+            ['Wind', 'Offshore'],
+            ['Marine', 'Tidal', 'Inshore']
+        ]);
 
-        const encoded = assetTypeService.encode(['Solar', 'Concentration']);
+        const expectedResult = ['Solar;Concentration', 'Wind;Offshore', 'Marine;Tidal;Inshore'];
 
-        const expectedResult = AssetType.Solar | AssetType.Concentration;
-
-        assert.equal(encoded, expectedResult);
-        assert.isTrue((encoded & AssetType.Solar) === AssetType.Solar);
-        assert.isFalse((encoded & AssetType.Wind) === AssetType.Wind);
+        assert.deepEqual(encoded, expectedResult);
     });
 
-    it('should recognize encoded flags', () => {
-        const assetTypeService = new IRECAssetService();
+    it('should decode asset types', () => {
+        const decoded = assetTypeService.decode(['Solar;Concentration', 'Wind;Offshore', 'Marine;Tidal;Inshore']);
 
-        const encoded = AssetType.Solar | AssetType.Concentration | AssetType.Thermal;
+        const expectedResult = [
+            ['Solar', 'Concentration'],
+            ['Wind', 'Offshore'],
+            ['Marine', 'Tidal', 'Inshore']
+        ];
 
-        const hasSolar = assetTypeService.includes(encoded, AssetType.Solar);
-        const hasPhotoVoltaic = assetTypeService.includes(encoded, AssetType.Photovoltaic);
-
-        assert.isTrue(hasSolar);
-        assert.isFalse(hasPhotoVoltaic);
+        assert.deepEqual(decoded, expectedResult);
     });
 
-    it('should decode flags', () => {
-        const assetTypeService = new IRECAssetService();
+    it('should decode asset types', () => {
+        const decoded = assetTypeService.decode(['Solar;Concentration', 'Wind;Offshore', 'Marine;Tidal;Inshore']);
 
-        const encoded = AssetType.Solar | AssetType.Concentration | AssetType.Thermal;
+        const expectedResult = [
+            ['Solar', 'Concentration'],
+            ['Wind', 'Offshore'],
+            ['Marine', 'Tidal', 'Inshore']
+        ];
 
-        const decoded = assetTypeService.decode(encoded);
+        assert.deepEqual(decoded, expectedResult);
+    });
 
-        const hasSolar = decoded.includes('Solar');
-        const hasThermal = decoded.includes('Thermal');
-        const hasWind = decoded.includes('Wind');
+    it('should find demanded asset types when types matches', () => {
+        const demandAssetTypes = ['Solar;Concentration'];
+        const supplyAssetTypes = ['Solar;Concentration'];
 
-        assert.isTrue(hasSolar);
-        assert.isTrue(hasThermal);
-        assert.isFalse(hasWind);
+        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        assert.isTrue(res);
+    });
+
+    it('should find demanded asset types when current has one of matches', () => {
+        const demandAssetTypes = ['Solar;Concentration', 'Wind'];
+        const supplyAssetTypes = ['Solar;Concentration'];
+
+        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        assert.isTrue(res);
+    });
+
+    it('should not find demanded asset types when types matches', () => {
+        const demandAssetTypes = ['Solar;Concentration'];
+        const supplyAssetTypes = ['Wind;Onshore'];
+
+        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        assert.isFalse(res);
+    });
+
+    it('should find demanded asset types when demanded assets are less specific than current', () => {
+        const demandAssetTypes = ['Solar'];
+        const supplyAssetTypes = ['Solar;Photovoltaic;Roof mounted'];
+
+        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        assert.isTrue(res);
+    });
+
+    it('should not find demanded asset types when demanded assets are more specific than current', () => {
+        const demandAssetTypes = ['Marine;Tidal;Inshore'];
+        const supplyAssetTypes = ['Marine;Tidal'];
+
+        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        assert.isFalse(res);
     });
 });

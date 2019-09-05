@@ -8,7 +8,6 @@ import { ProducingAssetTable } from '../components/ProducingAssetTable';
 import { producingAssetCreatedOrUpdated } from '../features/actions';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { dataTestSelector } from '../utils/Helper';
-import { AssetType } from '@energyweb/utils-general';
 
 const flushPromises = () => new Promise(setImmediate);
 
@@ -51,7 +50,7 @@ describe('ProducingAssetTable', () => {
                 },
                 offChainProperties: ({
                     facilityName: 'Wuthering Heights facility',
-                    assetType: AssetType.Solar,
+                    assetType: 'Solar',
                     city: 'Sopot',
                     country: 'Poland',
                     capacityWh: 9876543
@@ -72,7 +71,7 @@ describe('ProducingAssetTable', () => {
                 },
                 offChainProperties: ({
                     facilityName: 'Biomass Energy Facility',
-                    assetType: AssetType['Agricultural gas'],
+                    assetType: 'Gaseous;Agricultural gas',
                     city: 'Amsterdam',
                     country: 'Netherlands',
                     capacityWh: 736123
@@ -109,7 +108,7 @@ describe('ProducingAssetTable', () => {
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
-            'BiomassGas',
+            'Gaseous;Agricultural gas',
             '736.123',
             '0.312',
             ''
@@ -138,7 +137,7 @@ describe('ProducingAssetTable', () => {
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
-            'BiomassGas',
+            'Gaseous;Agricultural gas',
             '736.123',
             '0.312',
             ''

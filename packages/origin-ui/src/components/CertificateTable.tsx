@@ -19,7 +19,6 @@ import { MatcherLogic } from '@energyweb/market-matcher';
 import { Certificate, TradableEntity } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import {
-    AssetType,
     Compliance,
     Configuration,
     Currency,
@@ -139,9 +138,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
         label: 'Asset Type',
         sortProperties: ['assetTypeLabel'],
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-            new IRECAssetService().decode(
                 enrichedData.producingAsset.offChainProperties.assetType
-            )[0]
     },
     {
         label: 'Commissioning Date',
@@ -188,9 +185,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
     }
 ];
 
-class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
-    private IRECAssetService = new IRECAssetService();
-    
+class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {  
     constructor(props: Props) {
         super(props);
 
@@ -360,7 +355,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel: this.IRECAssetService.decode(producingAsset.offChainProperties.assetType)[0],
+                assetTypeLabel: producingAsset.offChainProperties.assetType,
                 certificateOwner: await new User.Entity(certificate.owner, this.props
                     .configuration as any).sync(),
                 offChainSettlementOptions,
@@ -656,7 +651,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                         : a,
                 0
             ) / 1000;
-
+        
+        //TODO: implement new asset types
         const filters = [
             {
                 property: `${RECORD_INDICATOR}producingAsset.offChainProperties.assetType`,
@@ -666,26 +662,26 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     availableOptions: [
                         {
                             label: 'Solar',
-                            value: AssetType.Solar
+                            value: 'Solar'
                         },
                         {
                             label: 'Wind',
-                            value: AssetType.Wind
+                            value: 'Wind'
                         },
                         {
                             label: 'Agricultural gas',
-                            value: AssetType['Agricultural gas']
+                            value: 'Gaseous;Agricultural gas'
                         },
                         {
                             label: 'Hydro',
-                            value: AssetType['Run-of-river head installation']
+                            value: 'Hydro-electric Head;Run-of-river head installation'
                         }
                     ],
                     defaultOptions: [
-                        AssetType.Solar,
-                        AssetType.Wind,
-                        AssetType['Agricultural gas'],
-                        AssetType['Run-of-river head installation']
+                        'Solar',
+                        'Wind',
+                        'Gaseous;Agricultural gas',
+                        'Hydro-electric Head;Run-of-river head installation'
                     ]
                 }
             },

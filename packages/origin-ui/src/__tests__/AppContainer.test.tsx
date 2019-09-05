@@ -28,7 +28,7 @@ import Web3 from 'web3';
 
 import { migrateCertificateRegistryContracts, CertificateLogic } from '@energyweb/origin';
 import { migrateMarketRegistryContracts, MarketLogic } from '@energyweb/market';
-import { Configuration, AssetType, Compliance } from '@energyweb/utils-general';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';
 import { dataTestSelector } from '../utils/Helper';
@@ -228,7 +228,7 @@ const deployDemo = async () => {
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
-        assetType: AssetType.Wind,
+        assetType: 'Wind',
         complianceRegistry: Compliance.IREC,
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,

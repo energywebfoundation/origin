@@ -22,7 +22,6 @@ import {
     UserLogic
 } from '@energyweb/user-registry';
 import {
-    AssetType,
     Compliance,
     Configuration,
     Currency,
@@ -215,7 +214,7 @@ describe('Test StrategyBasedMatcher', async () => {
             consumingAsset: 0,
             locationCountry: 'string',
             locationRegion: 'string',
-            assettype: AssetType.Solar,
+            assettype: ['Solar'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
@@ -266,7 +265,7 @@ describe('Test StrategyBasedMatcher', async () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: AssetType.Wind,
+            assetType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: ''

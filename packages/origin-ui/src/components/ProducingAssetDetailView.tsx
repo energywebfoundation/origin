@@ -27,7 +27,7 @@ import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
-import { AssetType, Compliance, Configuration, IRECAssetService } from '@energyweb/utils-general';
+import { Compliance, Configuration, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { AssetMap } from './AssetMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
@@ -155,11 +155,11 @@ class ProducingAssetDetailViewClass extends React.Component<Props, State> {
                         label:
                             'Asset Type' +
                             getOffChainText('assetType', selectedAsset.offChainProperties),
-                        data: this.IRECAssetService.decode(selectedAsset.offChainProperties.assetType)[0],
-                        image:
-                            AssetType.Wind === selectedAsset.offChainProperties.assetType
+                        data: selectedAsset.offChainProperties.assetType,
+                        image: //TODO: handle more asset types
+                            'Wind' === selectedAsset.offChainProperties.assetType
                                 ? wind
-                                : AssetType.Solar ===
+                                : 'Solar' ===
                                   selectedAsset.offChainProperties.assetType
                                 ? solar
                                 : hydro,

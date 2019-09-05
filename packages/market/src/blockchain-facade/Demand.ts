@@ -25,7 +25,7 @@ export interface IDemandOffChainProperties {
     consumingAsset?: number;
     locationCountry?: string;
     locationRegion?: string;
-    assettype?: number;
+    assettype?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;

@@ -21,7 +21,6 @@ import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import {
-    AssetType,
     Compliance,
     Configuration,
     Currency,
@@ -142,8 +141,10 @@ export const marketDemo = async (demoFile?: string) => {
                     address: action.data.trader,
                     privateKey: action.data.traderPK
                 };
-
-                const assetTypeConfig = AssetType[action.data.assettype];
+                if (!Array.isArray(action.data.assettype)) {
+                    throw new Error("Demand assettype has to be string[]")
+                }
+                const assetTypeConfig = action.data.assettype;
                 const assetCompliance =
                     Compliance[action.data.registryCompliance as keyof typeof Compliance];
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];

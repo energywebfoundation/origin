@@ -402,7 +402,7 @@ describe('AssetProducingLogic', () => {
             });
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'saveSmartMeterRead: meter read too low');
+            assert.include(ex.message, 'saveSmartMeterRead: meterread too low');
         }
 
         assert.isTrue(failed);

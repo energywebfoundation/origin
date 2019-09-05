@@ -24,4 +24,4 @@ export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
 export { TimeFrame, Currency, Compliance } from './blockchain-facade/EnumExports';
 export { deploy } from './deployment/deploy';
-export { AssetType, IAssetService, IAssetTypeStructure as IAssetStructure, IRECAssetService } from './blockchain-facade/AssetTypeService';
+export { IAssetService, IAssetTypeStructure as IAssetStructure, IRECAssetService } from './blockchain-facade/AssetTypeService';

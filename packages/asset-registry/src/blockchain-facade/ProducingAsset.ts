@@ -28,7 +28,7 @@ export interface IOnChainProperties extends Asset.IOnChainProperties {
 }
 
 export interface IOffChainProperties extends Asset.IOffChainProperties {
-    assetType: number;
+    assetType: string;
     complianceRegistry: Compliance;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;

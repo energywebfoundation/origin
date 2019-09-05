@@ -235,7 +235,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
                 enrichedRecordData.organizationName,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                this.IRECAssetService.decode(asset.offChainProperties.assetType)[0], //TODO: handle multiple asset types
+                asset.offChainProperties.assetType,
                 asset.offChainProperties.capacityWh / 1000,
                 asset.lastSmartMeterReadWh / 1000
             ];

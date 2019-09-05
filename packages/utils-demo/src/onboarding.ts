@@ -17,7 +17,6 @@
 import * as Asset from '@energyweb/asset-registry';
 import * as GeneralLib from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
-import { AssetType } from '@energyweb/utils-general';
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -81,7 +80,7 @@ export const onboardDemo = async (
                 maxOwnerChanges: action.data.maxOwnerChanges
             };
 
-            const assetTypeConfig = AssetType[action.data.assetType];
+            const assetTypeConfig = action.data.assetType;
             const assetCompliance =
                 GeneralLib.Compliance[action.data.complianceRegistry as keyof typeof GeneralLib.Compliance];
 

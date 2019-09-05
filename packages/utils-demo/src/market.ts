@@ -20,7 +20,6 @@ import Web3 from 'web3';
 import { deployERC20TestToken, Erc20TestToken } from 'ew-erc-test-contracts';
 import {
     Configuration,
-    AssetType,
     TimeFrame,
     Compliance,
     Currency
@@ -175,7 +174,10 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.traderPK
                 };
 
-                const assetTypeConfig = AssetType[action.data.assettype];
+                if (!Array.isArray(action.data.assettype)) {
+                    throw new Error("Demand assettype has to be string[]")
+                }
+                const assetTypeConfig = action.data.assettype;
                 const assetCompliance =
                     Compliance[action.data.registryCompliance as keyof typeof Compliance];
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
