@@ -44,7 +44,7 @@ async function executeCommand(command, directory) {
 }
 
 async function generateSchemaIfNew(command, location) {
-    let { stdout: newSchema } = await executeCommand(command, ROOT_DIRECTORY);
+    const { stdout: newSchema } = await executeCommand(command, ROOT_DIRECTORY);
 
     const absoluteSchemaLocation = `${ROOT_DIRECTORY}${location}`;
 

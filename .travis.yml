@@ -21,6 +21,8 @@ cache:
         - packages/market/schemas
         - packages/market/build
         - packages/market/dist
+        - packages/market-matcher/schemas
+        - packages/market-matcher/dist
 
 before_install:
     - sh scripts/restore-original-timestamps.sh
@@ -28,12 +30,10 @@ before_install:
 install:
     - yarn
 
-# script: yarn build && yarn lint && yarn test
-
 jobs:
   include:	
     - stage: "Tests"	
-      name: "User & Asset Registry Tests"	
-      script: yarn build:user-asset-registry && yarn test:user-registry && yarn test:asset-registry	
-    - name: "Linting + Other Tests"    	
-      script: yarn build && yarn lint && yarn test:origin && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:event-listener
+      name: "User & Asset Registry & Origin Tests"	
+      script: yarn build:user-asset-registry && yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin
+    - name: "Linting + Market & UI & Matcher & Event Listener Tests"    	
+      script: yarn build && yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:event-listener

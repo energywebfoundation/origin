@@ -12,20 +12,20 @@ function relativePath(pathToAdd) {
 function getRootDirectory() {
     const PATHS_TO_TEST = [relativePath('../')];
 
-    for (const path of PATHS_TO_TEST) {
-        if (fs.existsSync(path)) {
-            return path;
+    for (const testPath of PATHS_TO_TEST) {
+        if (fs.existsSync(testPath)) {
+            return testPath;
         }
     }
 
-    throw `Can't find contracts directory`;
+    throw new Error(`Can't find contracts directory`);
 }
 
 const ROOT_DIRECTORY = getRootDirectory();
 
 async function executeCommand(command, directory) {
     const options = {
-        encoding: "UTF-8"
+        encoding: 'UTF-8'
     };
 
     if (directory) {
@@ -65,16 +65,20 @@ async function generateSchemaIfNew(command, location) {
 }
 
 async function run() {
-    console.log('USER-REGISTRY: Building schemas');
+    console.log('MARKET-MATCHER: Building schemas');
 
     await fs.ensureDir(`${ROOT_DIRECTORY}/schemas`);
 
     await generateSchemaIfNew(
-        'yarn --silent build-schema:UserPropertiesOffChain',
-        '/schemas/UserOffChainProperties.schema.json'
+        'yarn --silent generate-sim-flow-schema',
+        '/schemas/simulation-description.schema.json'
     );
 
-    console.log('USER-REGISTRY: Building schemas done');
+    await generateSchemaIfNew('yarn --silent generate-rule-schema', '/schemas/rule.schema.json');
+
+    await generateSchemaIfNew('yarn --silent generate-conf-schema', '/schemas/conf.schema.json');
+
+    console.log('MARKET-MATCHER: Building schemas done');
 }
 
 run();
