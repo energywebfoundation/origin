@@ -16,7 +16,7 @@
 
 import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
-import {  UserContractLookup, UserLogic } from '..';
+import { UserContractLookup, UserLogic } from '..';
 
 export const createBlockchainProperties = async (
     web3: Web3,

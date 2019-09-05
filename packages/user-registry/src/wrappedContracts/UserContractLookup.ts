@@ -1,9 +1,10 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import UserContractLookupJSON from '../../build/contracts/UserContractLookup.json';
 
 export class UserContractLookup extends GeneralFunctions {
     web3: Web3;
+
     buildFile = UserContractLookupJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -20,7 +21,7 @@ export class UserContractLookup extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -37,10 +38,10 @@ export class UserContractLookup extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
+    async getAllEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -56,32 +57,32 @@ export class UserContractLookup extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
     }
 
-    async update(_userRegistry: string, txParams?: SpecialTx) {
+    async update(_userRegistry: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.update(_userRegistry);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async userRegistry(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.userRegistry().call(txParams);
+    async userRegistry(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.userRegistry().call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
+    async owner(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async init(_userRegistry: string, _db: string, txParams?: SpecialTx) {
+    async init(_userRegistry: string, _db: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.init(_userRegistry, _db);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 }

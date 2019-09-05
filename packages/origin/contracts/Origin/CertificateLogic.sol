@@ -243,7 +243,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
             "You are not the owner of the certificate"
         );
 
-        (uint childOneId, uint childTwoId) = splitCertificateInternal(_certificateId, _power);
+        (uint childOneId, ) = splitCertificateInternal(_certificateId, _power);
 
         TradableEntityDBInterface(address(db)).setOnChainDirectPurchasePrice(childOneId, _price);
         TradableEntityDBInterface(address(db)).setTradableToken(childOneId, _tokenAddress);

@@ -21,8 +21,8 @@
     "test": "test"
   },
   "scripts": {
-    "build": "scripts/build.js",
-    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "build": "yarn compile && yarn build-ts",
+    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts",
