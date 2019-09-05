@@ -16,7 +16,12 @@
 
 import * as React from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
+import Toggle from 'react-toggle';
+import { DatePicker } from '@material-ui/pickers';
 import renderHTML from 'react-render-html';
+import { Moment } from 'moment';
+import { PeriodToSeconds } from '../DemandTable';
+import { TimeFrame } from '@energyweb/utils-general';
 import { Pagination } from './Pagination';
 import { ArrowDropUp, ArrowDropDown } from '@material-ui/icons';
 
@@ -25,11 +30,19 @@ import './Table.scss';
 import { ActionIcon } from '../icons/ActionIcon';
 import { ICustomFilter } from './FiltersHeader';
 import { deepEqual } from '../../utils/Helper';
+import {
+    TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    FilledInput,
+    MenuItem
+} from '@material-ui/core';
 
 export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
 export interface ITableProps {
-    header: ITableHeaderData[];
+    header: Array<ITableHeaderData | ITableAdminHeaderData>;
     data: any;
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
@@ -38,6 +51,7 @@ export interface ITableProps {
     actions?: any | boolean;
     actionWidth?: any;
     classNames?: string[];
+    type?: any;
     operations?: any[];
     operationClicked?: (key: string | number, id?: number) => void;
     onSelect?: TableOnSelectFunction;
@@ -63,7 +77,13 @@ export interface ITableAdminHeaderData {
 }
 
 interface IState {
+    inputs: any;
+    totalEnergy: any;
+    date: any;
     currentPage: number;
+
+    [x: string]: any;
+    [x: number]: any;
 }
 
 const addCommas = intNum => {
@@ -80,7 +100,42 @@ export class Table extends React.Component<ITableProps, IState> {
     constructor(props) {
         super(props);
 
+        const { header, type = 'data' } = props;
+
+        const toggles = {};
+        if (type === 'admin') {
+            for (let i = 0; i < header.length; i++) {
+                if (header[i].header) {
+                    continue;
+                }
+                const { data } = header[i];
+                for (let d = 0; d < data.length; d++) {
+                    const row = data[d];
+                    if (row.toggle.default) {
+                        toggles['toggle_' + row.key] = true;
+                    }
+                }
+            }
+        }
+
         this.state = {
+            ...toggles,
+            inputs: {
+                enabledProperties: [
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false
+                ]
+            },
+            totalEnergy: 0,
+            date: new Date(),
             currentPage: 1
         };
 
@@ -121,7 +176,7 @@ export class Table extends React.Component<ITableProps, IState> {
         }
 
         return ret;
-    }
+    };
 
     async loadPage(page: number) {
         await this.props.loadPage(page);
@@ -228,6 +283,7 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     render() {
+        const { state, props, handleToggle, handleDropdown, handleInput, handleDate } = this;
         const {
             header = [],
             footer = [],
@@ -235,13 +291,14 @@ export class Table extends React.Component<ITableProps, IState> {
             actions,
             actionWidth,
             classNames,
+            type = 'data',
             operations = [],
             operationClicked = () => null,
             currentSort,
             sortAscending
-        } = this.props;
+        } = props;
 
-        const totalTableColumnSum = this.calculateTotal(data, footer);
+        const totalTableColumnSum = type === 'data' ? this.calculateTotal(data, footer) : 0;
 
         const popoverFocus = (id: number) => (
             <Popover id="popover-trigger-focus">
@@ -261,52 +318,162 @@ export class Table extends React.Component<ITableProps, IState> {
 
         return (
             <div className="TableWrapper">
-                <table className={(classNames || []).join(' ')}>
-                    <thead>
-                        <tr>
-                            {this.props.onSelect && <th style={{ width: '30px' }} />}
-                            {header.map((item: ITableHeaderData) => {
-                                return (
-                                    <th style={item.style} key={item.key}>
-                                        {item.sortProperties ?
-                                            <div onClick={() => this.props.toggleSort(item.sortProperties)} className="Table_head_columnHeader-clickable">
-                                                {item.label}
-                                                {deepEqual(item.sortProperties, currentSort) ?
-                                                    (sortAscending ?
-                                                        <ArrowDropUp className="Table_head_columnHeader_sortIcon" /> :
-                                                        <ArrowDropDown className="Table_head_columnHeader_sortIcon" />)
-                                                    : ''
-                                                }
-                                            </div>
-                                            :
-                                            renderHTML(renderText(item.label))
-                                        }
-                                    </th>
-                                );
-                            })}
-                            {actions && (
-                                <th style={{ width: actionWidth || 72.89 }} className="Actions">
-                                    {renderHTML(renderText('Actions'))}
-                                </th>
-                            )}
-                        </tr>
-                    </thead>
-                    {footer.length > 0 &&
-                        <tfoot>
-                            <tr>
-                                {footer.map(item => {
-                                    return (
-                                        <td
-                                            colSpan={(item.colspan + (this.props.onSelect ? 1 : 0) || 1)}
-                                            className={`Total ${item.hide ? 'Hide' : 'Show'}`}
-                                            style={item.style || {}}
-                                            key={item.key}
+                {type === 'data' && (
+                    <>
+                        <table className={(classNames || []).join(' ')}>
+                            <thead>
+                                <tr>
+                                    {this.props.onSelect && <th style={{ width: '30px' }} />}
+                                    {header.map((item: ITableHeaderData) => {
+                                        return (
+                                            <th style={item.style} key={item.key}>
+                                                {item.sortProperties ? (
+                                                    <div
+                                                        onClick={() =>
+                                                            this.props.toggleSort(
+                                                                item.sortProperties
+                                                            )
+                                                        }
+                                                        className="Table_head_columnHeader-clickable"
+                                                    >
+                                                        {item.label}
+                                                        {deepEqual(
+                                                            item.sortProperties,
+                                                            currentSort
+                                                        ) ? (
+                                                            sortAscending ? (
+                                                                <ArrowDropUp className="Table_head_columnHeader_sortIcon" />
+                                                            ) : (
+                                                                <ArrowDropDown className="Table_head_columnHeader_sortIcon" />
+                                                            )
+                                                        ) : (
+                                                            ''
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    renderHTML(renderText(item.label))
+                                                )}
+                                            </th>
+                                        );
+                                    })}
+                                    {actions && (
+                                        <th
+                                            style={{ width: actionWidth || 72.89 }}
+                                            className="Actions"
                                         >
-                                            {renderHTML(renderText(item.label || totalTableColumnSum[item.key]))}
-                                        </td>
+                                            {renderHTML(renderText('Actions'))}
+                                        </th>
+                                    )}
+                                </tr>
+                            </thead>
+                            {footer.length > 0 && (
+                                <tfoot>
+                                    <tr>
+                                        {footer.map(item => {
+                                            return (
+                                                <td
+                                                    colSpan={
+                                                        item.colspan +
+                                                            (this.props.onSelect ? 1 : 0) || 1
+                                                    }
+                                                    className={`Total ${
+                                                        item.hide ? 'Hide' : 'Show'
+                                                    }`}
+                                                    style={item.style || {}}
+                                                    key={item.key}
+                                                >
+                                                    {renderHTML(
+                                                        renderText(
+                                                            item.label ||
+                                                                totalTableColumnSum[item.key]
+                                                        )
+                                                    )}
+                                                </td>
+                                            );
+                                        })}
+                                        {actions && <td className="Actions" />}
+                                    </tr>
+                                </tfoot>
+                            )}
+                            <tbody>
+                                {data.map((row, rowIndex) => {
+                                    return (
+                                        <tr key={row[0]}>
+                                            {this.props.onSelect && (
+                                                <td className="selectRow">
+                                                    <div className="custom-control custom-checkbox">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="custom-control-input"
+                                                            id={'selectbox' + row[0]}
+                                                            onChange={e =>
+                                                                this.props.onSelect(
+                                                                    rowIndex,
+                                                                    e.target.checked
+                                                                )
+                                                            }
+                                                        />
+                                                        <label
+                                                            className="custom-control-label"
+                                                            htmlFor={'selectbox' + row[0]}
+                                                        />
+                                                    </div>
+                                                </td>
+                                            )}
+                                            {header.map((item: ITableHeaderData, colIndex) => {
+                                                return (
+                                                    <td
+                                                        key={item.key}
+                                                        style={
+                                                            { ...item.style, ...item.styleBody } ||
+                                                            {}
+                                                        }
+                                                        className={`${
+                                                            item.styleBody.opacity ? 'Active' : ''
+                                                        }`}
+                                                    >
+                                                        {renderHTML(renderText(row[colIndex]))}
+                                                    </td>
+                                                );
+                                            })}
+                                            {actions && (
+                                                <td className="Actions">
+                                                    {operations.length > 0 && (
+                                                        <OverlayTrigger
+                                                            trigger="focus"
+                                                            placement="bottom"
+                                                            overlay={popoverFocus(row[0])}
+                                                        >
+                                                            <Button>
+                                                                <ActionIcon />
+                                                            </Button>
+                                                        </OverlayTrigger>
+                                                    )}
+                                                </td>
+                                            )}
+                                        </tr>
                                     );
                                 })}
-                                {actions && <td className="Actions" />}
+                            </tbody>
+                        </table>
+                        <Pagination
+                            displayedEntriesLength={data.length}
+                            currentPage={this.state.currentPage}
+                            loadPage={this.loadPage}
+                            pageSize={this.props.pageSize}
+                            total={this.props.total}
+                        />
+                    </>
+                )}
+                {type === 'admin' && (
+                    <table className={`${type}`}>
+                        <thead>
+                            <tr>
+                                <td style={{ width: '18.33' }}>&nbsp;</td>
+                                <td style={{ width: '11.13' }}>&nbsp;</td>
+                                <td style={{ width: '12.85' }}>&nbsp;</td>
+                                <td style={{ width: '25.28' }}>&nbsp;</td>
+                                <td style={{ width: '32.4' }}>&nbsp;</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -487,35 +654,13 @@ export class Table extends React.Component<ITableProps, IState> {
                                                     </FormControl>
                                                 )}
                                             </td>
-                                        );
-                                    })}
-                                    {actions && (
-                                        <td className="Actions">
-                                            {operations.length > 0 && (
-                                                <OverlayTrigger
-                                                    trigger="focus"
-                                                    placement="bottom"
-                                                    overlay={popoverFocus(row[0])}
-                                                >
-                                                    <Button>
-                                                        <ActionIcon />
-                                                    </Button>
-                                                </OverlayTrigger>
-                                            )}
-                                        </td>
-                                    )}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-                <Pagination
-                    displayedEntriesLength={data.length}
-                    currentPage={this.state.currentPage}
-                    loadPage={this.loadPage}
-                    pageSize={this.props.pageSize}
-                    total={this.props.total}
-                />        
+                                        </tr>
+                                    ))
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
     }

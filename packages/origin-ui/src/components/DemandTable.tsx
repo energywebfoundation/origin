@@ -18,7 +18,13 @@ import * as React from 'react';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
-import { Configuration, TimeFrame, Compliance, Currency, IRECAssetService } from '@energyweb/utils-general';
+import {
+    Configuration,
+    TimeFrame,
+    Compliance,
+    Currency,
+    IRECAssetService
+} from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
@@ -79,7 +85,7 @@ enum OPERATIONS {
 
 class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
     private IRECAssetService = new IRECAssetService();
-    
+
     constructor(props: Props) {
         super(props);
 
@@ -105,10 +111,10 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             };
 
             if (demand.offChainProperties) {
-                if (typeof demand.offChainProperties.productingAsset !== 'undefined') {
+                if (typeof demand.offChainProperties.producingAsset !== 'undefined') {
                     result.producingAsset = this.props.producingAssets.find(
                         (asset: ProducingAsset.Entity) =>
-                            asset.id === demand.offChainProperties.productingAsset.toString()
+                            asset.id === demand.offChainProperties.producingAsset.toString()
                     );
                 }
 
@@ -190,7 +196,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                     Math.ceil(
                         (parseInt(demand.offChainProperties.endTime, 10) -
                             parseInt(demand.offChainProperties.startTime, 10)) /
-                            PeriodToSeconds[demand.offChainProperties.timeframe] /
+                            PeriodToSeconds[demand.offChainProperties.timeFrame] /
                             1000
                     ) *
                     (demand.offChainProperties.targetWhPerPeriod / 1000);
@@ -202,17 +208,17 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                         ' - ' +
                         moment(demand.offChainProperties.endTime, 'x').format('DD MMM YY'),
                     this.getCountryRegionText(demand),
-                    typeof demand.offChainProperties.assettype !== 'undefined'
-                        ? demand.offChainProperties.assettype[0] //TODO: handle multiple asset types
+                    typeof demand.offChainProperties.assetType !== 'undefined'
+                        ? demand.offChainProperties.assetType[0] // TODO: handle multiple asset types
                         : NO_VALUE_TEXT,
                     typeof demand.offChainProperties.registryCompliance !== 'undefined'
                         ? Compliance[demand.offChainProperties.registryCompliance]
                         : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.timeframe !== 'undefined'
-                        ? TimeFrame[demand.offChainProperties.timeframe]
+                    typeof demand.offChainProperties.timeFrame !== 'undefined'
+                        ? TimeFrame[demand.offChainProperties.timeFrame]
                         : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.productingAsset !== 'undefined'
-                        ? demand.offChainProperties.productingAsset
+                    typeof demand.offChainProperties.producingAsset !== 'undefined'
+                        ? demand.offChainProperties.producingAsset
                         : NO_VALUE_TEXT,
                     typeof demand.offChainProperties.consumingAsset !== 'undefined'
                         ? demand.offChainProperties.consumingAsset

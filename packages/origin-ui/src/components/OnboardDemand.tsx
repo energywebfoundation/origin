@@ -180,8 +180,6 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             return 0;
         }
 
-        transformedInput.targetWhPerPeriod *= 1000;
-
         let numberOfTimesDemandWillRepeat = 0;
 
         const demandDuration = moment.duration(endDate.diff(startDate));
@@ -201,7 +199,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                 break;
         }
 
-        return demandAsFloat * numberOfTimesDemandWillRepeat;
+        return Number(demandNeedsInMWh) * numberOfTimesDemandWillRepeat;
     }
 
     typesByLevel(level: number) {
@@ -209,7 +207,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
     }
 
     filterSelected(currentType: string, types: string[], selected) {
-        const isSelected = (selected ? selected : []).find(type => type.value === currentType);
+        const isSelected = (selected || []).find(type => type.value === currentType);
 
         if (!isSelected) {
             return [];

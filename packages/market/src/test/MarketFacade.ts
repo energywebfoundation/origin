@@ -174,14 +174,14 @@ describe('Market-Facade', () => {
             };
 
             const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
-                timeframe: GeneralLib.TimeFrame.hourly,
+                timeFrame: GeneralLib.TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
-                productingAsset: 0,
+                producingAsset: 0,
                 consumingAsset: 0,
                 locationCountry: 'string',
                 locationRegion: 'string',
-                assettype: ['Solar'],
+                assetType: ['Solar'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
@@ -323,7 +323,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 availableWh: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const supplyProps: Market.Supply.ISupplyOnChainProperties = {

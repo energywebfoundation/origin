@@ -206,14 +206,14 @@ describe('Test StrategyBasedMatcher', async () => {
         };
 
         const demandOffChainProps: Demand.IDemandOffChainProperties = {
-            timeframe: TimeFrame.hourly,
+            timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150,
             currency: Currency.USD,
-            productingAsset: 0,
+            producingAsset: 0,
             consumingAsset: 0,
             locationCountry: 'string',
             locationRegion: 'string',
-            assettype: ['Solar'],
+            assetType: ['Solar'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
@@ -290,7 +290,7 @@ describe('Test StrategyBasedMatcher', async () => {
                 price: 150,
                 currency: Currency.USD,
                 availableWh: 1e6,
-                timeframe: TimeFrame.hourly
+                timeFrame: TimeFrame.hourly
             },
             conf
         );

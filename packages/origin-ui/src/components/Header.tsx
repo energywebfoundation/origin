@@ -24,7 +24,7 @@ import './Header.scss';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getBaseURL, getCurrentUser } from '../features/selectors';
-import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
+import { getAssetsLink, getCertificatesLink, getDemandsLink, getAdminLink } from '../utils/routing';
 
 interface IStateProps {
     currentUser: User.Entity;

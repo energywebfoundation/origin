@@ -151,14 +151,14 @@ export const marketDemo = async (demoFile?: string) => {
                 currency = Currency[action.data.currency as keyof typeof Currency];
 
                 const demandOffchainProps: Demand.IDemandOffChainProperties = {
-                    timeframe: timeFrame,
+                    timeFrame: timeFrame,
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
-                    productingAsset: action.data.producingAsset,
+                    producingAsset: action.data.producingAsset,
                     consumingAsset: action.data.consumingAsset,
                     locationCountry: action.data.country,
                     locationRegion: action.data.region,
-                    assettype: assetTypeConfig,
+                    assetType: assetTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
@@ -206,7 +206,7 @@ export const marketDemo = async (demoFile?: string) => {
                     price: action.data.price,
                     currency,
                     availableWh: action.data.availableWh,
-                    timeframe: timeFrame
+                    timeFrame: timeFrame
                 };
 
                 const supplyProps: Supply.ISupplyOnChainProperties = {

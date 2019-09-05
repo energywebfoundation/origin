@@ -18,13 +18,7 @@ import { Demand } from '@energyweb/market';
 import { MatcherLogic } from '@energyweb/market-matcher';
 import { Certificate, TradableEntity } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
-import {
-    Compliance,
-    Configuration,
-    Currency,
-    IRECAssetService,
-    TimeFrame
-} from '@energyweb/utils-general';
+import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { Erc20TestToken } from 'ew-erc-test-contracts';
 import moment from 'moment';
 import * as React from 'react';
@@ -57,16 +51,7 @@ import {
     IPaginatedLoaderFilteredSortedState,
     PaginatedLoaderFilteredSorted
 } from './Table/PaginatedLoaderFilteredSorted';
-import { connect } from 'react-redux';
-import { IStoreState } from '../types';
-import {
-    getBaseURL,
-    getCertificates,
-    getConfiguration,
-    getCurrentUser,
-    getProducingAssets
-} from '../features/selectors';
-import { getCertificateDetailLink } from '../utils/routing';
+import TableUtils from './Table/TableUtils';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -144,7 +129,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
         label: 'Asset Type',
         sortProperties: ['assetTypeLabel'],
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-                enrichedData.producingAsset.offChainProperties.assetType
+            enrichedData.producingAsset.offChainProperties.assetType
     },
     {
         label: 'Commissioning Date',
@@ -567,10 +552,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             }
 
             const offChainProperties: Demand.IDemandOffChainProperties = {
-                timeframe: TimeFrame.yearly,
+                timeFrame: TimeFrame.yearly,
                 maxPricePerMwh: 0,
                 currency: Currency.USD,
-                productingAsset: certificate.assetId,
+                producingAsset: certificate.assetId,
                 consumingAsset: 0,
                 locationCountry: asset.offChainProperties.country,
                 locationRegion: asset.offChainProperties.region,

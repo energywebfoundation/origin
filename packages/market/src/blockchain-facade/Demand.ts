@@ -18,14 +18,14 @@ import * as GeneralLib from '@energyweb/utils-general';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 
 export interface IDemandOffChainProperties {
-    timeframe: GeneralLib.TimeFrame;
+    timeFrame: GeneralLib.TimeFrame;
     maxPricePerMwh: number;
     currency: GeneralLib.Currency | string;
-    productingAsset?: number;
+    producingAsset?: number;
     consumingAsset?: number;
     locationCountry?: string;
     locationRegion?: string;
-    assettype?: string[];
+    assetType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;
