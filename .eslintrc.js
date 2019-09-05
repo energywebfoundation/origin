@@ -34,7 +34,9 @@ module.exports = {
         "no-continue": "off",
         "import/prefer-default-export": "off",
         "no-restricted-syntax": "off",
-        "no-constant-condition": "off"
+        "no-constant-condition": "off",
+        "class-methods-use-this": "off",
+        "no-underscore-dangle": "off"
     },
     "settings": {
         "import/resolver": {
