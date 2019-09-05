@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { assert } from 'chai';
-import dotenv from 'dotenv';
 import Web3 from 'web3';
 
 import { deployDemo } from './helpers/deployDemo';
@@ -8,9 +7,9 @@ import { deployDemo } from './helpers/deployDemo';
 import { EventServiceProvider } from '../src/services/event.service';
 
 describe('Event Service Tests', async () => {
-    dotenv.config({
-        path: '.env.dev'
-    });
+    process.env.UI_BASE_URL = "http://localhost:3000";
+    process.env.API_BASE_URL = "http://localhost:3030";
+    process.env.WEB3 = "http://localhost:8545";
 
     let originContract1;
     let originContract2;

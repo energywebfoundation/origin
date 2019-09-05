@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import dotenv from 'dotenv';
 import Web3 from 'web3';
 
 import { SCAN_INTERVAL } from '../src/index';
@@ -13,9 +12,9 @@ function sleep(ms) {
 }
 
 describe('Origin Listener Tests', async () => {
-    dotenv.config({
-        path: '.env.dev'
-    });
+    process.env.UI_BASE_URL = "http://localhost:3000";
+    process.env.API_BASE_URL = "http://localhost:3030";
+    process.env.WEB3 = "http://localhost:8545";
 
     let originContract;
 
