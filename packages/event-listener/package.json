@@ -3,13 +3,13 @@
     "description": "",
     "license": "GPLv3",
     "author": "",
-    "homepage": "https://github.com/energywebfoundation/ewf-monorepo/packages/event-listener#readme",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/event-listener#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/energywebfoundation/ewf-monorepo.git"
+        "url": "git+https://github.com/energywebfoundation/origin.git"
     },
     "bugs": {
-        "url": "https://github.com/energywebfoundation/ewf-monorepo/issues"
+        "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "version": "1.1.0",
     "main": "dist/js/src/index.js",
