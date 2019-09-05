@@ -206,14 +206,14 @@ describe('Market-Facade', () => {
             delete demand.configuration;
             delete demand.propertiesDocumentHash;
 
-            assert.deepEqual(demand as any, {
+            assert.deepEqual(demand, {
                 id: '0',
                 initialized: true,
                 url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
                 status: 0,
                 offChainProperties: {
-                    assettype: ['Solar'],
+                    assetType: ['Solar'],
                     consumingAsset: 0,
                     currency: GeneralLib.Currency.USD,
                     locationCountry: 'string',
@@ -221,15 +221,15 @@ describe('Market-Facade', () => {
                     minCO2Offset: 10,
                     otherGreenAttributes: 'string',
                     maxPricePerMwh: 1.5,
-                    productingAsset: 0,
+                    producingAsset: 0,
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
-                    timeframe: 3,
+                    timeFrame: 3,
                     typeOfPublicSupport: 'string',
                     startTime: START_TIME,
                     endTime: END_TIME
                 }
-            });
+            } as Partial<Market.Demand.Entity>);
         });
 
         it('should return 1 demand for getAllDemands', async () => {
@@ -244,14 +244,14 @@ describe('Market-Facade', () => {
             delete demand.configuration;
             delete demand.propertiesDocumentHash;
 
-            assert.deepEqual(demand as any, {
+            assert.deepEqual(demand, {
                 id: '0',
                 initialized: true,
                 url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
                 status: 0,
                 offChainProperties: {
-                    assettype: ['Solar'],
+                    assetType: ['Solar'],
                     consumingAsset: 0,
                     currency: GeneralLib.Currency.USD,
                     locationCountry: 'string',
@@ -259,15 +259,15 @@ describe('Market-Facade', () => {
                     minCO2Offset: 10,
                     otherGreenAttributes: 'string',
                     maxPricePerMwh: 1.5,
-                    productingAsset: 0,
+                    producingAsset: 0,
                     registryCompliance: 2,
                     targetWhPerPeriod: 10,
-                    timeframe: 3,
+                    timeFrame: 3,
                     typeOfPublicSupport: 'string',
                     startTime: START_TIME,
                     endTime: END_TIME
                 }
-            });
+            } as Partial<Market.Demand.Entity>);
         });
     });
 
@@ -345,18 +345,18 @@ describe('Market-Facade', () => {
             delete supply.configuration;
             delete supply.propertiesDocumentHash;
 
-            assert.deepEqual(supply as any, {
+            assert.deepEqual(supply, {
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Supply',
-                assetId: '0',
+                assetId: 0,
                 offChainProperties: {
                     availableWh: 10,
                     currency: GeneralLib.Currency.USD,
                     price: 10,
-                    timeframe: 3
+                    timeFrame: 3
                 }
-            });
+            } as Partial<Market.Supply.Entity>);
         });
 
         it('should return supply', async () => {
@@ -366,18 +366,18 @@ describe('Market-Facade', () => {
             delete supply.configuration;
             delete supply.propertiesDocumentHash;
 
-            assert.deepEqual(supply as any, {
+            assert.deepEqual(supply, {
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Supply',
-                assetId: '0',
+                assetId: 0,
                 offChainProperties: {
                     availableWh: 10,
                     currency: GeneralLib.Currency.USD,
                     price: 10,
-                    timeframe: 3
+                    timeFrame: 3
                 }
-            });
+            } as Partial<Market.Supply.Entity>);
         });
 
         it('should get all supplies', async () => {
@@ -434,13 +434,13 @@ describe('Market-Facade', () => {
             delete agreement.propertiesDocumentHash;
             delete agreement.matcherPropertiesDocumentHash;
 
-            assert.deepEqual(agreement as any, {
+            assert.deepEqual(agreement, {
                 allowedMatcher: [matcher],
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
+                demandId: 0,
+                supplyId: 0,
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
                 matcherDBURL: 'http://localhost:3030/Matcher',
@@ -456,7 +456,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeframe: 3
                 }
-            });
+            } as Partial<Market.Agreement.Entity>);
         });
 
         it('should return an agreement', async () => {
@@ -470,13 +470,13 @@ describe('Market-Facade', () => {
             delete agreement.propertiesDocumentHash;
             delete agreement.matcherPropertiesDocumentHash;
 
-            assert.deepEqual(agreement as any, {
+            assert.deepEqual(agreement, {
                 allowedMatcher: [matcher],
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
+                demandId: 0,
+                supplyId: 0,
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
                 matcherDBURL: 'http://localhost:3030/Matcher',
@@ -492,7 +492,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeframe: 3
                 }
-            });
+            } as Partial<Market.Agreement.Entity>);
         });
 
         it('should agree to an agreement as supply', async () => {
@@ -514,13 +514,13 @@ describe('Market-Facade', () => {
             delete agreement.propertiesDocumentHash;
             delete agreement.matcherPropertiesDocumentHash;
 
-            assert.deepEqual(agreement as any, {
+            assert.deepEqual(agreement, {
                 allowedMatcher: [matcher],
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
+                demandId: 0,
+                supplyId: 0,
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
                 matcherDBURL: 'http://localhost:3030/Matcher',
@@ -536,7 +536,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeframe: 3
                 }
-            });
+            } as Partial<Market.Agreement.Entity>);
         });
 
         it('should create a 2nd agreement', async () => {
@@ -585,13 +585,13 @@ describe('Market-Facade', () => {
             delete agreement.propertiesDocumentHash;
             delete agreement.matcherPropertiesDocumentHash;
 
-            assert.deepEqual(agreement as any, {
+            assert.deepEqual(agreement, {
                 allowedMatcher: [matcher],
                 id: '1',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
+                demandId: 0,
+                supplyId: 0,
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: false,
                 matcherDBURL: 'http://localhost:3030/Matcher',
@@ -607,7 +607,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeframe: 3
                 }
-            });
+            } as Partial<Market.Agreement.Entity>);
         });
 
         it('should agree to an agreement as demand', async () => {
@@ -629,13 +629,13 @@ describe('Market-Facade', () => {
             delete agreement.propertiesDocumentHash;
             delete agreement.matcherPropertiesDocumentHash;
 
-            assert.deepEqual(agreement as any, {
+            assert.deepEqual(agreement, {
                 allowedMatcher: [matcher],
                 id: '1',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
+                demandId: 0,
+                supplyId: 0,
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
                 matcherDBURL: 'http://localhost:3030/Matcher',
@@ -651,7 +651,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeframe: 3
                 }
-            });
+            } as Partial<Market.Agreement.Entity>);
         });
 
         it('should change matcherProperties', async () => {
@@ -678,13 +678,13 @@ describe('Market-Facade', () => {
             delete agreement.propertiesDocumentHash;
             delete agreement.matcherPropertiesDocumentHash;
 
-            assert.deepEqual(agreement as any, {
+            assert.deepEqual(agreement, {
                 allowedMatcher: [matcher],
                 id: '1',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
+                demandId: 0,
+                supplyId: 0,
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
                 matcherDBURL: 'http://localhost:3030/Matcher',
@@ -700,7 +700,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeframe: 3
                 }
-            });
+            } as Partial<Market.Agreement.Entity>);
         });
 
         it('should get all agreements', async () => {
