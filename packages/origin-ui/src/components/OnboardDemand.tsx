@@ -180,7 +180,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             return 0;
         }
 
-        const demandAsFloat = parseFloat(demandNeedsInMWh);
+        transformedInput.targetWhPerPeriod *= 1000;
 
         let numberOfTimesDemandWillRepeat = 0;
 

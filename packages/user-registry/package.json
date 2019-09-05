@@ -29,15 +29,15 @@
     "prebuild": "rm -rf dist/js",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
-    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
+    "lint": "solium -d contracts",
+    "lint-fix": "solium -d contracts --fix",
     "prepare": "scripts/build.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "build:static": "yarn compile",
-    "test-contracts": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
+    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run prebuild-schemas && npm run build-schema:UserPropertiesOffChain && cp -R schemas dist/schemas",
     "build-schema:UserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Users/User.ts IUserOffChainProperties > schemas/UserOffChainProperties.schema.json"
@@ -59,13 +59,6 @@
     "ganache-cli": "6.1.8",
     "lint-staged": "8.1.7",
     "truffle": "5.0.18"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "tslint --fix",
-      "prettier --write --config ./.prettierrc --config-precedence file-override",
-      "git add"
-    ]
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

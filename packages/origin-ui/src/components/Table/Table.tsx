@@ -31,7 +31,7 @@ export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 export interface ITableProps {
     header: ITableHeaderData[];
     data: any;
-    loadPage?: (page: number, filters?: ICustomFilter[]) => void;
+    loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
     footer?: any;
@@ -39,7 +39,7 @@ export interface ITableProps {
     actionWidth?: any;
     classNames?: string[];
     operations?: any[];
-    operationClicked?: Function;
+    operationClicked?: (key: string | number, id?: number) => void;
     onSelect?: TableOnSelectFunction;
     currentSort?: string[];
     sortAscending?: boolean;
@@ -54,12 +54,28 @@ export interface ITableHeaderData {
     sortProperties?: string[];
 }
 
+export interface ITableAdminHeaderData {
+    header?: any;
+    footer?: any;
+    data?: any;
+    footerClick?: (inputs: any) => void;
+    key?: string;
+}
+
 interface IState {
     currentPage: number;
 }
 
+const addCommas = intNum => {
+    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+};
+
+const renderText = (data, tag = 'div') => {
+    return `<${tag}>${Number(data) ? addCommas(data) : data}</${tag}>`;
+};
+
 export class Table extends React.Component<ITableProps, IState> {
-    _isMounted = false;
+    isMountedIndicator = false;
 
     constructor(props) {
         super(props);
@@ -72,11 +88,11 @@ export class Table extends React.Component<ITableProps, IState> {
     }
 
     componentDidMount() {
-        this._isMounted = true;
+        this.isMountedIndicator = true;
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        this.isMountedIndicator = false;
     }
 
     calculateTotal = (data, keys) => {
@@ -98,8 +114,8 @@ export class Table extends React.Component<ITableProps, IState> {
             }
         }
 
-        for (let key of Object.keys(ret)) {
-            if (ret[key] && typeof(ret[key]) === 'number') {
+        for (const key of Object.keys(ret)) {
+            if (ret[key] && typeof ret[key] === 'number') {
                 ret[key] = Math.round(ret[key] * 1000) / 1000;
             }
         }
@@ -110,13 +126,105 @@ export class Table extends React.Component<ITableProps, IState> {
     async loadPage(page: number) {
         await this.props.loadPage(page);
 
-        if (!this._isMounted) {
+        if (!this.isMountedIndicator) {
             return;
         }
 
         this.setState({
             currentPage: page
         });
+    }
+
+    handleDropdown = (key, itemInput) => {
+        return event => {
+            const value = event.target.value;
+            const { data } = this.props;
+            if (itemInput.labelKey) {
+                const items = data[itemInput.data];
+                let val = items.filter(item => item[itemInput.key] === value);
+                val = val.length > 0 ? val[0][itemInput.labelKey] : '';
+                this.setState({
+                    [key]: value,
+                    ['dropdown_' + key]: val
+                });
+            } else {
+                this.setState({ [key]: value });
+            }
+            const newInputs = { ...this.state.inputs };
+            newInputs[key] = value;
+
+            this.setState({ inputs: newInputs }, this.saveTotalEnergy);
+        };
+    };
+
+    handleToggle = (key, index) => {
+        return () => {
+            const { state } = this;
+            this.setState(state);
+
+            if (index !== undefined) {
+                const newInputs = { ...this.state.inputs };
+                newInputs.enabledProperties[index] = !newInputs.enabledProperties[index];
+
+                this.setState({ inputs: newInputs });
+            }
+        };
+    };
+
+    handleInput = key => {
+        return e => {
+            const newInputs = { ...this.state.inputs };
+            newInputs[key] = e.target.value;
+
+            this.setState(
+                {
+                    inputs: newInputs
+                },
+                this.saveTotalEnergy
+            );
+        };
+    };
+
+    handleDate = key => {
+        return (momentObject: Moment) => {
+            const dateObject = momentObject.toDate();
+            const output = momentObject.format('DD MMM YY');
+            this.setState({ [key]: dateObject, ['date_' + key]: output });
+            const newInputs = { ...this.state.inputs };
+            newInputs[key] = momentObject.unix();
+
+            this.setState(
+                {
+                    inputs: newInputs
+                },
+                this.saveTotalEnergy
+            );
+        };
+    };
+
+    saveTotalEnergy() {
+        this.setState({
+            totalEnergy: this.calculateTotalEnergy()
+        });
+    }
+
+    calculateTotalEnergy(): number {
+        if (
+            this.state.inputs.targetWhPerPeriod &&
+            this.state.inputs.timeframe &&
+            this.state.inputs.startTime &&
+            this.state.inputs.endTime
+        ) {
+            return (
+                Math.ceil(
+                    (parseInt(this.state.inputs.endTime, 10) -
+                        parseInt(this.state.inputs.startTime, 10)) /
+                        PeriodToSeconds[TimeFrame[this.state.inputs.timeframe]]
+                ) * parseInt(this.state.inputs.targetWhPerPeriod, 10)
+            );
+        } else {
+            return 0;
+        }
     }
 
     render() {
@@ -128,7 +236,7 @@ export class Table extends React.Component<ITableProps, IState> {
             actionWidth,
             classNames,
             operations = [],
-            operationClicked = () => {},
+            operationClicked = () => null,
             currentSort,
             sortAscending
         } = this.props;
@@ -138,7 +246,7 @@ export class Table extends React.Component<ITableProps, IState> {
         const popoverFocus = (id: number) => (
             <Popover id="popover-trigger-focus">
                 <div className="popover-wrapper">
-                    {operations.map(o => (
+                    {operations.map((o: string) => (
                         <div
                             key={o}
                             onClick={() => operationClicked(o, id)}
@@ -200,37 +308,184 @@ export class Table extends React.Component<ITableProps, IState> {
                                 })}
                                 {actions && <td className="Actions" />}
                             </tr>
-                        </tfoot>
-                    }
-                    <tbody>
-                        {data.map((row, rowIndex) => {
-                            return (
-                                <tr key={row[0]}>
-                                    {this.props.onSelect && 
-                                        <td className="selectRow">
-                                            <div className="custom-control custom-checkbox">
-                                                <input
-                                                    type="checkbox"
-                                                    className="custom-control-input"
-                                                    id={'selectbox' + row[0]}
-                                                    onChange={e => this.props.onSelect(rowIndex, e.target.checked)}
-                                                />
-                                                <label className="custom-control-label" htmlFor={'selectbox' + row[0]} />
-                                            </div>
-                                        </td>
-                                    }
-                                    {header.map((item: ITableHeaderData, colIndex) => {
-                                        return (
+                        </thead>
+                        <tbody>
+                            {header.map((item: ITableAdminHeaderData) => {
+                                return item.header ? (
+                                    <tr
+                                        key={item.key}
+                                        className={`${item.footer ? 'TableFooter' : 'TableHeader'}`}
+                                    >
+                                        <th colSpan={5} className="Actions">
+                                            {item.footer ? (
+                                                <button
+                                                    onClick={() =>
+                                                        item.footerClick(this.state.inputs)
+                                                    }
+                                                >
+                                                    {item.footer}
+                                                </button>
+                                            ) : (
+                                                item.header
+                                            )}
+                                        </th>
+                                    </tr>
+                                ) : (
+                                    item.data.map(nestedItem => (
+                                        <tr key={nestedItem.key}>
+                                            <td className="Actions Label">
+                                                {renderHTML(
+                                                    renderText(
+                                                        nestedItem.label.length
+                                                            ? nestedItem.label + ':'
+                                                            : ''
+                                                    )
+                                                )}
+                                            </td>
                                             <td
-                                                key={item.key}
-                                                style={
-                                                    { ...item.style, ...item.styleBody } || {}
-                                                }
-                                                className={`${
-                                                    item.styleBody.opacity ? 'Active' : ''
+                                                className={`Actions ToggleLabel ${
+                                                    state['toggle_' + nestedItem.key] ||
+                                                    (nestedItem.toggle.ref &&
+                                                        state['toggle_' + nestedItem.toggle.ref])
+                                                        ? 'Disabled'
+                                                        : 'Active'
                                                 }`}
                                             >
-                                                {renderHTML(renderText(row[colIndex]))}
+                                                {renderHTML(
+                                                    renderText(
+                                                        nestedItem.toggle.hide
+                                                            ? ''
+                                                            : nestedItem.toggle.label
+                                                    )
+                                                )}
+                                            </td>
+                                            <td className={`Actions Toggle`}>
+                                                {nestedItem.toggle.hide ? (
+                                                    <div />
+                                                ) : (
+                                                    <div>
+                                                        <Toggle
+                                                            defaultChecked={
+                                                                nestedItem.toggle.default || false
+                                                            }
+                                                            icons={false}
+                                                            onChange={handleToggle(
+                                                                nestedItem.key,
+                                                                nestedItem.toggle.index
+                                                            )}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td
+                                                className={`Actions ToggleDescription ${
+                                                    state['toggle_' + nestedItem.key] ||
+                                                    (nestedItem.toggle.ref &&
+                                                        state['toggle_' + nestedItem.toggle.ref])
+                                                        ? 'Active'
+                                                        : 'Disabled'
+                                                }`}
+                                            >
+                                                {renderHTML(
+                                                    renderText(
+                                                        nestedItem.toggle.description.length
+                                                            ? nestedItem.toggle.description + ':'
+                                                            : ''
+                                                    )
+                                                )}
+                                            </td>
+                                            <td className={`Actions Input`}>
+                                                {nestedItem.input.type === 'text' &&
+                                                    nestedItem.key !== 'totalDemand' && (
+                                                        <TextField
+                                                            onChange={handleInput(nestedItem.key)}
+                                                            value={state[nestedItem.key]}
+                                                            label={nestedItem.label}
+                                                            fullWidth
+                                                            variant="filled"
+                                                        />
+                                                    )}
+                                                {nestedItem.input.type === 'text' &&
+                                                    nestedItem.key === 'totalDemand' && (
+                                                        <TextField
+                                                            value={this.state.totalEnergy}
+                                                            label={nestedItem.label}
+                                                            fullWidth
+                                                            variant="filled"
+                                                            disabled
+                                                        />
+                                                    )}
+                                                {nestedItem.input.type === 'number' && (
+                                                    // TO-DO: Deprecate the use of input type number after POC
+                                                    <TextField
+                                                        onChange={handleInput(nestedItem.key)}
+                                                        value={state[nestedItem.key]}
+                                                        label={nestedItem.label}
+                                                        fullWidth
+                                                        variant="filled"
+                                                        type="number"
+                                                    />
+                                                )}
+                                                {nestedItem.input.type === 'date' && (
+                                                    <DatePicker
+                                                        onChange={handleDate(nestedItem.key)}
+                                                        value={state[nestedItem.key] || null}
+                                                        fullWidth
+                                                        variant="inline"
+                                                        inputVariant="filled"
+                                                        label={nestedItem.label}
+                                                    />
+                                                )}
+                                                {nestedItem.input.type === 'select' && (
+                                                    <FormControl fullWidth={true} variant="filled">
+                                                        <InputLabel>
+                                                            Choose {nestedItem.label}
+                                                        </InputLabel>
+                                                        <Select
+                                                            onChange={handleDropdown(
+                                                                nestedItem.key,
+                                                                nestedItem.input
+                                                            )}
+                                                            fullWidth={true}
+                                                            variant="filled"
+                                                            value={state[nestedItem.key]}
+                                                            input={<FilledInput />}
+                                                        >
+                                                            {nestedItem.input.key
+                                                                ? data[nestedItem.input.data].map(
+                                                                      (opt, index) => (
+                                                                          <MenuItem
+                                                                              key={index}
+                                                                              value={
+                                                                                  opt[
+                                                                                      nestedItem
+                                                                                          .input.key
+                                                                                  ]
+                                                                              }
+                                                                          >
+                                                                              {
+                                                                                  opt[
+                                                                                      nestedItem
+                                                                                          .input
+                                                                                          .labelKey
+                                                                                  ]
+                                                                              }
+                                                                          </MenuItem>
+                                                                      )
+                                                                  )
+                                                                : data[nestedItem.input.data].map(
+                                                                      (opt, index) => (
+                                                                          <MenuItem
+                                                                              key={index}
+                                                                              value={opt}
+                                                                          >
+                                                                              {opt}
+                                                                          </MenuItem>
+                                                                      )
+                                                                  )}
+                                                        </Select>
+                                                    </FormControl>
+                                                )}
                                             </td>
                                         );
                                     })}
@@ -265,11 +520,3 @@ export class Table extends React.Component<ITableProps, IState> {
         );
     }
 }
-
-const renderText = (data, tag = 'div') => {
-    return `<${tag}>${Number(data) ? addCommas(data) : data}</${tag}>`;
-};
-
-const addCommas = intNum => {
-    return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-};

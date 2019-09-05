@@ -26,7 +26,7 @@ export class IndividualFilter extends Component<IProps> {
         if (!filter) {
             return null;
         }
-        
+
         switch (filter.input.type) {
             case CustomFilterInputType.string:
                 return (
@@ -66,7 +66,7 @@ export class IndividualFilter extends Component<IProps> {
                                 </>
                             )}
                         >
-                            {filter.input.availableOptions.map((option, index) => (
+                            {filter.input.availableOptions.map(option => (
                                 <MenuItem
                                     key={option.value}
                                     value={option.value}

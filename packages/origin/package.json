@@ -28,8 +28,8 @@
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "flatten-contracts": "truffle-flattener contracts/Origin/* > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
-    "lint": "solium -d contracts && tslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "solium -d contracts --fix && tslint --fix 'src/**/*{.ts,.tsx}'",
+    "lint": "solium -d contracts",
+    "lint-fix": "solium -d contracts --fix",
     "prepare": "scripts/build.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
     "start-test-backend": "rm -rf db.json && node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
@@ -54,18 +54,10 @@
     "ew-erc-test-contracts": "1.0.0",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.4.4",
-    "lint-staged": "8.1.7",
     "moment": "2.24.0",
     "truffle": "5.0.18",
     "truffle-flattener": "1.3.0",
     "websocket": "1.0.28"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "tslint --fix",
-      "prettier --write --config ./.prettierrc --config-precedence file-override",
-      "git add"
-    ]
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

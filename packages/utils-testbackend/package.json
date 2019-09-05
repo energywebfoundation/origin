@@ -31,15 +31,7 @@
     "js-beautify": "1.10.0"
   },
   "devDependencies": {
-    "axios": "0.19.0",
-    "lint-staged": "8.1.7"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "tslint --fix",
-      "prettier --write --config ./.prettierrc --config-precedence file-override",
-      "git add"
-    ]
+    "axios": "0.19.0"
   },
   "files": [
     "dist"

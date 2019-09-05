@@ -35,7 +35,7 @@ describe('ProducingAssetTable', () => {
 
         const store = createStore(createRootReducer(history));
 
-        const producingAssets: Partial<ProducingAsset.Entity>[] = [
+        const producingAssets: Array<Partial<ProducingAsset.Entity>> = [
             {
                 id: '0',
                 configuration: {

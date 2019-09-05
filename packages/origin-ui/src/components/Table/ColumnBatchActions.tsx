@@ -3,7 +3,7 @@ import './ColumnBatchActions.scss';
 
 export interface IBatchableAction {
     label: string;
-    handler: Function;
+    handler: (selectedIndexes: number[]) => void;
 }
 
 export type CustomCounterGeneratorFunction = (selectedIndexes: number[]) => string;

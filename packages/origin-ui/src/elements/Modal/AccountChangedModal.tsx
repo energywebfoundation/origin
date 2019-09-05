@@ -16,13 +16,13 @@ import {
 } from '../../features/general/actions';
 import { getAccountChangedModalVisible } from '../../features/general/selectors';
 
-interface AccountChangedModalProps {
+interface IAccountChangedModalProps {
     show: boolean;
     disableAccountChangedModal: TDisableAccountChangedModal;
 }
 
-class AccountChangedModalClass extends React.Component<AccountChangedModalProps> {
-    constructor(props: AccountChangedModalProps) {
+class AccountChangedModalClass extends React.Component<IAccountChangedModalProps> {
+    constructor(props: IAccountChangedModalProps) {
         super(props);
 
         this.handleClose = this.handleClose.bind(this);

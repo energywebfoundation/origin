@@ -214,7 +214,6 @@ describe('EnergyCertificateBundleLogic', () => {
         });
 
         it('should have the lookup-contracts', async () => {
-            // tslint:disable-next-line:max-line-length
             assert.equal(
                 await energyCertificateBundleLogic.assetContractLookup(),
                 assetRegistryContract.web3Contract._address

@@ -26,12 +26,12 @@ import { IStoreState } from '../types';
 import { getBaseURL, getCurrentUser } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 
-interface StateProps {
+interface IStateProps {
     currentUser: User.Entity;
     baseURL: string;
 }
 
-type Props = RouteComponentProps & StateProps;
+type Props = RouteComponentProps & IStateProps;
 
 class HeaderClass extends React.Component<Props> {
     render() {
@@ -45,22 +45,19 @@ class HeaderClass extends React.Component<Props> {
                     </NavLink>
                     <ul className="NavMenu nav">
                         <li>
-                            <NavLink to={getAssetsLink(baseURL)}>
-                                Assets
-                            </NavLink>
+                            <NavLink to={getAssetsLink(baseURL)}>Assets</NavLink>
                         </li>
                         <li>
-                            <NavLink to={getCertificatesLink(baseURL)}>
-                                Certificates
-                            </NavLink>
+                            <NavLink to={getCertificatesLink(baseURL)}>Certificates</NavLink>
                         </li>
                         <li>
-                            <NavLink to={getDemandsLink(baseURL)}>
-                                Demands
-                            </NavLink>
+                            <NavLink to={getDemandsLink(baseURL)}>Demands</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={getAdminLink(baseURL)}>Admin</NavLink>
                         </li>
                     </ul>
-                    
+
                     <div className="ViewProfile">
                         <AccountCircle className="ViewProfile_icon" color="primary" />
                         {currentUser ? currentUser.organization : 'Guest'}
@@ -71,9 +68,9 @@ class HeaderClass extends React.Component<Props> {
     }
 }
 
-export const Header = withRouter(connect(
-    (state: IStoreState) => ({
+export const Header = withRouter(
+    connect((state: IStoreState) => ({
         baseURL: getBaseURL(state),
         currentUser: getCurrentUser(state)
-    })
-)(HeaderClass));
+    }))(HeaderClass)
+);

@@ -47,7 +47,7 @@ export abstract class PaginatedLoader<
     Props extends IPaginatedLoaderProps,
     State extends IPaginatedLoaderState
 > extends Component<Props, State> implements IPaginatedLoader {
-    protected _isMounted: boolean = false;
+    protected isMountedIndicator = false;
 
     constructor(props: Props) {
         super(props);
@@ -56,13 +56,13 @@ export abstract class PaginatedLoader<
     }
 
     async componentDidMount() {
-        this._isMounted = true;
+        this.isMountedIndicator = true;
 
         await this.loadPage(1);
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        this.isMountedIndicator = false;
     }
 
     abstract getPaginatedData({
@@ -82,7 +82,7 @@ export abstract class PaginatedLoader<
             filters
         });
 
-        if (!this._isMounted) {
+        if (!this.isMountedIndicator) {
             return;
         }
 

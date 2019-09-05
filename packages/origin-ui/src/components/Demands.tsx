@@ -69,30 +69,7 @@ class DemandsClass extends React.Component<Props> {
                     </ul>
                 </div>
 
-                <Route
-                    path={`${getDemandsLink(baseURL)}/:key`}
-                    render={props => {
-                        const key = props.match.params.key;
-                        const matches = DemandsMenu.filter(item => {
-                            return item.key === key;
-                        });
-
-                        return (
-                            <PageContent
-                                menu={matches.length > 0 ? matches[0] : null}
-                                redirectPath={getDemandsLink(baseURL)}
-                            />
-                        );
-                    }}
-                />
-
-                <Route
-                    exact={true}
-                    path={`${getDemandsLink(baseURL)}`}
-                    render={() => (
-                        <Redirect to={{ pathname: `${getDemandsLink(baseURL)}/${DemandsMenu[0].key}` }} />
-                    )}
-                />
+                <PageContent menu={DemandsMenu} redirectPath={getDemandsLink(this.props.baseURL)} />
             </div>
         );
     }

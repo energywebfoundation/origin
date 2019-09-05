@@ -35,7 +35,14 @@ import {
     getInitialPaginatedLoaderState
 } from './Table/PaginatedLoader';
 import { getCertificatesForDemandLink } from '../utils/routing';
-import { getConfiguration, getConsumingAssets, getProducingAssets, getCurrentUser, getBaseURL, getDemands } from '../features/selectors';
+import {
+    getConfiguration,
+    getConsumingAssets,
+    getProducingAssets,
+    getCurrentUser,
+    getBaseURL,
+    getDemands
+} from '../features/selectors';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 
@@ -91,7 +98,10 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                 demand,
                 producingAsset: null,
                 consumingAsset: null,
-                demandOwner: await new User.Entity(demand.demandOwner, this.props.configuration).sync()
+                demandOwner: await new User.Entity(
+                    demand.demandOwner,
+                    this.props.configuration
+                ).sync()
             };
 
             if (demand.offChainProperties) {
@@ -237,7 +247,10 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             return (
                 <Redirect
                     push={true}
-                    to={getCertificatesForDemandLink(this.props.baseURL, this.state.showMatchingSupply)}
+                    to={getCertificatesForDemandLink(
+                        this.props.baseURL,
+                        this.state.showMatchingSupply
+                    )}
                 />
             );
         }

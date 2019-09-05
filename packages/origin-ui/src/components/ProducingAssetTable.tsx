@@ -21,7 +21,7 @@ import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { ITableHeaderData } from './Table/Table';
 import TableUtils from './Table/TableUtils';
-import { Configuration, IRECAssetService } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
@@ -41,7 +41,13 @@ import {
 import { getProducingAssetDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getConfiguration, getCertificates, getProducingAssets, getCurrentUser, getBaseURL } from '../features/selectors';
+import {
+    getConfiguration,
+    getCertificates,
+    getProducingAssets,
+    getCurrentUser,
+    getBaseURL
+} from '../features/selectors';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -70,12 +76,7 @@ enum OPERATIONS {
     SHOW_DETAILS = 'Show Details'
 }
 
-class ProducingAssetTableClass extends PaginatedLoaderFiltered<
-    Props,
-    IProducingAssetTableState
-> {
-    private IRECAssetService = new IRECAssetService();
-
+class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducingAssetTableState> {
     constructor(props: Props) {
         super(props);
 
@@ -100,7 +101,10 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
         producingAssets: ProducingAsset.Entity[]
     ): Promise<IEnrichedProducingAssetData[]> {
         const promises = producingAssets.map(async asset => {
-            const user = await new User.Entity(asset.owner.address, this.props.configuration).sync();
+            const user = await new User.Entity(
+                asset.owner.address,
+                this.props.configuration
+            ).sync();
 
             return {
                 asset,
@@ -134,7 +138,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
             (a: ProducingAsset.Entity) => a.id === id.toString()
         );
 
-        let isOwner =
+        const isOwner =
             asset.owner &&
             asset.owner.address.toLowerCase() === this.props.currentUser.id.toLowerCase();
         if (!isOwner) {
@@ -146,7 +150,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
             return;
         }
 
-        let hasRights = this.props.currentUser.isRole(Role.AssetManager);
+        const hasRights = this.props.currentUser.isRole(Role.AssetManager);
         if (!hasRights) {
             showNotification(
                 `You need to have Asset Manager role to request I-RECs.`,
@@ -253,7 +257,10 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<
             return (
                 <Redirect
                     push={true}
-                    to={getProducingAssetDetailLink(this.props.baseURL, this.state.detailViewForAssetId.toString())}
+                    to={getProducingAssetDetailLink(
+                        this.props.baseURL,
+                        this.state.detailViewForAssetId.toString()
+                    )}
                 />
             );
         }

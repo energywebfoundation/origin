@@ -3,13 +3,13 @@
     "description": "",
     "license": "GPLv3",
     "author": "",
-    "homepage": "https://github.com/energywebfoundation/ewf-monorepo/packages/market-matcher#readme",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/market-matcher#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/energywebfoundation/ewf-monorepo.git"
+        "url": "git+https://github.com/energywebfoundation/origin.git"
     },
     "bugs": {
-        "url": "https://github.com/energywebfoundation/ewf-monorepo/issues"
+        "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "version": "1.1.0",
     "main": "dist/js/src/index.js",
@@ -21,8 +21,6 @@
         "generate-rule-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IRuleConf > schemas/rule.schema.json",
         "generate-schemas": "rm -rf schemas/ && mkdir schemas/ && yarn generate-sim-flow-schema && yarn generate-rule-schema && yarn generate-conf-schema",
         "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json ISimulationFlow > schemas/simulation-description.schema.json",
-        "lint": "tslint 'src/**/*{.ts,.tsx}'",
-        "lint-fix": "tslint --fix 'src/**/*{.ts,.tsx}'",
         "prepare": "scripts/build.js",
         "start": "yarn build && node dist/js/src/main.js",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
@@ -53,13 +51,6 @@
         "ganache-cli": "6.6.0",
         "lint-staged": "8.1.7",
         "ts-mockito": "2.4.2"
-    },
-    "lint-staged": {
-        "*.{ts,tsx}": [
-            "tslint --fix",
-            "prettier --write --config ./.prettierrc --config-precedence file-override",
-            "git add"
-        ]
     },
     "postinstall": "rm -f node_modules/web3/index.d.ts",
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

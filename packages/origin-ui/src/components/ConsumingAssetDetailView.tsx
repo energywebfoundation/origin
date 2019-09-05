@@ -30,7 +30,12 @@ import { AssetMap } from './AssetMap';
 import { getConsumingAssetDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCertificates, getConfiguration, getConsumingAssets } from '../features/selectors';
+import {
+    getBaseURL,
+    getCertificates,
+    getConfiguration,
+    getConsumingAssets
+} from '../features/selectors';
 
 interface IOwnProps {
     id: number;
@@ -70,12 +75,12 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
         await this.getOwner(this.props);
     }
 
-    async componentWillReceiveProps(newProps: Props): Promise<void> {
+    async UNSAFE_componentWillReceiveProps(newProps: Props): Promise<void> {
         await this.getOwner(newProps);
     }
 
     async getOwner(props: Props): Promise<void> {
-        if (typeof(props.id) === 'undefined') {
+        if (typeof props.id === 'undefined') {
             return;
         }
 
@@ -96,7 +101,10 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
                 });
             }
             this.setState({
-                owner: await new User.Entity(selectedAsset.owner.address, props.configuration as any).sync()
+                owner: await new User.Entity(
+                    selectedAsset.owner.address,
+                    props.configuration as any
+                ).sync()
             });
         }
     }
@@ -240,9 +248,11 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
     }
 }
 
-export const ConsumingAssetDetailView = connect((state: IStoreState): IStateProps => ({
-    baseURL: getBaseURL(state),
-    certificates: getCertificates(state),
-    configuration: getConfiguration(state),
-    consumingAssets: getConsumingAssets(state)
-}))(ConsumingAssetDetailViewClass);
+export const ConsumingAssetDetailView = connect(
+    (state: IStoreState): IStateProps => ({
+        baseURL: getBaseURL(state),
+        certificates: getCertificates(state),
+        configuration: getConfiguration(state),
+        consumingAssets: getConsumingAssets(state)
+    })
+)(ConsumingAssetDetailViewClass);

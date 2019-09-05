@@ -6,8 +6,6 @@ export const getAccountChangedModalVisible = (state: IStoreState) =>
 export const getAccountChangedModalEnabled = (state: IStoreState) =>
     state.general.accountChangedModalEnabled;
 
-export const getLoading = (state: IStoreState) =>
-    state.general.loading;
+export const getLoading = (state: IStoreState) => state.general.loading;
 
-export const getError = (state: IStoreState) =>
-    state.general.error;
+export const getError = (state: IStoreState) => state.general.error;

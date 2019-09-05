@@ -47,7 +47,7 @@ export function getPropertyByPath(obj, path) {
 export function indexOfEnd(baseString: string, searchString: string) {
     const index = baseString.indexOf(searchString);
 
-    return index == -1 ? -1 : index + searchString.length;
+    return index === -1 ? -1 : index + searchString.length;
 }
 
 export function deepEqual(a: any, b: any) {

@@ -39,15 +39,7 @@
   "devDependencies": {
     "@types/node": "9.6.48",
     "@types/web3": "1.0.14",
-    "ganache-cli": "6.6.0",
-    "lint-staged": "8.1.7"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "tslint --fix",
-      "prettier --write --config ./.prettierrc --config-precedence file-override",
-      "git add"
-    ]
+    "ganache-cli": "6.6.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts"
 }

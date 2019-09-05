@@ -46,11 +46,7 @@ class AssetClass extends React.Component<Props> {
     }
 
     ConsumingDetailView(id: number): JSX.Element {
-        return (
-            <ConsumingAssetDetailView
-                id={id}
-            />
-        );
+        return <ConsumingAssetDetailView id={id} />;
     }
 
     render(): JSX.Element {
@@ -65,7 +61,7 @@ class AssetClass extends React.Component<Props> {
             {
                 key: 'production-map',
                 label: 'Production Map',
-                component: () => <AssetMap height='700px' />
+                component: () => <AssetMap height="700px" />
             },
             {
                 key: 'consumption',
@@ -91,9 +87,7 @@ class AssetClass extends React.Component<Props> {
                         {AssetsMenu.map(menu => {
                             return (
                                 <li key={menu.key}>
-                                    <NavLink
-                                        to={`${getAssetsLink(baseURL)}/${menu.key}`}
-                                    >
+                                    <NavLink to={`${getAssetsLink(baseURL)}/${menu.key}`}>
                                         {menu.label}
                                     </NavLink>
                                 </li>
@@ -149,8 +143,10 @@ class AssetClass extends React.Component<Props> {
     }
 }
 
-export const Asset = withRouter(connect(
-    (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state)
-    })
-)(AssetClass));
+export const Asset = withRouter(
+    connect(
+        (state: IStoreState): IStateProps => ({
+            baseURL: getBaseURL(state)
+        })
+    )(AssetClass)
+);

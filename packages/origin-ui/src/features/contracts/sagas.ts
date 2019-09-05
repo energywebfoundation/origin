@@ -54,9 +54,7 @@ async function initConf(
         web3 = new Web3(web3.currentProvider);
     }
 
-    let blockchainProperties: Configuration.BlockchainProperties;
-
-    blockchainProperties = await createBlockchainProperties(
+    const blockchainProperties: Configuration.BlockchainProperties = await createBlockchainProperties(
         web3,
         originIssuerContractLookupAddress
     );

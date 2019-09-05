@@ -33,12 +33,7 @@ enum OPERATIONS {
     APPROVE = 'Approve'
 }
 
-class CertificationRequestsTableClass extends PaginatedLoader<
-    Props,
-    IPaginatedLoaderState
-> {
-    private IRECAssetService = new IRECAssetService();
-
+class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedLoaderState> {
     constructor(props: Props) {
         super(props);
 
