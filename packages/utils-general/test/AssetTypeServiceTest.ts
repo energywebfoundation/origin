@@ -83,4 +83,12 @@ describe('AssetTypeService tests', () => {
         const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
         assert.isFalse(res);
     });
+
+    it('should not find demanded asset types when demanded assets are more specific than current', () => {
+        const demandAssetTypes = ['Marine;Tidal;Inshore'];
+        const supplyAssetTypes = ['Marine;Tidal'];
+
+        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        assert.isFalse(res);
+    });
 });

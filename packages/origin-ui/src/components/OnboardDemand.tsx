@@ -2,14 +2,27 @@ import * as React from 'react';
 import { User, Role } from '@energyweb/user-registry';
 import { Currency, IRECAssetService } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
-import { Paper, Typography, FormControl, InputLabel, FilledInput, MenuItem, Grid, Button, Tooltip } from '@material-ui/core';
+import {
+    Paper,
+    Typography,
+    FormControl,
+    InputLabel,
+    FilledInput,
+    MenuItem,
+    Grid,
+    Button,
+    Tooltip
+} from '@material-ui/core';
 import { getEnumValues } from '../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getCurrentUser } from '../features/selectors';
 import './OnboardDemand.scss';
 import { DatePicker } from '@material-ui/pickers';
-import { MultiSelectAutocomplete, IAutocompleteMultiSelectOptionType } from './MultiSelectAutocomplete';
+import {
+    MultiSelectAutocomplete,
+    IAutocompleteMultiSelectOptionType
+} from './MultiSelectAutocomplete';
 import { CustomSlider, CustomSliderThumbComponent } from './CustomSlider';
 import moment, { Moment } from 'moment';
 import { Formik, Field, Form } from 'formik';
@@ -47,13 +60,7 @@ const REGIONS_PROVINCES_MAP = {
         'Phrae',
         'Uttaradit'
     ],
-    West: [
-        'Tak',
-        'Kanchanaburi',
-        'Ratchaburi',
-        'Phetchaburi',
-        'Prachuap Khiri Khan'
-    ],
+    West: ['Tak', 'Kanchanaburi', 'Ratchaburi', 'Phetchaburi', 'Prachuap Khiri Khan'],
     Central: [
         'Sukhothai',
         'Phitsanulok',
@@ -77,15 +84,7 @@ const REGIONS_PROVINCES_MAP = {
         'Suphan Buri',
         'Nakhon Nayok'
     ],
-    East: [
-        'Chachoengsao',
-        'Chanthaburi',
-        'Chon Buri',
-        'Prachin Buri',
-        'Rayong',
-        'Sa Kaeo',
-        'Trat'
-    ],
+    East: ['Chachoengsao', 'Chanthaburi', 'Chon Buri', 'Prachin Buri', 'Rayong', 'Sa Kaeo', 'Trat'],
     South: [
         'Chumphon',
         'Nakhon Si Thammarat',
@@ -131,11 +130,11 @@ const REPEATABLE_TIMEFRAMES = [
         label: 'Year',
         value: Timeframe.year
     }
-]
+];
 
-const Level1Types = TYPES.map(type => ({
-    value: typeof (type) === 'string' ? type : type.type,
-    label: typeof (type) === 'string' ? type : type.type
+const Level1Types = TYPES.filter(assetType => assetType.length === 1).map(type => ({
+    value: type[0],
+    label: type[0]
 }));
 
 const regionOptions = Object.keys(REGIONS_PROVINCES_MAP).map(label => ({
@@ -158,15 +157,9 @@ interface IState {
 
 const DEFAULT_VINTAGE_RANGE = [1970, moment().year()];
 
-const FormikDatePicker = ({
-    form: { setFieldValue },
-    field: { name, value },
-    ...rest
-}) => <DatePicker
-        onChange={(value) => setFieldValue(name, value)}
-        value={value}
-        {...rest}
-    />
+const FormikDatePicker = ({ form: { setFieldValue }, field: { name, value }, ...rest }) => (
+    <DatePicker onChange={value => setFieldValue(name, value)} value={value} {...rest} />
+);
 
 class OnboardDemandClass extends React.Component<IStateProps, IState> {
     constructor(props) {
@@ -183,7 +176,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
     }
 
     totalDemand(startDate: Moment, endDate: Moment, demandNeedsInMWh: string, timeframe: number) {
-        if (!endDate || !demandNeedsInMWh || !startDate || typeof (timeframe) === 'undefined') {
+        if (!endDate || !demandNeedsInMWh || !startDate || typeof timeframe === 'undefined') {
             return 0;
         }
 
@@ -211,59 +204,88 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         return demandAsFloat * numberOfTimesDemandWillRepeat;
     }
 
+    typesByLevel(level: number) {
+        return TYPES.filter(t => t.length === level).map(t => irecAssetService.encode([t]).pop());
+    }
+
+    filterSelected(currentType: string, types: string[], selected) {
+        const isSelected = (selected ? selected : []).find(type => type.value === currentType);
+
+        if (!isSelected) {
+            return [];
+        }
+
+        return types.filter(t => t.startsWith(currentType));
+    }
+
+    assetTypesToSelectionOptions(types: string[]) {
+        return types.map(t => ({
+            value: t,
+            label: irecAssetService
+                .decode([t])
+                .pop()
+                .join(' - ')
+        }));
+    }
+
     get currencies() {
         return getEnumValues(Currency).filter(curr => Currency[curr] !== Currency.NONE);
     }
 
     get provincesOptions() {
-        const {
-            selectedRegions
-        } = this.state;
+        const { selectedRegions } = this.state;
 
         if (!selectedRegions) {
             return [];
         }
 
-        return selectedRegions.reduce(
-            (a: string[], b: IAutocompleteMultiSelectOptionType) => a.concat(REGIONS_PROVINCES_MAP[b.label]), []
-        ).map(item => ({
-            label: item,
-            value: item
-        }));
+        return selectedRegions
+            .reduce(
+                (a: string[], b: IAutocompleteMultiSelectOptionType) =>
+                    a.concat(REGIONS_PROVINCES_MAP[b.label]),
+                []
+            )
+            .map(item => ({
+                label: item,
+                value: item
+            }));
     }
 
     get assetTypesOptions() {
-        const {
-            selectedTypesLevelOne,
-            selectedTypesLevelTwo
-        } = this.state;
+        const { selectedTypesLevelOne, selectedTypesLevelTwo } = this.state;
 
         const levelTwoTypes = [];
         const levelThreeTypes = [];
 
-        for (const levelOneType of TYPES) {
-            const levelOneTypeSelected = (selectedTypesLevelOne ? selectedTypesLevelOne : []).find(type => type.value === levelOneType.type);
+        const availableL1Types = this.typesByLevel(1);
+        const availableL2Types = this.typesByLevel(2);
+        const availableL3Types = this.typesByLevel(3);
 
-            if (!levelOneTypeSelected) {
+        for (const currentType of availableL1Types) {
+            const level2Types = this.filterSelected(
+                currentType,
+                availableL2Types,
+                selectedTypesLevelOne
+            );
+
+            if (!level2Types.length) {
                 continue;
             }
 
-            levelTwoTypes.push(...levelOneType.subType.map(levelTwoType => ({
-                value: levelTwoType.type,
-                label: `${levelOneType.type} - ${levelTwoType.type}`
-            })));
+            levelTwoTypes.push(...this.assetTypesToSelectionOptions(level2Types));
 
-            for (const levelTwoType of levelOneType.subType) {
-                const levelTwoTypeSelected = (selectedTypesLevelTwo ? selectedTypesLevelTwo : []).find(type => type.value === levelTwoType.type);
+            for (const currentLevel2Type of level2Types) {
+                const level3Types = this.filterSelected(
+                    currentLevel2Type,
+                    availableL3Types,
+                    selectedTypesLevelTwo
+                );
 
-                if (!levelTwoTypeSelected || !levelTwoType.subType) {
+                if (!level3Types.length) {
                     continue;
                 }
 
-                levelThreeTypes.push(...levelTwoType.subType.map(levelThreeType => ({
-                    value: levelThreeType.type,
-                    label: `${levelOneType.type} - ${levelTwoType.type} - ${levelThreeType.type}`
-                })));
+                levelThreeTypes.push(...this.assetTypesToSelectionOptions(level3Types));
             }
         }
 
@@ -288,9 +310,16 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             vintage
         } = this.state;
 
-        const { currencies, provincesOptions, assetTypesOptions: { levelTwoTypes, levelThreeTypes } } = this;
+        const {
+            currencies,
+            provincesOptions,
+            assetTypesOptions: { levelTwoTypes, levelThreeTypes }
+        } = this;
 
-        const minDate = moment().hour(0).minutes(0).seconds(0);
+        const minDate = moment()
+            .hour(0)
+            .minutes(0)
+            .seconds(0);
 
         return (
             <Paper className="OnboardDemand">
@@ -299,14 +328,14 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                         demandNeedsInMWh: '',
                         maxPricePerMWh: '',
                         currency: '',
-                        timeframe: '' as any as number,
+                        timeframe: ('' as any) as number,
                         activeUntilDate: null,
                         startDate: null,
                         endDate: null,
                         procureFromSingleFacility: false
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log('submit values', values)
+                        console.log('submit values', values);
 
                         setSubmitting(true);
 
@@ -316,7 +345,6 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                             showNotification('Demand created', NotificationType.Success);
                         }, 4000);
                     }}
-
                     validationSchema={Yup.object().shape({
                         demandNeedsInMWh: Yup.number()
                             .label('Demand needs (MWh)')
@@ -333,21 +361,14 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                             .label('Timeframe')
                             .min(0)
                             .required(),
-                        startDate: Yup.date()
-                            .required(),
-                        endDate: Yup.date()
-                            .required(),
-                        activeUntilDate: Yup.date()
-                            .required(),
+                        startDate: Yup.date().required(),
+                        endDate: Yup.date().required(),
+                        activeUntilDate: Yup.date().required(),
                         procureFromSingleFacility: Yup.boolean()
                     })}
                 >
-                    {(props) => {
-                        const {
-                            values,
-                            isValid,
-                            isSubmitting
-                        } = props;
+                    {props => {
+                        const { values, isValid, isSubmitting } = props;
 
                         let buttonTooltip = '';
 
@@ -359,213 +380,273 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                             buttonTooltip = 'You need to have a Trader role to create a demand.';
                         }
 
-                        return <Form>
-                            <Grid container spacing={3}>
-                                <Grid item xs={6}>
-                                    <Typography className="mt-3">General</Typography>
-                                    <FormControl fullWidth variant="filled" className="mt-3" required>
-                                        <Field
-                                            label="Demand needs (MWh)"
-                                            name="demandNeedsInMWh"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            required
-                                        />
-                                    </FormControl>
-                                    <FormControl fullWidth variant="filled" className="mt-3" required>
-                                        <Field
-                                            label="Max price (per MWh)"
-                                            name="maxPricePerMWh"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            required
-                                        />
-                                    </FormControl>
-                                    <FormControl fullWidth variant="filled" className="mt-3" required>
-                                        <InputLabel required>Currency</InputLabel>
-                                        <Field
-                                            name="currency"
-                                            label="Currency"
-                                            component={Select}
-                                            input={<FilledInput value={values.currency} />}
+                        return (
+                            <Form>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <Typography className="mt-3">General</Typography>
+                                        <FormControl
                                             fullWidth
                                             variant="filled"
+                                            className="mt-3"
                                             required
                                         >
-                                            {currencies.map((option) => <MenuItem value={option} key={option}>{option}</MenuItem>)}
-                                        </Field>
-                                    </FormControl>
-                                    <Field
-                                        name="startDate"
-                                        label="Start date"
-                                        minDate={minDate}
-                                        className="mt-3"
-                                        inputVariant="filled"
-                                        variant="inline"
-                                        fullWidth
-                                        required
-                                        component={FormikDatePicker}
-                                    />
-                                    <Field
-                                        name="activeUntilDate"
-                                        label="Active until date"
-                                        minDate={minDate}
-                                        className="mt-3"
-                                        inputVariant="filled"
-                                        variant="inline"
-                                        fullWidth
-                                        required
-                                        component={FormikDatePicker}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography className="mt-3">Producing Asset Criteria</Typography>
-                                    <MultiSelectAutocomplete
-                                        label="Asset type"
-                                        placeholder="Select asset type"
-                                        options={Level1Types}
-                                        onChange={(value) => this.setState({
-                                            selectedTypesLevelOne: value
-                                        })}
-                                        selectedValues={selectedTypesLevelOne}
-                                        classes={{ root: 'mt-3' }}
-                                        disabled={isSubmitting}
-                                    />
-                                    {levelTwoTypes.length > 0 && (
+                                            <Field
+                                                label="Demand needs (MWh)"
+                                                name="demandNeedsInMWh"
+                                                component={TextField}
+                                                variant="filled"
+                                                fullWidth
+                                                required
+                                            />
+                                        </FormControl>
+                                        <FormControl
+                                            fullWidth
+                                            variant="filled"
+                                            className="mt-3"
+                                            required
+                                        >
+                                            <Field
+                                                label="Max price (per MWh)"
+                                                name="maxPricePerMWh"
+                                                component={TextField}
+                                                variant="filled"
+                                                fullWidth
+                                                required
+                                            />
+                                        </FormControl>
+                                        <FormControl
+                                            fullWidth
+                                            variant="filled"
+                                            className="mt-3"
+                                            required
+                                        >
+                                            <InputLabel required>Currency</InputLabel>
+                                            <Field
+                                                name="currency"
+                                                label="Currency"
+                                                component={Select}
+                                                input={<FilledInput value={values.currency} />}
+                                                fullWidth
+                                                variant="filled"
+                                                required
+                                            >
+                                                {currencies.map(option => (
+                                                    <MenuItem value={option} key={option}>
+                                                        {option}
+                                                    </MenuItem>
+                                                ))}
+                                            </Field>
+                                        </FormControl>
+                                        <Field
+                                            name="startDate"
+                                            label="Start date"
+                                            minDate={minDate}
+                                            className="mt-3"
+                                            inputVariant="filled"
+                                            variant="inline"
+                                            fullWidth
+                                            required
+                                            component={FormikDatePicker}
+                                        />
+                                        <Field
+                                            name="activeUntilDate"
+                                            label="Active until date"
+                                            minDate={minDate}
+                                            className="mt-3"
+                                            inputVariant="filled"
+                                            variant="inline"
+                                            fullWidth
+                                            required
+                                            component={FormikDatePicker}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography className="mt-3">
+                                            Producing Asset Criteria
+                                        </Typography>
                                         <MultiSelectAutocomplete
                                             label="Asset type"
                                             placeholder="Select asset type"
-                                            options={levelTwoTypes}
-                                            onChange={(value) => this.setState({
-                                                selectedTypesLevelTwo: value
-                                            })}
-                                            selectedValues={selectedTypesLevelTwo}
-                                            classes={{ root: 'mt-3' }}
-                                            disabled={isSubmitting}
-                                        />
-                                    )}
-                                    {levelThreeTypes.length > 0 && (
-                                        <MultiSelectAutocomplete
-                                            label="Asset type"
-                                            placeholder="Select asset type"
-                                            options={levelThreeTypes}
-                                            onChange={(value) => this.setState({
-                                                selectedTypesLevelThree: value
-                                            })}
-                                            selectedValues={selectedTypesLevelThree}
-                                            classes={{ root: 'mt-3' }}
-                                            disabled={isSubmitting}
-                                        />
-                                    )}
-
-                                    <div className="Filter_menu_item_sliderWrapper mt-3">
-                                        <InputLabel shrink={true}>Vintage (year of asset construction)</InputLabel>
-                                        <CustomSlider
-                                            valueLabelDisplay="on"
-                                            defaultValue={
-                                                vintage || DEFAULT_VINTAGE_RANGE
-                                            }
-                                            min={DEFAULT_VINTAGE_RANGE[0]}
-                                            max={DEFAULT_VINTAGE_RANGE[1]}
-                                            ThumbComponent={CustomSliderThumbComponent}
-                                            onChangeCommitted={(event, value: number[]) =>
+                                            options={Level1Types}
+                                            onChange={value =>
                                                 this.setState({
-                                                    vintage: value
+                                                    selectedTypesLevelOne: value
                                                 })
                                             }
+                                            selectedValues={selectedTypesLevelOne}
+                                            classes={{ root: 'mt-3' }}
                                             disabled={isSubmitting}
                                         />
-                                    </div>
+                                        {levelTwoTypes.length > 0 && (
+                                            <MultiSelectAutocomplete
+                                                label="Asset type"
+                                                placeholder="Select asset type"
+                                                options={levelTwoTypes}
+                                                onChange={value =>
+                                                    this.setState({
+                                                        selectedTypesLevelTwo: value
+                                                    })
+                                                }
+                                                selectedValues={selectedTypesLevelTwo}
+                                                classes={{ root: 'mt-3' }}
+                                                disabled={isSubmitting}
+                                            />
+                                        )}
+                                        {levelThreeTypes.length > 0 && (
+                                            <MultiSelectAutocomplete
+                                                label="Asset type"
+                                                placeholder="Select asset type"
+                                                options={levelThreeTypes}
+                                                onChange={value =>
+                                                    this.setState({
+                                                        selectedTypesLevelThree: value
+                                                    })
+                                                }
+                                                selectedValues={selectedTypesLevelThree}
+                                                classes={{ root: 'mt-3' }}
+                                                disabled={isSubmitting}
+                                            />
+                                        )}
 
-                                    <Field
-                                        name="procureFromSingleFacility"
-                                        Label={{
-                                            label: "Procure from single facility"
-                                        }}
-                                        color="primary"
-                                        component={CheckboxWithLabel}
-                                    />
-                                </Grid>
-                            </Grid>
+                                        <div className="Filter_menu_item_sliderWrapper mt-3">
+                                            <InputLabel shrink={true}>
+                                                Vintage (year of asset construction)
+                                            </InputLabel>
+                                            <CustomSlider
+                                                valueLabelDisplay="on"
+                                                defaultValue={vintage || DEFAULT_VINTAGE_RANGE}
+                                                min={DEFAULT_VINTAGE_RANGE[0]}
+                                                max={DEFAULT_VINTAGE_RANGE[1]}
+                                                ThumbComponent={CustomSliderThumbComponent}
+                                                onChangeCommitted={(event, value: number[]) =>
+                                                    this.setState({
+                                                        vintage: value
+                                                    })
+                                                }
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
 
-                            <Grid container spacing={3}>
-                                <Grid item xs={6}>
-                                    <Typography className="mt-3">Repeatable</Typography>
-                                    <FormControl fullWidth variant="filled" className="mt-3" required>
-                                        <InputLabel required>Every</InputLabel>
                                         <Field
-                                            name="timeframe"
-                                            label="Timeframe"
-                                            component={Select}
-                                            input={<FilledInput value={values.timeframe} />}
+                                            name="procureFromSingleFacility"
+                                            Label={{
+                                                label: 'Procure from single facility'
+                                            }}
+                                            color="primary"
+                                            component={CheckboxWithLabel}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <Typography className="mt-3">Repeatable</Typography>
+                                        <FormControl
                                             fullWidth
                                             variant="filled"
+                                            className="mt-3"
                                             required
                                         >
-                                            {REPEATABLE_TIMEFRAMES.map(timeframe =>
-                                                <MenuItem value={timeframe.value} key={timeframe.value}>{timeframe.label}</MenuItem>
-                                            )}
-                                        </Field>
-                                    </FormControl> 
+                                            <InputLabel required>Every</InputLabel>
+                                            <Field
+                                                name="timeframe"
+                                                label="Timeframe"
+                                                component={Select}
+                                                input={<FilledInput value={values.timeframe} />}
+                                                fullWidth
+                                                variant="filled"
+                                                required
+                                            >
+                                                {REPEATABLE_TIMEFRAMES.map(timeframe => (
+                                                    <MenuItem
+                                                        value={timeframe.value}
+                                                        key={timeframe.value}
+                                                    >
+                                                        {timeframe.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Field>
+                                        </FormControl>
 
-                                    <Field
-                                        name="endDate"
-                                        label="End date"
-                                        minDate={minDate}
-                                        className="mt-3"
-                                        inputVariant="filled"
-                                        variant="inline"
-                                        fullWidth
-                                        required
-                                        component={FormikDatePicker}
-                                    />
-                                    
-                                    <div className="mt-3">
-                                        Total demand: <b>{this.totalDemand(
-                                            values.startDate,
-                                            values.endDate,
-                                            values.demandNeedsInMWh,
-                                            values.timeframe
-                                        )} MWh</b>
-                                    </div>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography className="mt-3">Producing Asset Location</Typography>
-                                    <MultiSelectAutocomplete
-                                        label="Regions"
-                                        placeholder="Select multiple regions"
-                                        options={regionOptions}
-                                        onChange={(value) => this.setState({
-                                            selectedRegions: value
-                                        })}
-                                        selectedValues={selectedRegions}
-                                        classes={{ root: 'mt-3' }}
-                                        disabled={isSubmitting}
-                                    />
-                                    <MultiSelectAutocomplete
-                                        label="Provinces"
-                                        placeholder="Select multiple provinces"
-                                        options={provincesOptions}
-                                        onChange={(value) => this.setState({
-                                            selectedProvinces: value
-                                        })}
-                                        selectedValues={selectedProvinces}
-                                        classes={{ root: 'mt-3' }}
-                                        disabled={isSubmitting}
-                                    />
-                                </Grid>
-                            </Grid>
+                                        <Field
+                                            name="endDate"
+                                            label="End date"
+                                            minDate={minDate}
+                                            className="mt-3"
+                                            inputVariant="filled"
+                                            variant="inline"
+                                            fullWidth
+                                            required
+                                            component={FormikDatePicker}
+                                        />
 
-                            <Tooltip title={buttonTooltip} disableHoverListener={!buttonTooltip}>
-                                <span>
-                                    <Button type="submit" variant="contained" color="primary" className="mt-3 right" disabled={isSubmitting || !isValid || !this.isUserTraderRole()}>
-                                        Create demand
-                            </Button>
-                                </span>
-                            </Tooltip>
-                        </Form>
+                                        <div className="mt-3">
+                                            Total demand:{' '}
+                                            <b>
+                                                {this.totalDemand(
+                                                    values.startDate,
+                                                    values.endDate,
+                                                    values.demandNeedsInMWh,
+                                                    values.timeframe
+                                                )}{' '}
+                                                MWh
+                                            </b>
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography className="mt-3">
+                                            Producing Asset Location
+                                        </Typography>
+                                        <MultiSelectAutocomplete
+                                            label="Regions"
+                                            placeholder="Select multiple regions"
+                                            options={regionOptions}
+                                            onChange={value =>
+                                                this.setState({
+                                                    selectedRegions: value
+                                                })
+                                            }
+                                            selectedValues={selectedRegions}
+                                            classes={{ root: 'mt-3' }}
+                                            disabled={isSubmitting}
+                                        />
+                                        <MultiSelectAutocomplete
+                                            label="Provinces"
+                                            placeholder="Select multiple provinces"
+                                            options={provincesOptions}
+                                            onChange={value =>
+                                                this.setState({
+                                                    selectedProvinces: value
+                                                })
+                                            }
+                                            selectedValues={selectedProvinces}
+                                            classes={{ root: 'mt-3' }}
+                                            disabled={isSubmitting}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Tooltip
+                                    title={buttonTooltip}
+                                    disableHoverListener={!buttonTooltip}
+                                >
+                                    <span>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            className="mt-3 right"
+                                            disabled={
+                                                isSubmitting || !isValid || !this.isUserTraderRole()
+                                            }
+                                        >
+                                            Create demand
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            </Form>
+                        );
                     }}
                 </Formik>
             </Paper>
