@@ -31,3 +31,19 @@ install:
     - yarn lint
 
 script: yarn test
+
+jobs:
+  include:
+    - stage: "Tests"
+      name: "User Registry Tests"
+      script: yarn test:user-registry
+    - name: "Asset Registry Tests"    
+      script: yarn test:asset-registry
+    - name: "Origin Tests"    
+      script: yarn test:origin
+    - name: "Market Tests"
+      script: yarn test:market
+    - name: "UI Tests"    
+      script: yarn test:ui
+    - name: "Matcher And Event Listener Tests"    
+      script: yarn test
