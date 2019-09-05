@@ -34,6 +34,6 @@ jobs:
   include:	
     - stage: "Tests"	
       name: "User & Asset Registry & Origin Tests"	
-      script: yarn build:user-asset-registry && yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin
+      script: yarn build:user-asset-registry-origin && yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin
     - name: "Linting + Market & UI & Matcher & Event Listener Tests"    	
       script: yarn build && yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:event-listener
