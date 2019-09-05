@@ -23,7 +23,6 @@ import { IStoreState } from '../types';
 import { getBaseURL } from '../features/selectors';
 import { OnboardDemand } from './OnboardDemand';
 import { NavLink } from 'react-router-dom';
-import { Route, Redirect } from 'react-router';
 
 interface IStateProps {
     baseURL: string;
@@ -33,9 +32,7 @@ type Props = IStateProps;
 
 class DemandsClass extends React.Component<Props> {
     render() {
-        const {
-            baseURL
-        } = this.props;
+        const { baseURL } = this.props;
         const DemandsMenu = [
             {
                 key: 'list',

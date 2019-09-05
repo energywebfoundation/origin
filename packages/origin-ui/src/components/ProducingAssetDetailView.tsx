@@ -141,10 +141,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
                         label:
                             'Certified by Registry' +
                             getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
-                        data:
-                            Compliance[
-                                selectedAsset.offChainProperties.complianceRegistry
-                            ]
+                        data: Compliance[selectedAsset.offChainProperties.complianceRegistry]
                     },
                     {
                         label:
@@ -162,11 +159,11 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
                             'Asset Type' +
                             getOffChainText('assetType', selectedAsset.offChainProperties),
                         data: selectedAsset.offChainProperties.assetType,
-                        image: //TODO: handle more asset types
-                            'Wind' === selectedAsset.offChainProperties.assetType
+                        // TODO: handle more asset types
+                        image:
+                            selectedAsset.offChainProperties.assetType === 'Wind'
                                 ? wind
-                                : 'Solar' ===
-                                  selectedAsset.offChainProperties.assetType
+                                : selectedAsset.offChainProperties.assetType === 'Solar'
                                 ? solar
                                 : hydro,
                         rowspan: 2

@@ -41,7 +41,6 @@ import { AssetContractLookup } from '../wrappedContracts/AssetContractLookup';
 import { AssetProducingDB } from '../wrappedContracts/AssetProducingDB';
 import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
 
-// tslint:disable-next-line: no-big-function
 describe('AssetProducingLogic', () => {
     const configFile = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')

@@ -17,182 +17,185 @@ import { PlaceholderProps } from 'react-select/src/components/Placeholder';
 import { SingleValueProps } from 'react-select/src/components/SingleValue';
 import { ValueType } from 'react-select/src/types';
 import { Omit } from '@material-ui/types';
-import { INPUT_AUTOCOMPLETE_SELECT_STYLE, createInputAutocompleteStyle } from '../styles/styleConfig';
+import {
+    INPUT_AUTOCOMPLETE_SELECT_STYLE,
+    createInputAutocompleteStyle
+} from '../styles/styleConfig';
 
 export interface IAutocompleteMultiSelectOptionType {
-  label: string;
-  value: string;
+    label: string;
+    value: string;
 }
 
 function NoOptionsMessage(props: NoticeProps<IAutocompleteMultiSelectOptionType>) {
-  return (
-    <Typography
-      color="textSecondary"
-      className={props.selectProps.classes.noOptionsMessage}
-      {...props.innerProps}
-    >
-      {props.children}
-    </Typography>
-  );
+    return (
+        <Typography
+            color="textSecondary"
+            className={props.selectProps.classes.noOptionsMessage}
+            {...props.innerProps}
+        >
+            {props.children}
+        </Typography>
+    );
 }
 
 type InputComponentProps = Pick<BaseTextFieldProps, 'inputRef'> & HTMLAttributes<HTMLDivElement>;
 
 function inputComponent({ inputRef, ...props }: InputComponentProps) {
-  return <div ref={inputRef} {...props} />;
+    return <div ref={inputRef} {...props} />;
 }
 
 function Control(props: ControlProps<IAutocompleteMultiSelectOptionType>) {
-  const {
-    children,
-    innerProps,
-    innerRef,
-    selectProps: { classes, TextFieldProps },
-  } = props;
+    const {
+        children,
+        innerProps,
+        innerRef,
+        selectProps: { classes, TextFieldProps }
+    } = props;
 
-  return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputComponent,
-        inputProps: {
-          className: classes.input,
-          ref: innerRef,
-          children,
-          ...innerProps,
-        },
-      }}
-      {...TextFieldProps}
-    />
-  );
+    return (
+        <TextField
+            fullWidth
+            InputProps={{
+                inputComponent,
+                inputProps: {
+                    className: classes.input,
+                    ref: innerRef,
+                    children,
+                    ...innerProps
+                }
+            }}
+            {...TextFieldProps}
+        />
+    );
 }
 
 function Option(props: OptionProps<IAutocompleteMultiSelectOptionType>) {
-  return (
-    <MenuItem
-      ref={props.innerRef}
-      selected={props.isFocused}
-      component="div"
-      style={{
-        fontWeight: props.isSelected ? 500 : 400,
-      }}
-      {...props.innerProps}
-    >
-      {props.children}
-    </MenuItem>
-  );
+    return (
+        <MenuItem
+            ref={props.innerRef}
+            selected={props.isFocused}
+            component="div"
+            style={{
+                fontWeight: props.isSelected ? 500 : 400
+            }}
+            {...props.innerProps}
+        >
+            {props.children}
+        </MenuItem>
+    );
 }
 
-type MuiPlaceholderProps = Omit<PlaceholderProps<IAutocompleteMultiSelectOptionType>, 'innerProps'> &
-  Partial<Pick<PlaceholderProps<IAutocompleteMultiSelectOptionType>, 'innerProps'>>;
+type MuiPlaceholderProps = Omit<
+    PlaceholderProps<IAutocompleteMultiSelectOptionType>,
+    'innerProps'
+> &
+    Partial<Pick<PlaceholderProps<IAutocompleteMultiSelectOptionType>, 'innerProps'>>;
 function Placeholder(props: MuiPlaceholderProps) {
-  const { selectProps, innerProps = {}, children } = props;
-  return (
-    <Typography color="textSecondary" className={selectProps.classes.placeholder} {...innerProps}>
-      {children}
-    </Typography>
-  );
+    const { selectProps, innerProps = {}, children } = props;
+    return (
+        <Typography
+            color="textSecondary"
+            className={selectProps.classes.placeholder}
+            {...innerProps}
+        >
+            {children}
+        </Typography>
+    );
 }
 
 function SingleValue(props: SingleValueProps<IAutocompleteMultiSelectOptionType>) {
-  return (
-    <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
-      {props.children}
-    </Typography>
-  );
+    return (
+        <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
+            {props.children}
+        </Typography>
+    );
 }
 
 function ValueContainer(props: ValueContainerProps<IAutocompleteMultiSelectOptionType>) {
-  return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
+    return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
 }
 
 function MultiValue(props: MultiValueProps<IAutocompleteMultiSelectOptionType>) {
-  return (
-    <Chip
-      tabIndex={-1}
-      label={props.children}
-      className={clsx(props.selectProps.classes.chip, {
-        [props.selectProps.classes.chipFocused]: props.isFocused,
-      })}
-      onDelete={props.removeProps.onClick}
-      deleteIcon={<CancelIcon {...props.removeProps} />}
-      color="primary"
-    />
-  );
+    return (
+        <Chip
+            tabIndex={-1}
+            label={props.children}
+            className={clsx(props.selectProps.classes.chip, {
+                [props.selectProps.classes.chipFocused]: props.isFocused
+            })}
+            onDelete={props.removeProps.onClick}
+            deleteIcon={<CancelIcon {...props.removeProps} />}
+            color="primary"
+        />
+    );
 }
 
 function Menu(props: MenuProps<IAutocompleteMultiSelectOptionType>) {
-  return (
-    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
-      {props.children}
-    </Paper>
-  );
+    return (
+        <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+            {props.children}
+        </Paper>
+    );
 }
 
 const components = {
-  Control,
-  Menu,
-  MultiValue,
-  NoOptionsMessage,
-  Option,
-  Placeholder,
-  SingleValue,
-  ValueContainer,
+    Control,
+    Menu,
+    MultiValue,
+    NoOptionsMessage,
+    Option,
+    Placeholder,
+    SingleValue,
+    ValueContainer
 };
 
 interface IOwnProps {
-  classes: any;
-  label: string;
-  placeholder: string;
-  options: IAutocompleteMultiSelectOptionType[];
-  onChange: (value: ValueType<IAutocompleteMultiSelectOptionType>) => any;
-  selectedValues: ValueType<IAutocompleteMultiSelectOptionType>;
-  disabled?: boolean;
+    classes: any;
+    label: string;
+    placeholder: string;
+    options: IAutocompleteMultiSelectOptionType[];
+    onChange: (value: ValueType<IAutocompleteMultiSelectOptionType>) => any;
+    selectedValues: ValueType<IAutocompleteMultiSelectOptionType>;
+    disabled?: boolean;
 }
 
 class MultiSelectClass extends React.Component<IOwnProps> {
-  constructor(props: IOwnProps) {
-    super(props);
+    constructor(props: IOwnProps) {
+        super(props);
 
-    this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
-  }
+        this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
+    }
 
-  handleMultiSelectChange(value: ValueType<IAutocompleteMultiSelectOptionType>) {
-    this.props.onChange(value);    
-  }
+    handleMultiSelectChange(value: ValueType<IAutocompleteMultiSelectOptionType>) {
+        this.props.onChange(value);
+    }
 
-  render() {
-    const {
-      classes,
-      label,
-      placeholder,
-      options,
-      selectedValues,
-      disabled
-    } = this.props;
+    render() {
+        const { classes, label, placeholder, options, selectedValues, disabled } = this.props;
 
-    return (
-      <div className={classes.root}>
-          <Select
-            classes={classes}
-            styles={INPUT_AUTOCOMPLETE_SELECT_STYLE}
-            TextFieldProps={{
-              label,
-              InputLabelProps: {
-                shrink: true
-              }
-            }}
-            placeholder={placeholder}
-            options={options}
-            components={components}
-            value={selectedValues}
-            onChange={this.handleMultiSelectChange}
-            isDisabled={disabled}
-            isMulti
-          />
-      </div>
-    );
-  }
+        return (
+            <div className={classes.root}>
+                <Select
+                    classes={classes}
+                    styles={INPUT_AUTOCOMPLETE_SELECT_STYLE}
+                    TextFieldProps={{
+                        label,
+                        InputLabelProps: {
+                            shrink: true
+                        }
+                    }}
+                    placeholder={placeholder}
+                    options={options}
+                    components={components}
+                    value={selectedValues}
+                    onChange={this.handleMultiSelectChange}
+                    isDisabled={disabled}
+                    isMulti
+                />
+            </div>
+        );
+    }
 }
 
 export const MultiSelectAutocomplete = withStyles(createInputAutocompleteStyle)(MultiSelectClass);

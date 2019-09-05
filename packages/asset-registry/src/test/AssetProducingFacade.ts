@@ -16,7 +16,6 @@ import Web3 from 'web3';
 import { AssetProducingRegistryLogic, migrateAssetRegistryContracts, ProducingAsset } from '..';
 import { logger } from '../Logger';
 
-// tslint:disable-next-line: no-big-function
 describe('AssetProducing Facade', () => {
     const configFile = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')

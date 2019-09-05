@@ -25,7 +25,7 @@ import {
 } from './MultiSelectAutocomplete';
 import { CustomSlider, CustomSliderThumbComponent } from './CustomSlider';
 import moment, { Moment } from 'moment';
-import { Formik, Field, Form } from 'formik';
+import { Formik, Field, Form, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 
@@ -157,8 +157,12 @@ interface IState {
 
 const DEFAULT_VINTAGE_RANGE = [1970, moment().year()];
 
-const FormikDatePicker = ({ form: { setFieldValue }, field: { name, value }, ...rest }) => (
-    <DatePicker onChange={value => setFieldValue(name, value)} value={value} {...rest} />
+const FormikDatePicker = ({
+    form: { setFieldValue },
+    field: { name, value },
+    ...rest
+}: FieldProps) => (
+    <DatePicker onChange={newValue => setFieldValue(name, newValue)} value={value} {...rest} />
 );
 
 class OnboardDemandClass extends React.Component<IStateProps, IState> {

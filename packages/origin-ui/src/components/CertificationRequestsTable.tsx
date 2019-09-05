@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Configuration, IRECAssetService } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { CertificateLogic } from '@energyweb/origin';
