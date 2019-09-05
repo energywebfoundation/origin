@@ -6,7 +6,7 @@ import { AssetConsumingRegistryLogic, AssetProducingRegistryLogic, migrateAssetR
 import { MarketLogic, migrateMarketRegistryContracts } from '@energyweb/market';
 import { CertificateLogic, migrateCertificateRegistryContracts } from '@energyweb/origin';
 import { buildRights, migrateUserRegistryContracts, Role, User, UserLogic } from '@energyweb/user-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 
 export const deployDemo = async () => {
     const connectionConfig = {
@@ -166,8 +166,8 @@ export const deployDemo = async () => {
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
-        assetType: ProducingAsset.Type.Wind,
-        complianceRegistry: ProducingAsset.Compliance.IREC,
+        assetType: 'Wind',
+        complianceRegistry: Compliance.IREC,
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
         city: 'Warsaw',
