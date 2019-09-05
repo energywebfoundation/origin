@@ -38,7 +38,7 @@
     "test": "npm run build && mocha dist/js/src/test/ --timeout 60000",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "build:static": "yarn compile",
-    "test-contracts": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
+    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"yarn test\"",
     "prebuild-schemas": "rm -rf dist/schemas && mkdir -p dist/schemas && rm -rf schemas && mkdir schemas",
     "build-schemas": "npm run prebuild-schemas && npm run build-schema:UserPropertiesOffChain && cp -R schemas dist/schemas",
     "build-schema:UserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Users/User.ts IUserOffChainProperties > schemas/UserOffChainProperties.schema.json"
