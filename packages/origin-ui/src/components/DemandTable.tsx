@@ -18,13 +18,7 @@ import * as React from 'react';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
-import {
-    Configuration,
-    TimeFrame,
-    Compliance,
-    AssetType,
-    Currency
-} from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Currency, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
@@ -32,7 +26,6 @@ import { Demand } from '@energyweb/market';
 import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
-import { deleteDemand } from '@energyweb/market/dist/js/src/blockchain-facade/Demand';
 import {
     IPaginatedLoaderState,
     PaginatedLoader,
@@ -51,6 +44,7 @@ import {
 } from '../features/selectors';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
+import { calculateTotalEnergyDemand } from './OnboardDemand';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -84,6 +78,8 @@ enum OPERATIONS {
 }
 
 class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
+    private IRECAssetService = new IRECAssetService();
+
     constructor(props: Props) {
         super(props);
 
@@ -109,10 +105,10 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             };
 
             if (demand.offChainProperties) {
-                if (typeof demand.offChainProperties.productingAsset !== 'undefined') {
+                if (typeof demand.offChainProperties.producingAsset !== 'undefined') {
                     result.producingAsset = this.props.producingAssets.find(
                         (asset: ProducingAsset.Entity) =>
-                            asset.id === demand.offChainProperties.productingAsset.toString()
+                            asset.id === demand.offChainProperties.producingAsset.toString()
                     );
                 }
 
@@ -130,15 +126,18 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
         return Promise.all(promises);
     }
 
-    getCountryRegionText(demand: Demand.Entity): string {
+    getRegionsProvincesText(demand: Demand.Entity): string {
         let text = '';
+        const { location } = demand.offChainProperties;
 
-        if (demand.offChainProperties.locationCountry) {
-            text += demand.offChainProperties.locationCountry;
-        }
+        if (location) {
+            if (location.regions && location.regions.length) {
+                text += location.regions.join(', ');
+            }
 
-        if (demand.offChainProperties.locationRegion) {
-            text += `, ${demand.offChainProperties.locationRegion}`;
+            if (location.provinces && location.provinces.length) {
+                text += ` ${location.provinces.join(', ')}`;
+            }
         }
 
         return text || NO_VALUE_TEXT;
@@ -161,7 +160,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             this.props.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
             };
-            await deleteDemand(id, this.props.configuration);
+            await Demand.deleteDemand(id, this.props.configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
         } catch (error) {
@@ -190,41 +189,45 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
         const formattedPaginatedData = paginatedData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
                 const demand = enrichedDemandData.demand;
-                const overallDemand =
-                    Math.ceil(
-                        (parseInt(demand.offChainProperties.endTime, 10) -
-                            parseInt(demand.offChainProperties.startTime, 10)) /
-                            PeriodToSeconds[demand.offChainProperties.timeframe] /
-                            1000
-                    ) *
-                    (demand.offChainProperties.targetWhPerPeriod / 1000);
+
+                const assetTypes =
+                    demand.offChainProperties.assetType &&
+                    demand.offChainProperties.assetType.length > 0
+                        ? demand.offChainProperties.assetType
+                              .map(type => type.replace(/;/g, ' - '))
+                              .join(', ')
+                        : NO_VALUE_TEXT;
+
+                const overallDemand = (
+                    calculateTotalEnergyDemand(
+                        moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
+                        moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+                        demand.offChainProperties.targetWhPerPeriod,
+                        demand.offChainProperties.timeFrame
+                    ) / 1000000
+                ).toLocaleString();
 
                 return [
                     demand.id,
                     enrichedDemandData.demandOwner.organization,
-                    moment(demand.offChainProperties.startTime, 'x').format('DD MMM YY') +
+                    moment
+                        .unix(parseInt(demand.offChainProperties.startTime, 10))
+                        .format('DD MMM YY') +
                         ' - ' +
-                        moment(demand.offChainProperties.endTime, 'x').format('DD MMM YY'),
-                    this.getCountryRegionText(demand),
-                    typeof demand.offChainProperties.assettype !== 'undefined'
-                        ? AssetType[demand.offChainProperties.assettype]
+                        moment
+                            .unix(parseInt(demand.offChainProperties.endTime, 10))
+                            .format('DD MMM YY'),
+                    this.getRegionsProvincesText(demand),
+                    assetTypes,
+                    typeof demand.offChainProperties.timeFrame !== 'undefined'
+                        ? TimeFrame[demand.offChainProperties.timeFrame]
                         : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.registryCompliance !== 'undefined'
-                        ? Compliance[demand.offChainProperties.registryCompliance]
+                    demand.offChainProperties.procureFromSingleFacility ? 'yes' : 'no',
+                    demand.offChainProperties.vintage &&
+                    demand.offChainProperties.vintage.length === 2
+                        ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
                         : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.timeframe !== 'undefined'
-                        ? TimeFrame[demand.offChainProperties.timeframe]
-                        : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.productingAsset !== 'undefined'
-                        ? demand.offChainProperties.productingAsset
-                        : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.consumingAsset !== 'undefined'
-                        ? demand.offChainProperties.consumingAsset
-                        : NO_VALUE_TEXT,
-                    typeof demand.offChainProperties.minCO2Offset !== 'undefined'
-                        ? demand.offChainProperties.minCO2Offset.toLocaleString()
-                        : 0,
-                    (demand.offChainProperties.targetWhPerPeriod / 1000).toLocaleString(),
+                    (demand.offChainProperties.targetWhPerPeriod / 1000000).toLocaleString(),
                     `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
                         Currency[demand.offChainProperties.currency]
                     }`,
@@ -268,25 +271,23 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 12
+                colspan: 10
             },
-            generateFooter('Energy Demand (kWh)', true)
+            generateFooter('Total Demand (kWh)', true)
         ];
 
         const TableHeader = [
             generateHeader('#'),
             generateHeader('Buyer'),
             generateHeader('Start/End-Date'),
-            generateHeader('Country,<br/>Region'),
+            generateHeader('Region, Province'),
             generateHeader('Asset Type'),
-            generateHeader('Compliance'),
-            generateHeader('Coupling Timeframe'),
-            generateHeader('Production Coupling with Asset'),
-            generateHeader('Consumption Coupling with Asset'),
-            generateHeader('Min CO2 Offset'),
-            generateHeader('Coupling Cap per Timeframe (kWh)'),
+            generateHeader('Repeatable'),
+            generateHeader('Procure from single facility'),
+            generateHeader('Vintage'),
+            generateHeader('Demand per Timeframe (MWh)'),
             generateHeader('Max Price'),
-            generateHeader('Energy Demand (kWh)')
+            generateHeader('Total Demand (MWh)')
         ];
 
         return (

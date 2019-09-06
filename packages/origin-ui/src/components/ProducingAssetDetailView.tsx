@@ -27,7 +27,7 @@ import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
-import { Configuration } from '@energyweb/utils-general';
+import { Compliance, Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { AssetMap } from './AssetMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
@@ -141,10 +141,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
                         label:
                             'Certified by Registry' +
                             getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
-                        data:
-                            ProducingAsset.Compliance[
-                                selectedAsset.offChainProperties.complianceRegistry
-                            ]
+                        data: Compliance[selectedAsset.offChainProperties.complianceRegistry]
                     },
                     {
                         label:
@@ -161,12 +158,12 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
                         label:
                             'Asset Type' +
                             getOffChainText('assetType', selectedAsset.offChainProperties),
-                        data: ProducingAsset.Type[selectedAsset.offChainProperties.assetType],
+                        data: selectedAsset.offChainProperties.assetType,
+                        // TODO: handle more asset types
                         image:
-                            ProducingAsset.Type.Wind === selectedAsset.offChainProperties.assetType
+                            selectedAsset.offChainProperties.assetType === 'Wind'
                                 ? wind
-                                : ProducingAsset.Type.Solar ===
-                                  selectedAsset.offChainProperties.assetType
+                                : selectedAsset.offChainProperties.assetType === 'Solar'
                                 ? solar
                                 : hydro,
                         rowspan: 2

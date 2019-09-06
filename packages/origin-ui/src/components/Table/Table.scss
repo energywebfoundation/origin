@@ -1,97 +1,14 @@
-@import '../../styles/variables.scss';
+@import "../../styles/variables.scss";
 
 .TableWrapper {
     table {
         box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
         table-layout: fixed;
         width: 100%;
-
-        &:not(.admin) {
-            border-bottom: 3px solid $primaryColor;
-        }
+        border-bottom: 3px solid $primaryColor;
 
         & td {
             word-wrap: break-word;
-        }
-
-        &.admin {
-            table-layout: initial;
-
-            thead tr {
-                display: none;
-            }
-
-            tr {
-                height: 60px;
-
-                &.TableFooter,
-                &.TableHeader {
-                    background-color: $backgroundColorDark !important;
-                }
-
-                &.TableFooter {
-                    height: 125px;
-                    border-bottom: 3px solid $primaryColor !important;
-
-                    th.Actions {
-                        text-align: center;
-
-                        button {
-                            margin-top: 22px;
-                            background: $primaryColor;
-                            border-radius: 3px;
-                            font-weight: 500;
-                            font-size: 14px;
-                            text-align: center;
-                            letter-spacing: 0.3px;
-                            text-transform: uppercase;
-                            line-height: 50px;
-                            width: 195px;
-                            color: #ffffff;
-                            border: none;
-                            padding: 0;
-                            outline: none;
-                        }
-                    }
-                }
-
-                &:not(:first-child),
-                &:not(:last-child) {
-                    border-bottom: 1px solid rgba(151, 151, 151, 0.14);
-                }
-
-                &:nth-child(even),
-                &:nth-child(odd) {
-                    background-color: #474747;
-                }
-            }
-
-            tr td,
-            tr th {
-                text-align: left;
-                vertical-align: middle;
-                padding: 0 14px;
-
-                > div {
-                    opacity: 1;
-                }
-            }
-
-            tr {
-                th {
-                    font-size: 18px;
-                    mix-blend-mode: normal;
-                    font-weight: 100;
-                    color: rgba(255, 255, 255, 0.7);
-                }
-
-                td {
-                    font-weight: 500;
-                    font-size: 14px;
-                    mix-blend-mode: normal;
-                    color: rgba(255, 255, 255, 0.7);
-                }
-            }
         }
 
         tr td,

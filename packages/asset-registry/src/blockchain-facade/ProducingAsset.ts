@@ -13,37 +13,22 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import { Configuration } from '@energyweb/utils-general';
-import * as Asset from './Asset';
-import { ProducingAssetPropertiesOffchainSchema } from '..';
-import { TransactionReceipt } from 'web3/types';
+import { Compliance, Configuration } from '@energyweb/utils-general';
 import moment from 'moment';
+import { TransactionReceipt } from 'web3/types';
+
+import { ProducingAssetPropertiesOffchainSchema } from '..';
 import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
+import * as Asset from './Asset';
 
-/**
- * TODO: in generalLib
- */
-export enum Type {
-    Wind,
-    Solar,
-    RunRiverHydro,
-    BiomassGas
-}
 
-export enum Compliance {
-    none,
-    IREC,
-    EEC,
-    TIGR
-}
 
 export interface IOnChainProperties extends Asset.IOnChainProperties {
     maxOwnerChanges?: number;
 }
 
 export interface IOffChainProperties extends Asset.IOffChainProperties {
-    assetType: Type;
+    assetType: string;
     complianceRegistry: Compliance;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;

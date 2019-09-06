@@ -18,9 +18,12 @@ import * as fs from 'fs';
 import Web3 from 'web3';
 
 import { deployERC20TestToken, Erc20TestToken } from 'ew-erc-test-contracts';
-import { Configuration, AssetType, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from '@energyweb/asset-registry';
+import {
+    AssetProducingRegistryLogic,
+    AssetConsumingRegistryLogic
+} from '@energyweb/asset-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
 
@@ -92,7 +95,6 @@ export const marketDemo = async (demoFile?: string) => {
         },
         logger
     };
-
 
     const userPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -167,78 +169,26 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.traderPK
                 };
 
-                let assetTypeConfig;
-
-                switch (action.data.assettype) {
-                    case 'Wind':
-                        assetTypeConfig = AssetType.Wind;
-                        break;
-                    case 'Solar':
-                        assetTypeConfig = AssetType.Solar;
-                        break;
-                    case 'RunRiverHydro':
-                        assetTypeConfig = AssetType.RunRiverHydro;
-                        break;
-                    case 'BiomassGas':
-                        assetTypeConfig = AssetType.BiomassGas;
+                if (!Array.isArray(action.data.assettype)) {
+                    throw new Error('Demand assettype has to be string[]');
                 }
-
-                let assetCompliance;
-
-                switch (action.data.registryCompliance) {
-                    case 'IREC':
-                        assetCompliance = Compliance.IREC;
-                        break;
-                    case 'EEC':
-                        assetCompliance = Compliance.EEC;
-                        break;
-                    case 'TIGR':
-                        assetCompliance = Compliance.TIGR;
-                        break;
-                    default:
-                        assetCompliance = Compliance.none;
-                        break;
-                }
-
-                switch (action.data.timeframe) {
-                    case 'yearly':
-                        timeFrame = TimeFrame.yearly;
-                        break;
-                    case 'monthly':
-                        timeFrame = TimeFrame.monthly;
-                        break;
-                    case 'daily':
-                        timeFrame = TimeFrame.daily;
-                        break;
-                    case 'hourly':
-                        timeFrame = TimeFrame.hourly;
-                        break;
-                }
-
-                switch (action.data.currency) {
-                    case 'EUR':
-                        currency = Currency.EUR;
-                        break;
-                    case 'USD':
-                        currency = Currency.USD;
-                        break;
-                    case 'SGD':
-                        currency = Currency.SGD;
-                        break;
-                    case 'THB':
-                        currency = Currency.THB;
-                        break;
-                }
+                const assetTypeConfig = action.data.assettype;
+                const assetCompliance =
+                    Compliance[action.data.registryCompliance as keyof typeof Compliance];
+                timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
+                currency = Currency[action.data.currency as keyof typeof Currency];
 
                 const demandOffchainProps: Demand.IDemandOffChainProperties = {
-                    timeframe: timeFrame,
+                    timeFrame: timeFrame,
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
-                    productingAsset: action.data.producingAsset,
+                    producingAsset: action.data.producingAsset,
                     consumingAsset: action.data.consumingAsset,
-                    locationCountry: action.data.country,
-                    locationRegion: action.data.region,
-                    assettype: assetTypeConfig,
+                    location: {
+                        provinces: [action.data.provinces],
+                        regions: [action.data.regions]
+                    },
+                    assetType: assetTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
@@ -279,41 +229,14 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.assetOwnerPK
                 };
 
-                switch (action.data.timeframe) {
-                    case 'yearly':
-                        timeFrame = TimeFrame.yearly;
-                        break;
-                    case 'monthly':
-                        timeFrame = TimeFrame.monthly;
-                        break;
-                    case 'daily':
-                        timeFrame = TimeFrame.daily;
-                        break;
-                    case 'hourly':
-                        timeFrame = TimeFrame.hourly;
-                        break;
-                }
-
-                switch (action.data.currency) {
-                    case 'EUR':
-                        currency = Currency.EUR;
-                        break;
-                    case 'USD':
-                        currency = Currency.USD;
-                        break;
-                    case 'SGD':
-                        currency = Currency.SGD;
-                        break;
-                    case 'THB':
-                        currency = Currency.THB;
-                        break;
-                }
+                timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
+                currency = Currency[action.data.currency as keyof typeof Currency];
 
                 const supplyOffChainProperties: Supply.ISupplyOffchainProperties = {
                     price: action.data.price,
                     currency,
                     availableWh: action.data.availableWh,
-                    timeframe: timeFrame
+                    timeFrame: timeFrame
                 };
 
                 const supplyProps: Supply.ISupplyOnChainProperties = {
@@ -347,35 +270,8 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.creatorPK
                 };
 
-                switch (action.data.timeframe) {
-                    case 'yearly':
-                        timeFrame = TimeFrame.yearly;
-                        break;
-                    case 'monthly':
-                        timeFrame = TimeFrame.monthly;
-                        break;
-                    case 'daily':
-                        timeFrame = TimeFrame.daily;
-                        break;
-                    case 'hourly':
-                        timeFrame = TimeFrame.hourly;
-                        break;
-                }
-
-                switch (action.data.currency) {
-                    case 'EUR':
-                        currency = Currency.EUR;
-                        break;
-                    case 'USD':
-                        currency = Currency.USD;
-                        break;
-                    case 'SGD':
-                        currency = Currency.SGD;
-                        break;
-                    case 'THB':
-                        currency = Currency.THB;
-                        break;
-                }
+                timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
+                currency = Currency[action.data.currency as keyof typeof Currency];
 
                 if (action.data.startTime === -1) {
                     action.data.startTime = Math.floor(Date.now() / 1000);

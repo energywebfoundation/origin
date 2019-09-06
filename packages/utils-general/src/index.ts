@@ -13,14 +13,15 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import * as BlockchainDataModelEntity from './blockchain-facade/BlockchainDataModelEntity';
 import * as Configuration from './blockchain-facade/Configuration';
+
 
 export { ContractEventHandler } from './blockchain-facade/ContractEventHandler';
 export { EventHandlerManager } from './blockchain-facade/EventHandlerManager';
 export { BlockchainDataModelEntity };
 export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
-export { TimeFrame, Currency, AssetType, Compliance } from './blockchain-facade/EnumExports';
+export { TimeFrame, Currency, Compliance } from './blockchain-facade/EnumExports';
 export { deploy } from './deployment/deploy';
+export { IAssetService, IRECAssetService } from './blockchain-facade/AssetTypeService';

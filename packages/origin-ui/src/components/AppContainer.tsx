@@ -20,7 +20,6 @@ import { Route, Switch, withRouter, RouteComponentProps } from 'react-router-dom
 import { IStoreState } from '../types';
 import { Header } from './Header';
 import { Asset } from './Asset';
-import { Admin } from './Admin';
 import './AppContainer.scss';
 import { Demands } from './Demands';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
@@ -33,7 +32,7 @@ import {
     setOriginContractLookupAddress
 } from '../features/contracts/actions';
 import { getBaseURL } from '../features/selectors';
-import { getAssetsLink, getCertificatesLink, getAdminLink, getDemandsLink } from '../utils/routing';
+import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 import { getError, getLoading } from '../features/general/selectors';
 
 interface IMatchParams {
@@ -76,7 +75,6 @@ class AppContainerClass extends React.Component<Props> {
                 <Switch>
                     <Route path={getAssetsLink(baseURL)} component={Asset} />
                     <Route path={getCertificatesLink(baseURL)} component={Certificates} />
-                    <Route path={getAdminLink(baseURL)} component={Admin} />
                     <Route path={getDemandsLink(baseURL)} component={Demands} />
 
                     <Route path={baseURL} component={Asset} />
