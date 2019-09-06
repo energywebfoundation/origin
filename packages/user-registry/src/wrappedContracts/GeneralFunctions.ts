@@ -1,12 +1,14 @@
 import Web3 from 'web3';
+// eslint-disable-next-line import/no-unresolved
 import { Tx } from 'web3/eth/types';
+// eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt, Logs } from 'web3/types';
 
-export declare interface SpecialTx extends Tx {
+export declare interface ISpecialTx extends Tx {
     privateKey: string;
 }
 
-export declare interface SearchLog extends Logs {
+export declare interface ISearchLog extends Logs {
     toBlock: number;
 }
 
@@ -52,6 +54,7 @@ export async function replayTransaction(web3: Web3, txHash: string) {
 
 export class GeneralFunctions {
     web3Contract: any;
+
     web3: Web3;
 
     constructor(web3Contract) {
@@ -70,17 +73,17 @@ export class GeneralFunctions {
 
         const txObject = await web3.eth.accounts.signTransaction(txData, privateKey);
 
-        return await web3.eth.sendSignedTransaction((txObject as any).rawTransaction);
+        return web3.eth.sendSignedTransaction((txObject as any).rawTransaction);
     }
 
-    async send(method: any, txParams: SpecialTx): Promise<TransactionReceipt> {
-        const transactionParams: SpecialTx = await this.buildTransactionParams(method, txParams);
+    async send(method: any, txParams: ISpecialTx): Promise<TransactionReceipt> {
+        const transactionParams: ISpecialTx = await this.buildTransactionParams(method, txParams);
 
         if (transactionParams.privateKey === '') {
-            return await this.web3.eth.sendTransaction(transactionParams);
+            return this.web3.eth.sendTransaction(transactionParams);
         }
 
-        return await this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
+        return this.sendRaw(this.web3, transactionParams.privateKey, transactionParams);
     }
 
     getWeb3Contract() {
@@ -88,7 +91,7 @@ export class GeneralFunctions {
     }
 
     async getErrorMessage(web3: Web3, txObj: Tx): Promise<string> {
-        return await new Promise<any>((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
             (web3.currentProvider as any).send(
                 {
                     jsonrpc: '2.0',
@@ -102,7 +105,7 @@ export class GeneralFunctions {
                     } else {
                         const outputResult = r.result.output;
 
-                        const shorterAsciiCode = '0x' + outputResult.substr(10);
+                        const shorterAsciiCode = `0x${outputResult.substr(10)}`;
 
                         if (r.result.output === '0x') {
                             resolve('Bad instruction / revert without reason string');
@@ -115,14 +118,16 @@ export class GeneralFunctions {
         });
     }
 
-    async buildTransactionParams(method, params): Promise<SpecialTx> {
+    async buildTransactionParams(method, params): Promise<ISpecialTx> {
         params = params || {};
         const networkGasPrice = await this.web3.eth.getGasPrice();
 
         let methodGas;
 
         if (params.privateKey) {
-            const privateKey = params.privateKey.startsWith('0x') ? params.privateKey : '0x' + params.privateKey;
+            const privateKey = params.privateKey.startsWith('0x')
+                ? params.privateKey
+                : `0x${params.privateKey}`;
 
             params.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
         }

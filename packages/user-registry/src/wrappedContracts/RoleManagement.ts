@@ -1,5 +1,5 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import RoleManagementJSON from '../../build/contracts/RoleManagement.json';
 
 export enum Role {
@@ -18,11 +18,12 @@ export function buildRights(roles: Role[]): number {
 
     return roles.reduce((a, b) => {
         return a | Math.pow(2, b);
-    },                  0);
+    }, 0);
 }
 
 export class RoleManagement extends GeneralFunctions {
     web3: Web3;
+
     buildFile = RoleManagementJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -31,13 +32,15 @@ export class RoleManagement extends GeneralFunctions {
                 ? new web3.eth.Contract(RoleManagementJSON.abi, address)
                 : new web3.eth.Contract(
                       RoleManagementJSON.abi,
-                      (RoleManagementJSON as any).networks.length > 0 ? RoleManagementJSON.networks[0] : null
+                      (RoleManagementJSON as any).networks.length > 0
+                          ? RoleManagementJSON.networks[0]
+                          : null
                   )
         );
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -54,10 +57,10 @@ export class RoleManagement extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
+    async getAllEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -73,24 +76,24 @@ export class RoleManagement extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
     }
 
-    async userContractLookup(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.userContractLookup().call(txParams);
+    async userContractLookup(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.userContractLookup().call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
+    async owner(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
+    async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
     }
 }

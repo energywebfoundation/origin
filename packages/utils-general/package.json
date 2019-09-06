@@ -21,7 +21,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "scripts/build.js",
+    "build": "yarn compile && yarn build-ts",
     "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",

@@ -23,6 +23,7 @@ contract Owned {
     event LogChangeOwner(address _newOwner);
 
     address public owner;
+    address public ownerTwo;
 
     /// @notice The Constructor assigns the message sender to be `owner`
     constructor(address _initOwner) public { owner = _initOwner;}

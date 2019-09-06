@@ -17,15 +17,21 @@ export interface IOriginEventListener extends IEventListener {
 
 export class OriginEventListener implements IOriginEventListener {
     public originLookupAddress: string;
+
     public web3: Web3;
+
     public started: boolean;
+
     public notificationInterval: number;
 
     public conf: Configuration.Entity;
+
     public manager: EventHandlerManager;
+
     public emailService: IEmailServiceProvider;
 
     private newCertificateCounters: object;
+
     private interval;
 
     constructor(
@@ -68,14 +74,19 @@ export class OriginEventListener implements IOriginEventListener {
                 this.newCertificateCounters[certOwnerEmail] = 1;
             }
 
-            this.conf.logger.info(`<${certOwnerEmail}> New certificate approved. Buffered emails count: ${this.newCertificateCounters[certOwnerEmail]}`);
+            this.conf.logger.info(
+                `<${certOwnerEmail}> New certificate approved. Buffered emails count: ${this.newCertificateCounters[certOwnerEmail]}`
+            );
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
         this.manager.registerEventHandler(certificateContractEventHandler);
 
         this.manager.start();
-        this.interval = setInterval(this.notifyOwnersOfNewCertificates.bind(this), this.notificationInterval);
+        this.interval = setInterval(
+            this.notifyOwnersOfNewCertificates.bind(this),
+            this.notificationInterval
+        );
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.originLookupAddress}`);
@@ -84,7 +95,6 @@ export class OriginEventListener implements IOriginEventListener {
     public async notifyOwnersOfNewCertificates() {
         for (const ownerEmail in this.newCertificateCounters) {
             if (this.newCertificateCounters[ownerEmail] > 0) {
-
                 this.conf.logger.info(`Sending email to ${ownerEmail}...`);
 
                 const emailTemplate: IEmail = {
@@ -96,11 +106,13 @@ export class OriginEventListener implements IOriginEventListener {
                         ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox
                     `
                 };
-    
+
                 const response: IEmailResponse = await this.emailService.send(emailTemplate);
 
                 if (!response.success) {
-                    this.conf.logger.error(`Unable to send email to ${ownerEmail}: ${response.error}`);
+                    this.conf.logger.error(
+                        `Unable to send email to ${ownerEmail}: ${response.error}`
+                    );
                     return;
                 }
 
