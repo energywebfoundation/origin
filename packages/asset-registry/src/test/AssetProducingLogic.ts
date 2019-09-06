@@ -13,32 +13,33 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
+import 'mocha';
 
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    UserContractLookup,
+    UserLogic
+} from '@energyweb/user-registry';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import 'mocha';
+import moment from 'moment';
 import Web3 from 'web3';
+
 import {
-    UserContractLookup,
-    UserLogic,
-    migrateUserRegistryContracts,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
-import { AssetContractLookup } from '../wrappedContracts/AssetContractLookup';
-import { AssetConsumingRegistryLogic } from '../wrappedContracts/AssetConsumingRegistryLogic';
-import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
-import { AssetConsumingDB } from '../wrappedContracts/AssetConsumingDB';
-import { AssetProducingDB } from '../wrappedContracts/AssetProducingDB';
-import {
-    AssetContractLookupJSON,
     AssetConsumingDBJSON,
     AssetConsumingRegistryLogicJSON,
+    AssetContractLookupJSON,
     AssetProducingDBJSON,
     AssetProducingRegistryLogicJSON
 } from '..';
-import moment from 'moment';
+import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
+import { AssetConsumingDB } from '../wrappedContracts/AssetConsumingDB';
+import { AssetConsumingRegistryLogic } from '../wrappedContracts/AssetConsumingRegistryLogic';
+import { AssetContractLookup } from '../wrappedContracts/AssetContractLookup';
+import { AssetProducingDB } from '../wrappedContracts/AssetProducingDB';
+import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
 
 describe('AssetProducingLogic', () => {
     const configFile = JSON.parse(
@@ -139,8 +140,6 @@ describe('AssetProducingLogic', () => {
 
             const deployedBytecode = await web3.eth.getCode(deployedContracts[key]);
             assert.isTrue(deployedBytecode.length > 0);
-
-            // const tempBytecode = contractInfo.deployedBytecode;
             assert.equal(deployedBytecode, tempBytecode);
         });
     });
@@ -210,10 +209,6 @@ describe('AssetProducingLogic', () => {
     });
 
     it('should onboard tests-users', async () => {
-        const userLogicAddress = await userContractLookup.userRegistry();
-
-        //  userLogic = new UserLogic(web3, userLogicAddress);
-
         await userLogic.createUser(
             'propertiesDocumentHash',
             'documentDBURL',
@@ -230,34 +225,10 @@ describe('AssetProducingLogic', () => {
         );
     });
 
-    it('should not deploy an asset as user', async () => {
-        let failed = false;
-        try {
-            await assetProducingLogic.createAsset(
-                assetSmartmeter,
-                assetOwnerAddress,
-                true,
-                [matcher] as any,
-                'propertiesDocumentHash',
-                'url',
-                2,
-                {
-                    privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
-                }
-            );
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'user does not have the required role');
-        }
-        assert.isTrue(failed);
-    });
-
     it('should return empty asset when smart meter is not onboarded yet', async () => {
         const deployedAsset = await assetProducingLogic.getAssetBySmartMeter(assetSmartmeter);
 
-        // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 2);
-        // checking the number of properties in assetGeneral
         assert.equal(deployedAsset.assetGeneral.length, 10);
 
         const ag = deployedAsset.assetGeneral;
@@ -274,7 +245,7 @@ describe('AssetProducingLogic', () => {
         assert.isFalse(ag.bundled);
     });
 
-    it('should throw when trying to access a non exsting AssetGeneral-Struct', async () => {
+    it('should throw when trying to access a non existing AssetGeneral-Struct', async () => {
         let failed = false;
         try {
             await assetProducingLogic.getAssetGeneral(0);
@@ -340,7 +311,7 @@ describe('AssetProducingLogic', () => {
         assert.isFalse(ag.bundled);
     });
 
-    it('should return asset by smartmeter correctly', async () => {
+    it('should return asset by smart meter correctly', async () => {
         const deployedAsset = await assetProducingLogic.getAssetBySmartMeter(assetSmartmeter);
 
         assert.equal(deployedAsset.length, 2);
@@ -377,7 +348,7 @@ describe('AssetProducingLogic', () => {
         assert.isFalse(ag.bundled);
     });
 
-    it('should fail when trying to log with saveSmartMeterRead using the wrong smartmeter', async () => {
+    it('should fail when trying to log with saveSmartMeterRead using the wrong smart meter', async () => {
         let failed = false;
 
         try {
@@ -421,7 +392,7 @@ describe('AssetProducingLogic', () => {
         });
     });
 
-    it('should fail when trying to log with saveSmartMeterRead and a too low meterreading', async () => {
+    it('should fail when trying to log with saveSmartMeterRead and a too low meter reading', async () => {
         let failed = false;
 
         try {
@@ -466,7 +437,7 @@ describe('AssetProducingLogic', () => {
         });
     });
 
-    it('should fail when trying to deactive an asset as non-manager', async () => {
+    it('should fail when trying to deactivate an asset as non-manager', async () => {
         let failed = false;
 
         try {
@@ -481,7 +452,7 @@ describe('AssetProducingLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should be able to deactive an asset', async () => {
+    it('should be able to deactivate an asset', async () => {
         const tx = await assetProducingLogic.setActive(0, false, {
             privateKey: privateKeyDeployment
         });
@@ -535,7 +506,7 @@ describe('AssetProducingLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should be able to deactive an asset', async () => {
+    it('should be able to deactivate an asset', async () => {
         const tx = await assetProducingLogic.setActive(0, true, {
             privateKey: privateKeyDeployment
         });
@@ -1183,7 +1154,7 @@ describe('AssetProducingLogic', () => {
         assert.isTrue(ag.bundled);
     });
 
-    it('should return the correct latest hashes + meterreadings', async () => {
+    it('should return the correct latest hashes + meter readings', async () => {
         assert.deepEqual(await assetProducingLogic.getLastMeterReadingAndHash(0), {
             0: '200',
             1: 'lastSmartMeterReadFileHash#2',
@@ -1198,7 +1169,7 @@ describe('AssetProducingLogic', () => {
             _lastSmartMeterReadFileHash: ''
         });
 
-        it('should fail when trying to return latest hash + meterreading of a non existing asset', async () => {
+        it('should fail when trying to return latest hash + meter reading of a non existing asset', async () => {
             let failed = false;
 
             try {

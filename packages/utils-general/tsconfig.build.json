@@ -6,6 +6,6 @@
         "outDir": "./dist/js",
     },
     "include": [
-        "src/**/*", "build/**/*.json"
+        "src/**/*", "build/**/*.json", "test/*"
     ]
 }

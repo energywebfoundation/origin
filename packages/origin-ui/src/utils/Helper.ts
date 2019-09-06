@@ -61,3 +61,9 @@ export function deepEqual(a: any, b: any) {
 
     return a === b;
 }
+
+export function getEnumValues(enumeration) {
+    const enumObject = Object.keys(enumeration);
+
+    return enumObject.splice(Math.ceil(enumObject.length / 2), enumObject.length - 1);
+}

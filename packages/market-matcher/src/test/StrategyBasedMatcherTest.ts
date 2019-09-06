@@ -22,7 +22,6 @@ import {
     UserLogic
 } from '@energyweb/user-registry';
 import {
-    AssetType,
     Compliance,
     Configuration,
     Currency,
@@ -207,14 +206,13 @@ describe('Test StrategyBasedMatcher', async () => {
         };
 
         const demandOffChainProps: Demand.IDemandOffChainProperties = {
-            timeframe: TimeFrame.hourly,
+            timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150,
             currency: Currency.USD,
-            productingAsset: 0,
-            consumingAsset: 0,
-            locationCountry: 'string',
-            locationRegion: 'string',
-            assettype: AssetType.BiomassGas,
+            producingAsset: '0',
+            consumingAsset: '0',
+            location: { provinces: ['string'], regions: ['string'] },
+            assetType: ['Solar'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
@@ -265,8 +263,8 @@ describe('Test StrategyBasedMatcher', async () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: ProducingAsset.Type.Wind,
-            complianceRegistry: ProducingAsset.Compliance.EEC,
+            assetType: 'Wind',
+            complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: ''
         };
@@ -285,13 +283,13 @@ describe('Test StrategyBasedMatcher', async () => {
             {
                 url: null,
                 propertiesDocumentHash: null,
-                assetId: 0
+                assetId: '0'
             },
             {
                 price: 150,
                 currency: Currency.USD,
                 availableWh: 1e6,
-                timeframe: TimeFrame.hourly
+                timeFrame: TimeFrame.hourly
             },
             conf
         );
@@ -412,8 +410,8 @@ describe('Test StrategyBasedMatcher', async () => {
                 url: null,
                 matcherDBURL: null,
                 matcherPropertiesDocumentHash: null,
-                demandId: 0,
-                supplyId: 0,
+                demandId: '0',
+                supplyId: '0',
                 allowedMatcher: []
             };
 

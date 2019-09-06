@@ -96,7 +96,7 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
                 i,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                ProducingAsset.Type[asset.offChainProperties.assetType],
+                asset.offChainProperties.assetType,
                 asset.offChainProperties.capacityWh / 1000,
                 energy / 1000
             ]);

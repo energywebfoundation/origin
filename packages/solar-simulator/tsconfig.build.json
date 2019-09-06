@@ -6,7 +6,7 @@
         "outDir": "./dist/js",
         "types": ["node"]
     },
-    "include": ["./src/**/*"],
+    "include": ["./src/**/*", "./config/*.json"],
     "references": [
         {
             "path": "../utils-general/tsconfig.build.json"

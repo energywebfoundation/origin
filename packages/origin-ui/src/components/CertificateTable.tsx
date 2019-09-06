@@ -13,39 +13,21 @@
 // GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
-import * as React from 'react';
-import { Redirect } from 'react-router-dom';
-import moment from 'moment';
-
-import { Certificate, TradableEntity } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-import { Configuration, TimeFrame, Currency } from '@energyweb/utils-general';
 import { MatcherLogic } from '@energyweb/market-matcher';
-
-import TableUtils from './Table/TableUtils';
-import { showNotification, NotificationType } from '../utils/notifications';
-import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
-import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
-import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
+import { Certificate, TradableEntity } from '@energyweb/origin';
+import { User } from '@energyweb/user-registry';
+import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
-import {
-    IPaginatedLoaderFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues
-} from './Table/PaginatedLoader';
-import { IBatchableAction } from './Table/ColumnBatchActions';
-import { AdvancedTable } from './Table/AdvancedTable';
-import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { RECORD_INDICATOR, FILTER_SPECIAL_TYPES } from './Table/PaginatedLoaderFiltered';
-import {
-    PaginatedLoaderFilteredSorted,
-    IPaginatedLoaderFilteredSortedState,
-    getInitialPaginatedLoaderFilteredSortedState
-} from './Table/PaginatedLoaderFilteredSorted';
+import moment from 'moment';
+import * as React from 'react';
 import { connect } from 'react-redux';
-import { IStoreState } from '../types';
+import { Redirect } from 'react-router-dom';
+
+import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
+import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
+import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import {
     getBaseURL,
     getCertificates,
@@ -53,7 +35,23 @@ import {
     getCurrentUser,
     getProducingAssets
 } from '../features/selectors';
+import { IStoreState } from '../types';
+import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
+import { AdvancedTable } from './Table/AdvancedTable';
+import { IBatchableAction } from './Table/ColumnBatchActions';
+import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
+import {
+    IPaginatedLoaderFetchDataParameters,
+    IPaginatedLoaderFetchDataReturnValues
+} from './Table/PaginatedLoader';
+import { FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderFiltered';
+import {
+    getInitialPaginatedLoaderFilteredSortedState,
+    IPaginatedLoaderFilteredSortedState,
+    PaginatedLoaderFilteredSorted
+} from './Table/PaginatedLoaderFilteredSorted';
+import TableUtils from './Table/TableUtils';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -131,7 +129,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
         label: 'Asset Type',
         sortProperties: ['assetTypeLabel'],
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-            ProducingAsset.Type[enrichedData.producingAsset.offChainProperties.assetType]
+            enrichedData.producingAsset.offChainProperties.assetType
     },
     {
         label: 'Commissioning Date',
@@ -154,9 +152,7 @@ const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
     {
         label: 'Compliance',
         displayValue: (enrichedData: IEnrichedCertificateData) =>
-            ProducingAsset.Compliance[
-                enrichedData.producingAsset.offChainProperties.complianceRegistry
-            ]
+            Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry]
     },
     {
         label: 'Owner',
@@ -348,7 +344,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel: ProducingAsset.Type[producingAsset.offChainProperties.assetType],
+                assetTypeLabel: producingAsset.offChainProperties.assetType,
                 certificateOwner: await new User.Entity(certificate.owner, this.props
                     .configuration as any).sync(),
                 offChainSettlementOptions,
@@ -556,13 +552,11 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             }
 
             const offChainProperties: Demand.IDemandOffChainProperties = {
-                timeframe: TimeFrame.yearly,
+                timeFrame: TimeFrame.yearly,
                 maxPricePerMwh: 0,
                 currency: Currency.USD,
-                productingAsset: certificate.assetId,
-                consumingAsset: 0,
-                locationCountry: asset.offChainProperties.country,
-                locationRegion: asset.offChainProperties.region,
+                producingAsset: certificate.assetId.toString(),
+                consumingAsset: '0',
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 targetWhPerPeriod: certificate.powerInW,
@@ -615,26 +609,26 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     availableOptions: [
                         {
                             label: 'Solar',
-                            value: ProducingAsset.Type.Solar
+                            value: 'Solar'
                         },
                         {
                             label: 'Wind',
-                            value: ProducingAsset.Type.Wind
+                            value: 'Wind'
                         },
                         {
-                            label: 'Biomass Gas',
-                            value: ProducingAsset.Type.BiomassGas
+                            label: 'Agricultural gas',
+                            value: 'Gaseous;Agricultural gas'
                         },
                         {
                             label: 'Hydro',
-                            value: ProducingAsset.Type.RunRiverHydro
+                            value: 'Hydro-electric Head;Run-of-river head installation'
                         }
                     ],
                     defaultOptions: [
-                        ProducingAsset.Type.Solar,
-                        ProducingAsset.Type.Wind,
-                        ProducingAsset.Type.BiomassGas,
-                        ProducingAsset.Type.RunRiverHydro
+                        'Solar',
+                        'Wind',
+                        'Gaseous;Agricultural gas',
+                        'Hydro-electric Head;Run-of-river head installation'
                     ]
                 }
             },

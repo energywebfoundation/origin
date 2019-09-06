@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
+    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "start-simulation": "ts-node src/simulatorService.ts",
     "start-consuming-api": "ts-node src/consumerService.ts",
     "import-irec-assets": "ts-node src/importIRECAssets.ts",

@@ -24,7 +24,7 @@ import './Header.scss';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getBaseURL, getCurrentUser } from '../features/selectors';
-import { getAssetsLink, getCertificatesLink, getDemandsLink, getAdminLink } from '../utils/routing';
+import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 
 interface IStateProps {
     currentUser: User.Entity;
@@ -52,9 +52,6 @@ class HeaderClass extends React.Component<Props> {
                         </li>
                         <li>
                             <NavLink to={getDemandsLink(baseURL)}>Demands</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={getAdminLink(baseURL)}>Admin</NavLink>
                         </li>
                     </ul>
 

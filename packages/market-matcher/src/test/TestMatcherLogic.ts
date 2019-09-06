@@ -34,7 +34,7 @@ describe('Test Matcher Logic', async () => {
                     currency: Currency.USD,
                     startTime: '',
                     endTime: '',
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // Wh check should fail
                 {
@@ -43,7 +43,7 @@ describe('Test Matcher Logic', async () => {
                     currency: Currency.EUR,
                     startTime: '',
                     endTime: '',
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // Price check should fail
                 {
@@ -52,7 +52,7 @@ describe('Test Matcher Logic', async () => {
                     currency: Currency.EUR,
                     startTime: '',
                     endTime: '',
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // Currency check should fail
                 {
@@ -61,7 +61,7 @@ describe('Test Matcher Logic', async () => {
                     currency: Currency.USD,
                     startTime: '',
                     endTime: '',
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // All checks should pass
                 {
@@ -70,7 +70,7 @@ describe('Test Matcher Logic', async () => {
                     currency: Currency.EUR,
                     startTime: '',
                     endTime: '',
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 }
             ];
 
@@ -111,7 +111,7 @@ describe('Test Matcher Logic', async () => {
                 currency: Currency.EUR,
                 startTime: '',
                 endTime: '',
-                timeframe: TimeFrame.daily
+                timeFrame: TimeFrame.daily
             };
 
             const testCertificates = [
@@ -216,7 +216,7 @@ describe('Test Matcher Logic', async () => {
                 currency: Currency.EUR,
                 startTime: '',
                 endTime: '',
-                timeframe: TimeFrame.daily
+                timeFrame: TimeFrame.daily
             };
 
             const testSupplies = [
@@ -225,28 +225,28 @@ describe('Test Matcher Logic', async () => {
                     availableWh: 0.9e6,
                     price: 200,
                     currency: Currency.EUR,
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // Wh check should fail
                 {
                     availableWh: 1.1e6,
                     price: 200,
                     currency: Currency.EUR,
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // Price check should fail
                 {
                     availableWh: 0.9e6,
                     price: 100,
                     currency: Currency.EUR,
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 },
                 // Both checks should pass
                 {
                     availableWh: 1.1e6,
                     price: 100,
                     currency: Currency.EUR,
-                    timeframe: TimeFrame.daily
+                    timeFrame: TimeFrame.daily
                 }
             ];
 
@@ -283,7 +283,7 @@ describe('Test Matcher Logic', async () => {
                 assetId: 0
             };
 
-            const testAgreements = [{ supplyId: 1 }, { supplyId: 2 }, { supplyId: 3 }];
+            const testAgreements = [{ supplyId: '1' }, { supplyId: '2' }, { supplyId: '3' }];
 
             const expectedMatches = 1;
 

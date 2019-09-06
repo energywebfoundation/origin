@@ -207,7 +207,7 @@
                 "houseNumber": "10",
                 "gpsLatitude": "8.9596",
                 "gpsLongitude": "99.222",
-                "assetType": "BiomassGas",
+                "assetType": "Biomass from agriculture",
                 "certificatesCreatedForWh": 0,
                 "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "TIGR",

@@ -239,7 +239,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
                 enrichedRecordData.organizationName,
                 asset.offChainProperties.facilityName,
                 asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                ProducingAsset.Type[asset.offChainProperties.assetType],
+                asset.offChainProperties.assetType,
                 asset.offChainProperties.capacityWh / 1000,
                 asset.lastSmartMeterReadWh / 1000
             ];
