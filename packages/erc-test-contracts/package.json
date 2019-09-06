@@ -24,7 +24,8 @@
     "lint": "solium -d contracts && eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && eslint --fix 'src/**/*{.ts,.tsx}'",
     "prepare": "node scripts/build.js",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "build:static": "yarn compile"
   },
   "dependencies": {
     "@energyweb/utils-general": "1.1.0",
