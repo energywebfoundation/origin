@@ -13,12 +13,14 @@ export interface IEventServiceProvider {
 
 export class EventServiceProvider implements IEventServiceProvider {
     public apiUrl: string;
+
     public listeners: IOriginEventListener[];
+
     public web3: Web3;
 
     public emailService: IEmailServiceProvider;
 
-    constructor (apiUrl: string, web3: Web3) {
+    constructor(apiUrl: string, web3: Web3) {
         this.apiUrl = apiUrl;
         this.web3 = web3;
         this.listeners = [];
@@ -36,7 +38,9 @@ export class EventServiceProvider implements IEventServiceProvider {
         const result = await axios.get(`${this.apiUrl}/OriginContractLookupMarketLookupMapping/`);
 
         const latestOriginContracts = Object.keys(result.data);
-        const currentlyListeningContracts = this.listeners.map(listener => listener.originLookupAddress);
+        const currentlyListeningContracts = this.listeners.map(
+            listener => listener.originLookupAddress
+        );
 
         // Add any listener from backend if missing
         for (const contract of latestOriginContracts) {

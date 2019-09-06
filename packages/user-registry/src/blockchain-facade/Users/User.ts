@@ -30,73 +30,30 @@ export interface IUserOffChainProperties {
     state?: string;
 }
 
-export interface IUserOnChainProperties
-    extends BlockchainDataModelEntity.IOnChainProperties {
+export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
     id: string;
     organization: string;
     roles: number;
     active?: boolean;
 }
 
-export const createUser = async (
-    userPropertiesOnChain: IUserOnChainProperties,
-    userPropertiesOffChain: IUserOffChainProperties,
-    configuration: Configuration.Entity
-): Promise<Entity> => {
-    const user = new Entity(null, configuration);
-
-    const offChainStorageProperties = user.prepareEntityCreation(
-        userPropertiesOnChain,
-        userPropertiesOffChain,
-        UserOffChainPropertiesSchema,
-        user.getUrl()
-    );
-
-    if (configuration.offChainDataSource) {
-        userPropertiesOnChain.url = user.getUrl();
-        userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
-
-    await configuration.blockchainProperties.userLogicInstance.createUser(
-        userPropertiesOnChain.propertiesDocumentHash,
-        userPropertiesOnChain.url,
-        userPropertiesOnChain.id,
-        userPropertiesOnChain.organization,
-        {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        }
-    );
-
-    await configuration.blockchainProperties.userLogicInstance.setRoles(
-        userPropertiesOnChain.id,
-        userPropertiesOnChain.roles
-    );
-
-    user.id = userPropertiesOnChain.id;
-
-    await user.putToOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
-
-    if (configuration.logger) {
-        configuration.logger.info(`User ${user.id} created`);
-    }
-
-    return user.sync();
-};
-
-export class Entity extends BlockchainDataModelEntity.Entity
-    implements IUserOnChainProperties {
+export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnChainProperties {
     offChainProperties: IUserOffChainProperties;
+
     propertiesDocumentHash: string;
+
     url: string;
 
     id: string;
 
     organization: string;
+
     roles: number;
+
     active: boolean;
 
     configuration: Configuration.Entity;
+
     initialized: boolean;
 
     constructor(accountAddress: string, configuration: Configuration.Entity) {
@@ -147,3 +104,49 @@ export class Entity extends BlockchainDataModelEntity.Entity
         return Boolean(this.roles & Math.pow(2, role));
     }
 }
+
+export const createUser = async (
+    userPropertiesOnChain: IUserOnChainProperties,
+    userPropertiesOffChain: IUserOffChainProperties,
+    configuration: Configuration.Entity
+): Promise<Entity> => {
+    const user = new Entity(null, configuration);
+
+    const offChainStorageProperties = user.prepareEntityCreation(
+        userPropertiesOnChain,
+        userPropertiesOffChain,
+        UserOffChainPropertiesSchema,
+        user.getUrl()
+    );
+
+    if (configuration.offChainDataSource) {
+        userPropertiesOnChain.url = user.getUrl();
+        userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
+    }
+
+    await configuration.blockchainProperties.userLogicInstance.createUser(
+        userPropertiesOnChain.propertiesDocumentHash,
+        userPropertiesOnChain.url,
+        userPropertiesOnChain.id,
+        userPropertiesOnChain.organization,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
+        }
+    );
+
+    await configuration.blockchainProperties.userLogicInstance.setRoles(
+        userPropertiesOnChain.id,
+        userPropertiesOnChain.roles
+    );
+
+    user.id = userPropertiesOnChain.id;
+
+    await user.putToOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+
+    if (configuration.logger) {
+        configuration.logger.info(`User ${user.id} created`);
+    }
+
+    return user.sync();
+};

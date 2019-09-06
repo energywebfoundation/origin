@@ -4,10 +4,7 @@ import { IEmail, IEmailResponse } from '../email.service';
 import { IEmailAdapter } from './IEmailAdapter';
 
 export class NodemailerAdapter implements IEmailAdapter {
-    public async send(
-        from: string,
-        email: IEmail
-    ): Promise<IEmailResponse> {
+    public async send(from: string, email: IEmail): Promise<IEmailResponse> {
         const { to, subject, html } = email;
 
         const transporter = nodemailer.createTransport({
@@ -31,7 +28,7 @@ export class NodemailerAdapter implements IEmailAdapter {
         console.log(`Message sent: ${info.messageId}`);
         console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
 
-        return { 
+        return {
             success: true,
             error: null
         };

@@ -19,10 +19,11 @@ export interface IEmailServiceProvider {
 export class EmailServiceProvider implements IEmailServiceProvider {
     public adapter: IEmailAdapter;
 
-    public sentCounter: number = 0;
+    public sentCounter = 0;
+
     private fromEmail: string;
 
-    constructor (adapter: IEmailAdapter, fromEmail: string) {
+    constructor(adapter: IEmailAdapter, fromEmail: string) {
         this.adapter = adapter;
         this.fromEmail = fromEmail;
     }

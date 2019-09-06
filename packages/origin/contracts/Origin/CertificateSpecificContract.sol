@@ -14,13 +14,14 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
+pragma solidity ^0.5.2;
 import "@energyweb/user-registry/contracts/Users/RoleManagement.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetProducingInterface.sol";
 import "@energyweb/asset-registry/contracts/Asset/AssetProducingDB.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
 import "../../contracts/Origin/TradableEntityLogic.sol";
 
-pragma solidity ^0.5.2;
+
 pragma experimental ABIEncoderV2;
 
 contract CertificateSpecificContract is TradableEntityLogic {

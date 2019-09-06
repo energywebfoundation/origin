@@ -1,0 +1,1 @@
+git ls-files -z | xargs -0 -n1 -I{} -- git log -1 --format="%ai {}" {} | perl -ne 'chomp;next if(/'"'"'/);($d,$f)=(/(^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(?: \+\d\d\d\d|)) (.*)/);print "d=$d f=$f\n"; `touch -d "$d" '"'"'$f'"'"'`;'

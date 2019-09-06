@@ -1,5 +1,5 @@
 sudo: required
-dist: trusty
+dist: bionic
 language: node_js
 node_js:
     - '10'
@@ -7,15 +7,33 @@ node_js:
 cache:
     yarn: true
     directories:
-        - node_modules
+        - packages/utils-general/build
+        - packages/utils-general/dist
+        - packages/user-registry/schemas
+        - packages/user-registry/build
+        - packages/user-registry/dist
+        - packages/utils-testbackend/dist
+        - packages/asset-registry/schemas
+        - packages/asset-registry/build
+        - packages/asset-registry/dist
+        - packages/origin/build
+        - packages/origin/dist
+        - packages/market/schemas
+        - packages/market/build
+        - packages/market/dist
+        - packages/market-matcher/schemas
+        - packages/market-matcher/dist
 
 before_install:
-    - npm install -g yarn
+    - sh scripts/restore-original-timestamps.sh
 
 install:
     - yarn
-    - yarn build
-    - yarn lint:simulator
-    - yarn lint:ui
 
-script: yarn test
+jobs:
+  include:	
+    - stage: "Tests"	
+      name: "User & Asset Registry & Origin Tests"	
+      script: yarn build:user-asset-registry-origin && yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin
+    - name: "Linting + Market & UI & Matcher & Event Listener Tests"    	
+      script: yarn build && yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:event-listener
