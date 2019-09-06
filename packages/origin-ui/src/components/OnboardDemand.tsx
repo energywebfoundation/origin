@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { User, Role } from '@energyweb/user-registry';
-import { Currency, IRECAssetService } from '@energyweb/utils-general';
+import { Currency, IRECAssetService, Configuration, TimeFrame } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -16,7 +16,7 @@ import {
 import { getEnumValues } from '../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getCurrentUser } from '../features/selectors';
+import { getCurrentUser, getConfiguration } from '../features/selectors';
 import './OnboardDemand.scss';
 import { DatePicker } from '@material-ui/pickers';
 import {
@@ -25,9 +25,10 @@ import {
 } from './MultiSelectAutocomplete';
 import { CustomSlider, CustomSliderThumbComponent } from './CustomSlider';
 import moment, { Moment } from 'moment';
-import { Formik, Field, Form, FieldProps } from 'formik';
+import { Formik, Field, Form, FieldProps, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
+import { Demand } from '@energyweb/market';
 
 const REGIONS_PROVINCES_MAP = {
     Northeast: [
@@ -103,32 +104,53 @@ const REGIONS_PROVINCES_MAP = {
     ]
 };
 
+export function calculateTotalEnergyDemand(
+    startDate: Moment,
+    endDate: Moment,
+    targetWhPerPeriod: number,
+    timeframe: TimeFrame
+) {
+    let numberOfTimesDemandWillRepeat = 0;
+
+    const demandDuration = moment.duration(endDate.diff(startDate));
+
+    switch (timeframe) {
+        case TimeFrame.daily:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
+            break;
+        case TimeFrame.weekly:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
+            break;
+        case TimeFrame.monthly:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
+            break;
+        case TimeFrame.yearly:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
+            break;
+    }
+
+    return targetWhPerPeriod * numberOfTimesDemandWillRepeat;
+}
+
 const irecAssetService = new IRECAssetService();
 const TYPES = irecAssetService.AssetTypes;
-
-enum Timeframe {
-    day,
-    week,
-    month,
-    year
-}
 
 const REPEATABLE_TIMEFRAMES = [
     {
         label: 'Day',
-        value: Timeframe.day
+        value: TimeFrame.daily
     },
     {
         label: 'Week',
-        value: Timeframe.week
+        value: TimeFrame.weekly
     },
     {
         label: 'Month',
-        value: Timeframe.month
+        value: TimeFrame.monthly
     },
     {
         label: 'Year',
-        value: Timeframe.year
+        value: TimeFrame.yearly
     }
 ];
 
@@ -142,8 +164,31 @@ const regionOptions = Object.keys(REGIONS_PROVINCES_MAP).map(label => ({
     label
 }));
 
+interface IFormValues {
+    demandNeedsInMWh: string;
+    maxPricePerMWh: string;
+    currency: keyof typeof Currency | '';
+    timeframe: TimeFrame | '';
+    startDate: Moment;
+    endDate: Moment;
+    activeUntilDate: Moment;
+    procureFromSingleFacility: boolean;
+}
+
+const INITIAL_FORM_VALUES: IFormValues = {
+    demandNeedsInMWh: '',
+    maxPricePerMWh: '',
+    currency: '',
+    timeframe: '',
+    activeUntilDate: null,
+    startDate: null,
+    endDate: null,
+    procureFromSingleFacility: false
+};
+
 interface IStateProps {
     currentUser: User.Entity;
+    configuration: Configuration.Entity;
 }
 
 interface IState {
@@ -152,10 +197,10 @@ interface IState {
     selectedTypesLevelOne: IAutocompleteMultiSelectOptionType[];
     selectedTypesLevelTwo: IAutocompleteMultiSelectOptionType[];
     selectedTypesLevelThree: IAutocompleteMultiSelectOptionType[];
-    vintage: number[];
+    vintage: [number, number];
 }
 
-const DEFAULT_VINTAGE_RANGE = [1970, moment().year()];
+const DEFAULT_VINTAGE_RANGE: [number, number] = [1970, moment().year()];
 
 const FormikDatePicker = ({
     form: { setFieldValue },
@@ -177,33 +222,26 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             selectedTypesLevelThree: [],
             vintage: null
         };
+
+        this.submitForm = this.submitForm.bind(this);
     }
 
-    totalDemand(startDate: Moment, endDate: Moment, demandNeedsInMWh: string, timeframe: number) {
-        if (!endDate || !demandNeedsInMWh || !startDate || typeof timeframe === 'undefined') {
+    totalDemand(
+        startDate: IFormValues['startDate'],
+        endDate: IFormValues['endDate'],
+        demandNeedsInMWh: IFormValues['demandNeedsInMWh'],
+        timeframe: IFormValues['timeframe']
+    ) {
+        if (!endDate || !demandNeedsInMWh || !startDate || timeframe === '') {
             return 0;
         }
 
-        let numberOfTimesDemandWillRepeat = 0;
-
-        const demandDuration = moment.duration(endDate.diff(startDate));
-
-        switch (timeframe) {
-            case Timeframe.day:
-                numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
-                break;
-            case Timeframe.week:
-                numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
-                break;
-            case Timeframe.month:
-                numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
-                break;
-            case Timeframe.year:
-                numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
-                break;
-        }
-
-        return Number(demandNeedsInMWh) * numberOfTimesDemandWillRepeat;
+        return calculateTotalEnergyDemand(
+            startDate,
+            endDate,
+            parseInt(demandNeedsInMWh, 10) * 1000000,
+            timeframe
+        );
     }
 
     typesByLevel(level: number) {
@@ -298,8 +336,71 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         return this.props.currentUser && this.props.currentUser.isRole(Role.Trader);
     }
 
-    isFormValid() {
-        return this.isUserTraderRole();
+    async submitForm(
+        values: typeof INITIAL_FORM_VALUES,
+        formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
+    ): Promise<void> {
+        if (values.timeframe === '' || values.currency === '') {
+            return;
+        }
+
+        const {
+            selectedRegions,
+            selectedProvinces,
+            selectedTypesLevelOne,
+            selectedTypesLevelTwo,
+            selectedTypesLevelThree,
+            vintage
+        } = this.state;
+
+        const assetTypes = [
+            ...selectedTypesLevelOne,
+            ...selectedTypesLevelTwo,
+            ...selectedTypesLevelThree
+        ].map(type => type.value);
+
+        formikActions.setSubmitting(true);
+
+        this.props.configuration.blockchainProperties.activeUser = {
+            address: this.props.currentUser.id
+        };
+
+        const onChainProps: Demand.IDemandOnChainProperties = {
+            demandOwner: this.props.currentUser.id,
+            propertiesDocumentHash: '',
+            status: Demand.DemandStatus.ACTIVE,
+            url: ''
+        };
+
+        const offChainProps: Demand.IDemandOffChainProperties = {
+            currency: Currency[values.currency as keyof typeof Currency],
+            startTime: values.startDate.unix().toString(),
+            endTime: values.endDate.unix().toString(),
+            timeFrame: values.timeframe,
+            maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
+            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
+            location: {
+                regions: selectedRegions.map(i => i.value),
+                provinces: selectedProvinces.map(i => i.value)
+            },
+            procureFromSingleFacility: values.procureFromSingleFacility,
+            assetType: assetTypes
+        };
+
+        if (vintage && vintage.length === 2) {
+            offChainProps.vintage = vintage;
+        }
+
+        try {
+            await Demand.createDemand(onChainProps, offChainProps, this.props.configuration);
+
+            showNotification('Demand created', NotificationType.Success);
+        } catch (error) {
+            console.error('Demand creation error', error);
+            showNotification(`Can't create demand`, NotificationType.Error);
+        }
+
+        formikActions.setSubmitting(false);
     }
 
     render() {
@@ -326,27 +427,8 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         return (
             <Paper className="OnboardDemand">
                 <Formik
-                    initialValues={{
-                        demandNeedsInMWh: '',
-                        maxPricePerMWh: '',
-                        currency: '',
-                        timeframe: ('' as any) as number,
-                        activeUntilDate: null,
-                        startDate: null,
-                        endDate: null,
-                        procureFromSingleFacility: false
-                    }}
-                    onSubmit={(values, { setSubmitting }) => {
-                        console.log('submit values', values);
-
-                        setSubmitting(true);
-
-                        setTimeout(() => {
-                            setSubmitting(false);
-
-                            showNotification('Demand created', NotificationType.Success);
-                        }, 4000);
-                    }}
+                    initialValues={INITIAL_FORM_VALUES}
+                    onSubmit={this.submitForm}
                     validationSchema={Yup.object().shape({
                         demandNeedsInMWh: Yup.number()
                             .label('Demand needs (MWh)')
@@ -521,7 +603,10 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                                                 min={DEFAULT_VINTAGE_RANGE[0]}
                                                 max={DEFAULT_VINTAGE_RANGE[1]}
                                                 ThumbComponent={CustomSliderThumbComponent}
-                                                onChangeCommitted={(event, value: number[]) =>
+                                                onChangeCommitted={(
+                                                    event,
+                                                    value: [number, number]
+                                                ) =>
                                                     this.setState({
                                                         vintage: value
                                                     })
@@ -586,12 +671,14 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                                         <div className="mt-3">
                                             Total demand:{' '}
                                             <b>
-                                                {this.totalDemand(
-                                                    values.startDate,
-                                                    values.endDate,
-                                                    values.demandNeedsInMWh,
-                                                    values.timeframe
-                                                )}{' '}
+                                                {(
+                                                    this.totalDemand(
+                                                        values.startDate,
+                                                        values.endDate,
+                                                        values.demandNeedsInMWh,
+                                                        values.timeframe
+                                                    ) / 1000000
+                                                ).toLocaleString()}{' '}
                                                 MWh
                                             </b>
                                         </div>
@@ -658,6 +745,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
 
 export const OnboardDemand = connect(
     (state: IStoreState): IStateProps => ({
-        currentUser: getCurrentUser(state)
+        currentUser: getCurrentUser(state),
+        configuration: getConfiguration(state)
     })
 )(OnboardDemandClass);

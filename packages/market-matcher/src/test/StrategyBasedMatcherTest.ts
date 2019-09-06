@@ -211,7 +211,7 @@ describe('Test StrategyBasedMatcher', async () => {
             currency: Currency.USD,
             producingAsset: '0',
             consumingAsset: '0',
-            location: [{ country: 'string', regions: ['string'] }],
+            location: { provinces: ['string'], regions: ['string'] },
             assetType: ['Solar'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',

@@ -2,6 +2,7 @@ export enum TimeFrame {
     yearly,
     monthly,
     daily,
+    weekly,
     hourly,
     halfHourly
 }

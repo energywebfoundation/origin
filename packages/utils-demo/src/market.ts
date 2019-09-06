@@ -184,12 +184,10 @@ export const marketDemo = async (demoFile?: string) => {
                     currency,
                     producingAsset: action.data.producingAsset,
                     consumingAsset: action.data.consumingAsset,
-                    location: [
-                        {
-                            country: action.data.country,
-                            regions: [action.data.region]
-                        }
-                    ],
+                    location: {
+                        provinces: [action.data.provinces],
+                        regions: [action.data.regions]
+                    },
                     assetType: assetTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,

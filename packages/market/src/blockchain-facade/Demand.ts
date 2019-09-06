@@ -23,7 +23,7 @@ export interface IDemandOffChainProperties {
     currency: GeneralLib.Currency | string;
     producingAsset?: string;
     consumingAsset?: string;
-    location?: IDemandLocation[];
+    location?: IDemandLocation;
     assetType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
@@ -33,10 +33,11 @@ export interface IDemandOffChainProperties {
     startTime: string;
     endTime: string;
     procureFromSingleFacility?: boolean;
+    vintage?: [number, number];
 }
 
 export interface IDemandLocation {
-    country: string;
+    provinces: string[];
     regions: string[];
 }
 
