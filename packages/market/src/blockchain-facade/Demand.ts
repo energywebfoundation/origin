@@ -32,6 +32,7 @@ export interface IDemandOffChainProperties {
     registryCompliance?: GeneralLib.Compliance;
     startTime: string;
     endTime: string;
+    procureFromSingleFacility?: boolean;
 }
 
 export interface IDemandLocation {
@@ -40,7 +41,9 @@ export interface IDemandLocation {
 }
 
 export enum DemandStatus {
-    ACTIVE, PAUSED, ARCHIVED
+    ACTIVE,
+    PAUSED,
+    ARCHIVED
 }
 
 export interface IDemandOnChainProperties
