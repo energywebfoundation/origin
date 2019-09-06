@@ -557,8 +557,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 currency: Currency.USD,
                 producingAsset: certificate.assetId.toString(),
                 consumingAsset: '0',
-                locationCountry: asset.offChainProperties.country,
-                locationRegion: asset.offChainProperties.region,
+                location: [
+                    {
+                        country: asset.offChainProperties.country,
+                        regions: [asset.offChainProperties.region]
+                    }
+                ],
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 targetWhPerPeriod: certificate.powerInW,

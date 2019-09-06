@@ -23,8 +23,7 @@ export interface IDemandOffChainProperties {
     currency: GeneralLib.Currency | string;
     producingAsset?: string;
     consumingAsset?: string;
-    locationCountry?: string;
-    locationRegion?: string;
+    location?: IDemandLocation[];
     assetType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
@@ -33,6 +32,11 @@ export interface IDemandOffChainProperties {
     registryCompliance?: GeneralLib.Compliance;
     startTime: string;
     endTime: string;
+}
+
+export interface IDemandLocation {
+    country: string;
+    regions: string[];
 }
 
 export enum DemandStatus {

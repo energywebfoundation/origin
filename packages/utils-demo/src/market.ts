@@ -18,12 +18,7 @@ import * as fs from 'fs';
 import Web3 from 'web3';
 
 import { deployERC20TestToken, Erc20TestToken } from 'ew-erc-test-contracts';
-import {
-    Configuration,
-    TimeFrame,
-    Compliance,
-    Currency
-} from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import {
     AssetProducingRegistryLogic,
@@ -175,7 +170,7 @@ export const marketDemo = async (demoFile?: string) => {
                 };
 
                 if (!Array.isArray(action.data.assettype)) {
-                    throw new Error("Demand assettype has to be string[]")
+                    throw new Error('Demand assettype has to be string[]');
                 }
                 const assetTypeConfig = action.data.assettype;
                 const assetCompliance =
@@ -189,8 +184,12 @@ export const marketDemo = async (demoFile?: string) => {
                     currency,
                     producingAsset: action.data.producingAsset,
                     consumingAsset: action.data.consumingAsset,
-                    locationCountry: action.data.country,
-                    locationRegion: action.data.region,
+                    location: [
+                        {
+                            country: action.data.country,
+                            regions: [action.data.region]
+                        }
+                    ],
                     assetType: assetTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,

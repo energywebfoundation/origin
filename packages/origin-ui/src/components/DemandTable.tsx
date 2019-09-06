@@ -132,15 +132,17 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
         return Promise.all(promises);
     }
 
+    // TODO: multiple regions
     getCountryRegionText(demand: Demand.Entity): string {
         let text = '';
+        const { location } = demand.offChainProperties;
 
-        if (demand.offChainProperties.locationCountry) {
-            text += demand.offChainProperties.locationCountry;
-        }
+        if (location && location.length) {
+            text += location[0].country;
 
-        if (demand.offChainProperties.locationRegion) {
-            text += `, ${demand.offChainProperties.locationRegion}`;
+            if (location[0].regions && location[0].regions.length) {
+                text += `, ${location[0].regions[0]}`;
+            }
         }
 
         return text || NO_VALUE_TEXT;
