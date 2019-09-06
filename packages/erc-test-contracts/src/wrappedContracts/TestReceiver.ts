@@ -1,9 +1,11 @@
-import { GeneralFunctions, SpecialTx, getClientVersion } from './GeneralFunctions';
-import Web3 = require('web3');
+import { GeneralFunctions, ISpecialTx } from './GeneralFunctions';
 import TestReceiverJSON from '../../build/contracts/TestReceiver.json';
+
+import Web3 = require('web3');
 
 export class TestReceiver extends GeneralFunctions {
     web3: Web3;
+
     buildFile = TestReceiverJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -25,26 +27,30 @@ export class TestReceiver extends GeneralFunctions {
         _from: string,
         _tokenId: number,
         _data: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.onERC721Received(_operator, _from, _tokenId, _data);
+        const method = this.web3Contract.methods.onERC721Received(
+            _operator,
+            _from,
+            _tokenId,
+            _data
+        );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: SpecialTx) {
+    async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: ISpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
 
-            return await this.send(method, txParams);
-        } else {
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId)
-
-            return await this.send(method, txParams);
+            return this.send(method, txParams);
         }
+        const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId);
+
+        return this.send(method, txParams);
     }
 
-    async entityContract(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.entityContract().call(txParams);
+    async entityContract(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.entityContract().call(txParams);
     }
 }

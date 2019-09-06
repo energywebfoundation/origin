@@ -1,9 +1,11 @@
-import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
-import Web3 = require('web3');
+import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
+
+import Web3 = require('web3');
 
 export class Erc20TestToken extends GeneralFunctions {
     web3: Web3;
+
     buildFile = Erc20TestTokenJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -20,7 +22,7 @@ export class Erc20TestToken extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllTransferEvents(eventFilter?: SearchLog) {
+    async getAllTransferEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -37,10 +39,10 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('Transfer', filterParams);
+        return this.web3Contract.getPastEvents('Transfer', filterParams);
     }
 
-    async getAllApprovalEvents(eventFilter?: SearchLog) {
+    async getAllApprovalEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -57,10 +59,10 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('Approval', filterParams);
+        return this.web3Contract.getPastEvents('Approval', filterParams);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
+    async getAllEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -76,64 +78,64 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
     }
 
-    async name(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.name().call(txParams);
+    async name(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.name().call(txParams);
     }
 
-    async approve(_spender: string, _tokens: number, txParams?: SpecialTx) {
+    async approve(_spender: string, _tokens: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approve(_spender, _tokens);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async totalSupplyNumber(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.totalSupplyNumber().call(txParams);
+    async totalSupplyNumber(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.totalSupplyNumber().call(txParams);
     }
 
-    async decimas(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.decimas().call(txParams);
+    async decimas(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.decimas().call(txParams);
     }
 
-    async totalSupply(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.totalSupply().call(txParams);
+    async totalSupply(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.totalSupply().call(txParams);
     }
 
-    async transferFrom(_from: string, _to: string, _tokens: number, txParams?: SpecialTx) {
+    async transferFrom(_from: string, _to: string, _tokens: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.transferFrom(_from, _to, _tokens);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async balances(param0: string, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.balances(param0).call(txParams);
+    async balances(param0: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.balances(param0).call(txParams);
     }
 
-    async allowed(param0: string, param1: string, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.allowed(param0, param1).call(txParams);
+    async allowed(param0: string, param1: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.allowed(param0, param1).call(txParams);
     }
 
-    async balanceOf(_tokenOwner: string, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.balanceOf(_tokenOwner).call(txParams);
+    async balanceOf(_tokenOwner: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.balanceOf(_tokenOwner).call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
+    async owner(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.owner().call(txParams);
     }
 
-    async symbol(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.symbol().call(txParams);
+    async symbol(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.symbol().call(txParams);
     }
 
-    async transfer(_to: string, _tokens: number, txParams?: SpecialTx) {
+    async transfer(_to: string, _tokens: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.transfer(_to, _tokens);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async allowance(_tokenOwner: string, _spender: string, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.allowance(_tokenOwner, _spender).call(txParams);
+    async allowance(_tokenOwner: string, _spender: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.allowance(_tokenOwner, _spender).call(txParams);
     }
 }

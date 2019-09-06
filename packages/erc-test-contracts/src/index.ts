@@ -4,4 +4,11 @@ import { deployERC20TestToken, deployERC721TestReceiver } from './deployment/dep
 import { Erc20TestToken } from './wrappedContracts/Erc20TestToken';
 import { TestReceiver } from './wrappedContracts/TestReceiver';
 
-export { Erc20TestTokenJSON, Erc721TestReceiverJSON, deployERC20TestToken, deployERC721TestReceiver, Erc20TestToken, TestReceiver };
+export {
+    Erc20TestTokenJSON,
+    Erc721TestReceiverJSON,
+    deployERC20TestToken,
+    deployERC721TestReceiver,
+    Erc20TestToken,
+    TestReceiver
+};
