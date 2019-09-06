@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,

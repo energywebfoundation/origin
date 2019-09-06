@@ -24,7 +24,7 @@
   "dependencies": {
     "concurrently": "4.1.1",
     "@energyweb/asset-registry": "1.1.0",
-    "ew-erc-test-contracts": "1.0.0",
+    "@energyweb/erc-test-contracts": "1.1.0",
     "@energyweb/market": "1.1.0",
     "@energyweb/origin": "1.1.0",
     "@energyweb/user-registry": "1.1.0",

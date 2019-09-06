@@ -13,6 +13,9 @@
             "path": "../user-registry/tsconfig.build.json"
         },
         {
+            "path": "../erc-test-contracts/tsconfig.build.json"
+        },
+        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {

@@ -17,7 +17,7 @@
 import * as fs from 'fs';
 import Web3 from 'web3';
 
-import { deployERC20TestToken } from 'ew-erc-test-contracts';
+import { deployERC20TestToken } from '@energyweb/erc-test-contracts';
 import { Configuration, AssetType, Currency, Compliance, TimeFrame } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { AssetProducingRegistryLogic, AssetConsumingRegistryLogic } from '@energyweb/asset-registry';

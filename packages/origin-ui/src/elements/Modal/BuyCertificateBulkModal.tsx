@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 import { showNotification, NotificationType } from '../../utils/notifications';

@@ -30,7 +30,7 @@ import { showNotification, NotificationType } from '../utils/notifications';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues

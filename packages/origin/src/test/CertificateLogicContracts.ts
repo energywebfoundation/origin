@@ -38,7 +38,7 @@ import {
     Erc20TestToken,
     Erc20TestTokenJSON,
     Erc721TestReceiverJSON
-} from 'ew-erc-test-contracts';
+} from '@energyweb/erc-test-contracts';
 
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';

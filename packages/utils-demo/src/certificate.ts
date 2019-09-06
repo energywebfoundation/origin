@@ -16,7 +16,7 @@
 
 import * as fs from 'fs';
 
-import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Certificate, TradableEntity } from '@energyweb/origin';
 import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
