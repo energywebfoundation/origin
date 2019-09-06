@@ -39,6 +39,9 @@ export abstract class Entity {
         if (typeof id !== 'string' && id !== null) {
             throw Error('An ID of an Entity should always be of type string.');
         }
+        if (isNaN(Number(id))) {
+            throw Error('An ID of an Entity should always be numeric string.');
+        }
 
         this.id = id;
         this.configuration = configuration;

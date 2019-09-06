@@ -37,8 +37,8 @@ export interface IAgreementOnChainProperties
     extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
     matcherPropertiesDocumentHash: string;
     matcherDBURL: string;
-    demandId: number;
-    supplyId: number;
+    demandId: string;
+    supplyId: string;
     allowedMatcher: string[];
 }
 
@@ -128,8 +128,8 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     url: string;
     matcherPropertiesDocumentHash: string;
     matcherDBURL: string;
-    demandId: number;
-    supplyId: number;
+    demandId: string;
+    supplyId: string;
     approvedBySupplyOwner: boolean;
     approvedByDemandOwner: boolean;
     allowedMatcher: string[];

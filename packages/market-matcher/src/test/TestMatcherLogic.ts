@@ -283,7 +283,7 @@ describe('Test Matcher Logic', async () => {
                 assetId: 0
             };
 
-            const testAgreements = [{ supplyId: 1 }, { supplyId: 2 }, { supplyId: 3 }];
+            const testAgreements = [{ supplyId: '1' }, { supplyId: '2' }, { supplyId: '3' }];
 
             const expectedMatches = 1;
 

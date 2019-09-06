@@ -26,7 +26,7 @@ export interface ISupplyOffchainProperties {
 
 export interface ISupplyOnChainProperties
     extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
-    assetId: number;
+    assetId: string;
 }
 
 export const getSupplyListLength = async (configuration: GeneralLib.Configuration.Entity) => {
@@ -88,7 +88,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     propertiesDocumentHash: string;
     url: string;
 
-    assetId: number;
+    assetId: string;
 
     initialized: boolean;
     configuration: GeneralLib.Configuration.Entity;

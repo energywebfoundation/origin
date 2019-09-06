@@ -21,8 +21,8 @@ export interface IDemandOffChainProperties {
     timeFrame: GeneralLib.TimeFrame;
     maxPricePerMwh: number;
     currency: GeneralLib.Currency | string;
-    producingAsset?: number;
-    consumingAsset?: number;
+    producingAsset?: string;
+    consumingAsset?: string;
     locationCountry?: string;
     locationRegion?: string;
     assetType?: string[];
