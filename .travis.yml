@@ -29,11 +29,12 @@ before_install:
 
 install:
     - yarn
+    - yarn build
 
 jobs:
   include:	
     - stage: "Tests"	
       name: "User & Asset Registry & Origin Tests"	
-      script: yarn build:user-asset-registry-origin && yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin
+      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener
     - name: "Linting + Market & UI & Matcher & Event Listener Tests"    	
-      script: yarn build && yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:event-listener
+      script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher

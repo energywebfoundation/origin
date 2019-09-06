@@ -2,10 +2,21 @@ import axios from 'axios';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
-import { AssetConsumingRegistryLogic, AssetProducingRegistryLogic, migrateAssetRegistryContracts, ProducingAsset } from '@energyweb/asset-registry';
+import {
+    AssetConsumingRegistryLogic,
+    AssetProducingRegistryLogic,
+    migrateAssetRegistryContracts,
+    ProducingAsset
+} from '@energyweb/asset-registry';
 import { MarketLogic, migrateMarketRegistryContracts } from '@energyweb/market';
 import { CertificateLogic, migrateCertificateRegistryContracts } from '@energyweb/origin';
-import { buildRights, migrateUserRegistryContracts, Role, User, UserLogic } from '@energyweb/user-registry';
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    User,
+    UserLogic
+} from '@energyweb/user-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 
 export const deployDemo = async () => {
@@ -24,13 +35,13 @@ export const deployDemo = async () => {
         },
         ASSET_MANAGER: {
             address: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
-            privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac',
+            privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac'
         },
         SMART_METER: {
             address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
             privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
         }
-    }
+    };
 
     const logger = Winston.createLogger({
         level: 'debug',
@@ -39,12 +50,16 @@ export const deployDemo = async () => {
     });
 
     const userContracts: any = await migrateUserRegistryContracts(web3, adminPK);
-    const assetContracts: any = await migrateAssetRegistryContracts(web3, userContracts.UserContractLookup, adminPK);
+    const assetContracts: any = await migrateAssetRegistryContracts(
+        web3,
+        userContracts.UserContractLookup,
+        adminPK
+    );
     const originContracts: any = await migrateCertificateRegistryContracts(
         web3,
         assetContracts.AssetContractLookup,
         adminPK
-        );
+    );
     const marketContracts: any = await migrateMarketRegistryContracts(
         web3,
         assetContracts.AssetContractLookup,
@@ -74,9 +89,11 @@ export const deployDemo = async () => {
     deployResult.marketLogic = marketContracts.MarketLogic;
 
     await axios.put(
-        `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${deployResult.originContractLookup.toLowerCase()}`,
+        `${
+            process.env.API_BASE_URL
+        }/OriginContractLookupMarketLookupMapping/${deployResult.originContractLookup.toLowerCase()}`,
         {
-            marketContractLookup: deployResult.marketContractLookup.toLowerCase(),
+            marketContractLookup: deployResult.marketContractLookup.toLowerCase()
         }
     );
 
@@ -184,19 +201,17 @@ export const deployDemo = async () => {
     };
 
     try {
-        await ProducingAsset.createAsset(
-            assetProducingProps,
-            assetProducingPropsOffChain,
-            conf
-        );
+        await ProducingAsset.createAsset(assetProducingProps, assetProducingPropsOffChain, conf);
     } catch (error) {
         throw new Error(error);
     }
 
-    await assetProducingRegistryLogic.saveSmartMeterRead(0, 1e7, 'newSmartMeterRead', 0,
-        { privateKey: ACCOUNTS.SMART_METER.privateKey }
-    );
-    await certificateLogic.requestCertificates(0, 0, { privateKey: ACCOUNTS.ASSET_MANAGER.privateKey });
+    await assetProducingRegistryLogic.saveSmartMeterRead(0, 1e7, 'newSmartMeterRead', 0, {
+        privateKey: ACCOUNTS.SMART_METER.privateKey
+    });
+    await certificateLogic.requestCertificates(0, 0, {
+        privateKey: ACCOUNTS.ASSET_MANAGER.privateKey
+    });
     await certificateLogic.approveCertificationRequest(0, { privateKey: adminPK });
 
     return { conf, deployResult };

@@ -7,6 +7,9 @@
     "include": ["src/**/*"],
     "references": [
         {
+            "path": "../erc-test-contracts/tsconfig.build.json"
+        },
+        {
             "path": "../user-registry/tsconfig.build.json"
         },
         {

@@ -19,7 +19,7 @@ import { MatcherLogic } from '@energyweb/market-matcher';
 import { Certificate, TradableEntity } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import moment from 'moment';
 import * as React from 'react';
 import { connect } from 'react-redux';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import { Erc20TestToken } from 'ew-erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Currency, Configuration } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';

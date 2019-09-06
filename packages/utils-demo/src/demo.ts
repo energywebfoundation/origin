@@ -21,7 +21,7 @@ import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
-import { deployERC20TestToken } from 'ew-erc-test-contracts';
+import { deployERC20TestToken } from '@energyweb/erc-test-contracts';
 import * as fs from 'fs';
 import Web3 from 'web3';
 

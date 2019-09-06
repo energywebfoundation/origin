@@ -17,8 +17,8 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "ew-erc-test-contracts/contracts/Interfaces/ERC721.sol";
-import "ew-erc-test-contracts/contracts/Interfaces/ERC721TokenReceiver.sol";
+import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC721.sol";
+import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC721TokenReceiver.sol";
 import "@energyweb/utils-general/contracts/Interfaces/Updatable.sol";
 import "@energyweb/user-registry/contracts/Users/RoleManagement.sol";
 import "@energyweb/user-registry/contracts/Interfaces/UserContractLookupInterface.sol";

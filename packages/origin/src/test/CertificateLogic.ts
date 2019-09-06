@@ -38,7 +38,7 @@ import {
     Erc20TestToken,
     TestReceiver,
     deployERC721TestReceiver
-} from 'ew-erc-test-contracts';
+} from '@energyweb/erc-test-contracts';
 
 import { OriginContractLookup, CertificateLogic, migrateCertificateRegistryContracts } from '..';
 import * as Certificate from '../blockchain-facade/Certificate';

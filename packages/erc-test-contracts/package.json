@@ -1,0 +1,46 @@
+{
+  "name": "@energyweb/erc-test-contracts",
+  "description": "",
+  "license": "GPLv3",
+  "author": "",
+  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/erc-test-contracts#readme",
+  "repository": {
+      "type": "git",
+      "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+      "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "version": "1.1.0",
+  "main": "dist/js/src/index.js",
+  "scripts": {
+    "build": "yarn compile && yarn build-ts",
+    "compile": "truffle compile",
+    "deploy-contracts": "truffle migrate",
+    "test": "npm run build && mocha dist/js/src/test/ --timeout 90000",
+    "build-ts": "rm -rf dist/js && tsc -b tsconfig.build.json --verbose --pretty",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "lint": "solium -d contracts && eslint 'src/**/*{.ts,.tsx}'",
+    "lint-fix": "solium -d contracts --fix && eslint --fix 'src/**/*{.ts,.tsx}'",
+    "precommit": "lint-staged",
+    "build:static": "yarn compile"
+  },
+  "dependencies": {
+    "@energyweb/utils-general": "1.1.0",
+    "ew-utils-deployment": "0.3.0",
+    "typedarray-to-buffer": "3.1.5",
+    "web3": "1.0.0-beta.37",
+    "winston": "3.2.1",
+    "yaeti": "1.0.2"
+  },
+  "devDependencies": {
+    "@types/web3": "1.0.14",
+    "fs-extra": "8.0.1",
+    "ganache-cli": "6.2.5",
+    "lint-staged": "9.2.5",
+    "solium": "^1.2.4",
+    "truffle": "5.0.18"
+  },
+  "postinstall": "rm -f node_modules/web3/index.d.ts"
+}
