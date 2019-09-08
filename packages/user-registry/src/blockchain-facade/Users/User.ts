@@ -124,20 +124,23 @@ export const createUser = async (
         userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
     }
 
+    const accountProperties = {
+        from: configuration.blockchainProperties.activeUser.address,
+        privateKey: configuration.blockchainProperties.activeUser.privateKey
+    };
+
     await configuration.blockchainProperties.userLogicInstance.createUser(
         userPropertiesOnChain.propertiesDocumentHash,
         userPropertiesOnChain.url,
         userPropertiesOnChain.id,
         userPropertiesOnChain.organization,
-        {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        }
+        accountProperties
     );
 
     await configuration.blockchainProperties.userLogicInstance.setRoles(
         userPropertiesOnChain.id,
-        userPropertiesOnChain.roles
+        userPropertiesOnChain.roles,
+        accountProperties
     );
 
     user.id = userPropertiesOnChain.id;
