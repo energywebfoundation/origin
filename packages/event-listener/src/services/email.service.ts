@@ -1,4 +1,4 @@
-import { IEmailAdapter } from './email/IEmailAdapter';
+import { IEmailAdapter } from '../email/IEmailAdapter';
 
 export interface IEmail {
     to: string[];

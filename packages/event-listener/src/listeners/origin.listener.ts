@@ -6,12 +6,12 @@ import { Configuration, ContractEventHandler, EventHandlerManager } from '@energ
 import { MatcherLogic } from '@energyweb/market-matcher';
 import { Demand } from '@energyweb/market';
 
-import { initOriginConfig } from '../../config/origin.config';
-import { IEmailResponse, IEmailServiceProvider } from '../email.service';
+import { initOriginConfig } from '../config/origin.config';
+import { IEmailResponse, IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
 import EmailTypes from '../email/EmailTypes';
 
-import { SCAN_INTERVAL } from '../../index';
+import { SCAN_INTERVAL } from '../index';
 
 interface ICounter {
     user: User.Entity;
@@ -164,7 +164,7 @@ export class OriginEventListener implements IOriginEventListener {
 
     private async incrementNewCertCounter(certificate: Certificate.Entity): Promise<void> {
         const certOwner = await new User.Entity(certificate.owner, this.conf as any).sync();
-        let userCounter = this.counters.find(counter => counter.user.id === certOwner.id);
+        let userCounter: ICounter = this.counters.find(counter => counter.user.id === certOwner.id);
 
         if (userCounter) {
             userCounter.newCertificates += 1;

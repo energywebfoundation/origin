@@ -2,8 +2,8 @@ import axios from 'axios';
 import Web3 from 'web3';
 
 import { EmailServiceProvider, IEmailServiceProvider } from './email.service';
-import { MandrillEmailAdapter } from './email/mandrill.adapter';
-import { IOriginEventListener, OriginEventListener } from './listeners/origin.listener';
+import { MandrillEmailAdapter } from '../email/mandrill.adapter';
+import { IOriginEventListener, OriginEventListener } from '../listeners/origin.listener';
 
 export interface IEventServiceProvider {
     apiUrl: string;
