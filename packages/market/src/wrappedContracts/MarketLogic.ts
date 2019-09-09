@@ -83,18 +83,18 @@ export class MarketLogic extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async getDemand(_demandId: number, txParams?: SpecialTx) {
+    async getDemand(_demandId: string, txParams?: SpecialTx) {
         return await this.web3Contract.methods.getDemand(_demandId).call(txParams);
     }
 
-    async deleteDemand(_demandId: number, txParams?: SpecialTx) {
+    async deleteDemand(_demandId: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.deleteDemand(_demandId);
 
         return await this.send(method, txParams);
     }
 
     async updateDemand(
-        _demandId: number,
+        _demandId: string,
         _propertiesDocumentHash: string,
         _documentDBURL: string,
         txParams?: SpecialTx
@@ -215,7 +215,7 @@ export class MarketLogic extends GeneralFunctions {
         return await this.web3Contract.methods.getAllDemandListLength().call(txParams);
     }
 
-    async changeDemandStatus(_demandId: number, _status: DemandStatus, txParams?: SpecialTx) {
+    async changeDemandStatus(_demandId: string, _status: DemandStatus, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.changeDemandStatus(_demandId, _status);
 
         return this.send(method, txParams);

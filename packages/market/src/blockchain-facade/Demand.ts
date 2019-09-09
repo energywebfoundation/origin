@@ -16,6 +16,7 @@
 
 import * as GeneralLib from '@energyweb/utils-general';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
+import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
 export interface IDemandOffChainProperties {
     timeFrame: GeneralLib.TimeFrame;
@@ -60,27 +61,20 @@ export const getDemandListLength = async (
 };
 
 export const createDemand = async (
-    demandPropertiesOnChain: IDemandOnChainProperties,
     demandPropertiesOffChain: IDemandOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
     const demand = new Entity(null, configuration);
 
     const offChainStorageProperties = demand.prepareEntityCreation(
-        demandPropertiesOnChain,
         demandPropertiesOffChain,
         DemandOffChainPropertiesSchema,
         demand.getUrl()
     );
 
-    if (configuration.offChainDataSource) {
-        demandPropertiesOnChain.url = demand.getUrl();
-        demandPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
-
     const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
-        demandPropertiesOnChain.propertiesDocumentHash,
-        demandPropertiesOnChain.url,
+        offChainStorageProperties.rootHash,
+        demand.getUrl(),
         {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey
@@ -135,24 +129,24 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     initialized: boolean;
     configuration: GeneralLib.Configuration.Entity;
 
+    marketLogicInstance: MarketLogic;
+
     constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
         super(id, configuration);
 
+        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance!;
         this.initialized = false;
     }
 
     getUrl(): string {
-        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
-            .web3Contract._address;
+        const marketLogicAddress = this.marketLogicInstance.web3Contract._address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/Demand/${marketLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const demand = await this.configuration.blockchainProperties.marketLogicInstance.getDemand(
-                this.id
-            );
+            const demand = await this.marketLogicInstance.getDemand(this.id);
 
             if (demand._owner === '0x0000000000000000000000000000000000000000') {
                 return this;
@@ -176,16 +170,29 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     async clone(): Promise<Entity> {
         await this.sync();
 
-        return createDemand(
-            {
-                status: this.status,
-                url: null,
-                propertiesDocumentHash: null,
-                demandOwner: this.demandOwner
-            },
-            this.offChainProperties,
-            this.configuration
+        return createDemand(this.offChainProperties, this.configuration);
+    }
+
+    async update(offChainProperties: IDemandOffChainProperties) {
+        const updatedOffChainStorageProperties = this.prepareEntityCreation(
+            offChainProperties,
+            DemandOffChainPropertiesSchema,
+            this.getUrl()
         );
+
+        await this.marketLogicInstance.updateDemand(
+            this.id,
+            updatedOffChainStorageProperties.rootHash,
+            this.getUrl(),
+            {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
+
+        await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+        
+        return new Entity(this.id, this.configuration).sync();
     }
 }
 

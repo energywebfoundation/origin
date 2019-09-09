@@ -62,7 +62,6 @@ export const createAsset = async (
 ): Promise<Entity> => {
     const producingAsset = new Entity(null, configuration);
     const offChainStorageProperties = producingAsset.prepareEntityCreation(
-        assetPropertiesOnChain,
         assetPropertiesOffChain,
         ProducingAssetPropertiesOffchainSchema
     );

@@ -173,7 +173,7 @@ describe('Market-Facade', () => {
                 logger
             };
 
-            const demandOffchainProps: Market.Demand.IDemandOffChainProperties = {
+            const demandOffChainProps: Market.Demand.IDemandOffChainProperties = {
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
@@ -190,44 +190,21 @@ describe('Market-Facade', () => {
                 endTime: END_TIME
             };
 
-            const demandProps: Market.Demand.IDemandOnChainProperties = {
-                url: null,
-                propertiesDocumentHash: null,
-                demandOwner: conf.blockchainProperties.activeUser.address,
-                status: DemandStatus.ACTIVE
-            };
             assert.equal(await Market.Demand.getDemandListLength(conf), 0);
 
-            const demand = await Market.Demand.createDemand(demandProps, demandOffchainProps, conf);
+            const demand = await Market.Demand.createDemand(demandOffChainProps, conf);
+
             assert.equal(await Market.Demand.getDemandListLength(conf), 1);
 
-            delete demand.proofs;
-            delete demand.configuration;
-            delete demand.propertiesDocumentHash;
-
-            assert.deepEqual(demand, {
+            assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
                 url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
-                status: 0,
-                offChainProperties: {
-                    assetType: ['Solar'],
-                    consumingAsset: '0',
-                    currency: GeneralLib.Currency.USD,
-                    location: { provinces: ['string'], regions: ['string'] },
-                    minCO2Offset: 10,
-                    otherGreenAttributes: 'string',
-                    maxPricePerMwh: 1.5,
-                    producingAsset: '0',
-                    registryCompliance: 2,
-                    targetWhPerPeriod: 10,
-                    timeFrame: GeneralLib.TimeFrame.hourly,
-                    typeOfPublicSupport: 'string',
-                    startTime: START_TIME,
-                    endTime: END_TIME
-                }
+                status: 0
             } as Partial<Market.Demand.Entity>);
+
+            assert.deepEqual(demand.offChainProperties, demandOffChainProps);
         });
 
         it('should return 1 demand for getAllDemands', async () => {
@@ -236,35 +213,32 @@ describe('Market-Facade', () => {
         });
 
         it('should return demand', async () => {
-            const demand: Market.Demand.Entity = await new Market.Demand.Entity('0', conf).sync();
+            const demand = await new Market.Demand.Entity('0', conf).sync();
 
-            delete demand.proofs;
-            delete demand.configuration;
-            delete demand.propertiesDocumentHash;
-
-            assert.deepEqual(demand, {
+            assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
                 url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
                 demandOwner: accountTrader,
-                status: 0,
-                offChainProperties: {
-                    assetType: ['Solar'],
-                    consumingAsset: '0',
-                    currency: GeneralLib.Currency.USD,
-                    location: { provinces: ['string'], regions: ['string'] },
-                    minCO2Offset: 10,
-                    otherGreenAttributes: 'string',
-                    maxPricePerMwh: 1.5,
-                    producingAsset: '0',
-                    registryCompliance: 2,
-                    targetWhPerPeriod: 10,
-                    timeFrame: GeneralLib.TimeFrame.hourly,
-                    typeOfPublicSupport: 'string',
-                    startTime: START_TIME,
-                    endTime: END_TIME
-                }
+                status: 0
             } as Partial<Market.Demand.Entity>);
+
+            assert.deepEqual(demand.offChainProperties, {
+                assetType: ['Solar'],
+                consumingAsset: '0',
+                currency: GeneralLib.Currency.USD,
+                location: { provinces: ['string'], regions: ['string'] },
+                minCO2Offset: 10,
+                otherGreenAttributes: 'string',
+                maxPricePerMwh: 1.5,
+                producingAsset: '0',
+                registryCompliance: 2,
+                targetWhPerPeriod: 10,
+                timeFrame: GeneralLib.TimeFrame.hourly,
+                typeOfPublicSupport: 'string',
+                startTime: START_TIME,
+                endTime: END_TIME
+            });
         });
 
         it('should clone demand', async () => {
@@ -273,9 +247,24 @@ describe('Market-Facade', () => {
 
             assert.notEqual(clone.id, demand.id);
             assert.notEqual(clone.propertiesDocumentHash, demand.propertiesDocumentHash);
-            
+
             assert.equal(clone.url, demand.url);
             assert.deepEqual(clone.offChainProperties, demand.offChainProperties);
+        });
+
+        it('should update off chain properties', async () => {
+            const demand = await new Market.Demand.Entity('0', conf).clone();
+
+            const offChainProperties = { ...demand.offChainProperties };
+            offChainProperties.procureFromSingleFacility = !demand.offChainProperties.procureFromSingleFacility;
+            offChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
+
+            const updated = await demand.update(offChainProperties);
+
+            assert.equal(updated.id, demand.id);
+            assert.equal(updated.status, demand.status);
+            assert.notEqual(updated.propertiesDocumentHash, demand.propertiesDocumentHash);
+            assert.notDeepEqual(updated.offChainProperties, demand.offChainProperties);
         });
     });
 

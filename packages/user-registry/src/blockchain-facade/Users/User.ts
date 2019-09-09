@@ -113,7 +113,6 @@ export const createUser = async (
     const user = new Entity(null, configuration);
 
     const offChainStorageProperties = user.prepareEntityCreation(
-        userPropertiesOnChain,
         userPropertiesOffChain,
         UserOffChainPropertiesSchema,
         user.getUrl()

@@ -392,7 +392,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         }
 
         try {
-            await Demand.createDemand(onChainProps, offChainProps, this.props.configuration);
+            await Demand.createDemand(offChainProps, this.props.configuration);
 
             showNotification('Demand created', NotificationType.Success);
         } catch (error) {
