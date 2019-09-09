@@ -19,7 +19,7 @@ export interface IEmailServiceProvider {
 export class EmailServiceProvider implements IEmailServiceProvider {
     public adapter: IEmailAdapter;
 
-    public sentCounter = 0;
+    public sentEmails: IEmail[] = [];
 
     private fromEmail: string;
 
@@ -32,7 +32,7 @@ export class EmailServiceProvider implements IEmailServiceProvider {
         const response: IEmailResponse = await this.adapter.send(this.fromEmail, email);
 
         if (response.success) {
-            this.sentCounter += 1;
+            this.sentEmails.push(email);
         }
 
         return response;

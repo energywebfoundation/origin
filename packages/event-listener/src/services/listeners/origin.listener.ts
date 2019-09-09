@@ -3,10 +3,13 @@ import Web3 from 'web3';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
+import { MatcherLogic } from '@energyweb/market-matcher';
+import { Demand } from '@energyweb/market';
 
 import { initOriginConfig } from '../../config/origin.config';
 import { IEmail, IEmailResponse, IEmailServiceProvider } from '../email.service';
 import { IEventListener } from './IEventListener';
+import EmailTypes from '../email/EmailTypes';
 
 import { SCAN_INTERVAL } from '../../index';
 
@@ -64,19 +67,9 @@ export class OriginEventListener implements IOriginEventListener {
             this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
 
             const newCertificate = await new Certificate.Entity(certId, this.conf).sync();
-            const certOwner = await new User.Entity(newCertificate.owner, this.conf as any).sync();
 
-            const certOwnerEmail = certOwner.offChainProperties.email;
-
-            if (this.newCertificateCounters[certOwnerEmail]) {
-                this.newCertificateCounters[certOwnerEmail] += 1;
-            } else {
-                this.newCertificateCounters[certOwnerEmail] = 1;
-            }
-
-            this.conf.logger.info(
-                `<${certOwnerEmail}> New certificate approved. Buffered emails count: ${this.newCertificateCounters[certOwnerEmail]}`
-            );
+            await this.incrementNewCertCounter(newCertificate);
+            await this.checkDemands(newCertificate);
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
@@ -99,7 +92,7 @@ export class OriginEventListener implements IOriginEventListener {
 
                 const emailTemplate: IEmail = {
                     to: [ownerEmail],
-                    subject: '[Origin] Certificates approved',
+                    subject: `[Origin] ${EmailTypes.CERTS_APPROVED}`,
                     html: `
                         Local issuer approved your certificates. 
                         There are ${this.newCertificateCounters[ownerEmail]} new certificates in your inbox:
@@ -123,7 +116,7 @@ export class OriginEventListener implements IOriginEventListener {
         this.resetCounters();
     }
 
-    public resetCounters() {
+    public resetCounters(): void {
         this.newCertificateCounters = {};
     }
 
@@ -132,5 +125,28 @@ export class OriginEventListener implements IOriginEventListener {
         this.manager.stop();
 
         this.started = false;
+    }
+
+    private async incrementNewCertCounter(certificate: Certificate.Entity): Promise<void> {
+        const certOwner = await new User.Entity(certificate.owner, this.conf as any).sync();
+        const certOwnerEmail = certOwner.offChainProperties.email;
+
+        if (this.newCertificateCounters[certOwnerEmail]) {
+            this.newCertificateCounters[certOwnerEmail] += 1;
+        } else {
+            this.newCertificateCounters[certOwnerEmail] = 1;
+        }
+
+        this.conf.logger.info(
+            `<${certOwnerEmail}> New certificate approved. Buffered emails count: ${this.newCertificateCounters[certOwnerEmail]}`
+        );
+    }
+
+    private async checkDemands(certificate: Certificate.Entity): Promise<void> {
+        const matchedDemands: Demand.Entity[] = await MatcherLogic.findMatchingDemandsForCertificate(
+            certificate,
+            this.conf
+        );
+        console.log({ matchedDemands });
     }
 }
