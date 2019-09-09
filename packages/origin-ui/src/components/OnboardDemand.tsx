@@ -365,13 +365,6 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             address: this.props.currentUser.id
         };
 
-        const onChainProps: Demand.IDemandOnChainProperties = {
-            demandOwner: this.props.currentUser.id,
-            propertiesDocumentHash: '',
-            status: Demand.DemandStatus.ACTIVE,
-            url: ''
-        };
-
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
             startTime: values.startDate.unix().toString(),
@@ -392,7 +385,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         }
 
         try {
-            await Demand.createDemand(onChainProps, offChainProps, this.props.configuration);
+            await Demand.createDemand(offChainProps, this.props.configuration);
 
             showNotification('Demand created', NotificationType.Success);
         } catch (error) {

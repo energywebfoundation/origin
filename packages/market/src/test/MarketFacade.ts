@@ -190,15 +190,9 @@ describe('Market-Facade', () => {
                 endTime: END_TIME
             };
 
-            const demandProps: Market.Demand.IDemandOnChainProperties = {
-                url: null,
-                propertiesDocumentHash: null,
-                demandOwner: conf.blockchainProperties.activeUser.address,
-                status: DemandStatus.ACTIVE
-            };
             assert.equal(await Market.Demand.getDemandListLength(conf), 0);
 
-            const demand = await Market.Demand.createDemand(demandProps, demandOffchainProps, conf);
+            const demand = await Market.Demand.createDemand(demandOffchainProps, conf);
             assert.equal(await Market.Demand.getDemandListLength(conf), 1);
 
             delete demand.proofs;

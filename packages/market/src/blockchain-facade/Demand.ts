@@ -61,27 +61,31 @@ export const getDemandListLength = async (
 };
 
 export const createDemand = async (
-    demandPropertiesOnChain: IDemandOnChainProperties,
     demandPropertiesOffChain: IDemandOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
-    const demand = new Entity(null, configuration);
+    const demand = new Entity(null, configuration)
+    
+    const onChainProperties : Pick<IDemandOnChainProperties, 'url' | 'propertiesDocumentHash'> = {
+        url: '',
+        propertiesDocumentHash: ''
+    };
 
     const offChainStorageProperties = demand.prepareEntityCreation(
-        demandPropertiesOnChain,
+        onChainProperties,
         demandPropertiesOffChain,
         DemandOffChainPropertiesSchema,
         demand.getUrl()
     );
 
     if (configuration.offChainDataSource) {
-        demandPropertiesOnChain.url = demand.getUrl();
-        demandPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
+        onChainProperties.url = demand.getUrl();
+        onChainProperties.propertiesDocumentHash = offChainStorageProperties.rootHash;
     }
 
     const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
-        demandPropertiesOnChain.propertiesDocumentHash,
-        demandPropertiesOnChain.url,
+        onChainProperties.propertiesDocumentHash,
+        onChainProperties.url,
         {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey

@@ -1,19 +1,22 @@
 import {
     PaginatedLoaderFilteredSorted,
     IPaginatedLoaderFilteredSortedState,
-    IPaginatedLoaderFilteredSortedProps
+    IPaginatedLoaderFilteredSortedProps,
+    getInitialPaginatedLoaderFilteredSortedState
 } from '../components/Table/PaginatedLoaderFilteredSorted';
+import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../components/Table/PaginatedLoader';
 
 describe('PaginatedLoaderFilteredSorted', () => {
     it('sortData correctly sorts records by multiple properties', async () => {
         class TestClass extends PaginatedLoaderFilteredSorted<
-            IPaginatedLoaderFilteredSortedState,
-            IPaginatedLoaderFilteredSortedProps
+            IPaginatedLoaderFilteredSortedProps,
+            IPaginatedLoaderFilteredSortedState
         > {
             constructor(props: any) {
                 super(props);
 
                 this.state = {
+                    ...getInitialPaginatedLoaderFilteredSortedState(),
                     currentSort: [],
                     sortAscending: false
                 };
@@ -23,8 +26,8 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 pageSize,
                 offset,
                 filters
-            }: import('../components/Table/PaginatedLoader').IPaginatedLoaderFetchDataParameters): Promise<
-                import('../components/Table/PaginatedLoader').IPaginatedLoaderFetchDataReturnValues
+            }: IPaginatedLoaderFetchDataParameters): Promise<
+                IPaginatedLoaderFetchDataReturnValues
             > {
                 throw new Error('Method not implemented.');
             }
@@ -33,6 +36,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
         const paginationFilteredLoader = new TestClass({});
 
         paginationFilteredLoader.state = {
+            ...getInitialPaginatedLoaderFilteredSortedState(),
             currentSort: [
                 'producingAsset.offChainProperties.country',
                 'producingAsset.offChainProperties.city'
@@ -95,6 +99,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
         ]);
 
         paginationFilteredLoader.state = {
+            ...getInitialPaginatedLoaderFilteredSortedState(),
             currentSort: [
                 'producingAsset.offChainProperties.country',
                 'producingAsset.offChainProperties.city'
@@ -132,13 +137,14 @@ describe('PaginatedLoaderFilteredSorted', () => {
 
     it('sorts data correctly when passing function to be run primer on data', async () => {
         class TestClass extends PaginatedLoaderFilteredSorted<
-            IPaginatedLoaderFilteredSortedState,
-            IPaginatedLoaderFilteredSortedProps
+            IPaginatedLoaderFilteredSortedProps,
+            IPaginatedLoaderFilteredSortedState
         > {
             constructor(props: any) {
                 super(props);
 
                 this.state = {
+                    ...getInitialPaginatedLoaderFilteredSortedState(),
                     currentSort: [],
                     sortAscending: false
                 };
@@ -148,8 +154,8 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 pageSize,
                 offset,
                 filters
-            }: import('../components/Table/PaginatedLoader').IPaginatedLoaderFetchDataParameters): Promise<
-                import('../components/Table/PaginatedLoader').IPaginatedLoaderFetchDataReturnValues
+            }: IPaginatedLoaderFetchDataParameters): Promise<
+                IPaginatedLoaderFetchDataReturnValues
             > {
                 throw new Error('Method not implemented.');
             }
@@ -158,6 +164,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
         const paginationFilteredLoader = new TestClass({});
 
         paginationFilteredLoader.state = {
+            ...getInitialPaginatedLoaderFilteredSortedState(),
             currentSort: [['energy', value => parseInt(value, 10)]],
             sortAscending: true
         };
@@ -187,6 +194,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
         ]);
 
         paginationFilteredLoader.state = {
+            ...getInitialPaginatedLoaderFilteredSortedState(),
             currentSort: [['energy', value => parseInt(value, 10)]],
             sortAscending: false
         };

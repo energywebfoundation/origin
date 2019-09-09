@@ -149,7 +149,6 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
         return (
             <div className="CertificateTableWrapper">
                 <Table
-                    classNames={['bare-font', 'bare-padding']}
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}

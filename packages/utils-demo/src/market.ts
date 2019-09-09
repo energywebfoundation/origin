@@ -198,16 +198,8 @@ export const marketDemo = async (demoFile?: string) => {
                     endTime: action.data.endTime
                 };
 
-                const demandProps: Demand.IDemandOnChainProperties = {
-                    url: '',
-                    propertiesDocumentHash: '',
-                    demandOwner: action.data.trader,
-                    status: Demand.DemandStatus.ACTIVE
-                };
-
                 try {
                     const demand = await Demand.createDemand(
-                        demandProps,
                         demandOffchainProps,
                         conf
                     );
