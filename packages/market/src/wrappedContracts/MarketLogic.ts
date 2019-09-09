@@ -11,7 +11,8 @@ const SUPPORTED_EVENTS = [
     'LogAgreementFullySigned',
     'LogAgreementCreated',
     'LogChangeOwner',
-    'DemandStatusChanged'
+    'DemandStatusChanged',
+    'DemandUpdated'
 ];
 
 export class MarketLogic extends GeneralFunctions {
@@ -88,6 +89,17 @@ export class MarketLogic extends GeneralFunctions {
 
     async deleteDemand(_demandId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.deleteDemand(_demandId);
+
+        return await this.send(method, txParams);
+    }
+
+    async updateDemand(
+        _demandId: number,
+        _propertiesDocumentHash: string,
+        _documentDBURL: string,
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.updateDemand(_demandId, _propertiesDocumentHash, _documentDBURL);
 
         return await this.send(method, txParams);
     }

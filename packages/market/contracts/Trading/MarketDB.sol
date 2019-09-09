@@ -72,6 +72,27 @@ contract MarketDB is AgreementDB {
         _demandId = allDemands.length>0?allDemands.length-1:0;
     }
 
+    /// @notice updates existing demand
+    /// @param _demandId demand id
+	/// @param _propertiesDocumentHash the properties document hash
+	/// @param _documentDBURL the url of the document in a database
+	/// @return operation result
+    function updateDemand
+    (
+        uint _demandId,
+        string calldata _propertiesDocumentHash,
+        string calldata _documentDBURL
+    )
+        external
+        onlyOwner
+        returns (bool)
+    {
+        allDemands[_demandId].propertiesDocumentHash = _propertiesDocumentHash;
+        allDemands[_demandId].documentDBURL = _documentDBURL;
+
+        return true;
+    }
+
 	/// @notice creates a supply
 	/// @param _propertiesDocumentHash the properties document hash
 	/// @param _documentDBURL the url of the document in a database

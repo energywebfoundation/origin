@@ -26,6 +26,7 @@ contract MarketLogic is AgreementLogic {
     event createdNewDemand(address _sender, uint indexed _demandId);
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
+    event DemandUpdated(uint indexed _demandId);
 
     /// @notice constructor
     constructor(
@@ -64,6 +65,28 @@ contract MarketLogic is AgreementLogic {
         require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
 
         changeDemandStatus(_demandId, MarketDB.DemandStatus.ARCHIVED);
+    }
+
+    /// @notice Updates existing demand with new properties
+	/// @dev will return an event with the event-Id
+	/// @param _demandId index of the demand in the allDemands-array
+    /// @param _propertiesDocumentHash document-hash with all the properties of the demand
+	/// @param _documentDBURL url-address of the demand
+    function updateDemand(
+        uint _demandId,
+        string calldata _propertiesDocumentHash,
+        string calldata _documentDBURL
+    )
+        external
+        onlyRole(RoleManagement.Role.Trader)
+    {
+        MarketDB.Demand memory demand = db.getDemand(_demandId);
+        require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
+        require(demand.status != MarketDB.DemandStatus.ARCHIVED, "demand cannot be in archived state");
+
+        db.updateDemand(_demandId, _propertiesDocumentHash, _documentDBURL);
+
+        emit DemandUpdated(_demandId);
     }
 
 	/// @notice Function to create a supply

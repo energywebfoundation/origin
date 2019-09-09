@@ -37,8 +37,6 @@ import { MarketLogic } from '../wrappedContracts/MarketLogic';
 import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
 import { DemandStatus } from '../blockchain-facade/Demand';
 
-const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
-
 describe('MarketLogic', () => {
     const configFile = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
@@ -1236,5 +1234,42 @@ describe('MarketLogic', () => {
     it('should be not able to set demand status to active or paused when current status is archived', async () => {
         await testStatusChange(0, DemandStatus.ACTIVE, false);
         await testStatusChange(0, DemandStatus.PAUSED, false);
+    });
+
+    it('should be able to update url and hash', async () => {
+        const tx = await marketLogic.createDemand('hash', 'url', {
+            privateKey: traderPK
+        });
+
+        const events = await marketLogic.getEvents('createdNewDemand', {
+            fromBlock: tx.blockNumber,
+            toBlock: tx.blockNumber
+        });
+
+        const demandId = events[0].returnValues._demandId;
+
+        const newHash = 'hashhash';
+        const newUrl = 'urlurl';
+
+        await marketLogic.updateDemand(demandId, newHash, newUrl, {
+            privateKey: traderPK
+        });
+
+        const demandUpdatedEvents = await marketLogic.getEvents('DemandUpdated', {
+            fromBlock: tx.blockNumber,
+            toBlock: tx.blockNumber
+        });
+
+        const updatedDemandId = demandUpdatedEvents[0].returnValues._demandId;
+
+        assert.equal(updatedDemandId, demandId);
+
+        const { _status, _propertiesDocumentHash, _documentDBURL } = await marketLogic.getDemand(
+            updatedDemandId
+        );
+
+        assert.equal(_status, DemandStatus.ACTIVE);
+        assert.equal(_propertiesDocumentHash, newHash);
+        assert.equal(_documentDBURL, newUrl);
     });
 });
