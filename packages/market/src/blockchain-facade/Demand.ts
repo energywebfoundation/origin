@@ -172,6 +172,21 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
 
         return this;
     }
+
+    async clone(): Promise<Entity> {
+        await this.sync();
+
+        return createDemand(
+            {
+                status: this.status,
+                url: null,
+                propertiesDocumentHash: null,
+                demandOwner: this.demandOwner
+            },
+            this.offChainProperties,
+            this.configuration
+        );
+    }
 }
 
 export const getAllDemandsListLength = async (configuration: GeneralLib.Configuration.Entity) => {

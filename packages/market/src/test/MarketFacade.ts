@@ -266,6 +266,17 @@ describe('Market-Facade', () => {
                 }
             } as Partial<Market.Demand.Entity>);
         });
+
+        it('should clone demand', async () => {
+            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const clone = await demand.clone();
+
+            assert.notEqual(clone.id, demand.id);
+            assert.notEqual(clone.propertiesDocumentHash, demand.propertiesDocumentHash);
+            
+            assert.equal(clone.url, demand.url);
+            assert.deepEqual(clone.offChainProperties, demand.offChainProperties);
+        });
     });
 
     describe('Supply-Facade', () => {
@@ -713,20 +724,13 @@ describe('Market-Facade', () => {
                 privateKey: traderPK
             };
 
-            assert.equal(await Market.Demand.getDemandListLength(conf), 1);
+            const amountOfDemands = await Market.Demand.getDemandListLength(conf);
 
             const deleted = await Market.Demand.deleteDemand(0, conf);
             assert.isTrue(deleted);
 
             // Should remain the same
-            assert.equal(await Market.Demand.getDemandListLength(conf), 1);
-        });
-
-        it('should get all demands even after a demand is deleted', async () => {
-            const allDemands = await Market.Demand.getAllDemands(conf);
-
-            assert.equal(allDemands.length, 1);
-            assert.equal(allDemands[0].status, DemandStatus.ARCHIVED);
+            assert.equal(await Market.Demand.getDemandListLength(conf), amountOfDemands);
         });
     });
 });
