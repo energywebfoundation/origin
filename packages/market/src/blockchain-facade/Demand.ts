@@ -15,6 +15,7 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as GeneralLib from '@energyweb/utils-general';
+import { extendArray } from '@energyweb/utils-general';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 
 export interface IDemandOffChainProperties {
@@ -187,4 +188,14 @@ export const getAllDemands = async (configuration: GeneralLib.Configuration.Enti
         .map((item, index) => new Entity(index.toString(), configuration).sync());
 
     return (await Promise.all(demandsPromises)).filter(promise => promise.initialized);
+};
+
+export const filterDemandBy = async (
+    configuration: GeneralLib.Configuration.Entity,
+    onChainProperties: Partial<IDemandOnChainProperties>,
+) => {
+    const allDemands = await getAllDemands(configuration);
+    const filter = { ...onChainProperties } as Partial<Entity>;
+
+    return extendArray(allDemands).filterBy(filter);
 };
