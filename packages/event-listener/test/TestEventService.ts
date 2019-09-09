@@ -12,20 +12,16 @@ describe('Event Service Tests', async () => {
     process.env.WEB3 = 'http://localhost:8545';
     const deployKey = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-    let demo1;
-    let demo2;
+    let demo;
 
     before(async () => {
-        demo1 = new Demo(process.env.WEB3, deployKey);
-        await demo1.deploy();
-
-        demo2 = new Demo(process.env.WEB3, deployKey);
-        await demo2.deploy();
+        demo = new Demo(process.env.WEB3, deployKey);
+        await demo.deploy();
     });
 
     it('gets an instance of OriginContractLookupMarketLookupMapping', async () => {
         const response = await axios.get(
-            `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${demo1.originContractLookup}`
+            `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${demo.originContractLookup}`
         );
         should().exist(response.data.marketContractLookup);
     });
@@ -38,7 +34,7 @@ describe('Event Service Tests', async () => {
 
         await eventService.start();
 
-        assert.equal(eventService.listeners.length, 2);
+        assert.equal(eventService.listeners.length, 1);
         eventService.stop();
     });
 });

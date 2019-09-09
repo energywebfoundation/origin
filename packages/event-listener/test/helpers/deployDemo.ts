@@ -8,8 +8,12 @@ import {
     migrateAssetRegistryContracts,
     ProducingAsset
 } from '@energyweb/asset-registry';
-import { MarketLogic, migrateMarketRegistryContracts } from '@energyweb/market';
-import { CertificateLogic, migrateCertificateRegistryContracts } from '@energyweb/origin';
+import { MarketLogic, migrateMarketRegistryContracts, Demand } from '@energyweb/market';
+import {
+    CertificateLogic,
+    migrateCertificateRegistryContracts,
+    Certificate
+} from '@energyweb/origin';
 import {
     buildRights,
     migrateUserRegistryContracts,
@@ -17,7 +21,8 @@ import {
     User,
     UserLogic
 } from '@energyweb/user-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+
+import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
 
 export class Demo {
     public originContractLookup;
@@ -27,6 +32,8 @@ export class Demo {
     public assetProducingRegistryLogic;
 
     private connectionConfig;
+
+    private conf: Configuration.Entity;
 
     private adminPK;
 
@@ -132,7 +139,7 @@ export class Demo {
         this.certificateLogic = new CertificateLogic(this.web3, deployResult.certificateLogic);
         const marketLogic = new MarketLogic(this.web3, deployResult.marketLogic);
 
-        const conf: Configuration.Entity = {
+        this.conf = {
             blockchainProperties: {
                 activeUser: {
                     address: this.ACCOUNTS.ADMIN.address,
@@ -170,14 +177,14 @@ export class Demo {
             country: '',
             state: ''
         };
-        await User.createUser(adminPropsOnChain, adminPropsOffChain, conf);
+        await User.createUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
         const assetManagerPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
             url: null,
             id: this.ACCOUNTS.ASSET_MANAGER.address,
             active: true,
-            roles: buildRights([Role.AssetManager]),
+            roles: buildRights([Role.AssetAdmin, Role.AssetManager, Role.Trader]),
             organization: 'Asset Manager organization'
         };
         const assetManagerPropsOffChain: User.IUserOffChainProperties = {
@@ -191,7 +198,7 @@ export class Demo {
             country: '',
             state: ''
         };
-        await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
+        await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, this.conf);
 
         const assetProducingProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
@@ -227,13 +234,13 @@ export class Demo {
             await ProducingAsset.createAsset(
                 assetProducingProps,
                 assetProducingPropsOffChain,
-                conf
+                this.conf
             );
         } catch (error) {
             throw new Error(error);
         }
 
-        return { conf, deployResult };
+        return { conf: this.conf, deployResult };
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
@@ -254,5 +261,43 @@ export class Demo {
         });
 
         this.latestDeployedSmReadIndex += 1;
+    }
+
+    async publishForSale(certificateId: number) {
+        const deployedCertificate = await new Certificate.Entity(
+            certificateId.toString(),
+            this.conf
+        ).sync();
+        await deployedCertificate.publishForSale(1000, Currency.USD);
+        console.log('PUBLISHED FOR SALE');
+    }
+
+    async deployDemand() {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
+
+        const demandOffChainProps: Demand.IDemandOffChainProperties = {
+            timeFrame: TimeFrame.hourly,
+            maxPricePerMwh: 150000,
+            currency: Currency.USD,
+            producingAsset: '0',
+            location: { provinces: ['string'], regions: ['string'] },
+            assetType: ['Solar'],
+            minCO2Offset: 10,
+            otherGreenAttributes: 'string',
+            typeOfPublicSupport: 'string',
+            targetWhPerPeriod: 1e6,
+            registryCompliance: Compliance.EEC,
+            startTime: '1559466472732',
+            endTime: '1559466492732'
+        };
+
+        const demandProps: Demand.IDemandOnChainProperties = {
+            url: null,
+            propertiesDocumentHash: null,
+            demandOwner: this.ACCOUNTS.ASSET_MANAGER.address,
+            status: Demand.DemandStatus.ACTIVE
+        };
+
+        return Demand.createDemand(demandProps, demandOffChainProps, this.conf);
     }
 }

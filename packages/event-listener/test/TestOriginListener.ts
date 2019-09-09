@@ -1,7 +1,6 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { SCAN_INTERVAL } from '../src/index';
 import { EmailServiceProvider } from '../src/services/email.service';
 import {
     IOriginEventListener,
@@ -11,6 +10,7 @@ import { Demo } from './helpers/deployDemo';
 import { TestEmailAdapter } from './helpers/TestAdapter';
 import EmailTypes from '../src/services/email/EmailTypes';
 
+const SCAN_INTERVAL = 3000;
 const APPROX_EMAIL_SENDING_TIME = 3000;
 
 function sleep(ms) {
@@ -34,22 +34,18 @@ describe('Origin Listener Tests', async () => {
         const web3 = new Web3(process.env.WEB3);
         const emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
 
-        assert.equal(emailService.sentEmails.length, 0);
-
-        const NOTIFICATION_INTERVAL = SCAN_INTERVAL;
-
         const listener: IOriginEventListener = new OriginEventListener(
             demo.originContractLookup,
             web3,
             emailService,
-            NOTIFICATION_INTERVAL
+            SCAN_INTERVAL
         );
 
         await listener.start();
 
         await demo.deploySmartMeterRead(1e7);
 
-        await sleep(APPROX_EMAIL_SENDING_TIME + NOTIFICATION_INTERVAL);
+        await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
 
         assert.equal(emailService.sentEmails.length, 1);
         assert.isTrue(emailService.sentEmails[0].subject.includes(EmailTypes.CERTS_APPROVED));
@@ -61,25 +57,24 @@ describe('Origin Listener Tests', async () => {
         const web3 = new Web3(process.env.WEB3);
         const emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
 
-        assert.equal(emailService.sentEmails.length, 0);
-
-        const NOTIFICATION_INTERVAL = SCAN_INTERVAL;
-
         const listener: IOriginEventListener = new OriginEventListener(
             demo.originContractLookup,
             web3,
             emailService,
-            NOTIFICATION_INTERVAL
+            SCAN_INTERVAL
         );
+
+        await demo.deployDemand();
 
         await listener.start();
 
         await demo.deploySmartMeterRead(2e7);
+        await demo.publishForSale(0);
 
-        await sleep(APPROX_EMAIL_SENDING_TIME + NOTIFICATION_INTERVAL);
+        await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
 
-        assert.equal(emailService.sentEmails.length, 1);
-        assert.isTrue(emailService.sentEmails[0].subject.includes(EmailTypes.CERTS_APPROVED));
+        assert.equal(emailService.sentEmails.length, 2);
+        assert.isTrue(emailService.sentEmails[1].subject.includes(EmailTypes.DEMAND_MATCH));
 
         listener.stop();
     });

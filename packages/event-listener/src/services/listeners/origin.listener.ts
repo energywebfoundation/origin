@@ -7,11 +7,17 @@ import { MatcherLogic } from '@energyweb/market-matcher';
 import { Demand } from '@energyweb/market';
 
 import { initOriginConfig } from '../../config/origin.config';
-import { IEmail, IEmailResponse, IEmailServiceProvider } from '../email.service';
+import { IEmailResponse, IEmailServiceProvider } from '../email.service';
 import { IEventListener } from './IEventListener';
 import EmailTypes from '../email/EmailTypes';
 
 import { SCAN_INTERVAL } from '../../index';
+
+interface ICounter {
+    user: User.Entity;
+    newCertificates: number;
+    matchedDemands: number;
+}
 
 export interface IOriginEventListener extends IEventListener {
     originLookupAddress: string;
@@ -33,7 +39,7 @@ export class OriginEventListener implements IOriginEventListener {
 
     public emailService: IEmailServiceProvider;
 
-    private newCertificateCounters: object;
+    private counters: ICounter[] = [];
 
     private interval;
 
@@ -50,7 +56,6 @@ export class OriginEventListener implements IOriginEventListener {
 
         this.started = false;
         this.interval = null;
-        this.resetCounters();
     }
 
     public async start(): Promise<void> {
@@ -69,55 +74,85 @@ export class OriginEventListener implements IOriginEventListener {
             const newCertificate = await new Certificate.Entity(certId, this.conf).sync();
 
             await this.incrementNewCertCounter(newCertificate);
-            await this.checkDemands(newCertificate);
+        });
+
+        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const publishedCertificate = await new Certificate.Entity(
+                event.returnValues._entityId,
+                this.conf
+            ).sync();
+            this.conf.logger.info(
+                `Event: LogPublishForSale certificate #${
+                    publishedCertificate.id
+                } at ${JSON.stringify(publishedCertificate.offChainSettlementOptions)}`
+            );
+
+            await this.checkDemands(publishedCertificate);
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
         this.manager.registerEventHandler(certificateContractEventHandler);
 
         this.manager.start();
-        this.interval = setInterval(
-            this.notifyOwnersOfNewCertificates.bind(this),
-            this.notificationInterval
-        );
+        this.interval = setInterval(this.notify.bind(this), this.notificationInterval);
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.originLookupAddress}`);
     }
 
-    public async notifyOwnersOfNewCertificates() {
-        for (const ownerEmail in this.newCertificateCounters) {
-            if (this.newCertificateCounters[ownerEmail] > 0) {
-                this.conf.logger.info(`Sending email to ${ownerEmail}...`);
+    public async notify() {
+        for (const counter of this.counters) {
+            const emailAddress = counter.user.offChainProperties.email;
 
-                const emailTemplate: IEmail = {
-                    to: [ownerEmail],
+            if (counter.newCertificates > 0) {
+                this.conf.logger.info(`Sending email to ${emailAddress}...`);
+
+                const response: IEmailResponse = await this.emailService.send({
+                    to: [emailAddress],
                     subject: `[Origin] ${EmailTypes.CERTS_APPROVED}`,
                     html: `
                         Local issuer approved your certificates. 
-                        There are ${this.newCertificateCounters[ownerEmail]} new certificates in your inbox:
+                        There are ${counter.newCertificates} new certificates in your inbox:
                         ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox
                     `
-                };
-
-                const response: IEmailResponse = await this.emailService.send(emailTemplate);
+                });
 
                 if (!response.success) {
                     this.conf.logger.error(
-                        `Unable to send email to ${ownerEmail}: ${response.error}`
+                        `Unable to send email to ${emailAddress}: ${response.error}`
                     );
                     return;
                 }
 
                 this.conf.logger.info('Sent.');
+
+                counter.newCertificates = 0;
+            }
+
+            if (counter.matchedDemands > 0) {
+                this.conf.logger.info(`Sending email to ${emailAddress}...`);
+
+                const response: IEmailResponse = await this.emailService.send({
+                    to: [emailAddress],
+                    subject: `[Origin] ${EmailTypes.DEMAND_MATCH}`,
+                    html: `
+                        We found ${counter.matchedDemands} matching your demand. Open Origin and check it out:
+                        ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/
+                    `
+                });
+
+                if (!response.success) {
+                    this.conf.logger.error(
+                        `Unable to send email to ${emailAddress}: ${response.error}`
+                    );
+                    return;
+                }
+
+                this.conf.logger.info('Sent.');
+
+                counter.matchedDemands = 0;
             }
         }
-
-        this.resetCounters();
-    }
-
-    public resetCounters(): void {
-        this.newCertificateCounters = {};
     }
 
     public stop(): void {
@@ -129,16 +164,21 @@ export class OriginEventListener implements IOriginEventListener {
 
     private async incrementNewCertCounter(certificate: Certificate.Entity): Promise<void> {
         const certOwner = await new User.Entity(certificate.owner, this.conf as any).sync();
-        const certOwnerEmail = certOwner.offChainProperties.email;
+        let userCounter = this.counters.find(counter => counter.user.id === certOwner.id);
 
-        if (this.newCertificateCounters[certOwnerEmail]) {
-            this.newCertificateCounters[certOwnerEmail] += 1;
+        if (userCounter) {
+            userCounter.newCertificates += 1;
         } else {
-            this.newCertificateCounters[certOwnerEmail] = 1;
+            userCounter = {
+                user: certOwner,
+                newCertificates: 1,
+                matchedDemands: 0
+            };
+            this.counters.push(userCounter);
         }
 
         this.conf.logger.info(
-            `<${certOwnerEmail}> New certificate approved. Buffered emails count: ${this.newCertificateCounters[certOwnerEmail]}`
+            `<${certOwner.offChainProperties.email}> New certificate approved. Buffered emails count: ${userCounter.newCertificates}`
         );
     }
 
@@ -147,6 +187,29 @@ export class OriginEventListener implements IOriginEventListener {
             certificate,
             this.conf
         );
-        console.log({ matchedDemands });
+
+        if (matchedDemands.length > 0) {
+            for (const demand of matchedDemands) {
+                const demandOwner = await new User.Entity(demand.demandOwner, this
+                    .conf as any).sync();
+
+                let userCounter = this.counters.find(counter => counter.user.id === demandOwner.id);
+
+                if (userCounter) {
+                    userCounter.matchedDemands += 1;
+                } else {
+                    userCounter = {
+                        user: demandOwner,
+                        newCertificates: 0,
+                        matchedDemands: 1
+                    };
+                    this.counters.push(userCounter);
+                }
+
+                this.conf.logger.info(
+                    `<${demandOwner.offChainProperties.email}> New certificate found for demand. Buffered emails count: ${userCounter.matchedDemands}`
+                );
+            }
+        }
     }
 }
