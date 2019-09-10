@@ -28,6 +28,7 @@ export interface IUserOffChainProperties {
     city?: string;
     country?: string;
     state?: string;
+    notifications?: boolean;
 }
 
 export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
@@ -102,6 +103,28 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
         }
 
         return Boolean(this.roles & Math.pow(2, role));
+    }
+
+    async update(offChainProperties: IUserOffChainProperties) {
+        const updatedOffChainStorageProperties = this.prepareEntityCreation(
+            offChainProperties,
+            UserOffChainPropertiesSchema,
+            this.getUrl()
+        );
+
+        await this.configuration.blockchainProperties.userLogicInstance.updateUser(
+            this.id,
+            updatedOffChainStorageProperties.rootHash,
+            this.getUrl(),
+            {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
+
+        await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+
+        return new Entity(this.id, this.configuration).sync();
     }
 }
 

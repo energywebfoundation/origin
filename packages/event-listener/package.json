@@ -32,6 +32,7 @@
         "@energyweb/asset-registry": "1.1.0",
         "@energyweb/user-registry": "1.1.0",
         "@energyweb/market": "1.1.0",
+        "@energyweb/market-matcher": "1.1.0",
         "@energyweb/origin": "1.1.0",
         "@energyweb/utils-general": "1.1.0",
         "@energyweb/utils-testbackend": "1.1.0",

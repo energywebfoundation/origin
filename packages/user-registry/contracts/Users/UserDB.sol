@@ -115,4 +115,25 @@ contract UserDB is Owned {
     {
         return userList[_user];
     }
+
+    /// @notice updates existing user
+    /// @param _user user address
+	/// @param _propertiesDocumentHash the properties document hash
+	/// @param _documentDBURL the url of the document in a database
+	/// @return operation result
+    function updateUser
+    (
+        address _user,
+        string calldata _propertiesDocumentHash,
+        string calldata _documentDBURL
+    )
+        external
+        onlyOwner
+        returns (bool)
+    {
+        userList[_user].propertiesDocumentHash = _propertiesDocumentHash;
+        userList[_user].documentDBURL = _documentDBURL;
+
+        return true;
+    }
 }

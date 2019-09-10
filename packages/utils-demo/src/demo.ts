@@ -112,7 +112,8 @@ export const marketDemo = async (demoFile?: string) => {
         zip: '',
         city: '',
         country: '',
-        state: ''
+        state: '',
+        notifications: true
     };
 
     await User.createUser(userPropsOnChain, userPropsOffChain, conf);

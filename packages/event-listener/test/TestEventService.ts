@@ -1,32 +1,29 @@
 import axios from 'axios';
-import { assert } from 'chai';
+import { assert, should } from 'chai';
 import Web3 from 'web3';
 
-import { deployDemo } from './helpers/deployDemo';
+import { Demo } from './helpers/deployDemo';
 
 import { EventServiceProvider } from '../src/services/event.service';
 
 describe('Event Service Tests', async () => {
-    process.env.UI_BASE_URL = "http://localhost:3000";
-    process.env.API_BASE_URL = "http://localhost:3030";
-    process.env.WEB3 = "http://localhost:8545";
+    process.env.UI_BASE_URL = 'http://localhost:3000';
+    process.env.API_BASE_URL = 'http://localhost:3030';
+    process.env.WEB3 = 'http://localhost:8545';
+    const deployKey = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-    let originContract1;
-    let originContract2;
+    let demo;
 
     before(async () => {
-        const resultDeploy1 = await deployDemo();
-        originContract1 = resultDeploy1.deployResult.originContractLookup;
-
-        const resultDeploy2 = await deployDemo();
-        originContract2 = resultDeploy2.deployResult.originContractLookup;
+        demo = new Demo(process.env.WEB3, deployKey);
+        await demo.deploy();
     });
 
     it('gets an instance of OriginContractLookupMarketLookupMapping', async () => {
         const response = await axios.get(
-            `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originContract1}`
+            `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${demo.originContractLookup}`
         );
-        assert.isNotNull(response.data.marketContractLookup);
+        should().exist(response.data.marketContractLookup);
     });
 
     it('initializes event service', async () => {
@@ -37,7 +34,7 @@ describe('Event Service Tests', async () => {
 
         await eventService.start();
 
-        assert.equal(eventService.listeners.length, 2);
+        assert.equal(eventService.listeners.length, 1);
         eventService.stop();
     });
 });

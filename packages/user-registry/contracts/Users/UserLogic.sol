@@ -28,6 +28,8 @@ import "../../contracts/Interfaces/UserContractLookupInterface.sol";
 /// @notice this contract will not directly store any data, instead it will store them into the userDB-contract
 contract UserLogic is RoleManagement, Updatable, RolesInterface {
 
+    event UserUpdated(address _user);
+
     /// @notice db user-db for storing the contract
     UserDB public db;
 
@@ -150,5 +152,24 @@ contract UserLogic is RoleManagement, Updatable, RolesInterface {
         returns (uint)
     {
         return db.getFullUser(_user).roles;
+    }
+
+    /// @notice Updates existing user with new properties
+	/// @dev will return an event with the event-Id
+	/// @param _user user address
+    /// @param _propertiesDocumentHash document-hash with all the properties of the user
+	/// @param _documentDBURL url-address of the user
+    function updateUser(
+        address _user,
+        string calldata _propertiesDocumentHash,
+        string calldata _documentDBURL
+    )
+        external
+    {
+        require(msg.sender == _user, "user can only update himself");
+
+        db.updateUser(_user, _propertiesDocumentHash, _documentDBURL);
+
+        emit UserUpdated(_user);
     }
 }
