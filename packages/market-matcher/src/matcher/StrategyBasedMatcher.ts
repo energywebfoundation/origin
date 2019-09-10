@@ -5,22 +5,54 @@ import { TimeFrame } from '@energyweb/utils-general';
 import { Controller } from '../controller/Controller';
 import { logger } from '../Logger';
 import { IStrategy } from '../strategy/IStrategy';
-import { Matcher } from './Matcher';
-import {
-    findMatchingAgreementsForCertificate,
-    findMatchingDemandsForCertificate
-} from './MatcherLogic';
+import { findMatchingAgreementsForCertificate, findMatchingDemandsForCertificate } from './MatcherLogic';
 
-export class StrategyBasedMatcher extends Matcher {
+export class StrategyBasedMatcher {
     private strategy: IStrategy;
+    private controller: Controller;
 
     constructor(strategy: IStrategy) {
-        super();
         this.strategy = strategy;
     }
 
     public setController(controller: Controller) {
         this.controller = controller;
+    }
+
+    public async match(
+        certificate: Certificate.Entity,
+        agreements: Agreement.Entity[],
+        demands: Demand.Entity[]
+    ): Promise<boolean> {
+        const matcherAccount = certificate.escrow.find(
+            (escrow: any) => escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase()
+        );
+
+        if (!matcherAccount) {
+            logger.verbose('This instance is not an escrow for certificate #' + certificate.id);
+        } else {
+            logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+
+            const agreementMatchResult = await this.findMatchingAgreement(certificate, agreements);
+            if (agreementMatchResult.agreement) {
+                await this.controller.matchAgreement(certificate, agreementMatchResult.agreement);
+
+                return true;
+            } else if (!agreementMatchResult.split) {
+                await this.controller.handleUnmatchedCertificate(certificate);
+            }
+
+            const demandMatchResult = await this.findMatchingDemand(certificate, demands);
+            if (demandMatchResult.demand) {
+                await this.controller.matchDemand(certificate, demandMatchResult.demand);
+
+                return true;
+            } else if (!demandMatchResult.split) {
+                await this.controller.handleUnmatchedCertificate(certificate);
+            }
+        }
+
+        return false;
     }
 
     public async findMatchingAgreement(

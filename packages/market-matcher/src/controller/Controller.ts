@@ -1,18 +1,3 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
@@ -21,7 +6,7 @@ import * as Jsonschema from 'jsonschema';
 import * as LogSymbols from 'log-symbols';
 
 import { logger } from '../Logger';
-import { Matcher } from '../matcher/Matcher';
+import { StrategyBasedMatcher } from '../matcher/StrategyBasedMatcher';
 
 export abstract class Controller {
     public static validateJson(input: any, schema: any, description: string) {
@@ -48,9 +33,9 @@ export abstract class Controller {
     protected demands: Demand.Entity[];
     protected supplies: Supply.Entity[];
     protected producingAssets: ProducingAsset.Entity[];
-    protected matcher: Matcher;
+    protected matcher: StrategyBasedMatcher;
 
-    public setMatcher(matcher: Matcher) {
+    public setMatcher(matcher: StrategyBasedMatcher) {
         this.matcher = matcher;
     }
 
