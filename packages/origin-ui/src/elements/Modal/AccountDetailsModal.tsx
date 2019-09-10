@@ -60,10 +60,10 @@ class AccountDetailsModal extends React.Component<
         };
     }
 
-    UNSAFE_componentWillReceiveProps(newProps: IAccountDetailsModalProps) {
-        this.setState({
-            show: newProps.showModal
-        });
+    static getDerivedStateFromProps(nextProps) {
+        return {
+            show: nextProps.showModal
+        };
     }
 
     componentDidUpdate(prevProps) {

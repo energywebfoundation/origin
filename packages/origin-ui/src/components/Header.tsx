@@ -28,13 +28,13 @@ import { getBaseURL, getCurrentUser, getConfiguration } from '../features/select
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 import { AccountDetailsModal } from '../elements/Modal/AccountDetailsModal';
 
-interface IHeaderProps {
+interface IStateProps {
     configuration: Configuration.Entity;
     currentUser: User.Entity;
     baseURL: string;
 }
 
-type Props = RouteComponentProps & IHeaderProps;
+type Props = RouteComponentProps & IStateProps;
 
 interface IHeaderState {
     showAccountDetailsModal: boolean;
