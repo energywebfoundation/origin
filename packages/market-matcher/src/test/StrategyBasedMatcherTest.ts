@@ -222,14 +222,7 @@ describe('Test StrategyBasedMatcher', async () => {
             endTime: '1559466492732'
         };
 
-        const demandProps: Demand.IDemandOnChainProperties = {
-            url: null,
-            propertiesDocumentHash: null,
-            demandOwner: conf.blockchainProperties.activeUser.address,
-            status: Demand.DemandStatus.ACTIVE
-        };
-
-        await Demand.createDemand(demandProps, demandOffChainProps, conf);
+        await Demand.createDemand(demandOffChainProps, conf);
         assert.equal(await Demand.getDemandListLength(conf), 1);
     });
 
