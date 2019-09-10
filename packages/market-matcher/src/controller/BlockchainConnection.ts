@@ -28,7 +28,7 @@ import { Configuration, ContractEventHandler, EventHandlerManager } from '@energ
 import Web3 from 'web3';
 
 import { logger } from '../Logger';
-import { IBlockchainDataSource } from '../schema-defs/MatcherConf';
+import { IBlockchainDataSource } from '../matcher/MatcherConfig';
 import { Controller } from './Controller';
 
 export const initMatchingManager = async (controller: Controller, conf: Configuration.Entity) => {

@@ -76,8 +76,6 @@ async function run() {
 
     await generateSchemaIfNew('yarn --silent generate-rule-schema', '/schemas/rule.schema.json');
 
-    await generateSchemaIfNew('yarn --silent generate-conf-schema', '/schemas/conf.schema.json');
-
     console.log('MARKET-MATCHER: Building schemas done');
 }
 

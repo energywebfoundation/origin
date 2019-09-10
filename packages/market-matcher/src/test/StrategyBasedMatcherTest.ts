@@ -32,7 +32,7 @@ import Web3 from 'web3';
 
 import { startMatcher } from '..';
 import { logger } from '../Logger';
-import * as SchemaDefs from '../schema-defs/MatcherConf';
+import * as SchemaDefs from '../matcher/MatcherConfig';
 
 const PROVIDER_URL = 'http://localhost:8545';
 const BACKEND_URL = 'http://localhost:3030';
@@ -70,9 +70,9 @@ describe('Test StrategyBasedMatcher', async () => {
     const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    const matcherConf: SchemaDefs.IMatcherConf = {
+    const matcherConf: SchemaDefs.IMatcherConfig = {
         dataSource: {
-            type: 'BLOCKCHAIN' as SchemaDefs.BlockchainDataSourceType,
+            type: SchemaDefs.BlockchainDataSourceType.Blockchain,
             web3Url: PROVIDER_URL,
             offChainDataSourceUrl: BACKEND_URL,
             marketContractLookupAddress: '',

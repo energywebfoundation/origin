@@ -4,6 +4,8 @@
         "baseUrl": "./packages",
         "paths": {
             "@energyweb/*": ["*/src"]
-        }
+        },
+        "types": ["mocha"],
+        "target": "es2018"
     }
 }

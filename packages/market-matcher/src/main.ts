@@ -16,11 +16,11 @@
 import * as fs from 'fs';
 
 import { startMatcher } from './';
-import * as SchemaDefs from './schema-defs/MatcherConf';
+import { IMatcherConfig } from './matcher/MatcherConfig';
 
 const main = async () => {
     if (process.argv[2]) {
-        const conf: SchemaDefs.IMatcherConf = JSON.parse(
+        const conf: IMatcherConfig = JSON.parse(
             fs.readFileSync(process.argv[2], 'utf8').toString()
         );
         await startMatcher(conf);

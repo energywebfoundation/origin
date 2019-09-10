@@ -23,7 +23,7 @@ import * as LogSymbols from 'log-symbols';
 import { METHOD_NOT_IMPLEMENTED } from '..';
 import * as SimulationDescriptionSchema from '../../schemas/simulation-description.schema.json';
 import { logger } from '../Logger';
-import { ISimulationDataSource } from '../schema-defs/MatcherConf';
+import { ISimulationDataSource } from '../matcher/MatcherConfig';
 import * as SimulationFlowDef from '../schema-defs/simulation-flow/';
 import { Controller } from './Controller';
 import * as SimulationFlowHandler from './SimulationFlowHandler';

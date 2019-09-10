@@ -17,7 +17,6 @@
         "build": "yarn generate-schemas && yarn build-ts",
         "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "debug": "node --inspect-brk dist/js/src/main.js",
-        "generate-conf-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IMatcherConf",
         "generate-rule-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IRuleConf",
         "generate-schemas": "./scripts/buildSchemas.js",
         "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json ISimulationFlow",

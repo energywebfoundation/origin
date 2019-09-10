@@ -1,4 +1,3 @@
-import * as ConfSchema from '../schemas/conf.schema.json';
 import { createBlockchainConf } from './controller/BlockchainConnection';
 import { BlockchainModeController } from './controller/BlockchainModeController';
 import { Controller } from './controller/Controller';
@@ -6,7 +5,7 @@ import { SimulationModeController } from './controller/SimulationModeController'
 import { logger } from './Logger';
 import * as MatcherLogic from './matcher/MatcherLogic';
 import { StrategyBasedMatcher } from './matcher/StrategyBasedMatcher';
-import * as SchemaDefs from './schema-defs/MatcherConf';
+import * as SchemaDefs from './matcher/MatcherConfig';
 import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
 
 const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';
@@ -30,12 +29,11 @@ const buildController = async (
     }
 };
 
-const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
-    logger.info('Matcher application started.');
+const startMatcher = async (conf: SchemaDefs.IMatcherConfig) => {
+    logger.info('Matcher application is starting.');
 
     if (conf) {
         try {
-            Controller.validateJson(conf, ConfSchema, 'Config file');
             const matcher = new StrategyBasedMatcher(new LowestPriceStrategy());
             const controller = await buildController(conf.dataSource);
             matcher.setController(controller);
@@ -47,6 +45,8 @@ const startMatcher = async (conf: SchemaDefs.IMatcherConf) => {
     } else {
         throw new Error('No config specified');
     }
+
+    logger.info('Matcher application started.');
 };
 
 export { MatcherLogic, METHOD_NOT_IMPLEMENTED, startMatcher };
