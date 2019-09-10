@@ -1,44 +1,68 @@
-import { createBlockchainConf } from './controller/BlockchainConnection';
-import { BlockchainModeController } from './controller/BlockchainModeController';
-import { Controller } from './controller/Controller';
-import { SimulationModeController } from './controller/SimulationModeController';
+import 'reflect-metadata';
+
+import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
+import { createBlockchainProperties as issuerCreateBlockchainProperties } from '@energyweb/origin';
+import { Configuration } from '@energyweb/utils-general';
+import Web3 from 'web3';
+import { container } from 'tsyringe';
+import * as Winston from 'winston';
+
 import { logger } from './Logger';
-import * as MatcherLogic from './matcher/MatcherLogic';
-import { StrategyBasedMatcher } from './matcher/StrategyBasedMatcher';
-import * as SchemaDefs from './matcher/MatcherConfig';
+import { Matcher } from './Matcher';
+import { EntityStore, IEntityStore } from './EntityStore';
+import { IStrategy } from './strategy/IStrategy';
 import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
+import { CertificateService } from './CertificateService';
 
-const METHOD_NOT_IMPLEMENTED = 'Method not implemented.';
+export interface IMatcherConfig {
+    web3Url: string;
+    marketContractLookupAddress: string;
+    originContractLookupAddress: string;
+    matcherAccount: Configuration.EthAccount;
+    offChainDataSourceUrl: string;
+}
 
-const buildController = async (
-    dataSource: SchemaDefs.IBlockchainDataSource | SchemaDefs.ISimulationDataSource
-): Promise<Controller> => {
-    logger.verbose('Data source type is ' + dataSource.type);
-    switch (dataSource.type) {
-        case SchemaDefs.BlockchainDataSourceType.Blockchain:
-            return new BlockchainModeController(
-                await createBlockchainConf(dataSource, dataSource.matcherAccount),
-                dataSource.matcherAccount.address
-            );
+const createBlockchainConf = async (
+    matcherConfig: IMatcherConfig
+): Promise<Configuration.Entity> => {
+    const web3 = new Web3(matcherConfig.web3Url);
+    const marketConf = await marketCreateBlockchainProperties(
+        web3,
+        matcherConfig.marketContractLookupAddress
+    );
+    const originConf = await issuerCreateBlockchainProperties(
+        web3,
+        matcherConfig.originContractLookupAddress
+    );
+    marketConf.certificateLogicInstance = originConf.certificateLogicInstance;
+    marketConf.activeUser = matcherConfig.matcherAccount;
 
-        case SchemaDefs.SimulationDataSourceType.Simulation:
-            return new SimulationModeController(dataSource);
-
-        default:
-            throw new Error('Unknown data source type.');
-    }
+    return {
+        blockchainProperties: marketConf,
+        logger,
+        offChainDataSource: {
+            baseUrl: matcherConfig.offChainDataSourceUrl
+        }
+    };
 };
 
-const startMatcher = async (conf: SchemaDefs.IMatcherConfig) => {
+export async function startMatcher(config: IMatcherConfig) {
     logger.info('Matcher application is starting.');
 
-    if (conf) {
+    if (config) {
         try {
-            const matcher = new StrategyBasedMatcher(new LowestPriceStrategy());
-            const controller = await buildController(conf.dataSource);
-            matcher.setController(controller);
-            controller.setMatcher(matcher);
-            controller.start();
+            const configEntity = await createBlockchainConf(config);
+
+            container.register<Configuration.Entity>('config', {
+                useValue: configEntity
+            });
+            container.register<IEntityStore>("entityStore", { useClass: EntityStore });
+            container.register<IStrategy>("strategy", { useClass: LowestPriceStrategy });
+            container.register<CertificateService>("certificateService", { useClass: CertificateService });
+            container.register<Winston.Logger>('logger', { useValue: logger });
+
+            const matcher = container.resolve<Matcher>(Matcher);
+            await matcher.init();
         } catch (e) {
             logger.error(e.message);
         }
@@ -47,6 +71,4 @@ const startMatcher = async (conf: SchemaDefs.IMatcherConfig) => {
     }
 
     logger.info('Matcher application started.');
-};
-
-export { MatcherLogic, METHOD_NOT_IMPLEMENTED, startMatcher };
+}

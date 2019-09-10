@@ -1,5 +1,5 @@
-import { Agreement } from '@energyweb/market';
+import { MatchableAgreement } from '../MatchableAgreement';
 
 export interface IStrategy {
-    execute(agreements: Agreement.Entity[]): Promise<Agreement.Entity[]>;
+    execute(agreements: MatchableAgreement[]): Promise<MatchableAgreement[]>;
 }

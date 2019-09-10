@@ -1,6 +1,0 @@
-{
-    "dataSource": {
-        "type": "SIMULATION",
-        "simulationFlowFile": "example-conf/simulation-flow.json"
-    }
-}
