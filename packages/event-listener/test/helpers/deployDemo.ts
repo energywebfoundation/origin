@@ -176,7 +176,7 @@ export class Demo {
             city: '',
             country: '',
             state: '',
-            notifications: false
+            notifications: true
         };
         await User.createUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
@@ -198,7 +198,7 @@ export class Demo {
             city: '',
             country: '',
             state: '',
-            notifications: false
+            notifications: true
         };
         await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, this.conf);
 

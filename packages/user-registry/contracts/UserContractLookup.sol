@@ -49,7 +49,7 @@ contract UserContractLookup is Owned, UserContractLookupInterface {
         external
         onlyOwner
     {
-        require(address(_userRegistry)!= address(0x0), "update: cannot set to 0");
+        require(address(_userRegistry) != address(0x0), "update: cannot set to 0");
         userRegistryContract.update(address(_userRegistry));
         userRegistryContract = _userRegistry;
     }
