@@ -191,7 +191,8 @@ const deployDemo = async () => {
         zip: '',
         city: '',
         country: '',
-        state: ''
+        state: '',
+        notifications: false
     };
     await User.createUser(adminPropsOnChain, adminPropsOffChain, conf);
 
@@ -212,7 +213,8 @@ const deployDemo = async () => {
         zip: '',
         city: '',
         country: '',
-        state: ''
+        state: '',
+        notifications: false
     };
     await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
 

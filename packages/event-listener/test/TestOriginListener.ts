@@ -5,7 +5,7 @@ import { EmailServiceProvider } from '../src/services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../src/listeners/origin.listener';
 import { Demo } from './helpers/deployDemo';
 import { TestEmailAdapter } from './helpers/TestAdapter';
-import EmailTypes from '../src/email/EmailTypes';
+import NotificationTypes from '../src/notification/NotificationTypes';
 
 const SCAN_INTERVAL = 3000;
 const APPROX_EMAIL_SENDING_TIME = 3000;
@@ -45,7 +45,9 @@ describe('Origin Listener Tests', async () => {
         await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
 
         assert.equal(emailService.sentEmails.length, 1);
-        assert.isTrue(emailService.sentEmails[0].subject.includes(EmailTypes.CERTS_APPROVED));
+        assert.isTrue(
+            emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
+        );
 
         listener.stop();
     });
@@ -71,7 +73,10 @@ describe('Origin Listener Tests', async () => {
         await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
 
         assert.equal(emailService.sentEmails.length, 2);
-        assert.isTrue(emailService.sentEmails[1].subject.includes(EmailTypes.DEMAND_MATCH));
+        assert.isTrue(
+            emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
+        );
+        assert.isTrue(emailService.sentEmails[1].subject.includes(NotificationTypes.DEMAND_MATCH));
 
         listener.stop();
     });

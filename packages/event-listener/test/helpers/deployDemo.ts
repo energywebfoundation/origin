@@ -175,7 +175,8 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: ''
+            state: '',
+            notifications: false
         };
         await User.createUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
@@ -196,7 +197,8 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: ''
+            state: '',
+            notifications: false
         };
         await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, this.conf);
 
@@ -291,13 +293,6 @@ export class Demo {
             endTime: '1559466492732'
         };
 
-        const demandProps: Demand.IDemandOnChainProperties = {
-            url: null,
-            propertiesDocumentHash: null,
-            demandOwner: this.ACCOUNTS.ASSET_MANAGER.address,
-            status: Demand.DemandStatus.ACTIVE
-        };
-
-        return Demand.createDemand(demandProps, demandOffChainProps, this.conf);
+        return Demand.createDemand(demandOffChainProps, this.conf);
     }
 }

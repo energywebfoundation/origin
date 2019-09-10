@@ -53,7 +53,8 @@ export const onboardDemo = async (
                 zip: action.data.zip,
                 city: action.data.city,
                 country: action.data.country,
-                state: action.data.state
+                state: action.data.state,
+                notifications: true
             };
 
             await User.createUser(userPropsOnChain, userPropsOffChain, conf);

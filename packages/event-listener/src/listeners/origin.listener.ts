@@ -9,7 +9,7 @@ import { Demand } from '@energyweb/market';
 import { initOriginConfig } from '../config/origin.config';
 import { IEmailResponse, IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
-import EmailTypes from '../email/EmailTypes';
+import NotificationTypes from '../notification/NotificationTypes';
 
 import { SCAN_INTERVAL } from '../index';
 
@@ -103,13 +103,14 @@ export class OriginEventListener implements IOriginEventListener {
     public async notify() {
         for (const counter of this.counters) {
             const emailAddress = counter.user.offChainProperties.email;
+            const notificationsEnabled = counter.user.offChainProperties.notifications;
 
-            if (counter.newCertificates > 0) {
+            if (counter.newCertificates > 0 && notificationsEnabled) {
                 this.conf.logger.info(`Sending email to ${emailAddress}...`);
 
                 const response: IEmailResponse = await this.emailService.send({
                     to: [emailAddress],
-                    subject: `[Origin] ${EmailTypes.CERTS_APPROVED}`,
+                    subject: `[Origin] ${NotificationTypes.CERTS_APPROVED}`,
                     html: `
                         Local issuer approved your certificates. 
                         There are ${counter.newCertificates} new certificates in your inbox:
@@ -129,12 +130,12 @@ export class OriginEventListener implements IOriginEventListener {
                 counter.newCertificates = 0;
             }
 
-            if (counter.matchedDemands > 0) {
+            if (counter.matchedDemands > 0 && notificationsEnabled) {
                 this.conf.logger.info(`Sending email to ${emailAddress}...`);
 
                 const response: IEmailResponse = await this.emailService.send({
                     to: [emailAddress],
-                    subject: `[Origin] ${EmailTypes.DEMAND_MATCH}`,
+                    subject: `[Origin] ${NotificationTypes.DEMAND_MATCH}`,
                     html: `
                         We found ${counter.matchedDemands} matching your demand. Open Origin and check it out:
                         ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/
