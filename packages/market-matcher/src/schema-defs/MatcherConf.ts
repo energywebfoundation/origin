@@ -8,11 +8,6 @@ export enum SimulationDataSourceType {
     Simulation = 'SIMULATION'
 }
 
-export enum MatcherType {
-    ConfigurableReference = 'CONFIGURABLE_REFERENCE',
-    Strategy = 'STRATEGY'
-}
-
 export interface IBlockchainDataSource {
     type: BlockchainDataSourceType;
     web3Url: string;
@@ -27,17 +22,7 @@ export interface ISimulationDataSource {
     simulationFlowFile: string;
 }
 
-export interface ISimulationMatcherSpecification {
-    type: MatcherType;
-    matcherConfigFile?: string;
-}
-
-export interface IBlockchainMatcherSpecification {
-    type: MatcherType;
-    matcherConfigFile?: string;
-}
 
 export interface IMatcherConf {
     dataSource: ISimulationDataSource | IBlockchainDataSource;
-    matcherSpecification: ISimulationMatcherSpecification | IBlockchainMatcherSpecification;
 }

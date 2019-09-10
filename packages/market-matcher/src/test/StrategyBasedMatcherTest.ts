@@ -81,9 +81,6 @@ describe('Test StrategyBasedMatcher', async () => {
                 address: accountDeployment,
                 privateKey: privateKeyDeployment
             }
-        },
-        matcherSpecification: {
-            type: SchemaDefs.MatcherType.Strategy
         }
     };
 
