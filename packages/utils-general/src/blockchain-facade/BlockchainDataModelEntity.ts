@@ -55,28 +55,19 @@ export abstract class Entity {
     abstract getUrl(): string;
 
     prepareEntityCreation(
-        onChainProperties: IOnChainProperties,
         offChainProperties: any,
         schema: any,
         url?: string,
         debug?: boolean
     ): IOffChainProperties {
-        const axiosurl = url ? url : this.getUrl();
-
-        validateJson(offChainProperties, schema, axiosurl, this.configuration.logger);
-
-        if (this.configuration.offChainDataSource) {
-            if (onChainProperties.url) {
-                throw new Error('URL should not be set');
-            }
-            if (onChainProperties.propertiesDocumentHash) {
-                throw new Error('Hash should not be set');
-            }
-
-            return this.generateAndAddProofs(offChainProperties, debug);
+        if (!this.configuration.offChainDataSource) {
+            return null;
         }
+        const storageUrl = url || this.getUrl();
 
-        return null;
+        validateJson(offChainProperties, schema, storageUrl, this.configuration.logger);
+        
+        return this.generateAndAddProofs(offChainProperties, debug);
     }
 
     async putToOffChainStorage(
@@ -85,16 +76,16 @@ export abstract class Entity {
         url?: string
     ) {
         if (this.configuration.offChainDataSource) {
-            const axiosurl = url ? url : this.getUrl();
+            const storageUrl = url || this.getUrl();
 
-            await axios.put(`${axiosurl}/${String(this.id).toLowerCase()}`, {
+            await axios.put(`${storageUrl}/${String(this.id).toLowerCase()}`, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema
             });
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
-                    `Put off chain properties to ${axiosurl}/${this.id}`
+                    `Put off chain properties to ${storageUrl}/${this.id}`
                 );
             }
         }
@@ -102,13 +93,13 @@ export abstract class Entity {
 
     async deleteFromOffChainStorage(url?: string) {
         if (this.configuration.offChainDataSource) {
-            const axiosurl = url ? url : this.getUrl();
+            const storageUrl = url || this.getUrl();
 
-            await axios.delete(`${axiosurl}/${this.id}`);
+            await axios.delete(`${storageUrl}/${this.id}`);
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
-                    `Deleted off chain properties of ${axiosurl}/${this.id}`
+                    `Deleted off chain properties of ${storageUrl}/${this.id}`
                 );
             }
         }
@@ -116,15 +107,15 @@ export abstract class Entity {
 
     async getOffChainProperties(hash: string, url?: string, debug?: boolean): Promise<any> {
         if (this.configuration.offChainDataSource) {
-            const axiosurl = url ? url : this.getUrl();
-            const data = (await axios.get(`${axiosurl}/${String(this.id).toLowerCase()}`)).data;
+            const storageUrl = url || this.getUrl();
+            const data = (await axios.get(`${storageUrl}/${String(this.id).toLowerCase()}`)).data;
             const offChainProperties = data.properties;
             this.generateAndAddProofs(data.properties, debug, data.salts);
 
             this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
-                    `Got off chain properties from ${axiosurl}/${this.id}`
+                    `Got off chain properties from ${storageUrl}/${this.id}`
                 );
             }
 

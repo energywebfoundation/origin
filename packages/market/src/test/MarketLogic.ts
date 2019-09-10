@@ -37,8 +37,6 @@ import { MarketLogic } from '../wrappedContracts/MarketLogic';
 import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
 import { DemandStatus } from '../blockchain-facade/Demand';
 
-const ZERO_ADDR = '0x0000000000000000000000000000000000000000';
-
 describe('MarketLogic', () => {
     const configFile = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
@@ -74,7 +72,7 @@ describe('MarketLogic', () => {
     const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
 
     const testStatusChange = async (
-        demandId: number,
+        demandId: string,
         status: DemandStatus,
         hasChanged: boolean,
         user: string = traderPK
@@ -208,7 +206,7 @@ describe('MarketLogic', () => {
     it('should throw an error when trying to access a non existing demand', async () => {
         let failed = false;
         try {
-            await marketLogic.getDemand(0);
+            await marketLogic.getDemand('0');
         } catch (ex) {
             failed = true;
         }
@@ -317,7 +315,7 @@ describe('MarketLogic', () => {
     });
 
     it('should get a demand', async () => {
-        const demand = await marketLogic.getDemand(0);
+        const demand = await marketLogic.getDemand('0');
         demand[2] = demand[2].toLowerCase();
         demand._owner = demand._owner.toLowerCase();
 
@@ -791,7 +789,7 @@ describe('MarketLogic', () => {
         });
     });
 
-    it('should fail when trying to change matcherproperties with wrong account (assetAdmin)', async () => {
+    it('should fail when trying to change matcher properties with wrong account (assetAdmin)', async () => {
         let failed = false;
         try {
             const agreement = await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
@@ -805,7 +803,7 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to change matcherproperties with wrong account (assetOwner)', async () => {
+    it('should fail when trying to change matcher properties with wrong account (assetOwner)', async () => {
         let failed = false;
         try {
             const agreement = await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
@@ -819,7 +817,7 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should change matcherproperties ', async () => {
+    it('should change matcher properties ', async () => {
         await assetRegistry.addMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
         //      const agreement = await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', { privateKey:  });
         let failed = false;
@@ -1056,7 +1054,7 @@ describe('MarketLogic', () => {
         });
     });
 
-    it('should fail when trying to set Matcherproperties when the agreement is not finihsed yet', async () => {
+    it('should fail when trying to set matcher properties when the agreement is not finished yet', async () => {
         let failed = false;
         try {
             await marketLogic.setMatcherProperties(2, 'newProps', 'newDB', {
@@ -1074,7 +1072,7 @@ describe('MarketLogic', () => {
         await marketLogic.approveAgreementSupply(2, { privateKey: assetOwnerPK });
     });
 
-    it('should change matcherpropertes', async () => {
+    it('should change matcher properties', async () => {
         await marketLogic.setMatcherProperties(2, 'newMatcherProps', 'newMatcherDB', {
             privateKey: matcherPK
         });
@@ -1154,7 +1152,7 @@ describe('MarketLogic', () => {
     it('should fail to delete a demand as non-trader', async () => {
         let failed = false;
         try {
-            await marketLogic.deleteDemand(1, {
+            await marketLogic.deleteDemand('1', {
                 privateKey: assetOwnerPK
             });
         } catch (ex) {
@@ -1168,7 +1166,7 @@ describe('MarketLogic', () => {
     it('should not be able to delete a demand as trader non-owner', async () => {
         let failed = false;
         try {
-            await marketLogic.deleteDemand(1, {
+            await marketLogic.deleteDemand('1', {
                 privateKey: trader2PK
             });
         } catch (ex) {
@@ -1180,7 +1178,7 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to delete a demand as trader owner', async () => {
-        const txDelete = await marketLogic.deleteDemand(1, {
+        const txDelete = await marketLogic.deleteDemand('1', {
             privateKey: traderPK
         });
 
@@ -1190,7 +1188,7 @@ describe('MarketLogic', () => {
         });
         assert.equal(archivedDemandStatusEvents.length, 1);
 
-        const demandAfter = await marketLogic.getDemand(1);
+        const demandAfter = await marketLogic.getDemand('1');
         assert.deepEqual(demandAfter, {
             0: 'propertiesDocumentHash_2',
             1: 'documentDBURL_2',
@@ -1207,13 +1205,13 @@ describe('MarketLogic', () => {
     });
 
     it('should not emit event when status not changed', async () => {
-        await testStatusChange(0, DemandStatus.ACTIVE, false);
+        await testStatusChange('0', DemandStatus.ACTIVE, false);
     });
 
     it('should not be able to change demand status when no demand owner', async () => {
         let failed = false;
         try {
-            await testStatusChange(0, DemandStatus.PAUSED, false, trader2PK);
+            await testStatusChange('0', DemandStatus.PAUSED, false, trader2PK);
         } catch (e) {
             failed = true;
         }
@@ -1222,19 +1220,56 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to set demand status to paused when current status is active', async () => {
-        await testStatusChange(0, DemandStatus.PAUSED, true);
+        await testStatusChange('0', DemandStatus.PAUSED, true);
     });
 
     it('should be able to set demand status to active when current status is paused', async () => {
-        await testStatusChange(0, DemandStatus.ACTIVE, true);
+        await testStatusChange('0', DemandStatus.ACTIVE, true);
     });
 
     it('should be able to set demand status to archived when current status is active', async () => {
-        await testStatusChange(0, DemandStatus.ARCHIVED, true);
+        await testStatusChange('0', DemandStatus.ARCHIVED, true);
     });
 
     it('should be not able to set demand status to active or paused when current status is archived', async () => {
-        await testStatusChange(0, DemandStatus.ACTIVE, false);
-        await testStatusChange(0, DemandStatus.PAUSED, false);
+        await testStatusChange('0', DemandStatus.ACTIVE, false);
+        await testStatusChange('0', DemandStatus.PAUSED, false);
+    });
+
+    it('should be able to update url and hash', async () => {
+        const tx = await marketLogic.createDemand('hash', 'url', {
+            privateKey: traderPK
+        });
+
+        const events = await marketLogic.getEvents('createdNewDemand', {
+            fromBlock: tx.blockNumber,
+            toBlock: tx.blockNumber
+        });
+
+        const demandId = events[0].returnValues._demandId;
+
+        const newHash = 'hashhash';
+        const newUrl = 'urlurl';
+
+        await marketLogic.updateDemand(demandId, newHash, newUrl, {
+            privateKey: traderPK
+        });
+
+        const demandUpdatedEvents = await marketLogic.getEvents('DemandUpdated', {
+            fromBlock: tx.blockNumber,
+            toBlock: tx.blockNumber
+        });
+
+        const updatedDemandId = demandUpdatedEvents[0].returnValues._demandId;
+
+        assert.equal(updatedDemandId, demandId);
+
+        const { _status, _propertiesDocumentHash, _documentDBURL } = await marketLogic.getDemand(
+            updatedDemandId
+        );
+
+        assert.equal(_status, DemandStatus.ACTIVE);
+        assert.equal(_propertiesDocumentHash, newHash);
+        assert.equal(_documentDBURL, newUrl);
     });
 });
