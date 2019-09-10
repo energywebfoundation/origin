@@ -5,7 +5,10 @@ import { TimeFrame } from '@energyweb/utils-general';
 import { Controller } from '../controller/Controller';
 import { logger } from '../Logger';
 import { IStrategy } from '../strategy/IStrategy';
-import { findMatchingAgreementsForCertificate, findMatchingDemandsForCertificate } from './MatcherLogic';
+import {
+    findMatchingAgreementsForCertificate,
+    findMatchingDemandsForCertificate
+} from './MatcherLogic';
 
 export class StrategyBasedMatcher {
     private strategy: IStrategy;
@@ -24,35 +27,34 @@ export class StrategyBasedMatcher {
         agreements: Agreement.Entity[],
         demands: Demand.Entity[]
     ): Promise<boolean> {
-        const matcherAccount = certificate.escrow.find(
-            (escrow: any) => escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase()
+        const isEscrowAccount = certificate.escrow.some(
+            escrow => escrow.toLowerCase() === this.controller.matcherAddress.toLowerCase()
         );
 
-        if (!matcherAccount) {
+        if (!isEscrowAccount) {
             logger.verbose('This instance is not an escrow for certificate #' + certificate.id);
-        } else {
-            logger.verbose('This instance is an escrow for certificate #' + certificate.id);
-
-            const agreementMatchResult = await this.findMatchingAgreement(certificate, agreements);
-            if (agreementMatchResult.agreement) {
-                await this.controller.matchAgreement(certificate, agreementMatchResult.agreement);
-
-                return true;
-            } else if (!agreementMatchResult.split) {
-                await this.controller.handleUnmatchedCertificate(certificate);
-            }
-
-            const demandMatchResult = await this.findMatchingDemand(certificate, demands);
-            if (demandMatchResult.demand) {
-                await this.controller.matchDemand(certificate, demandMatchResult.demand);
-
-                return true;
-            } else if (!demandMatchResult.split) {
-                await this.controller.handleUnmatchedCertificate(certificate);
-            }
+            return false;
         }
 
-        return false;
+        logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+
+        const agreementMatchResult = await this.findMatchingAgreement(certificate, agreements);
+        if (agreementMatchResult.agreement) {
+            await this.controller.matchAgreement(certificate, agreementMatchResult.agreement);
+
+            return true;
+        } else if (!agreementMatchResult.split) {
+            await this.controller.handleUnmatchedCertificate(certificate);
+        }
+
+        const demandMatchResult = await this.findMatchingDemand(certificate, demands);
+        if (demandMatchResult.demand) {
+            await this.controller.matchDemand(certificate, demandMatchResult.demand);
+
+            return true;
+        } else if (!demandMatchResult.split) {
+            await this.controller.handleUnmatchedCertificate(certificate);
+        }
     }
 
     public async findMatchingAgreement(
