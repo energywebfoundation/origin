@@ -73,7 +73,6 @@ export class SmartMeterReadingsTable extends PaginatedLoader<
         return (
             <div className="smartMeterReadingsTable">
                 <Table
-                    classNames={['bare-font', 'bare-padding']}
                     header={TableHeader}
                     data={this.state.formattedPaginatedData}
                     loadPage={this.loadPage}

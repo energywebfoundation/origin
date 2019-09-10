@@ -5,12 +5,14 @@ import {
     getInitialPaginatedLoaderFilteredState
 } from './PaginatedLoaderFiltered';
 
+export type SortPropertiesType = Array<string | [string, (value: string) => number]>;
+
 export interface IPaginatedLoaderFilteredSortedState extends IPaginatedLoaderFilteredState {
-    currentSort: string[];
+    currentSort: SortPropertiesType;
     sortAscending: boolean;
 }
 
-export type IPaginatedLoaderFilteredSortedProps = any;
+export type IPaginatedLoaderFilteredSortedProps = {};
 
 export const PAGINATED_LOADER_FILTERED_SORTED_INITIAL_STATE: IPaginatedLoaderFilteredSortedState = {
     ...getInitialPaginatedLoaderFilteredState(),
@@ -32,7 +34,7 @@ export abstract class PaginatedLoaderFilteredSorted<
         this.toggleSort = this.toggleSort.bind(this);
     }
 
-    sortData(records: any) {
+    sortData(records: any[]) {
         const { currentSort, sortAscending } = this.state;
 
         return records.sort((a, b) => {
@@ -65,7 +67,7 @@ export abstract class PaginatedLoaderFilteredSorted<
         });
     }
 
-    toggleSort(sortProperties: string[]) {
+    toggleSort(sortProperties: SortPropertiesType) {
         if (deepEqual(sortProperties, this.state.currentSort)) {
             this.setState({
                 sortAscending: !this.state.sortAscending

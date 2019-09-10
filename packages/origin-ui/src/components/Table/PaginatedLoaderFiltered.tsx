@@ -8,7 +8,7 @@ import {
 import { getPropertyByPath, indexOfEnd } from '../../utils/Helper';
 import moment, { Moment } from 'moment';
 
-export type IPaginatedLoaderFilteredProps = any;
+export type IPaginatedLoaderFilteredProps = {};
 
 export interface IPaginatedLoaderFilteredState extends IPaginatedLoaderState {
     appliedFilters: ICustomFilter[];

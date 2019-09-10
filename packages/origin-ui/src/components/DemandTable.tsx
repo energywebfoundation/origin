@@ -1,24 +1,8 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import * as React from 'react';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
-import { Configuration, TimeFrame, Currency, IRECAssetService } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Currency } from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
@@ -27,11 +11,8 @@ import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
-    IPaginatedLoaderState,
-    PaginatedLoader,
     IPaginatedLoaderFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues,
-    getInitialPaginatedLoaderState
+    IPaginatedLoaderFetchDataReturnValues
 } from './Table/PaginatedLoader';
 import { getCertificatesForDemandLink } from '../utils/routing';
 import {
@@ -45,6 +26,14 @@ import {
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { calculateTotalEnergyDemand } from './OnboardDemand';
+import {
+    IPaginatedLoaderFilteredState,
+    PaginatedLoaderFiltered,
+    getInitialPaginatedLoaderFilteredState,
+    RECORD_INDICATOR
+} from './Table/PaginatedLoaderFiltered';
+import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
+import { AdvancedTable } from './Table/AdvancedTable';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -57,7 +46,7 @@ interface IStateProps {
 
 type Props = IStateProps;
 
-export interface IDemandTableState extends IPaginatedLoaderState {
+export interface IDemandTableState extends IPaginatedLoaderFilteredState {
     showMatchingSupply: number;
 }
 
@@ -68,8 +57,6 @@ export interface IEnrichedDemandData {
     producingAsset?: ProducingAsset.Entity;
 }
 
-export const PeriodToSeconds = [31536000, 2592000, 86400, 3600];
-
 const NO_VALUE_TEXT = 'any';
 
 enum OPERATIONS {
@@ -77,19 +64,48 @@ enum OPERATIONS {
     SUPPLIES = 'Show supplies for demand'
 }
 
-class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
-    private IRECAssetService = new IRECAssetService();
-
+class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState> {
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            ...getInitialPaginatedLoaderState(),
+            ...getInitialPaginatedLoaderFilteredState(),
             showMatchingSupply: null
         };
 
         this.operationClicked = this.operationClicked.bind(this);
         this.showMatchingSupply = this.showMatchingSupply.bind(this);
+    }
+
+    get filters(): ICustomFilterDefinition[] {
+        return [
+            {
+                property: `${RECORD_INDICATOR}demand.status`,
+                label: 'Status',
+                input: {
+                    type: CustomFilterInputType.multiselect,
+                    availableOptions: [
+                        {
+                            label: 'Active',
+                            value: Demand.DemandStatus.ACTIVE
+                        },
+                        {
+                            label: 'Paused',
+                            value: Demand.DemandStatus.PAUSED
+                        },
+                        {
+                            label: 'Archived',
+                            value: Demand.DemandStatus.ARCHIVED
+                        }
+                    ],
+                    defaultOptions: [
+                        Demand.DemandStatus.ACTIVE,
+                        Demand.DemandStatus.PAUSED,
+                        Demand.DemandStatus.ARCHIVED
+                    ]
+                }
+            }
+        ];
     }
 
     async enrichData(demands: Demand.Entity[]): Promise<IEnrichedDemandData[]> {
@@ -177,14 +193,19 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
 
     async getPaginatedData({
         pageSize,
-        offset
+        offset,
+        filters
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const { demands } = this.props;
         const enrichedData = await this.enrichData(demands);
 
-        const total = enrichedData.length;
+        const filteredData = enrichedData.filter(record =>
+            this.checkRecordPassesFilters(record, filters)
+        );
 
-        const paginatedData = enrichedData.slice(offset, offset + pageSize);
+        const total = filteredData.length;
+
+        const paginatedData = filteredData.slice(offset, offset + pageSize);
 
         const formattedPaginatedData = paginatedData.map(
             (enrichedDemandData: IEnrichedDemandData) => {
@@ -206,6 +227,14 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                         demand.offChainProperties.timeFrame
                     ) / 1000000
                 ).toLocaleString();
+
+                let demandStatus = 'Active';
+
+                if (demand.status === Demand.DemandStatus.PAUSED) {
+                    demandStatus = 'Paused';
+                } else if (demand.status === Demand.DemandStatus.ARCHIVED) {
+                    demandStatus = 'Archived';
+                }
 
                 return [
                     demand.id,
@@ -231,6 +260,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                     `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
                         Currency[demand.offChainProperties.currency]
                     }`,
+                    demandStatus,
                     overallDemand
                 ];
             }
@@ -250,14 +280,13 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
     }
 
     render() {
-        if (this.state.showMatchingSupply !== null) {
+        const { showMatchingSupply } = this.state;
+
+        if (showMatchingSupply !== null) {
             return (
                 <Redirect
                     push={true}
-                    to={getCertificatesForDemandLink(
-                        this.props.baseURL,
-                        this.state.showMatchingSupply
-                    )}
+                    to={getCertificatesForDemandLink(this.props.baseURL, showMatchingSupply)}
                 />
             );
         }
@@ -271,7 +300,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             {
                 label: 'Total',
                 key: 'total',
-                colspan: 10
+                colspan: 11
             },
             generateFooter('Total Demand (kWh)', true)
         ];
@@ -287,13 +316,13 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
             generateHeader('Vintage'),
             generateHeader('Demand per Timeframe (MWh)'),
             generateHeader('Max Price'),
+            generateHeader('Status'),
             generateHeader('Total Demand (MWh)')
         ];
 
         return (
             <div className="ForSaleWrapper">
-                <Table
-                    classNames={['bare-font', 'bare-padding']}
+                <AdvancedTable
                     header={TableHeader}
                     footer={TableFooter}
                     actions={true}
@@ -304,6 +333,7 @@ class DemandTableClass extends PaginatedLoader<Props, IDemandTableState> {
                     loadPage={this.loadPage}
                     total={this.state.total}
                     pageSize={this.state.pageSize}
+                    filters={this.filters}
                 />
             </div>
         );
