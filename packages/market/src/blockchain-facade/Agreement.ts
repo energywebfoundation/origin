@@ -51,14 +51,12 @@ export const createAgreement = async (
     const agreement = new Entity(null, configuration);
 
     const agreementOffChainStorageProperties = agreement.prepareEntityCreation(
-        agreementPropertiesOnChain,
         agreementPropertiesOffchain,
         AgreementOffchainPropertiesSchema,
         agreement.getUrl()
     );
 
     const matcherOffchainStorageProperties = agreement.prepareEntityCreation(
-        agreementPropertiesOnChain,
         matcherPropertiesOffchain,
         MatcherOffChainPropertiesSchema,
         agreement.getMatcherURL()
@@ -227,7 +225,6 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
         };
 
         const matcherOffchainStorageProperties = this.prepareEntityCreation(
-            agreementPropsOnChain,
             matcherOffchainProperties,
             MatcherOffChainPropertiesSchema,
             this.getMatcherURL()
