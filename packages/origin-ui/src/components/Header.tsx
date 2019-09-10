@@ -19,23 +19,38 @@ import { NavLink, withRouter, RouteComponentProps } from 'react-router-dom';
 import { User } from '@energyweb/user-registry';
 import logo from '../../assets/logo.svg';
 import { AccountCircle } from '@material-ui/icons';
+import { Configuration } from '@energyweb/utils-general';
 
 import './Header.scss';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCurrentUser } from '../features/selectors';
+import { getBaseURL, getCurrentUser, getConfiguration } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
+import { AccountDetailsModal } from '../elements/Modal/AccountDetailsModal';
 
-interface IStateProps {
+interface IHeaderProps {
+    configuration: Configuration.Entity;
     currentUser: User.Entity;
     baseURL: string;
 }
 
-type Props = RouteComponentProps & IStateProps;
+type Props = RouteComponentProps & IHeaderProps;
 
-class HeaderClass extends React.Component<Props> {
+interface IHeaderState {
+    showAccountDetailsModal: boolean;
+}
+
+class HeaderClass extends React.Component<Props, IHeaderState> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            showAccountDetailsModal: false
+        };
+    }
+
     render() {
-        const { baseURL, currentUser } = this.props;
+        const { baseURL, currentUser, configuration } = this.props;
 
         return (
             <div className="HeaderWrapper">
@@ -55,11 +70,23 @@ class HeaderClass extends React.Component<Props> {
                         </li>
                     </ul>
 
-                    <div className="ViewProfile">
+                    <div
+                        className="ViewProfile"
+                        onClick={() => this.setState({ showAccountDetailsModal: true })}
+                    >
                         <AccountCircle className="ViewProfile_icon" color="primary" />
                         {currentUser ? currentUser.organization : 'Guest'}
                     </div>
                 </div>
+
+                {currentUser && (
+                    <AccountDetailsModal
+                        conf={configuration}
+                        user={currentUser}
+                        showModal={this.state.showAccountDetailsModal}
+                        callback={() => this.setState({ showAccountDetailsModal: false })}
+                    />
+                )}
             </div>
         );
     }
@@ -67,6 +94,7 @@ class HeaderClass extends React.Component<Props> {
 
 export const Header = withRouter(
     connect((state: IStoreState) => ({
+        configuration: getConfiguration(state),
         baseURL: getBaseURL(state),
         currentUser: getCurrentUser(state)
     }))(HeaderClass)
