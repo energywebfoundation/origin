@@ -82,7 +82,7 @@ class HeaderClass extends React.Component<Props, IHeaderState> {
                 {currentUser && (
                     <AccountDetailsModal
                         conf={configuration}
-                        user={currentUser}
+                        currentUser={currentUser}
                         showModal={this.state.showAccountDetailsModal}
                         callback={() => this.setState({ showAccountDetailsModal: false })}
                     />
