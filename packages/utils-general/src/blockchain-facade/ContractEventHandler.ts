@@ -1,3 +1,4 @@
+
 // Copyright 2018 Energy Web Foundation
 // This file is part of the Origin Application brought to you by the Energy Web Foundation,
 // a global non-profit organization focused on accelerating blockchain technology across the energy sector,
@@ -34,14 +35,16 @@ export class ContractEventHandler {
 
     async tick(configuration: Configuration.Entity) {
         const blockNumber = await configuration.blockchainProperties.web3.eth.getBlockNumber();
-        const events = await this.contractInstance.getWeb3Contract().getPastEvents('allEvents', {
-            fromBlock: Math.min(this.lastBlockChecked + 1, blockNumber),
-            toBlock: blockNumber
-        });
-        this.unhandledEvents = events.reverse().concat(this.unhandledEvents);
-        this.lastBlockChecked =
-            blockNumber > this.lastBlockChecked ? blockNumber : this.lastBlockChecked;
-        this.walkThroughUnhandledEvent();
+
+        if (blockNumber > this.lastBlockChecked) {
+            const events = await this.contractInstance.getWeb3Contract().getPastEvents('allEvents', {
+                fromBlock: Math.min(this.lastBlockChecked + 1, blockNumber),
+                toBlock: blockNumber
+            });
+            this.unhandledEvents = events.reverse().concat(this.unhandledEvents);
+            this.lastBlockChecked = blockNumber;
+            this.walkThroughUnhandledEvent();
+        }
     }
 
     walkThroughUnhandledEvent() {
