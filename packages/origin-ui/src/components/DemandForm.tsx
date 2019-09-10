@@ -16,8 +16,8 @@ import {
 import { getEnumValues } from '../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getCurrentUser, getConfiguration } from '../features/selectors';
-import './OnboardDemand.scss';
+import { getCurrentUser, getConfiguration, getBaseURL } from '../features/selectors';
+import './DemandForm.scss';
 import { DatePicker } from '@material-ui/pickers';
 import {
     MultiSelectAutocomplete,
@@ -29,6 +29,9 @@ import { Formik, Field, Form, FieldProps, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
+import { LoadingComponent } from './LoadingComponent';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { getDemandEditLink } from '../utils/routing';
 
 const REGIONS_PROVINCES_MAP = {
     Northeast: [
@@ -186,10 +189,19 @@ const INITIAL_FORM_VALUES: IFormValues = {
     procureFromSingleFacility: false
 };
 
+interface IOwnProps {
+    demand?: Demand.Entity;
+    edit?: boolean;
+    clone?: boolean;
+}
+
 interface IStateProps {
+    baseURL: string;
     currentUser: User.Entity;
     configuration: Configuration.Entity;
 }
+
+type Props = RouteComponentProps & IOwnProps & IStateProps;
 
 interface IState {
     selectedRegions: IAutocompleteMultiSelectOptionType[];
@@ -198,6 +210,7 @@ interface IState {
     selectedTypesLevelTwo: IAutocompleteMultiSelectOptionType[];
     selectedTypesLevelThree: IAutocompleteMultiSelectOptionType[];
     vintage: [number, number];
+    initialFormValuesFromDemand: IFormValues;
 }
 
 const DEFAULT_VINTAGE_RANGE: [number, number] = [1970, moment().year()];
@@ -210,7 +223,7 @@ const FormikDatePicker = ({
     <DatePicker onChange={newValue => setFieldValue(name, newValue)} value={value} {...rest} />
 );
 
-class OnboardDemandClass extends React.Component<IStateProps, IState> {
+class DemandFormClass extends React.Component<Props, IState> {
     constructor(props) {
         super(props);
 
@@ -220,10 +233,107 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             selectedTypesLevelOne: [],
             selectedTypesLevelTwo: [],
             selectedTypesLevelThree: [],
+            initialFormValuesFromDemand: null,
             vintage: null
         };
 
         this.submitForm = this.submitForm.bind(this);
+    }
+
+    componentDidMount() {
+        this.updateComponent(this.props);
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.demand !== prevProps.demand) {
+            this.updateComponent(this.props);
+        }
+    }
+
+    updateComponent(props: Props) {
+        if (!props.demand) {
+            return;
+        }
+
+        this.setupFormBasedOnDemand(props.demand);
+    }
+
+    setupFormBasedOnDemand(demand: Demand.Entity) {
+        const initialFormValuesFromDemand: IFormValues = {
+            currency: Currency[demand.offChainProperties.currency] as IFormValues['currency'],
+            startDate: moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
+            endDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            activeUntilDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            demandNeedsInMWh: Math.round(
+                demand.offChainProperties.targetWhPerPeriod / 1000000
+            ).toString(),
+            maxPricePerMWh: Math.round(demand.offChainProperties.maxPricePerMwh / 100).toString(),
+            procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
+            timeframe: demand.offChainProperties.timeFrame
+        };
+
+        const newState: Partial<IState> = {
+            initialFormValuesFromDemand
+        };
+
+        if (demand.offChainProperties.vintage && demand.offChainProperties.vintage.length === 2) {
+            newState.vintage = demand.offChainProperties.vintage;
+        }
+
+        if (demand.offChainProperties.location) {
+            if (
+                demand.offChainProperties.location.regions &&
+                demand.offChainProperties.location.regions.length > 0
+            ) {
+                newState.selectedRegions = demand.offChainProperties.location.regions.map(
+                    (region): IAutocompleteMultiSelectOptionType => ({
+                        label: region,
+                        value: region
+                    })
+                );
+            }
+
+            if (
+                demand.offChainProperties.location.provinces &&
+                demand.offChainProperties.location.provinces.length > 0
+            ) {
+                newState.selectedProvinces = demand.offChainProperties.location.provinces.map(
+                    (province): IAutocompleteMultiSelectOptionType => ({
+                        label: province,
+                        value: province
+                    })
+                );
+            }
+        }
+
+        if (demand.offChainProperties.assetType && demand.offChainProperties.assetType.length > 0) {
+            const decodedType = irecAssetService.decode(demand.offChainProperties.assetType);
+
+            const extractedTypesLevelOne = decodedType.filter(type => type.length === 1);
+            const extractedTypesLevelTwo = decodedType.filter(type => type.length === 2);
+            const extractedTypesLevelThree = decodedType.filter(type => type.length === 3);
+
+            if (extractedTypesLevelOne.length > 0) {
+                newState.selectedTypesLevelOne = extractedTypesLevelOne.map(type => ({
+                    value: type[0],
+                    label: type[0]
+                }));
+            }
+
+            if (extractedTypesLevelTwo.length > 0) {
+                newState.selectedTypesLevelTwo = this.assetTypesToSelectionOptions(
+                    irecAssetService.encode(extractedTypesLevelTwo)
+                );
+            }
+
+            if (extractedTypesLevelThree.length > 0) {
+                newState.selectedTypesLevelThree = this.assetTypesToSelectionOptions(
+                    irecAssetService.encode(extractedTypesLevelThree)
+                );
+            }
+        }
+
+        this.setState(newState as IState);
     }
 
     totalDemand(
@@ -353,16 +463,18 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             vintage
         } = this.state;
 
+        const { baseURL, currentUser, configuration, edit, demand, clone, history } = this.props;
+
         const assetTypes = [
-            ...selectedTypesLevelOne,
-            ...selectedTypesLevelTwo,
-            ...selectedTypesLevelThree
+            ...(selectedTypesLevelOne || []),
+            ...(selectedTypesLevelTwo || []),
+            ...(selectedTypesLevelThree || [])
         ].map(type => type.value);
 
         formikActions.setSubmitting(true);
 
-        this.props.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
+        configuration.blockchainProperties.activeUser = {
+            address: currentUser.id
         };
 
         const offChainProps: Demand.IDemandOffChainProperties = {
@@ -372,25 +484,53 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
             targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
-            location: {
-                regions: selectedRegions.map(i => i.value),
-                provinces: selectedProvinces.map(i => i.value)
-            },
             procureFromSingleFacility: values.procureFromSingleFacility,
             assetType: assetTypes
         };
 
-        if (vintage && vintage.length === 2) {
+        if (selectedRegions && selectedRegions.length > 0) {
+            offChainProps.location = {
+                regions: selectedRegions.map(i => i.value)
+            };
+        }
+
+        if (selectedProvinces && selectedProvinces.length > 0) {
+            if (typeof offChainProps.location === 'undefined') {
+                offChainProps.location = {
+                    provinces: selectedProvinces.map(i => i.value)
+                };
+            } else {
+                offChainProps.location.provinces = selectedProvinces.map(i => i.value);
+            }
+        }
+
+        if (
+            vintage &&
+            vintage.length === 2 &&
+            (vintage[0] !== DEFAULT_VINTAGE_RANGE[0] || vintage[1] !== DEFAULT_VINTAGE_RANGE[1])
+        ) {
             offChainProps.vintage = vintage;
         }
 
         try {
-            await Demand.createDemand(offChainProps, this.props.configuration);
+            if (edit) {
+                await demand.update(offChainProps);
 
-            showNotification('Demand created', NotificationType.Success);
+                showNotification('Demand edited', NotificationType.Success);
+            } else {
+                const createdDemand = await Demand.createDemand(offChainProps, configuration);
+
+                if (clone) {
+                    showNotification('Demand cloned', NotificationType.Success);
+                } else {
+                    showNotification('Demand created', NotificationType.Success);
+                }
+
+                history.push(getDemandEditLink(baseURL, createdDemand.id));
+            }
         } catch (error) {
-            console.error('Demand creation error', error);
-            showNotification(`Can't create demand`, NotificationType.Error);
+            console.error('Demand form error', error);
+            showNotification(`Can't save demand`, NotificationType.Error);
         }
 
         formikActions.setSubmitting(false);
@@ -403,8 +543,11 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             selectedTypesLevelOne,
             selectedTypesLevelTwo,
             selectedTypesLevelThree,
-            vintage
+            vintage,
+            initialFormValuesFromDemand
         } = this.state;
+
+        const { edit, clone } = this.props;
 
         const {
             currencies,
@@ -417,10 +560,30 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             .minutes(0)
             .seconds(0);
 
+        let initialFormValues = null;
+
+        if (edit || clone) {
+            initialFormValues = initialFormValuesFromDemand;
+        } else {
+            initialFormValues = INITIAL_FORM_VALUES;
+        }
+
+        if (!initialFormValues) {
+            return <LoadingComponent />;
+        }
+
+        let submitButtonText = 'Create demand';
+
+        if (edit) {
+            submitButtonText = 'Save demand';
+        } else if (clone) {
+            submitButtonText = 'Clone demand';
+        }
+
         return (
-            <Paper className="OnboardDemand">
+            <Paper className="DemandForm">
                 <Formik
-                    initialValues={INITIAL_FORM_VALUES}
+                    initialValues={initialFormValues}
                     onSubmit={this.submitForm}
                     validationSchema={Yup.object().shape({
                         demandNeedsInMWh: Yup.number()
@@ -443,6 +606,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                         activeUntilDate: Yup.date().required(),
                         procureFromSingleFacility: Yup.boolean()
                     })}
+                    isInitialValid={edit || clone}
                 >
                     {props => {
                         const { values, isValid, isSubmitting } = props;
@@ -723,7 +887,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                                                 isSubmitting || !isValid || !this.isUserTraderRole()
                                             }
                                         >
-                                            Create demand
+                                            {submitButtonText}
                                         </Button>
                                     </span>
                                 </Tooltip>
@@ -736,9 +900,12 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
     }
 }
 
-export const OnboardDemand = connect(
-    (state: IStoreState): IStateProps => ({
-        currentUser: getCurrentUser(state),
-        configuration: getConfiguration(state)
-    })
-)(OnboardDemandClass);
+export const DemandForm = withRouter(
+    connect(
+        (state: IStoreState): IStateProps => ({
+            baseURL: getBaseURL(state),
+            currentUser: getCurrentUser(state),
+            configuration: getConfiguration(state)
+        })
+    )(DemandFormClass)
+);

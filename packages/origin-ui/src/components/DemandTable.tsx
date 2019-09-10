@@ -1,20 +1,23 @@
 import * as React from 'react';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { Configuration, TimeFrame, Currency } from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
 
-import { Table } from './Table/Table';
 import TableUtils from './Table/TableUtils';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
 } from './Table/PaginatedLoader';
-import { getCertificatesForDemandLink } from '../utils/routing';
+import {
+    getCertificatesForDemandLink,
+    getDemandEditLink,
+    getDemandCloneLink
+} from '../utils/routing';
 import {
     getConfiguration,
     getConsumingAssets,
@@ -25,7 +28,7 @@ import {
 } from '../features/selectors';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { calculateTotalEnergyDemand } from './OnboardDemand';
+import { calculateTotalEnergyDemand } from './DemandForm';
 import {
     IPaginatedLoaderFilteredState,
     PaginatedLoaderFiltered,
@@ -44,7 +47,7 @@ interface IStateProps {
     baseURL: string;
 }
 
-type Props = IStateProps;
+type Props = RouteComponentProps<{}> & IStateProps;
 
 export interface IDemandTableState extends IPaginatedLoaderFilteredState {
     showMatchingSupply: number;
@@ -60,6 +63,8 @@ export interface IEnrichedDemandData {
 const NO_VALUE_TEXT = 'any';
 
 enum OPERATIONS {
+    EDIT = 'Edit',
+    CLONE = 'Clone',
     DELETE = 'Delete',
     SUPPLIES = 'Show supplies for demand'
 }
@@ -166,6 +171,12 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                 break;
             case OPERATIONS.SUPPLIES:
                 this.showMatchingSupply(id);
+                break;
+            case OPERATIONS.EDIT:
+                this.props.history.push(getDemandEditLink(this.props.baseURL, id.toString()));
+                break;
+            case OPERATIONS.CLONE:
+                this.props.history.push(getDemandCloneLink(this.props.baseURL, id.toString()));
                 break;
             default:
         }
@@ -340,13 +351,15 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
     }
 }
 
-export const DemandTable = connect(
-    (state: IStoreState): IStateProps => ({
-        configuration: getConfiguration(state),
-        consumingAssets: getConsumingAssets(state),
-        demands: getDemands(state),
-        producingAssets: getProducingAssets(state),
-        currentUser: getCurrentUser(state),
-        baseURL: getBaseURL(state)
-    })
-)(DemandTableClass);
+export const DemandTable = withRouter(
+    connect(
+        (state: IStoreState): IStateProps => ({
+            configuration: getConfiguration(state),
+            consumingAssets: getConsumingAssets(state),
+            demands: getDemands(state),
+            producingAssets: getProducingAssets(state),
+            currentUser: getCurrentUser(state),
+            baseURL: getBaseURL(state)
+        })
+    )(DemandTableClass)
+);
