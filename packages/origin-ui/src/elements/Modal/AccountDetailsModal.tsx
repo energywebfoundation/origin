@@ -9,7 +9,8 @@ import {
     DialogTitle,
     Switch,
     FormControlLabel,
-    FormGroup
+    FormGroup,
+    TextField
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -117,6 +118,13 @@ class AccountDetailsModal extends React.Component<
             <Dialog open={this.state.show} onClose={this.handleClose}>
                 <DialogTitle>{currentUser ? currentUser.organization : 'Guest'}</DialogTitle>
                 <DialogContent>
+                    <TextField
+                        label="e-mail"
+                        value={currentUser ? currentUser.offChainProperties.email : 'Unknown'}
+                        fullWidth
+                        disabled
+                        className="my-3"
+                    />
                     <FormGroup>
                         <FormControlLabel
                             control={
