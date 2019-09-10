@@ -3,7 +3,7 @@ import { ICustomFilter } from './FiltersHeader';
 
 export const DEFAULT_PAGE_SIZE = 25;
 
-export type IPaginatedLoaderProps = any;
+export type IPaginatedLoaderProps = {};
 
 export interface IPaginatedLoaderState {
     paginatedData: any[];

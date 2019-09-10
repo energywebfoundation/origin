@@ -1,43 +1,13 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import * as React from 'react';
 import { Button, OverlayTrigger, Popover } from 'react-bootstrap';
-import Toggle from 'react-toggle';
-import { DatePicker } from '@material-ui/pickers';
 import renderHTML from 'react-render-html';
-import { Moment } from 'moment';
-import { PeriodToSeconds } from '../DemandTable';
-import { TimeFrame } from '@energyweb/utils-general';
 import { Pagination } from './Pagination';
 import { ArrowDropUp, ArrowDropDown } from '@material-ui/icons';
-
-import './toggle.scss';
 import './Table.scss';
 import { ActionIcon } from '../icons/ActionIcon';
 import { ICustomFilter } from './FiltersHeader';
 import { deepEqual } from '../../utils/Helper';
-import {
-    TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    FilledInput,
-    MenuItem
-} from '@material-ui/core';
+import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
 
 export type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
@@ -48,15 +18,15 @@ export interface ITableProps {
     pageSize?: number;
     total?: number;
     footer?: any;
-    actions?: any | boolean;
+    actions?: boolean;
     actionWidth?: any;
     classNames?: string[];
     operations?: any[];
     operationClicked?: (key: string | number, id?: number) => void;
     onSelect?: TableOnSelectFunction;
-    currentSort?: string[];
+    currentSort?: SortPropertiesType;
     sortAscending?: boolean;
-    toggleSort?: (sortProperties: string[]) => void;
+    toggleSort?: (sortProperties: SortPropertiesType) => void;
 }
 
 export interface ITableHeaderData {
@@ -64,17 +34,11 @@ export interface ITableHeaderData {
     key: string;
     style: React.CSSProperties;
     styleBody: React.CSSProperties;
-    sortProperties?: string[];
+    sortProperties?: SortPropertiesType;
 }
 
 interface IState {
-    inputs: any;
-    totalEnergy: any;
-    date: any;
     currentPage: number;
-
-    [x: string]: any;
-    [x: number]: any;
 }
 
 const addCommas = intNum => {
@@ -91,28 +55,7 @@ export class Table extends React.Component<ITableProps, IState> {
     constructor(props) {
         super(props);
 
-        const { header } = props;
-
-        const toggles = {};
-
         this.state = {
-            ...toggles,
-            inputs: {
-                enabledProperties: [
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false
-                ]
-            },
-            totalEnergy: 0,
-            date: new Date(),
             currentPage: 1
         };
 
@@ -167,100 +110,7 @@ export class Table extends React.Component<ITableProps, IState> {
         });
     }
 
-    handleDropdown = (key, itemInput) => {
-        return event => {
-            const value = event.target.value;
-            const { data } = this.props;
-            if (itemInput.labelKey) {
-                const items = data[itemInput.data];
-                let val = items.filter(item => item[itemInput.key] === value);
-                val = val.length > 0 ? val[0][itemInput.labelKey] : '';
-                this.setState({
-                    [key]: value,
-                    ['dropdown_' + key]: val
-                });
-            } else {
-                this.setState({ [key]: value });
-            }
-            const newInputs = { ...this.state.inputs };
-            newInputs[key] = value;
-
-            this.setState({ inputs: newInputs }, this.saveTotalEnergy);
-        };
-    };
-
-    handleToggle = (key, index) => {
-        return () => {
-            const { state } = this;
-            this.setState(state);
-
-            if (index !== undefined) {
-                const newInputs = { ...this.state.inputs };
-                newInputs.enabledProperties[index] = !newInputs.enabledProperties[index];
-
-                this.setState({ inputs: newInputs });
-            }
-        };
-    };
-
-    handleInput = key => {
-        return e => {
-            const newInputs = { ...this.state.inputs };
-            newInputs[key] = e.target.value;
-
-            this.setState(
-                {
-                    inputs: newInputs
-                },
-                this.saveTotalEnergy
-            );
-        };
-    };
-
-    handleDate = key => {
-        return (momentObject: Moment) => {
-            const dateObject = momentObject.toDate();
-            const output = momentObject.format('DD MMM YY');
-            this.setState({ [key]: dateObject, ['date_' + key]: output });
-            const newInputs = { ...this.state.inputs };
-            newInputs[key] = momentObject.unix();
-
-            this.setState(
-                {
-                    inputs: newInputs
-                },
-                this.saveTotalEnergy
-            );
-        };
-    };
-
-    saveTotalEnergy() {
-        this.setState({
-            totalEnergy: this.calculateTotalEnergy()
-        });
-    }
-
-    calculateTotalEnergy(): number {
-        if (
-            this.state.inputs.targetWhPerPeriod &&
-            this.state.inputs.timeframe &&
-            this.state.inputs.startTime &&
-            this.state.inputs.endTime
-        ) {
-            return (
-                Math.ceil(
-                    (parseInt(this.state.inputs.endTime, 10) -
-                        parseInt(this.state.inputs.startTime, 10)) /
-                        PeriodToSeconds[TimeFrame[this.state.inputs.timeframe]]
-                ) * parseInt(this.state.inputs.targetWhPerPeriod, 10)
-            );
-        } else {
-            return 0;
-        }
-    }
-
     render() {
-        const { state, props, handleToggle, handleDropdown, handleInput, handleDate } = this;
         const {
             header = [],
             footer = [],
@@ -272,7 +122,7 @@ export class Table extends React.Component<ITableProps, IState> {
             operationClicked = () => null,
             currentSort,
             sortAscending
-        } = props;
+        } = this.props;
 
         const totalTableColumnSum = this.calculateTotal(data, footer);
 
