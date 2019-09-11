@@ -39,8 +39,8 @@ export interface IDemandOffChainProperties {
 }
 
 export interface IDemandLocation {
-    provinces: string[];
-    regions: string[];
+    provinces?: string[];
+    regions?: string[];
 }
 
 export enum DemandStatus {

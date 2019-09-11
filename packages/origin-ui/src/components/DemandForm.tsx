@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { User, Role } from '@energyweb/user-registry';
-import { Currency, IRECAssetService, Configuration, TimeFrame } from '@energyweb/utils-general';
+import {
+    Currency,
+    Configuration,
+    TimeFrame,
+    THAILAND_REGIONS_PROVINCES_MAP,
+    EncodedAssetType
+} from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -16,93 +22,23 @@ import {
 import { getEnumValues } from '../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getCurrentUser, getConfiguration } from '../features/selectors';
-import './OnboardDemand.scss';
-import { DatePicker } from '@material-ui/pickers';
+import { getCurrentUser, getConfiguration, getBaseURL } from '../features/selectors';
+import './DemandForm.scss';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
 import { CustomSlider, CustomSliderThumbComponent } from './CustomSlider';
 import moment, { Moment } from 'moment';
-import { Formik, Field, Form, FieldProps, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
-
-const REGIONS_PROVINCES_MAP = {
-    Northeast: [
-        'Amnat Charoen',
-        'Bueng Kan, Buri Ram',
-        'Chaiyaphum, Kalasin',
-        'Khon Kaen, Loei',
-        'Maha Sarakham',
-        'Mukdahan',
-        'Nakhon Phanom',
-        'Nakhon Ratchasima',
-        'Nong Bua Lamphu',
-        'Nong Khai',
-        'Roi Et',
-        'Sakon Nakhon',
-        'Si Sa Ket',
-        'Surin',
-        'Ubon Ratchathani',
-        'Udon Thani',
-        'Yasothon'
-    ],
-    North: [
-        'Chiang Mai',
-        'Chiang Rai',
-        'Lampang',
-        'Lamphun',
-        'Mae Hong Son',
-        'Nan',
-        'Phayao',
-        'Phrae',
-        'Uttaradit'
-    ],
-    West: ['Tak', 'Kanchanaburi', 'Ratchaburi', 'Phetchaburi', 'Prachuap Khiri Khan'],
-    Central: [
-        'Sukhothai',
-        'Phitsanulok',
-        'Phichit',
-        'Kamphaeng Phet',
-        'Phetchabun',
-        'Nakhon Sawan',
-        'Uthai Thani',
-        'Ang Thong',
-        'Phra Nakhon Si Ayutthaya',
-        'Bangkok, Chai Nat',
-        'Lop Buri',
-        'Nakhon Pathom',
-        'Nonthaburi',
-        'Pathum Thani',
-        'Samut Prakan',
-        'Samut Sakhon',
-        'Samut Songkhram',
-        'Saraburi',
-        'Sing Buri',
-        'Suphan Buri',
-        'Nakhon Nayok'
-    ],
-    East: ['Chachoengsao', 'Chanthaburi', 'Chon Buri', 'Prachin Buri', 'Rayong', 'Sa Kaeo', 'Trat'],
-    South: [
-        'Chumphon',
-        'Nakhon Si Thammarat',
-        'Narathiwat',
-        'Pattani',
-        'Phatthalung',
-        'Songkhla',
-        'Surat Thani',
-        'Yala',
-        'Krabi',
-        'Phang Nga',
-        'Phuket',
-        'Ranong',
-        'Satun',
-        'Trang'
-    ]
-};
+import { LoadingComponent } from './LoadingComponent';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { getDemandEditLink } from '../utils/routing';
+import { FormikDatePicker } from './FormikDatePicker';
+import { AssetTypeSelector } from './AssetTypeSelector';
 
 export function calculateTotalEnergyDemand(
     startDate: Moment,
@@ -132,9 +68,6 @@ export function calculateTotalEnergyDemand(
     return targetWhPerPeriod * numberOfTimesDemandWillRepeat;
 }
 
-const irecAssetService = new IRECAssetService();
-const TYPES = irecAssetService.AssetTypes;
-
 const REPEATABLE_TIMEFRAMES = [
     {
         label: 'Day',
@@ -154,12 +87,7 @@ const REPEATABLE_TIMEFRAMES = [
     }
 ];
 
-const Level1Types = TYPES.filter(assetType => assetType.length === 1).map(type => ({
-    value: type[0],
-    label: type[0]
-}));
-
-const regionOptions = Object.keys(REGIONS_PROVINCES_MAP).map(label => ({
+const regionOptions = Object.keys(THAILAND_REGIONS_PROVINCES_MAP).map(label => ({
     value: label,
     label
 }));
@@ -186,44 +114,116 @@ const INITIAL_FORM_VALUES: IFormValues = {
     procureFromSingleFacility: false
 };
 
+interface IOwnProps {
+    demand?: Demand.Entity;
+    edit?: boolean;
+    clone?: boolean;
+}
+
 interface IStateProps {
+    baseURL: string;
     currentUser: User.Entity;
     configuration: Configuration.Entity;
 }
 
+type Props = RouteComponentProps & IOwnProps & IStateProps;
+
 interface IState {
     selectedRegions: IAutocompleteMultiSelectOptionType[];
     selectedProvinces: IAutocompleteMultiSelectOptionType[];
-    selectedTypesLevelOne: IAutocompleteMultiSelectOptionType[];
-    selectedTypesLevelTwo: IAutocompleteMultiSelectOptionType[];
-    selectedTypesLevelThree: IAutocompleteMultiSelectOptionType[];
+    selectedAssetType: EncodedAssetType;
     vintage: [number, number];
+    initialFormValuesFromDemand: IFormValues;
 }
 
 const DEFAULT_VINTAGE_RANGE: [number, number] = [1970, moment().year()];
 
-const FormikDatePicker = ({
-    form: { setFieldValue },
-    field: { name, value },
-    ...rest
-}: FieldProps) => (
-    <DatePicker onChange={newValue => setFieldValue(name, newValue)} value={value} {...rest} />
-);
-
-class OnboardDemandClass extends React.Component<IStateProps, IState> {
+class DemandFormClass extends React.Component<Props, IState> {
     constructor(props) {
         super(props);
 
         this.state = {
             selectedRegions: [],
             selectedProvinces: [],
-            selectedTypesLevelOne: [],
-            selectedTypesLevelTwo: [],
-            selectedTypesLevelThree: [],
+            selectedAssetType: [],
+            initialFormValuesFromDemand: null,
             vintage: null
         };
 
         this.submitForm = this.submitForm.bind(this);
+    }
+
+    componentDidMount() {
+        this.updateComponent(this.props);
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.demand !== prevProps.demand) {
+            this.updateComponent(this.props);
+        }
+    }
+
+    updateComponent(props: Props) {
+        if (!props.demand) {
+            return;
+        }
+
+        this.setupFormBasedOnDemand(props.demand);
+    }
+
+    setupFormBasedOnDemand(demand: Demand.Entity) {
+        const initialFormValuesFromDemand: IFormValues = {
+            currency: Currency[demand.offChainProperties.currency] as IFormValues['currency'],
+            startDate: moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
+            endDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            activeUntilDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            demandNeedsInMWh: Math.round(
+                demand.offChainProperties.targetWhPerPeriod / 1000000
+            ).toString(),
+            maxPricePerMWh: Math.round(demand.offChainProperties.maxPricePerMwh / 100).toString(),
+            procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
+            timeframe: demand.offChainProperties.timeFrame
+        };
+
+        const newState: Partial<IState> = {
+            initialFormValuesFromDemand
+        };
+
+        if (demand.offChainProperties.vintage && demand.offChainProperties.vintage.length === 2) {
+            newState.vintage = demand.offChainProperties.vintage;
+        }
+
+        if (demand.offChainProperties.location) {
+            if (
+                demand.offChainProperties.location.regions &&
+                demand.offChainProperties.location.regions.length > 0
+            ) {
+                newState.selectedRegions = demand.offChainProperties.location.regions.map(
+                    (region): IAutocompleteMultiSelectOptionType => ({
+                        label: region,
+                        value: region
+                    })
+                );
+            }
+
+            if (
+                demand.offChainProperties.location.provinces &&
+                demand.offChainProperties.location.provinces.length > 0
+            ) {
+                newState.selectedProvinces = demand.offChainProperties.location.provinces.map(
+                    (province): IAutocompleteMultiSelectOptionType => ({
+                        label: province,
+                        value: province
+                    })
+                );
+            }
+        }
+
+        if (demand.offChainProperties.assetType && demand.offChainProperties.assetType.length > 0) {
+            newState.selectedAssetType = demand.offChainProperties.assetType;
+        }
+
+        this.setState(newState as IState);
     }
 
     totalDemand(
@@ -244,30 +244,6 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         );
     }
 
-    typesByLevel(level: number) {
-        return TYPES.filter(t => t.length === level).map(t => irecAssetService.encode([t]).pop());
-    }
-
-    filterSelected(currentType: string, types: string[], selected) {
-        const isSelected = (selected || []).find(type => type.value === currentType);
-
-        if (!isSelected) {
-            return [];
-        }
-
-        return types.filter(t => t.startsWith(currentType));
-    }
-
-    assetTypesToSelectionOptions(types: string[]) {
-        return types.map(t => ({
-            value: t,
-            label: irecAssetService
-                .decode([t])
-                .pop()
-                .join(' - ')
-        }));
-    }
-
     get currencies() {
         return getEnumValues(Currency).filter(curr => Currency[curr] !== Currency.NONE);
     }
@@ -282,54 +258,13 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         return selectedRegions
             .reduce(
                 (a: string[], b: IAutocompleteMultiSelectOptionType) =>
-                    a.concat(REGIONS_PROVINCES_MAP[b.label]),
+                    a.concat(THAILAND_REGIONS_PROVINCES_MAP[b.label]),
                 []
             )
             .map(item => ({
                 label: item,
                 value: item
             }));
-    }
-
-    get assetTypesOptions() {
-        const { selectedTypesLevelOne, selectedTypesLevelTwo } = this.state;
-
-        const levelTwoTypes = [];
-        const levelThreeTypes = [];
-
-        const availableL1Types = this.typesByLevel(1);
-        const availableL2Types = this.typesByLevel(2);
-        const availableL3Types = this.typesByLevel(3);
-
-        for (const currentType of availableL1Types) {
-            const level2Types = this.filterSelected(
-                currentType,
-                availableL2Types,
-                selectedTypesLevelOne
-            );
-
-            if (!level2Types.length) {
-                continue;
-            }
-
-            levelTwoTypes.push(...this.assetTypesToSelectionOptions(level2Types));
-
-            for (const currentLevel2Type of level2Types) {
-                const level3Types = this.filterSelected(
-                    currentLevel2Type,
-                    availableL3Types,
-                    selectedTypesLevelTwo
-                );
-
-                if (!level3Types.length) {
-                    continue;
-                }
-
-                levelThreeTypes.push(...this.assetTypesToSelectionOptions(level3Types));
-            }
-        }
-
-        return { levelTwoTypes, levelThreeTypes };
     }
 
     isUserTraderRole() {
@@ -344,25 +279,14 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             return;
         }
 
-        const {
-            selectedRegions,
-            selectedProvinces,
-            selectedTypesLevelOne,
-            selectedTypesLevelTwo,
-            selectedTypesLevelThree,
-            vintage
-        } = this.state;
+        const { selectedRegions, selectedProvinces, selectedAssetType, vintage } = this.state;
 
-        const assetTypes = [
-            ...selectedTypesLevelOne,
-            ...selectedTypesLevelTwo,
-            ...selectedTypesLevelThree
-        ].map(type => type.value);
+        const { baseURL, currentUser, configuration, edit, demand, history } = this.props;
 
         formikActions.setSubmitting(true);
 
-        this.props.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
+        configuration.blockchainProperties.activeUser = {
+            address: currentUser.id
         };
 
         const offChainProps: Demand.IDemandOffChainProperties = {
@@ -371,26 +295,56 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
             endTime: values.endDate.unix().toString(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
-            location: {
-                regions: selectedRegions.map(i => i.value),
-                provinces: selectedProvinces.map(i => i.value)
-            },
-            procureFromSingleFacility: values.procureFromSingleFacility,
-            assetType: assetTypes
+            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
         };
 
-        if (vintage && vintage.length === 2) {
+        if (values.procureFromSingleFacility) {
+            offChainProps.procureFromSingleFacility = values.procureFromSingleFacility;
+        }
+
+        if (selectedAssetType && selectedAssetType.length > 0) {
+            offChainProps.assetType = selectedAssetType;
+        }
+
+        if (selectedRegions && selectedRegions.length > 0) {
+            offChainProps.location = {
+                regions: selectedRegions.map(i => i.value)
+            };
+        }
+
+        if (selectedProvinces && selectedProvinces.length > 0) {
+            if (typeof offChainProps.location === 'undefined') {
+                offChainProps.location = {
+                    provinces: selectedProvinces.map(i => i.value)
+                };
+            } else {
+                offChainProps.location.provinces = selectedProvinces.map(i => i.value);
+            }
+        }
+
+        if (
+            vintage &&
+            vintage.length === 2 &&
+            (vintage[0] !== DEFAULT_VINTAGE_RANGE[0] || vintage[1] !== DEFAULT_VINTAGE_RANGE[1])
+        ) {
             offChainProps.vintage = vintage;
         }
 
         try {
-            await Demand.createDemand(offChainProps, this.props.configuration);
+            if (edit) {
+                await demand.update(offChainProps);
 
-            showNotification('Demand created', NotificationType.Success);
+                showNotification('Demand edited', NotificationType.Success);
+            } else {
+                const createdDemand = await Demand.createDemand(offChainProps, configuration);
+
+                showNotification('Demand created', NotificationType.Success);
+
+                history.push(getDemandEditLink(baseURL, createdDemand.id));
+            }
         } catch (error) {
-            console.error('Demand creation error', error);
-            showNotification(`Can't create demand`, NotificationType.Error);
+            console.error('Demand form error', error);
+            showNotification(`Can't save demand`, NotificationType.Error);
         }
 
         formikActions.setSubmitting(false);
@@ -400,27 +354,42 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
         const {
             selectedRegions,
             selectedProvinces,
-            selectedTypesLevelOne,
-            selectedTypesLevelTwo,
-            selectedTypesLevelThree,
-            vintage
+            selectedAssetType,
+            vintage,
+            initialFormValuesFromDemand
         } = this.state;
 
-        const {
-            currencies,
-            provincesOptions,
-            assetTypesOptions: { levelTwoTypes, levelThreeTypes }
-        } = this;
+        const { edit, clone } = this.props;
+
+        const { currencies, provincesOptions } = this;
 
         const minDate = moment()
             .hour(0)
             .minutes(0)
             .seconds(0);
 
+        let initialFormValues = null;
+
+        if (edit || clone) {
+            initialFormValues = initialFormValuesFromDemand;
+        } else {
+            initialFormValues = INITIAL_FORM_VALUES;
+        }
+
+        if (!initialFormValues) {
+            return <LoadingComponent />;
+        }
+
+        let submitButtonText = 'Create demand';
+
+        if (edit) {
+            submitButtonText = 'Save demand';
+        }
+
         return (
-            <Paper className="OnboardDemand">
+            <Paper className="DemandForm">
                 <Formik
-                    initialValues={INITIAL_FORM_VALUES}
+                    initialValues={initialFormValues}
                     onSubmit={this.submitForm}
                     validationSchema={Yup.object().shape({
                         demandNeedsInMWh: Yup.number()
@@ -443,6 +412,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                         activeUntilDate: Yup.date().required(),
                         procureFromSingleFacility: Yup.boolean()
                     })}
+                    isInitialValid={edit || clone}
                 >
                     {props => {
                         const { values, isValid, isSubmitting } = props;
@@ -542,50 +512,15 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                                         <Typography className="mt-3">
                                             Producing Asset Criteria
                                         </Typography>
-                                        <MultiSelectAutocomplete
-                                            label="Asset type"
-                                            placeholder="Select asset type"
-                                            options={Level1Types}
-                                            onChange={value =>
+                                        <AssetTypeSelector
+                                            selectedType={selectedAssetType}
+                                            onChange={(value: EncodedAssetType) =>
                                                 this.setState({
-                                                    selectedTypesLevelOne: value
+                                                    selectedAssetType: value
                                                 })
                                             }
-                                            selectedValues={selectedTypesLevelOne}
-                                            classes={{ root: 'mt-3' }}
                                             disabled={isSubmitting}
                                         />
-                                        {levelTwoTypes.length > 0 && (
-                                            <MultiSelectAutocomplete
-                                                label="Asset type"
-                                                placeholder="Select asset type"
-                                                options={levelTwoTypes}
-                                                onChange={value =>
-                                                    this.setState({
-                                                        selectedTypesLevelTwo: value
-                                                    })
-                                                }
-                                                selectedValues={selectedTypesLevelTwo}
-                                                classes={{ root: 'mt-3' }}
-                                                disabled={isSubmitting}
-                                            />
-                                        )}
-                                        {levelThreeTypes.length > 0 && (
-                                            <MultiSelectAutocomplete
-                                                label="Asset type"
-                                                placeholder="Select asset type"
-                                                options={levelThreeTypes}
-                                                onChange={value =>
-                                                    this.setState({
-                                                        selectedTypesLevelThree: value
-                                                    })
-                                                }
-                                                selectedValues={selectedTypesLevelThree}
-                                                classes={{ root: 'mt-3' }}
-                                                disabled={isSubmitting}
-                                            />
-                                        )}
-
                                         <div className="Filter_menu_item_sliderWrapper mt-3">
                                             <InputLabel shrink={true}>
                                                 Vintage (year of asset construction)
@@ -723,7 +658,7 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
                                                 isSubmitting || !isValid || !this.isUserTraderRole()
                                             }
                                         >
-                                            Create demand
+                                            {submitButtonText}
                                         </Button>
                                     </span>
                                 </Tooltip>
@@ -736,9 +671,12 @@ class OnboardDemandClass extends React.Component<IStateProps, IState> {
     }
 }
 
-export const OnboardDemand = connect(
-    (state: IStoreState): IStateProps => ({
-        currentUser: getCurrentUser(state),
-        configuration: getConfiguration(state)
-    })
-)(OnboardDemandClass);
+export const DemandForm = withRouter(
+    connect(
+        (state: IStoreState): IStateProps => ({
+            baseURL: getBaseURL(state),
+            currentUser: getCurrentUser(state),
+            configuration: getConfiguration(state)
+        })
+    )(DemandFormClass)
+);
