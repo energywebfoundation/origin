@@ -1,3 +1,5 @@
+import { describe, it } from 'mocha';
+
 import {
     AssetProducingRegistryLogic,
     migrateAssetRegistryContracts,

@@ -6,6 +6,7 @@
         "outDir": "./dist/js"
     },
     "include": ["./src/**/*", "./build/**/*.json"],
+    "exclude": ["./src/test/*"],
     "references": [
         {
             "path": "../utils-general/tsconfig.build.json"

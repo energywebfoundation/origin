@@ -7,5 +7,6 @@
     },
     "include": [
         "src/**/*", "build/**/*.json", "test/*"
-    ]
+    ],
+    "exclude": ["./src/test/*"]
 }

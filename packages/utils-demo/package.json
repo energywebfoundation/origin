@@ -17,7 +17,7 @@
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "yarn build-ts && node dist/js/src/test",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist db.json"
   },
   "types": "dist/js/index.d.ts",
   "dependencies": {

@@ -1,11 +1,11 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { EmailServiceProvider } from '../src/services/email.service';
-import { IOriginEventListener, OriginEventListener } from '../src/listeners/origin.listener';
-import { Demo } from './helpers/deployDemo';
-import { TestEmailAdapter } from './helpers/TestAdapter';
-import NotificationTypes from '../src/notification/NotificationTypes';
+import { EmailServiceProvider } from '../services/email.service';
+import { IOriginEventListener, OriginEventListener } from '../listeners/origin.listener';
+import { Demo } from './deployDemo';
+import { TestEmailAdapter } from './TestAdapter';
+import NotificationTypes from '../notification/NotificationTypes';
 
 const SCAN_INTERVAL = 3000;
 const APPROX_EMAIL_SENDING_TIME = 3000;

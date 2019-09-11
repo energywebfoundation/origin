@@ -6,7 +6,8 @@
         "outDir": "./dist/js",
         "types": ["mocha"]
     },
-    "include": ["./src/**/*", "./test/**/*"],
+    "include": ["./src/**/*"],
+    "exclude": ["./src/test/*"],
     "references": [
         {
             "path": "../utils-general/tsconfig.build.json"
