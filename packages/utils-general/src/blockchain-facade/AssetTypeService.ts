@@ -1,7 +1,10 @@
+export type EncodedAssetType = string[];
+export type DecodedAssetType = string[][];
+
 export interface IAssetService {
-    AssetTypes: string[][];
-    encode(assetTypes: string[][]): string[];
-    decode(encodedAssetType: string[]): string[][];
+    AssetTypes: DecodedAssetType;
+    encode(assetTypes: DecodedAssetType): EncodedAssetType;
+    decode(encodedAssetType: EncodedAssetType): DecodedAssetType;
     includes(current: string[], requested: string[]): boolean;
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] };
 }
@@ -64,7 +67,7 @@ export class IRECAssetService implements IAssetService {
         ];
     }
 
-    encode(assetTypes: string[][]): string[] {
+    encode(assetTypes: DecodedAssetType): EncodedAssetType {
         const encoded = assetTypes.map(group => group.join(';'));
 
         const { areValid, unknown } = this.validate(encoded);
@@ -75,7 +78,7 @@ export class IRECAssetService implements IAssetService {
         return encoded;
     }
 
-    decode(encodedAssetType: string[]): string[][] {
+    decode(encodedAssetType: EncodedAssetType): DecodedAssetType {
         const { areValid, unknown } = this.validate(encodedAssetType);
         if (!areValid) {
             throw new Error(`IRECAssetService::decode Unknown asset types ${unknown}`);
@@ -91,7 +94,7 @@ export class IRECAssetService implements IAssetService {
     }
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
-        const encoded = this.AssetTypes.map(group => group.join(';'));
+        const encoded: EncodedAssetType = this.AssetTypes.map(group => group.join(';'));
         const unknown = [];
 
         const areValid = assetTypes

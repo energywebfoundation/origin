@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { User, Role } from '@energyweb/user-registry';
-import { Currency, IRECAssetService, Configuration, TimeFrame } from '@energyweb/utils-general';
+import {
+    Currency,
+    Configuration,
+    TimeFrame,
+    THAILAND_REGIONS_PROVINCES_MAP,
+    EncodedAssetType
+} from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -18,94 +24,21 @@ import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getCurrentUser, getConfiguration, getBaseURL } from '../features/selectors';
 import './DemandForm.scss';
-import { DatePicker } from '@material-ui/pickers';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
 import { CustomSlider, CustomSliderThumbComponent } from './CustomSlider';
 import moment, { Moment } from 'moment';
-import { Formik, Field, Form, FieldProps, FormikActions } from 'formik';
+import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
 import { LoadingComponent } from './LoadingComponent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getDemandEditLink } from '../utils/routing';
-
-const REGIONS_PROVINCES_MAP = {
-    Northeast: [
-        'Amnat Charoen',
-        'Bueng Kan, Buri Ram',
-        'Chaiyaphum, Kalasin',
-        'Khon Kaen, Loei',
-        'Maha Sarakham',
-        'Mukdahan',
-        'Nakhon Phanom',
-        'Nakhon Ratchasima',
-        'Nong Bua Lamphu',
-        'Nong Khai',
-        'Roi Et',
-        'Sakon Nakhon',
-        'Si Sa Ket',
-        'Surin',
-        'Ubon Ratchathani',
-        'Udon Thani',
-        'Yasothon'
-    ],
-    North: [
-        'Chiang Mai',
-        'Chiang Rai',
-        'Lampang',
-        'Lamphun',
-        'Mae Hong Son',
-        'Nan',
-        'Phayao',
-        'Phrae',
-        'Uttaradit'
-    ],
-    West: ['Tak', 'Kanchanaburi', 'Ratchaburi', 'Phetchaburi', 'Prachuap Khiri Khan'],
-    Central: [
-        'Sukhothai',
-        'Phitsanulok',
-        'Phichit',
-        'Kamphaeng Phet',
-        'Phetchabun',
-        'Nakhon Sawan',
-        'Uthai Thani',
-        'Ang Thong',
-        'Phra Nakhon Si Ayutthaya',
-        'Bangkok, Chai Nat',
-        'Lop Buri',
-        'Nakhon Pathom',
-        'Nonthaburi',
-        'Pathum Thani',
-        'Samut Prakan',
-        'Samut Sakhon',
-        'Samut Songkhram',
-        'Saraburi',
-        'Sing Buri',
-        'Suphan Buri',
-        'Nakhon Nayok'
-    ],
-    East: ['Chachoengsao', 'Chanthaburi', 'Chon Buri', 'Prachin Buri', 'Rayong', 'Sa Kaeo', 'Trat'],
-    South: [
-        'Chumphon',
-        'Nakhon Si Thammarat',
-        'Narathiwat',
-        'Pattani',
-        'Phatthalung',
-        'Songkhla',
-        'Surat Thani',
-        'Yala',
-        'Krabi',
-        'Phang Nga',
-        'Phuket',
-        'Ranong',
-        'Satun',
-        'Trang'
-    ]
-};
+import { FormikDatePicker } from './FormikDatePicker';
+import { AssetTypeSelector } from './AssetTypeSelector';
 
 export function calculateTotalEnergyDemand(
     startDate: Moment,
@@ -135,9 +68,6 @@ export function calculateTotalEnergyDemand(
     return targetWhPerPeriod * numberOfTimesDemandWillRepeat;
 }
 
-const irecAssetService = new IRECAssetService();
-const TYPES = irecAssetService.AssetTypes;
-
 const REPEATABLE_TIMEFRAMES = [
     {
         label: 'Day',
@@ -157,12 +87,7 @@ const REPEATABLE_TIMEFRAMES = [
     }
 ];
 
-const Level1Types = TYPES.filter(assetType => assetType.length === 1).map(type => ({
-    value: type[0],
-    label: type[0]
-}));
-
-const regionOptions = Object.keys(REGIONS_PROVINCES_MAP).map(label => ({
+const regionOptions = Object.keys(THAILAND_REGIONS_PROVINCES_MAP).map(label => ({
     value: label,
     label
 }));
@@ -206,22 +131,12 @@ type Props = RouteComponentProps & IOwnProps & IStateProps;
 interface IState {
     selectedRegions: IAutocompleteMultiSelectOptionType[];
     selectedProvinces: IAutocompleteMultiSelectOptionType[];
-    selectedTypesLevelOne: IAutocompleteMultiSelectOptionType[];
-    selectedTypesLevelTwo: IAutocompleteMultiSelectOptionType[];
-    selectedTypesLevelThree: IAutocompleteMultiSelectOptionType[];
+    selectedAssetType: EncodedAssetType;
     vintage: [number, number];
     initialFormValuesFromDemand: IFormValues;
 }
 
 const DEFAULT_VINTAGE_RANGE: [number, number] = [1970, moment().year()];
-
-const FormikDatePicker = ({
-    form: { setFieldValue },
-    field: { name, value },
-    ...rest
-}: FieldProps) => (
-    <DatePicker onChange={newValue => setFieldValue(name, newValue)} value={value} {...rest} />
-);
 
 class DemandFormClass extends React.Component<Props, IState> {
     constructor(props) {
@@ -230,9 +145,7 @@ class DemandFormClass extends React.Component<Props, IState> {
         this.state = {
             selectedRegions: [],
             selectedProvinces: [],
-            selectedTypesLevelOne: [],
-            selectedTypesLevelTwo: [],
-            selectedTypesLevelThree: [],
+            selectedAssetType: [],
             initialFormValuesFromDemand: null,
             vintage: null
         };
@@ -307,30 +220,7 @@ class DemandFormClass extends React.Component<Props, IState> {
         }
 
         if (demand.offChainProperties.assetType && demand.offChainProperties.assetType.length > 0) {
-            const decodedType = irecAssetService.decode(demand.offChainProperties.assetType);
-
-            const extractedTypesLevelOne = decodedType.filter(type => type.length === 1);
-            const extractedTypesLevelTwo = decodedType.filter(type => type.length === 2);
-            const extractedTypesLevelThree = decodedType.filter(type => type.length === 3);
-
-            if (extractedTypesLevelOne.length > 0) {
-                newState.selectedTypesLevelOne = extractedTypesLevelOne.map(type => ({
-                    value: type[0],
-                    label: type[0]
-                }));
-            }
-
-            if (extractedTypesLevelTwo.length > 0) {
-                newState.selectedTypesLevelTwo = this.assetTypesToSelectionOptions(
-                    irecAssetService.encode(extractedTypesLevelTwo)
-                );
-            }
-
-            if (extractedTypesLevelThree.length > 0) {
-                newState.selectedTypesLevelThree = this.assetTypesToSelectionOptions(
-                    irecAssetService.encode(extractedTypesLevelThree)
-                );
-            }
+            newState.selectedAssetType = demand.offChainProperties.assetType;
         }
 
         this.setState(newState as IState);
@@ -354,30 +244,6 @@ class DemandFormClass extends React.Component<Props, IState> {
         );
     }
 
-    typesByLevel(level: number) {
-        return TYPES.filter(t => t.length === level).map(t => irecAssetService.encode([t]).pop());
-    }
-
-    filterSelected(currentType: string, types: string[], selected) {
-        const isSelected = (selected || []).find(type => type.value === currentType);
-
-        if (!isSelected) {
-            return [];
-        }
-
-        return types.filter(t => t.startsWith(currentType));
-    }
-
-    assetTypesToSelectionOptions(types: string[]) {
-        return types.map(t => ({
-            value: t,
-            label: irecAssetService
-                .decode([t])
-                .pop()
-                .join(' - ')
-        }));
-    }
-
     get currencies() {
         return getEnumValues(Currency).filter(curr => Currency[curr] !== Currency.NONE);
     }
@@ -392,54 +258,13 @@ class DemandFormClass extends React.Component<Props, IState> {
         return selectedRegions
             .reduce(
                 (a: string[], b: IAutocompleteMultiSelectOptionType) =>
-                    a.concat(REGIONS_PROVINCES_MAP[b.label]),
+                    a.concat(THAILAND_REGIONS_PROVINCES_MAP[b.label]),
                 []
             )
             .map(item => ({
                 label: item,
                 value: item
             }));
-    }
-
-    get assetTypesOptions() {
-        const { selectedTypesLevelOne, selectedTypesLevelTwo } = this.state;
-
-        const levelTwoTypes = [];
-        const levelThreeTypes = [];
-
-        const availableL1Types = this.typesByLevel(1);
-        const availableL2Types = this.typesByLevel(2);
-        const availableL3Types = this.typesByLevel(3);
-
-        for (const currentType of availableL1Types) {
-            const level2Types = this.filterSelected(
-                currentType,
-                availableL2Types,
-                selectedTypesLevelOne
-            );
-
-            if (!level2Types.length) {
-                continue;
-            }
-
-            levelTwoTypes.push(...this.assetTypesToSelectionOptions(level2Types));
-
-            for (const currentLevel2Type of level2Types) {
-                const level3Types = this.filterSelected(
-                    currentLevel2Type,
-                    availableL3Types,
-                    selectedTypesLevelTwo
-                );
-
-                if (!level3Types.length) {
-                    continue;
-                }
-
-                levelThreeTypes.push(...this.assetTypesToSelectionOptions(level3Types));
-            }
-        }
-
-        return { levelTwoTypes, levelThreeTypes };
     }
 
     isUserTraderRole() {
@@ -454,22 +279,9 @@ class DemandFormClass extends React.Component<Props, IState> {
             return;
         }
 
-        const {
-            selectedRegions,
-            selectedProvinces,
-            selectedTypesLevelOne,
-            selectedTypesLevelTwo,
-            selectedTypesLevelThree,
-            vintage
-        } = this.state;
+        const { selectedRegions, selectedProvinces, selectedAssetType, vintage } = this.state;
 
-        const { baseURL, currentUser, configuration, edit, demand, clone, history } = this.props;
-
-        const assetTypes = [
-            ...(selectedTypesLevelOne || []),
-            ...(selectedTypesLevelTwo || []),
-            ...(selectedTypesLevelThree || [])
-        ].map(type => type.value);
+        const { baseURL, currentUser, configuration, edit, demand, history } = this.props;
 
         formikActions.setSubmitting(true);
 
@@ -483,10 +295,16 @@ class DemandFormClass extends React.Component<Props, IState> {
             endTime: values.endDate.unix().toString(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
-            procureFromSingleFacility: values.procureFromSingleFacility,
-            assetType: assetTypes
+            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
         };
+
+        if (values.procureFromSingleFacility) {
+            offChainProps.procureFromSingleFacility = values.procureFromSingleFacility;
+        }
+
+        if (selectedAssetType && selectedAssetType.length > 0) {
+            offChainProps.assetType = selectedAssetType;
+        }
 
         if (selectedRegions && selectedRegions.length > 0) {
             offChainProps.location = {
@@ -520,11 +338,7 @@ class DemandFormClass extends React.Component<Props, IState> {
             } else {
                 const createdDemand = await Demand.createDemand(offChainProps, configuration);
 
-                if (clone) {
-                    showNotification('Demand cloned', NotificationType.Success);
-                } else {
-                    showNotification('Demand created', NotificationType.Success);
-                }
+                showNotification('Demand created', NotificationType.Success);
 
                 history.push(getDemandEditLink(baseURL, createdDemand.id));
             }
@@ -540,20 +354,14 @@ class DemandFormClass extends React.Component<Props, IState> {
         const {
             selectedRegions,
             selectedProvinces,
-            selectedTypesLevelOne,
-            selectedTypesLevelTwo,
-            selectedTypesLevelThree,
+            selectedAssetType,
             vintage,
             initialFormValuesFromDemand
         } = this.state;
 
         const { edit, clone } = this.props;
 
-        const {
-            currencies,
-            provincesOptions,
-            assetTypesOptions: { levelTwoTypes, levelThreeTypes }
-        } = this;
+        const { currencies, provincesOptions } = this;
 
         const minDate = moment()
             .hour(0)
@@ -576,8 +384,6 @@ class DemandFormClass extends React.Component<Props, IState> {
 
         if (edit) {
             submitButtonText = 'Save demand';
-        } else if (clone) {
-            submitButtonText = 'Clone demand';
         }
 
         return (
@@ -706,50 +512,15 @@ class DemandFormClass extends React.Component<Props, IState> {
                                         <Typography className="mt-3">
                                             Producing Asset Criteria
                                         </Typography>
-                                        <MultiSelectAutocomplete
-                                            label="Asset type"
-                                            placeholder="Select asset type"
-                                            options={Level1Types}
-                                            onChange={value =>
+                                        <AssetTypeSelector
+                                            selectedType={selectedAssetType}
+                                            onChange={(value: EncodedAssetType) =>
                                                 this.setState({
-                                                    selectedTypesLevelOne: value
+                                                    selectedAssetType: value
                                                 })
                                             }
-                                            selectedValues={selectedTypesLevelOne}
-                                            classes={{ root: 'mt-3' }}
                                             disabled={isSubmitting}
                                         />
-                                        {levelTwoTypes.length > 0 && (
-                                            <MultiSelectAutocomplete
-                                                label="Asset type"
-                                                placeholder="Select asset type"
-                                                options={levelTwoTypes}
-                                                onChange={value =>
-                                                    this.setState({
-                                                        selectedTypesLevelTwo: value
-                                                    })
-                                                }
-                                                selectedValues={selectedTypesLevelTwo}
-                                                classes={{ root: 'mt-3' }}
-                                                disabled={isSubmitting}
-                                            />
-                                        )}
-                                        {levelThreeTypes.length > 0 && (
-                                            <MultiSelectAutocomplete
-                                                label="Asset type"
-                                                placeholder="Select asset type"
-                                                options={levelThreeTypes}
-                                                onChange={value =>
-                                                    this.setState({
-                                                        selectedTypesLevelThree: value
-                                                    })
-                                                }
-                                                selectedValues={selectedTypesLevelThree}
-                                                classes={{ root: 'mt-3' }}
-                                                disabled={isSubmitting}
-                                            />
-                                        )}
-
                                         <div className="Filter_menu_item_sliderWrapper mt-3">
                                             <InputLabel shrink={true}>
                                                 Vintage (year of asset construction)
