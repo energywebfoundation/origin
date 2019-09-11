@@ -25,8 +25,8 @@
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
         "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "test": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && mocha --exit dist/js/src/test/\"",
-        "test-ts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && mocha --exit -r ts-node/register src/test/*.ts\"",
+        "test": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && mocha --exit dist/js/src/test/*.test.js\"",
+        "test-ts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && mocha --exit -r ts-node/register src/test/*.test.js\"",
         "clean": "rm -rf build dist schemas",
         "build:static": "yarn generate-schemas"
     },
