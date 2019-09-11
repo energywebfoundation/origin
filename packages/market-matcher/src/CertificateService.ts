@@ -10,9 +10,9 @@ import { Utils } from './Utils';
 @autoInjectable()
 export class CertificateService {
     constructor(
-        @inject("config") private config: Configuration.Entity,
-        @inject("entityStore") private entityStore: IEntityStore,
-        @inject("logger") private logger: Winston.Logger
+        @inject('config') private config: Configuration.Entity,
+        @inject('entityStore') private entityStore: IEntityStore,
+        @inject('logger') private logger: Winston.Logger
     ) {}
 
     public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
@@ -40,23 +40,11 @@ export class CertificateService {
 
     public async splitCertificate(
         certificate: Certificate.Entity,
-        whForFirstChild: number
+        requiredEnergy: number
     ): Promise<void> {
-        await certificate.splitCertificate(whForFirstChild);
+        this.logger.info(`Splitting certificate ${certificate.id} at ${requiredEnergy}`);
 
-        // certificate = await certificate.sync();
-
-        // const childCertificate1 = await new Certificate.Entity(
-        //     certificate.children['0'],
-        //     this.config
-        // ).sync();
-        // const childCertificate2 = await new Certificate.Entity(
-        //     certificate.children['1'],
-        //     this.config
-        // ).sync();
-
-        // await this.matchTrigger(childCertificate1);
-        // await this.matchTrigger(childCertificate2);
+        await certificate.splitCertificate(requiredEnergy);
     }
 
     public async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {

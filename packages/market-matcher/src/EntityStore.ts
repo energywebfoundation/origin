@@ -1,28 +1,28 @@
 import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import { EventEmitter } from 'events';
-import { autoInjectable, inject } from 'tsyringe';
+import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
 
 export interface IEntityStore {
     init(): Promise<void>;
-    registerCertificateListener(listener: (certificate: Certificate.Entity) => void): void;
+    registerCertificateListener(listener: NewCertificateListener): void;
 
     getDemandById(id: string): Demand.Entity;
     getAgreements(): Agreement.Entity[];
     getDemands(): Demand.Entity[];
 }
 
-@autoInjectable()
+export type NewCertificateListener = (certificate: Certificate.Entity) => Promise<void>;
+
+@singleton()
 export class EntityStore implements IEntityStore {
     private demands: Map<string, Demand.Entity> = new Map<string, Demand.Entity>();
     private supplies: Map<string, Supply.Entity> = new Map<string, Supply.Entity>();
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
     private matcherAddress: string;
 
-    private certificateEventEmitter = new EventEmitter();
-    private readonly NEW_CERTIFICATE_EVENT_NAME = 'new-cert-event';
+    private certificateListeners: NewCertificateListener[] = [];
 
     constructor(
         @inject('config') private config?: Configuration.Entity,
@@ -31,8 +31,8 @@ export class EntityStore implements IEntityStore {
         this.matcherAddress = config.blockchainProperties.activeUser.address.toLowerCase();
     }
 
-    public registerCertificateListener(listener: (certificate: Certificate.Entity) => void) {
-        this.certificateEventEmitter.addListener(this.NEW_CERTIFICATE_EVENT_NAME, listener);
+    public registerCertificateListener(listener: NewCertificateListener) {
+        this.certificateListeners.push(listener);
     }
 
     public getDemandById(id: string): Demand.Entity {
@@ -50,6 +50,16 @@ export class EntityStore implements IEntityStore {
     public async init() {
         await this.syncExistingEvents();
         await this.subscribeToEvents();
+    }
+
+    private async triggerListeners(certificate: Certificate.Entity) {
+        for (const listener of this.certificateListeners) {
+            try {
+                await listener(certificate);
+            } catch (e) {
+                this.logger.debug(`Listener failed to execute: ${e}`);
+            }
+        }
     }
 
     private async syncExistingEvents() {
@@ -75,8 +85,8 @@ export class EntityStore implements IEntityStore {
         const certificateListLength = await Certificate.getCertificateListLength(this.config);
         for (let i = 0; i < certificateListLength; i++) {
             const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
-            
-            this.certificateEventEmitter.emit(this.NEW_CERTIFICATE_EVENT_NAME, newCertificate);
+
+            await this.triggerListeners(newCertificate);
         }
     }
 
@@ -95,8 +105,21 @@ export class EntityStore implements IEntityStore {
                 event.returnValues._certificateId,
                 this.config
             ).sync();
+            
+            await this.triggerListeners(newCertificate);
+        });
 
-            this.certificateEventEmitter.emit(this.NEW_CERTIFICATE_EVENT_NAME, newCertificate);
+        certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) => {
+            const { _certificateId, _childOne, _childTwo } = event.returnValues;
+
+            this.logger.verbose(
+                `Event: LogCertificateSplit certificate #${_certificateId} children=[${_childOne}, ${_childTwo}]`
+            );
+            const firstChild = await new Certificate.Entity(_childOne, this.config).sync();
+            const secondChild = await new Certificate.Entity(_childTwo, this.config).sync();
+            
+            await this.triggerListeners(firstChild);
+            await this.triggerListeners(secondChild);
         });
 
         const marketContractEventHandler = new ContractEventHandler(

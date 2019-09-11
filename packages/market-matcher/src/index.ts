@@ -56,9 +56,15 @@ export async function startMatcher(config: IMatcherConfig) {
             container.register<Configuration.Entity>('config', {
                 useValue: configEntity
             });
-            container.register<IEntityStore>("entityStore", { useClass: EntityStore });
-            container.register<IStrategy>("strategy", { useClass: LowestPriceStrategy });
-            container.register<CertificateService>("certificateService", { useClass: CertificateService });
+            container.register<IEntityStore>(
+                'entityStore',
+                { useClass: EntityStore },
+                { singleton: true }
+            );
+            container.register<IStrategy>('strategy', { useClass: LowestPriceStrategy });
+            container.register<CertificateService>('certificateService', {
+                useClass: CertificateService
+            });
             container.register<Winston.Logger>('logger', { useValue: logger });
 
             const matcher = container.resolve<Matcher>(Matcher);

@@ -96,19 +96,17 @@ export class Matcher {
         const processedMatchingAgreements = await this.strategy.execute(matchingAgreements);
 
         this.logger.debug(
-            `Processed agreement list for certificate #${
-                certificate.id
-            }: ${processedMatchingAgreements.reduce(
-                (accumulator: string, currentValue: MatchableAgreement) =>
-                    (accumulator += currentValue.agreement.id + ' '),
-                ''
-            )}`
+            `Processed agreement list for certificate #${certificate.id} [${matchingAgreements.join(
+                ','
+            )}]`
         );
 
         for (const matchingAgreement of processedMatchingAgreements) {
             const { agreement } = matchingAgreement;
             const demand = this.entityStore.getDemandById(agreement.demandId.toString());
             const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
+
+            this.logger.debug(`Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`)
 
             if (certificate.powerInW > missingEnergyForPeriod) {
                 this.logger.debug(
