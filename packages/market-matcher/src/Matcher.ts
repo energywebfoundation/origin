@@ -52,33 +52,57 @@ export class Matcher {
     private async matchWithAgreements(certificate: Certificate.Entity) {
         const agreements = this.entityStore.getAgreements();
 
-        const { agreement } = await this.findMatchingAgreement(certificate, agreements);
+        const matchingAgreements = await this.findMatchingAgreements(certificate, agreements);
 
-        if (!agreement) {
-            return false;
+        for (const matchingAgreement of matchingAgreements) {
+            const { agreement } = matchingAgreement;
+            const demand = this.entityStore.getDemandById(agreement.demandId.toString());
+            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
+
+            this.logger.debug(
+                `Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`
+            );
+
+            if (certificate.powerInW === missingEnergyForPeriod) {
+                await this.certificateService.matchAgreement(certificate, agreement);
+                return true;
+            } else if (
+                missingEnergyForPeriod > 0 &&
+                certificate.powerInW > missingEnergyForPeriod
+            ) {
+                await this.certificateService.splitCertificate(certificate, missingEnergyForPeriod);
+                return true;
+            }
         }
 
-        await this.certificateService.matchAgreement(certificate, agreement);
-        return true;
+        return false;
     }
 
     private async matchWithDemands(certificate: Certificate.Entity) {
         const demands = this.entityStore.getDemands();
 
-        const { demand } = await this.findMatchingDemand(certificate, demands);
+        const matchingDemands = await this.findMatchingDemands(certificate, demands);
 
-        if (!demand) {
-            return false;
+        for (const matchingDemand of matchingDemands) {
+            const { demand } = matchingDemand;
+            const requiredPower = demand.offChainProperties.targetWhPerPeriod;
+
+            if (certificate.powerInW === requiredPower) {
+                await this.certificateService.matchDemand(certificate, demand);
+                return true;
+            } else if (requiredPower > 0 && certificate.powerInW > requiredPower) {
+                await this.certificateService.splitCertificate(certificate, requiredPower);
+                return true;
+            }
         }
 
-        await this.certificateService.matchDemand(certificate, demand);
-        return true;
+        return false;
     }
 
-    private async findMatchingAgreement(
+    private async findMatchingAgreements(
         certificate: Certificate.Entity,
         agreements: Agreement.Entity[]
-    ): Promise<{ split: boolean; agreement: Agreement.Entity }> {
+    ): Promise<MatchableAgreement[]> {
         this.logger.debug(`Scanning ${agreements.length} agreements for a match.`);
 
         const matchingAgreements = await Promise.all(
@@ -90,87 +114,22 @@ export class Matcher {
         if (matchingAgreements.length === 0) {
             this.logger.info('Found no matching agreement for certificate #' + certificate.id);
 
-            return { split: false, agreement: null };
+            return [];
         }
 
-        const processedMatchingAgreements = await this.strategy.execute(matchingAgreements);
-
-        this.logger.debug(
-            `Processed agreement list for certificate #${certificate.id} [${matchingAgreements.join(
-                ','
-            )}]`
-        );
-
-        for (const matchingAgreement of processedMatchingAgreements) {
-            const { agreement } = matchingAgreement;
-            const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
-
-            this.logger.debug(`Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`)
-
-            if (certificate.powerInW > missingEnergyForPeriod) {
-                this.logger.debug(
-                    `Certificate ${certificate.id} too large (${certificate.powerInW})` +
-                        `for agreement ${agreement.id} (${missingEnergyForPeriod})`
-                );
-                if (missingEnergyForPeriod > 0) {
-                    //TODO: handle splitting
-                    await this.certificateService.splitCertificate(
-                        certificate,
-                        missingEnergyForPeriod
-                    );
-
-                    return { split: true, agreement: null };
-                }
-            } else {
-                return { split: false, agreement };
-            }
-        }
-
-        this.logger.verbose('No matching agreement found for certificate ' + certificate.id);
-
-        return { split: false, agreement: null };
+        return this.strategy.execute(matchingAgreements);
     }
 
-    private async findMatchingDemand(
+    private async findMatchingDemands(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
-    ): Promise<{ split: boolean; demand: Demand.Entity }> {
+    ): Promise<MatchableDemand[]> {
         this.logger.debug(`Scanning ${demands.length} demands for a match.`);
 
-        const matchingDemands = await Promise.all(
+        return Promise.all(
             demands
                 .map(demand => new MatchableDemand(demand))
                 .filter(matchableDemand => matchableDemand.matchesCertificate(certificate))
         );
-
-        if (matchingDemands.length === 0) {
-            this.logger.info('Found no matching demands for certificate #' + certificate.id);
-
-            return { split: false, demand: null };
-        }
-
-        const offeredPower = certificate.powerInW;
-
-        for (const matchingDemand of matchingDemands) {
-            const { demand } = matchingDemand;
-            const requiredPower = demand.offChainProperties.targetWhPerPeriod;
-
-            if (offeredPower === requiredPower) {
-                return { split: false, demand };
-            }
-
-            this.logger.debug(
-                `Certificate ${certificate.id} too large (${offeredPower}) for demand ${matchingDemand.demand.id} (${requiredPower}). Splitting...`
-            );
-
-            if (requiredPower > 0) {
-                await this.certificateService.splitCertificate(certificate, requiredPower);
-
-                return { split: true, demand: null };
-            }
-        }
-
-        return { split: false, demand: null };
     }
 }
