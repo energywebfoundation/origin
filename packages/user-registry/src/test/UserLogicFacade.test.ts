@@ -86,7 +86,8 @@ describe('UserLogic Facade', () => {
             zip: '14789',
             city: 'Shelbyville',
             country: 'US',
-            state: 'FL'
+            state: 'FL',
+            notifications: false
         };
 
         conf = {
@@ -146,10 +147,35 @@ describe('UserLogic Facade', () => {
             email: 'john@doe.com',
             firstName: 'John',
             number: '101',
+            notifications: false,
             state: 'FL',
             street: 'Evergreen Terrace',
             surname: 'Doe',
             zip: '14789'
+        });
+    });
+
+    it('Should update offChainProperties correctly', async () => {
+        let user = await new User.Entity(user1, conf).sync();
+
+        assert.ownInclude(user.offChainProperties, {
+            city: 'Shelbyville'
+        });
+
+        conf.blockchainProperties.activeUser = {
+            address: user1,
+            privateKey: user1PK
+        };
+
+        const newProperties: User.IUserOffChainProperties = user.offChainProperties;
+        newProperties.city = 'New York';
+
+        await user.update(newProperties);
+
+        user = await user.sync();
+
+        assert.ownInclude(user.offChainProperties, {
+            city: 'New York'
         });
     });
 });

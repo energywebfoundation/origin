@@ -39,8 +39,8 @@ export interface IDemandOffChainProperties {
 }
 
 export interface IDemandLocation {
-    provinces: string[];
-    regions: string[];
+    provinces?: string[];
+    regions?: string[];
 }
 
 export enum DemandStatus {
@@ -65,7 +65,7 @@ export const createDemand = async (
     demandPropertiesOffChain: IDemandOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
-    const demand = new Entity(null, configuration);
+    const demand = new Entity(null, configuration)
 
     const offChainStorageProperties = demand.prepareEntityCreation(
         demandPropertiesOffChain,

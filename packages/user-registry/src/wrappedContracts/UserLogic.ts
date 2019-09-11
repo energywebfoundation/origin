@@ -97,6 +97,21 @@ export class UserLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async updateUser(
+        _user: string,
+        _propertiesDocumentHash: string,
+        _documentDBURL: string,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.updateUser(
+            _user,
+            _propertiesDocumentHash,
+            _documentDBURL
+        );
+
+        return this.send(method, txParams);
+    }
+
     async userContractLookup(txParams?: ISpecialTx) {
         return this.web3Contract.methods.userContractLookup().call(txParams);
     }

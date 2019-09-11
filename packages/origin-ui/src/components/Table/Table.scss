@@ -62,40 +62,6 @@
             }
         }
 
-        &.bare {
-            &-font {
-                tr td,
-                tr th {
-                    padding-left: 12px;
-                    padding-right: 12px;
-                }
-
-                thead {
-                    tr {
-                        th {
-                            font-size: 10.5px;
-                        }
-                    }
-                }
-
-                tbody {
-                    tr {
-                        td {
-                            font-size: 11px;
-                        }
-                    }
-                }
-            }
-
-            &-padding {
-                tr td,
-                tr th {
-                    padding-left: 7.5px;
-                    padding-right: 7.5px;
-                }
-            }
-        }
-
         thead {
             tr {
                 vertical-align: top;

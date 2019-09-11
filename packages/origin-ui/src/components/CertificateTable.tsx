@@ -1,18 +1,3 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
@@ -49,7 +34,8 @@ import { FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderF
 import {
     getInitialPaginatedLoaderFilteredSortedState,
     IPaginatedLoaderFilteredSortedState,
-    PaginatedLoaderFilteredSorted
+    PaginatedLoaderFilteredSorted,
+    SortPropertiesType
 } from './Table/PaginatedLoaderFilteredSorted';
 import TableUtils from './Table/TableUtils';
 
@@ -70,7 +56,7 @@ interface IStateProps {
 
 type Props = IOwnProps & IStateProps;
 
-export interface IEnrichedCertificateData {
+interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
     certificateOwner: User.Entity;
     producingAsset: ProducingAsset.Entity;
@@ -80,7 +66,7 @@ export interface IEnrichedCertificateData {
     assetTypeLabel: string;
 }
 
-export interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
+interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
     selectedState: SelectedState;
     selectedCertificates: Certificate.Entity[];
     detailViewForCertificateId: number;
@@ -102,7 +88,7 @@ export enum SelectedState {
     ForDemand
 }
 
-export enum OPERATIONS {
+enum OPERATIONS {
     PUBLISH_FOR_SALE = 'Publish For Sale',
     RETURN_TO_INBOX = 'Return to Inbox',
     CLAIM = 'Claim',
@@ -116,7 +102,7 @@ interface ICertificateTableColumn {
     displayValue?: (enrichedData: IEnrichedCertificateData) => string | number;
     right?: boolean;
     body?: boolean;
-    sortProperties?: any[];
+    sortProperties?: SortPropertiesType;
 }
 
 const DEFAULT_COLUMNS: ICertificateTableColumn[] = [

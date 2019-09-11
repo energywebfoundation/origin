@@ -1,7 +1,7 @@
 import mandrill from 'mandrill-api/mandrill';
 
 import { IEmailAdapter } from './IEmailAdapter';
-import { IEmail, IEmailResponse } from '../email.service';
+import { IEmail, IEmailResponse } from '../services/email.service';
 
 export class MandrillEmailAdapter implements IEmailAdapter {
     private mandrill;

@@ -10,6 +10,14 @@ export const getDemandsLink = (baseURL: string) => {
     return `${baseURL}/demands`;
 };
 
+export const getDemandEditLink = (baseURL: string, id: string) => {
+    return `${getDemandsLink(baseURL)}/edit/${id}`;
+};
+
+export const getDemandCloneLink = (baseURL: string, id: string) => {
+    return `${getDemandsLink(baseURL)}/clone/${id}`;
+};
+
 export const getCertificateDetailLink = (baseURL: string, certificateId: string | number) => {
     if (typeof certificateId === 'number') {
         certificateId = certificateId.toString();

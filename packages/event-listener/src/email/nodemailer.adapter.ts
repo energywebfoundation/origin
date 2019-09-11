@@ -1,6 +1,6 @@
 import * as nodemailer from 'nodemailer';
 
-import { IEmail, IEmailResponse } from '../email.service';
+import { IEmail, IEmailResponse } from '../services/email.service';
 import { IEmailAdapter } from './IEmailAdapter';
 
 export class NodemailerAdapter implements IEmailAdapter {

@@ -105,7 +105,6 @@ export class AdvancedTable extends React.Component<IProps, IState> {
                 />
                 <Table
                     operationClicked={operationClicked}
-                    classNames={['bare-font', 'bare-padding']}
                     header={header}
                     footer={footer}
                     actions={actions}
