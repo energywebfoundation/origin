@@ -48,6 +48,39 @@ export class EntityStore implements IEntityStore {
     }
 
     public async init() {
+        await this.syncExistingEvents();
+        await this.subscribeToEvents();
+    }
+
+    private async syncExistingEvents() {
+        this.logger.verbose('* Getting all active agreements');
+        const agreementListLength = await Agreement.getAgreementListLength(this.config);
+        for (let i = 0; i < agreementListLength; i++) {
+            this.registerAgreement(await new Agreement.Entity(i.toString(), this.config).sync());
+        }
+
+        this.logger.verbose('* Getting all active demands');
+        const demandListLength = await Demand.getDemandListLength(this.config);
+        for (let i = 0; i < demandListLength; i++) {
+            this.registerDemand(await new Demand.Entity(i.toString(), this.config).sync());
+        }
+
+        this.logger.verbose('* Getting all active supplies');
+        const supplyListLength = await Supply.getSupplyListLength(this.config);
+        for (let i = 0; i < supplyListLength; i++) {
+            this.registerSupply(await new Supply.Entity(i.toString(), this.config).sync());
+        }
+
+        this.logger.verbose('* Getting all certificates');
+        const certificateListLength = await Certificate.getCertificateListLength(this.config);
+        for (let i = 0; i < certificateListLength; i++) {
+            const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
+            
+            this.certificateEventEmitter.emit(this.NEW_CERTIFICATE_EVENT_NAME, newCertificate);
+        }
+    }
+
+    private async subscribeToEvents() {
         const currentBlockNumber = await this.config.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
             this.config.blockchainProperties.certificateLogicInstance,

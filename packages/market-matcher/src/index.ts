@@ -72,3 +72,6 @@ export async function startMatcher(config: IMatcherConfig) {
 
     logger.info('Matcher application started.');
 }
+
+export { MatchableDemand } from './MatchableDemand';
+export { MatchableAgreement } from './MatchableAgreement';

@@ -15,18 +15,18 @@ export class Matcher {
     private matcherAddress: string;
 
     constructor(
-        @inject("config") private config: Configuration.Entity,
-        @inject("entityStore") private entityStore: IEntityStore,
-        @inject("certificateService") private certificateService: CertificateService,
-        @inject("strategy") private strategy?: IStrategy,
-        @inject("logger") private logger?: Winston.Logger
+        @inject('config') private config: Configuration.Entity,
+        @inject('entityStore') private entityStore: IEntityStore,
+        @inject('certificateService') private certificateService: CertificateService,
+        @inject('strategy') private strategy?: IStrategy,
+        @inject('logger') private logger?: Winston.Logger
     ) {
         entityStore.registerCertificateListener(this.match.bind(this));
         this.matcherAddress = config.blockchainProperties.activeUser.address;
     }
 
     public async init() {
-      await this.entityStore.init();
+        await this.entityStore.init();
     }
 
     private async match(certificate: Certificate.Entity) {
@@ -134,7 +134,7 @@ export class Matcher {
         return { split: false, agreement: null };
     }
 
-    public async findMatchingDemand(
+    private async findMatchingDemand(
         certificate: Certificate.Entity,
         demands: Demand.Entity[]
     ): Promise<{ split: boolean; demand: Demand.Entity }> {
