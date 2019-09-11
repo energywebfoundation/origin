@@ -1,4 +1,4 @@
-import { IRECAssetService } from '../src/blockchain-facade/AssetTypeService';
+import { IRECAssetService } from '../blockchain-facade/AssetTypeService';
 import { assert } from 'chai';
 
 describe('AssetTypeService tests', () => {

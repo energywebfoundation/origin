@@ -16,7 +16,8 @@
     "test": "jest",
     "test-watch": "jest -u --watchAll",
     "precommit": "lint-staged",
-    "prettier": "prettier --write --config-precedence file-override './src/**/*'"
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "clean": "rm -rf db.json dist"
   },
   "dependencies": {
     "@date-io/moment": "1.3.9",

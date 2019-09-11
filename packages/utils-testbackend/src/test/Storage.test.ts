@@ -2,7 +2,7 @@ import axios from 'axios';
 import 'mocha';
 import { assert } from 'chai';
 
-import { startAPI } from '../src/api';
+import { startAPI } from '../api';
 
 describe('Storage tests', async () => {
     let apiServer;
