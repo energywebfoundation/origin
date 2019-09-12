@@ -184,9 +184,10 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     private async checkDemands(certificate: Certificate.Entity): Promise<void> {
-        const matchedDemands: Demand.Entity[] = await MatcherLogic.findMatchingDemandsForCertificate(
-            certificate,
-            this.conf
+        const demands = await Demand.getAllDemands(this.conf);
+
+        const matchedDemands = demands.filter(demand =>
+            new MatchableDemand(demand).matchesCertificate(certificate)
         );
 
         if (matchedDemands.length > 0) {
