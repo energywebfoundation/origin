@@ -14,7 +14,7 @@
     "version": "1.1.0",
     "main": "dist/js/src/index.js",
     "scripts": {
-        "build": "yarn build-ts",
+        "build": "yarn clean && yarn build-ts",
         "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "debug": "node --inspect-brk dist/js/src/main.js",
         "start": "node dist/js/src/main.js",
