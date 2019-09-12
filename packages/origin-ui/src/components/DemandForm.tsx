@@ -363,11 +363,6 @@ class DemandFormClass extends React.Component<Props, IState> {
 
         const { currencies, provincesOptions } = this;
 
-        const minDate = moment()
-            .hour(0)
-            .minutes(0)
-            .seconds(0);
-
         let initialFormValues = null;
 
         if (edit || clone) {
@@ -488,7 +483,6 @@ class DemandFormClass extends React.Component<Props, IState> {
                                         <Field
                                             name="startDate"
                                             label="Start date"
-                                            minDate={minDate}
                                             className="mt-3"
                                             inputVariant="filled"
                                             variant="inline"
@@ -499,7 +493,6 @@ class DemandFormClass extends React.Component<Props, IState> {
                                         <Field
                                             name="activeUntilDate"
                                             label="Active until date"
-                                            minDate={minDate}
                                             className="mt-3"
                                             inputVariant="filled"
                                             variant="inline"
@@ -587,7 +580,6 @@ class DemandFormClass extends React.Component<Props, IState> {
                                         <Field
                                             name="endDate"
                                             label="End date"
-                                            minDate={minDate}
                                             className="mt-3"
                                             inputVariant="filled"
                                             variant="inline"
