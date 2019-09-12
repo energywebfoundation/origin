@@ -18,8 +18,11 @@ export type NewCertificateListener = (certificate: Certificate.Entity) => Promis
 @singleton()
 export class EntityStore implements IEntityStore {
     private demands: Map<string, Demand.Entity> = new Map<string, Demand.Entity>();
+
     private supplies: Map<string, Supply.Entity> = new Map<string, Supply.Entity>();
+
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
+
     private matcherAddress: string;
 
     private certificateListeners: NewCertificateListener[] = [];
@@ -99,13 +102,13 @@ export class EntityStore implements IEntityStore {
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             this.logger.verbose(
-                'Event: LogCreatedCertificate certificate #' + event.returnValues._certificateId
+                `Event: LogCreatedCertificate certificate #${event.returnValues._certificateId}`
             );
             const newCertificate = await new Certificate.Entity(
                 event.returnValues._certificateId,
                 this.config
             ).sync();
-            
+
             await this.triggerListeners(newCertificate);
         });
 
@@ -117,7 +120,7 @@ export class EntityStore implements IEntityStore {
             );
             const firstChild = await new Certificate.Entity(_childOne, this.config).sync();
             const secondChild = await new Certificate.Entity(_childTwo, this.config).sync();
-            
+
             await this.triggerListeners(firstChild);
             await this.triggerListeners(secondChild);
         });
@@ -129,7 +132,7 @@ export class EntityStore implements IEntityStore {
 
         marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
             this.logger.verbose(
-                '\n* Event: createdNewDemand demand: ' + event.returnValues._demandId
+                `\n* Event: createdNewDemand demand: ${event.returnValues._demandId}`
             );
             const newDemand = await new Demand.Entity(
                 event.returnValues._demandId,
@@ -141,7 +144,7 @@ export class EntityStore implements IEntityStore {
 
         marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
             this.logger.verbose(
-                '\n* Event: createdNewSupply supply: ' + event.returnValues._supplyId
+                `\n* Event: createdNewSupply supply: ${event.returnValues._supplyId}`
             );
             const newSupply = await new Supply.Entity(
                 event.returnValues._supplyId,
@@ -176,7 +179,7 @@ export class EntityStore implements IEntityStore {
         }
 
         this.demands.set(demand.id, demand);
-        this.logger.verbose('Registered new demand #' + demand.id);
+        this.logger.verbose(`Registered new demand #${demand.id}`);
     }
 
     private registerSupply(supply: Supply.Entity) {
@@ -185,7 +188,7 @@ export class EntityStore implements IEntityStore {
         }
 
         this.supplies.set(supply.id, supply);
-        this.logger.verbose('Registered new supply #' + supply.id);
+        this.logger.verbose(`Registered new supply #${supply.id}`);
     }
 
     private registerAgreement(agreement: Agreement.Entity) {
@@ -194,7 +197,7 @@ export class EntityStore implements IEntityStore {
         );
 
         if (!allowed) {
-            this.logger.verbose('This instance is not an matcher for agreement #' + agreement.id);
+            this.logger.verbose(`This instance is not an matcher for agreement #${agreement.id}`);
         }
 
         if (this.agreements.has(agreement.id)) {
@@ -202,6 +205,6 @@ export class EntityStore implements IEntityStore {
         }
 
         this.agreements.set(agreement.id, agreement);
-        this.logger.verbose('Registered new agreement #' + agreement.id);
+        this.logger.verbose(`Registered new agreement #${agreement.id}`);
     }
 }

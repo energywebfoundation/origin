@@ -5,7 +5,6 @@ import { autoInjectable, inject } from 'tsyringe';
 import * as Winston from 'winston';
 
 import { IEntityStore } from './EntityStore';
-import { Utils } from './Utils';
 
 @autoInjectable()
 export class CertificateService {
@@ -22,22 +21,22 @@ export class CertificateService {
         );
         await certificate.transferFrom(demand.demandOwner);
 
-        //TODO: update the the agreement current energy needs
+        // TODO: update the the agreement current energy needs
 
-        const currentPeriod = await Utils.getCurrentPeriod(
-            agreement.offChainProperties.start,
-            agreement.offChainProperties.timeframe,
-            this.config
-        );
+        // const currentPeriod = await Utils.getCurrentPeriod(
+        //     agreement.offChainProperties.start,
+        //     agreement.offChainProperties.timeframe,
+        //     this.config
+        // );
 
-        if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
-            agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
-            agreement.matcherOffChainProperties.currentWh = certificate.powerInW;
-        } else {
-            agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
-        }
+        // if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
+        //     agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
+        //     agreement.matcherOffChainProperties.currentWh = certificate.powerInW;
+        // } else {
+        //     agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
+        // }
 
-        this.logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
+        // this.logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
     }
 
     public async splitCertificate(

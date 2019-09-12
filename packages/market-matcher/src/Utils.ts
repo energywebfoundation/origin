@@ -19,7 +19,7 @@ export class Utils {
             case TimeFrame.hourly:
                 return Math.floor(timeDifference / (24 * 60 * 60));
             default:
-                throw new Error('Unknown time frame' + timeFrame);
+                throw new Error(`Unknown time frame${timeFrame}`);
         }
     }
 }

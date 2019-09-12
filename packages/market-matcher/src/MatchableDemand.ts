@@ -1,7 +1,7 @@
-import { Certificate } from '@energyweb/origin';
-import { Currency, Configuration, IRECAssetService } from '@energyweb/utils-general';
-import { Demand, Supply } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
+import { Demand, Supply } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
+import { Currency, IRECAssetService } from '@energyweb/utils-general';
 
 export enum MatchingErrorReason {
     NON_ACTIVE_DEMAND,
@@ -22,7 +22,7 @@ export class MatchableDemand {
     ) {
         const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
 
-        //TODO: move to certificate entity code
+        // TODO: move to certificate entity code
         const certCurrency: Currency = isOffChainSettlement
             ? certificate.offChainSettlementOptions.currency
             : certificate.acceptedToken;
@@ -48,7 +48,7 @@ export class MatchableDemand {
             matchingErrors.push(MatchingErrorReason.TOO_EXPENSIVE);
         }
 
-        if (certCurrency != offChainProperties.currency) {
+        if (certCurrency !== offChainProperties.currency) {
             matchingErrors.push(MatchingErrorReason.NON_MATCHING_CURRENCY);
         }
 

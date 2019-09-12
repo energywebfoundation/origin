@@ -43,7 +43,9 @@ describe('MatchableDemand tests', () => {
         const producingAssetOffChainProperties = Substitute.for<
             ProducingAsset.IOffChainProperties
         >();
-        producingAssetOffChainProperties.assetType.returns(options.producingAssetAssetType || assetType);
+        producingAssetOffChainProperties.assetType.returns(
+            options.producingAssetAssetType || assetType
+        );
 
         const producingAsset = Substitute.for<ProducingAsset.IProducingAsset>();
         producingAsset.offChainProperties.returns(producingAssetOffChainProperties);
@@ -113,14 +115,14 @@ describe('MatchableDemand tests', () => {
     });
 
     it('should not match demand with not compatible asset type', () => {
-      const { demand, certificate, producingAsset } = createMatchingMocks({
-          producingAssetAssetType: 'Wind'
-      });
+        const { demand, certificate, producingAsset } = createMatchingMocks({
+            producingAssetAssetType: 'Wind'
+        });
 
-      const matchableDemand = new MatchableDemand(demand);
-      const { result, reason } = matchableDemand.matchesCertificate(certificate, producingAsset);
+        const matchableDemand = new MatchableDemand(demand);
+        const { result, reason } = matchableDemand.matchesCertificate(certificate, producingAsset);
 
-      assert.isFalse(result);
-      assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
-  });
+        assert.isFalse(result);
+        assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
+    });
 });

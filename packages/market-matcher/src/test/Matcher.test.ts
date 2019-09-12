@@ -35,10 +35,10 @@ const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a57
 describe('Test StrategyBasedMatcher', async () => {
     const web3 = new Web3(PROVIDER_URL);
 
-    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    console.log('acc-deployment: ' + accountDeployment);
+    console.log(`acc-deployment: ${accountDeployment}`);
     let conf: Configuration.Entity;
     let userLogic: UserLogic;
     let assetProducingRegistry: AssetProducingRegistryLogic;

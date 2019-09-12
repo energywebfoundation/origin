@@ -2,14 +2,14 @@ import * as Winston from 'winston';
 import { inject } from 'tsyringe';
 
 import { Configuration } from '@energyweb/utils-general';
-import { IEntityStore } from './EntityStore';
 import { Certificate } from '@energyweb/origin';
-import { CertificateService } from './CertificateService';
 import { Agreement, Demand } from '@energyweb/market';
+import { ProducingAsset } from '@energyweb/asset-registry';
+import { IEntityStore } from './EntityStore';
+import { CertificateService } from './CertificateService';
 import { MatchableAgreement } from './MatchableAgreement';
 import { IStrategy } from './strategy/IStrategy';
 import { MatchableDemand } from './MatchableDemand';
-import { ProducingAsset } from '@energyweb/asset-registry';
 
 export class Matcher {
     private matcherAddress: string;
@@ -36,17 +36,18 @@ export class Matcher {
 
         if (!isEscrowAccount) {
             this.logger.verbose(
-                'This instance is not an escrow for certificate #' + certificate.id
+                `This instance is not an escrow for certificate #${certificate.id}`
             );
             return false;
         }
 
-        this.logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+        this.logger.verbose(`This instance is an escrow for certificate #${certificate.id}`);
 
-        return (
+        const matchingResult =
             (await this.matchWithAgreements(certificate)) ||
-            (await this.matchWithDemands(certificate))
-        );
+            (await this.matchWithDemands(certificate));
+
+        return matchingResult;
     }
 
     private async matchWithAgreements(certificate: Certificate.Entity) {
@@ -66,10 +67,8 @@ export class Matcher {
             if (certificate.powerInW === missingEnergyForPeriod) {
                 await this.certificateService.matchAgreement(certificate, agreement);
                 return true;
-            } else if (
-                missingEnergyForPeriod > 0 &&
-                certificate.powerInW > missingEnergyForPeriod
-            ) {
+            }
+            if (missingEnergyForPeriod > 0 && certificate.powerInW > missingEnergyForPeriod) {
                 await this.certificateService.splitCertificate(certificate, missingEnergyForPeriod);
                 return true;
             }
@@ -90,7 +89,8 @@ export class Matcher {
             if (certificate.powerInW === requiredPower) {
                 await this.certificateService.matchDemand(certificate, demand);
                 return true;
-            } else if (requiredPower > 0 && certificate.powerInW > requiredPower) {
+            }
+            if (requiredPower > 0 && certificate.powerInW > requiredPower) {
                 await this.certificateService.splitCertificate(certificate, requiredPower);
                 return true;
             }
@@ -112,7 +112,7 @@ export class Matcher {
         );
 
         if (matchingAgreements.length === 0) {
-            this.logger.info('Found no matching agreement for certificate #' + certificate.id);
+            this.logger.info(`Found no matching agreement for certificate #${certificate.id}`);
 
             return [];
         }
