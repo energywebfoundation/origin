@@ -3,6 +3,7 @@
     "compilerOptions": {
         "types": ["node", "winston", "mocha"],
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": true
     }
 }

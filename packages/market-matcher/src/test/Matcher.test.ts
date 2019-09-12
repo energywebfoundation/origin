@@ -45,12 +45,12 @@ describe('Test StrategyBasedMatcher', async () => {
     let marketLogic: MarketLogic;
     let certificateLogic: CertificateLogic;
 
-    let userContractLookupAddr;
-    let assetContractLookupAddr;
-    let originContractLookupAddr;
-    let marketContractLookupAddr;
+    let userContractLookupAddr: string;
+    let assetContractLookupAddr: string;
+    let originContractLookupAddr: string;
+    let marketContractLookupAddr: string;
 
-    let asset;
+    let asset: ProducingAsset.Entity;
 
     const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -74,6 +74,8 @@ describe('Test StrategyBasedMatcher', async () => {
             privateKey: privateKeyDeployment
         }
     };
+
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     it('should deploy user-registry contracts', async () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
@@ -160,7 +162,7 @@ describe('Test StrategyBasedMatcher', async () => {
             (deployedContracts as any).CertificateLogic
         );
         originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
-        
+
         matcherConfig.originContractLookupAddress = originContractLookupAddr;
     });
 
@@ -172,7 +174,7 @@ describe('Test StrategyBasedMatcher', async () => {
         );
         marketLogic = new MarketLogic(web3, (deployedContracts as any).MarketLogic);
         marketContractLookupAddr = (deployedContracts as any).MarketContractLookup;
-        
+
         matcherConfig.marketContractLookupAddress = marketContractLookupAddr;
     });
 
@@ -291,7 +293,6 @@ describe('Test StrategyBasedMatcher', async () => {
     it('starts the matcher', async () => {
         await startMatcher(matcherConfig);
 
-        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         await sleep(5000);
     }).timeout(6000);
 
@@ -357,7 +358,6 @@ describe('Test StrategyBasedMatcher', async () => {
                 privateKey: traderPK
             };
 
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
             await sleep(10000);
 
             const certificate = await new Certificate.Entity('0', conf).sync();
@@ -447,7 +447,6 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('a certificate has been split', async () => {
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
             await sleep(10000);
 
             assert.equal(await Certificate.getCertificateListLength(conf), 4);

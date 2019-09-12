@@ -6,7 +6,8 @@
         "outDir": "./dist/js",
         "types": ["mocha"],
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": true
     },
     "include": ["./src/**/*"],
     "references": [

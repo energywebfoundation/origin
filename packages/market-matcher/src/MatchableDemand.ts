@@ -10,8 +10,8 @@ export class MatchableDemand {
   public matchesCertificate(certificate: Certificate.Entity) {
     const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
 
-    const certCurrency: Currency | string = isOffChainSettlement
-        ? Currency[certificate.offChainSettlementOptions.currency]
+    const certCurrency: Currency = isOffChainSettlement
+        ? certificate.offChainSettlementOptions.currency
         : certificate.acceptedToken;
     const certPricePerMwh: number =
         ((isOffChainSettlement
@@ -26,7 +26,7 @@ export class MatchableDemand {
         this.isActive &&
         offChainProperties.targetWhPerPeriod <= Number(certificate.powerInW) &&
         certPricePerMwh <= offChainProperties.maxPricePerMwh &&
-        certCurrency === Currency[offChainProperties.currency.toString()]
+        certCurrency == offChainProperties.currency
     );
   }
 

@@ -127,7 +127,7 @@ export class EntityStore implements IEntityStore {
             currentBlockNumber
         );
 
-        marketContractEventHandler.onEvent('createdNewDemand', async event => {
+        marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
             this.logger.verbose(
                 '\n* Event: createdNewDemand demand: ' + event.returnValues._demandId
             );
@@ -139,7 +139,7 @@ export class EntityStore implements IEntityStore {
             this.registerDemand(newDemand);
         });
 
-        marketContractEventHandler.onEvent('createdNewSupply', async event => {
+        marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
             this.logger.verbose(
                 '\n* Event: createdNewSupply supply: ' + event.returnValues._supplyId
             );
@@ -151,7 +151,7 @@ export class EntityStore implements IEntityStore {
             this.registerSupply(newSupply);
         });
 
-        marketContractEventHandler.onEvent('LogAgreementFullySigned', async event => {
+        marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
             this.logger.verbose(
                 `\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
             );
