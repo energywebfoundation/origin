@@ -14,20 +14,15 @@
     "version": "1.1.0",
     "main": "dist/js/src/index.js",
     "scripts": {
-        "build": "yarn generate-schemas && yarn build-ts",
+        "build": "yarn clean && yarn build-ts",
         "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "debug": "node --inspect-brk dist/js/src/main.js",
-        "generate-conf-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IMatcherConf",
-        "generate-rule-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json IRuleConf",
-        "generate-schemas": "./scripts/buildSchemas.js",
-        "generate-sim-flow-schema": "typescript-json-schema --required --ignoreErrors tsconfig.json ISimulationFlow",
         "start": "node dist/js/src/main.js",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20",
         "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && mocha -r ts-node/register src/test/*.test.ts --exit\"",
-        "clean": "rm -rf build dist schemas db.json",
-        "build:static": "yarn generate-schemas"
+        "clean": "rm -rf build dist db.json"
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
@@ -36,13 +31,17 @@
         "@energyweb/origin": "1.1.0",
         "@energyweb/user-registry": "1.1.0",
         "@energyweb/utils-general": "1.1.0",
+        "dotenv": "^8.1.0",
         "jsonschema": "1.2.4",
         "log-symbols": "2.2.0",
+        "reflect-metadata": "^0.1.13",
+        "tsyringe": "^3.4.0",
         "web3": "1.0.0-beta.37",
         "winston": "3.2.1"
     },
     "devDependencies": {
         "@energyweb/utils-testbackend": "1.1.0",
+        "@types/dotenv": "^6.1.1",
         "@types/log-symbols": "2.0.0",
         "@types/web3": "1.0.14",
         "fs-extra": "8.0.1",

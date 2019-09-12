@@ -4,3 +4,4 @@ schemas
 build
 dist
 db.json
+.env

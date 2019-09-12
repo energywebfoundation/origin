@@ -1,5 +1,3 @@
-import { describe, it } from 'mocha';
-
 import {
     AssetProducingRegistryLogic,
     migrateAssetRegistryContracts,
@@ -23,18 +21,12 @@ import {
     Role,
     UserLogic
 } from '@energyweb/user-registry';
-import {
-    Compliance,
-    Configuration,
-    Currency,
-    TimeFrame
-} from '@energyweb/utils-general';
+import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { startMatcher } from '..';
+import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
-import * as SchemaDefs from '../schema-defs/MatcherConf';
 
 const PROVIDER_URL = 'http://localhost:8545';
 const BACKEND_URL = 'http://localhost:3030';
@@ -53,12 +45,12 @@ describe('Test StrategyBasedMatcher', async () => {
     let marketLogic: MarketLogic;
     let certificateLogic: CertificateLogic;
 
-    let userContractLookupAddr;
-    let assetContractLookupAddr;
-    let originContractLookupAddr;
-    let marketContractLookupAddr;
+    let userContractLookupAddr: string;
+    let assetContractLookupAddr: string;
+    let originContractLookupAddr: string;
+    let marketContractLookupAddr: string;
 
-    let asset;
+    let asset: ProducingAsset.Entity;
 
     const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -72,22 +64,18 @@ describe('Test StrategyBasedMatcher', async () => {
     const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    const matcherConf: SchemaDefs.IMatcherConf = {
-        dataSource: {
-            type: 'BLOCKCHAIN' as SchemaDefs.BlockchainDataSourceType,
-            web3Url: PROVIDER_URL,
-            offChainDataSourceUrl: BACKEND_URL,
-            marketContractLookupAddress: '',
-            originContractLookupAddress: '',
-            matcherAccount: {
-                address: accountDeployment,
-                privateKey: privateKeyDeployment
-            }
-        },
-        matcherSpecification: {
-            type: SchemaDefs.MatcherType.Strategy
+    const matcherConfig: IMatcherConfig = {
+        web3Url: PROVIDER_URL,
+        offChainDataSourceUrl: BACKEND_URL,
+        marketContractLookupAddress: '',
+        originContractLookupAddress: '',
+        matcherAccount: {
+            address: accountDeployment,
+            privateKey: privateKeyDeployment
         }
     };
+
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     it('should deploy user-registry contracts', async () => {
         const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
@@ -174,7 +162,8 @@ describe('Test StrategyBasedMatcher', async () => {
             (deployedContracts as any).CertificateLogic
         );
         originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
-        (matcherConf.dataSource as SchemaDefs.IBlockchainDataSource).originContractLookupAddress = originContractLookupAddr;
+
+        matcherConfig.originContractLookupAddress = originContractLookupAddr;
     });
 
     it('should deploy market-registry contracts', async () => {
@@ -185,7 +174,8 @@ describe('Test StrategyBasedMatcher', async () => {
         );
         marketLogic = new MarketLogic(web3, (deployedContracts as any).MarketLogic);
         marketContractLookupAddr = (deployedContracts as any).MarketContractLookup;
-        (matcherConf.dataSource as SchemaDefs.IBlockchainDataSource).marketContractLookupAddress = marketContractLookupAddr;
+
+        matcherConfig.marketContractLookupAddress = marketContractLookupAddr;
     });
 
     it('should create a demand', async () => {
@@ -202,7 +192,7 @@ describe('Test StrategyBasedMatcher', async () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030'
+                baseUrl: BACKEND_URL
             },
             logger
         };
@@ -301,9 +291,8 @@ describe('Test StrategyBasedMatcher', async () => {
     });
 
     it('starts the matcher', async () => {
-        await startMatcher(matcherConf);
+        await startMatcher(matcherConfig);
 
-        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         await sleep(5000);
     }).timeout(6000);
 
@@ -369,7 +358,6 @@ describe('Test StrategyBasedMatcher', async () => {
                 privateKey: traderPK
             };
 
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
             await sleep(10000);
 
             const certificate = await new Certificate.Entity('0', conf).sync();
@@ -459,7 +447,6 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('a certificate has been split', async () => {
-            const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
             await sleep(10000);
 
             assert.equal(await Certificate.getCertificateListLength(conf), 4);

@@ -22,7 +22,7 @@ import { MarketLogic } from '../wrappedContracts/MarketLogic';
 export interface IDemandOffChainProperties {
     timeFrame: GeneralLib.TimeFrame;
     maxPricePerMwh: number;
-    currency: GeneralLib.Currency | string;
+    currency: GeneralLib.Currency;
     producingAsset?: string;
     consumingAsset?: string;
     location?: IDemandLocation;

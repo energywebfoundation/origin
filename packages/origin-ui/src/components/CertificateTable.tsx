@@ -1,6 +1,6 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand } from '@energyweb/market';
-import { MatcherLogic } from '@energyweb/market-matcher';
+import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate, TradableEntity } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
@@ -343,10 +343,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async initMatchingCertificates(demand: Demand.Entity) {
-        const matchedCertificates: Certificate.Entity[] = await MatcherLogic.findMatchingCertificatesForDemand(
-            demand,
-            this.props.configuration,
-            this.props.certificates
+        const matchableDemand = new MatchableDemand(demand);
+        const matchedCertificates = this.props.certificates.filter(certificate =>
+            matchableDemand.matchesCertificate(certificate)
         );
 
         this.setState({ matchedCertificates });
