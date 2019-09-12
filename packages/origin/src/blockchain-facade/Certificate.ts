@@ -36,6 +36,10 @@ export interface ICertificateSpecific extends TradableEntity.IOnChainProperties 
     ownerChangerCounter: number;
 }
 
+export interface ICertificate extends ICertificateSpecific {
+
+}
+
 export const getCertificateListLength = async (
     configuration: Configuration.Entity
 ): Promise<number> => {
@@ -125,7 +129,7 @@ export const getAllCertificateEvents = async (
     return returnEvents;
 };
 
-export class Entity extends TradableEntity.Entity implements ICertificateSpecific {
+export class Entity extends TradableEntity.Entity implements ICertificate {
     status: number;
     dataLog: string;
     creationTime: number;

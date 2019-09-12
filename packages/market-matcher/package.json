@@ -41,6 +41,7 @@
     },
     "devDependencies": {
         "@energyweb/utils-testbackend": "1.1.0",
+        "@fluffy-spoon/substitute": "^1.89.0",
         "@types/dotenv": "^6.1.1",
         "@types/log-symbols": "2.0.0",
         "@types/web3": "1.0.14",

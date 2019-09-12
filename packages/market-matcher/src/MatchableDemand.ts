@@ -1,49 +1,83 @@
-import { Certificate } from "@energyweb/origin";
-import { Currency } from "@energyweb/utils-general";
-import { Demand, Supply } from "@energyweb/market";
+import { Certificate } from '@energyweb/origin';
+import { Currency, Configuration, IRECAssetService } from '@energyweb/utils-general';
+import { Demand, Supply } from '@energyweb/market';
+import { ProducingAsset } from '@energyweb/asset-registry';
+
+export enum MatchingErrorReason {
+    NON_ACTIVE_DEMAND,
+    NOT_ENOUGH_ENERGY,
+    TOO_EXPENSIVE,
+    NON_MATCHING_CURRENCY,
+    NON_MATCHING_ASSET_TYPE
+}
 
 export class MatchableDemand {
-  constructor(public demand: Demand.Entity) {
+    private assetService = new IRECAssetService();
 
-  }
+    constructor(public demand: Demand.IDemand) {}
 
-  public matchesCertificate(certificate: Certificate.Entity) {
-    const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
+    public matchesCertificate(
+        certificate: Certificate.ICertificate,
+        producingAsset: ProducingAsset.IProducingAsset
+    ) {
+        const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
 
-    const certCurrency: Currency = isOffChainSettlement
-        ? certificate.offChainSettlementOptions.currency
-        : certificate.acceptedToken;
-    const certPricePerMwh: number =
-        ((isOffChainSettlement
-            ? certificate.offChainSettlementOptions.price
-            : certificate.onChainDirectPurchasePrice) /
-            certificate.powerInW) *
-        1e6;
+        //TODO: move to certificate entity code
+        const certCurrency: Currency = isOffChainSettlement
+            ? certificate.offChainSettlementOptions.currency
+            : certificate.acceptedToken;
+        const certPricePerMwh: number =
+            ((isOffChainSettlement
+                ? certificate.offChainSettlementOptions.price
+                : certificate.onChainDirectPurchasePrice) /
+                certificate.powerInW) *
+            1e6;
 
-    const { offChainProperties } = this.demand;
+        const { offChainProperties } = this.demand;
+        const matchingErrors: MatchingErrorReason[] = [];
 
-    return (
-        this.isActive &&
-        offChainProperties.targetWhPerPeriod <= Number(certificate.powerInW) &&
-        certPricePerMwh <= offChainProperties.maxPricePerMwh &&
-        certCurrency == offChainProperties.currency
-    );
-  }
+        if (!this.isActive) {
+            matchingErrors.push(MatchingErrorReason.NON_ACTIVE_DEMAND);
+        }
 
-  public matchesSupply(supply: Supply.Entity) {
-    const supplyPricePerMwh =
-        (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
+        if (offChainProperties.targetWhPerPeriod > Number(certificate.powerInW)) {
+            matchingErrors.push(MatchingErrorReason.NOT_ENOUGH_ENERGY);
+        }
 
-    const { offChainProperties } = this.demand;
+        if (certPricePerMwh > offChainProperties.maxPricePerMwh) {
+            matchingErrors.push(MatchingErrorReason.TOO_EXPENSIVE);
+        }
 
-    return (
-        this.isActive &&
-        offChainProperties.targetWhPerPeriod <= supply.offChainProperties.availableWh &&
-        supplyPricePerMwh <= offChainProperties.maxPricePerMwh
-    );
-  }
+        if (certCurrency != offChainProperties.currency) {
+            matchingErrors.push(MatchingErrorReason.NON_MATCHING_CURRENCY);
+        }
 
-  private get isActive() {
-    return this.demand.status === Demand.DemandStatus.ACTIVE;
-  }
+        if (
+            !this.assetService.includesAssetType(
+                producingAsset.offChainProperties.assetType,
+                offChainProperties.assetType
+            )
+        ) {
+            matchingErrors.push(MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
+        }
+
+        return { result: matchingErrors.length === 0, reason: matchingErrors };
+    }
+
+    public matchesSupply(supply: Supply.Entity) {
+        const supplyPricePerMwh =
+            (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
+
+        const { offChainProperties } = this.demand;
+
+        return (
+            this.isActive &&
+            offChainProperties.targetWhPerPeriod <= supply.offChainProperties.availableWh &&
+            supplyPricePerMwh <= offChainProperties.maxPricePerMwh
+        );
+    }
+
+    private get isActive() {
+        return this.demand.status === Demand.DemandStatus.ACTIVE;
+    }
 }

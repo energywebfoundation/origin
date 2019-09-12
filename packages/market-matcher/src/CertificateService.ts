@@ -22,6 +22,8 @@ export class CertificateService {
         );
         await certificate.transferFrom(demand.demandOwner);
 
+        //TODO: update the the agreement current energy needs
+
         const currentPeriod = await Utils.getCurrentPeriod(
             agreement.offChainProperties.start,
             agreement.offChainProperties.timeframe,
@@ -47,7 +49,7 @@ export class CertificateService {
         await certificate.splitCertificate(requiredEnergy);
     }
 
-    public async matchDemand(certificate: Certificate.Entity, demand: Demand.Entity) {
+    public async matchDemand(certificate: Certificate.Entity, demand: Demand.IDemand) {
         this.logger.info(`Matched certificate #${certificate.id} to demand #${demand.id}`);
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`

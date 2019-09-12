@@ -1,5 +1,5 @@
 import * as Winston from 'winston';
-import { autoInjectable, inject } from 'tsyringe';
+import { inject } from 'tsyringe';
 
 import { Configuration } from '@energyweb/utils-general';
 import { IEntityStore } from './EntityStore';
@@ -9,8 +9,8 @@ import { Agreement, Demand } from '@energyweb/market';
 import { MatchableAgreement } from './MatchableAgreement';
 import { IStrategy } from './strategy/IStrategy';
 import { MatchableDemand } from './MatchableDemand';
+import { ProducingAsset } from '@energyweb/asset-registry';
 
-@autoInjectable()
 export class Matcher {
     private matcherAddress: string;
 
@@ -18,8 +18,8 @@ export class Matcher {
         @inject('config') private config: Configuration.Entity,
         @inject('entityStore') private entityStore: IEntityStore,
         @inject('certificateService') private certificateService: CertificateService,
-        @inject('strategy') private strategy?: IStrategy,
-        @inject('logger') private logger?: Winston.Logger
+        @inject('strategy') private strategy: IStrategy,
+        @inject('logger') private logger: Winston.Logger
     ) {
         entityStore.registerCertificateListener(this.match.bind(this));
         this.matcherAddress = config.blockchainProperties.activeUser.address;
@@ -125,11 +125,16 @@ export class Matcher {
         demands: Demand.Entity[]
     ): Promise<MatchableDemand[]> {
         this.logger.debug(`Scanning ${demands.length} demands for a match.`);
+        const producingAsset = await new ProducingAsset.Entity(
+            certificate.assetId.toString(),
+            this.config
+        ).sync();
 
-        return Promise.all(
-            demands
-                .map(demand => new MatchableDemand(demand))
-                .filter(matchableDemand => matchableDemand.matchesCertificate(certificate))
-        );
+        return demands
+            .map(demand => new MatchableDemand(demand))
+            .filter(matchableDemand => {
+                const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+                return result;
+            });
     }
 }

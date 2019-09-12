@@ -25,8 +25,8 @@ export class EntityStore implements IEntityStore {
     private certificateListeners: NewCertificateListener[] = [];
 
     constructor(
-        @inject('config') private config?: Configuration.Entity,
-        @inject('logger') private logger?: Winston.Logger
+        @inject('config') private config: Configuration.Entity,
+        @inject('logger') private logger: Winston.Logger
     ) {
         this.matcherAddress = config.blockchainProperties.activeUser.address.toLowerCase();
     }
