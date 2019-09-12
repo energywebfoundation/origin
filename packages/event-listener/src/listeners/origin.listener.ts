@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import { MatcherLogic } from '@energyweb/market-matcher';
+import { MatchableDemand } from '@energyweb/market-matcher';
 import { Demand } from '@energyweb/market';
 
 import { initOriginConfig } from '../config/origin.config';
