@@ -3,7 +3,7 @@ import { injectable, inject } from 'tsyringe';
 
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
-import { Agreement, Demand } from '@energyweb/market';
+import { Agreement, Demand, Supply } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { IEntityStore } from './EntityStore';
 import { CertificateService } from './CertificateService';
@@ -59,7 +59,10 @@ export class Matcher {
         for (const matchingAgreement of matchingAgreements) {
             const { agreement } = matchingAgreement;
             const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
+            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(
+                demand,
+                this.config
+            );
 
             this.logger.debug(
                 `Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`
@@ -106,11 +109,16 @@ export class Matcher {
     ): Promise<MatchableAgreement[]> {
         this.logger.debug(`Scanning ${agreements.length} agreements for a match.`);
 
-        const matchingAgreements = await Promise.all(
-            agreements
-                .map(a => new MatchableAgreement(a, this.config))
-                .filter(a => a.matchesCertificate(certificate))
-        );
+        const matchingAgreements = agreements
+            .map(agreement => new MatchableAgreement(agreement))
+            .filter(async matchableAgreement => {
+                const supply = await new Supply.Entity(
+                    matchableAgreement.agreement.supplyId.toString(),
+                    this.config
+                ).sync();
+                const { result } = matchableAgreement.matchesCertificate(certificate, supply);
+                return result;
+            });
 
         if (matchingAgreements.length === 0) {
             this.logger.info(`Found no matching agreement for certificate #${certificate.id}`);

@@ -14,7 +14,7 @@ export class CertificateService {
         @inject('logger') private logger: Winston.Logger
     ) {}
 
-    public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.Entity) {
+    public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.IAgreement) {
         const demand = this.entityStore.getDemandById(agreement.demandId.toString());
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`

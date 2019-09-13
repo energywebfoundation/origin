@@ -3,14 +3,7 @@ import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Currency, IRECAssetService } from '@energyweb/utils-general';
 import { Validator } from './Validator';
-
-export enum MatchingErrorReason {
-    NON_ACTIVE_DEMAND,
-    NOT_ENOUGH_ENERGY,
-    TOO_EXPENSIVE,
-    NON_MATCHING_CURRENCY,
-    NON_MATCHING_ASSET_TYPE
-}
+import { MatchingErrorReason } from './MatchingErrorReason';
 
 export class MatchableDemand {
     private assetService = new IRECAssetService();

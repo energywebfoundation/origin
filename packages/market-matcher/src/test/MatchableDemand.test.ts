@@ -5,7 +5,8 @@ import { Currency } from '@energyweb/utils-general';
 import { Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 
-import { MatchableDemand, MatchingErrorReason } from '../MatchableDemand';
+import { MatchableDemand } from '../MatchableDemand';
+import { MatchingErrorReason } from '../MatchingErrorReason';
 
 interface IMockOptions {
     status?: Demand.DemandStatus;
