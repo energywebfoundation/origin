@@ -74,24 +74,34 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
     }
 
     async sync(): Promise<Entity> {
-        if (this.id !== null) {
-            const userData = await this.configuration.blockchainProperties.userLogicInstance.getFullUser(
-                this.id
-            );
+        const { userLogicInstance } = this.configuration.blockchainProperties;
 
-            this.propertiesDocumentHash = userData._propertiesDocumentHash;
-            this.url = userData._documentDBURL;
-            this.organization = userData._organization;
-            this.roles = parseInt(userData._roles, 10);
-            this.active = userData._active;
+        if (
+            this.id === null ||
+            this.id === undefined ||
+            this.id === '0x0000000000000000000000000000000000000000'
+        ) {
+            throw Error('Please provide an valid User ID.');
+        }
 
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+        if (!(await userLogicInstance.doesUserExist(this.id))) {
+            throw Error(`User doesn't exist.`);
+        }
 
-            this.initialized = true;
+        const userData = await userLogicInstance.getFullUser(this.id);
 
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(`User ${this.id} synced`);
-            }
+        this.propertiesDocumentHash = userData._propertiesDocumentHash;
+        this.url = userData._documentDBURL;
+        this.organization = userData._organization;
+        this.roles = parseInt(userData._roles, 10);
+        this.active = userData._active;
+
+        this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+
+        this.initialized = true;
+
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(`User ${this.id} synced`);
         }
 
         return this;

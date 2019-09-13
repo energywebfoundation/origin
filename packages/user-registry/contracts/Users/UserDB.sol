@@ -106,9 +106,9 @@ contract UserDB is Owned {
     /// @param _user account of the user to be returned
     /// @return returns user-struct
     function getFullUser(address _user)
-        onlyOwner
         external
         view
+        onlyOwner
         returns (
           User memory user
         )
