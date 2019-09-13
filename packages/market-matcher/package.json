@@ -35,8 +35,6 @@
         "@energyweb/user-registry": "1.1.0",
         "@energyweb/utils-general": "1.1.0",
         "dotenv": "^8.1.0",
-        "jsonschema": "1.2.4",
-        "log-symbols": "2.2.0",
         "reflect-metadata": "^0.1.13",
         "tsyringe": "^3.4.0",
         "web3": "1.0.0-beta.37",
@@ -46,12 +44,8 @@
         "@energyweb/utils-testbackend": "1.1.0",
         "@fluffy-spoon/substitute": "^1.89.0",
         "@types/dotenv": "^6.1.1",
-        "@types/log-symbols": "2.0.0",
         "@types/web3": "1.0.14",
-        "fs-extra": "8.0.1",
-        "ganache-cli": "6.6.0",
-        "lint-staged": "8.1.7",
-        "ts-mockito": "2.4.2"
+        "ganache-cli": "6.6.0"
     },
     "postinstall": "rm -f node_modules/web3/index.d.ts",
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

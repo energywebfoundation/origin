@@ -39,7 +39,6 @@
     "@types/web3": "1.0.14",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.2.5",
-    "lint-staged": "9.2.5",
     "solium": "^1.2.4",
     "truffle": "5.0.18"
   },
