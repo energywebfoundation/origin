@@ -170,6 +170,7 @@ describe('Test StrategyBasedMatcher', async () => {
         const deployedContracts = await migrateMarketRegistryContracts(
             web3 as any,
             assetContractLookupAddr,
+            originContractLookupAddr,
             privateKeyDeployment
         );
         marketLogic = new MarketLogic(web3, (deployedContracts as any).MarketLogic);

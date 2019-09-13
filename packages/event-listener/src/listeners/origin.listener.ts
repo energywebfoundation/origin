@@ -51,7 +51,7 @@ export class OriginEventListener implements IOriginEventListener {
         this.originLookupAddress = originLookupAddress;
         this.web3 = web3;
         this.emailService = emailService;
-        this.notificationInterval = notificationInterval || 60000; // Default to 1 min intervals
+        this.notificationInterval = notificationInterval || 6000; // Default to 1 min intervals
 
         this.started = false;
         this.interval = null;
@@ -87,6 +87,15 @@ export class OriginEventListener implements IOriginEventListener {
             );
 
             await this.checkDemands(publishedCertificate);
+        });
+
+        certificateContractEventHandler.onEvent('Transfer', async function(event: any) {
+            const { _tokenId, _from, _to } = event.returnValues;
+            const transferredCert = await new Certificate.Entity(_tokenId, this.conf).sync();
+
+            this.conf.logger.info(
+                `Event: Transfer: Certificate #${transferredCert.id} from ${_from} to ${_to}.`
+            );
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);

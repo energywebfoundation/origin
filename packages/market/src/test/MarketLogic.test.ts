@@ -21,7 +21,6 @@ import Web3 from 'web3';
 import {
     migrateUserRegistryContracts,
     UserLogic,
-    UserContractLookup,
     buildRights,
     Role
 } from '@energyweb/user-registry';
@@ -30,6 +29,7 @@ import {
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from '@energyweb/asset-registry';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
@@ -119,9 +119,18 @@ describe('MarketLogic', () => {
 
         const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
+        const originContracts = await migrateCertificateRegistryContracts(
+            web3,
+            assetRegistryLookupAddr,
+            privateKeyDeployment
+        );
+
+        const originLookupAddr = (originContracts as any).OriginContractLookup;
+
         const marketContracts = await migrateMarketRegistryContracts(
             web3,
             assetRegistryLookupAddr,
+            originLookupAddr,
             privateKeyDeployment
         );
 

@@ -27,6 +27,9 @@ import {
     UserContractLookup,
     UserLogic
 } from '@energyweb/user-registry';
+import {
+    migrateCertificateRegistryContracts
+} from '@energyweb/origin';
 import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
@@ -64,6 +67,7 @@ describe('Market-Facade', () => {
 
     let userContractLookupAddr;
     let assetContractLookupAddr;
+    let originContractLookupAddr;
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -142,10 +146,20 @@ describe('Market-Facade', () => {
         assetContractLookupAddr = (deployedContracts as any).AssetContractLookup;
     });
 
+    it('should deploy origin contracts', async () => {
+        const deployedContracts = await migrateCertificateRegistryContracts(
+            web3 as any,
+            assetContractLookupAddr,
+            privateKeyDeployment
+        );
+        originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
+    });
+
     it('should deploy market-registry contracts', async () => {
         const deployedContracts = await migrateMarketRegistryContracts(
             web3 as any,
             assetContractLookupAddr,
+            originContractLookupAddr,
             privateKeyDeployment
         );
         marketLogic = new MarketLogic(web3 as any, (deployedContracts as any).MarketLogic);

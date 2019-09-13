@@ -17,9 +17,13 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
+import "@energyweb/origin/contracts/Origin/TradableEntityLogic.sol";
+import "@energyweb/origin/contracts/Origin/TradableEntityContract.sol";
+import "@energyweb/origin/contracts/Interfaces/TradableEntityDBInterface.sol";
+import "@energyweb/origin/contracts/Interfaces/TradableEntityInterface.sol";
+import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol";
 import "../../contracts/Trading/MarketDB.sol";
 import "../../contracts/Trading/AgreementLogic.sol";
-import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol";
 
 /// @title The logic contract for the AgreementDB of Origin list
 contract MarketLogic is AgreementLogic {
@@ -27,13 +31,15 @@ contract MarketLogic is AgreementLogic {
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
     event DemandUpdated(uint indexed _demandId);
+    event DemandFilled(uint indexed _demandId, uint indexed _entityId);
 
     /// @notice constructor
     constructor(
         AssetContractLookupInterface _assetContractLookup,
+        OriginContractLookupInterface _originContractLookup,
         MarketContractLookupInterface _marketContractLookup
     )
-        AgreementLogic(_assetContractLookup,_marketContractLookup)
+        AgreementLogic(_assetContractLookup, _originContractLookup, _marketContractLookup)
         public
     {
 
@@ -87,6 +93,31 @@ contract MarketLogic is AgreementLogic {
         db.updateDemand(_demandId, _propertiesDocumentHash, _documentDBURL);
 
         emit DemandUpdated(_demandId);
+    }
+
+    /// @notice Matches a tradable entity to a demand
+	/// @dev will return an event with the event-Id
+	/// @param _demandId index of the demand in the allDemands-array
+    /// @param _entityId ID of the tradable entity
+    function fillDemand(
+        uint _demandId,
+        uint _entityId
+    )
+        external
+        onlyRole(RoleManagement.Role.Matcher)
+    {
+        MarketDB.Demand memory demand = db.getDemand(_demandId);
+        require(demand.status != MarketDB.DemandStatus.ARCHIVED, "demand cannot be in archived state");
+
+        address entityOwner = TradableEntityDBInterface(
+            address(originContractLookup.originLogicRegistry())
+        ).getTradableEntityOwner(_entityId);
+
+        TradableEntityLogic(
+            address(originContractLookup.originLogicRegistry())
+        ).transferFrom(entityOwner, demand.demandOwner, _entityId);
+
+        emit DemandFilled(_demandId, _entityId);
     }
 
 	/// @notice Function to create a supply
@@ -156,7 +187,7 @@ contract MarketLogic is AgreementLogic {
         _assetId = supply.assetId;
     }
 
-    function changeDemandStatus(uint _demandId, MarketDB.DemandStatus _status) 
+    function changeDemandStatus(uint _demandId, MarketDB.DemandStatus _status)
         public
         onlyRole(RoleManagement.Role.Trader)
         returns (MarketDB.DemandStatus)
@@ -169,11 +200,11 @@ contract MarketLogic is AgreementLogic {
         }
         if (demand.status == MarketDB.DemandStatus.ARCHIVED) {
             return MarketDB.DemandStatus.ARCHIVED;
-        } 
+        }
 
         MarketDB.DemandStatus status = db.setDemandStatus(_demandId, _status);
         emit DemandStatusChanged(msg.sender, _demandId, uint16(status));
-        
+
         return status;
     }
 }

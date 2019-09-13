@@ -15,6 +15,7 @@
     "main": "dist/js/src/index.js",
     "scripts": {
         "start": "node dist/js/src/index.js",
+        "start-all": "yarn start",
         "build": "yarn clean && yarn build-ts",
         "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "lint": "eslint 'src/**/*{.ts,.tsx}'",

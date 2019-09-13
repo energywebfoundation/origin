@@ -14,8 +14,6 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as fs from 'fs';
-import * as path from 'path';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import Web3 from 'web3';
 
@@ -25,6 +23,7 @@ import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
 export async function migrateMarketRegistryContracts(
     web3: Web3,
     assetContractLookupAddress: string,
+    originContractLookupAddress: string,
     deployKey: string
 ): Promise<JSON> {
     return new Promise<any>(async (resolve, reject) => {
@@ -39,8 +38,8 @@ export async function migrateMarketRegistryContracts(
             MarketLogicJSON.bytecode +
                 web3.eth.abi
                     .encodeParameters(
-                        ['address', 'address'],
-                        [assetContractLookupAddress, marketContractLookupAddress]
+                        ['address', 'address', 'address'],
+                        [assetContractLookupAddress, originContractLookupAddress, marketContractLookupAddress]
                     )
                     .substr(2),
             { privateKey: privateKeyDeployment }
@@ -57,6 +56,7 @@ export async function migrateMarketRegistryContracts(
 
         await marketContractLookup.init(
             assetContractLookupAddress,
+            originContractLookupAddress,
             marketLogicAddress,
             marketDBAddress,
             { privateKey: privateKeyDeployment }

@@ -111,6 +111,7 @@ const deployDemo = async () => {
     const marketContracts: any = await migrateMarketRegistryContracts(
         web3,
         assetContracts.AssetContractLookup,
+        originContracts.OriginContractLookup,
         adminPK
     );
 

@@ -16,6 +16,7 @@
 
 import * as GeneralLib from '@energyweb/utils-general';
 import { extendArray } from '@energyweb/utils-general';
+import { TradableEntity } from '@energyweb/origin';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -197,6 +198,19 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
         await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
+        return new Entity(this.id, this.configuration).sync();
+    }
+
+    async fill(entityId: string) {
+        await this.marketLogicInstance.fillDemand(
+            this.id,
+            entityId,
+            {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
+        
         return new Entity(this.id, this.configuration).sync();
     }
 }

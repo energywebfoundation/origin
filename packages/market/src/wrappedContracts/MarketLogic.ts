@@ -104,6 +104,16 @@ export class MarketLogic extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
+    async fillDemand(
+        _demandId: string,
+        _entityId: string,
+        txParams?: SpecialTx
+    ) {
+        const method = this.web3Contract.methods.fillDemand(_demandId, _entityId);
+
+        return await this.send(method, txParams);
+    }
+
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
 

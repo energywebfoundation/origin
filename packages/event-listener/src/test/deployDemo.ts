@@ -91,6 +91,7 @@ export class Demo {
         const marketContracts: any = await migrateMarketRegistryContracts(
             this.web3,
             assetContracts.AssetContractLookup,
+            originContracts.OriginContractLookup,
             this.adminPK
         );
 

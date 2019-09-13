@@ -24,6 +24,7 @@ import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol
 import "@energyweb/asset-registry/contracts/Interfaces/AssetProducingInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetConsumingInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
+import "@energyweb/origin/contracts/Interfaces/OriginContractLookupInterface.sol";
 import "../../contracts/Interfaces/MarketContractLookupInterface.sol";
 
 contract AgreementLogic is RoleManagement, Updatable {
@@ -35,16 +36,19 @@ contract AgreementLogic is RoleManagement, Updatable {
     MarketDB public db;
 
     AssetContractLookupInterface public assetContractLookup;
+    OriginContractLookupInterface public originContractLookup;
 
     /// @notice constructor
     constructor(
         AssetContractLookupInterface _assetContractLookup,
+        OriginContractLookupInterface _originContractLookup,
         MarketContractLookupInterface _marketContractLookup
     )
         RoleManagement(UserContractLookupInterface(_assetContractLookup.userRegistry()), address(_marketContractLookup))
         public
     {
         assetContractLookup = _assetContractLookup;
+        originContractLookup = _originContractLookup;
     }
 
 	/// @notice Function to create a agreement
@@ -234,6 +238,5 @@ contract AgreementLogic is RoleManagement, Updatable {
         require(foundMatcher, "sender is not in matcher array");
 
         db.setMatcherPropertiesAndURL(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
-    
     }
 }

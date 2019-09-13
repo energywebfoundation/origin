@@ -65,12 +65,14 @@ export class MarketContractLookup extends GeneralFunctions {
 
     async init(
         _assetRegistry: string,
+        _originRegistry: string,
         _marketLogicRegistry: string,
         _marketDB: string,
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.init(
             _assetRegistry,
+            _originRegistry,
             _marketLogicRegistry,
             _marketDB
         );
@@ -84,12 +86,12 @@ export class MarketContractLookup extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async assetContractLookupContract(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.assetContractLookupContract().call(txParams);
-    }
-
     async assetContractLookup(txParams?: SpecialTx) {
         return await this.web3Contract.methods.assetContractLookup().call(txParams);
+    }
+
+    async originContractLookup(txParams?: SpecialTx) {
+        return await this.web3Contract.methods.originContractLookup().call(txParams);
     }
 
     async owner(txParams?: SpecialTx) {
