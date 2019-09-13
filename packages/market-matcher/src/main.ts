@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
-dotenv.config();
 
-import { startMatcher } from './';
+import { startMatcher } from '.';
+
+dotenv.config();
 
 const config = {
     web3Url: process.env.WEB3,

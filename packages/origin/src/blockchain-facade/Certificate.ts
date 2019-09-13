@@ -26,7 +26,7 @@ export enum Status {
     Split
 }
 
-export interface ICertificateSpecific extends TradableEntity.IOnChainProperties {
+export interface ICertificate extends TradableEntity.IOnChainProperties {
     status: number;
     dataLog: string;
     creationTime: number;
@@ -125,7 +125,7 @@ export const getAllCertificateEvents = async (
     return returnEvents;
 };
 
-export class Entity extends TradableEntity.Entity implements ICertificateSpecific {
+export class Entity extends TradableEntity.Entity implements ICertificate {
     status: number;
     dataLog: string;
     creationTime: number;

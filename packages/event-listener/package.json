@@ -51,7 +51,6 @@
     "devDependencies": {
         "@types/web3": "1.0.14",
         "ganache-cli": "6.6.0",
-        "lint-staged": "9.2.5",
         "mocha": "6.2.0",
         "shx": "0.3.2",
         "source-map-support": "0.5.13"

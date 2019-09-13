@@ -5,7 +5,7 @@ export interface IAssetService {
     AssetTypes: DecodedAssetType;
     encode(assetTypes: DecodedAssetType): EncodedAssetType;
     decode(encodedAssetType: EncodedAssetType): DecodedAssetType;
-    includes(current: string[], requested: string[]): boolean;
+    includesAssetType(current: string, requested: string[]): boolean;
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] };
 }
 
@@ -87,10 +87,8 @@ export class IRECAssetService implements IAssetService {
         return encodedAssetType.map(assetType => assetType.split(';'));
     }
 
-    includes(current: string[], requested: string[]): boolean {
-        return requested.some(requestedAssetType =>
-            current.find(assetType => assetType.includes(requestedAssetType))
-        );
+    includesAssetType(current: string, requested: string[]): boolean {
+        return requested.some(requestedAssetType => current === requestedAssetType);
     }
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {

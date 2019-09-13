@@ -103,7 +103,11 @@ export interface ISmartMeterRead {
     timestamp: number;
 }
 
-export class Entity extends Asset.Entity implements IOnChainProperties {
+export interface IProducingAsset extends IOnChainProperties {
+    offChainProperties: IOffChainProperties
+}
+
+export class Entity extends Asset.Entity implements IProducingAsset {
     certificatesCreatedForWh: number;
     lastSmartMeterCO2OffsetRead: number;
     maxOwnerChanges: number;

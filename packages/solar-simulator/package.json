@@ -36,8 +36,5 @@
     "winston": "3.2.1"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
-  "private": true,
-  "devDependencies": {
-    "lint-staged": "9.2.5"
-  }
+  "private": true
 }

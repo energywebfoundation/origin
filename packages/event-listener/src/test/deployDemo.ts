@@ -283,7 +283,7 @@ export class Demo {
             currency: Currency.USD,
             producingAsset: '0',
             location: { provinces: ['string'], regions: ['string'] },
-            assetType: ['Solar'],
+            assetType: ['Wind'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',

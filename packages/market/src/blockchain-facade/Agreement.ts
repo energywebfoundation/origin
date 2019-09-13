@@ -106,8 +106,12 @@ export const createAgreement = async (
     return agreement.sync();
 };
 
-export const getAgreementListLength = async (configuration: GeneralLib.Configuration.Entity) : Promise<number> => {
-    return Number(await configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength());
+export const getAgreementListLength = async (
+    configuration: GeneralLib.Configuration.Entity
+): Promise<number> => {
+    return Number(
+        await configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength()
+    );
 };
 
 export const getAllAgreements = async (configuration: GeneralLib.Configuration.Entity) => {
@@ -118,8 +122,13 @@ export const getAllAgreements = async (configuration: GeneralLib.Configuration.E
     return (await Promise.all(agreementsPromises)).filter(promise => promise.initialized);
 };
 
+export interface IAgreement extends IAgreementOnChainProperties {
+    offChainProperties: IAgreementOffChainProperties;
+    matcherOffChainProperties: IMatcherOffChainProperties;
+}
+
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements IAgreementOnChainProperties {
+    implements IAgreement {
     matcherOffChainProperties: IMatcherOffChainProperties;
     offChainProperties: IAgreementOffChainProperties;
     propertiesDocumentHash: string;

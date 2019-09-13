@@ -1,16 +1,17 @@
 import * as Winston from 'winston';
-import { autoInjectable, inject } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 
 import { Configuration } from '@energyweb/utils-general';
-import { IEntityStore } from './EntityStore';
 import { Certificate } from '@energyweb/origin';
+import { Agreement, Demand, Supply } from '@energyweb/market';
+import { ProducingAsset } from '@energyweb/asset-registry';
+import { IEntityStore } from './EntityStore';
 import { CertificateService } from './CertificateService';
-import { Agreement, Demand } from '@energyweb/market';
 import { MatchableAgreement } from './MatchableAgreement';
 import { IStrategy } from './strategy/IStrategy';
 import { MatchableDemand } from './MatchableDemand';
 
-@autoInjectable()
+@injectable()
 export class Matcher {
     private matcherAddress: string;
 
@@ -18,8 +19,8 @@ export class Matcher {
         @inject('config') private config: Configuration.Entity,
         @inject('entityStore') private entityStore: IEntityStore,
         @inject('certificateService') private certificateService: CertificateService,
-        @inject('strategy') private strategy?: IStrategy,
-        @inject('logger') private logger?: Winston.Logger
+        @inject('strategy') private strategy: IStrategy,
+        @inject('logger') private logger: Winston.Logger
     ) {
         entityStore.registerCertificateListener(this.match.bind(this));
         this.matcherAddress = config.blockchainProperties.activeUser.address;
@@ -36,17 +37,18 @@ export class Matcher {
 
         if (!isEscrowAccount) {
             this.logger.verbose(
-                'This instance is not an escrow for certificate #' + certificate.id
+                `This instance is not an escrow for certificate #${certificate.id}`
             );
             return false;
         }
 
-        this.logger.verbose('This instance is an escrow for certificate #' + certificate.id);
+        this.logger.verbose(`This instance is an escrow for certificate #${certificate.id}`);
 
-        return (
+        const matchingResult =
             (await this.matchWithAgreements(certificate)) ||
-            (await this.matchWithDemands(certificate))
-        );
+            (await this.matchWithDemands(certificate));
+
+        return matchingResult;
     }
 
     private async matchWithAgreements(certificate: Certificate.Entity) {
@@ -57,7 +59,10 @@ export class Matcher {
         for (const matchingAgreement of matchingAgreements) {
             const { agreement } = matchingAgreement;
             const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
+            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(
+                demand,
+                this.config
+            );
 
             this.logger.debug(
                 `Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`
@@ -66,10 +71,8 @@ export class Matcher {
             if (certificate.powerInW === missingEnergyForPeriod) {
                 await this.certificateService.matchAgreement(certificate, agreement);
                 return true;
-            } else if (
-                missingEnergyForPeriod > 0 &&
-                certificate.powerInW > missingEnergyForPeriod
-            ) {
+            }
+            if (missingEnergyForPeriod > 0 && certificate.powerInW > missingEnergyForPeriod) {
                 await this.certificateService.splitCertificate(certificate, missingEnergyForPeriod);
                 return true;
             }
@@ -90,7 +93,8 @@ export class Matcher {
             if (certificate.powerInW === requiredPower) {
                 await this.certificateService.matchDemand(certificate, demand);
                 return true;
-            } else if (requiredPower > 0 && certificate.powerInW > requiredPower) {
+            }
+            if (requiredPower > 0 && certificate.powerInW > requiredPower) {
                 await this.certificateService.splitCertificate(certificate, requiredPower);
                 return true;
             }
@@ -105,14 +109,19 @@ export class Matcher {
     ): Promise<MatchableAgreement[]> {
         this.logger.debug(`Scanning ${agreements.length} agreements for a match.`);
 
-        const matchingAgreements = await Promise.all(
-            agreements
-                .map(a => new MatchableAgreement(a, this.config))
-                .filter(a => a.matchesCertificate(certificate))
-        );
+        const matchingAgreements = agreements
+            .map(agreement => new MatchableAgreement(agreement))
+            .filter(async matchableAgreement => {
+                const supply = await new Supply.Entity(
+                    matchableAgreement.agreement.supplyId.toString(),
+                    this.config
+                ).sync();
+                const { result } = matchableAgreement.matchesCertificate(certificate, supply);
+                return result;
+            });
 
         if (matchingAgreements.length === 0) {
-            this.logger.info('Found no matching agreement for certificate #' + certificate.id);
+            this.logger.info(`Found no matching agreement for certificate #${certificate.id}`);
 
             return [];
         }
@@ -125,11 +134,16 @@ export class Matcher {
         demands: Demand.Entity[]
     ): Promise<MatchableDemand[]> {
         this.logger.debug(`Scanning ${demands.length} demands for a match.`);
+        const producingAsset = await new ProducingAsset.Entity(
+            certificate.assetId.toString(),
+            this.config
+        ).sync();
 
-        return Promise.all(
-            demands
-                .map(demand => new MatchableDemand(demand))
-                .filter(matchableDemand => matchableDemand.matchesCertificate(certificate))
-        );
+        return demands
+            .map(demand => new MatchableDemand(demand))
+            .filter(matchableDemand => {
+                const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+                return result;
+            });
     }
 }

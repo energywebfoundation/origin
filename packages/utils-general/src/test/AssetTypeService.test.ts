@@ -46,49 +46,49 @@ describe('AssetTypeService tests', () => {
 
     it('should find demanded asset types when types matches', () => {
         const demandAssetTypes = ['Solar;Concentration'];
-        const supplyAssetTypes = ['Solar;Concentration'];
+        const supplyAssetTypes = 'Solar;Concentration';
 
-        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isTrue(res);
     });
 
     it('should find demanded asset types when current has one of matches', () => {
         const demandAssetTypes = ['Solar;Concentration', 'Wind'];
-        const supplyAssetTypes = ['Solar;Concentration'];
+        const supplyAssetTypes = 'Solar;Concentration';
 
-        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isTrue(res);
     });
 
     it('should not find demanded asset types when types matches', () => {
         const demandAssetTypes = ['Solar;Concentration'];
-        const supplyAssetTypes = ['Wind;Onshore'];
+        const supplyAssetTypes = 'Wind;Onshore';
 
-        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isFalse(res);
     });
 
     it('should find demanded asset types when demanded assets are less specific than current', () => {
         const demandAssetTypes = ['Solar'];
-        const supplyAssetTypes = ['Solar;Photovoltaic;Roof mounted'];
+        const supplyAssetTypes = 'Solar;Photovoltaic;Roof mounted';
 
-        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isTrue(res);
     });
 
     it('should not find demanded asset types when demanded assets are more specific than current', () => {
         const demandAssetTypes = ['Marine;Tidal;Inshore'];
-        const supplyAssetTypes = ['Marine;Tidal'];
+        const supplyAssetTypes = 'Marine;Tidal';
 
-        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isFalse(res);
     });
 
     it('should not find demanded asset types when demanded assets are more specific than current', () => {
         const demandAssetTypes = ['Marine;Tidal;Inshore'];
-        const supplyAssetTypes = ['Marine;Tidal'];
+        const supplyAssetTypes = 'Marine;Tidal';
 
-        const res = assetTypeService.includes(supplyAssetTypes, demandAssetTypes);
+        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isFalse(res);
     });
 });
