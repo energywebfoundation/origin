@@ -30,8 +30,7 @@ import { setError, setLoading } from '../general/actions';
 import { getLoading } from '../general/selectors';
 
 enum ERROR {
-    WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid.",
-    INVALID_USER = 'Invalid user. Please make sure you are logged in as the correct user.'
+    WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
 }
 
 async function initConf(
@@ -242,11 +241,7 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
                     )
                 );
             } catch (error) {
-                console.error('ContractsSaga::InvalidUser', error);
-                yield put(setError(ERROR.INVALID_USER));
-                yield put(setLoading(false));
-
-                yield cancel();
+                console.error('ContractsSaga::UserDoesntExist', error);
             }
 
             const producingAssets: ProducingAsset.Entity[] = yield apply(
