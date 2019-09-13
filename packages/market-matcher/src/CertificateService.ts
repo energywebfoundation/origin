@@ -1,12 +1,12 @@
 import { Agreement, Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
-import { autoInjectable, inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
 
 import { IEntityStore } from './EntityStore';
 
-@autoInjectable()
+@injectable()
 export class CertificateService {
     constructor(
         @inject('config') private config: Configuration.Entity,

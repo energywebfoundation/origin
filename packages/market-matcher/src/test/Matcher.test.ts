@@ -248,7 +248,7 @@ describe('Test StrategyBasedMatcher', async () => {
             houseNumber: '42',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
-            assetType: 'Wind',
+            assetType: 'Solar',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: ''

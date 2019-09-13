@@ -1,5 +1,5 @@
 import * as Winston from 'winston';
-import { inject } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
@@ -11,6 +11,7 @@ import { MatchableAgreement } from './MatchableAgreement';
 import { IStrategy } from './strategy/IStrategy';
 import { MatchableDemand } from './MatchableDemand';
 
+@injectable()
 export class Matcher {
     private matcherAddress: string;
 

@@ -37,7 +37,7 @@ export interface ICertificateSpecific extends TradableEntity.IOnChainProperties 
 }
 
 export interface ICertificate extends ICertificateSpecific {
-
+    
 }
 
 export const getCertificateListLength = async (
