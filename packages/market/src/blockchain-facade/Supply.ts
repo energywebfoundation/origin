@@ -81,8 +81,12 @@ export const createSupply = async (
     return supply.sync();
 };
 
+export interface ISupply extends ISupplyOnChainProperties {
+    offChainProperties: ISupplyOffchainProperties
+}
+
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements ISupplyOnChainProperties {
+    implements ISupply {
     offChainProperties: ISupplyOffchainProperties;
     propertiesDocumentHash: string;
     url: string;

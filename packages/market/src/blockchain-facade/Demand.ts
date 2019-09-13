@@ -55,6 +55,11 @@ export interface IDemandOnChainProperties
     status: DemandStatus;
 }
 
+export interface IDemand extends IDemandOnChainProperties {
+    id: string;
+    offChainProperties: IDemandOffChainProperties;
+}
+
 export const getDemandListLength = async (
     configuration: GeneralLib.Configuration.Entity
 ): Promise<number> => {
@@ -65,7 +70,7 @@ export const createDemand = async (
     demandPropertiesOffChain: IDemandOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
-    const demand = new Entity(null, configuration)
+    const demand = new Entity(null, configuration);
 
     const offChainStorageProperties = demand.prepareEntityCreation(
         demandPropertiesOffChain,
@@ -118,8 +123,7 @@ export const deleteDemand = async (
     return success;
 };
 
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements IDemandOnChainProperties {
+export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements IDemand {
     offChainProperties: IDemandOffChainProperties;
     propertiesDocumentHash: string;
     url: string;
@@ -192,7 +196,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
         );
 
         await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
-        
+
         return new Entity(this.id, this.configuration).sync();
     }
 }
@@ -214,7 +218,7 @@ export const getAllDemands = async (configuration: GeneralLib.Configuration.Enti
 
 export const filterDemandBy = async (
     configuration: GeneralLib.Configuration.Entity,
-    onChainProperties: Partial<IDemandOnChainProperties>,
+    onChainProperties: Partial<IDemandOnChainProperties>
 ) => {
     const allDemands = await getAllDemands(configuration);
     const filter = { ...onChainProperties } as Partial<Entity>;

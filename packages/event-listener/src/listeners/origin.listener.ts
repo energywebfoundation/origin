@@ -1,17 +1,16 @@
-import Web3 from 'web3';
-
+import { ProducingAsset } from '@energyweb/asset-registry';
+import { Demand } from '@energyweb/market';
+import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import { MatchableDemand } from '@energyweb/market-matcher';
-import { Demand } from '@energyweb/market';
+import Web3 from 'web3';
 
+import { SCAN_INTERVAL } from '..';
 import { initOriginConfig } from '../config/origin.config';
+import NotificationTypes from '../notification/NotificationTypes';
 import { IEmailResponse, IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
-import NotificationTypes from '../notification/NotificationTypes';
-
-import { SCAN_INTERVAL } from '../index';
 
 interface ICounter {
     user: User.Entity;
@@ -186,9 +185,18 @@ export class OriginEventListener implements IOriginEventListener {
     private async checkDemands(certificate: Certificate.Entity): Promise<void> {
         const demands = await Demand.getAllDemands(this.conf);
 
-        const matchedDemands = demands.filter(demand =>
-            new MatchableDemand(demand).matchesCertificate(certificate)
-        );
+        const producingAsset = await new ProducingAsset.Entity(
+            certificate.assetId.toString(),
+            this.conf
+        ).sync();
+
+        const matchedDemands = demands.filter(demand => {
+            const { result } = new MatchableDemand(demand).matchesCertificate(
+                certificate,
+                producingAsset
+            );
+            return result;
+        });
 
         if (matchedDemands.length > 0) {
             for (const demand of matchedDemands) {
