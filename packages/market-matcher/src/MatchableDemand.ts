@@ -2,6 +2,7 @@ import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Currency, IRECAssetService } from '@energyweb/utils-general';
+import { Validator } from './Validator';
 
 export enum MatchingErrorReason {
     NON_ACTIVE_DEMAND,
@@ -34,47 +35,48 @@ export class MatchableDemand {
             1e6;
 
         const { offChainProperties } = this.demand;
-        const matchingErrors: MatchingErrorReason[] = [];
 
-        if (!this.isActive) {
-            matchingErrors.push(MatchingErrorReason.NON_ACTIVE_DEMAND);
-        }
-
-        if (offChainProperties.targetWhPerPeriod > Number(certificate.powerInW)) {
-            matchingErrors.push(MatchingErrorReason.NOT_ENOUGH_ENERGY);
-        }
-
-        if (certPricePerMwh > offChainProperties.maxPricePerMwh) {
-            matchingErrors.push(MatchingErrorReason.TOO_EXPENSIVE);
-        }
-
-        if (certCurrency !== offChainProperties.currency) {
-            matchingErrors.push(MatchingErrorReason.NON_MATCHING_CURRENCY);
-        }
-
-        if (
-            !this.assetService.includesAssetType(
-                producingAsset.offChainProperties.assetType,
-                offChainProperties.assetType
+        return new Validator<MatchingErrorReason>()
+            .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
+            .validate(
+                offChainProperties.targetWhPerPeriod <= Number(certificate.powerInW),
+                MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
-        ) {
-            matchingErrors.push(MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
-        }
-
-        return { result: matchingErrors.length === 0, reason: matchingErrors };
+            .validate(
+                certPricePerMwh <= offChainProperties.maxPricePerMwh,
+                MatchingErrorReason.TOO_EXPENSIVE
+            )
+            .validate(
+                certCurrency === offChainProperties.currency,
+                MatchingErrorReason.NON_MATCHING_CURRENCY
+            )
+            .validate(
+                this.assetService.includesAssetType(
+                    producingAsset.offChainProperties.assetType,
+                    offChainProperties.assetType
+                ),
+                MatchingErrorReason.NON_MATCHING_ASSET_TYPE
+            )
+            .result();
     }
 
-    public matchesSupply(supply: Supply.Entity) {
+    public matchesSupply(supply: Supply.ISupply) {
         const supplyPricePerMwh =
             (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
 
         const { offChainProperties } = this.demand;
 
-        return (
-            this.isActive &&
-            offChainProperties.targetWhPerPeriod <= supply.offChainProperties.availableWh &&
-            supplyPricePerMwh <= offChainProperties.maxPricePerMwh
-        );
+        return new Validator<MatchingErrorReason>()
+            .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
+            .validate(
+                supply.offChainProperties.availableWh >= offChainProperties.targetWhPerPeriod,
+                MatchingErrorReason.NOT_ENOUGH_ENERGY
+            )
+            .validate(
+                supplyPricePerMwh <= offChainProperties.maxPricePerMwh,
+                MatchingErrorReason.TOO_EXPENSIVE
+            )
+            .result();
     }
 
     private get isActive() {
