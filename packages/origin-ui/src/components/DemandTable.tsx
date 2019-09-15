@@ -34,6 +34,7 @@ import {
 } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import { TableMaterial } from './Table/TableMaterial';
+import { Delete, FileCopy, Share, Edit } from '@material-ui/icons';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -60,13 +61,6 @@ export interface IEnrichedDemandData {
 
 const NO_VALUE_TEXT = 'any';
 
-enum OPERATIONS {
-    EDIT = 'Edit',
-    CLONE = 'Clone',
-    DELETE = 'Delete',
-    SUPPLIES = 'Show supplies for demand'
-}
-
 type GetElementType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U> ? U : never;
 
 type TObjectWithKeyOfType<T extends string> = {
@@ -83,10 +77,6 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             ...getInitialPaginatedLoaderFilteredState(),
             showMatchingSupply: null
         };
-
-        this.operationClicked = this.operationClicked.bind(this);
-        this.showMatchingSupply = this.showMatchingSupply.bind(this);
-        this.handleRowClick = this.handleRowClick.bind(this);
     }
 
     get filters(): ICustomFilterDefinition[] {
@@ -154,7 +144,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return Promise.all(promises);
     }
 
-    getRegionsProvincesText(demand: Demand.Entity): string {
+    getRegionText(demand: Demand.Entity): string {
         let text = '';
         const { location } = demand.offChainProperties;
 
@@ -167,27 +157,9 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return text || NO_VALUE_TEXT;
     }
 
-    async operationClicked(key: string, firstRowColumnValue: number) {
-        switch (key) {
-            case OPERATIONS.DELETE:
-                this.deleteDemand(firstRowColumnValue);
-                break;
-            case OPERATIONS.SUPPLIES:
-                this.showMatchingSupply(firstRowColumnValue);
-                break;
-            // case OPERATIONS.EDIT:
-            //     this.editDemand(firstRowColumnValue.toString());
-            //     break;
-            case OPERATIONS.CLONE:
-                this.props.history.push(
-                    getDemandCloneLink(this.props.baseURL, firstRowColumnValue.toString())
-                );
-                break;
-            default:
-        }
-    }
+    async editDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
 
-    async editDemand(demand: Demand.Entity) {
         if (!demand) {
             showNotification(`Can't find demand.`, NotificationType.Error);
             return;
@@ -208,12 +180,21 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id));
     }
 
-    async deleteDemand(id: number) {
+    cloneDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id));
+    }
+
+    async deleteDemand(rowIndex: number) {
         try {
+            const demand = this.state.paginatedData[rowIndex].demand;
+
             this.props.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
             };
-            await Demand.deleteDemand(id, this.props.configuration);
+
+            await Demand.deleteDemand(demand.id, this.props.configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
         } catch (error) {
@@ -256,24 +237,18 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         }
     }
 
-    handleRowClick(rowIndex: number) {
-        const demand = this.state.paginatedData[rowIndex].demand;
-
-        this.editDemand(demand);
-    }
-
     columns = [
         { id: 'buyer', label: 'Buyer' },
         { id: 'duration', label: 'Duration' },
         { id: 'region', label: 'Region' },
-        { id: 'assetType', label: 'Asset Type' },
+        { id: 'assetType', label: 'Asset type' },
         { id: 'repeatable', label: 'Repeatable' },
-        { id: 'fromSingleFacility', label: 'From single facility' },
+        { id: 'fromSingleFacility', label: 'Single facility' },
         { id: 'vintage', label: 'Vintage' },
-        { id: 'demand', label: 'Demand per Timeframe (MWh)' },
-        { id: 'max', label: 'Max Price' },
+        { id: 'demand', label: 'Per timeframe (MWh)' },
+        { id: 'max', label: 'Max price' },
         { id: 'status', label: 'Status' },
-        { id: 'total', label: 'Total Demand (MWh)' }
+        { id: 'energy', label: 'Energy (MWh)' }
     ] as const;
 
     get rows(): TObjectWithKeyOfType<ColumnIdUnionType>[] {
@@ -320,7 +295,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                         moment
                             .unix(parseInt(demand.offChainProperties.endTime, 10))
                             .format('DD MMM YY'),
-                    region: this.getRegionsProvincesText(demand),
+                    region: this.getRegionText(demand),
                     assetType,
                     repeatable:
                         typeof demand.offChainProperties.timeFrame !== 'undefined'
@@ -341,7 +316,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                         Currency[demand.offChainProperties.currency]
                     }`,
                     status: demandStatus,
-                    total: overallDemand
+                    energy: overallDemand
                 };
             }
         );
@@ -359,18 +334,28 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             );
         }
 
+        const actions = [
+            { icon: <Edit />, name: 'Edit', onClick: (row: number) => this.editDemand(row) },
+            { icon: <FileCopy />, name: 'Clone', onClick: (row: number) => this.cloneDemand(row) },
+            { icon: <Delete />, name: 'Delete', onClick: (row: number) => this.deleteDemand(row) },
+            {
+                icon: <Share />,
+                name: 'Show supplies',
+                onClick: (row: number) => this.showMatchingSupply(row)
+            }
+        ];
+
         return (
             <div className="ForSaleWrapper">
                 <TableMaterial
                     columns={this.columns}
                     rows={this.rows}
-                    operations={Object.values(OPERATIONS)}
-                    operationClicked={this.operationClicked}
                     loadPage={this.loadPage}
                     total={total}
                     pageSize={pageSize}
                     filters={this.filters}
-                    handleRowClick={this.handleRowClick}
+                    handleRowClick={(row: number) => this.editDemand(row)}
+                    actions={actions}
                 />
             </div>
         );

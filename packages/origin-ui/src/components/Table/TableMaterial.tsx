@@ -12,17 +12,21 @@ import {
     TablePagination,
     TableRow,
     withStyles,
-    WithStyles
+    WithStyles,
+    createStyles
 } from '@material-ui/core';
+import { Actions, ITableAction } from './Actions';
 
-const styles = {
-    root: {
-        width: '100%'
-    },
-    tableWrapper: {
-        overflow: 'auto'
-    }
-};
+const styles = () =>
+    createStyles({
+        root: {
+            width: '100%'
+        },
+        tableWrapper: {},
+        tableCellWrappingActions: {
+            position: 'relative'
+        }
+    });
 
 export interface ITableColumn {
     id: string;
@@ -34,11 +38,11 @@ export interface ITableColumn {
 interface IProps extends WithStyles<typeof styles> {
     columns: readonly ITableColumn[]; // @TODO strict
     rows: any; // @TODO strict
+
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
-    operations?: any[];
-    operationClicked?: (key: string | number, id?: number) => void;
+    actions?: ITableAction[];
     onSelect?: TableOnSelectFunction;
     currentSort?: SortPropertiesType;
     sortAscending?: boolean;
@@ -96,7 +100,7 @@ class TableMaterialClass extends React.Component<IProps, IState> {
     }
 
     render() {
-        const { classes, columns, pageSize, rows, total, filters } = this.props;
+        const { classes, columns, pageSize, rows, total, filters, actions } = this.props;
         const { currentPage } = this.state;
 
         const zeroIndexBasedPage = currentPage - 1;
@@ -119,29 +123,45 @@ class TableMaterialClass extends React.Component<IProps, IState> {
                                             {column.label}
                                         </TableCell>
                                     ))}
+                                    {actions && actions.length > 0 && <TableCell></TableCell>}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row, index) => {
+                                {rows.map((row, rowIndex) => {
                                     return (
                                         <TableRow
                                             hover
                                             role="checkbox"
                                             tabIndex={-1}
-                                            key={index}
-                                            onClick={() => this.handleRowClick(index)}
-                                            className={
-                                                this.props.handleRowClick ? 'cursor-pointer' : ''
-                                            }
+                                            key={rowIndex}
                                         >
                                             {columns.map(column => {
                                                 const value = row[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <TableCell
+                                                        onClick={() =>
+                                                            this.handleRowClick(rowIndex)
+                                                        }
+                                                        className={
+                                                            this.props.handleRowClick
+                                                                ? 'cursor-pointer'
+                                                                : ''
+                                                        }
+                                                        key={column.id}
+                                                        align={column.align}
+                                                    >
                                                         {value}
                                                     </TableCell>
                                                 );
                                             })}
+                                            {actions && actions.length > 0 && (
+                                                <TableCell
+                                                    key={rowIndex}
+                                                    className={classes.tableCellWrappingActions}
+                                                >
+                                                    <Actions actions={actions} id={rowIndex} />
+                                                </TableCell>
+                                            )}
                                         </TableRow>
                                     );
                                 })}
