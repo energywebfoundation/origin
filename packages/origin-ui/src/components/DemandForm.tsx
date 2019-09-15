@@ -36,7 +36,7 @@ import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
 import { LoadingComponent } from './LoadingComponent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { getDemandEditLink } from '../utils/routing';
+import { getDemandViewLink } from '../utils/routing';
 import { FormikDatePicker } from './FormikDatePicker';
 import { AssetTypeSelector } from './AssetTypeSelector';
 
@@ -118,6 +118,7 @@ interface IOwnProps {
     demand?: Demand.Entity;
     edit?: boolean;
     clone?: boolean;
+    readOnly?: boolean;
 }
 
 interface IStateProps {
@@ -340,7 +341,7 @@ class DemandFormClass extends React.Component<Props, IState> {
 
                 showNotification('Demand created', NotificationType.Success);
 
-                history.push(getDemandEditLink(baseURL, createdDemand.id));
+                history.push(getDemandViewLink(baseURL, createdDemand.id));
             }
         } catch (error) {
             console.error('Demand form error', error);
@@ -359,13 +360,13 @@ class DemandFormClass extends React.Component<Props, IState> {
             initialFormValuesFromDemand
         } = this.state;
 
-        const { edit, clone } = this.props;
+        const { edit, clone, readOnly } = this.props;
 
         const { currencies, provincesOptions } = this;
 
         let initialFormValues = null;
 
-        if (edit || clone) {
+        if (edit || clone || readOnly) {
             initialFormValues = initialFormValuesFromDemand;
         } else {
             initialFormValues = INITIAL_FORM_VALUES;
@@ -375,10 +376,12 @@ class DemandFormClass extends React.Component<Props, IState> {
             return <LoadingComponent />;
         }
 
-        let submitButtonText = 'Create demand';
+        let submitButtonText;
 
         if (edit) {
             submitButtonText = 'Save demand';
+        } else if (!readOnly) {
+            submitButtonText = 'Create demand';
         }
 
         return (
@@ -407,10 +410,12 @@ class DemandFormClass extends React.Component<Props, IState> {
                         activeUntilDate: Yup.date().required(),
                         procureFromSingleFacility: Yup.boolean()
                     })}
-                    isInitialValid={edit || clone}
+                    isInitialValid={edit || clone || readOnly}
                 >
                     {props => {
                         const { values, isValid, isSubmitting } = props;
+
+                        const disabled = isSubmitting || readOnly;
 
                         let buttonTooltip = '';
 
@@ -440,6 +445,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                 variant="filled"
                                                 fullWidth
                                                 required
+                                                disabled={disabled}
                                             />
                                         </FormControl>
                                         <FormControl
@@ -455,6 +461,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                 variant="filled"
                                                 fullWidth
                                                 required
+                                                disabled={disabled}
                                             />
                                         </FormControl>
                                         <FormControl
@@ -472,6 +479,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                 fullWidth
                                                 variant="filled"
                                                 required
+                                                disabled={disabled}
                                             >
                                                 {currencies.map(option => (
                                                     <MenuItem value={option} key={option}>
@@ -489,6 +497,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             fullWidth
                                             required
                                             component={FormikDatePicker}
+                                            disabled={disabled}
                                         />
                                         <Field
                                             name="activeUntilDate"
@@ -499,6 +508,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             fullWidth
                                             required
                                             component={FormikDatePicker}
+                                            disabled={disabled}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
@@ -512,7 +522,8 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                     selectedAssetType: value
                                                 })
                                             }
-                                            disabled={isSubmitting}
+                                            readOnly={readOnly}
+                                            disabled={disabled}
                                         />
                                         <div className="Filter_menu_item_sliderWrapper mt-3">
                                             <InputLabel shrink={true}>
@@ -532,7 +543,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                         vintage: value
                                                     })
                                                 }
-                                                disabled={isSubmitting}
+                                                disabled={disabled}
                                             />
                                         </div>
 
@@ -543,6 +554,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             }}
                                             color="primary"
                                             component={CheckboxWithLabel}
+                                            disabled={disabled}
                                         />
                                     </Grid>
                                 </Grid>
@@ -565,6 +577,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                 fullWidth
                                                 variant="filled"
                                                 required
+                                                disabled={disabled}
                                             >
                                                 {REPEATABLE_TIMEFRAMES.map(timeframe => (
                                                     <MenuItem
@@ -586,6 +599,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             fullWidth
                                             required
                                             component={FormikDatePicker}
+                                            disabled={disabled}
                                         />
 
                                         <div className="mt-3">
@@ -609,7 +623,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                         </Typography>
                                         <MultiSelectAutocomplete
                                             label="Regions"
-                                            placeholder="Select multiple regions"
+                                            placeholder={readOnly ? '' : 'Select multiple regions'}
                                             options={regionOptions}
                                             onChange={value =>
                                                 this.setState({
@@ -618,11 +632,13 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             }
                                             selectedValues={selectedRegions}
                                             classes={{ root: 'mt-3' }}
-                                            disabled={isSubmitting}
+                                            disabled={disabled}
                                         />
                                         <MultiSelectAutocomplete
                                             label="Provinces"
-                                            placeholder="Select multiple provinces"
+                                            placeholder={
+                                                readOnly ? '' : 'Select multiple provinces'
+                                            }
                                             options={provincesOptions}
                                             onChange={value =>
                                                 this.setState({
@@ -631,29 +647,31 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             }
                                             selectedValues={selectedProvinces}
                                             classes={{ root: 'mt-3' }}
-                                            disabled={isSubmitting}
+                                            disabled={disabled}
                                         />
                                     </Grid>
                                 </Grid>
 
-                                <Tooltip
-                                    title={buttonTooltip}
-                                    disableHoverListener={!buttonTooltip}
-                                >
-                                    <span>
-                                        <Button
-                                            type="submit"
-                                            variant="contained"
-                                            color="primary"
-                                            className="mt-3 right"
-                                            disabled={
-                                                isSubmitting || !isValid || !this.isUserTraderRole()
-                                            }
-                                        >
-                                            {submitButtonText}
-                                        </Button>
-                                    </span>
-                                </Tooltip>
+                                {submitButtonText && (
+                                    <Tooltip
+                                        title={buttonTooltip}
+                                        disableHoverListener={!buttonTooltip}
+                                    >
+                                        <span>
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                color="primary"
+                                                className="mt-3 right"
+                                                disabled={
+                                                    disabled || !isValid || !this.isUserTraderRole()
+                                                }
+                                            >
+                                                {submitButtonText}
+                                            </Button>
+                                        </span>
+                                    </Tooltip>
+                                )}
                             </Form>
                         );
                     }}

@@ -9,6 +9,7 @@ import { DemandForm } from './DemandForm';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { DemandEdit } from './DemandEdit';
 import { DemandClone } from './DemandClone';
+import { DemandView } from './DemandView';
 
 interface IStateProps {
     baseURL: string;
@@ -40,6 +41,12 @@ class DemandsClass extends React.Component<Props> {
                 key: 'clone',
                 label: 'Clone',
                 component: DemandClone,
+                hide: true
+            },
+            {
+                key: 'view',
+                label: 'View',
+                component: DemandView,
                 hide: true
             }
         ];

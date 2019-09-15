@@ -13,7 +13,8 @@ import {
 import {
     getCertificatesForDemandLink,
     getDemandEditLink,
-    getDemandCloneLink
+    getDemandCloneLink,
+    getDemandViewLink
 } from '../utils/routing';
 import {
     getConfiguration,
@@ -178,6 +179,12 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         }
 
         this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id));
+    }
+
+    viewDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id));
     }
 
     cloneDemand(rowIndex: number) {
@@ -354,7 +361,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     total={total}
                     pageSize={pageSize}
                     filters={this.filters}
-                    handleRowClick={(row: number) => this.editDemand(row)}
+                    handleRowClick={(row: number) => this.viewDemand(row)}
                     actions={actions}
                 />
             </div>
