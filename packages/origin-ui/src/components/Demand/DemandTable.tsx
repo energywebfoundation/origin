@@ -5,17 +5,17 @@ import { Configuration, TimeFrame, Currency, IRECAssetService } from '@energyweb
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-import { showNotification, NotificationType } from '../utils/notifications';
+import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
-} from './Table/PaginatedLoader';
+} from '../Table/PaginatedLoader';
 import {
     getCertificatesForDemandLink,
     getDemandEditLink,
     getDemandCloneLink,
     getDemandViewLink
-} from '../utils/routing';
+} from '../../utils/routing';
 import {
     getConfiguration,
     getConsumingAssets,
@@ -23,18 +23,18 @@ import {
     getCurrentUser,
     getBaseURL,
     getDemands
-} from '../features/selectors';
+} from '../../features/selectors';
 import { connect } from 'react-redux';
-import { IStoreState } from '../types';
+import { IStoreState } from '../../types';
 import { calculateTotalEnergyDemand } from './DemandForm';
 import {
     IPaginatedLoaderFilteredState,
     PaginatedLoaderFiltered,
     getInitialPaginatedLoaderFilteredState,
     RECORD_INDICATOR
-} from './Table/PaginatedLoaderFiltered';
-import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { TableMaterial } from './Table/TableMaterial';
+} from '../Table/PaginatedLoaderFiltered';
+import { ICustomFilterDefinition, CustomFilterInputType } from '../Table/FiltersHeader';
+import { TableMaterial } from '../Table/TableMaterial';
 import { Delete, FileCopy, Share, Edit } from '@material-ui/icons';
 
 interface IStateProps {

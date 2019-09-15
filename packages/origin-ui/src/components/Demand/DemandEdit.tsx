@@ -6,9 +6,9 @@ import { DemandForm } from './DemandForm';
 
 import { connect } from 'react-redux';
 
-import { IStoreState } from '../types';
+import { IStoreState } from '../../types';
 
-import { getDemands } from '../features/selectors';
+import { getDemands } from '../../features/selectors';
 import { Demand } from '@energyweb/market';
 
 interface IMatchParams {
@@ -22,18 +22,18 @@ interface IStateProps {
 
 type Props = IStateProps & RouteComponentProps<IMatchParams>;
 
-class DemandViewClass extends React.Component<Props> {
+class DemandEditClass extends React.Component<Props> {
     render() {
         const demand = this.props.demands.find(d => d.id === this.props.match.params.id);
 
-        return <DemandForm demand={demand} readOnly={true} />;
+        return <DemandForm demand={demand} edit={true} />;
     }
 }
 
-export const DemandView = withRouter(
+export const DemandEdit = withRouter(
     connect(
         (state: IStoreState): IStateProps => ({
             demands: getDemands(state)
         })
-    )(DemandViewClass)
+    )(DemandEditClass)
 );

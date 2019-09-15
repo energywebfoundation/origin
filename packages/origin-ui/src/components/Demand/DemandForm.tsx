@@ -7,7 +7,7 @@ import {
     THAILAND_REGIONS_PROVINCES_MAP,
     EncodedAssetType
 } from '@energyweb/utils-general';
-import { showNotification, NotificationType } from '../utils/notifications';
+import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Paper,
     Typography,
@@ -19,26 +19,26 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { getEnumValues } from '../utils/Helper';
+import { getEnumValues } from '../../utils/Helper';
 import { connect } from 'react-redux';
-import { IStoreState } from '../types';
-import { getCurrentUser, getConfiguration, getBaseURL } from '../features/selectors';
+import { IStoreState } from '../../types';
+import { getCurrentUser, getConfiguration, getBaseURL } from '../../features/selectors';
 import './DemandForm.scss';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
-} from './MultiSelectAutocomplete';
-import { CustomSlider, CustomSliderThumbComponent } from './CustomSlider';
+} from '../MultiSelectAutocomplete';
+import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import moment, { Moment } from 'moment';
 import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
-import { LoadingComponent } from './LoadingComponent';
+import { LoadingComponent } from '../LoadingComponent';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { getDemandViewLink } from '../utils/routing';
-import { FormikDatePicker } from './FormikDatePicker';
-import { AssetTypeSelector } from './AssetTypeSelector';
+import { getDemandViewLink } from '../../utils/routing';
+import { FormikDatePicker } from '../FormikDatePicker';
+import { AssetTypeSelector } from '../AssetTypeSelector';
 
 export function calculateTotalEnergyDemand(
     startDate: Moment,
