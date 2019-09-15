@@ -16,7 +16,8 @@ const styles = () =>
         speedDialButton: {
             width: '28px',
             height: '28px',
-            minHeight: '28px'
+            minHeight: '28px',
+            backgroundColor: '#333333'
         },
         speedDialIcon: {
             fontSize: '16px'
