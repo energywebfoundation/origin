@@ -35,9 +35,17 @@ export interface ITableColumn {
     align?: 'right';
 }
 
-interface IProps extends WithStyles<typeof styles> {
-    columns: readonly ITableColumn[]; // @TODO strict
-    rows: any; // @TODO strict
+type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U>
+    ? U
+    : never;
+
+export type TTableRow<T extends string> = {
+    [key in T]: string;
+};
+
+interface IProps<T extends readonly ITableColumn[]> extends WithStyles<typeof styles> {
+    columns: T;
+    rows: TTableRow<GetReadonlyArrayItemType<T>['id']>[];
 
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
@@ -55,10 +63,13 @@ interface IState {
     currentPage: number;
 }
 
-class TableMaterialClass extends React.Component<IProps, IState> {
+class TableMaterialClass<T extends readonly ITableColumn[]> extends React.Component<
+    IProps<T>,
+    IState
+> {
     isMountedIndicator = false;
 
-    constructor(props) {
+    constructor(props: IProps<T>) {
         super(props);
 
         this.state = {
@@ -188,4 +199,10 @@ class TableMaterialClass extends React.Component<IProps, IState> {
     }
 }
 
-export const TableMaterial = withStyles(styles)(TableMaterialClass);
+type ExternalProps<T extends readonly ITableColumn[]> = Omit<IProps<T>, 'classes'>;
+
+export const TableMaterial = withStyles(styles)(TableMaterialClass) as <
+    T extends readonly ITableColumn[]
+>(
+    props: ExternalProps<T>
+) => React.ReactElement<TableMaterialClass<T>>;

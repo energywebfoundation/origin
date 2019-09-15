@@ -62,14 +62,6 @@ export interface IEnrichedDemandData {
 
 const NO_VALUE_TEXT = 'any';
 
-type GetElementType<T extends ReadonlyArray<any>> = T extends ReadonlyArray<infer U> ? U : never;
-
-type TObjectWithKeyOfType<T extends string> = {
-    [key in T]: any;
-};
-
-type ColumnIdUnionType = GetElementType<DemandTableClass['columns']>['id'];
-
 class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState> {
     constructor(props: Props) {
         super(props);
@@ -258,75 +250,72 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         { id: 'energy', label: 'Energy (MWh)' }
     ] as const;
 
-    get rows(): TObjectWithKeyOfType<ColumnIdUnionType>[] {
-        return this.state.paginatedData.map(
-            (enrichedDemandData): TObjectWithKeyOfType<ColumnIdUnionType> => {
-                const demand = enrichedDemandData.demand;
+    get rows() {
+        return this.state.paginatedData.map(enrichedDemandData => {
+            const demand = enrichedDemandData.demand;
 
-                const assetService = new IRECAssetService();
+            const assetService = new IRECAssetService();
 
-                const topLevelAssetTypes = demand.offChainProperties.assetType
-                    ? assetService
-                          .decode(demand.offChainProperties.assetType)
-                          .filter(type => type.length === 1)
-                    : [];
+            const topLevelAssetTypes = demand.offChainProperties.assetType
+                ? assetService
+                      .decode(demand.offChainProperties.assetType)
+                      .filter(type => type.length === 1)
+                : [];
 
-                const assetType =
-                    topLevelAssetTypes.length > 0
-                        ? topLevelAssetTypes.map(type => type[0]).join(', ')
-                        : NO_VALUE_TEXT;
+            const assetType =
+                topLevelAssetTypes.length > 0
+                    ? topLevelAssetTypes.map(type => type[0]).join(', ')
+                    : NO_VALUE_TEXT;
 
-                const overallDemand =
-                    calculateTotalEnergyDemand(
-                        moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-                        moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-                        demand.offChainProperties.targetWhPerPeriod,
-                        demand.offChainProperties.timeFrame
-                    ) / 1000000;
+            const overallDemand = (
+                calculateTotalEnergyDemand(
+                    moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
+                    moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+                    demand.offChainProperties.targetWhPerPeriod,
+                    demand.offChainProperties.timeFrame
+                ) / 1000000
+            ).toLocaleString();
 
-                let demandStatus = 'Active';
+            let demandStatus = 'Active';
 
-                if (demand.status === Demand.DemandStatus.PAUSED) {
-                    demandStatus = 'Paused';
-                } else if (demand.status === Demand.DemandStatus.ARCHIVED) {
-                    demandStatus = 'Archived';
-                }
-
-                return {
-                    buyer: enrichedDemandData.demandOwner.organization,
-                    duration:
-                        moment
-                            .unix(parseInt(demand.offChainProperties.startTime, 10))
-                            .format('DD MMM YY') +
-                        ' - ' +
-                        moment
-                            .unix(parseInt(demand.offChainProperties.endTime, 10))
-                            .format('DD MMM YY'),
-                    region: this.getRegionText(demand),
-                    assetType,
-                    repeatable:
-                        typeof demand.offChainProperties.timeFrame !== 'undefined'
-                            ? TimeFrame[demand.offChainProperties.timeFrame]
-                            : NO_VALUE_TEXT,
-                    fromSingleFacility: demand.offChainProperties.procureFromSingleFacility
-                        ? 'yes'
-                        : 'no',
-                    vintage:
-                        demand.offChainProperties.vintage &&
-                        demand.offChainProperties.vintage.length === 2
-                            ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
-                            : NO_VALUE_TEXT,
-                    demand: (
-                        demand.offChainProperties.targetWhPerPeriod / 1000000
-                    ).toLocaleString(),
-                    max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
-                        Currency[demand.offChainProperties.currency]
-                    }`,
-                    status: demandStatus,
-                    energy: overallDemand
-                };
+            if (demand.status === Demand.DemandStatus.PAUSED) {
+                demandStatus = 'Paused';
+            } else if (demand.status === Demand.DemandStatus.ARCHIVED) {
+                demandStatus = 'Archived';
             }
-        );
+
+            return {
+                buyer: enrichedDemandData.demandOwner.organization,
+                duration:
+                    moment
+                        .unix(parseInt(demand.offChainProperties.startTime, 10))
+                        .format('DD MMM YY') +
+                    ' - ' +
+                    moment
+                        .unix(parseInt(demand.offChainProperties.endTime, 10))
+                        .format('DD MMM YY'),
+                region: this.getRegionText(demand),
+                assetType,
+                repeatable:
+                    typeof demand.offChainProperties.timeFrame !== 'undefined'
+                        ? TimeFrame[demand.offChainProperties.timeFrame]
+                        : NO_VALUE_TEXT,
+                fromSingleFacility: demand.offChainProperties.procureFromSingleFacility
+                    ? 'yes'
+                    : 'no',
+                vintage:
+                    demand.offChainProperties.vintage &&
+                    demand.offChainProperties.vintage.length === 2
+                        ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
+                        : NO_VALUE_TEXT,
+                demand: (demand.offChainProperties.targetWhPerPeriod / 1000000).toLocaleString(),
+                max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
+                    Currency[demand.offChainProperties.currency]
+                }`,
+                status: demandStatus,
+                energy: overallDemand
+            };
+        });
     }
 
     render() {
