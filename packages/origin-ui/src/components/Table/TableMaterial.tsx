@@ -39,7 +39,7 @@ type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends Readonly
     ? U
     : never;
 
-export type TTableRow<T extends string> = {
+type TTableRow<T extends string> = {
     [key in T]: string;
 };
 

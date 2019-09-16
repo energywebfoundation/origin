@@ -71,12 +71,14 @@ class AssetClass extends React.Component<Props> {
             {
                 key: 'producing_detail_view',
                 label: 'Production Detail',
-                component: null
+                component: null,
+                hide: true
             },
             {
                 key: 'consuming_detail_view',
                 label: 'Consumption Detail',
-                component: null
+                component: null,
+                hide: true
             }
         ];
 
@@ -85,6 +87,10 @@ class AssetClass extends React.Component<Props> {
                 <div className="PageNav">
                     <ul className="NavMenu nav">
                         {AssetsMenu.map(menu => {
+                            if (menu.hide) {
+                                return null;
+                            }
+
                             return (
                                 <li key={menu.key}>
                                     <NavLink to={`${getAssetsLink(baseURL)}/${menu.key}`}>

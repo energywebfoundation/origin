@@ -3,8 +3,6 @@ import * as React from 'react';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
-import { ITableHeaderData } from './Table/Table';
-import TableUtils from './Table/TableUtils';
 import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
@@ -16,7 +14,6 @@ import {
     FILTER_SPECIAL_TYPES,
     RECORD_INDICATOR
 } from './Table/PaginatedLoaderFiltered';
-import { AdvancedTable } from './Table/AdvancedTable';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import {
     IPaginatedLoaderFetchDataParameters,
@@ -32,6 +29,8 @@ import {
     getCurrentUser,
     getBaseURL
 } from '../features/selectors';
+import { Share } from '@material-ui/icons';
+import { TableMaterial } from './Table/TableMaterial';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -50,14 +49,10 @@ interface IEnrichedProducingAssetData {
 }
 
 interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
-    detailViewForAssetId: number;
+    detailViewForAssetId: string;
     requestIRECsModalAsset: ProducingAsset.Entity;
     showRequestIRECsModal: boolean;
-}
-
-enum OPERATIONS {
-    REQUEST_IRECS = 'Request I-RECs',
-    SHOW_DETAILS = 'Show Details'
+    paginatedData: IEnrichedProducingAssetData[];
 }
 
 class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducingAssetTableState> {
@@ -71,7 +66,6 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
             showRequestIRECsModal: false
         };
 
-        this.operationClicked = this.operationClicked.bind(this);
         this.hideRequestIRECsModal = this.hideRequestIRECsModal.bind(this);
     }
 
@@ -104,23 +98,16 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         return Promise.all(promises);
     }
 
-    operationClicked(key: string, id: number): void {
-        switch (key) {
-            case OPERATIONS.REQUEST_IRECS:
-                this.requestIRECs(id);
-                break;
-            default:
-                this.setState({
-                    detailViewForAssetId: id
-                });
-                break;
-        }
+    viewAsset(rowIndex: number) {
+        const asset = this.state.paginatedData[rowIndex].asset;
+
+        this.setState({
+            detailViewForAssetId: asset.id
+        });
     }
 
-    async requestIRECs(id: number) {
-        const asset: ProducingAsset.Entity = this.props.producingAssets.find(
-            (a: ProducingAsset.Entity) => a.id === id.toString()
-        );
+    async requestIRECs(rowIndex: number) {
+        const asset = this.state.paginatedData[rowIndex].asset;
 
         const isOwner =
             asset.owner &&
@@ -215,87 +202,80 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
 
         const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
 
-        const formattedPaginatedData = paginatedData.map(enrichedRecordData => {
-            const asset = enrichedRecordData.asset;
-
-            return [
-                asset.id,
-                enrichedRecordData.organizationName,
-                asset.offChainProperties.facilityName,
-                asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                asset.offChainProperties.assetType,
-                asset.offChainProperties.capacityWh / 1000,
-                asset.lastSmartMeterReadWh / 1000
-            ];
-        });
-
         return {
-            formattedPaginatedData,
             paginatedData,
             total
         };
     }
 
+    columns = [
+        { id: 'owner', label: 'Owner' },
+        { id: 'facilityName', label: 'Facility name' },
+        { id: 'townCountry', label: 'Town, country' },
+        { id: 'type', label: 'Type' },
+        { id: 'capacity', label: 'Nameplate capacity (kW)' },
+        { id: 'read', label: 'Meter read (kWh)' }
+    ] as const;
+
+    get rows() {
+        return this.state.paginatedData.map(enrichedData => ({
+            owner: enrichedData.organizationName,
+            facilityName: enrichedData.asset.offChainProperties.facilityName,
+            townCountry:
+                enrichedData.asset.offChainProperties.city +
+                ', ' +
+                enrichedData.asset.offChainProperties.country,
+            type: enrichedData.asset.offChainProperties.assetType,
+            capacity: (enrichedData.asset.offChainProperties.capacityWh / 1000).toLocaleString(),
+            read: (enrichedData.asset.lastSmartMeterReadWh / 1000).toLocaleString()
+        }));
+    }
+
     render(): JSX.Element {
-        if (this.state.detailViewForAssetId !== null) {
+        const {
+            detailViewForAssetId,
+            total,
+            pageSize,
+            requestIRECsModalAsset,
+            showRequestIRECsModal
+        } = this.state;
+
+        if (detailViewForAssetId !== null) {
             return (
                 <Redirect
                     push={true}
-                    to={getProducingAssetDetailLink(
-                        this.props.baseURL,
-                        this.state.detailViewForAssetId.toString()
-                    )}
+                    to={getProducingAssetDetailLink(this.props.baseURL, detailViewForAssetId)}
                 />
             );
         }
 
-        const generateHeader = TableUtils.generateHeader;
-        const generateFooter: any = TableUtils.generateFooter;
-
-        const TableHeader: ITableHeaderData[] = [
-            generateHeader('#', 60),
-            generateHeader('Owner'),
-            generateHeader('Facility Name'),
-            generateHeader('Town, Country'),
-            generateHeader('Type', 140),
-            generateHeader('Nameplate Capacity (kW)', 125.45, true),
-            generateHeader('Meter Read (kWh)', 135.89, true)
-        ];
-
-        const TableFooter: any = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: 6
-            },
-            generateFooter('Meter Read (kWh)')
-        ];
-
-        const operations = [OPERATIONS.SHOW_DETAILS];
+        const actions = [];
 
         if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
-            operations.push(OPERATIONS.REQUEST_IRECS);
+            actions.push({
+                icon: <Share />,
+                name: 'Request I-RECs',
+                onClick: (row: number) => this.requestIRECs(row)
+            });
         }
 
         return (
             <div className="ProductionWrapper">
-                <AdvancedTable
-                    header={TableHeader}
-                    footer={TableFooter}
-                    operationClicked={this.operationClicked}
-                    actions={true}
-                    data={this.state.formattedPaginatedData}
-                    operations={operations}
+                <TableMaterial
+                    columns={this.columns}
+                    rows={this.rows}
                     loadPage={this.loadPage}
-                    total={this.state.total}
-                    pageSize={this.state.pageSize}
+                    total={total}
+                    pageSize={pageSize}
                     filters={this.filters}
+                    handleRowClick={(row: number) => this.viewAsset(row)}
+                    actions={actions}
                 />
 
                 <RequestIRECsModal
                     conf={this.props.configuration}
-                    producingAsset={this.state.requestIRECsModalAsset}
-                    showModal={this.state.showRequestIRECsModal}
+                    producingAsset={requestIRECsModalAsset}
+                    showModal={showRequestIRECsModal}
                     callback={this.hideRequestIRECsModal}
                 />
             </div>
