@@ -304,7 +304,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             .map(i => i.certificate);
 
         const isOwnerOfSomeCertificates = selectedCertificates.some(
-            c => c.owner === this.props.currentUser.id
+            c => c.owner.toLowerCase() === this.props.currentUser.id.toLowerCase()
         );
 
         if (isOwnerOfSomeCertificates) {
