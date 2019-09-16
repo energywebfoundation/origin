@@ -7,7 +7,7 @@ export type IPaginatedLoaderProps = {};
 
 export interface IPaginatedLoaderState {
     paginatedData: any[];
-    formattedPaginatedData: ReactText[][];
+    formattedPaginatedData?: ReactText[][];
     pageSize: number;
     total: number;
 }
@@ -20,7 +20,7 @@ export interface IPaginatedLoaderFetchDataParameters {
 
 export interface IPaginatedLoaderFetchDataReturnValues {
     paginatedData: any[];
-    formattedPaginatedData: ReactText[][];
+    formattedPaginatedData?: ReactText[][];
     total: number;
 }
 

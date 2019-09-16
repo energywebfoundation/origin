@@ -715,7 +715,7 @@ describe('Market-Facade', () => {
 
             const amountOfDemands = await Market.Demand.getDemandListLength(conf);
 
-            const deleted = await Market.Demand.deleteDemand(0, conf);
+            const deleted = await Market.Demand.deleteDemand('0', conf);
             assert.isTrue(deleted);
 
             // Should remain the same
