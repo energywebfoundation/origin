@@ -51,7 +51,7 @@ export const DEFAULT_MATERIAL_THEME = () => {
             },
             MuiTable: {
                 root: {
-                    borderBottom: '2px solid #894ec5'
+                    borderBottom: `2px solid ${STYLE_CONFIG.PRIMARY_COLOR}`
                 }
             },
             MuiTableHead: {
