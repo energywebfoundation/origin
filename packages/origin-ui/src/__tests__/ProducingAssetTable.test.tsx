@@ -92,37 +92,31 @@ describe('ProducingAssetTable', () => {
 
         await flushPromises();
 
+        const assertPagination = (firstIndex: number, lastIndex: number, total: number) => {
+            expect(rendered.find('span.MuiTablePagination-caption').text()).toBe(
+                `${firstIndex}-${lastIndex} of ${total}`
+            );
+        }
+
         rendered.update();
 
         expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
-            '0',
             'Example Organization',
             'Wuthering Heights facility',
             'Sopot, Poland',
             'Solar',
-            '9876.543',
+            '9,876.543',
             '7.777',
-            '',
             // next asset
-            '1',
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
             'Gaseous;Agricultural gas',
             '736.123',
-            '0.312',
-            ''
+            '0.312'
         ]);
 
-        expect(rendered.find('table tfoot tr td').map(el => el.text())).toEqual([
-            'Total',
-            '8.089',
-            ''
-        ]);
-
-        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe(
-            'Showing 1 to 2 of 2 entries'
-        );
+        assertPagination(1, 2, 2);
 
         const searchInput = rendered.find(`${dataTestSelector('Search-textfield')} input`);
 
@@ -133,19 +127,15 @@ describe('ProducingAssetTable', () => {
         rendered.update();
 
         expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
-            '1',
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
             'Gaseous;Agricultural gas',
             '736.123',
-            '0.312',
-            ''
+            '0.312'
         ]);
 
-        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe(
-            'Showing 1 to 1 of 1 entries'
-        );
+        assertPagination(1, 1, 1);
 
         searchInput.simulate('change', { target: { value: 'Wuthering Heights' } });
 
@@ -154,18 +144,14 @@ describe('ProducingAssetTable', () => {
         rendered.update();
 
         expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
-            '0',
             'Example Organization',
             'Wuthering Heights facility',
             'Sopot, Poland',
             'Solar',
-            '9876.543',
-            '7.777',
-            ''
+            '9,876.543',
+            '7.777'
         ]);
 
-        expect(rendered.find(dataTestSelector('pagination-helper-text')).text()).toBe(
-            'Showing 1 to 1 of 1 entries'
-        );
+        assertPagination(1, 1, 1);
     });
 });
