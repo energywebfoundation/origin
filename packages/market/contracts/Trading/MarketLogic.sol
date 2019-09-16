@@ -107,7 +107,7 @@ contract MarketLogic is AgreementLogic {
         onlyRole(RoleManagement.Role.Matcher)
     {
         MarketDB.Demand memory demand = db.getDemand(_demandId);
-        require(demand.status != MarketDB.DemandStatus.ARCHIVED, "demand cannot be in archived state");
+        require(demand.status == MarketDB.DemandStatus.ACTIVE, "demand cannot be in archived state");
 
         address entityOwner = TradableEntityDBInterface(
             address(originContractLookup.originLogicRegistry())

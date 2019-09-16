@@ -354,6 +354,13 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('certificate owner is the trader after successful match', async () => {
+            console.log({
+                marketLogic
+            });
+            const events = await marketLogic.getEvents('DemandFilled');
+            console.log({ events });
+            assert.equal(events.length, 0);
+
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
                 privateKey: traderPK

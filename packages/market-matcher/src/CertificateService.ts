@@ -15,11 +15,16 @@ export class CertificateService {
     ) {}
 
     public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.IAgreement) {
-        const demand = this.entityStore.getDemandById(agreement.demandId.toString());
+        const demand: Demand.IDemand = this.entityStore.getDemandById(
+            agreement.demandId.toString()
+        );
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
-        await certificate.transferFrom(demand.demandOwner);
+        console.log({
+            id: certificate.id
+        });
+        await demand.fill(certificate.id);
 
         // TODO: update the the agreement current energy needs
 
@@ -53,6 +58,9 @@ export class CertificateService {
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
-        await certificate.transferFrom(demand.demandOwner);
+        console.log({
+            id: certificate.id
+        });
+        await demand.fill(certificate.id);
     }
 }
