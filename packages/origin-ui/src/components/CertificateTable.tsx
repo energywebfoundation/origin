@@ -359,7 +359,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
 
-        if (!this.props.currentUser || this.props.currentUser.id !== certificate.owner) {
+        if (
+            !this.props.currentUser ||
+            this.props.currentUser.id.toLowerCase() !== certificate.owner.toLowerCase()
+        ) {
             showNotification(
                 `You are not the owner of certificate ${certificate.id}.`,
                 NotificationType.Error
@@ -718,7 +721,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
 
         return (
-            <div className="CertificateTableWrapper">
+            <>
                 <TableMaterial
                     columns={this.columns}
                     rows={this.rows}
@@ -764,7 +767,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     showModal={showBuyBulkModal}
                     callback={this.hideBuyBulkModal}
                 />
-            </div>
+            </>
         );
     }
 }

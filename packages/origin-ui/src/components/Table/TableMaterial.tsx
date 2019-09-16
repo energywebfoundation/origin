@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
 import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
-import { TableOnSelectFunction } from './Table';
 import {
     Paper,
     TableFooter,
@@ -24,6 +23,8 @@ import {
     IBatchableAction,
     CustomCounterGeneratorFunction
 } from './ColumnBatchActions';
+
+type TableOnSelectFunction = (index: number, selected: boolean) => void;
 
 const styles = () =>
     createStyles({
@@ -145,6 +146,12 @@ class TableMaterialClass<T extends readonly ITableColumn[]> extends React.Compon
                 selectedIndexes: this.props.rows.map((row, index) => index)
             });
         } else {
+            this.resetSelection();
+        }
+    }
+
+    componentDidUpdate(prevProps: IProps<T>) {
+        if (JSON.stringify(prevProps.rows) !== JSON.stringify(this.props.rows)) {
             this.resetSelection();
         }
     }

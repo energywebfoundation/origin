@@ -118,18 +118,23 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
     ] as const;
 
     get rows() {
-        return this.state.paginatedData.map(enrichedData => ({
-            owner: enrichedData.organizationName,
-            facilityName: enrichedData.asset.offChainProperties.facilityName,
-            townCountry:
-                enrichedData.asset.offChainProperties.city +
-                ', ' +
-                enrichedData.asset.offChainProperties.country,
-            capacity: enrichedData.asset.offChainProperties.capacityWh
-                ? (enrichedData.asset.offChainProperties.capacityWh / 1000).toLocaleString()
-                : '-',
-            consumption: (enrichedData.asset.certificatesUsedForWh / 1000).toLocaleString()
-        }));
+        return this.state.paginatedData.map(({ asset, organizationName }) => {
+            const consumption =
+                typeof asset.certificatesUsedForWh === 'number'
+                    ? (asset.certificatesUsedForWh / 1000).toLocaleString()
+                    : '-';
+
+            return {
+                owner: organizationName,
+                facilityName: asset.offChainProperties.facilityName,
+                townCountry:
+                    asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+                capacity: asset.offChainProperties.capacityWh
+                    ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
+                    : '-',
+                consumption
+            };
+        });
     }
 
     render(): JSX.Element {

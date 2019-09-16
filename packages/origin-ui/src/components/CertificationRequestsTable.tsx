@@ -148,16 +148,14 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
         const { total, pageSize } = this.state;
 
         return (
-            <div className="CertificateTableWrapper">
-                <TableMaterial
-                    columns={this.columns}
-                    rows={this.rows}
-                    loadPage={this.loadPage}
-                    total={total}
-                    pageSize={pageSize}
-                    actions={this.actions}
-                />
-            </div>
+            <TableMaterial
+                columns={this.columns}
+                rows={this.rows}
+                loadPage={this.loadPage}
+                total={total}
+                pageSize={pageSize}
+                actions={this.actions}
+            />
         );
     }
 

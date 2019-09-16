@@ -21,7 +21,6 @@ import {
 import createSagaMiddleware from 'redux-saga';
 import sagas from '../features/sagas';
 
-import { OverlayTrigger } from 'react-bootstrap';
 import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 
 import Web3 from 'web3';
@@ -31,7 +30,6 @@ import { migrateMarketRegistryContracts, MarketLogic } from '@energyweb/market';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';
-import { dataTestSelector } from '../utils/Helper';
 import axios from 'axios';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createMemoryHistory } from 'history';
