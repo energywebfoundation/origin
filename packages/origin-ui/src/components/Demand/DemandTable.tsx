@@ -236,6 +236,17 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         }
     }
 
+    actions = [
+        { icon: <Edit />, name: 'Edit', onClick: (row: number) => this.editDemand(row) },
+        { icon: <FileCopy />, name: 'Clone', onClick: (row: number) => this.cloneDemand(row) },
+        { icon: <Delete />, name: 'Delete', onClick: (row: number) => this.deleteDemand(row) },
+        {
+            icon: <Share />,
+            name: 'Show supplies',
+            onClick: (row: number) => this.showMatchingSupply(row)
+        }
+    ];
+
     columns = [
         { id: 'buyer', label: 'Buyer' },
         { id: 'duration', label: 'Duration' },
@@ -330,17 +341,6 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             );
         }
 
-        const actions = [
-            { icon: <Edit />, name: 'Edit', onClick: (row: number) => this.editDemand(row) },
-            { icon: <FileCopy />, name: 'Clone', onClick: (row: number) => this.cloneDemand(row) },
-            { icon: <Delete />, name: 'Delete', onClick: (row: number) => this.deleteDemand(row) },
-            {
-                icon: <Share />,
-                name: 'Show supplies',
-                onClick: (row: number) => this.showMatchingSupply(row)
-            }
-        ];
-
         return (
             <div className="ForSaleWrapper">
                 <TableMaterial
@@ -351,7 +351,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     pageSize={pageSize}
                     filters={this.filters}
                     handleRowClick={(row: number) => this.viewDemand(row)}
-                    actions={actions}
+                    actions={this.actions}
                 />
             </div>
         );

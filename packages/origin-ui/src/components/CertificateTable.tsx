@@ -23,7 +23,6 @@ import {
 import { IStoreState } from '../types';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
-import { AdvancedTable } from './Table/AdvancedTable';
 import { IBatchableAction } from './Table/ColumnBatchActions';
 import { CustomFilterInputType, ICustomFilterDefinition } from './Table/FiltersHeader';
 import {
@@ -34,10 +33,11 @@ import { FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderF
 import {
     getInitialPaginatedLoaderFilteredSortedState,
     IPaginatedLoaderFilteredSortedState,
-    PaginatedLoaderFilteredSorted,
-    SortPropertiesType
+    PaginatedLoaderFilteredSorted
 } from './Table/PaginatedLoaderFilteredSorted';
-import TableUtils from './Table/TableUtils';
+import { TableMaterial } from './Table/TableMaterial';
+import { Publish, AssignmentReturn, AssignmentTurnedIn, AddShoppingCart } from '@material-ui/icons';
+import { formatCurrency } from '../utils/Helper';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -69,9 +69,8 @@ interface IEnrichedCertificateData {
 interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
     selectedState: SelectedState;
     selectedCertificates: Certificate.Entity[];
-    detailViewForCertificateId: number;
+    detailViewForCertificateId: string;
     matchedCertificates: Certificate.Entity[];
-    shouldShowPrice: boolean;
     showSellModal: boolean;
     sellModalForCertificate: Certificate.Entity;
     showBuyModal: boolean;
@@ -88,80 +87,6 @@ export enum SelectedState {
     ForDemand
 }
 
-enum OPERATIONS {
-    PUBLISH_FOR_SALE = 'Publish For Sale',
-    RETURN_TO_INBOX = 'Return to Inbox',
-    CLAIM = 'Claim',
-    BUY = 'Buy',
-    SHOW_DETAILS = 'Show Certificate Details'
-}
-
-interface ICertificateTableColumn {
-    label: string;
-    width?: number;
-    displayValue?: (enrichedData: IEnrichedCertificateData) => string | number;
-    right?: boolean;
-    body?: boolean;
-    sortProperties?: SortPropertiesType;
-}
-
-const DEFAULT_COLUMNS: ICertificateTableColumn[] = [
-    {
-        label: '#',
-        width: 60,
-        displayValue: (enrichedData: IEnrichedCertificateData) => enrichedData.certificate.id
-    },
-    {
-        label: 'Asset Type',
-        sortProperties: ['assetTypeLabel'],
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            enrichedData.producingAsset.offChainProperties.assetType
-    },
-    {
-        label: 'Commissioning Date',
-        sortProperties: ['producingAsset.offChainProperties.operationalSince'],
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            moment(
-                enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
-                'x'
-            ).format('MMM YY')
-    },
-    {
-        label: 'Town, Country',
-        sortProperties: [
-            'producingAsset.offChainProperties.country',
-            'producingAsset.offChainProperties.city'
-        ],
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            `${enrichedData.producingAsset.offChainProperties.city}, ${enrichedData.producingAsset.offChainProperties.country}`
-    },
-    {
-        label: 'Compliance',
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry]
-    },
-    {
-        label: 'Owner',
-        sortProperties: ['certificateOwner.organization'],
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            enrichedData.certificateOwner.organization
-    },
-    {
-        label: 'Certification Date',
-        sortProperties: ['certificate.creationTime'],
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            new Date(enrichedData.certificate.creationTime * 1000).toDateString()
-    },
-    {
-        label: 'Certified Energy (kWh)',
-        sortProperties: [['certificate.powerInW', value => parseInt(value, 10)]],
-        displayValue: (enrichedData: IEnrichedCertificateData) =>
-            enrichedData.certificate.powerInW / 1000,
-        right: true,
-        body: true
-    }
-];
-
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
     constructor(props: Props) {
         super(props);
@@ -172,11 +97,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             selectedCertificates: [],
             detailViewForCertificateId: null,
             matchedCertificates: [],
-            shouldShowPrice: [
-                SelectedState.ForSale,
-                SelectedState.ForDemand,
-                SelectedState.Claimed
-            ].includes(props.selectedState),
             showSellModal: false,
             sellModalForCertificate: null,
             showBuyModal: false,
@@ -187,10 +107,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             sortAscending: false
         };
 
-        this.publishForSale = this.publishForSale.bind(this);
-        this.claimCertificate = this.claimCertificate.bind(this);
-        this.operationClicked = this.operationClicked.bind(this);
-        this.showCertificateDetails = this.showCertificateDetails.bind(this);
         this.getTokenSymbol = this.getTokenSymbol.bind(this);
         this.buyCertificateBulk = this.buyCertificateBulk.bind(this);
         this.hidePublishForSaleModal = this.hidePublishForSaleModal.bind(this);
@@ -213,12 +129,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
     }
 
-    get visibleColumns(): ICertificateTableColumn[] {
-        return DEFAULT_COLUMNS.filter(
-            column => !this.props.hiddenColumns || !this.props.hiddenColumns.includes(column.label)
-        );
-    }
-
     async getPaginatedData({
         pageSize,
         offset,
@@ -230,7 +140,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             (enrichedCertificateData: IEnrichedCertificateData) => {
                 const ownerOf =
                     this.props.currentUser &&
-                    this.props.currentUser.id === enrichedCertificateData.certificate.owner;
+                    this.props.currentUser.id.toLowerCase() ===
+                        enrichedCertificateData.certificate.owner.toLowerCase();
                 const claimed =
                     Number(enrichedCertificateData.certificate.status) ===
                     Certificate.Status.Retired;
@@ -267,41 +178,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const paginatedData = sortedEnrichedData.slice(offset, offset + pageSize);
         const total = sortedEnrichedData.length;
 
-        const formattedPaginatedData = paginatedData.map(
-            (enrichedDataItem: IEnrichedCertificateData) => {
-                const certificateDataToShow = this.visibleColumns.map(column =>
-                    column.displayValue(enrichedDataItem)
-                );
-
-                if (this.state.shouldShowPrice) {
-                    const formatter = new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD'
-                    });
-
-                    certificateDataToShow.splice(
-                        certificateDataToShow.length - 1,
-                        0,
-                        enrichedDataItem.isOffChainSettlement
-                            ? formatter
-                                  .format(enrichedDataItem.offChainSettlementOptions.price / 100)
-                                  .replace('$', '')
-                            : enrichedDataItem.certificate.onChainDirectPurchasePrice
-                    );
-                    certificateDataToShow.splice(
-                        certificateDataToShow.length - 1,
-                        0,
-                        enrichedDataItem.acceptedCurrency
-                    );
-                }
-
-                return certificateDataToShow;
-            }
-        );
-
         return {
             paginatedData,
-            formattedPaginatedData,
             total
         };
     }
@@ -372,7 +250,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         return null;
     }
 
-    async buyCertificate(certificateId: number) {
+    async buyCertificate(rowIndex: number) {
+        const certificateId = this.state.paginatedData[rowIndex].certificate.id;
         const certificate: Certificate.Entity = this.props.certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
@@ -440,7 +319,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         });
     }
 
-    async publishForSale(certificateId: number) {
+    async publishForSale(rowIndex: number) {
+        const certificateId = this.state.paginatedData[rowIndex].certificate.id;
+
         const certificate: Certificate.Entity = this.props.certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
@@ -471,7 +352,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         });
     }
 
-    async returnToInbox(certificateId: number) {
+    async returnToInbox(rowIndex: number) {
+        const certificateId = this.state.paginatedData[rowIndex].certificate.id;
+
         const certificate: Certificate.Entity = this.props.certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
@@ -504,14 +387,17 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         );
     }
 
-    async claimCertificate(certificateId: number) {
+    async claimCertificate(rowIndex: number) {
+        const certificateId = this.state.paginatedData[rowIndex].certificate.id;
+
         const certificate: Certificate.Entity = this.props.certificates.find(
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
+
         if (
             certificate &&
             this.props.currentUser &&
-            this.props.currentUser.id === certificate.owner
+            this.props.currentUser.id.toLowerCase() === certificate.owner.toLowerCase()
         ) {
             certificate.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
@@ -559,9 +445,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
     }
 
-    showCertificateDetails(certificateId: number) {
+    showCertificateDetails(rowIndex: number) {
         this.setState({
-            detailViewForCertificateId: certificateId
+            detailViewForCertificateId: this.state.paginatedData[rowIndex].certificate.id
         });
     }
 
@@ -652,30 +538,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     max: maxCertificateEnergyInkWh
                 }
             }
-        ].filter(
-            filter => !this.props.hiddenColumns || !this.props.hiddenColumns.includes(filter.label)
-        );
-    }
-
-    async operationClicked(key: string, id: number) {
-        switch (key) {
-            case OPERATIONS.PUBLISH_FOR_SALE:
-                this.publishForSale(id);
-                break;
-            case OPERATIONS.RETURN_TO_INBOX:
-                this.returnToInbox(id);
-                break;
-            case OPERATIONS.CLAIM:
-                this.claimCertificate(id);
-                break;
-            case OPERATIONS.BUY:
-                await this.buyCertificate(id);
-                break;
-            case OPERATIONS.SHOW_DETAILS:
-                this.showCertificateDetails(id);
-                break;
-            default:
-        }
+        ].filter(filter => !this.hiddenColumns.includes(filter.label));
     }
 
     hideBuyModal() {
@@ -706,17 +569,138 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         }
     }
 
+    get batchableActions(): IBatchableAction[] {
+        const actions = [];
+
+        if ([SelectedState.ForSale, SelectedState.ForDemand].includes(this.props.selectedState)) {
+            actions.push({
+                label: 'Buy',
+                handler: this.buyCertificateBulk
+            });
+        }
+
+        return actions;
+    }
+
+    get actions() {
+        const actions = [];
+
+        const buyAction = {
+            name: 'Buy',
+            onClick: (row: number) => this.buyCertificate(row),
+            icon: <AddShoppingCart />
+        };
+
+        switch (this.props.selectedState) {
+            case SelectedState.Inbox:
+                actions.push(
+                    {
+                        name: 'Claim',
+                        icon: <AssignmentTurnedIn />,
+                        onClick: (row: number) => this.claimCertificate(row)
+                    },
+                    {
+                        name: 'Publish for sale',
+                        icon: <Publish />,
+                        onClick: (row: number) => this.publishForSale(row)
+                    }
+                );
+                break;
+            case SelectedState.ForSale:
+                actions.push(buyAction, {
+                    name: 'Return to inbox',
+                    icon: <AssignmentReturn />,
+                    onClick: (row: number) => this.returnToInbox(row)
+                });
+                break;
+            case SelectedState.ForDemand:
+                actions.push(buyAction);
+                break;
+        }
+
+        return actions;
+    }
+
+    get hiddenColumns() {
+        const hiddenColumns = this.props.hiddenColumns || [];
+
+        const showPrice = [
+            SelectedState.ForSale,
+            SelectedState.ForDemand,
+            SelectedState.Claimed
+        ].includes(this.props.selectedState);
+
+        if (!showPrice) {
+            hiddenColumns.push('price', 'currency');
+        }
+
+        return hiddenColumns;
+    }
+
+    get columns() {
+        return ([
+            { id: 'assetType', label: 'Asset type', sortProperties: ['assetTypeLabel'] },
+            {
+                id: 'commissioningDate',
+                label: 'Commissioning date',
+                sortProperties: ['producingAsset.offChainProperties.operationalSince']
+            },
+            {
+                id: 'townCountry',
+                label: 'Town, country',
+                sortProperties: [
+                    'producingAsset.offChainProperties.country',
+                    'producingAsset.offChainProperties.city'
+                ]
+            },
+            { id: 'compliance', label: 'Compliance' },
+            { id: 'owner', label: 'Owner', sortProperties: ['certificateOwner.organization'] },
+            {
+                id: 'certificationDate',
+                label: 'Certification date',
+                sortProperties: ['certificate.creationTime']
+            },
+            { id: 'price', label: 'Price' },
+            { id: 'currency', label: 'Currency' },
+            {
+                id: 'energy',
+                label: 'Certified energy (kWh)',
+                sortProperties: [['certificate.powerInW', (value: string) => parseInt(value, 10)]]
+            }
+        ] as const).filter(column => !this.hiddenColumns.includes(column.id));
+    }
+
+    get rows() {
+        return this.state.paginatedData.map(enrichedData => ({
+            assetType: enrichedData.producingAsset.offChainProperties.assetType,
+            commissioningDate: moment(
+                enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
+                'x'
+            ).format('MMM YY'),
+            townCountry: `${enrichedData.producingAsset.offChainProperties.city}, ${enrichedData.producingAsset.offChainProperties.country}`,
+            compliance:
+                Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry],
+            owner: enrichedData.certificateOwner.organization,
+            certificationDate: new Date(
+                enrichedData.certificate.creationTime * 1000
+            ).toDateString(),
+            price: enrichedData.isOffChainSettlement
+                ? formatCurrency(enrichedData.offChainSettlementOptions.price / 100)
+                : enrichedData.certificate.onChainDirectPurchasePrice.toLocaleString(),
+            currency: enrichedData.acceptedCurrency,
+            energy: (enrichedData.certificate.powerInW / 1000).toLocaleString()
+        }));
+    }
+
     render() {
         const {
             buyModalForCertificate,
             buyModalForProducingAsset,
             currentSort,
             detailViewForCertificateId,
-            formattedPaginatedData,
             pageSize,
             selectedCertificates,
             sellModalForCertificate,
-            shouldShowPrice,
             showBuyBulkModal,
             showBuyModal,
             showSellModal,
@@ -733,76 +717,19 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             );
         }
 
-        const defaultWidth = 106;
-        const generateFooter = TableUtils.generateFooter;
-
-        const columns = this.visibleColumns;
-
-        if (shouldShowPrice) {
-            columns.splice(columns.length - 1, 0, {
-                label: 'Price'
-            });
-            columns.splice(columns.length - 1, 0, {
-                label: 'Currency'
-            });
-        }
-
-        const TableHeader = columns.map(column => {
-            return TableUtils.generateHeader(
-                column.label,
-                column.width || defaultWidth,
-                column.right,
-                column.body,
-                column.sortProperties
-            );
-        });
-
-        const TableFooter = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: TableHeader.length - 1
-            },
-            generateFooter('Certified Energy (kWh)', true)
-        ];
-
-        const operations = [];
-        const batchableActions: IBatchableAction[] = [];
-
-        switch (this.props.selectedState) {
-            case SelectedState.Inbox:
-                operations.push(OPERATIONS.CLAIM, OPERATIONS.PUBLISH_FOR_SALE);
-                break;
-            case SelectedState.ForSale:
-                operations.push(OPERATIONS.BUY, OPERATIONS.RETURN_TO_INBOX);
-                batchableActions.push({
-                    label: 'Buy',
-                    handler: this.buyCertificateBulk
-                });
-                break;
-            case SelectedState.ForDemand:
-                operations.push(OPERATIONS.BUY);
-                break;
-        }
-
-        operations.push(OPERATIONS.SHOW_DETAILS);
-
         return (
             <div className="CertificateTableWrapper">
-                <AdvancedTable
-                    operationClicked={this.operationClicked}
-                    header={TableHeader}
-                    footer={TableFooter}
-                    actions={true}
-                    data={formattedPaginatedData}
-                    actionWidth={55.39}
-                    operations={operations}
+                <TableMaterial
+                    columns={this.columns}
+                    rows={this.rows}
                     loadPage={this.loadPage}
                     total={total}
                     pageSize={pageSize}
-                    batchableActions={batchableActions}
+                    batchableActions={this.batchableActions}
                     customSelectCounterGenerator={this.customSelectCounterGenerator}
                     filters={this.filters}
+                    handleRowClick={(row: number) => this.showCertificateDetails(row)}
+                    actions={this.actions}
                     currentSort={currentSort}
                     sortAscending={sortAscending}
                     toggleSort={this.toggleSort}

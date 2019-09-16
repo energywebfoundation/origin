@@ -67,3 +67,12 @@ export function getEnumValues(enumeration) {
 
     return enumObject.splice(Math.ceil(enumObject.length / 2), enumObject.length - 1);
 }
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+});
+
+export function formatCurrency(value: number) {
+    return currencyFormatter.format(value).replace('$', '');
+}

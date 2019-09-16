@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { Configuration } from '@energyweb/utils-general';
-import { Table } from './Table/Table';
-import TableUtils from './Table/TableUtils';
 import { CertificateLogic } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { User, Role } from '@energyweb/user-registry';
@@ -16,6 +14,18 @@ import {
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getCurrentUser, getProducingAssets, getConfiguration } from '../features/selectors';
+import { TableMaterial } from './Table/TableMaterial';
+import { Check } from '@material-ui/icons';
+
+interface IEnrichedData {
+    certificationRequestId: number;
+    asset: ProducingAsset.Entity;
+    energy: number;
+}
+
+interface IState extends IPaginatedLoaderState {
+    paginatedData: IEnrichedData[];
+}
 
 interface IOwnProps {
     approvedOnly?: boolean;
@@ -29,17 +39,11 @@ interface IStateProps {
 
 type Props = IOwnProps & IStateProps;
 
-enum OPERATIONS {
-    APPROVE = 'Approve'
-}
-
-class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedLoaderState> {
+class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
     constructor(props: Props) {
         super(props);
 
         this.state = getInitialPaginatedLoaderState();
-
-        this.operationClicked = this.operationClicked.bind(this);
     }
 
     async componentDidUpdate(prevProps) {
@@ -52,9 +56,8 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
         pageSize,
         offset
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        if (!this.props.currentUser) {
+        if (!this.props.currentUser || this.props.producingAssets.length === 0) {
             return {
-                formattedPaginatedData: [],
                 paginatedData: [],
                 total: 0
             };
@@ -70,7 +73,6 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
         const requests = await certificateLogic.getCertificationRequests();
 
         let paginatedData = [];
-        let formattedPaginatedData = [];
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
@@ -91,80 +93,77 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
                 .slice(request.readsStartIndex, Number(request.readsEndIndex) + 1)
                 .reduce((a, b) => a + Number(b.energy), 0);
 
-            paginatedData.push(request);
-            formattedPaginatedData.push([
-                i,
-                asset.offChainProperties.facilityName,
-                asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                asset.offChainProperties.assetType,
-                asset.offChainProperties.capacityWh / 1000,
-                energy / 1000
-            ]);
+            paginatedData.push({
+                certificationRequestId: i,
+                asset,
+                energy
+            });
         }
 
         const total = paginatedData.length;
 
         paginatedData = paginatedData.slice(offset, offset + pageSize);
-        formattedPaginatedData = formattedPaginatedData.slice(offset, offset + pageSize);
 
         return {
-            formattedPaginatedData,
             paginatedData,
             total
         };
     }
 
-    render() {
-        const defaultWidth = 106;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body);
-        const generateFooter = TableUtils.generateFooter;
-
-        const TableHeader = [
-            generateHeader('#', 60),
-            generateHeader('Facility'),
-            generateHeader('Town, Country'),
-            generateHeader('Type'),
-            generateHeader('Capacity (kW)'),
-            generateHeader('Meter Read (kWh)')
-        ];
-
-        const TableFooter = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: TableHeader.length - 1
-            },
-            generateFooter('Meter Read (kWh)', true)
-        ];
-
-        let operations;
-
+    get actions() {
         const isIssuer = this.props.currentUser && this.props.currentUser.isRole(Role.Issuer);
 
         if (isIssuer && !this.props.approvedOnly) {
-            operations = [OPERATIONS.APPROVE];
+            return [
+                {
+                    icon: <Check />,
+                    name: 'Approve',
+                    onClick: (row: number) => this.approve(row)
+                }
+            ];
         }
+
+        return [];
+    }
+
+    columns = [
+        { id: 'facility', label: 'Facility' },
+        { id: 'townCountry', label: 'Town, country' },
+        { id: 'type', label: 'Type' },
+        { id: 'capacity', label: 'Capacity (kW)' },
+        { id: 'meterRead', label: 'Meter Read (kWh)' }
+    ] as const;
+
+    get rows() {
+        return this.state.paginatedData.map(({ asset, energy }) => ({
+            facility: asset.offChainProperties.facilityName,
+            townCountry: asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+            type: asset.offChainProperties.assetType,
+            capacity: (asset.offChainProperties.capacityWh / 1000).toLocaleString(),
+            meterRead: (energy / 1000).toLocaleString()
+        }));
+    }
+
+    render() {
+        const { total, pageSize } = this.state;
 
         return (
             <div className="CertificateTableWrapper">
-                <Table
-                    header={TableHeader}
-                    footer={TableFooter}
-                    actions={true}
-                    actionWidth={55}
-                    data={this.state.formattedPaginatedData}
-                    operations={operations}
-                    operationClicked={this.operationClicked}
+                <TableMaterial
+                    columns={this.columns}
+                    rows={this.rows}
                     loadPage={this.loadPage}
-                    total={this.state.total}
-                    pageSize={this.state.pageSize}
+                    total={total}
+                    pageSize={pageSize}
+                    actions={this.actions}
                 />
             </div>
         );
     }
 
-    async approve(id: number) {
+    async approve(rowIndex: number) {
+        const certificationRequestId = this.state.paginatedData[rowIndex].certificationRequestId;
+
         const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
             .certificateLogicInstance;
 
@@ -173,7 +172,7 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
                 address: this.props.currentUser.id
             };
 
-            await certificateLogic.approveCertificationRequest(id);
+            await certificateLogic.approveCertificationRequest(certificationRequestId);
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 
@@ -181,16 +180,6 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IPaginatedL
         } catch (error) {
             showNotification(`Could not approve certification request.`, NotificationType.Error);
             console.error(error);
-        }
-    }
-
-    async operationClicked(key: string, id: number) {
-        switch (key) {
-            case OPERATIONS.APPROVE:
-                this.approve(id);
-                break;
-            default:
-                break;
         }
     }
 }
