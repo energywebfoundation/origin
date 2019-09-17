@@ -312,7 +312,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            const supplyOffChainProperties: Market.Supply.ISupplyOffchainProperties = {
+            const supplyOffChainProperties: Market.Supply.ISupplyOffChainProperties = {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 availableWh: 10,

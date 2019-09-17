@@ -15,9 +15,9 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
 import * as GeneralLib from '@energyweb/utils-general';
-import SupplyOffchainpropertiesSchema from '../../schemas/SupplyOffchainProperties.schema.json';
+import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperties.schema.json';
 
-export interface ISupplyOffchainProperties {
+export interface ISupplyOffChainProperties {
     price: number;
     currency: GeneralLib.Currency;
     availableWh: number;
@@ -43,14 +43,14 @@ export const getAllSupplies = async (configuration: GeneralLib.Configuration.Ent
 
 export const createSupply = async (
     supplyPropertiesOnChain: ISupplyOnChainProperties,
-    supplyPropertiesOffChain: ISupplyOffchainProperties,
+    supplyPropertiesOffChain: ISupplyOffChainProperties,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<Entity> => {
     const supply = new Entity(null, configuration);
 
     const offChainStorageProperties = supply.prepareEntityCreation(
         supplyPropertiesOffChain,
-        SupplyOffchainpropertiesSchema,
+        supplyOffChainPropertiesSchema,
         supply.getUrl()
     );
     if (configuration.offChainDataSource) {
@@ -82,12 +82,12 @@ export const createSupply = async (
 };
 
 export interface ISupply extends ISupplyOnChainProperties {
-    offChainProperties: ISupplyOffchainProperties
+    offChainProperties: ISupplyOffChainProperties
 }
 
 export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
     implements ISupply {
-    offChainProperties: ISupplyOffchainProperties;
+    offChainProperties: ISupplyOffChainProperties;
     propertiesDocumentHash: string;
     url: string;
 

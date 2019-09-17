@@ -160,7 +160,7 @@ describe('MatchableDemand tests', () => {
             demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
             demand.offChainProperties.returns(demandOffChainProperties);
 
-            const supplyOffChainProperties = Substitute.for<Supply.ISupplyOffchainProperties>();
+            const supplyOffChainProperties = Substitute.for<Supply.ISupplyOffChainProperties>();
             supplyOffChainProperties.availableWh.returns(options.energy || supplyEnergy);
             supplyOffChainProperties.price.returns(
                 options.price || (energyPrice * (options.energy || supplyEnergy)) / 1e6

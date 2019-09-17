@@ -223,7 +223,7 @@ export const marketDemo = async (demoFile?: string) => {
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
                 currency = Currency[action.data.currency as keyof typeof Currency];
 
-                const supplyOffChainProperties: Supply.ISupplyOffchainProperties = {
+                const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
                     price: action.data.price,
                     currency,
                     availableWh: action.data.availableWh,
