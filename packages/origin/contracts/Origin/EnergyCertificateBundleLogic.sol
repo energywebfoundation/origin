@@ -105,7 +105,6 @@ contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpec
         uint256 _entityId
     )
         external
-   //     onlyRole(RoleManagement.Role.Trader)
         payable
     {
         EnergyCertificateBundleDB.EnergyCertificateBundle memory bundle = EnergyCertificateBundleDB(address(db)).getBundle(_entityId);
@@ -277,7 +276,7 @@ contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpec
         internal
     {
         EnergyCertificateBundleDB.EnergyCertificateBundle memory bundle = EnergyCertificateBundleDB(address(db)).getBundle(_entityId);
-        
+
         simpleTransferInternal(_from, _to, _entityId);
         safeTransferChecks(_from, _to, _entityId, _data);
         emit LogBundleOwnerChanged(_entityId, bundle.tradableEntity.owner, _to, address(0x0));

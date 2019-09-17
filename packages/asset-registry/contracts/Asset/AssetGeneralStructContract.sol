@@ -31,6 +31,4 @@ contract AssetGeneralStructContract {
         address marketLookupContract;
         bool bundled;
     }
-
-
 }

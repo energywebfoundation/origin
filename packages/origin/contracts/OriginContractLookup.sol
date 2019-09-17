@@ -19,9 +19,9 @@ pragma solidity ^0.5.0;
 import "@energyweb/utils-general/contracts/Msc/Owned.sol";
 import "@energyweb/utils-general/contracts/Interfaces/Updatable.sol";
 import "@energyweb/user-registry/contracts/Interfaces/UserContractLookupInterface.sol";
-import "../contracts/Interfaces/OriginContractLookupInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
-//import "ew-asset-registry-contracts/contracts/Interfaces/OriginMarketContractLookupInterface.sol";
+
+import "../contracts/Interfaces/OriginContractLookupInterface.sol";
 
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract OriginContractLookup is Owned, OriginContractLookupInterface {

@@ -98,7 +98,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         address _to,
         uint256 _entityId
     )
-        onlyRole(RoleManagement.Role.Trader)
         external
         payable
     {
@@ -111,7 +110,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         external functions
     */
 
-    function buyCertificateInternal(uint _certificateId, address buyer) internal{
+    function buyCertificateInternal(uint _certificateId, address buyer) internal {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
 
         require(buyer != cert.tradableEntity.owner, "Can't buy your own certificates.");

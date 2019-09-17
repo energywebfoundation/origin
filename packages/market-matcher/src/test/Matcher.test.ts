@@ -353,22 +353,24 @@ describe('Test StrategyBasedMatcher', async () => {
 
         it('certificate owner is the trader after successful match', async () => {
             console.log({
-                marketLogic
+                marketLogicInstance:
+                    conf.blockchainProperties.marketLogicInstance.web3Contract._address,
+                certificateLogicInstance:
+                    conf.blockchainProperties.certificateLogicInstance.web3Contract._address
             });
-            const events = await marketLogic.getEvents('DemandFilled');
-            console.log({ events });
-            assert.equal(events.length, 0);
 
             conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
+                address: accountDeployment,
+                privateKey: privateKeyDeployment
             };
 
-            await sleep(10000);
+            await sleep(30000);
+            const events = await marketLogic.getAllEvents();
+            console.log({ events: events.map((event: any) => event.returnValues) });
 
             const certificate = await new Certificate.Entity('0', conf).sync();
             assert.equal(await certificate.getOwner(), accountTrader);
-        }).timeout(11000);
+        }).timeout(31000);
     });
 
     describe('Agreement matching tests', () => {

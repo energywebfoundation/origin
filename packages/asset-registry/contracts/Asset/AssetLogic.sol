@@ -141,10 +141,10 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
 	/// @param _new matcher-address to be included
     function addMatcher(uint _assetId, address _new) external {
 
-        require(msg.sender == db.getAssetOwner(_assetId),"addMatcher: not the owner");
+        require(msg.sender == db.getAssetOwner(_assetId), "addMatcher: not the owner");
         address[] memory matcher = db.getMatcher(_assetId);
         assert(matcher.length < matcher.length + 1);
-        require(matcher.length+1 <= AssetContractLookup(owner).maxMatcherPerAsset(),"addMatcher: too many matcher already");
+        require(matcher.length+1 <= AssetContractLookup(owner).maxMatcherPerAsset(), "addMatcher: too many matcher already");
 
         db.addMatcher(_assetId,_new);
     }

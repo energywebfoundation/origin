@@ -277,14 +277,14 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice gets the tradable token
     /// @param _entityId the id of an entity
     /// @return the tradable token (ERC20 contract)
-    function getTradableToken(uint _entityId) external view returns (address){
+    function getTradableToken(uint _entityId) external view returns (address) {
         return db.getTradableToken(_entityId);
     }
 
     /// @notice functions that checks whether this contract supports a certain interfaceId
     /// @param _interfaceID the interfaceId
     /// @return true if interfaceId == 0x80ac58cd
-    function supportsInterface(bytes4 _interfaceID) external view returns (bool){
+    function supportsInterface(bytes4 _interfaceID) external view returns (bool) {
         if(_interfaceID == 0x80ac58cd) return true;
     }
 
@@ -294,11 +294,14 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice Checks if the msg.sender is included in the matcher-array
     /// @param _matcher the array with matchers
     /// @return true when the msg.sender is in the matcher-array
-    function checkMatcher(address[] memory _matcher) public view returns (bool){
-
+    function checkMatcher(address[] memory _matcher) public view returns (bool) {
         // we iterate through the matcherarray, the length is defined by the maxMatcherPerAsset-parameter of the Coo-contract or the array-length if it's shorter
-        for(uint i = 0; i < ( AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset() < _matcher.length? AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset():_matcher.length); i++){
-            if(_matcher[i] == msg.sender) return true;
+        uint matcherArrayLength = AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset() < _matcher.length
+            ? AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset()
+            : _matcher.length;
+
+        for (uint i = 0; i < matcherArrayLength; i++) {
+            if (_matcher[i] == msg.sender) return true;
         }
     }
 
@@ -327,19 +330,18 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     {
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(address(db)).getTradableEntity(_entityId);
 
-        require(te.owner == _from,"not the owner of the entity");
+        require(te.owner == _from, "not the owner of the entity");
         require(te.owner != address(0x0), "0x0 as owner is not allowed");
         require(msg.value == 0, "sending value is not allowed");
-      //  require((te.owner == _from) && (te.owner != 0x0) && (msg.value == 0),"owner not matching or send value");
         require(
             te.owner == msg.sender
             || checkMatcher(te.escrow)
             || db.getOwnerToOperators(te.owner, msg.sender)
             || te.approvedAddress == msg.sender, "simpleTransfer, missing rights"
         );
-        db.setTradableEntityOwnerAndAddApproval(_entityId, _to,address(0x0));
+        db.setTradableEntityOwnerAndAddApproval(_entityId, _to, address(0x0));
         db.removeTokenAndPrice(_entityId);
-        emit Transfer(_from,_to,_entityId);
+        emit Transfer(_from, _to, _entityId);
     }
 
     /// @notice checks requirements for a safe transder
@@ -355,7 +357,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     )
         internal
     {
-        require(isContract(_to),"_to is not a contract");
-        require(ERC721TokenReceiver(_to).onERC721Received(address(this),_from,_entityId,_data) == 0x150b7a02,"_to did not respond correctly");
+        require(isContract(_to), "_to is not a contract");
+        require(ERC721TokenReceiver(_to).onERC721Received(address(this),_from,_entityId,_data) == 0x150b7a02, "_to did not respond correctly");
     }
 }

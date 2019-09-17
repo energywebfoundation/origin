@@ -23,7 +23,7 @@ export class CertificateService {
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
-
+        console.log('Filling...');
         console.log({
             id: certificate.id
         });
@@ -64,11 +64,12 @@ export class CertificateService {
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
-
+        console.log('Filling...');
         console.log({
             id: certificate.id
         });
         await demand.fill(certificate.id);
+        console.log(`Filled: ${certificate.id}`);
     }
 
     private async isAlreadyTransferred(certificate: Certificate.Entity, owner: string) {

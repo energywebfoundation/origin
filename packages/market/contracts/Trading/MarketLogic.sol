@@ -1,23 +1,7 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "@energyweb/origin/contracts/Origin/TradableEntityLogic.sol";
+import "@energyweb/origin/contracts/Origin/CertificateLogic.sol";
 import "@energyweb/origin/contracts/Origin/TradableEntityContract.sol";
 import "@energyweb/origin/contracts/Interfaces/TradableEntityDBInterface.sol";
 import "@energyweb/origin/contracts/Interfaces/TradableEntityInterface.sol";
@@ -109,13 +93,12 @@ contract MarketLogic is AgreementLogic {
         MarketDB.Demand memory demand = db.getDemand(_demandId);
         require(demand.status == MarketDB.DemandStatus.ACTIVE, "demand cannot be in archived state");
 
-        address entityOwner = TradableEntityDBInterface(
-            address(originContractLookup.originLogicRegistry())
-        ).getTradableEntityOwner(_entityId);
+        address originLogicRegistry = originContractLookup.originLogicRegistry();
 
-        TradableEntityLogic(
-            address(originContractLookup.originLogicRegistry())
-        ).transferFrom(entityOwner, demand.demandOwner, _entityId);
+        TradableEntityContract.TradableEntity memory te = TradableEntityDB(originLogicRegistry).getTradableEntity(_entityId);
+        CertificateLogic(originLogicRegistry).transferFrom(
+            te.owner, demand.demandOwner, _entityId
+        );
 
         emit DemandFilled(_demandId, _entityId);
     }
