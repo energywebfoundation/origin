@@ -1,19 +1,23 @@
-import * as Winston from 'winston';
-import { injectable, inject } from 'tsyringe';
-
-import { Configuration } from '@energyweb/utils-general';
-import { Certificate } from '@energyweb/origin';
-import { Agreement, Demand, Supply } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { IEntityStore } from './EntityStore';
+import { Agreement, Demand, Supply } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
+import { Configuration } from '@energyweb/utils-general';
+import { Subject } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+import { inject, injectable } from 'tsyringe';
+import * as Winston from 'winston';
+
 import { CertificateService } from './CertificateService';
+import { IEntityStore } from './EntityStore';
 import { MatchableAgreement } from './MatchableAgreement';
-import { IStrategy } from './strategy/IStrategy';
 import { MatchableDemand } from './MatchableDemand';
+import { IStrategy } from './strategy/IStrategy';
 
 @injectable()
 export class Matcher {
     private matcherAddress: string;
+
+    private matchingQueue = new Subject();
 
     constructor(
         @inject('config') private config: Configuration.Entity,
@@ -22,29 +26,39 @@ export class Matcher {
         @inject('strategy') private strategy: IStrategy,
         @inject('logger') private logger: Winston.Logger
     ) {
-        entityStore.registerCertificateListener(this.match.bind(this));
         this.matcherAddress = config.blockchainProperties.activeUser.address;
     }
 
     public async init() {
+        this.matchingQueue.pipe(concatMap(this.match.bind(this))).subscribe();
+        this.entityStore.registerCertificateListener(async (certificate: Certificate.Entity) =>
+            this.matchingQueue.next(certificate)
+        );
         await this.entityStore.init();
     }
 
     private async match(certificate: Certificate.Entity) {
-        if (!this.isAllowedMatcher(certificate)) {
-            this.logger.verbose(
-                `This instance is not an escrow for certificate #${certificate.id}`
-            );
-            return false;
+        this.logger.verbose(`Started processing certificate #${certificate.id}`);
+        try {
+            if (!this.isAllowedMatcher(certificate)) {
+                this.logger.verbose(
+                    `This instance is not an escrow for certificate #${certificate.id}`
+                );
+                return false;
+            }
+
+            this.logger.verbose(`This instance is an escrow for certificate #${certificate.id}`);
+
+            const matchingResult =
+                (await this.matchWithAgreements(certificate)) ||
+                (await this.matchWithDemands(certificate));
+
+            return matchingResult;
+        } catch (e) {
+            this.logger.error(`Processing certificate #${certificate.id} failed with ${e.message}`);
         }
 
-        this.logger.verbose(`This instance is an escrow for certificate #${certificate.id}`);
-
-        const matchingResult =
-            (await this.matchWithAgreements(certificate)) ||
-            (await this.matchWithDemands(certificate));
-
-        return matchingResult;
+        return false;
     }
 
     private isOnSale(certificate: Certificate.ICertificate) {
