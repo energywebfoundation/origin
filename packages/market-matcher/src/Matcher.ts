@@ -102,7 +102,7 @@ export class Matcher {
 
     private async matchWithDemands(certificate: Certificate.Entity) {
         if (!this.isOnSale(certificate)) {
-            this.logger.verbose(`This certificate is on for sale #${certificate.id}`);
+            this.logger.verbose(`This certificate is not on sale #${certificate.id}`);
             return false;
         }
 

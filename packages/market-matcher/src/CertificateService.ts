@@ -72,7 +72,7 @@ export class CertificateService {
             `isAlreadyTransferred: #${syncedCertificate.id} owned by ${syncedCertificate.owner}`
         );
 
-        if (certificate.owner === owner) {
+        if (certificate.owner.toLowerCase() === owner.toLowerCase()) {
             this.logger.info(
                 `Certificate #${syncedCertificate.id} was already transferred to ${owner}`
             );
