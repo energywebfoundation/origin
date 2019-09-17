@@ -16,9 +16,14 @@ export class CertificateService {
 
     public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.IAgreement) {
         const demand = this.entityStore.getDemandById(agreement.demandId.toString());
+        if (await this.isAlreadyTransferred(certificate, demand.demandOwner)) {
+            return;
+        }
+
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
+
         await certificate.transferFrom(demand.demandOwner);
 
         // TODO: update the the agreement current energy needs
@@ -49,10 +54,31 @@ export class CertificateService {
     }
 
     public async matchDemand(certificate: Certificate.Entity, demand: Demand.IDemand) {
-        this.logger.info(`Matched certificate #${certificate.id} to demand #${demand.id}`);
+        if (await this.isAlreadyTransferred(certificate, demand.demandOwner)) {
+            return;
+        }
+
         this.logger.debug(
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
+
         await certificate.transferFrom(demand.demandOwner);
+    }
+
+    private async isAlreadyTransferred(certificate: Certificate.Entity, owner: string) {
+        const syncedCertificate = await certificate.sync();
+
+        this.logger.verbose(
+            `isAlreadyTransferred: #${syncedCertificate.id} owned by ${syncedCertificate.owner}`
+        );
+
+        if (certificate.owner.toLowerCase() === owner.toLowerCase()) {
+            this.logger.info(
+                `Certificate #${syncedCertificate.id} was already transferred to ${owner}`
+            );
+            return true;
+        }
+
+        return false;
     }
 }

@@ -292,8 +292,6 @@ describe('Test StrategyBasedMatcher', async () => {
 
     it('starts the matcher', async () => {
         await startMatcher(matcherConfig);
-
-        await sleep(5000);
     }).timeout(6000);
 
     it('sets the market lookup contract', async () => {
