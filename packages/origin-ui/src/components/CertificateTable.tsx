@@ -434,8 +434,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 timeFrame: TimeFrame.yearly,
                 maxPricePerMwh: 0,
                 currency: Currency.USD,
-                producingAsset: certificate.assetId.toString(),
-                consumingAsset: '0',
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 targetWhPerPeriod: certificate.powerInW,

@@ -201,8 +201,6 @@ describe('Test StrategyBasedMatcher', async () => {
             timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150,
             currency: Currency.USD,
-            producingAsset: '0',
-            consumingAsset: '0',
             location: { provinces: ['string'], regions: ['string'] },
             assetType: ['Solar'],
             minCO2Offset: 10,

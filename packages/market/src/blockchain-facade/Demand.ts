@@ -23,8 +23,6 @@ export interface IDemandOffChainProperties {
     timeFrame: GeneralLib.TimeFrame;
     maxPricePerMwh: number;
     currency: GeneralLib.Currency;
-    producingAsset?: string;
-    consumingAsset?: string;
     location?: IDemandLocation;
     assetType?: string[];
     minCO2Offset?: number;

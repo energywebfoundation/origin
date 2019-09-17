@@ -177,8 +177,6 @@ describe('Market-Facade', () => {
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
-                producingAsset: '0',
-                consumingAsset: '0',
                 location: { provinces: ['string'], regions: ['string'] },
                 assetType: ['Solar'],
                 minCO2Offset: 10,
@@ -225,13 +223,11 @@ describe('Market-Facade', () => {
 
             assert.deepEqual(demand.offChainProperties, {
                 assetType: ['Solar'],
-                consumingAsset: '0',
                 currency: GeneralLib.Currency.USD,
                 location: { provinces: ['string'], regions: ['string'] },
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
-                producingAsset: '0',
                 registryCompliance: 2,
                 targetWhPerPeriod: 10,
                 timeFrame: GeneralLib.TimeFrame.hourly,
