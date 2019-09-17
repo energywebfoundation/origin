@@ -376,7 +376,7 @@ describe('Test StrategyBasedMatcher', async () => {
                 price: 150,
                 currency: Currency.USD,
                 period: 10,
-                timeframe: TimeFrame.hourly
+                timeFrame: TimeFrame.hourly
             };
 
             const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {

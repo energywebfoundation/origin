@@ -25,7 +25,7 @@ export interface IAgreementOffChainProperties {
     price: number;
     currency: GeneralLib.Currency;
     period: number;
-    timeframe: GeneralLib.TimeFrame;
+    timeFrame: GeneralLib.TimeFrame;
 }
 
 export interface IMatcherOffChainProperties {

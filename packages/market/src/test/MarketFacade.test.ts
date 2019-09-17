@@ -395,7 +395,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const matcherOffchainProps: IMatcherOffChainProperties = {
@@ -447,7 +447,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -483,7 +483,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -527,7 +527,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -546,7 +546,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const matcherOffchainProps: IMatcherOffChainProperties = {
@@ -598,7 +598,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -642,7 +642,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -691,7 +691,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });

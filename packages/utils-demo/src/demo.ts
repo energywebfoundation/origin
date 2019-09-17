@@ -237,7 +237,7 @@ export const marketDemo = async (demoFile?: string) => {
                     price: action.data.price,
                     currency,
                     period: action.data.period,
-                    timeframe: timeFrame
+                    timeFrame: timeFrame
                 };
 
                 const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {

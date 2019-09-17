@@ -26,7 +26,7 @@ export class MatchableAgreement {
     }
 
     public async missingEnergyForDemand(demand: Demand.IDemand, config: Configuration.Entity) {
-        const { start, timeframe } = this.agreement.offChainProperties;
+        const { start, timeFrame: timeframe } = this.agreement.offChainProperties;
         const currentPeriod = await Utils.getCurrentPeriod(start, timeframe, config);
 
         const { targetWhPerPeriod } = demand.offChainProperties;
