@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment';
 import 'moment/min/locales.min';
-import { ButtonGroup, Button } from 'react-bootstrap';
 
 import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 
 import './SmartMeterReadingsChart.scss';
 import { STYLE_CONFIG } from '../styles/styleConfig';
+import { Button, ButtonGroup } from '@material-ui/core';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -232,8 +232,8 @@ export class SmartMeterReadingsChart extends React.Component<
                 <Button
                     key={index}
                     onClick={onClick}
+                    color="primary"
                     className={`btn-switcher-btn ${isCurrentlySelected ? 'selected' : ''}`}
-                    variant="primary"
                 >
                     {TIMEFRAME[timeframe]}
                 </Button>
@@ -258,7 +258,9 @@ export class SmartMeterReadingsChart extends React.Component<
                     </div>
 
                     <div className="col-lg-8">
-                        <ButtonGroup className="btn-switcher">{timeFrameButtons}</ButtonGroup>
+                        <ButtonGroup className="btn-switcher" variant="contained" color="primary">
+                            {timeFrameButtons}
+                        </ButtonGroup>
                     </div>
 
                     <div className="col-lg-2">

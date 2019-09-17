@@ -1,12 +1,7 @@
 import * as React from 'react';
 import moment from 'moment';
-
 import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
-
-import './SmartMeterReadingsTable.scss';
-import { Table } from './Table/Table';
-import TableUtils from './Table/TableUtils';
 import {
     IPaginatedLoaderState,
     PaginatedLoader,
@@ -14,17 +9,19 @@ import {
     IPaginatedLoaderFetchDataReturnValues,
     getInitialPaginatedLoaderState
 } from './Table/PaginatedLoader';
+import { TableMaterial } from './Table/TableMaterial';
 
-export interface ISmartMeterReadingsTableProps {
+interface IOwnProps {
     conf: Configuration.Entity;
     producingAsset: ProducingAsset.Entity;
 }
 
-export class SmartMeterReadingsTable extends PaginatedLoader<
-    ISmartMeterReadingsTableProps,
-    IPaginatedLoaderState
-> {
-    constructor(props: ISmartMeterReadingsTableProps) {
+interface IState extends IPaginatedLoaderState {
+    paginatedData: Array<[string, number]>;
+}
+
+export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> {
+    constructor(props: IOwnProps) {
         super(props);
 
         this.state = {
@@ -46,40 +43,35 @@ export class SmartMeterReadingsTable extends PaginatedLoader<
             currentSmartMeterState += readings[i].energy;
 
             data.push([
-                i,
                 moment.unix(readings[i].timestamp).format('DD MMM YY, HH:mm'),
                 currentSmartMeterState
             ]);
         }
 
         return {
-            formattedPaginatedData: data.reverse().slice(offset, offset + pageSize),
-            paginatedData: [],
+            paginatedData: data.reverse().slice(offset, offset + pageSize),
             total: readings.length
         };
     }
 
+    columns = [{ id: 'time', label: 'Time' }, { id: 'value', label: 'Smart Meter Value' }] as const;
+
+    get rows() {
+        return this.state.paginatedData.map(data => ({
+            time: data[0],
+            value: data[1].toLocaleString()
+        }));
+    }
+
     render() {
-        const defaultWidth = 106;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body);
-
-        const TableHeader = [
-            generateHeader('#', 50),
-            generateHeader('Time', 100),
-            generateHeader('Smart Meter Value', 100, true)
-        ];
-
         return (
-            <div className="smartMeterReadingsTable">
-                <Table
-                    header={TableHeader}
-                    data={this.state.formattedPaginatedData}
-                    loadPage={this.loadPage}
-                    total={this.state.total}
-                    pageSize={this.state.pageSize}
-                />
-            </div>
+            <TableMaterial
+                columns={this.columns}
+                rows={this.rows}
+                loadPage={this.loadPage}
+                total={this.state.total}
+                pageSize={this.state.pageSize}
+            />
         );
     }
 }

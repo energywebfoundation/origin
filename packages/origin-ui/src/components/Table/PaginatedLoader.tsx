@@ -7,7 +7,6 @@ export type IPaginatedLoaderProps = {};
 
 export interface IPaginatedLoaderState {
     paginatedData: any[];
-    formattedPaginatedData?: ReactText[][];
     pageSize: number;
     total: number;
 }
@@ -20,7 +19,6 @@ export interface IPaginatedLoaderFetchDataParameters {
 
 export interface IPaginatedLoaderFetchDataReturnValues {
     paginatedData: any[];
-    formattedPaginatedData?: ReactText[][];
     total: number;
 }
 
@@ -34,7 +32,6 @@ export interface IPaginatedLoader {
 
 export const PAGINATED_LOADER_INITIAL_STATE: IPaginatedLoaderState = {
     paginatedData: [],
-    formattedPaginatedData: [],
     pageSize: DEFAULT_PAGE_SIZE,
     total: 0
 };
@@ -76,7 +73,7 @@ export abstract class PaginatedLoader<
 
         const offset = (page - 1) * pageSize;
 
-        const { paginatedData, formattedPaginatedData, total } = await this.getPaginatedData({
+        const { paginatedData, total } = await this.getPaginatedData({
             pageSize,
             offset,
             filters
@@ -88,7 +85,6 @@ export abstract class PaginatedLoader<
 
         this.setState({
             paginatedData,
-            formattedPaginatedData,
             total
         });
     }
