@@ -100,6 +100,14 @@ export class EntityStore implements IEntityStore {
             currentBlockNumber
         );
 
+        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const { _entityId } = event.returnValues;
+            this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
+            const newCertificate = await new Certificate.Entity(_entityId, this.config).sync();
+
+            await this.triggerListeners(newCertificate);
+        });
+
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             this.logger.verbose(
                 `Event: LogCreatedCertificate certificate #${event.returnValues._certificateId}`

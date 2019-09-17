@@ -31,11 +31,7 @@ export class Matcher {
     }
 
     private async match(certificate: Certificate.Entity) {
-        const isEscrowAccount = certificate.escrow.some(
-            escrow => escrow.toLowerCase() === this.matcherAddress.toLowerCase()
-        );
-
-        if (!isEscrowAccount) {
+        if (!this.isAllowedMatcher(certificate)) {
             this.logger.verbose(
                 `This instance is not an escrow for certificate #${certificate.id}`
             );
@@ -51,9 +47,18 @@ export class Matcher {
         return matchingResult;
     }
 
+    private isOnSale(certificate: Certificate.ICertificate) {
+        return certificate.forSale;
+    }
+
+    private isAllowedMatcher(certificate: Certificate.ICertificate) {
+        return certificate.escrow.some(
+            escrow => escrow.toLowerCase() === this.matcherAddress.toLowerCase()
+        );
+    }
+
     private async matchWithAgreements(certificate: Certificate.Entity) {
         const agreements = this.entityStore.getAgreements();
-
         const matchingAgreements = await this.findMatchingAgreements(certificate, agreements);
 
         for (const matchingAgreement of matchingAgreements) {
@@ -82,6 +87,11 @@ export class Matcher {
     }
 
     private async matchWithDemands(certificate: Certificate.Entity) {
+        if (!this.isOnSale(certificate)) {
+            this.logger.verbose(`This certificate is on for sale #${certificate.id}`);
+            return false;
+        }
+
         const demands = this.entityStore.getDemands();
 
         const matchingDemands = await this.findMatchingDemands(certificate, demands);

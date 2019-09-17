@@ -138,7 +138,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         simpleTransferInternal(cert.tradableEntity.owner, buyer, _certificateId);
         checktransferOwnerInternally(_certificateId, cert);
 
-        TradableEntityDBInterface(address(db)).setForSale(_certificateId, false);
+        unpublishForSale(_certificateId);
     }
 
     /// @notice buys a certificate
