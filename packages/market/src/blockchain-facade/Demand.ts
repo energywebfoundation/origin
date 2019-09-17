@@ -102,7 +102,7 @@ export const createDemand = async (
 };
 
 export const deleteDemand = async (
-    demandId: number,
+    demandId: string,
     configuration: GeneralLib.Configuration.Entity
 ): Promise<boolean> => {
     let success = true;

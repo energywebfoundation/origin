@@ -1,24 +1,6 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import * as React from 'react';
 import { User } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
-import { ITableHeaderData } from './Table/Table';
-import TableUtils from './Table/TableUtils';
 import { Configuration } from '@energyweb/utils-general';
 import { ConsumingAsset } from '@energyweb/asset-registry';
 import {
@@ -33,11 +15,11 @@ import {
     PaginatedLoaderFiltered
 } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { AdvancedTable } from './Table/AdvancedTable';
 import { getConsumingAssetDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getConfiguration, getConsumingAssets, getBaseURL } from '../features/selectors';
+import { TableMaterial } from './Table/TableMaterial';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -45,13 +27,14 @@ interface IStateProps {
     baseURL: string;
 }
 
-interface IConsumingAssetTableState extends IPaginatedLoaderFilteredState {
-    detailViewForAssetId: number;
-}
-
 interface IEnrichedConsumingAssetData {
     asset: ConsumingAsset.Entity;
     organizationName: string;
+}
+
+interface IConsumingAssetTableState extends IPaginatedLoaderFilteredState {
+    detailViewForAssetId: string;
+    paginatedData: IEnrichedConsumingAssetData[];
 }
 
 class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
@@ -65,8 +48,14 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
             ...getInitialPaginatedLoaderFilteredState(),
             detailViewForAssetId: null
         };
+    }
 
-        this.operationClicked = this.operationClicked.bind(this);
+    viewAsset(rowIndex: number) {
+        const asset = this.state.paginatedData[rowIndex].asset;
+
+        this.setState({
+            detailViewForAssetId: asset.id
+        });
     }
 
     filters: ICustomFilterDefinition[] = [
@@ -96,24 +85,7 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
 
         const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
 
-        const formattedPaginatedData = paginatedData.map(enrichedRecordData => {
-            const asset = enrichedRecordData.asset;
-
-            return [
-                asset.id,
-                enrichedRecordData.organizationName,
-                asset.offChainProperties.facilityName,
-                asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
-                asset.offChainProperties.capacityWh
-                    ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
-                    : '-',
-                (asset.lastSmartMeterReadWh / 1000).toLocaleString(),
-                (asset.certificatesUsedForWh / 1000).toLocaleString()
-            ];
-        });
-
         return {
-            formattedPaginatedData,
             paginatedData,
             total
         };
@@ -137,62 +109,56 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
         return Promise.all(promises);
     }
 
-    operationClicked(id: number): void {
-        this.setState({
-            detailViewForAssetId: id
+    columns = [
+        { id: 'owner', label: 'Owner' },
+        { id: 'facilityName', label: 'Facility name' },
+        { id: 'townCountry', label: 'Town, country' },
+        { id: 'capacity', label: 'Nameplate capacity (kW)' },
+        { id: 'consumption', label: 'Consumption (kWh)' }
+    ] as const;
+
+    get rows() {
+        return this.state.paginatedData.map(({ asset, organizationName }) => {
+            const consumption =
+                typeof asset.certificatesUsedForWh === 'number'
+                    ? (asset.certificatesUsedForWh / 1000).toLocaleString()
+                    : '-';
+
+            return {
+                owner: organizationName,
+                facilityName: asset.offChainProperties.facilityName,
+                townCountry:
+                    asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+                capacity: asset.offChainProperties.capacityWh
+                    ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
+                    : '-',
+                consumption
+            };
         });
     }
 
     render(): JSX.Element {
-        if (this.state.detailViewForAssetId !== null) {
+        const { detailViewForAssetId, total, pageSize } = this.state;
+
+        if (detailViewForAssetId !== null) {
             return (
                 <Redirect
                     push={true}
-                    to={getConsumingAssetDetailLink(
-                        this.props.baseURL,
-                        this.state.detailViewForAssetId
-                    )}
+                    to={getConsumingAssetDetailLink(this.props.baseURL, detailViewForAssetId)}
                 />
             );
         }
 
-        const defaultWidth = 106;
-        const generateHeader = TableUtils.generateHeader;
-        const generateFooter = TableUtils.generateFooter;
-
-        const TableHeader: ITableHeaderData[] = [
-            generateHeader('#', 60),
-            generateHeader('Owner'),
-            generateHeader('Facility Name'),
-            generateHeader('Town, Country'),
-            generateHeader('Nameplate Capacity (kW)', defaultWidth, true),
-            generateHeader('Consumption (kWh)', defaultWidth, true)
-        ];
-
-        const TableFooter = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: 5
-            },
-            generateFooter('Consumption (kWh)')
-        ];
-
-        const operations = ['Show Details'];
-
         return (
             <div className="ConsumptionWrapper">
-                <AdvancedTable
-                    header={TableHeader}
-                    footer={TableFooter}
-                    actions={true}
-                    operationClicked={this.operationClicked}
-                    data={this.state.formattedPaginatedData}
-                    operations={operations}
+                <TableMaterial
+                    columns={this.columns}
+                    rows={this.rows}
                     loadPage={this.loadPage}
-                    total={this.state.total}
-                    pageSize={this.state.pageSize}
+                    total={total}
+                    pageSize={pageSize}
                     filters={this.filters}
+                    handleRowClick={(row: number) => this.viewAsset(row)}
                 />
             </div>
         );

@@ -161,9 +161,9 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         emit LogPublishForSale(_entityId, _price, _tokenAddress);
     }
 
-    /// @notice makes the tradable entity available for sale
+    /// @notice makes the tradable entity not available for sale
     /// @param _entityId The id of the certificate
-    function unpublishForSale(uint _entityId) external onlyEntityOwner(_entityId) {
+    function unpublishForSale(uint _entityId) public onlyEntityOwner(_entityId) {
         db.setForSale(_entityId, false);
         emit LogUnpublishForSale(_entityId);
     }

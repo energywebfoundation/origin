@@ -48,6 +48,42 @@ export const DEFAULT_MATERIAL_THEME = () => {
                         color: STYLE_CONFIG.TEXT_COLOR_DEFAULT
                     }
                 }
+            },
+            MuiTable: {
+                root: {
+                    borderBottom: `2px solid ${STYLE_CONFIG.PRIMARY_COLOR}`
+                }
+            },
+            MuiTableHead: {
+                root: {
+                    '& > .MuiTableRow-root': {
+                        background: '#2d2d2d'
+                    }
+                }
+            },
+            MuiTableRow: {
+                root: {
+                    background: '#333333',
+                    '&:nth-child(even)': {
+                        background: '#2d2d2d'
+                    }
+                },
+                footer: {
+                    background: '#2d2d2d'
+                }
+            },
+            MuiTableCell: {
+                root: {
+                    borderBottom: '1px solid rgb(72, 72, 72)'
+                },
+                body: {
+                    color: STYLE_CONFIG.TEXT_COLOR_DEFAULT
+                },
+                head: {
+                    color: STYLE_CONFIG.WHITE,
+                    fontWeight: 'bold',
+                    borderBottom: '3px solid #252525'
+                }
             }
         }
     });

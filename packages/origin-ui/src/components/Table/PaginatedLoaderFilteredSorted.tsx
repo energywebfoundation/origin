@@ -5,7 +5,9 @@ import {
     getInitialPaginatedLoaderFilteredState
 } from './PaginatedLoaderFiltered';
 
-export type SortPropertiesType = Array<string | [string, (value: string) => number]>;
+export type SortPropertiesType = ReadonlyArray<
+    string | readonly [string, (value: string) => number]
+>;
 
 export interface IPaginatedLoaderFilteredSortedState extends IPaginatedLoaderFilteredState {
     currentSort: SortPropertiesType;

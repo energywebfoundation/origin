@@ -61,7 +61,7 @@
                     }
                 }
 
-                table {
+                table:not(.MuiTable-root) {
                     table-layout: fixed;
                     width: 100%;
 

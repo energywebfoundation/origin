@@ -21,7 +21,7 @@ import { IStoreState } from '../types';
 import { Header } from './Header';
 import { Asset } from './Asset';
 import './AppContainer.scss';
-import { Demands } from './Demands';
+import { Demands } from './Demand/Demands';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

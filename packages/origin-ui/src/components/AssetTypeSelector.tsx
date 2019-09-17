@@ -9,6 +9,7 @@ interface IOwnProps {
     selectedType: EncodedAssetType;
     onChange: (value: EncodedAssetType) => void;
     disabled?: boolean;
+    readOnly?: boolean;
 }
 
 type Props = IOwnProps;
@@ -128,7 +129,7 @@ export class AssetTypeSelector extends React.Component<Props> {
     }
 
     render() {
-        const { disabled } = this.props;
+        const { disabled, readOnly } = this.props;
 
         const allTypesLevelOne = this.assetTypesToSelectionOptions(this.allTypesByLevel(1));
 
@@ -144,7 +145,7 @@ export class AssetTypeSelector extends React.Component<Props> {
             <>
                 <MultiSelectAutocomplete
                     label="Asset type"
-                    placeholder="Select asset type"
+                    placeholder={readOnly ? '' : 'Select asset type'}
                     options={allTypesLevelOne}
                     onChange={value => this.setTypeByLevel(value, 1)}
                     selectedValues={selectedTypesLevelOne}
@@ -154,7 +155,7 @@ export class AssetTypeSelector extends React.Component<Props> {
                 {levelTwoTypes.length > 0 && (
                     <MultiSelectAutocomplete
                         label="Asset type"
-                        placeholder="Select asset type"
+                        placeholder={readOnly ? '' : 'Select asset type'}
                         options={levelTwoTypes}
                         onChange={value => this.setTypeByLevel(value, 2)}
                         selectedValues={selectedTypesLevelTwo}
@@ -165,7 +166,7 @@ export class AssetTypeSelector extends React.Component<Props> {
                 {levelThreeTypes.length > 0 && (
                     <MultiSelectAutocomplete
                         label="Asset type"
-                        placeholder="Select asset type"
+                        placeholder={readOnly ? '' : 'Select asset type'}
                         options={levelThreeTypes}
                         onChange={value => this.setTypeByLevel(value, 3)}
                         selectedValues={selectedTypesLevelThree}

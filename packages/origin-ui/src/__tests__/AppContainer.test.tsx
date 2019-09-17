@@ -21,7 +21,6 @@ import {
 import createSagaMiddleware from 'redux-saga';
 import sagas from '../features/sagas';
 
-import { OverlayTrigger } from 'react-bootstrap';
 import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 
 import Web3 from 'web3';
@@ -31,7 +30,6 @@ import { migrateMarketRegistryContracts, MarketLogic } from '@energyweb/market';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';
-import { dataTestSelector } from '../utils/Helper';
 import axios from 'axios';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createMemoryHistory } from 'history';
@@ -299,26 +297,20 @@ describe('Application[E2E]', () => {
         expect(renderedApp.find('.ViewProfile').text()).toBe('admin');
 
         expect(renderedApp.find('table tbody tr td').map(el => el.text())).toEqual([
-            '0',
             'Asset Manager organization',
             'Wuthering Heights Windfarm',
             'Warsaw, Poland',
             'Wind',
             '0',
-            '0',
-            ''
+            '0'
         ]);
 
-        expect(renderedApp.find(dataTestSelector('pagination-helper-text')).text()).toBe(
-            'Showing 1 to 1 of 1 entries'
+        expect(renderedApp.find('span.MuiTablePagination-caption').text()).toBe(
+            '1-1 of 1'
         );
 
-        // Navigate to Show Details
-
-        renderedApp.find(OverlayTrigger).simulate('focus');
-
-        // Click show details
-        (document.body.querySelector('.popover-item') as any).click();
+        // Go to asset details
+        renderedApp.find('table tbody tr td').first().simulate('click');
 
         renderedApp.update();
 

@@ -1,4 +1,4 @@
-import { call, put, select, take, all, fork, apply, takeEvery } from 'redux-saga/effects';
+import { call, put, select, take, all, fork, apply, takeEvery, cancel } from 'redux-saga/effects';
 import { SagaIterator, eventChannel } from 'redux-saga';
 import { ContractsActions, setOriginContractLookupAddress } from './actions';
 import { getOriginContractLookupAddress } from './selectors';
@@ -206,18 +206,24 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
         const loading: boolean = yield select(getLoading);
 
         if (originContractLookupAddress && loading) {
+            const routerSearch: string = yield select(getSearch);
+
+            let configuration: Configuration.Entity;
             try {
-                const routerSearch: string = yield select(getSearch);
-                const configuration: Configuration.Entity = yield call(
-                    initConf,
-                    originContractLookupAddress,
-                    routerSearch
-                );
+                configuration = yield call(initConf, originContractLookupAddress, routerSearch);
 
                 yield put(configurationUpdated(configuration));
 
                 yield put(setLoading(false));
+            } catch (error) {
+                console.error('ContractsSaga::WrongNetwork', error);
+                yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
+                yield put(setLoading(false));
 
+                yield cancel();
+            }
+
+            try {
                 const accounts: string[] = yield call(
                     configuration.blockchainProperties.web3.eth.getAccounts
                 );
@@ -234,51 +240,49 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
                         currentUser !== null && currentUser.active ? currentUser : null
                     )
                 );
-
-                const producingAssets: ProducingAsset.Entity[] = yield apply(
-                    ProducingAsset,
-                    ProducingAsset.getAllAssets,
-                    [configuration]
-                );
-
-                for (const asset of producingAssets) {
-                    yield put(producingAssetCreatedOrUpdated(asset));
-                }
-
-                const consumingAssets: ConsumingAsset.Entity[] = yield apply(
-                    ConsumingAsset,
-                    ConsumingAsset.getAllAssets,
-                    [configuration]
-                );
-
-                for (const asset of consumingAssets) {
-                    yield put(consumingAssetCreatedOrUpdated(asset));
-                }
-
-                const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [
-                    configuration
-                ]);
-
-                for (const demand of demands) {
-                    yield put(demandCreated(demand));
-                }
-
-                const certificates: Certificate.Entity[] = yield apply(
-                    Certificate,
-                    Certificate.getAllCertificates,
-                    [configuration]
-                );
-
-                for (const certificate of certificates) {
-                    yield put(certificateCreatedOrUpdated(certificate));
-                }
-
-                yield call(initEventHandler);
             } catch (error) {
-                console.error('ContractsSaga::Error when initializing configuration', error);
-                yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-                yield put(setLoading(false));
+                console.error('ContractsSaga::UserDoesntExist', error);
             }
+
+            const producingAssets: ProducingAsset.Entity[] = yield apply(
+                ProducingAsset,
+                ProducingAsset.getAllAssets,
+                [configuration]
+            );
+
+            for (const asset of producingAssets) {
+                yield put(producingAssetCreatedOrUpdated(asset));
+            }
+
+            const consumingAssets: ConsumingAsset.Entity[] = yield apply(
+                ConsumingAsset,
+                ConsumingAsset.getAllAssets,
+                [configuration]
+            );
+
+            for (const asset of consumingAssets) {
+                yield put(consumingAssetCreatedOrUpdated(asset));
+            }
+
+            const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [
+                configuration
+            ]);
+
+            for (const demand of demands) {
+                yield put(demandCreated(demand));
+            }
+
+            const certificates: Certificate.Entity[] = yield apply(
+                Certificate,
+                Certificate.getAllCertificates,
+                [configuration]
+            );
+
+            for (const certificate of certificates) {
+                yield put(certificateCreatedOrUpdated(certificate));
+            }
+
+            yield call(initEventHandler);
         } else {
             originContractLookupAddress = yield call(getOriginContractLookupAddressFromAPI);
 

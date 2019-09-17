@@ -1,23 +1,21 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
-
-import { Configuration, TimeFrame, Currency } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Currency, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-
-import TableUtils from './Table/TableUtils';
-import { showNotification, NotificationType } from '../utils/notifications';
+import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
-} from './Table/PaginatedLoader';
+} from '../Table/PaginatedLoader';
 import {
     getCertificatesForDemandLink,
     getDemandEditLink,
-    getDemandCloneLink
-} from '../utils/routing';
+    getDemandCloneLink,
+    getDemandViewLink
+} from '../../utils/routing';
 import {
     getConfiguration,
     getConsumingAssets,
@@ -25,18 +23,19 @@ import {
     getCurrentUser,
     getBaseURL,
     getDemands
-} from '../features/selectors';
+} from '../../features/selectors';
 import { connect } from 'react-redux';
-import { IStoreState } from '../types';
+import { IStoreState } from '../../types';
 import { calculateTotalEnergyDemand } from './DemandForm';
 import {
     IPaginatedLoaderFilteredState,
     PaginatedLoaderFiltered,
     getInitialPaginatedLoaderFilteredState,
     RECORD_INDICATOR
-} from './Table/PaginatedLoaderFiltered';
-import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
-import { AdvancedTable } from './Table/AdvancedTable';
+} from '../Table/PaginatedLoaderFiltered';
+import { ICustomFilterDefinition, CustomFilterInputType } from '../Table/FiltersHeader';
+import { TableMaterial } from '../Table/TableMaterial';
+import { Delete, FileCopy, Share, Edit } from '@material-ui/icons';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -51,6 +50,7 @@ type Props = RouteComponentProps<{}> & IStateProps;
 
 export interface IDemandTableState extends IPaginatedLoaderFilteredState {
     showMatchingSupply: number;
+    paginatedData: IEnrichedDemandData[];
 }
 
 export interface IEnrichedDemandData {
@@ -62,13 +62,6 @@ export interface IEnrichedDemandData {
 
 const NO_VALUE_TEXT = 'any';
 
-enum OPERATIONS {
-    EDIT = 'Edit',
-    CLONE = 'Clone',
-    DELETE = 'Delete',
-    SUPPLIES = 'Show supplies for demand'
-}
-
 class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState> {
     constructor(props: Props) {
         super(props);
@@ -77,9 +70,6 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             ...getInitialPaginatedLoaderFilteredState(),
             showMatchingSupply: null
         };
-
-        this.operationClicked = this.operationClicked.bind(this);
-        this.showMatchingSupply = this.showMatchingSupply.bind(this);
     }
 
     get filters(): ICustomFilterDefinition[] {
@@ -147,7 +137,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return Promise.all(promises);
     }
 
-    getRegionsProvincesText(demand: Demand.Entity): string {
+    getRegionText(demand: Demand.Entity): string {
         let text = '';
         const { location } = demand.offChainProperties;
 
@@ -155,39 +145,55 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             if (location.regions && location.regions.length) {
                 text += location.regions.join(', ');
             }
-
-            if (location.provinces && location.provinces.length) {
-                text += ` ${location.provinces.join(', ')}`;
-            }
         }
 
         return text || NO_VALUE_TEXT;
     }
 
-    async operationClicked(key: string, id: number) {
-        switch (key) {
-            case OPERATIONS.DELETE:
-                this.deleteDemand(id);
-                break;
-            case OPERATIONS.SUPPLIES:
-                this.showMatchingSupply(id);
-                break;
-            case OPERATIONS.EDIT:
-                this.props.history.push(getDemandEditLink(this.props.baseURL, id.toString()));
-                break;
-            case OPERATIONS.CLONE:
-                this.props.history.push(getDemandCloneLink(this.props.baseURL, id.toString()));
-                break;
-            default:
+    async editDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        if (!demand) {
+            showNotification(`Can't find demand.`, NotificationType.Error);
+            return;
         }
+
+        if (
+            !this.props.currentUser ||
+            !this.props.currentUser.id ||
+            demand.demandOwner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
+        ) {
+            showNotification(
+                `You need to be owner of the demand to edit it.`,
+                NotificationType.Error
+            );
+            return;
+        }
+
+        this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id));
     }
 
-    async deleteDemand(id: number) {
+    viewDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id));
+    }
+
+    cloneDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id));
+    }
+
+    async deleteDemand(rowIndex: number) {
         try {
+            const demand = this.state.paginatedData[rowIndex].demand;
+
             this.props.configuration.blockchainProperties.activeUser = {
                 address: this.props.currentUser.id
             };
-            await Demand.deleteDemand(id, this.props.configuration);
+
+            await Demand.deleteDemand(demand.id, this.props.configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
         } catch (error) {
@@ -218,68 +224,8 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
         const paginatedData = filteredData.slice(offset, offset + pageSize);
 
-        const formattedPaginatedData = paginatedData.map(
-            (enrichedDemandData: IEnrichedDemandData) => {
-                const demand = enrichedDemandData.demand;
-
-                const assetTypes =
-                    demand.offChainProperties.assetType &&
-                    demand.offChainProperties.assetType.length > 0
-                        ? demand.offChainProperties.assetType
-                              .map(type => type.replace(/;/g, ' - '))
-                              .join(', ')
-                        : NO_VALUE_TEXT;
-
-                const overallDemand = (
-                    calculateTotalEnergyDemand(
-                        moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-                        moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-                        demand.offChainProperties.targetWhPerPeriod,
-                        demand.offChainProperties.timeFrame
-                    ) / 1000000
-                ).toLocaleString();
-
-                let demandStatus = 'Active';
-
-                if (demand.status === Demand.DemandStatus.PAUSED) {
-                    demandStatus = 'Paused';
-                } else if (demand.status === Demand.DemandStatus.ARCHIVED) {
-                    demandStatus = 'Archived';
-                }
-
-                return [
-                    demand.id,
-                    enrichedDemandData.demandOwner.organization,
-                    moment
-                        .unix(parseInt(demand.offChainProperties.startTime, 10))
-                        .format('DD MMM YY') +
-                        ' - ' +
-                        moment
-                            .unix(parseInt(demand.offChainProperties.endTime, 10))
-                            .format('DD MMM YY'),
-                    this.getRegionsProvincesText(demand),
-                    assetTypes,
-                    typeof demand.offChainProperties.timeFrame !== 'undefined'
-                        ? TimeFrame[demand.offChainProperties.timeFrame]
-                        : NO_VALUE_TEXT,
-                    demand.offChainProperties.procureFromSingleFacility ? 'yes' : 'no',
-                    demand.offChainProperties.vintage &&
-                    demand.offChainProperties.vintage.length === 2
-                        ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
-                        : NO_VALUE_TEXT,
-                    (demand.offChainProperties.targetWhPerPeriod / 1000000).toLocaleString(),
-                    `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
-                        Currency[demand.offChainProperties.currency]
-                    }`,
-                    demandStatus,
-                    overallDemand
-                ];
-            }
-        );
-
         return {
             paginatedData,
-            formattedPaginatedData,
             total
         };
     }
@@ -290,8 +236,101 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         }
     }
 
+    actions = [
+        { icon: <Edit />, name: 'Edit', onClick: (row: number) => this.editDemand(row) },
+        { icon: <FileCopy />, name: 'Clone', onClick: (row: number) => this.cloneDemand(row) },
+        { icon: <Delete />, name: 'Delete', onClick: (row: number) => this.deleteDemand(row) },
+        {
+            icon: <Share />,
+            name: 'Show supplies',
+            onClick: (row: number) => this.showMatchingSupply(row)
+        }
+    ];
+
+    columns = [
+        { id: 'buyer', label: 'Buyer' },
+        { id: 'duration', label: 'Duration' },
+        { id: 'region', label: 'Region' },
+        { id: 'assetType', label: 'Asset type' },
+        { id: 'repeatable', label: 'Repeatable' },
+        { id: 'fromSingleFacility', label: 'Single facility' },
+        { id: 'vintage', label: 'Vintage' },
+        { id: 'demand', label: 'Per timeframe (MWh)' },
+        { id: 'max', label: 'Max price' },
+        { id: 'status', label: 'Status' },
+        { id: 'energy', label: 'Energy (MWh)' }
+    ] as const;
+
+    get rows() {
+        return this.state.paginatedData.map(enrichedDemandData => {
+            const demand = enrichedDemandData.demand;
+
+            const assetService = new IRECAssetService();
+
+            const topLevelAssetTypes = demand.offChainProperties.assetType
+                ? assetService
+                      .decode(demand.offChainProperties.assetType)
+                      .filter(type => type.length === 1)
+                : [];
+
+            const assetType =
+                topLevelAssetTypes.length > 0
+                    ? topLevelAssetTypes.map(type => type[0]).join(', ')
+                    : NO_VALUE_TEXT;
+
+            const overallDemand = (
+                calculateTotalEnergyDemand(
+                    moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
+                    moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+                    demand.offChainProperties.targetWhPerPeriod,
+                    demand.offChainProperties.timeFrame
+                ) / 1000000
+            ).toLocaleString();
+
+            let demandStatus = 'Active';
+
+            if (demand.status === Demand.DemandStatus.PAUSED) {
+                demandStatus = 'Paused';
+            } else if (demand.status === Demand.DemandStatus.ARCHIVED) {
+                demandStatus = 'Archived';
+            }
+
+            return {
+                buyer: enrichedDemandData.demandOwner.organization,
+                duration:
+                    moment
+                        .unix(parseInt(demand.offChainProperties.startTime, 10))
+                        .format('DD MMM YY') +
+                    ' - ' +
+                    moment
+                        .unix(parseInt(demand.offChainProperties.endTime, 10))
+                        .format('DD MMM YY'),
+                region: this.getRegionText(demand),
+                assetType,
+                repeatable:
+                    typeof demand.offChainProperties.timeFrame !== 'undefined'
+                        ? TimeFrame[demand.offChainProperties.timeFrame]
+                        : NO_VALUE_TEXT,
+                fromSingleFacility: demand.offChainProperties.procureFromSingleFacility
+                    ? 'yes'
+                    : 'no',
+                vintage:
+                    demand.offChainProperties.vintage &&
+                    demand.offChainProperties.vintage.length === 2
+                        ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
+                        : NO_VALUE_TEXT,
+                demand: (demand.offChainProperties.targetWhPerPeriod / 1000000).toLocaleString(),
+                max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
+                    Currency[demand.offChainProperties.currency]
+                }`,
+                status: demandStatus,
+                energy: overallDemand
+            };
+        });
+    }
+
     render() {
-        const { showMatchingSupply } = this.state;
+        const { showMatchingSupply, total, pageSize } = this.state;
 
         if (showMatchingSupply !== null) {
             return (
@@ -302,49 +341,17 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             );
         }
 
-        const defaultWidth = 106;
-        const generateHeader = (label, width = defaultWidth, right = false, body = false) =>
-            TableUtils.generateHeader(label, width, right, body);
-        const generateFooter = TableUtils.generateFooter;
-
-        const TableFooter = [
-            {
-                label: 'Total',
-                key: 'total',
-                colspan: 11
-            },
-            generateFooter('Total Demand (kWh)', true)
-        ];
-
-        const TableHeader = [
-            generateHeader('#'),
-            generateHeader('Buyer'),
-            generateHeader('Start/End-Date'),
-            generateHeader('Region, Province'),
-            generateHeader('Asset Type'),
-            generateHeader('Repeatable'),
-            generateHeader('Procure from single facility'),
-            generateHeader('Vintage'),
-            generateHeader('Demand per Timeframe (MWh)'),
-            generateHeader('Max Price'),
-            generateHeader('Status'),
-            generateHeader('Total Demand (MWh)')
-        ];
-
         return (
             <div className="ForSaleWrapper">
-                <AdvancedTable
-                    header={TableHeader}
-                    footer={TableFooter}
-                    actions={true}
-                    data={this.state.formattedPaginatedData}
-                    actionWidth={55.39}
-                    operations={Object.values(OPERATIONS)}
-                    operationClicked={this.operationClicked}
+                <TableMaterial
+                    columns={this.columns}
+                    rows={this.rows}
                     loadPage={this.loadPage}
-                    total={this.state.total}
-                    pageSize={this.state.pageSize}
+                    total={total}
+                    pageSize={pageSize}
                     filters={this.filters}
+                    handleRowClick={(row: number) => this.viewDemand(row)}
+                    actions={this.actions}
                 />
             </div>
         );

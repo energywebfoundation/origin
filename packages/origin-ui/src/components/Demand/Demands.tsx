@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { PageContent } from '../elements/PageContent/PageContent';
+import { PageContent } from '../../elements/PageContent/PageContent';
 import { DemandTable } from './DemandTable';
 import { connect } from 'react-redux';
-import { getDemandsLink } from '../utils/routing';
-import { IStoreState } from '../types';
-import { getBaseURL } from '../features/selectors';
+import { getDemandsLink } from '../../utils/routing';
+import { IStoreState } from '../../types';
+import { getBaseURL } from '../../features/selectors';
 import { DemandForm } from './DemandForm';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { DemandEdit } from './DemandEdit';
 import { DemandClone } from './DemandClone';
+import { DemandView } from './DemandView';
 
 interface IStateProps {
     baseURL: string;
@@ -40,6 +41,12 @@ class DemandsClass extends React.Component<Props> {
                 key: 'clone',
                 label: 'Clone',
                 component: DemandClone,
+                hide: true
+            },
+            {
+                key: 'view',
+                label: 'View',
+                component: DemandView,
                 hide: true
             }
         ];
