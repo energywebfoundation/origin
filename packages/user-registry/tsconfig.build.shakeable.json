@@ -6,7 +6,7 @@
     },
     "references": [
         {
-            "path": "../utils-general/tsconfig.build.shakeable.json"
+            "path": "../utils-general/tsconfig.build.json"
         }
     ]
 }

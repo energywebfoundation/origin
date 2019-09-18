@@ -13,10 +13,10 @@
             "path": "../user-registry/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../erc-test-contracts/tsconfig.build.shakeable.json"
+            "path": "../erc-test-contracts/tsconfig.build.json"
         },
         {
-            "path": "../utils-general/tsconfig.build.shakeable.json"
+            "path": "../utils-general/tsconfig.build.json"
         },
         {
             "path": "../asset-registry/tsconfig.build.shakeable.json"
@@ -31,7 +31,7 @@
             "path": "../origin/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../utils-testbackend/tsconfig.build.shakeable.json"
+            "path": "../utils-testbackend/tsconfig.build.json"
         }
     ]
 }
