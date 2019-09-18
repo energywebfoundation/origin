@@ -4,12 +4,14 @@ import 'mocha';
 import Web3 from 'web3';
 
 import {
-    migrateUserRegistryContracts,
     UserLogic,
     UserContractLookup,
     Role,
     buildRights
 } from '@energyweb/user-registry';
+import {
+    migrateUserRegistryContracts,
+} from '@energyweb/user-registry/contracts';
 import {
     AssetContractLookup,
     AssetProducingRegistryLogic,

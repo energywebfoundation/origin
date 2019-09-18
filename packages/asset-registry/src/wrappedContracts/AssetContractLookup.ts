@@ -13,7 +13,7 @@ export class AssetContractLookup extends GeneralFunctions {
                 : new web3.eth.Contract(
                       AssetContractLookupJSON.abi,
                       (AssetContractLookupJSON as any).networks.length > 0
-                          ? AssetContractLookupJSON.networks[0]
+                          ? (AssetContractLookupJSON as any).networks[0]
                           : null
                   )
         );
@@ -25,7 +25,8 @@ export class AssetContractLookup extends GeneralFunctions {
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
+                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
+                topics: undefined
             };
             if (eventFilter.topics) {
                 filterParams.topics = eventFilter.topics;

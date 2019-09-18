@@ -19,7 +19,10 @@ import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
 
-import { migrateUserRegistryContracts, UserLogic } from '@energyweb/user-registry';
+import { UserLogic } from '@energyweb/user-registry';
+import {
+    migrateUserRegistryContracts,
+} from '@energyweb/user-registry/contracts';
 import { AssetContractLookup } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 

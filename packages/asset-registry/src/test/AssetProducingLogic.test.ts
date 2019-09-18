@@ -2,11 +2,13 @@ import 'mocha';
 
 import {
     buildRights,
-    migrateUserRegistryContracts,
     Role,
     UserContractLookup,
     UserLogic
 } from '@energyweb/user-registry';
+import {
+    migrateUserRegistryContracts,
+} from '@energyweb/user-registry/contracts';
 import { assert } from 'chai';
 import * as fs from 'fs';
 import moment from 'moment';

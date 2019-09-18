@@ -7,11 +7,13 @@ import { createStore, applyMiddleware } from 'redux';
 import { createRootReducer } from '../reducers';
 import {
     User,
-    migrateUserRegistryContracts,
     UserLogic,
     buildRights,
     Role
 } from '@energyweb/user-registry';
+import {
+    migrateUserRegistryContracts
+} from '@energyweb/user-registry/contracts';
 import {
     ProducingAsset,
     AssetProducingRegistryLogic,

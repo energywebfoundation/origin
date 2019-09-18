@@ -5,19 +5,15 @@ import * as Winston from 'winston';
 import {
     AssetConsumingRegistryLogic,
     AssetProducingRegistryLogic,
-    migrateAssetRegistryContracts,
     ProducingAsset
 } from '@energyweb/asset-registry';
-import { MarketLogic, migrateMarketRegistryContracts, Demand } from '@energyweb/market';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { MarketLogic, Demand } from '@energyweb/market';
+import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import {
-    buildRights,
-    migrateUserRegistryContracts,
-    Role,
-    User,
-    UserLogic
-} from '@energyweb/user-registry';
+import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 
 import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
 

@@ -4,12 +4,8 @@ import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import {
-    buildRights,
-    migrateUserRegistryContracts,
-    Role,
-    UserLogic
-} from '@energyweb/user-registry';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import Web3 from 'web3';

@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
-import UserLogicJSON from '../../build/contracts/UserLogic.json';
+import UserLogicJSON from '../../build/contracts/lightweight/UserLogic.json';
 
 export class UserLogic extends GeneralFunctions {
     web3: Web3;

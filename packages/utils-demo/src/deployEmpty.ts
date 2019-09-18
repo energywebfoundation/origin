@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import Web3 from 'web3';
 import { logger } from './Logger';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';

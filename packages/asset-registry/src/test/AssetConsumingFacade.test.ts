@@ -7,10 +7,12 @@ import { logger } from '../Logger';
 import {
     UserContractLookup,
     UserLogic,
-    migrateUserRegistryContracts,
     buildRights,
     Role
 } from '@energyweb/user-registry';
+import {
+    migrateUserRegistryContracts,
+} from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts  } from '../../contracts';
 import { Asset, ConsumingAsset, AssetConsumingRegistryLogic } from '..';
 
