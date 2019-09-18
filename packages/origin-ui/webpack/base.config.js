@@ -1,6 +1,5 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -32,8 +31,7 @@ module.exports = {
             meta: {
                 viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no'
             }
-        }),
-        new ForkTsCheckerWebpackPlugin()
+        })
     ],
     module: {
         rules: [
@@ -62,15 +60,6 @@ module.exports = {
                     }
                 ]
             },     
-            {
-                test: /\.tsx?$/,
-                loader: 'ts-loader',
-                options: {
-                    configFile: '../tsconfig.build.json',
-                    projectReferences: true,
-                    transpileOnly: true
-                }
-              },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: 'pre', test: /\.js\.map$/, loader: 'source-map-loader' }
