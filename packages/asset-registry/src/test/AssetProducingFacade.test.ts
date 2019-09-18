@@ -13,8 +13,9 @@ import * as fs from 'fs';
 import moment from 'moment';
 import Web3 from 'web3';
 
-import { AssetProducingRegistryLogic, migrateAssetRegistryContracts, ProducingAsset } from '..';
+import { AssetProducingRegistryLogic, ProducingAsset } from '..';
 import { logger } from '../Logger';
+import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 
 describe('AssetProducing Facade', () => {
     const configFile = JSON.parse(

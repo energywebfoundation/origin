@@ -31,7 +31,7 @@ import {
     AssetConsumingRegistryLogicJSON,
     AssetProducingDBJSON,
     AssetProducingRegistryLogicJSON
-} from '..';
+} from '../../contracts';
 
 describe('AssetContractLookup', () => {
     const configFile = JSON.parse(

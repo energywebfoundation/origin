@@ -37,7 +37,7 @@ import {
     AssetConsumingRegistryLogicJSON,
     AssetProducingDBJSON,
     AssetProducingRegistryLogicJSON
-} from '..';
+} from '../../contracts';
 import moment from 'moment';
 
 describe('AssetConsumingLogic', () => {

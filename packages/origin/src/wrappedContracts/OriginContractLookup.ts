@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import { Tx, BlockType } from 'web3/eth/types';
 import { TransactionReceipt, Logs } from 'web3/types';
 import { JsonRPCResponse } from 'web3/providers';
-import OriginContractLookupJSON from '../../build/contracts/OriginContractLookup.json';
+import OriginContractLookupJSON from '../../build/contracts/lightweight/OriginContractLookup.json';
 
 export class OriginContractLookup extends GeneralFunctions {
     web3: Web3;

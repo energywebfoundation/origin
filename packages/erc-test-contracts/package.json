@@ -1,7 +1,7 @@
 {
   "name": "@energyweb/erc-test-contracts",
   "description": "",
-  "license": "GPLv3",
+  "license": "GPL-3.0-only",
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/erc-test-contracts#readme",
   "repository": {

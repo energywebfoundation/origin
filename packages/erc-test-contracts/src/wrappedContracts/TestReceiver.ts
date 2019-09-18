@@ -1,7 +1,6 @@
+import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx } from './GeneralFunctions';
 import TestReceiverJSON from '../../build/contracts/TestReceiver.json';
-
-import Web3 = require('web3');
 
 export class TestReceiver extends GeneralFunctions {
     web3: Web3;

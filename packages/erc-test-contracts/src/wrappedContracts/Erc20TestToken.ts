@@ -1,7 +1,6 @@
+import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
-
-import Web3 = require('web3');
 
 export class Erc20TestToken extends GeneralFunctions {
     web3: Web3;

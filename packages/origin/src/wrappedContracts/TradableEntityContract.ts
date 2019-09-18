@@ -1,6 +1,6 @@
 import { GeneralFunctions } from './GeneralFunctions';
 import Web3 from 'web3';
-import TradableEntityContractJSON from '../../build/contracts/TradableEntityContract.json';
+import TradableEntityContractJSON from '../../build/contracts/lightweight/TradableEntityContract.json';
 
 export class TradableEntityContract extends GeneralFunctions {
     web3: Web3;

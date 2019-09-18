@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import AssetContractLookupJSON from '../../build/contracts/AssetContractLookup.json';
+import AssetContractLookupJSON from '../../build/contracts/lightweight/AssetContractLookup.json';
 
 export class AssetContractLookup extends GeneralFunctions {
     web3: Web3;

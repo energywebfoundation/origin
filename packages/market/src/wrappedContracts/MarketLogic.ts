@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import MarketLogicJSON from '../../build/contracts/MarketLogic.json';
+import MarketLogicJSON from '../../build/contracts/lightweight/MarketLogic.json';
 import { DemandStatus } from '../blockchain-facade/Demand';
 
 const SUPPORTED_EVENTS = [

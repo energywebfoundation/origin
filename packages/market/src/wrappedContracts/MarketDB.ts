@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import MarketDBJSON from '../../build/contracts/MarketDB.json';
+import MarketDBJSON from '../../build/contracts/lightweight/MarketDB.json';
 
 export class MarketDB extends GeneralFunctions {
     web3: Web3;

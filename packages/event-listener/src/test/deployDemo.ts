@@ -9,11 +9,8 @@ import {
     ProducingAsset
 } from '@energyweb/asset-registry';
 import { MarketLogic, migrateMarketRegistryContracts, Demand } from '@energyweb/market';
-import {
-    CertificateLogic,
-    migrateCertificateRegistryContracts,
-    Certificate
-} from '@energyweb/origin';
+import { CertificateLogic, Certificate } from '@energyweb/origin';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import {
     buildRights,
     migrateUserRegistryContracts,

@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import AgreementLogicJSON from '../../build/contracts/AgreementLogic.json';
+import AgreementLogicJSON from '../../build/contracts/lightweight/AgreementLogic.json';
 
 export class AgreementLogic extends GeneralFunctions {
     web3: Web3;

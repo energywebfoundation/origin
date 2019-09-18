@@ -1,20 +1,9 @@
-import {
-    AssetProducingRegistryLogic,
-    migrateAssetRegistryContracts,
-    ProducingAsset
-} from '@energyweb/asset-registry';
-import {
-    Agreement,
-    Demand,
-    MarketLogic,
-    migrateMarketRegistryContracts,
-    Supply
-} from '@energyweb/market';
-import {
-    Certificate,
-    CertificateLogic,
-    migrateCertificateRegistryContracts
-} from '@energyweb/origin';
+import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-registry';
+import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
+import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
+import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import {
     buildRights,
     migrateUserRegistryContracts,

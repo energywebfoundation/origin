@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { assert } from 'chai';
 import { deployERC20TestToken, deployERC721TestReceiver } from '..';
 
-import Web3 = require('web3');
+import Web3 from 'web3';
 
 describe('deployTests', () => {
     const configFile = JSON.parse(

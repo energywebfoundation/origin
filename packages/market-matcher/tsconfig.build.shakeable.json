@@ -1,19 +1,12 @@
 {
-    "extends": "../../tsconfig.build.json",
+    "extends": "./tsconfig.build.json",
     "compilerOptions": {
-        "outDir": "./dist/",
         "module": "es2015",
-        "moduleResolution": "node",
-        "declaration": false
+        "outDir": "./dist-shakeable/js"
     },
-    "include": ["./src/**/*"],
-    "exclude": ["./src/__tests__/**/*"],
     "references": [
         {
             "path": "../user-registry/tsconfig.build.shakeable.json"
-        },
-        {
-            "path": "../erc-test-contracts/tsconfig.build.shakeable.json"
         },
         {
             "path": "../utils-general/tsconfig.build.shakeable.json"
@@ -23,9 +16,6 @@
         },
         {
             "path": "../market/tsconfig.build.shakeable.json"
-        },
-        {
-            "path": "../market-matcher/tsconfig.build.shakeable.json"
         },
         {
             "path": "../origin/tsconfig.build.shakeable.json"

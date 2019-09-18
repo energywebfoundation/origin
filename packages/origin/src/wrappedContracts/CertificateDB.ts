@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import CertificateDBJSON from '../../build/contracts/CertificateDB.json';
+import CertificateDBJSON from '../../build/contracts/lightweight/CertificateDB.json';
 
 export class CertificateDB extends GeneralFunctions {
     web3: Web3;

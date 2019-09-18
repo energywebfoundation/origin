@@ -24,7 +24,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn compile && yarn build-schemas && yarn build-ts",
+    "build": "yarn build:static && yarn build-ts",
     "build-and-deploy": "yarn build && yarn deploy-contracts",
     "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts IOffChainProperties",
     "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties",
@@ -33,6 +33,7 @@
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",
+    "extractABI": "node ./scripts/extractABI.js",
     "lint": "solium -d contracts",
     "lint-fix": "solium -d contracts --fix",
     "prepare": "scripts/build.js",
@@ -41,8 +42,8 @@
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
-    "clean": "rm -rf build/ dist/ schemas/ db.json",
-    "build:static": "yarn compile && yarn build-schemas"
+    "clean": "rm -rf build dist dist-shakeable schemas db.json",
+    "build:static": "yarn compile && yarn extractABI && yarn build-schemas"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {

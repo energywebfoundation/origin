@@ -67,6 +67,7 @@ module.exports = {
                 loader: 'ts-loader',
                 options: {
                     configFile: '../tsconfig.build.json',
+                    projectReferences: true,
                     transpileOnly: true
                 }
               },

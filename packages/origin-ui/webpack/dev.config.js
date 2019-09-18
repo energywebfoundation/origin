@@ -6,7 +6,7 @@ module.exports = merge(baseConfig, {
     mode: 'development',
 
     // Enable sourcemaps for debugging webpack's output.
-    devtool: "source-map",
+    devtool: 'source-map',
 
     plugins: [
         new Dotenv({
