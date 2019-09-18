@@ -20,13 +20,14 @@ import 'mocha';
 import Web3 from 'web3';
 
 import { migrateUserRegistryContracts, UserLogic } from '@energyweb/user-registry';
-import { migrateAssetRegistryContracts, AssetContractLookup } from '@energyweb/asset-registry';
+import { AssetContractLookup } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 import { CertificateDB } from '../wrappedContracts/CertificateDB';
 import { CertificateLogic } from '../wrappedContracts/CertificateLogic';
-import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '..';
+import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '../../contracts';
 
 describe('OriginContractLookup', () => {
     const configFile = JSON.parse(

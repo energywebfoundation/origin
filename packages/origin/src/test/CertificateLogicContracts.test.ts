@@ -28,10 +28,12 @@ import {
     Role
 } from '@energyweb/user-registry';
 import {
-    migrateAssetRegistryContracts,
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from '@energyweb/asset-registry';
+import {
+    migrateAssetRegistryContracts
+} from '@energyweb/asset-registry/contracts';
 import { deploy } from 'ew-utils-deployment';
 import {
     TestReceiver,
@@ -44,7 +46,7 @@ import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 import { CertificateDB } from '../wrappedContracts/CertificateDB';
 import { CertificateLogic } from '../wrappedContracts/CertificateLogic';
-import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '..';
+import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '../../contracts';
 import * as Certificate from '../blockchain-facade/Certificate';
 
 describe('CertificateLogic', () => {
