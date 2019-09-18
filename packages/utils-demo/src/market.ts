@@ -292,7 +292,7 @@ export const marketDemo = async (demoFile?: string) => {
                 const agreementProps: Agreement.IAgreementOnChainProperties = {
                     propertiesDocumentHash: null,
                     url: null,
-                    matcherDBURL: null,
+                    matcherDBUrl: null,
                     matcherPropertiesDocumentHash: null,
                     demandId: action.data.demandId,
                     supplyId: action.data.supplyId,

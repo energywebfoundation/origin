@@ -20,7 +20,7 @@ export interface IMatcherOffChainProperties {
 export interface IAgreementOnChainProperties
     extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
     matcherPropertiesDocumentHash: string;
-    matcherDBURL: string;
+    matcherDBUrl: string;
     demandId: string;
     supplyId: string;
     allowedMatcher: string[];
@@ -42,7 +42,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
     matcherPropertiesDocumentHash: string;
 
-    matcherDBURL: string;
+    matcherDBUrl: string;
 
     demandId: string;
 
@@ -80,7 +80,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             this.propertiesDocumentHash = agreement._propertiesDocumentHash;
             this.url = agreement._documentDBURL;
             this.matcherPropertiesDocumentHash = agreement._matcherPropertiesDocumentHash;
-            this.matcherDBURL = agreement._matcherDBURL;
+            this.matcherDBUrl = agreement._matcherDBURL;
             this.demandId = agreement._demandId;
             this.supplyId = agreement._supplyId;
             this.approvedBySupplyOwner = agreement._approvedBySupplyOwner;
@@ -133,10 +133,10 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     }
 
     async setMatcherProperties(
-        matcherOffchainProperties: IMatcherOffChainProperties
+        matcherOffChainProperties: IMatcherOffChainProperties
     ): Promise<TransactionReceipt> {
-        const matcherOffchainStorageProperties = this.prepareEntityCreation(
-            matcherOffchainProperties,
+        const matcherOffChainStorageProperties = this.prepareEntityCreation(
+            matcherOffChainProperties,
             MatcherOffChainPropertiesSchema,
             this.getMatcherURL()
         );
@@ -146,22 +146,22 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             tx = await this.configuration.blockchainProperties.marketLogicInstance.setMatcherProperties(
                 this.id,
-                matcherOffchainStorageProperties.rootHash,
-                this.matcherDBURL,
+                matcherOffChainStorageProperties.rootHash,
+                this.matcherDBUrl,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
             tx = await this.configuration.blockchainProperties.marketLogicInstance.setMatcherProperties(
                 this.id,
-                matcherOffchainStorageProperties.rootHash,
-                this.matcherDBURL,
+                matcherOffChainStorageProperties.rootHash,
+                this.matcherDBUrl,
                 { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
 
         await this.putToOffChainStorage(
-            matcherOffchainProperties,
-            matcherOffchainStorageProperties,
+            matcherOffChainProperties,
+            matcherOffChainStorageProperties,
             this.getMatcherURL()
         );
 
@@ -192,7 +192,7 @@ export const createAgreement = async (
     let {
         url,
         propertiesDocumentHash,
-        matcherDBURL,
+        matcherDBUrl,
         matcherPropertiesDocumentHash
     } = agreementPropertiesOnChain;
 
@@ -200,7 +200,7 @@ export const createAgreement = async (
         url = agreement.getUrl();
         propertiesDocumentHash = agreementOffChainStorageProperties.rootHash;
 
-        matcherDBURL = agreement.getMatcherURL();
+        matcherDBUrl = agreement.getMatcherURL();
         matcherPropertiesDocumentHash = matcherOffChainStorageProperties.rootHash;
     }
 
@@ -208,7 +208,7 @@ export const createAgreement = async (
         propertiesDocumentHash,
         url,
         matcherPropertiesDocumentHash,
-        matcherDBURL,
+        matcherDBUrl,
         agreementPropertiesOnChain.demandId,
         agreementPropertiesOnChain.supplyId,
         {

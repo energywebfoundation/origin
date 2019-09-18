@@ -387,7 +387,7 @@ describe('Test StrategyBasedMatcher', async () => {
             const agreementProps: Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
+                matcherDBUrl: null,
                 matcherPropertiesDocumentHash: null,
                 demandId: '0',
                 supplyId: '0',

@@ -385,7 +385,7 @@ describe('Market-Facade', () => {
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
+                matcherDBUrl: null,
                 matcherPropertiesDocumentHash: null,
                 demandId: '0',
                 supplyId: '0',
@@ -415,7 +415,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -451,7 +451,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -495,7 +495,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -536,7 +536,7 @@ describe('Market-Facade', () => {
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
+                matcherDBUrl: null,
                 matcherPropertiesDocumentHash: null,
                 demandId: '0',
                 supplyId: '0',
@@ -566,7 +566,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: false,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -610,7 +610,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -659,7 +659,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 100
