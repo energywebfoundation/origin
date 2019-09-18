@@ -6,14 +6,16 @@ import * as Winston from 'winston';
 
 export interface IEntityStore {
     init(): Promise<void>;
-    registerCertificateListener(listener: NewCertificateListener): void;
+    registerCertificateListener(listener: Listener<Certificate.Entity>): void;
+    registerDemandListener(listener: Listener<Demand.Entity>): void;
 
     getDemandById(id: string): Demand.Entity;
     getAgreements(): Agreement.Entity[];
     getDemands(): Demand.Entity[];
+    getCertificates(): Certificate.Entity[];
 }
 
-export type NewCertificateListener = (certificate: Certificate.Entity) => Promise<void>;
+export type Listener<T> = (entity: T) => Promise<void>;
 
 @singleton()
 export class EntityStore implements IEntityStore {
@@ -23,9 +25,13 @@ export class EntityStore implements IEntityStore {
 
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
 
+    private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
+
     private matcherAddress: string;
 
-    private certificateListeners: NewCertificateListener[] = [];
+    private certificateListeners: Listener<Certificate.Entity>[] = [];
+
+    private demandListeners: Listener<Demand.Entity>[] = [];
 
     constructor(
         @inject('config') private config: Configuration.Entity,
@@ -34,8 +40,12 @@ export class EntityStore implements IEntityStore {
         this.matcherAddress = config.blockchainProperties.activeUser.address.toLowerCase();
     }
 
-    public registerCertificateListener(listener: NewCertificateListener) {
+    public registerCertificateListener(listener: Listener<Certificate.Entity>) {
         this.certificateListeners.push(listener);
+    }
+
+    public registerDemandListener(listener: Listener<Demand.Entity>) {
+        this.demandListeners.push(listener);
     }
 
     public getDemandById(id: string): Demand.Entity {
@@ -48,6 +58,10 @@ export class EntityStore implements IEntityStore {
 
     public getDemands() {
         return Array.from(this.demands.values());
+    }
+
+    public getCertificates() {
+        return Array.from(this.certificates.values());
     }
 
     public async init() {

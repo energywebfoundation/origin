@@ -21,3 +21,9 @@ export enum Compliance {
     EEC,
     TIGR
 }
+
+export enum Unit {
+    kWh = 1e3,
+    MWh = 1e6,
+    GWh = 1e9
+}
