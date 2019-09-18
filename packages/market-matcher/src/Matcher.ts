@@ -211,6 +211,7 @@ export class Matcher {
             this.entityStore
                 .getCertificates()
                 .filter(this.isAllowedMatcher.bind(this))
+                .filter(this.isOnSale.bind(this))
                 .map(async (certificate: Certificate.Entity) => {
                     const producingAsset = await new ProducingAsset.Entity(
                         certificate.assetId.toString(),
