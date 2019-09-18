@@ -1,20 +1,5 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
 import * as GeneralLib from '@energyweb/utils-general';
+
 import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperties.schema.json';
 
 export interface ISupplyOffChainProperties {
@@ -29,71 +14,21 @@ export interface ISupplyOnChainProperties
     assetId: string;
 }
 
-export const getSupplyListLength = async (configuration: GeneralLib.Configuration.Entity) => {
-    return configuration.blockchainProperties.marketLogicInstance.getAllSupplyListLength();
-};
-
-export const getAllSupplies = async (configuration: GeneralLib.Configuration.Entity) => {
-    const suppliesPromises = Array(parseInt(await getSupplyListLength(configuration)))
-        .fill(null)
-        .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-    return (await Promise.all(suppliesPromises)).filter(promise => promise.initialized);
-};
-
-export const createSupply = async (
-    supplyPropertiesOnChain: ISupplyOnChainProperties,
-    supplyPropertiesOffChain: ISupplyOffChainProperties,
-    configuration: GeneralLib.Configuration.Entity
-): Promise<Entity> => {
-    const supply = new Entity(null, configuration);
-
-    const offChainStorageProperties = supply.prepareEntityCreation(
-        supplyPropertiesOffChain,
-        supplyOffChainPropertiesSchema,
-        supply.getUrl()
-    );
-    if (configuration.offChainDataSource) {
-        supplyPropertiesOnChain.url = supply.getUrl();
-        supplyPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
-
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createSupply(
-        supplyPropertiesOnChain.propertiesDocumentHash,
-        supplyPropertiesOnChain.url,
-        supplyPropertiesOnChain.assetId,
-        {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        }
-    );
-
-    supply.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
-        .toString();
-
-    await supply.putToOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
-
-    if (configuration.logger) {
-        configuration.logger.info(`Supply ${supply.id} created`);
-    }
-
-    return supply.sync();
-};
-
 export interface ISupply extends ISupplyOnChainProperties {
-    offChainProperties: ISupplyOffChainProperties
+    offChainProperties: ISupplyOffChainProperties;
 }
 
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
-    implements ISupply {
+export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements ISupply {
     offChainProperties: ISupplyOffChainProperties;
+
     propertiesDocumentHash: string;
+
     url: string;
 
     assetId: string;
 
     initialized: boolean;
+
     configuration: GeneralLib.Configuration.Entity;
 
     constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
@@ -127,3 +62,58 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity
         return this;
     }
 }
+
+export const getSupplyListLength = async (configuration: GeneralLib.Configuration.Entity) => {
+    return configuration.blockchainProperties.marketLogicInstance.getAllSupplyListLength();
+};
+
+export const getAllSupplies = async (configuration: GeneralLib.Configuration.Entity) => {
+    const suppliesPromises = Array(parseInt(await getSupplyListLength(configuration), 10))
+        .fill(null)
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
+
+    return (await Promise.all(suppliesPromises)).filter(promise => promise.initialized);
+};
+
+export const createSupply = async (
+    supplyPropertiesOnChain: ISupplyOnChainProperties,
+    supplyPropertiesOffChain: ISupplyOffChainProperties,
+    configuration: GeneralLib.Configuration.Entity
+): Promise<Entity> => {
+    const supply = new Entity(null, configuration);
+
+    const offChainStorageProperties = supply.prepareEntityCreation(
+        supplyPropertiesOffChain,
+        supplyOffChainPropertiesSchema,
+        supply.getUrl()
+    );
+
+    let { url, propertiesDocumentHash } = supplyPropertiesOnChain;
+
+    if (configuration.offChainDataSource) {
+        url = supply.getUrl();
+        propertiesDocumentHash = offChainStorageProperties.rootHash;
+    }
+
+    const tx = await configuration.blockchainProperties.marketLogicInstance.createSupply(
+        propertiesDocumentHash,
+        url,
+        supplyPropertiesOnChain.assetId,
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
+        }
+    );
+
+    supply.id = configuration.blockchainProperties.web3.utils
+        .hexToNumber(tx.logs[0].topics[1])
+        .toString();
+
+    await supply.putToOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
+
+    if (configuration.logger) {
+        configuration.logger.info(`Supply ${supply.id} created`);
+    }
+
+    return supply.sync();
+};

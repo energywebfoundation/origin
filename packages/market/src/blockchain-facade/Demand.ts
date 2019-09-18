@@ -1,35 +1,26 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
+import {
+    BlockchainDataModelEntity,
+    Compliance,
+    Configuration,
+    Currency,
+    extendArray,
+    TimeFrame
+} from '@energyweb/utils-general';
 
-import * as GeneralLib from '@energyweb/utils-general';
-import { extendArray } from '@energyweb/utils-general';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
 export interface IDemandOffChainProperties {
-    timeFrame: GeneralLib.TimeFrame;
+    timeFrame: TimeFrame;
     maxPricePerMwh: number;
-    currency: GeneralLib.Currency;
+    currency: Currency;
     location?: IDemandLocation;
     assetType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;
     targetWhPerPeriod: number;
-    registryCompliance?: GeneralLib.Compliance;
+    registryCompliance?: Compliance;
     startTime: string;
     endTime: string;
     procureFromSingleFacility?: boolean;
@@ -47,8 +38,7 @@ export enum DemandStatus {
     ARCHIVED
 }
 
-export interface IDemandOnChainProperties
-    extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
+export interface IDemandOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
     demandOwner: string;
     status: DemandStatus;
 }
@@ -58,83 +48,24 @@ export interface IDemand extends IDemandOnChainProperties {
     offChainProperties: IDemandOffChainProperties;
 }
 
-export const getDemandListLength = async (
-    configuration: GeneralLib.Configuration.Entity
-): Promise<number> => {
-    return configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength();
-};
-
-export const createDemand = async (
-    demandPropertiesOffChain: IDemandOffChainProperties,
-    configuration: GeneralLib.Configuration.Entity
-): Promise<Entity> => {
-    const demand = new Entity(null, configuration);
-
-    const offChainStorageProperties = demand.prepareEntityCreation(
-        demandPropertiesOffChain,
-        DemandOffChainPropertiesSchema,
-        demand.getUrl()
-    );
-
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
-        offChainStorageProperties.rootHash,
-        demand.getUrl(),
-        {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        }
-    );
-
-    demand.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
-        .toString();
-
-    await demand.putToOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
-
-    if (configuration.logger) {
-        configuration.logger.info(`Demand ${demand.id} created`);
-    }
-
-    return demand.sync();
-};
-
-export const deleteDemand = async (
-    demandId: string,
-    configuration: GeneralLib.Configuration.Entity
-): Promise<boolean> => {
-    let success = true;
-
-    try {
-        await configuration.blockchainProperties.marketLogicInstance.deleteDemand(demandId, {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        });
-    } catch (e) {
-        success = false;
-        throw e;
-    }
-
-    if (configuration.logger) {
-        configuration.logger.info(`Demand ${demandId} deleted`);
-    }
-
-    return success;
-};
-
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements IDemand {
+export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
     offChainProperties: IDemandOffChainProperties;
+
     propertiesDocumentHash: string;
+
     url: string;
+
     status: DemandStatus;
 
     demandOwner: string;
 
     initialized: boolean;
-    configuration: GeneralLib.Configuration.Entity;
+
+    configuration: Configuration.Entity;
 
     marketLogicInstance: MarketLogic;
 
-    constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
+    constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
         this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance!;
@@ -173,7 +104,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     async clone(): Promise<Entity> {
         await this.sync();
 
-        return createDemand(this.offChainProperties, this.configuration);
+        return createDemand(this.offChainProperties, this.configuration); // eslint-disable-line @typescript-eslint/no-use-before-define
     }
 
     async update(offChainProperties: IDemandOffChainProperties) {
@@ -199,14 +130,14 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     }
 }
 
-export const getAllDemandsListLength = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAllDemandsListLength = async (configuration: Configuration.Entity) => {
     return parseInt(
         await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(),
         10
     );
 };
 
-export const getAllDemands = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAllDemands = async (configuration: Configuration.Entity) => {
     const demandsPromises = Array(await getAllDemandsListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -215,11 +146,72 @@ export const getAllDemands = async (configuration: GeneralLib.Configuration.Enti
 };
 
 export const filterDemandBy = async (
-    configuration: GeneralLib.Configuration.Entity,
+    configuration: Configuration.Entity,
     onChainProperties: Partial<IDemandOnChainProperties>
 ) => {
     const allDemands = await getAllDemands(configuration);
     const filter = { ...onChainProperties } as Partial<Entity>;
 
     return extendArray(allDemands).filterBy(filter);
+};
+
+export const getDemandListLength = async (configuration: Configuration.Entity): Promise<number> => {
+    return configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength();
+};
+
+export const createDemand = async (
+    demandPropertiesOffChain: IDemandOffChainProperties,
+    configuration: Configuration.Entity
+): Promise<Entity> => {
+    const demand = new Entity(null, configuration);
+
+    const offChainStorageProperties = demand.prepareEntityCreation(
+        demandPropertiesOffChain,
+        DemandOffChainPropertiesSchema,
+        demand.getUrl()
+    );
+
+    const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
+        offChainStorageProperties.rootHash,
+        demand.getUrl(),
+        {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
+        }
+    );
+
+    demand.id = configuration.blockchainProperties.web3.utils
+        .hexToNumber(tx.logs[0].topics[1])
+        .toString();
+
+    await demand.putToOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+
+    if (configuration.logger) {
+        configuration.logger.info(`Demand ${demand.id} created`);
+    }
+
+    return demand.sync();
+};
+
+export const deleteDemand = async (
+    demandId: string,
+    configuration: Configuration.Entity
+): Promise<boolean> => {
+    let success = true;
+
+    try {
+        await configuration.blockchainProperties.marketLogicInstance.deleteDemand(demandId, {
+            from: configuration.blockchainProperties.activeUser.address,
+            privateKey: configuration.blockchainProperties.activeUser.privateKey
+        });
+    } catch (e) {
+        success = false;
+        throw e;
+    }
+
+    if (configuration.logger) {
+        configuration.logger.info(`Demand ${demandId} deleted`);
+    }
+
+    return success;
 };
