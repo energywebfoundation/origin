@@ -21,6 +21,7 @@ import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC721.sol";
 import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC721TokenReceiver.sol";
 import "@energyweb/utils-general/contracts/Interfaces/Updatable.sol";
 import "@energyweb/user-registry/contracts/Users/RoleManagement.sol";
+import "@energyweb/user-registry/contracts/Users/UserLogic.sol";
 import "@energyweb/user-registry/contracts/Interfaces/UserContractLookupInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetProducingInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
@@ -337,7 +338,8 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
             te.owner == msg.sender
             || checkMatcher(te.escrow)
             || db.getOwnerToOperators(te.owner, msg.sender)
-            || te.approvedAddress == msg.sender, "simpleTransfer, missing rights"
+            || te.approvedAddress == msg.sender
+            || isRole(RoleManagement.Role.Matcher, msg.sender), "simpleTransfer, missing rights"
         );
         db.setTradableEntityOwnerAndAddApproval(_entityId, _to, address(0x0));
         db.removeTokenAndPrice(_entityId);

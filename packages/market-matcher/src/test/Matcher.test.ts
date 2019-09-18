@@ -173,8 +173,23 @@ describe('Test StrategyBasedMatcher', async () => {
             originContractLookupAddr,
             privateKeyDeployment
         );
-        marketLogic = new MarketLogic(web3, (deployedContracts as any).MarketLogic);
+
+        const marketLogicAddress: string = (deployedContracts as any).MarketLogic;
+
+        marketLogic = new MarketLogic(web3, marketLogicAddress);
         marketContractLookupAddr = (deployedContracts as any).MarketContractLookup;
+
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            marketLogicAddress,
+            'matcher',
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.setRoles(marketLogicAddress, buildRights([Role.Matcher]), {
+            privateKey: privateKeyDeployment
+        });
 
         matcherConfig.marketContractLookupAddress = marketContractLookupAddr;
     });
