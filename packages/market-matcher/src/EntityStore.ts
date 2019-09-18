@@ -200,14 +200,6 @@ export class EntityStore implements IEntityStore {
     }
 
     private registerAgreement(agreement: Agreement.Entity) {
-        const allowed = agreement.allowedMatcher.some(
-            matcherAddress => matcherAddress && matcherAddress.toLowerCase() === this.matcherAddress
-        );
-
-        if (!allowed) {
-            this.logger.verbose(`This instance is not an matcher for agreement #${agreement.id}`);
-        }
-
         if (this.agreements.has(agreement.id)) {
             return;
         }

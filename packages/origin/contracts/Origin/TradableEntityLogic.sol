@@ -46,11 +46,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice Logs when an ApprovedForAll gets triggered
     event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
 
-    /// @notice Logs when an escrow gets removed
-    event LogEscrowRemoved(uint indexed _certificateId, address _escrow);
-    /// @notice Logs when an escrow gets added
-    event LogEscrowAdded(uint indexed _certificateId, address _escrow);
-
     /// @notice Logs when an entity is published for sale
     event LogPublishForSale(uint indexed _entityId, uint _price, address _token);
     /// @notice Logs when an entity is published for sale
@@ -136,18 +131,10 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @param _entityId the entity-id
     function approve(address _approved, uint256 _entityId) external payable {
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(address(db)).getTradableEntity(_entityId);
-        require(te.owner == msg.sender || checkMatcher(te.escrow), "approve: not owner / matcher");
+        require(te.owner == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender), "approve: not owner / matcher");
         db.addApprovalExternal(_entityId, _approved);
 
         emit Approval(msg.sender,_approved, _entityId);
-    }
-
-    /// @notice Removes an escrow-address of a certifiacte
-    /// @param _certificateId The id of the certificate
-    /// @param _escrow The address to be removed
-    function removeEscrow(uint _certificateId, address _escrow) external onlyEntityOwner(_certificateId){
-        require(db.removeEscrow(_certificateId, _escrow), "escrow address not in array");
-        emit LogEscrowRemoved(_certificateId, _escrow);
     }
 
     /// @notice makes the tradable entity available for sale
@@ -194,21 +181,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
      /**
         external non erc721 functions
     */
-
-    /// @notice adds a new escrow address to a certificate
-    /// @param _certificateId The id of the certificate
-    /// @param _escrow The additional escrow address
-    function addEscrowForEntity(uint _certificateId, address _escrow)
-        external
-        onlyEntityOwner(_certificateId)
-    {
-        require(
-            db.getTradableEntityEscrowLength(_certificateId) < OriginContractLookupInterface(owner).maxMatcherPerCertificate(),
-            "maximum amount of escrows reached"
-        );
-        db.addEscrowForEntity(_certificateId, _escrow);
-        emit LogEscrowAdded(_certificateId, _escrow);
-    }
 
     /// @notice initializes the contract by binding it to a logic contract
     /// @param _database Sets the logic contract
@@ -290,23 +262,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     }
 
     /**
-        public functions
-     */
-    /// @notice Checks if the msg.sender is included in the matcher-array
-    /// @param _matcher the array with matchers
-    /// @return true when the msg.sender is in the matcher-array
-    function checkMatcher(address[] memory _matcher) public view returns (bool) {
-        // we iterate through the matcherarray, the length is defined by the maxMatcherPerAsset-parameter of the Coo-contract or the array-length if it's shorter
-        uint matcherArrayLength = AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset() < _matcher.length
-            ? AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset()
-            : _matcher.length;
-
-        for (uint i = 0; i < matcherArrayLength; i++) {
-            if (_matcher[i] == msg.sender) return true;
-        }
-    }
-
-    /**
         internal functions
      */
     /// @notice function to check whether the provided address is a contract
@@ -336,7 +291,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         require(msg.value == 0, "sending value is not allowed");
         require(
             te.owner == msg.sender
-            || checkMatcher(te.escrow)
             || db.getOwnerToOperators(te.owner, msg.sender)
             || te.approvedAddress == msg.sender
             || isRole(RoleManagement.Role.Matcher, msg.sender), "simpleTransfer, missing rights"

@@ -246,7 +246,6 @@ describe('Test StrategyBasedMatcher', async () => {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            matcher: [{ address: accountDeployment }],
             propertiesDocumentHash: null,
             url: null,
             maxOwnerChanges: 3
@@ -367,25 +366,16 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('certificate owner is the trader after successful match', async () => {
-            console.log({
-                marketLogicInstance:
-                    conf.blockchainProperties.marketLogicInstance.web3Contract._address,
-                certificateLogicInstance:
-                    conf.blockchainProperties.certificateLogicInstance.web3Contract._address
-            });
-
             conf.blockchainProperties.activeUser = {
                 address: accountDeployment,
                 privateKey: privateKeyDeployment
             };
 
-            await sleep(30000);
-            const events = await marketLogic.getAllEvents();
-            console.log({ events: events.map((event: any) => event.returnValues) });
+            await sleep(10000);
 
             const certificate = await new Certificate.Entity('0', conf).sync();
             assert.equal(await certificate.getOwner(), accountTrader);
-        }).timeout(31000);
+        }).timeout(11000);
     });
 
     describe('Agreement matching tests', () => {
@@ -406,27 +396,14 @@ describe('Test StrategyBasedMatcher', async () => {
                 timeframe: TimeFrame.hourly
             };
 
-            const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {
-                currentWh: 0,
-                currentPeriod: 0
-            };
-
             const agreementProps: Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
-                matcherPropertiesDocumentHash: null,
                 demandId: '0',
-                supplyId: '0',
-                allowedMatcher: []
+                supplyId: '0'
             };
 
-            await Agreement.createAgreement(
-                agreementProps,
-                agreementOffchainProps,
-                matcherOffchainProps,
-                conf
-            );
+            await Agreement.createAgreement(agreementProps, agreementOffchainProps, conf);
 
             conf.blockchainProperties.activeUser = {
                 address: assetOwnerAddress,

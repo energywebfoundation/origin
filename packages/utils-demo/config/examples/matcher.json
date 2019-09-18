@@ -58,7 +58,6 @@
                 "smartMeter": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "smartMeterPK": "622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
                 "owner": "0xd46ac0bc23db5e8afdaab9ad35e9a3ba05e092e8",
-                "matcher": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651",
                 "operationalSince": 1514764800,
                 "capacityWh": 10000,
                 "lastSmartMeterReadWh": 0,
@@ -88,7 +87,6 @@
                 "smartMeter": "0xfd863c662307fcf0c15f0b9f74f1d06544f19908",
                 "smartMeterPK": "60a0dae29ff80793b6cc1602f60fbe548b6787d0f9d4eb7c0967dac8ff11591a",
                 "owner": "0x9442ed348b161af888e6cb999951ae8b961f7b4b",
-                "matcher": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651",
                 "operationalSince": 1529971200,
                 "capacityWh": 5000,
                 "lastSmartMeterReadWh": 0,
@@ -177,8 +175,7 @@
               "currentWh": 0,
               "currentPeriod": 0,
               "demandId": 0,
-              "supplyId": 0,
-              "allowedMatcher": "0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651"
+              "supplyId": 0
             }
         },
         {

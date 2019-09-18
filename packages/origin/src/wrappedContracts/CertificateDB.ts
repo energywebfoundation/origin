@@ -67,31 +67,6 @@ export class CertificateDB extends GeneralFunctions {
         return await this.web3Contract.methods.getApproved(_entityId).call(txParams);
     }
 
-    async addEscrowForEntity(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForEntity(_entityId, _escrow);
-
-        return await this.send(method, txParams);
-    }
-
-    async setTradableEntityEscrowExternal(
-        _entityId: number,
-        _escrow: string[],
-        txParams?: SpecialTx
-    ) {
-        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(
-            _entityId,
-            _escrow
-        );
-
-        return await this.send(method, txParams);
-    }
-
-    async getTradableEntityEscrowLength(_entityId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods
-            .getTradableEntityEscrowLength(_entityId)
-            .call(txParams);
-    }
-
     async setDataLog(_certificateId: number, _newDataLog: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setDataLog(_certificateId, _newDataLog);
 
@@ -157,7 +132,6 @@ export class CertificateDB extends GeneralFunctions {
     async createCertificateRaw(
         _assetId: number,
         _powerInW: number,
-        _escrow: string[],
         _assetOwner: string,
         _lastSmartMeterReadFileHash: string,
         _maxOwnerChanges: number,
@@ -166,7 +140,6 @@ export class CertificateDB extends GeneralFunctions {
         const method = this.web3Contract.methods.createCertificateRaw(
             _assetId,
             _powerInW,
-            _escrow,
             _assetOwner,
             _lastSmartMeterReadFileHash,
             _maxOwnerChanges
@@ -284,12 +257,6 @@ export class CertificateDB extends GeneralFunctions {
             .call(txParams);
     }
 
-    async removeEscrow(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeEscrow(_entityId, _escrow);
-
-        return await this.send(method, txParams);
-    }
-
     async publishForSale(
         _entityId: number,
         _price: number,
@@ -321,19 +288,6 @@ export class CertificateDB extends GeneralFunctions {
 
     async setTradableToken(_entityId: number, _token: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableToken(_entityId, _token);
-
-        return await this.send(method, txParams);
-    }
-
-    async setOwnerChangeCounterResetEscrow(
-        _certificateId: number,
-        _newCounter: number,
-        txParams?: SpecialTx
-    ) {
-        const method = this.web3Contract.methods.setOwnerChangeCounterResetEscrow(
-            _certificateId,
-            _newCounter
-        );
 
         return await this.send(method, txParams);
     }

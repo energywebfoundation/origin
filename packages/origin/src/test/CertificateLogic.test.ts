@@ -78,9 +78,6 @@ describe('CertificateLogic-Facade', () => {
     const assetSmartmeterPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
 
-    const matcherPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
-    const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
-
     const approvedPK = '0x60a0dae29ff80793b6cc1602f60fbe548b6787d0f9d4eb7c0967dac8ff11591a';
     const approvedAccount = web3.eth.accounts.privateKeyToAccount(approvedPK).address;
 
@@ -227,7 +224,6 @@ describe('CertificateLogic-Facade', () => {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            matcher: [{ address: matcherAccount }],
             propertiesDocumentHash: null,
             url: null,
             maxOwnerChanges: 3
@@ -302,7 +298,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
@@ -420,14 +415,13 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
             parentId: '0',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '0',
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
@@ -467,7 +461,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
@@ -503,7 +496,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
@@ -547,7 +539,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: erc20TestTokenAddress,
             onChainDirectPurchasePrice: '100',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
@@ -632,14 +623,13 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
             parentId: '1',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '0',
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
@@ -676,7 +666,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
@@ -715,7 +704,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Split.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
@@ -747,7 +735,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
@@ -771,7 +758,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
@@ -816,118 +802,8 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Retired.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
-            offChainSettlementOptions: {
-                price: 0,
-                currency: Currency.NONE
-            }
-        });
-    });
-
-    it('should fail when trying to remove a non-existing matcher of a certificate', async () => {
-        let certificate = await new Certificate.Entity('4', conf).sync();
-
-        let failed = false;
-        try {
-            await certificate.removeEscrow(accountTrader);
-        } catch (ex) {
-            assert.include(ex.message, 'escrow address not in array');
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-        certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        assert.deepEqual(certificate as any, {
-            id: '4',
-            initialized: true,
-            assetId: '0',
-            children: [],
-            owner: accountAssetOwner,
-            powerInW: 40,
-            forSale: false,
-            acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
-            approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
-            offChainSettlementOptions: {
-                price: 0,
-                currency: Currency.NONE
-            }
-        });
-    });
-
-    it('should remove matcher of a certificate', async () => {
-        let certificate = await new Certificate.Entity('4', conf).sync();
-
-        await certificate.removeEscrow(matcherAccount);
-
-        certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        assert.deepEqual(certificate as any, {
-            id: '4',
-            initialized: true,
-            assetId: '0',
-            children: [],
-            owner: accountAssetOwner,
-            powerInW: 40,
-            forSale: false,
-            acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
-            escrow: [],
-            approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
-            creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
-            offChainSettlementOptions: {
-                price: 0,
-                currency: Currency.NONE
-            }
-        });
-    });
-
-    it('should add a matcher to a certificate', async () => {
-        let certificate = await new Certificate.Entity('4', conf).sync();
-
-        await certificate.addEscrowForEntity(matcherAccount);
-
-        certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        assert.deepEqual(certificate as any, {
-            id: '4',
-            initialized: true,
-            assetId: '0',
-            children: [],
-            owner: accountAssetOwner,
-            powerInW: 40,
-            forSale: false,
-            acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
-            approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
             parentId: '2',
@@ -969,7 +845,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#4',
@@ -1037,14 +912,13 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockCreationTime,
             parentId: '5',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '0',
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
@@ -1081,7 +955,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#5',
@@ -1149,14 +1022,13 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockCreationTime,
             parentId: '6',
             maxOwnerChanges: '3',
-            ownerChangerCounter: '1',
+            ownerChangerCounter: '0',
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
@@ -1385,7 +1257,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#10',
@@ -1426,7 +1297,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: true,
             acceptedToken: '0x1230000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '10',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#10',
@@ -1455,7 +1325,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#10',
@@ -1491,7 +1360,6 @@ describe('CertificateLogic-Facade', () => {
             forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
-            escrow: [matcherAccount],
             approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
             dataLog: 'lastSmartMeterReadFileHash#10',

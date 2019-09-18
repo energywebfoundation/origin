@@ -29,11 +29,6 @@ interface TradableEntityDBInterface {
     /// @param _approve the approved address
     function addApprovalExternal(uint _entityId, address _approve) external;
 
-    /// @notice adds an escrow for an entity
-    /// @param _entityId the id of the entity
-    /// @param _escrow the address of the escrow
-    function addEscrowForEntity(uint _entityId, address _escrow) external;
-
     /// @notice sets the owner of a tradableEntity
     /// @param _entityId the id of the entity
     /// @param _owner the new owner
@@ -53,12 +48,6 @@ interface TradableEntityDBInterface {
     /// @param _entityId the id of the entity
     function removeTokenAndPrice(uint _entityId) external;
 
-    /// @notice remmives an escrow-address for an entity
-    /// @param _entityId the id of the entity
-    /// @param _escrow the escrow address to be removed
-    /// @return true if the removal was successfull
-    function removeEscrow(uint _entityId, address _escrow) external returns (bool);
-
     /// @notice sets the flags whether an escrow can transfer the certificates of a company
     /// @param _company the owner of certificates
     /// @param _escrow the escrow address (matcher)
@@ -70,12 +59,6 @@ interface TradableEntityDBInterface {
     /// @param _owner the new owner
     /// @param _approve the approved address
     function setTradableEntityOwnerAndAddApproval(uint _entityId, address _owner, address _approve) external;
-
-    /// @notice sets the escrows for a tradableEntity
-    /// @param _entityId the id of the entity
-    /// @param _escrow array with escrows
-    function setTradableEntityEscrowExternal(uint _entityId, address[] calldata _escrow) external;
-
 
     /// @notice gets the approved address for an entity
     /// @param _entityId the id of the enitity
@@ -96,11 +79,6 @@ interface TradableEntityDBInterface {
     /// @param _entityId the id of the entity
     /// @return the owner of a tradable entity
     function getTradableEntityOwner(uint _entityId) external view returns (address);
-
-    /// @notice gets the number of escrows for a tradable entity
-    /// @param _entityId the id of the entity
-    /// @return the number of escrows for the tradable entity
-    function getTradableEntityEscrowLength(uint _entityId) external view returns (uint);
 
     /// @notice gets the onchain direct purchase price for an entity
     /// @param _entityId the id of the entity

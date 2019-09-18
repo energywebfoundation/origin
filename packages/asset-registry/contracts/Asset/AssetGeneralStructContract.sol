@@ -25,7 +25,6 @@ contract AssetGeneralStructContract {
         uint lastSmartMeterReadWh;
         bool active;
         string lastSmartMeterReadFileHash;
-        address[] matcher;
         string propertiesDocumentHash;
         string url;
         address marketLookupContract;

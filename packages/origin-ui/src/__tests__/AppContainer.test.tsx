@@ -225,8 +225,7 @@ const deployDemo = async () => {
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
         url: null,
-        maxOwnerChanges: 1000,
-        matcher: []
+        maxOwnerChanges: 1000
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {

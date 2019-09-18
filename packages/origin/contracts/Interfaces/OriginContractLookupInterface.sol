@@ -26,8 +26,4 @@ interface OriginContractLookupInterface {
     /// @notice gets the assetContractLookupRegistry-contract address
     /// @return the assetContractLookupRegistry-contract address
     function assetContractLookup() external view returns (address);
-
-    /// @notice gets the maximum amount of allowed matcher per certificate
-    /// @return the maximum amount of allowed matcher per certificate
-    function maxMatcherPerCertificate() external view returns (uint);
 }

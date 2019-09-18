@@ -37,13 +37,6 @@ export class CertificateService {
         //     this.config
         // );
 
-        // if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
-        //     agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
-        //     agreement.matcherOffChainProperties.currentWh = certificate.powerInW;
-        // } else {
-        //     agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
-        // }
-
         // this.logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
     }
 

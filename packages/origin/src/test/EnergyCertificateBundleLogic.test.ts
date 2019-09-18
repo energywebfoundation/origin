@@ -354,7 +354,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assetSmartmeter,
                 accountAssetOwner,
                 true,
-                ['0x1000000000000000000000000000000000000005'] as any,
                 'propertiesDocumentHash',
                 'url',
                 2,
@@ -473,9 +472,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -625,7 +621,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -747,7 +742,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -881,9 +875,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1152,9 +1143,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1343,14 +1331,7 @@ describe('EnergyCertificateBundleLogic', () => {
             });
         });
 
-        describe('escrow and approval', () => {
-            /*
-            it('should set an escrow to the asset', async () => {
-                await assetRegistry.addMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
-                assert.deepEqual(await assetRegistry.getMatcher(0),
-                                 ['0x1000000000000000000000000000000000000005', matcherAccount]);
-            });
-            */
+        describe('approval', () => {
 
             it('should return correct approval', async () => {
                 assert.isFalse(
@@ -1549,9 +1530,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1638,14 +1616,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     assert.include(ex.message, 'approve: not owner / matcher');
                 }
                 assert.isTrue(failed);
-            });
-
-            it('should set an escrow to the asset', async () => {
-                await assetRegistry.addMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
-                assert.deepEqual(await assetRegistry.getMatcher(0), [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
             });
 
             it('should throw trying to transfer old certificate with new matcher', async () => {
@@ -1753,10 +1723,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1891,10 +1857,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2089,7 +2051,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2184,10 +2145,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2381,7 +2338,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2476,10 +2432,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2569,7 +2521,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2676,10 +2627,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2843,7 +2790,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2937,10 +2883,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3101,7 +3043,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3185,10 +3126,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3221,10 +3158,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(tradableEntity.approvedAddress, approvedAccount);
             });
 
@@ -3305,7 +3238,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3389,10 +3321,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3425,10 +3353,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(tradableEntity.approvedAddress, approvedAccount);
             });
 
@@ -3525,7 +3449,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3609,10 +3532,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3645,10 +3564,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(tradableEntity.approvedAddress, approvedAccount);
             });
 
@@ -3745,7 +3660,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3829,10 +3743,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3899,10 +3809,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x1000000000000000000000000000000000000006'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3963,10 +3869,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x1000000000000000000000000000000000000006'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 1000);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4021,7 +3923,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4085,7 +3986,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4204,10 +4104,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4245,10 +4141,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x1000000000000000000000000000000000000006'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 1000);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4304,7 +4196,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4384,7 +4275,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4495,10 +4385,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4536,10 +4422,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x1000000000000000000000000000000000000006'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 1000);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4595,7 +4477,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -4660,7 +4541,6 @@ describe('EnergyCertificateBundleLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'

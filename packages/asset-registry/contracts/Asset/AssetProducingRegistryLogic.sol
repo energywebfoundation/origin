@@ -68,7 +68,6 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
 	/// @param _smartMeter smartmeter of the asset
 	/// @param _owner asset-owner
 	/// @param _active flag if the asset is already active
-	/// @param _matcher array with matcher addresses
 	/// @param _propertiesDocumentHash hash of the document with the properties of an asset
 	/// @param _url where to find the documentHash
 	/// @param _numOwnerChanges allowed amount of owner-changes of certificates created by the asset
@@ -77,7 +76,6 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
         address _smartMeter,
         address _owner,
         bool _active,
-        address[] calldata _matcher,
         string calldata _propertiesDocumentHash,
         string calldata _url,
         uint _numOwnerChanges
@@ -85,7 +83,7 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
         external
         returns (uint _assetId)
     {
-        checkBeforeCreation(_matcher, _owner, _smartMeter);
+        checkBeforeCreation(_owner, _smartMeter);
 
         AssetGeneral memory a = AssetGeneral({
             smartMeter: _smartMeter,
@@ -93,7 +91,6 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: "",
-            matcher: _matcher,
             propertiesDocumentHash: _propertiesDocumentHash,
             url: _url,
             marketLookupContract: address(0x0),

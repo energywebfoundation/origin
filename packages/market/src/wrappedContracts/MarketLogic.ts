@@ -79,8 +79,6 @@ export class MarketLogic extends GeneralFunctions {
     async createAgreement(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
         _demandId: number,
         _supplyId: number,
         txParams?: SpecialTx
@@ -88,8 +86,6 @@ export class MarketLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.createAgreement(
             _propertiesDocumentHash,
             _documentDBURL,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL,
             _demandId,
             _supplyId
         );
@@ -175,21 +171,6 @@ export class MarketLogic extends GeneralFunctions {
 
     async getAgreement(_agreementId: number, txParams?: SpecialTx) {
         return this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
-    }
-
-    async setMatcherProperties(
-        _agreementId: number,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
-        txParams?: SpecialTx
-    ) {
-        const method = this.web3Contract.methods.setMatcherProperties(
-            _agreementId,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL
-        );
-
-        return this.send(method, txParams);
     }
 
     async getAllSupplyListLength(txParams?: SpecialTx) {

@@ -38,8 +38,7 @@ import Web3 from 'web3';
 import * as Market from '..';
 import { MarketLogic } from '..';
 import {
-    IAgreementOffChainProperties,
-    IMatcherOffChainProperties
+    IAgreementOffChainProperties
 } from '../blockchain-facade/Agreement';
 import { DemandStatus } from '../blockchain-facade/Demand';
 import { logger } from '../Logger';
@@ -74,9 +73,6 @@ describe('Market-Facade', () => {
 
     const assetSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
-
-    const matcherPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
-    const matcher = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
 
     const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
@@ -295,7 +291,6 @@ describe('Market-Facade', () => {
                 lastSmartMeterReadWh: 0,
                 active: true,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-                matcher: [{ address: matcher }],
                 propertiesDocumentHash: null,
                 url: null,
                 maxOwnerChanges: 3
@@ -416,25 +411,16 @@ describe('Market-Facade', () => {
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const matcherOffchainProps: IMatcherOffChainProperties = {
-                currentWh: 0,
-                currentPeriod: 0
-            };
-
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
-                matcherPropertiesDocumentHash: null,
                 demandId: '0',
-                supplyId: '0',
-                allowedMatcher: []
+                supplyId: '0'
             };
 
             const agreement = await Market.Agreement.createAgreement(
                 agreementProps,
                 agreementOffchainProps,
-                matcherOffchainProps,
                 conf
             );
 
@@ -443,10 +429,8 @@ describe('Market-Facade', () => {
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
-            delete agreement.matcherPropertiesDocumentHash;
 
             assert.deepEqual(agreement, {
-                allowedMatcher: [matcher],
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
@@ -454,11 +438,6 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
-                matcherOffChainProperties: {
-                    currentPeriod: 0,
-                    currentWh: 0
-                },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
@@ -479,10 +458,8 @@ describe('Market-Facade', () => {
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
-            delete agreement.matcherPropertiesDocumentHash;
 
             assert.deepEqual(agreement, {
-                allowedMatcher: [matcher],
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
@@ -490,11 +467,6 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
-                matcherOffChainProperties: {
-                    currentPeriod: 0,
-                    currentWh: 0
-                },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
@@ -523,10 +495,8 @@ describe('Market-Facade', () => {
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
-            delete agreement.matcherPropertiesDocumentHash;
 
             assert.deepEqual(agreement, {
-                allowedMatcher: [matcher],
                 id: '0',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
@@ -534,11 +504,6 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
-                matcherOffChainProperties: {
-                    currentPeriod: 0,
-                    currentWh: 0
-                },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
@@ -567,25 +532,16 @@ describe('Market-Facade', () => {
                 timeframe: GeneralLib.TimeFrame.hourly
             };
 
-            const matcherOffchainProps: IMatcherOffChainProperties = {
-                currentWh: 0,
-                currentPeriod: 0
-            };
-
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
-                matcherPropertiesDocumentHash: null,
                 demandId: '0',
-                supplyId: '0',
-                allowedMatcher: []
+                supplyId: '0'
             };
 
             const agreement = await Market.Agreement.createAgreement(
                 agreementProps,
                 agreementOffchainProps,
-                matcherOffchainProps,
                 conf
             );
 
@@ -594,10 +550,8 @@ describe('Market-Facade', () => {
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
-            delete agreement.matcherPropertiesDocumentHash;
 
             assert.deepEqual(agreement, {
-                allowedMatcher: [matcher],
                 id: '1',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
@@ -605,11 +559,6 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: false,
-                matcherDBURL: 'http://localhost:3030/Matcher',
-                matcherOffChainProperties: {
-                    currentPeriod: 0,
-                    currentWh: 0
-                },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,
@@ -638,10 +587,8 @@ describe('Market-Facade', () => {
             delete agreement.proofs;
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
-            delete agreement.matcherPropertiesDocumentHash;
 
             assert.deepEqual(agreement, {
-                allowedMatcher: [matcher],
                 id: '1',
                 initialized: true,
                 url: 'http://localhost:3030/Agreement',
@@ -649,60 +596,6 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
-                matcherOffChainProperties: {
-                    currentPeriod: 0,
-                    currentWh: 0
-                },
-                offChainProperties: {
-                    currency: GeneralLib.Currency.USD,
-                    end: startTime + 1000,
-                    period: 10,
-                    price: 10,
-                    start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
-                }
-            } as Partial<Market.Agreement.Entity>);
-        });
-
-        it('should change matcherProperties', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: matcher,
-                privateKey: matcherPK
-            };
-
-            let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
-                '1',
-                conf
-            ).sync();
-
-            const matcherOffchainProps: IMatcherOffChainProperties = {
-                currentWh: 100,
-                currentPeriod: 0
-            };
-
-            await agreement.setMatcherProperties(matcherOffchainProps);
-
-            agreement = await agreement.sync();
-            delete agreement.proofs;
-            delete agreement.configuration;
-            delete agreement.propertiesDocumentHash;
-            delete agreement.matcherPropertiesDocumentHash;
-
-            assert.deepEqual(agreement, {
-                allowedMatcher: [matcher],
-                id: '1',
-                initialized: true,
-                url: 'http://localhost:3030/Agreement',
-                demandId: '0',
-                supplyId: '0',
-                approvedBySupplyOwner: true,
-                approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
-                matcherOffChainProperties: {
-                    currentPeriod: 0,
-                    currentWh: 100
-                },
                 offChainProperties: {
                     currency: GeneralLib.Currency.USD,
                     end: startTime + 1000,

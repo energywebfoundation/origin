@@ -40,15 +40,6 @@ export class Matcher {
     private async match(certificate: Certificate.Entity) {
         this.logger.verbose(`Started processing certificate #${certificate.id}`);
         try {
-            if (!this.isAllowedMatcher(certificate)) {
-                this.logger.verbose(
-                    `This instance is not an escrow for certificate #${certificate.id}`
-                );
-                return false;
-            }
-
-            this.logger.verbose(`This instance is an escrow for certificate #${certificate.id}`);
-
             const matchingResult =
                 (await this.matchWithAgreements(certificate)) ||
                 (await this.matchWithDemands(certificate));
@@ -65,12 +56,6 @@ export class Matcher {
         return certificate.forSale;
     }
 
-    private isAllowedMatcher(certificate: Certificate.ICertificate) {
-        return certificate.escrow.some(
-            escrow => escrow.toLowerCase() === this.matcherAddress.toLowerCase()
-        );
-    }
-
     private async matchWithAgreements(certificate: Certificate.Entity) {
         const agreements = this.entityStore.getAgreements();
         const matchingAgreements = await this.findMatchingAgreements(certificate, agreements);
@@ -78,10 +63,7 @@ export class Matcher {
         for (const matchingAgreement of matchingAgreements) {
             const { agreement } = matchingAgreement;
             const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(
-                demand,
-                this.config
-            );
+            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
 
             this.logger.debug(
                 `Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`

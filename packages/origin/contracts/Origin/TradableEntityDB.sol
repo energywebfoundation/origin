@@ -54,20 +54,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         te.forSale = _isForSale;
     }
 
-    /// @notice adds an escrow to an entity
-    /// @param _entityId the id of an entity
-    /// @param _escrow the escrow to be added
-    function addEscrowForEntity(
-        uint _entityId,
-        address _escrow
-    )
-        external
-        onlyOwner
-    {
-        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
-        te.escrow.push(_escrow);
-    }
-
     /// @notice adds approval for an entity (external call)
     /// @param _entityId the id of the entity
     /// @param _approve the address to be approved
@@ -79,22 +65,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         onlyOwner
     {
         addApproval(_entityId, _approve);
-    }
-
-    /// @notice Removes an escrow-address of an existing bundle
-    /// @param _entityId The array position
-    /// @param _escrow the escrow-address to be removed
-    /// @return whether the address had been removed
-    function removeEscrow(uint _entityId, address _escrow) external onlyOwner  returns (bool) {
-
-        address[] storage escrows = getTradableEntityInternally(_entityId).escrow;
-        for (uint i = 0; i < escrows.length; i++){
-            if(escrows[i] == _escrow){
-                escrows[i] = escrows[escrows.length-1];
-                escrows.length--;
-                return true;
-            }
-        }
     }
 
     /// @notice removes accepted token and the price for an entity
@@ -140,13 +110,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         onlyOwner
     {
         setTradableEntityOwner(_entityId, _owner);
-    }
-
-    /// @notice sets an array of escrows for an entity, gets called externally
-    /// @param _entityId the entity-id
-    /// @param _escrow the array with escrow-addresses
-    function setTradableEntityEscrowExternal(uint _entityId, address[] calldata _escrow) external onlyOwner {
-        setTradableEntityEscrow(_entityId, _escrow);
     }
 
     /// @notice sets the tradable token (ERC20 contracts) of an entity
@@ -232,13 +195,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         return getTradableEntity(_entityId).owner;
     }
 
-    /// @notice gets the number of escrow addresses for a tradable entity
-    /// @param _entityId the entitiy-id
-    /// @return the number of escrows for an entity
-    function getTradableEntityEscrowLength(uint _entityId) external onlyOwner view returns (uint){
-        return getTradableEntity(_entityId).escrow.length;
-    }
-
     /// @notice sets the TradableEntityOwner and adds approval
     /// @param _entityId the id of an entity
     /// @param _owner the new owner of an entity
@@ -286,16 +242,4 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         changeCertOwner(oldOwner,_owner);
 
     }
-
-    /// @notice sets the escrow-addresses of a certificate
-    /// @param _entityId the entity-id
-    /// @param _escrow new escrow-addresses
-    function setTradableEntityEscrow(uint _entityId, address[] memory _escrow)
-        internal
-    {
-        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
-        te.escrow = _escrow;
-    }
-
-
 }

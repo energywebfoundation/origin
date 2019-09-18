@@ -150,7 +150,6 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
             this.forSale = cert.tradableEntity.forSale;
             this.acceptedToken = cert.tradableEntity.acceptedToken;
             this.onChainDirectPurchasePrice = cert.tradableEntity.onChainDirectPurchasePrice;
-            this.escrow = cert.tradableEntity.escrow;
             this.approvedAddress = cert.tradableEntity.approvedAddress;
 
             this.children = cert.certificateSpecific.children;

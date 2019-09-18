@@ -1,9 +1,7 @@
 import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Configuration } from '@energyweb/utils-general';
 
 import { MatchingErrorReason } from './MatchingErrorReason';
-import { Utils } from './Utils';
 import { Validator } from './Validator';
 
 export class MatchableAgreement {
@@ -25,18 +23,8 @@ export class MatchableAgreement {
             .result();
     }
 
-    public async missingEnergyForDemand(demand: Demand.IDemand, config: Configuration.Entity) {
-        const { start, timeframe } = this.agreement.offChainProperties;
-        const currentPeriod = await Utils.getCurrentPeriod(start, timeframe, config);
-
+    public async missingEnergyForDemand(demand: Demand.IDemand) {
         const { targetWhPerPeriod } = demand.offChainProperties;
-
-        if (this.agreement.matcherOffChainProperties.currentPeriod === currentPeriod) {
-            const missingEnergy =
-                targetWhPerPeriod - this.agreement.matcherOffChainProperties.currentWh;
-
-            return Math.max(missingEnergy, 0);
-        }
 
         return targetWhPerPeriod;
     }

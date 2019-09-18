@@ -65,21 +65,6 @@ export class MarketDB extends GeneralFunctions {
         return await this.web3Contract.methods.getDemand(_demandId).call(txParams);
     }
 
-    async setMatcherPropertiesAndURL(
-        _agreementId: number,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
-        txParams?: SpecialTx
-    ) {
-        const method = this.web3Contract.methods.setMatcherPropertiesAndURL(
-            _agreementId,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL
-        );
-
-        return await this.send(method, txParams);
-    }
-
     async createSupply(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
@@ -91,12 +76,6 @@ export class MarketDB extends GeneralFunctions {
             _documentDBURL,
             _assetId
         );
-
-        return await this.send(method, txParams);
-    }
-
-    async setAgreementMatcher(_agreementId: number, _matchers: string[], txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setAgreementMatcher(_agreementId, _matchers);
 
         return await this.send(method, txParams);
     }
@@ -149,8 +128,6 @@ export class MarketDB extends GeneralFunctions {
     async createAgreementDB(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
         _demandId: number,
         _supplyId: number,
         txParams?: SpecialTx
@@ -158,8 +135,6 @@ export class MarketDB extends GeneralFunctions {
         const method = this.web3Contract.methods.createAgreementDB(
             _propertiesDocumentHash,
             _documentDBURL,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL,
             _demandId,
             _supplyId
         );

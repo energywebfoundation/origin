@@ -29,12 +29,9 @@ contract OriginContractLookup is Owned, OriginContractLookupInterface {
     Updatable private originLogicRegistryContract;
     AssetContractLookupInterface private assetContractLookupContract;
 
-    uint private maxMatcherPerCertificateNumber;
 
     /// @notice The constructor
-    constructor() Owned(msg.sender) public{
-        maxMatcherPerCertificateNumber = 10;
-    }
+    constructor() Owned(msg.sender) public {}
 
 	/// @notice function to initialize the contracts, setting the needed contract-addresses
 	/// @param _assetRegistry the asset Registry
@@ -64,16 +61,6 @@ contract OriginContractLookup is Owned, OriginContractLookupInterface {
         originLogicRegistryContract.init(_originDB, msg.sender);
     }
 
-	/// @notice set the amount of maximal matcher per certificate
-	/// @param _new the new amount
-    function setMaxMatcherPerCertificate(uint _new)
-        external
-        onlyOwner
-    {
-        maxMatcherPerCertificateNumber = _new;
-    }
-
-
 	/// @notice function to update one or more logic-contracts
 	/// @param _originRegistry address of the new user-registry-logic-contract
     function update(
@@ -98,12 +85,4 @@ contract OriginContractLookup is Owned, OriginContractLookupInterface {
     function assetContractLookup() external view returns (address){
         return address(assetContractLookupContract);
     }
-
-	/// @notice gets the maximal amount of matcher per certificate
-	/// @return the maximal amount of matcher per certificate
-    function maxMatcherPerCertificate() external view returns (uint){
-        return maxMatcherPerCertificateNumber;
-    }
-
-
 }

@@ -26,7 +26,6 @@ contract TradableEntityContract {
         bool forSale;
         address acceptedToken;
         uint onChainDirectPurchasePrice;
-        address[] escrow;
         address approvedAddress;
     }
 }

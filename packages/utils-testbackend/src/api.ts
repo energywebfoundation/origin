@@ -21,8 +21,7 @@ export async function startAPI() {
             ENTITY.CONSUMING_ASSET,
             ENTITY.DEMAND,
             ENTITY.SUPPLY,
-            ENTITY.AGREEMENT,
-            ENTITY.MATCHER
+            ENTITY.AGREEMENT
         ],
         new FileAdapter('db.json')
     );
@@ -164,21 +163,6 @@ export async function startAPI() {
         console.log(`PUT - Agreement ${req.params.id}`);
 
         storage.set(ENTITY.AGREEMENT, req.params.id, req.body);
-
-        res.send('success');
-    });
-
-    /**
-     * Matcher
-     */
-    app.get('/Matcher/:id', (req, res) => {
-        console.log(`GET - Matcher ${req.params.id}`);
-        res.send(storage.get(ENTITY.MATCHER, req.params.id));
-    });
-
-    app.put('/Matcher/:id', (req, res) => {
-        console.log(`PUT - Matcher ${req.params.id}`);
-        storage.set(ENTITY.MATCHER, req.params.id, req.body);
 
         res.send('success');
     });

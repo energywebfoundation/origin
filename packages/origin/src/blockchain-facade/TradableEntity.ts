@@ -27,7 +27,6 @@ export interface IOnChainProperties {
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
     offChainSettlementOptions: IOffChainSettlementOptions;
-    escrow: string[];
     approvedAddress: string;
 }
 
@@ -113,7 +112,6 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
     offChainSettlementOptions: IOffChainSettlementOptions;
-    escrow: string[];
     approvedAddress: string;
 
     initialized: boolean;
@@ -233,38 +231,6 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         return this.configuration.blockchainProperties.certificateLogicInstance.getOnChainDirectPurchasePrice(
             this.id
         );
-    }
-
-    async removeEscrow(escrow: string): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.removeEscrow(
-                this.id,
-                escrow,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.removeEscrow(
-                this.id,
-                escrow,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
-    async addEscrowForEntity(escrow: string): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.addEscrowForEntity(
-                this.id,
-                escrow,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.addEscrowForEntity(
-                this.id,
-                escrow,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
     }
 
     async publishForSale(price: number, tokenAddress: any): Promise<any> {

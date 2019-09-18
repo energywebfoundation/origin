@@ -85,22 +85,12 @@ export class OriginContractLookup extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setMaxMatcherPerCertificate(_new: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setMaxMatcherPerCertificate(_new);
-
-        return await this.send(method, txParams);
-    }
-
     async assetContractLookup(txParams?: SpecialTx) {
         return await this.web3Contract.methods.assetContractLookup().call(txParams);
     }
 
     async originLogicRegistry(txParams?: SpecialTx) {
         return await this.web3Contract.methods.originLogicRegistry().call(txParams);
-    }
-
-    async maxMatcherPerCertificate(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.maxMatcherPerCertificate().call(txParams);
     }
 
     async owner(txParams?: SpecialTx) {
