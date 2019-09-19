@@ -13,7 +13,7 @@ const SUPPORTED_EVENTS = [
     'LogChangeOwner',
     'DemandStatusChanged',
     'DemandUpdated',
-    'DemandFilled'
+    'DemandPartiallyFilled'
 ];
 
 export class MarketLogic extends GeneralFunctions {

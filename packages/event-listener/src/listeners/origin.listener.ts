@@ -94,12 +94,12 @@ export class OriginEventListener implements IOriginEventListener {
             await this.checkDemands(publishedCertificate);
         });
 
-        marketContractEventHandler.onEvent('DemandFilled', async (event: any) => {
-            const { _demandId, _entityId } = event.returnValues;
+        marketContractEventHandler.onEvent('DemandPartiallyFilled', async (event: any) => {
+            const { _demandId, _entityId, _amount } = event.returnValues;
             // const transferredCert = await new Certificate.Entity(_entityId, this.conf).sync();
 
             this.conf.logger.info(
-                `Event: DemandFilled: Matched certificate #${_entityId} to Demand #${_demandId}.`
+                `Event: DemandPartiallyFilled: Matched certificate #${_entityId} with energy ${_amount} to Demand #${_demandId}.`
             );
         });
 

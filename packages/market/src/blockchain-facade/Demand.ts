@@ -16,6 +16,8 @@
 
 import * as GeneralLib from '@energyweb/utils-general';
 import { extendArray } from '@energyweb/utils-general';
+import { TransactionReceipt } from 'web3/types';
+
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -201,8 +203,8 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
         return new Entity(this.id, this.configuration).sync();
     }
 
-    async fill(entityId: string): Promise<void> {
-        await this.marketLogicInstance.fillDemand(
+    async fill(entityId: string): Promise<TransactionReceipt> {
+        return this.marketLogicInstance.fillDemand(
             this.id,
             entityId,
             {
