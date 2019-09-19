@@ -1,5 +1,13 @@
 {
-  "extends": [
-    "config:base"
+  "extends": ["config:base"],
+  "schedule": ["every weekend"],
+  "ignoreDeps": [
+    "@energyweb/asset-registry",
+    "@energyweb/market-matcher",
+    "@energyweb/market",
+    "@energyweb/origin",
+    "@energyweb/user-registry",
+    "@energyweb/utils-general",
+    "@energyweb/utils-test-backend"
   ]
 }
