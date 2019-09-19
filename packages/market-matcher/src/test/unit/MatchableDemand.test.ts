@@ -1,12 +1,12 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency } from '@energyweb/utils-general';
+import { Currency, Unit } from '@energyweb/utils-general';
 import { Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 
-import { MatchableDemand } from '../MatchableDemand';
-import { MatchingErrorReason } from '../MatchingErrorReason';
+import { MatchableDemand } from '../../MatchableDemand';
+import { MatchingErrorReason } from '../../MatchingErrorReason';
 
 interface IMockOptions {
     status?: Demand.DemandStatus;
@@ -19,14 +19,14 @@ interface IMockOptions {
 describe('MatchableDemand tests', () => {
     describe('Certificates', () => {
         const certificateEnergy = 1000;
-        const energyPrice = 100;
+        const energyPrice = 100 * 1e6;
         const currency = Currency.USD;
         const assetType = 'Solar';
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
             demandOffChainProperties.targetWhPerPeriod.returns(certificateEnergy);
-            demandOffChainProperties.maxPricePerMwh.returns(energyPrice * 1e6);
+            demandOffChainProperties.maxPricePerMwh.returns(energyPrice);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
 
@@ -41,6 +41,7 @@ describe('MatchableDemand tests', () => {
                 currency: options.currency || currency
             });
             certificate.powerInW.returns(options.energy || certificateEnergy);
+            certificate.pricePerUnit(Unit.MWh).returns(options.price || energyPrice);
 
             const producingAssetOffChainProperties = Substitute.for<
                 ProducingAsset.IOffChainProperties
@@ -100,7 +101,7 @@ describe('MatchableDemand tests', () => {
 
         it('should not match demand with lower expected price', () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
-                price: energyPrice * 1e6
+                price: energyPrice + 1
             });
 
             const matchableDemand = new MatchableDemand(demand);
@@ -160,7 +161,7 @@ describe('MatchableDemand tests', () => {
             demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
             demand.offChainProperties.returns(demandOffChainProperties);
 
-            const supplyOffChainProperties = Substitute.for<Supply.ISupplyOffchainProperties>();
+            const supplyOffChainProperties = Substitute.for<Supply.ISupplyOffChainProperties>();
             supplyOffChainProperties.availableWh.returns(options.energy || supplyEnergy);
             supplyOffChainProperties.price.returns(
                 options.price || (energyPrice * (options.energy || supplyEnergy)) / 1e6

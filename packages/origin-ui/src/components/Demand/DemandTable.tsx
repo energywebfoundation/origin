@@ -1,47 +1,38 @@
-import * as React from 'react';
-import moment from 'moment';
-import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
-import { Configuration, TimeFrame, Currency, IRECAssetService } from '@energyweb/utils-general';
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { User } from '@energyweb/user-registry';
+import { Configuration, Currency, IRECAssetService, TimeFrame } from '@energyweb/utils-general';
+import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
+import moment from 'moment';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
+
+import { getBaseURL, getConfiguration, getCurrentUser, getDemands } from '../../features/selectors';
+import { IStoreState } from '../../types';
+import { NotificationType, showNotification } from '../../utils/notifications';
+import {
+    getCertificatesForDemandLink,
+    getDemandCloneLink,
+    getDemandEditLink,
+    getDemandViewLink
+} from '../../utils/routing';
+import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
 import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
 } from '../Table/PaginatedLoader';
 import {
-    getCertificatesForDemandLink,
-    getDemandEditLink,
-    getDemandCloneLink,
-    getDemandViewLink
-} from '../../utils/routing';
-import {
-    getConfiguration,
-    getConsumingAssets,
-    getProducingAssets,
-    getCurrentUser,
-    getBaseURL,
-    getDemands
-} from '../../features/selectors';
-import { connect } from 'react-redux';
-import { IStoreState } from '../../types';
-import { calculateTotalEnergyDemand } from './DemandForm';
-import {
+    getInitialPaginatedLoaderFilteredState,
     IPaginatedLoaderFilteredState,
     PaginatedLoaderFiltered,
-    getInitialPaginatedLoaderFilteredState,
     RECORD_INDICATOR
 } from '../Table/PaginatedLoaderFiltered';
-import { ICustomFilterDefinition, CustomFilterInputType } from '../Table/FiltersHeader';
 import { TableMaterial } from '../Table/TableMaterial';
-import { Delete, FileCopy, Share, Edit } from '@material-ui/icons';
+import { calculateTotalEnergyDemand } from './DemandForm';
 
 interface IStateProps {
     configuration: Configuration.Entity;
     demands: Demand.Entity[];
-    producingAssets: ProducingAsset.Entity[];
-    consumingAssets: ConsumingAsset.Entity[];
     currentUser: User.Entity;
     baseURL: string;
 }
@@ -56,8 +47,6 @@ export interface IDemandTableState extends IPaginatedLoaderFilteredState {
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
     demandOwner: User.Entity;
-    consumingAsset?: ConsumingAsset.Entity;
-    producingAsset?: ProducingAsset.Entity;
 }
 
 const NO_VALUE_TEXT = 'any';
@@ -105,33 +94,13 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
     async enrichData(demands: Demand.Entity[]): Promise<IEnrichedDemandData[]> {
         const promises = demands.map(async (demand: Demand.Entity) => {
-            const result: IEnrichedDemandData = {
+            return {
                 demand,
-                producingAsset: null,
-                consumingAsset: null,
                 demandOwner: await new User.Entity(
                     demand.demandOwner,
                     this.props.configuration
                 ).sync()
             };
-
-            if (demand.offChainProperties) {
-                if (typeof demand.offChainProperties.producingAsset !== 'undefined') {
-                    result.producingAsset = this.props.producingAssets.find(
-                        (asset: ProducingAsset.Entity) =>
-                            asset.id === demand.offChainProperties.producingAsset.toString()
-                    );
-                }
-
-                if (typeof demand.offChainProperties.consumingAsset !== 'undefined') {
-                    result.consumingAsset = this.props.consumingAssets.find(
-                        (asset: ConsumingAsset.Entity) =>
-                            asset.id === demand.offChainProperties.consumingAsset.toString()
-                    );
-                }
-            }
-
-            return result;
         });
 
         return Promise.all(promises);
@@ -362,9 +331,7 @@ export const DemandTable = withRouter(
     connect(
         (state: IStoreState): IStateProps => ({
             configuration: getConfiguration(state),
-            consumingAssets: getConsumingAssets(state),
             demands: getDemands(state),
-            producingAssets: getProducingAssets(state),
             currentUser: getCurrentUser(state),
             baseURL: getBaseURL(state)
         })

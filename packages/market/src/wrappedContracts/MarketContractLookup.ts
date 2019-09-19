@@ -1,9 +1,10 @@
-import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import MarketContractLookupJSON from '../../build/contracts/MarketContractLookup.json';
 
 export class MarketContractLookup extends GeneralFunctions {
     web3: Web3;
+
     buildFile = MarketContractLookupJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -20,7 +21,7 @@ export class MarketContractLookup extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -37,10 +38,10 @@ export class MarketContractLookup extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
+    async getAllEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -56,18 +57,18 @@ export class MarketContractLookup extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
     }
 
-    async marketLogicRegistry(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.marketLogicRegistry().call(txParams);
+    async marketLogicRegistry(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.marketLogicRegistry().call(txParams);
     }
 
     async init(
         _assetRegistry: string,
         _marketLogicRegistry: string,
         _marketDB: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.init(
             _assetRegistry,
@@ -75,30 +76,30 @@ export class MarketContractLookup extends GeneralFunctions {
             _marketDB
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async update(_marketRegistry: string, txParams?: SpecialTx) {
+    async update(_marketRegistry: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.update(_marketRegistry);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async assetContractLookupContract(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.assetContractLookupContract().call(txParams);
+    async assetContractLookupContract(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.assetContractLookupContract().call(txParams);
     }
 
-    async assetContractLookup(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.assetContractLookup().call(txParams);
+    async assetContractLookup(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.assetContractLookup().call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
+    async owner(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 }

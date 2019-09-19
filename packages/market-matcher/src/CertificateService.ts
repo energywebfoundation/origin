@@ -14,10 +14,13 @@ export class CertificateService {
         @inject('logger') private logger: Winston.Logger
     ) {}
 
-    public async matchAgreement(certificate: Certificate.Entity, agreement: Agreement.IAgreement) {
+    public async matchAgreement(
+        certificate: Certificate.ICertificate,
+        agreement: Agreement.IAgreement
+    ) {
         const demand = this.entityStore.getDemandById(agreement.demandId.toString());
         if (await this.isAlreadyTransferred(certificate, demand.demandOwner)) {
-            return;
+            return false;
         }
 
         this.logger.debug(
@@ -25,27 +28,11 @@ export class CertificateService {
         );
 
         await certificate.transferFrom(demand.demandOwner);
-
-        // TODO: update the the agreement current energy needs
-
-        // const currentPeriod = await Utils.getCurrentPeriod(
-        //     agreement.offChainProperties.start,
-        //     agreement.offChainProperties.timeframe,
-        //     this.config
-        // );
-
-        // if (agreement.matcherOffChainProperties.currentPeriod !== currentPeriod) {
-        //     agreement.matcherOffChainProperties.currentPeriod = currentPeriod;
-        //     agreement.matcherOffChainProperties.currentWh = certificate.powerInW;
-        // } else {
-        //     agreement.matcherOffChainProperties.currentWh += certificate.powerInW;
-        // }
-
-        // this.logger.info(`Matched certificate #${certificate.id} to agreement #${agreement.id}`);
+        return true;
     }
 
     public async splitCertificate(
-        certificate: Certificate.Entity,
+        certificate: Certificate.ICertificate,
         requiredEnergy: number
     ): Promise<void> {
         this.logger.info(`Splitting certificate ${certificate.id} at ${requiredEnergy}`);
@@ -53,9 +40,9 @@ export class CertificateService {
         await certificate.splitCertificate(requiredEnergy);
     }
 
-    public async matchDemand(certificate: Certificate.Entity, demand: Demand.IDemand) {
+    public async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
         if (await this.isAlreadyTransferred(certificate, demand.demandOwner)) {
-            return;
+            return false;
         }
 
         this.logger.debug(
@@ -63,9 +50,11 @@ export class CertificateService {
         );
 
         await certificate.transferFrom(demand.demandOwner);
+
+        return true;
     }
 
-    private async isAlreadyTransferred(certificate: Certificate.Entity, owner: string) {
+    private async isAlreadyTransferred(certificate: Certificate.ICertificate, owner: string) {
         const syncedCertificate = await certificate.sync();
 
         this.logger.verbose(
