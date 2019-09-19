@@ -406,6 +406,12 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
+    async claimCertificateBulk(_idArray: number[], txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.claimCertificateBulk(_idArray);
+
+        return this.send(method, txParams);
+    }
+
     async setTradableToken(_entityId: number, _tokenContract: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setTradableToken(_entityId, _tokenContract);
 

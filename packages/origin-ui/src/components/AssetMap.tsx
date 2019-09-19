@@ -18,7 +18,7 @@ interface IOwnProps {
 
 interface IStateProps {
     baseURL: string;
-    configuration: Configuration.Entity;
+    configuration: IStoreState['configuration'];
 }
 
 type Props = IOwnProps & IStateProps;

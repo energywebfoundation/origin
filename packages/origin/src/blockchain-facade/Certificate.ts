@@ -1,21 +1,6 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
-
 import { TransactionReceipt, Log } from 'web3/types';
-import { Configuration, Currency, Unit } from '@energyweb/utils-general';
+import { Currency, Unit } from '@energyweb/utils-general';
+import { Configuration } from '../utils/types';
 
 import * as TradableEntity from './TradableEntity';
 import { CertificateLogic } from '..';
@@ -43,7 +28,7 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
 }
 
 export const getCertificateListLength = async (
-    configuration: Configuration.Entity
+    configuration: Configuration
 ): Promise<number> => {
     return parseInt(
         await configuration.blockchainProperties.certificateLogicInstance.getCertificateListLength(),
@@ -51,7 +36,7 @@ export const getCertificateListLength = async (
     );
 };
 
-export const getAllCertificates = async (configuration: Configuration.Entity) => {
+export const getAllCertificates = async (configuration: Configuration) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -59,7 +44,7 @@ export const getAllCertificates = async (configuration: Configuration.Entity) =>
     return Promise.all(certificatePromises);
 };
 
-export const getActiveCertificates = async (configuration: Configuration.Entity) => {
+export const getActiveCertificates = async (configuration: Configuration) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -71,14 +56,14 @@ export const getActiveCertificates = async (configuration: Configuration.Entity)
 
 export const isRetired = async (
     certId: number,
-    configuration: Configuration.Entity
+    configuration: Configuration
 ): Promise<boolean> => {
     return configuration.blockchainProperties.certificateLogicInstance.isRetired(certId);
 };
 
 export const getAllCertificateEvents = async (
     certId: number,
-    configuration: Configuration.Entity
+    configuration: Configuration
 ): Promise<Log[]> => {
     const allEvents = await configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
         {
@@ -89,7 +74,8 @@ export const getAllCertificateEvents = async (
                     64,
                     '0'
                 )
-            ]
+            ],
+            toBlock: undefined
         }
     );
 
@@ -119,7 +105,8 @@ export const getAllCertificateEvents = async (
                         64,
                         '0'
                     )
-                ]
+                ],
+                toBlock: undefined
             }
         );
 
@@ -388,3 +375,17 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         return returnEvents;
     }
 }
+
+export async function claimCertificates(
+    certificateIds: string[],
+    configuration: Configuration
+) {
+    const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
+
+    const accountProperties = {
+        from: configuration.blockchainProperties.activeUser.address,
+        privateKey: configuration.blockchainProperties.activeUser.privateKey
+    };
+
+    return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(certificateIdsAsNumber, accountProperties);
+};

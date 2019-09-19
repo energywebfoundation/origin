@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
-import { Configuration } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
@@ -11,9 +10,10 @@ import {
     DialogTitle,
     DialogContentText
 } from '@material-ui/core';
+import { IStoreState } from '../../types/index';
 
 interface IBuyCertificateBulkModalProps {
-    conf: Configuration.Entity;
+    conf: IStoreState['configuration'];
     certificates: Certificate.Entity[];
     showModal: boolean;
     callback: () => void;
@@ -66,10 +66,10 @@ export class BuyCertificateBulkModal extends React.Component<
             }
         }
 
-        const certificateIds: string[] = this.props.certificates.map(cert => cert.id);
+        const certificateIds: number[] = this.props.certificates.map(cert => parseInt(cert.id, 10));
         await this.props.conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(
             certificateIds,
-            { from }
+            { from, privateKey: '' }
         );
 
         showNotification(`Certificates have been bought.`, NotificationType.Success);
