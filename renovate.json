@@ -9,5 +9,11 @@
     "@energyweb/user-registry",
     "@energyweb/utils-general",
     "@energyweb/utils-test-backend"
+  ],
+  "packageRules": [
+    {
+      "packagePatterns": [ "eslint" ],
+      "groupName": "eslint"
+    }
   ]
 }
