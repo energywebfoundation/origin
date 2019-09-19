@@ -1,55 +1,40 @@
 import 'mocha';
 
-import {
-    AssetProducingRegistryLogic,
-    ProducingAsset
-} from '@energyweb/asset-registry';
-import {
-    migrateAssetRegistryContracts
-} from '@energyweb/asset-registry/contracts';
-import {
-    buildRights,
-    Role,
-    UserContractLookup,
-    UserLogic
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts,
-} from '@energyweb/user-registry/contracts';
+import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
 
 import * as Market from '..';
-import { MarketLogic } from '..';
 import {
     IAgreementOffChainProperties,
     IMatcherOffChainProperties
 } from '../blockchain-facade/Agreement';
-import { DemandStatus } from '../blockchain-facade/Demand';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 
 describe('Market-Facade', () => {
     const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+        fs.readFileSync(`${process.cwd()}/connection-config.json`, 'utf8')
     );
 
     const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
         ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+        : `0x${configFile.develop.deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    console.log('acc-deployment: ' + accountDeployment);
+    console.log(`acc-deployment: ${accountDeployment}`);
     let conf: GeneralLib.Configuration.Entity;
     let userLogic: UserLogic;
-    let userContractLookup: UserContractLookup;
     let assetProducingRegistry: AssetProducingRegistryLogic;
-    let marketLogic: MarketLogic;
+    let marketLogic: Market.MarketLogic;
 
     let userContractLookupAddr;
     let assetContractLookupAddr;
@@ -62,9 +47,6 @@ describe('Market-Facade', () => {
 
     const matcherPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
     const matcher = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
-
-    const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
-    const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     const traderPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
@@ -137,7 +119,7 @@ describe('Market-Facade', () => {
             assetContractLookupAddr,
             privateKeyDeployment
         );
-        marketLogic = new MarketLogic(web3 as any, (deployedContracts as any).MarketLogic);
+        marketLogic = new Market.MarketLogic(web3 as any, (deployedContracts as any).MarketLogic);
     });
 
     describe('Demand-Facade', () => {
@@ -166,8 +148,6 @@ describe('Market-Facade', () => {
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
-                producingAsset: '0',
-                consumingAsset: '0',
                 location: { provinces: ['string'], regions: ['string'] },
                 assetType: ['Solar'],
                 minCO2Offset: 10,
@@ -214,13 +194,11 @@ describe('Market-Facade', () => {
 
             assert.deepEqual(demand.offChainProperties, {
                 assetType: ['Solar'],
-                consumingAsset: '0',
                 currency: GeneralLib.Currency.USD,
                 location: { provinces: ['string'], regions: ['string'] },
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
-                producingAsset: '0',
                 registryCompliance: 2,
                 targetWhPerPeriod: 10,
                 timeFrame: GeneralLib.TimeFrame.hourly,
@@ -245,7 +223,8 @@ describe('Market-Facade', () => {
             const demand = await new Market.Demand.Entity('0', conf).clone();
 
             const offChainProperties = { ...demand.offChainProperties };
-            offChainProperties.procureFromSingleFacility = !demand.offChainProperties.procureFromSingleFacility;
+            offChainProperties.procureFromSingleFacility = !demand.offChainProperties
+                .procureFromSingleFacility;
             offChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
 
             const updated = await demand.update(offChainProperties);
@@ -305,7 +284,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            const supplyOffChainProperties: Market.Supply.ISupplyOffchainProperties = {
+            const supplyOffChainProperties: Market.Supply.ISupplyOffChainProperties = {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 availableWh: 10,
@@ -388,7 +367,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const matcherOffchainProps: IMatcherOffChainProperties = {
@@ -399,7 +378,7 @@ describe('Market-Facade', () => {
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
+                matcherDBUrl: null,
                 matcherPropertiesDocumentHash: null,
                 demandId: '0',
                 supplyId: '0',
@@ -429,7 +408,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -440,7 +419,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -465,7 +444,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -476,7 +455,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -509,7 +488,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -520,7 +499,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -539,7 +518,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const matcherOffchainProps: IMatcherOffChainProperties = {
@@ -550,7 +529,7 @@ describe('Market-Facade', () => {
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBURL: null,
+                matcherDBUrl: null,
                 matcherPropertiesDocumentHash: null,
                 demandId: '0',
                 supplyId: '0',
@@ -580,7 +559,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: false,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -591,7 +570,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -624,7 +603,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 0
@@ -635,7 +614,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -673,7 +652,7 @@ describe('Market-Facade', () => {
                 supplyId: '0',
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
-                matcherDBURL: 'http://localhost:3030/Matcher',
+                matcherDBUrl: 'http://localhost:3030/Matcher',
                 matcherOffChainProperties: {
                     currentPeriod: 0,
                     currentWh: 100
@@ -684,7 +663,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });

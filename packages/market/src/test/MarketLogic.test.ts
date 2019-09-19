@@ -1,40 +1,30 @@
+import 'mocha';
+
+import { AssetContractLookup, AssetProducingRegistryLogic } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import 'mocha';
 import Web3 from 'web3';
-import {
-    UserLogic,
-    UserContractLookup,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts,
-} from '@energyweb/user-registry/contracts';
-import {
-    AssetContractLookup,
-    AssetProducingRegistryLogic
-} from '@energyweb/asset-registry';
-import {
-    migrateAssetRegistryContracts
-} from '@energyweb/asset-registry/contracts';
+
+import { MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON } from '../../contracts';
+import { DemandStatus } from '../blockchain-facade/Demand';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
-import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '../../contracts';
-import { DemandStatus } from '../blockchain-facade/Demand';
 
 describe('MarketLogic', () => {
     const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+        fs.readFileSync(`${process.cwd()}/connection-config.json`, 'utf8')
     );
 
     const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
         ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+        : `0x${configFile.develop.deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
@@ -118,7 +108,7 @@ describe('MarketLogic', () => {
             web3,
             (assetContracts as any).AssetProducingRegistryLogic
         );
-        for (let key of Object.keys(marketContracts)) {
+        for (const key of Object.keys(marketContracts)) {
             let tempBytecode;
             if (key.includes('MarketContractLookup')) {
                 marketRegistryContract = new MarketContractLookup(web3, marketContracts[key]);
@@ -627,7 +617,7 @@ describe('MarketLogic', () => {
     it('should throw an error when accessing a non existing-agreement', async () => {
         let failed = false;
         try {
-            const agreement = await marketLogic.getAgreement(0);
+            await marketLogic.getAgreement(0);
         } catch (ex) {
             failed = true;
         }
@@ -671,7 +661,7 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to approve aggreement again as supplyOwner', async () => {
-        const tx = await marketLogic.approveAgreementSupply(0, { privateKey: assetOwnerPK });
+        await marketLogic.approveAgreementSupply(0, { privateKey: assetOwnerPK });
     });
 
     it('should have 1 agreements in list', async () => {
@@ -681,7 +671,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to call approveAgreementDemand as assetOwner', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementDemand(0, { privateKey: assetOwnerPK });
+            await marketLogic.approveAgreementDemand(0, { privateKey: assetOwnerPK });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'approveAgreementDemand: wrong msg.sender');
@@ -693,7 +683,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to call approveAgreementDemand as admin', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementDemand(0, {
+            await marketLogic.approveAgreementDemand(0, {
                 privateKey: privateKeyDeployment
             });
         } catch (ex) {
@@ -780,7 +770,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to change matcher properties with wrong account (assetAdmin)', async () => {
         let failed = false;
         try {
-            const agreement = await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
+            await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
                 privateKey: privateKeyDeployment
             });
         } catch (e) {
@@ -794,7 +784,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to change matcher properties with wrong account (assetOwner)', async () => {
         let failed = false;
         try {
-            const agreement = await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
+            await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
                 privateKey: assetOwnerPK
             });
         } catch (e) {
@@ -928,13 +918,13 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to approve 2nd aggreement again as supplyOwner', async () => {
-        const tx = await marketLogic.approveAgreementDemand(1, { privateKey: traderPK });
+        await marketLogic.approveAgreementDemand(1, { privateKey: traderPK });
     });
 
     it('should fail when trying to call approveAgreementSupply as admin', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementSupply(1, {
+            await marketLogic.approveAgreementSupply(1, {
                 privateKey: privateKeyDeployment
             });
         } catch (ex) {
@@ -948,7 +938,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to call approveAgreementSupply as trader', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementSupply(1, { privateKey: traderPK });
+            await marketLogic.approveAgreementSupply(1, { privateKey: traderPK });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'approveAgreementSupply: wrong msg.sender');

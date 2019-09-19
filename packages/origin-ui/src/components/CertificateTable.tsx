@@ -1,10 +1,11 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
+import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Demand } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate, TradableEntity } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
+import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -21,6 +22,7 @@ import {
     getProducingAssets
 } from '../features/selectors';
 import { IStoreState } from '../types';
+import { formatCurrency } from '../utils/Helper';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';
@@ -36,8 +38,6 @@ import {
     PaginatedLoaderFilteredSorted
 } from './Table/PaginatedLoaderFilteredSorted';
 import { TableMaterial } from './Table/TableMaterial';
-import { Publish, AssignmentReturn, AssignmentTurnedIn, AddShoppingCart } from '@material-ui/icons';
-import { formatCurrency } from '../utils/Helper';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -434,8 +434,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 timeFrame: TimeFrame.yearly,
                 maxPricePerMwh: 0,
                 currency: Currency.USD,
-                producingAsset: certificate.assetId.toString(),
-                consumingAsset: '0',
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 targetWhPerPeriod: certificate.powerInW,

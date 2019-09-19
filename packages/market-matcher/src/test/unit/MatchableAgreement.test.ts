@@ -3,8 +3,8 @@ import { Certificate } from '@energyweb/origin';
 import { Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 
-import { MatchableAgreement } from '../MatchableAgreement';
-import { MatchingErrorReason } from '../MatchingErrorReason';
+import { MatchableAgreement } from '../../MatchableAgreement';
+import { MatchingErrorReason } from '../../MatchingErrorReason';
 
 interface IMockOptions {
     assetId?: string;

@@ -150,8 +150,6 @@ export const marketDemo = async (demoFile?: string) => {
                     timeFrame: timeFrame,
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
-                    producingAsset: action.data.producingAsset,
-                    consumingAsset: action.data.consumingAsset,
                     location: {
                         provinces: action.data.provinces,
                         regions: action.data.regions
@@ -192,7 +190,7 @@ export const marketDemo = async (demoFile?: string) => {
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
                 currency = Currency[action.data.currency as keyof typeof Currency];
 
-                const supplyOffChainProperties: Supply.ISupplyOffchainProperties = {
+                const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
                     price: action.data.price,
                     currency,
                     availableWh: action.data.availableWh,
@@ -239,7 +237,7 @@ export const marketDemo = async (demoFile?: string) => {
                     price: action.data.price,
                     currency,
                     period: action.data.period,
-                    timeframe: timeFrame
+                    timeFrame: timeFrame
                 };
 
                 const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {
@@ -250,7 +248,7 @@ export const marketDemo = async (demoFile?: string) => {
                 const agreementProps: Agreement.IAgreementOnChainProperties = {
                     propertiesDocumentHash: null,
                     url: null,
-                    matcherDBURL: null,
+                    matcherDBUrl: null,
                     matcherPropertiesDocumentHash: null,
                     demandId: action.data.demandId,
                     supplyId: action.data.supplyId,

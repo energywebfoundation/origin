@@ -1,7 +1,7 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, IRECAssetService } from '@energyweb/utils-general';
+import { Currency, IRECAssetService, Unit } from '@energyweb/utils-general';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
@@ -20,12 +20,6 @@ export class MatchableDemand {
         const certCurrency: Currency = isOffChainSettlement
             ? certificate.offChainSettlementOptions.currency
             : certificate.acceptedToken;
-        const certPricePerMwh: number =
-            ((isOffChainSettlement
-                ? certificate.offChainSettlementOptions.price
-                : certificate.onChainDirectPurchasePrice) /
-                certificate.powerInW) *
-            1e6;
 
         const { offChainProperties } = this.demand;
 
@@ -36,7 +30,7 @@ export class MatchableDemand {
                 MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
             .validate(
-                certPricePerMwh <= offChainProperties.maxPricePerMwh,
+                certificate.pricePerUnit(Unit.MWh) <= offChainProperties.maxPricePerMwh,
                 MatchingErrorReason.TOO_EXPENSIVE
             )
             .validate(

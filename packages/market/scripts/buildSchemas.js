@@ -86,7 +86,7 @@ async function run() {
 
     await generateSchemaIfNew(
         'yarn --silent build-schema:SupplyPropertiesOffChain',
-        '/schemas/SupplyOffchainProperties.schema.json'
+        '/schemas/SupplyOffChainProperties.schema.json'
     );
 
     console.log('MARKET: Building schemas done');

@@ -1,5 +1,5 @@
 import { TransactionReceipt, Log } from 'web3/types';
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Configuration, Currency, Unit } from '@energyweb/utils-general';
 
 import * as TradableEntity from './TradableEntity';
 import { CertificateLogic } from '..';
@@ -11,6 +11,7 @@ export enum Status {
 }
 
 export interface ICertificate extends TradableEntity.IOnChainProperties {
+    id: string;
     status: number;
     dataLog: string;
     creationTime: number;
@@ -18,6 +19,11 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
     children: number[];
     maxOwnerChanges: number;
     ownerChangerCounter: number;
+
+    pricePerUnit(unit: Unit): number;
+    sync(): Promise<ICertificate>;
+    splitCertificate(power: number): Promise<TransactionReceipt>;
+    transferFrom(_to: string): Promise<TransactionReceipt>;
 }
 
 export const getCertificateListLength = async (
@@ -295,6 +301,13 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
             price: saleParams.offChainPrice,
             currency: saleParams.offChainCurrency
         });
+    }
+
+    pricePerUnit(unit: Unit) {
+        const isOffChainSettlement = Number(this.acceptedToken) === 0x0;
+        const price = isOffChainSettlement ? this.offChainSettlementOptions.price : this.onChainDirectPurchasePrice;
+
+        return price / this.powerInW * unit;
     }
 
     async getCertificateOwner(): Promise<string> {
