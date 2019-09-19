@@ -19,7 +19,7 @@
             "groupName": "eslint"
         },
         {
-            "packagePatterns": ["webpack"],
+            "packagePatterns": ["webpack", "-loader"],
             "groupName": "webpack"
         },
         {
