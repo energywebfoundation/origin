@@ -23,6 +23,14 @@
             "groupName": "webpack"
         },
         {
+            "packagePatterns": ["jest"],
+            "groupName": "jest"
+        },
+        {
+            "packagePatterns": ["react", "redux"],
+            "groupName": "react"
+        },
+        {
             "depTypeList": ["devDependencies"],
             "automerge": true
         }
