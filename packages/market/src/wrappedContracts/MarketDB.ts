@@ -1,9 +1,10 @@
-import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import MarketDBJSON from '../../build/contracts/MarketDB.json';
 
 export class MarketDB extends GeneralFunctions {
     web3: Web3;
+
     buildFile = MarketDBJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -18,7 +19,7 @@ export class MarketDB extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -35,10 +36,10 @@ export class MarketDB extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
+    async getAllEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -54,22 +55,22 @@ export class MarketDB extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
     }
 
-    async getAllAgreementListLengthDB(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAllAgreementListLengthDB().call(txParams);
+    async getAllAgreementListLengthDB(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAllAgreementListLengthDB().call(txParams);
     }
 
-    async getDemand(_demandId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getDemand(_demandId).call(txParams);
+    async getDemand(_demandId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getDemand(_demandId).call(txParams);
     }
 
     async createSupply(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
         _assetId: number,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createSupply(
             _propertiesDocumentHash,
@@ -77,22 +78,22 @@ export class MarketDB extends GeneralFunctions {
             _assetId
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async getAgreementDB(_agreementId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAgreementDB(_agreementId).call(txParams);
+    async getAgreementDB(_agreementId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAgreementDB(_agreementId).call(txParams);
     }
 
-    async getAllSupplyListLength(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAllSupplyListLength().call(txParams);
+    async getAllSupplyListLength(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAllSupplyListLength().call(txParams);
     }
 
     async createDemand(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
         _demandOwner: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createDemand(
             _propertiesDocumentHash,
@@ -100,29 +101,29 @@ export class MarketDB extends GeneralFunctions {
             _demandOwner
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async approveAgreementSupplyDB(_agreementId: number, txParams?: SpecialTx) {
+    async approveAgreementSupplyDB(_agreementId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approveAgreementSupplyDB(_agreementId);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
+    async owner(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async approveAgreementDemandDB(_agreementId: number, txParams?: SpecialTx) {
+    async approveAgreementDemandDB(_agreementId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approveAgreementDemandDB(_agreementId);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
     async createAgreementDB(
@@ -130,7 +131,7 @@ export class MarketDB extends GeneralFunctions {
         _documentDBURL: string,
         _demandId: number,
         _supplyId: number,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createAgreementDB(
             _propertiesDocumentHash,
@@ -139,14 +140,14 @@ export class MarketDB extends GeneralFunctions {
             _supplyId
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async getSupply(_supplyId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getSupply(_supplyId).call(txParams);
+    async getSupply(_supplyId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getSupply(_supplyId).call(txParams);
     }
 
-    async getAllDemandListLength(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAllDemandListLength().call(txParams);
+    async getAllDemandListLength(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAllDemandListLength().call(txParams);
     }
 }

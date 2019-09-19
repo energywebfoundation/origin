@@ -1,18 +1,3 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH, Martin Kuechler, martin.kuechler@slock.it
 import 'mocha';
 
 import {
@@ -26,38 +11,32 @@ import {
     Role,
     UserLogic
 } from '@energyweb/user-registry';
-import {
-    migrateCertificateRegistryContracts,
-    Certificate,
-    CertificateLogic
-} from '@energyweb/origin';
+import { migrateCertificateRegistryContracts, CertificateLogic } from '@energyweb/origin';
 import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
 
 import * as Market from '..';
-import { MarketLogic } from '..';
-import {
-    IAgreementOffChainProperties
-} from '../blockchain-facade/Agreement';
+import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
+import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
 describe('Market-Facade', () => {
     const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+        fs.readFileSync(`${process.cwd()}/connection-config.json`, 'utf8')
     );
 
     const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
         ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+        : `0x${configFile.develop.deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    console.log('acc-deployment: ' + accountDeployment);
+    console.log(`acc-deployment: ${accountDeployment}`);
     let conf: GeneralLib.Configuration.Entity;
     let userLogic: UserLogic;
     let assetProducingRegistry: AssetProducingRegistryLogic;
@@ -172,7 +151,10 @@ describe('Market-Facade', () => {
             privateKeyDeployment
         );
         originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
-        certificateLogic = new CertificateLogic(web3 as any, (deployedContracts as any).CertificateLogic)
+        certificateLogic = new CertificateLogic(
+            web3 as any,
+            (deployedContracts as any).CertificateLogic
+        );
     });
 
     it('should deploy market-registry contracts', async () => {
@@ -183,7 +165,7 @@ describe('Market-Facade', () => {
             privateKeyDeployment
         );
         const marketLogicAddress = (deployedContracts as any).MarketLogic;
-        console.log({marketLogicAddress})
+        console.log({ marketLogicAddress });
         marketLogic = new MarketLogic(web3 as any, marketLogicAddress);
 
         await userLogic.createUser(
@@ -216,7 +198,7 @@ describe('Market-Facade', () => {
             },
             logger
         };
-    })
+    });
 
     it('should onboard a producing asset', async () => {
         conf.blockchainProperties.activeUser = {
@@ -272,8 +254,6 @@ describe('Market-Facade', () => {
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
-                producingAsset: '0',
-                consumingAsset: '0',
                 location: { provinces: ['string'], regions: ['string'] },
                 assetType: ['Solar'],
                 minCO2Offset: 10,
@@ -320,13 +300,11 @@ describe('Market-Facade', () => {
 
             assert.deepEqual(demand.offChainProperties, {
                 assetType: ['Solar'],
-                consumingAsset: '0',
                 currency: GeneralLib.Currency.USD,
                 location: { provinces: ['string'], regions: ['string'] },
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
-                producingAsset: '0',
                 registryCompliance: 2,
                 targetWhPerPeriod: 10,
                 timeFrame: GeneralLib.TimeFrame.hourly,
@@ -351,7 +329,8 @@ describe('Market-Facade', () => {
             const demand = await new Market.Demand.Entity('0', conf).clone();
 
             const offChainProperties = { ...demand.offChainProperties };
-            offChainProperties.procureFromSingleFacility = !demand.offChainProperties.procureFromSingleFacility;
+            offChainProperties.procureFromSingleFacility = !demand.offChainProperties
+                .procureFromSingleFacility;
             offChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
 
             const updated = await demand.update(offChainProperties);
@@ -388,11 +367,14 @@ describe('Market-Facade', () => {
             const demand = await new Market.Demand.Entity('0', conf).sync();
             const fillTx = await demand.fill('0');
 
-            const demandPartiallyFilledEvents = await marketLogic.getEvents('DemandPartiallyFilled', {
-                fromBlock: fillTx.blockNumber,
-                toBlock: fillTx.blockNumber
-            });
-    
+            const demandPartiallyFilledEvents = await marketLogic.getEvents(
+                'DemandPartiallyFilled',
+                {
+                    fromBlock: fillTx.blockNumber,
+                    toBlock: fillTx.blockNumber
+                }
+            );
+
             assert.equal(demandPartiallyFilledEvents.length, 1);
         });
     });
@@ -404,7 +386,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            const supplyOffChainProperties: Market.Supply.ISupplyOffchainProperties = {
+            const supplyOffChainProperties: Market.Supply.ISupplyOffChainProperties = {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 availableWh: 10,
@@ -487,7 +469,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
@@ -523,7 +505,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -552,7 +534,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -589,7 +571,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -608,7 +590,7 @@ describe('Market-Facade', () => {
                 price: 10,
                 currency: GeneralLib.Currency.USD,
                 period: 10,
-                timeframe: GeneralLib.TimeFrame.hourly
+                timeFrame: GeneralLib.TimeFrame.hourly
             };
 
             const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
@@ -644,7 +626,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });
@@ -681,7 +663,7 @@ describe('Market-Facade', () => {
                     period: 10,
                     price: 10,
                     start: startTime,
-                    timeframe: GeneralLib.TimeFrame.hourly
+                    timeFrame: GeneralLib.TimeFrame.hourly
                 }
             } as Partial<Market.Agreement.Entity>);
         });

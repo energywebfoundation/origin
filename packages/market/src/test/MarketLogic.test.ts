@@ -1,52 +1,37 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
+import 'mocha';
+import {
+    AssetContractLookup,
+    AssetProducingRegistryLogic,
+    migrateAssetRegistryContracts
+} from '@energyweb/asset-registry';
+import {
+    buildRights,
+    migrateUserRegistryContracts,
+    Role,
+    UserLogic
+} from '@energyweb/user-registry';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import 'mocha';
 import Web3 from 'web3';
-import {
-    migrateUserRegistryContracts,
-    UserLogic,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import {
-    migrateAssetRegistryContracts,
-    AssetContractLookup,
-    AssetProducingRegistryLogic
-} from '@energyweb/asset-registry';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin';
+
+import { MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON } from '..';
+import { DemandStatus } from '../blockchain-facade/Demand';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
-import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
-import { DemandStatus } from '../blockchain-facade/Demand';
 
 describe('MarketLogic', () => {
     const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
+        fs.readFileSync(`${process.cwd()}/connection-config.json`, 'utf8')
     );
 
     const web3 = new Web3(configFile.develop.web3);
 
     const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
         ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+        : `0x${configFile.develop.deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
@@ -136,7 +121,7 @@ describe('MarketLogic', () => {
             web3,
             (assetContracts as any).AssetProducingRegistryLogic
         );
-        for (let key of Object.keys(marketContracts)) {
+        for (const key of Object.keys(marketContracts)) {
             let tempBytecode;
             if (key.includes('MarketContractLookup')) {
                 marketRegistryContract = new MarketContractLookup(web3, marketContracts[key]);
@@ -453,13 +438,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing supply as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                0,
-                1,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
         }
@@ -470,13 +451,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing supply as assetOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                0,
-                1,
-                { privateKey: assetOwnerPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
+                privateKey: assetOwnerPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -487,13 +464,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing supply as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                0,
-                1,
-                { privateKey: traderPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
+                privateKey: traderPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -504,13 +477,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing demand as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                1,
-                0,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
         }
@@ -521,13 +490,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing demand as assetOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                1,
-                0,
-                { privateKey: assetOwnerPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
+                privateKey: assetOwnerPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -538,13 +503,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing demand as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                1,
-                0,
-                { privateKey: traderPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
+                privateKey: traderPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -555,13 +516,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                1,
-                1,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
         }
@@ -572,13 +529,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as assetOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                1,
-                1,
-                { privateKey: assetOwnerPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
+                privateKey: assetOwnerPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -589,13 +542,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                1,
-                1,
-                { privateKey: traderPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
+                privateKey: traderPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -606,13 +555,9 @@ describe('MarketLogic', () => {
     it('should fail when trying to create an agreement as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                0,
-                0,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 0, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'createDemand: wrong owner when creating');
@@ -624,7 +569,7 @@ describe('MarketLogic', () => {
     it('should throw an error when accessing a non existing-agreement', async () => {
         let failed = false;
         try {
-            const agreement = await marketLogic.getAgreement(0);
+            await marketLogic.getAgreement(0);
         } catch (ex) {
             failed = true;
         }
@@ -666,7 +611,7 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to approve agreement again as supplyOwner', async () => {
-        const tx = await marketLogic.approveAgreementSupply(0, { privateKey: assetOwnerPK });
+        await marketLogic.approveAgreementSupply(0, { privateKey: assetOwnerPK });
     });
 
     it('should have 1 agreements in list', async () => {
@@ -676,7 +621,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to call approveAgreementDemand as assetOwner', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementDemand(0, { privateKey: assetOwnerPK });
+            await marketLogic.approveAgreementDemand(0, { privateKey: assetOwnerPK });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'approveAgreementDemand: wrong msg.sender');
@@ -688,7 +633,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to call approveAgreementDemand as admin', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementDemand(0, {
+            await marketLogic.approveAgreementDemand(0, {
                 privateKey: privateKeyDeployment
             });
         } catch (ex) {
@@ -714,7 +659,7 @@ describe('MarketLogic', () => {
             _demandId: '0',
             _supplyId: '0',
             _approvedBySupplyOwner: true,
-            _approvedByDemandOwner: false,
+            _approvedByDemandOwner: false
         });
     });
 
@@ -858,13 +803,13 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to approve 2nd agreement again as supplyOwner', async () => {
-        const tx = await marketLogic.approveAgreementDemand(1, { privateKey: traderPK });
+        await marketLogic.approveAgreementDemand(1, { privateKey: traderPK });
     });
 
     it('should fail when trying to call approveAgreementSupply as admin', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementSupply(1, {
+            await marketLogic.approveAgreementSupply(1, {
                 privateKey: privateKeyDeployment
             });
         } catch (ex) {
@@ -878,7 +823,7 @@ describe('MarketLogic', () => {
     it('should fail when trying to call approveAgreementSupply as trader', async () => {
         let failed = false;
         try {
-            const tx = await marketLogic.approveAgreementSupply(1, { privateKey: traderPK });
+            await marketLogic.approveAgreementSupply(1, { privateKey: traderPK });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'approveAgreementSupply: wrong msg.sender');

@@ -281,7 +281,6 @@ export class Demo {
             timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150000,
             currency: Currency.USD,
-            producingAsset: '0',
             location: { provinces: ['string'], regions: ['string'] },
             assetType: ['Wind'],
             minCO2Offset: 10,

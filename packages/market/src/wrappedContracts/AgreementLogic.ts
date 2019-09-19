@@ -1,9 +1,10 @@
-import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
 import AgreementLogicJSON from '../../build/contracts/AgreementLogic.json';
 
 export class AgreementLogic extends GeneralFunctions {
     web3: Web3;
+
     buildFile = AgreementLogicJSON;
 
     constructor(web3: Web3, address?: string) {
@@ -20,7 +21,7 @@ export class AgreementLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogAgreementFullySignedEvents(eventFilter?: SearchLog) {
+    async getAllLogAgreementFullySignedEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -37,10 +38,10 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogAgreementFullySigned', filterParams);
+        return this.web3Contract.getPastEvents('LogAgreementFullySigned', filterParams);
     }
 
-    async getAllLogAgreementCreatedEvents(eventFilter?: SearchLog) {
+    async getAllLogAgreementCreatedEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -57,10 +58,10 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogAgreementCreated', filterParams);
+        return this.web3Contract.getPastEvents('LogAgreementCreated', filterParams);
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -77,10 +78,10 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
+    async getAllEvents(eventFilter?: ISearchLog) {
         let filterParams;
         if (eventFilter) {
             filterParams = {
@@ -96,7 +97,7 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
     }
 
     async createAgreement(
@@ -104,7 +105,7 @@ export class AgreementLogic extends GeneralFunctions {
         _documentDBURL: string,
         _demandId: number,
         _supplyId: number,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createAgreement(
             _propertiesDocumentHash,
@@ -113,68 +114,68 @@ export class AgreementLogic extends GeneralFunctions {
             _supplyId
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async approveAgreementSupply(_agreementId: number, txParams?: SpecialTx) {
+    async approveAgreementSupply(_agreementId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approveAgreementSupply(_agreementId);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async update(_newLogic: string, txParams?: SpecialTx) {
+    async update(_newLogic: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async approveAgreementDemand(_agreementId: number, txParams?: SpecialTx) {
+    async approveAgreementDemand(_agreementId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approveAgreementDemand(_agreementId);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async getAllAgreementListLength(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAllAgreementListLength().call(txParams);
+    async getAllAgreementListLength(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAllAgreementListLength().call(txParams);
     }
 
-    async userContractLookup(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.userContractLookup().call(txParams);
+    async userContractLookup(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.userContractLookup().call(txParams);
     }
 
-    async db(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.db().call(txParams);
+    async db(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.db().call(txParams);
     }
 
-    async getAgreement(_agreementId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
+    async getAgreement(_agreementId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
     }
 
-    async assetContractLookup(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.assetContractLookup().call(txParams);
+    async assetContractLookup(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.assetContractLookup().call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
+    async owner(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
-    async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
+    async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
     }
 
-    async getAgreementStruct(_agreementId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getAgreementStruct(_agreementId).call(txParams);
+    async getAgreementStruct(_agreementId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getAgreementStruct(_agreementId).call(txParams);
     }
 
-    async init(_database: string, _admin: string, txParams?: SpecialTx) {
+    async init(_database: string, _admin: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.init(_database, _admin);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 }

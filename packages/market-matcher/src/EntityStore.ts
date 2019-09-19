@@ -6,14 +6,16 @@ import * as Winston from 'winston';
 
 export interface IEntityStore {
     init(): Promise<void>;
-    registerCertificateListener(listener: NewCertificateListener): void;
+    registerCertificateListener(listener: Listener<Certificate.Entity>): void;
+    registerDemandListener(listener: Listener<Demand.Entity>): void;
 
     getDemandById(id: string): Demand.Entity;
     getAgreements(): Agreement.Entity[];
     getDemands(): Demand.Entity[];
+    getCertificates(): Certificate.Entity[];
 }
 
-export type NewCertificateListener = (certificate: Certificate.Entity) => Promise<void>;
+export type Listener<T> = (entity: T) => Promise<void>;
 
 @singleton()
 export class EntityStore implements IEntityStore {
@@ -23,9 +25,13 @@ export class EntityStore implements IEntityStore {
 
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
 
+    private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
+
     private matcherAddress: string;
 
-    private certificateListeners: NewCertificateListener[] = [];
+    private certificateListeners: Listener<Certificate.Entity>[] = [];
+
+    private demandListeners: Listener<Demand.Entity>[] = [];
 
     constructor(
         @inject('config') private config: Configuration.Entity,
@@ -34,8 +40,12 @@ export class EntityStore implements IEntityStore {
         this.matcherAddress = config.blockchainProperties.activeUser.address.toLowerCase();
     }
 
-    public registerCertificateListener(listener: NewCertificateListener) {
+    public registerCertificateListener(listener: Listener<Certificate.Entity>) {
         this.certificateListeners.push(listener);
+    }
+
+    public registerDemandListener(listener: Listener<Demand.Entity>) {
+        this.demandListeners.push(listener);
     }
 
     public getDemandById(id: string): Demand.Entity {
@@ -50,17 +60,31 @@ export class EntityStore implements IEntityStore {
         return Array.from(this.demands.values());
     }
 
+    public getCertificates() {
+        return Array.from(this.certificates.values());
+    }
+
     public async init() {
         await this.syncExistingEvents();
         await this.subscribeToEvents();
     }
 
-    private async triggerListeners(certificate: Certificate.Entity) {
+    private async triggerCertificateListeners(certificate: Certificate.Entity) {
         for (const listener of this.certificateListeners) {
             try {
                 await listener(certificate);
             } catch (e) {
-                this.logger.debug(`Listener failed to execute: ${e}`);
+                this.logger.debug(`Certificate listener failed to execute: ${e}`);
+            }
+        }
+    }
+
+    private async triggerDemandListeners(demand: Demand.Entity) {
+        for (const listener of this.demandListeners) {
+            try {
+                await listener(demand);
+            } catch (e) {
+                this.logger.debug(`Demand listener failed to execute: ${e}`);
             }
         }
     }
@@ -89,7 +113,7 @@ export class EntityStore implements IEntityStore {
         for (let i = 0; i < certificateListLength; i++) {
             const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
 
-            await this.triggerListeners(newCertificate);
+            await this.triggerCertificateListeners(newCertificate);
         }
     }
 
@@ -105,7 +129,7 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
             const newCertificate = await new Certificate.Entity(_entityId, this.config).sync();
 
-            await this.triggerListeners(newCertificate);
+            await this.triggerCertificateListeners(newCertificate);
         });
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
@@ -117,7 +141,7 @@ export class EntityStore implements IEntityStore {
                 this.config
             ).sync();
 
-            await this.triggerListeners(newCertificate);
+            await this.triggerCertificateListeners(newCertificate);
         });
 
         certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) => {
@@ -129,8 +153,8 @@ export class EntityStore implements IEntityStore {
             const firstChild = await new Certificate.Entity(_childOne, this.config).sync();
             const secondChild = await new Certificate.Entity(_childTwo, this.config).sync();
 
-            await this.triggerListeners(firstChild);
-            await this.triggerListeners(secondChild);
+            await this.triggerCertificateListeners(firstChild);
+            await this.triggerCertificateListeners(secondChild);
         });
 
         const marketContractEventHandler = new ContractEventHandler(
@@ -139,21 +163,18 @@ export class EntityStore implements IEntityStore {
         );
 
         marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-            this.logger.verbose(
-                `\n* Event: createdNewDemand demand: ${event.returnValues._demandId}`
-            );
+            this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
             const newDemand = await new Demand.Entity(
                 event.returnValues._demandId,
                 this.config
             ).sync();
 
             this.registerDemand(newDemand);
+            await this.triggerDemandListeners(newDemand);
         });
 
         marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
-            this.logger.verbose(
-                `\n* Event: createdNewSupply supply: ${event.returnValues._supplyId}`
-            );
+            this.logger.verbose(`Event: createdNewSupply supply: ${event.returnValues._supplyId}`);
             const newSupply = await new Supply.Entity(
                 event.returnValues._supplyId,
                 this.config
@@ -164,7 +185,7 @@ export class EntityStore implements IEntityStore {
 
         marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
             this.logger.verbose(
-                `\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
+                `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
             );
 
             const newAgreement = await new Agreement.Entity(

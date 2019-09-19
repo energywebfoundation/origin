@@ -1,6 +1,6 @@
-import * as Demand from '../blockchain-facade/Demand';
 import { Configuration } from '@energyweb/utils-general';
 import { assert } from 'chai';
+import * as Demand from '../blockchain-facade/Demand';
 
 describe('Demand tests', () => {
     const testDemands = [
