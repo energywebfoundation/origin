@@ -453,7 +453,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     get filters(): ICustomFilterDefinition[] {
-        if (this.props.selectedState !== SelectedState.ForSale) {
+        if (![SelectedState.ForSale, SelectedState.Claimed].includes(this.props.selectedState)) {
             return [];
         }
 
@@ -467,6 +467,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             ) / 1000;
 
         return [
+            {
+                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAsset.offChainProperties.country::${RECORD_INDICATOR}producingAsset.offChainProperties.city::${RECORD_INDICATOR}certificateOwner.organization`,
+                label: 'Search',
+                input: {
+                    type: CustomFilterInputType.string
+                },
+                search: true
+            },
             {
                 property: `${RECORD_INDICATOR}producingAsset.offChainProperties.assetType`,
                 label: 'Asset Type',
@@ -625,11 +633,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     get hiddenColumns() {
         const hiddenColumns = this.props.hiddenColumns || [];
 
-        const showPrice = [
-            SelectedState.ForSale,
-            SelectedState.ForDemand,
-            SelectedState.Claimed
-        ].includes(this.props.selectedState);
+        const showPrice = [SelectedState.ForSale, SelectedState.ForDemand].includes(
+            this.props.selectedState
+        );
 
         if (!showPrice) {
             hiddenColumns.push('price', 'currency');
