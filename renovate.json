@@ -8,7 +8,10 @@
     "@energyweb/origin",
     "@energyweb/user-registry",
     "@energyweb/utils-general",
-    "@energyweb/utils-test-backend"
+    "@energyweb/utils-test-backend",
+    "truffle",
+    "web3",
+    "ganache-cli"
   ],
   "packageRules": [
     {
