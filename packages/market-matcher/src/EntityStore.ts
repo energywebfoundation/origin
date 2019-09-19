@@ -69,12 +69,22 @@ export class EntityStore implements IEntityStore {
         await this.subscribeToEvents();
     }
 
-    private async triggerListeners(certificate: Certificate.Entity) {
+    private async triggerCertificateListeners(certificate: Certificate.Entity) {
         for (const listener of this.certificateListeners) {
             try {
                 await listener(certificate);
             } catch (e) {
-                this.logger.debug(`Listener failed to execute: ${e}`);
+                this.logger.debug(`Certificate listener failed to execute: ${e}`);
+            }
+        }
+    }
+
+    private async triggerDemandListeners(demand: Demand.Entity) {
+        for (const listener of this.demandListeners) {
+            try {
+                await listener(demand);
+            } catch (e) {
+                this.logger.debug(`Demand listener failed to execute: ${e}`);
             }
         }
     }
@@ -103,7 +113,7 @@ export class EntityStore implements IEntityStore {
         for (let i = 0; i < certificateListLength; i++) {
             const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
 
-            await this.triggerListeners(newCertificate);
+            await this.triggerCertificateListeners(newCertificate);
         }
     }
 
@@ -119,7 +129,7 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
             const newCertificate = await new Certificate.Entity(_entityId, this.config).sync();
 
-            await this.triggerListeners(newCertificate);
+            await this.triggerCertificateListeners(newCertificate);
         });
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
@@ -131,7 +141,7 @@ export class EntityStore implements IEntityStore {
                 this.config
             ).sync();
 
-            await this.triggerListeners(newCertificate);
+            await this.triggerCertificateListeners(newCertificate);
         });
 
         certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) => {
@@ -143,8 +153,8 @@ export class EntityStore implements IEntityStore {
             const firstChild = await new Certificate.Entity(_childOne, this.config).sync();
             const secondChild = await new Certificate.Entity(_childTwo, this.config).sync();
 
-            await this.triggerListeners(firstChild);
-            await this.triggerListeners(secondChild);
+            await this.triggerCertificateListeners(firstChild);
+            await this.triggerCertificateListeners(secondChild);
         });
 
         const marketContractEventHandler = new ContractEventHandler(
@@ -162,6 +172,7 @@ export class EntityStore implements IEntityStore {
             ).sync();
 
             this.registerDemand(newDemand);
+            await this.triggerDemandListeners(newDemand);
         });
 
         marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {

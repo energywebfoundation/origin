@@ -128,6 +128,15 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
 
         return new Entity(this.id, this.configuration).sync();
     }
+
+    async changeStatus(status: DemandStatus) {
+        await this.marketLogicInstance.changeDemandStatus(this.id, status, {
+            from: this.configuration.blockchainProperties.activeUser.address,
+            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+        });
+
+        return new Entity(this.id, this.configuration).sync();
+    }
 }
 
 export const getAllDemandsListLength = async (configuration: Configuration.Entity) => {
