@@ -21,7 +21,7 @@ export async function migrateMarketRegistryContracts(
         MarketLogicJSON.bytecode +
             web3.eth.abi
                 .encodeParameters(
-                    ['address', 'address'],
+                    ['address', 'address', 'address'],
                     [
                         assetContractLookupAddress,
                         originContractLookupAddress,

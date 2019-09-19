@@ -51,7 +51,7 @@ export class OriginEventListener implements IOriginEventListener {
         this.originLookupAddress = originLookupAddress;
         this.web3 = web3;
         this.emailService = emailService;
-        this.notificationInterval = notificationInterval || 6000; // Default to 1 min intervals
+        this.notificationInterval = notificationInterval || 60000; // Default to 1 min intervals
 
         this.started = false;
         this.interval = null;
