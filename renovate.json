@@ -19,6 +19,10 @@
             "groupName": "eslint"
         },
         {
+            "packagePatterns": ["webpack"],
+            "groupName": "webpack"
+        },
+        {
             "depTypeList": ["devDependencies"],
             "automerge": true
         }
