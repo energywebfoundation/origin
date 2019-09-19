@@ -134,7 +134,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         require(te.owner == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender), "approve: not owner / matcher");
         db.addApprovalExternal(_entityId, _approved);
 
-        emit Approval(msg.sender,_approved, _entityId);
+        emit Approval(msg.sender, _approved, _entityId);
     }
 
     /// @notice makes the tradable entity available for sale

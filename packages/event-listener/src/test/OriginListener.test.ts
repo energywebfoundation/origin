@@ -21,23 +21,27 @@ describe('Origin Listener Tests', async () => {
     const deployKey = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
     let demo;
+    let listener: IOriginEventListener;
+    let emailService;
 
     before(async () => {
         demo = new Demo(process.env.WEB3, deployKey);
         await demo.deploy();
     });
 
-    it('an email is sent when a certificate is created', async () => {
+    beforeEach(async () => {
         const web3 = new Web3(process.env.WEB3);
-        const emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
+        emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
 
-        const listener: IOriginEventListener = new OriginEventListener(
+        listener = new OriginEventListener(
             demo.originContractLookup,
             web3,
             emailService,
             SCAN_INTERVAL
         );
+    });
 
+    it('an email is sent when a certificate is created', async () => {
         await listener.start();
 
         await demo.deploySmartMeterRead(1e7);
@@ -52,17 +56,7 @@ describe('Origin Listener Tests', async () => {
         listener.stop();
     });
 
-    it('an email is sent when a demand is matched', async () => {
-        const web3 = new Web3(process.env.WEB3);
-        const emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
-
-        const listener: IOriginEventListener = new OriginEventListener(
-            demo.originContractLookup,
-            web3,
-            emailService,
-            SCAN_INTERVAL
-        );
-
+    it('an email is sent supply is found for a demand', async () => {
         await demo.deployDemand();
 
         await listener.start();
@@ -76,7 +70,9 @@ describe('Origin Listener Tests', async () => {
         assert.isTrue(
             emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
         );
-        assert.isTrue(emailService.sentEmails[1].subject.includes(NotificationTypes.DEMAND_MATCH));
+        assert.isTrue(
+            emailService.sentEmails[1].subject.includes(NotificationTypes.FOUND_MATCHING_SUPPLY)
+        );
 
         listener.stop();
     });

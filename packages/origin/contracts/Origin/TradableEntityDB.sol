@@ -129,7 +129,7 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
     /// @notice gets the approved address for an entity
     /// @param _entityId the id of an entity
     /// @return the approved address of an entity
-    function getApproved(uint256 _entityId) onlyOwner external view returns (address){
+    function getApproved(uint256 _entityId) external onlyOwner view returns (address) {
         return getTradableEntity(_entityId).approvedAddress;
     }
 

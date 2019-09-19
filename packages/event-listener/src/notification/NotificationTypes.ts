@@ -1,7 +1,7 @@
 enum NotificationTypes {
     CERTS_APPROVED = 'Certificate(s) approved',
-    DEMAND_MATCH = 'New certificate(s) matching your demand',
-    TRANSFER = 'A certificate has been transferred'
+    FOUND_MATCHING_SUPPLY = 'New certificate(s) matching your demand',
+    DEMAND_FILLED = 'A demand has been matched with a certificate'
 }
 
 export default NotificationTypes;

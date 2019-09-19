@@ -2152,7 +2152,7 @@ describe('CertificateLogic', () => {
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'impleTransfer, missing rights');
                 }
                 assert.isTrue(failed);
             });
@@ -2165,11 +2165,11 @@ describe('CertificateLogic', () => {
                         testreceiver.web3Contract._address,
                         8,
                         '0x01',
-                        { privateKey: approvedPK }
+                        { privateKey: assetSmartmeterPK }
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'simpleTransfer, missing rights');
                 }
                 assert.isTrue(failed);
             });
@@ -2191,6 +2191,10 @@ describe('CertificateLogic', () => {
                 assert.equal(
                     await certificateLogic.getApproved(8),
                     '0x0000000000000000000000000000000000000000'
+                );
+                assert.equal(
+                    await certificateLogic.getCertificateOwner(8),
+                    accountAssetOwner
                 );
 
                 const tx = await certificateLogic.transferFrom(
@@ -3358,7 +3362,7 @@ describe('CertificateLogic', () => {
                 assert.equal(certificateSpecific.parentId, 15);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
