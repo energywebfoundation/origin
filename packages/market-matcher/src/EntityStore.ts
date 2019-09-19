@@ -163,9 +163,7 @@ export class EntityStore implements IEntityStore {
         );
 
         marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-            this.logger.verbose(
-                `\n* Event: createdNewDemand demand: ${event.returnValues._demandId}`
-            );
+            this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
             const newDemand = await new Demand.Entity(
                 event.returnValues._demandId,
                 this.config
@@ -176,9 +174,7 @@ export class EntityStore implements IEntityStore {
         });
 
         marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
-            this.logger.verbose(
-                `\n* Event: createdNewSupply supply: ${event.returnValues._supplyId}`
-            );
+            this.logger.verbose(`Event: createdNewSupply supply: ${event.returnValues._supplyId}`);
             const newSupply = await new Supply.Entity(
                 event.returnValues._supplyId,
                 this.config
@@ -189,7 +185,7 @@ export class EntityStore implements IEntityStore {
 
         marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
             this.logger.verbose(
-                `\n* Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
+                `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
             );
 
             const newAgreement = await new Agreement.Entity(

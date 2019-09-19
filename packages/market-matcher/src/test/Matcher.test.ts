@@ -359,7 +359,7 @@ describe('Test StrategyBasedMatcher', async () => {
                 privateKey: traderPK
             };
 
-            await sleep(5000);
+            await sleep(10000);
 
             const certificate = await new Certificate.Entity('0', conf).sync();
             assert.equal(await certificate.getOwner(), accountTrader);
@@ -551,15 +551,14 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('demand should be matched with existing certificate', async () => {
+            await sleep(10000);
+
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
                 privateKey: traderPK
             };
-
-            await sleep(5000);
-
             const certificate = await new Certificate.Entity(certificateId, conf).sync();
             assert.equal(await certificate.getOwner(), accountTrader);
-        }).timeout(10000);
+        }).timeout(15000);
     });
 });

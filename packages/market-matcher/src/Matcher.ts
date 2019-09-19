@@ -52,13 +52,18 @@ export class Matcher {
             this.logger.verbose(`Started processing demand #${demand.id}`);
 
             const matchingCertificates = await this.findMatchingCertificates(demand);
+            let matched = false;
 
             for (const matchingCertificate of matchingCertificates) {
                 const matchingResult = await this.executeMatching(matchingCertificate, demand);
                 if (matchingResult) {
-                    return true;
+                    matched = true;
+                    break;
                 }
             }
+            this.logger.verbose(`Completed processing demand #${demand.id} with result ${matched}`);
+
+            return matched;
         } catch (e) {
             this.logger.error(`Processing demand #${demand.id} failed with ${e.message}`);
         }
@@ -70,12 +75,10 @@ export class Matcher {
         const requiredPower = demand.offChainProperties.targetWhPerPeriod;
 
         if (certificate.powerInW === requiredPower) {
-            await this.certificateService.matchDemand(certificate, demand);
-            return true;
+            return this.certificateService.matchDemand(certificate, demand);
         }
         if (requiredPower > 0 && certificate.powerInW > requiredPower) {
-            await this.certificateService.splitCertificate(certificate, requiredPower);
-            return true;
+            return this.certificateService.splitCertificate(certificate, requiredPower);
         }
 
         return false;
@@ -97,6 +100,10 @@ export class Matcher {
             const matchingResult =
                 (await this.matchWithAgreements(certificate)) ||
                 (await this.matchWithDemands(certificate));
+
+            this.logger.verbose(
+                `Completed processing certificate #${certificate.id} with result ${matchingResult}`
+            );
 
             return matchingResult;
         } catch (e) {
