@@ -31,7 +31,7 @@ import {
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from '@energyweb/asset-registry';
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from '@energyweb/utils-general';
 import {
     Erc20TestToken,
     Erc20TestTokenJSON,

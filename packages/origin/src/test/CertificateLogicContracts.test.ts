@@ -32,7 +32,7 @@ import {
     AssetContractLookup,
     AssetProducingRegistryLogic
 } from '@energyweb/asset-registry';
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from '@energyweb/utils-general';
 import {
     TestReceiver,
     Erc20TestToken,
