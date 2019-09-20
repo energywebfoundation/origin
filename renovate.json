@@ -1,0 +1,38 @@
+{
+    "extends": ["config:base"],
+    "schedule": ["every weekend"],
+    "ignoreDeps": [
+        "@energyweb/asset-registry",
+        "@energyweb/market-matcher",
+        "@energyweb/market",
+        "@energyweb/origin",
+        "@energyweb/user-registry",
+        "@energyweb/utils-general",
+        "@energyweb/utils-test-backend",
+        "truffle",
+        "web3",
+        "ganache-cli"
+    ],
+    "packageRules": [
+        {
+            "packagePatterns": ["eslint"],
+            "groupName": "eslint"
+        },
+        {
+            "packagePatterns": ["webpack", "-loader"],
+            "groupName": "webpack"
+        },
+        {
+            "packagePatterns": ["jest"],
+            "groupName": "jest"
+        },
+        {
+            "packagePatterns": ["react", "redux"],
+            "groupName": "react"
+        },
+        {
+            "depTypeList": ["devDependencies"],
+            "automerge": true
+        }
+    ]
+}
