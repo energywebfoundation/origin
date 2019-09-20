@@ -3,23 +3,14 @@ import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
 
-import {
-    UserLogic,
-    UserContractLookup,
-    Role,
-    buildRights
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts,
-} from '@energyweb/user-registry/contracts';
+import { UserLogic, UserContractLookup, Role, buildRights } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import {
     AssetContractLookup,
     AssetProducingRegistryLogic,
     ProducingAsset
 } from '@energyweb/asset-registry';
-import {
-    migrateAssetRegistryContracts
-} from '@energyweb/asset-registry/contracts'
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { Configuration, Currency, Compliance } from '@energyweb/utils-general';
 import {
     deployERC20TestToken,
@@ -226,14 +217,11 @@ describe('CertificateLogic-Facade', () => {
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityWh: 10,
-            country: 'USA',
-            region: 'AnyState',
-            zip: '012345',
-            city: 'Anytown',
-            street: 'Main-Street',
-            houseNumber: '42',
-            gpsLatitude: '0.0123123',
-            gpsLongitude: '31.1231',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+            gpsLatitude: '14.059500',
+            gpsLongitude: '99.977800',
             assetType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',

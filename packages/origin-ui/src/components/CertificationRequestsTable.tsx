@@ -137,7 +137,7 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
     get rows() {
         return this.state.paginatedData.map(({ asset, energy }) => ({
             facility: asset.offChainProperties.facilityName,
-            townCountry: asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+            townCountry: asset.offChainProperties.address + ', ' + asset.offChainProperties.country,
             type: asset.offChainProperties.assetType,
             capacity: (asset.offChainProperties.capacityWh / 1000).toLocaleString(),
             meterRead: (energy / 1000).toLocaleString()

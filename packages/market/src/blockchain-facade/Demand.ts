@@ -14,7 +14,7 @@ export interface IDemandOffChainProperties {
     timeFrame: TimeFrame;
     maxPricePerMwh: number;
     currency: Currency;
-    location?: IDemandLocation;
+    location?: string[];
     assetType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
@@ -25,11 +25,6 @@ export interface IDemandOffChainProperties {
     endTime: string;
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
-}
-
-export interface IDemandLocation {
-    provinces?: string[];
-    regions?: string[];
 }
 
 export enum DemandStatus {

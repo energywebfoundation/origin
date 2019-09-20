@@ -30,11 +30,7 @@ export interface IOffChainProperties {
     operationalSince: number;
     capacityWh: number;
     country: string;
-    region: string;
-    zip: string;
-    city: string;
-    street: string;
-    houseNumber: string;
+    address: string;
     gpsLatitude: string;
     gpsLongitude: string;
     facilityName: string;

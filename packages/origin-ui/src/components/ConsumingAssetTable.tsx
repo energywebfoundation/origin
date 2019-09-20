@@ -128,7 +128,7 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
                 owner: organizationName,
                 facilityName: asset.offChainProperties.facilityName,
                 townCountry:
-                    asset.offChainProperties.city + ', ' + asset.offChainProperties.country,
+                    asset.offChainProperties.address + ', ' + asset.offChainProperties.country,
                 capacity: asset.offChainProperties.capacityWh
                     ? (asset.offChainProperties.capacityWh / 1000).toLocaleString()
                     : '-',

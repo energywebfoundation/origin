@@ -222,7 +222,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
             owner: enrichedData.organizationName,
             facilityName: enrichedData.asset.offChainProperties.facilityName,
             townCountry:
-                enrichedData.asset.offChainProperties.city +
+                enrichedData.asset.offChainProperties.address +
                 ', ' +
                 enrichedData.asset.offChainProperties.country,
             type: enrichedData.asset.offChainProperties.assetType,

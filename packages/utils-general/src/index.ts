@@ -11,3 +11,4 @@ export { deploy } from './deployment/deploy';
 export { IAssetService, IRECAssetService, DecodedAssetType, EncodedAssetType } from './blockchain-facade/AssetTypeService';
 export { extendArray } from './extensions/array.extensions';
 export { THAILAND_REGIONS_PROVINCES_MAP } from './blockchain-facade/Location';
+export { LocationService } from './blockchain-facade/LocationService';
