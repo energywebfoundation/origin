@@ -56,14 +56,14 @@
     "ethlint": "1.2.4",
     "@energyweb/utils-testbackend": "1.1.0",
     "fs-extra": "8.0.1",
-    "ganache-cli": "6.4.3",
+    "ganache-cli": "6.1.8",
     "truffle": "5.0.18",
     "truffle-flattener": "1.3.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
-  "publishConfig" : {
-    "access" : "public",
+  "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   }
 }

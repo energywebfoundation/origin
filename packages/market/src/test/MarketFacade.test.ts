@@ -11,7 +11,11 @@ import {
     Role,
     UserLogic
 } from '@energyweb/user-registry';
-import { migrateCertificateRegistryContracts, CertificateLogic } from '@energyweb/origin';
+import {
+    migrateCertificateRegistryContracts,
+    CertificateLogic,
+    Certificate
+} from '@energyweb/origin';
 import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
@@ -365,6 +369,10 @@ describe('Market-Facade', () => {
             };
 
             const demand = await new Market.Demand.Entity('0', conf).sync();
+            const certificate = await new Certificate.Entity('0', conf).sync();
+            console.log({
+                certificate
+            });
             const fillTx = await demand.fill('0');
 
             const demandPartiallyFilledEvents = await marketLogic.getEvents(
@@ -374,6 +382,10 @@ describe('Market-Facade', () => {
                     toBlock: fillTx.blockNumber
                 }
             );
+
+            console.log({
+                returnValues: demandPartiallyFilledEvents[0].returnValues
+            });
 
             assert.equal(demandPartiallyFilledEvents.length, 1);
         });

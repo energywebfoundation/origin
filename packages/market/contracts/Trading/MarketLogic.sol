@@ -15,7 +15,7 @@ contract MarketLogic is AgreementLogic {
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
     event DemandUpdated(uint indexed _demandId);
-    event DemandPartiallyFilled(uint indexed _demandId, uint indexed _entityId, uint indexed _amount);
+    event DemandPartiallyFilled(uint indexed _demandId, uint indexed _entityId, uint indexed _amount, address _entityOwner, address _demandOwner);
 
     /// @notice constructor
     constructor(
@@ -100,7 +100,7 @@ contract MarketLogic is AgreementLogic {
             te.owner, demand.demandOwner, _entityId
         );
 
-        emit DemandPartiallyFilled(_demandId, _entityId, te.powerInW);
+        emit DemandPartiallyFilled(_demandId, _entityId, te.powerInW, te.owner, demand.demandOwner);
     }
 
 	/// @notice Function to create a supply
