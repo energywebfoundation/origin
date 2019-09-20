@@ -7,17 +7,19 @@ import { createStore, applyMiddleware } from 'redux';
 import { createRootReducer } from '../reducers';
 import {
     User,
-    migrateUserRegistryContracts,
     UserLogic,
     buildRights,
     Role
 } from '@energyweb/user-registry';
 import {
+    migrateUserRegistryContracts
+} from '@energyweb/user-registry/contracts';
+import {
     ProducingAsset,
-    migrateAssetRegistryContracts,
     AssetProducingRegistryLogic,
     AssetConsumingRegistryLogic
 } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import createSagaMiddleware from 'redux-saga';
 import sagas from '../features/sagas';
 
@@ -25,8 +27,10 @@ import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 
 import Web3 from 'web3';
 
-import { migrateCertificateRegistryContracts, CertificateLogic } from '@energyweb/origin';
-import { migrateMarketRegistryContracts, MarketLogic } from '@energyweb/market';
+import { CertificateLogic } from '@energyweb/origin';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import { MarketLogic } from '@energyweb/market';
+import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';

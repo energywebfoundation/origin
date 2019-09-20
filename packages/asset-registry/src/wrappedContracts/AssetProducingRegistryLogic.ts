@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import AssetProducingRegistryLogicJSON from '../../build/contracts/AssetProducingRegistryLogic.json';
+import AssetProducingRegistryLogicJSON from '../../build/contracts/lightweight/AssetProducingRegistryLogic.json';
 import moment from 'moment';
 
 export class AssetProducingRegistryLogic extends GeneralFunctions {

@@ -1,7 +1,7 @@
 {
   "name": "@energyweb/erc-test-contracts",
   "description": "",
-  "license": "GPLv3",
+  "license": "GPL-3.0-only",
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/erc-test-contracts#readme",
   "repository": {
@@ -25,7 +25,7 @@
     "lint-fix": "solium -d contracts --fix && eslint --fix 'src/**/*{.ts,.tsx}'",
     "precommit": "lint-staged",
     "build:static": "yarn compile",
-    "clean": "rm -rf build/ dist/"
+    "clean": "rm -rf build dist"
   },
   "dependencies": {
     "@energyweb/utils-general": "1.1.0",

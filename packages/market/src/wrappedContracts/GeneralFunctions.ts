@@ -19,7 +19,7 @@ export async function getClientVersion(web3: Web3): Promise<string> {
                 params: [],
                 id: 1
             },
-            (e, r) => {
+            (e: any, r: any) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -39,7 +39,7 @@ export async function replayTransaction(web3: Web3, txHash: string) {
                 params: [txHash, ['trace', 'vmTrace', 'stateDiff']],
                 id: 1
             },
-            (e, r) => {
+            (e: any, r: any) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -97,7 +97,7 @@ export class GeneralFunctions {
                     params: [txObj, ['trace']],
                     id: 1
                 },
-                (e, r) => {
+                (e: any, r: any) => {
                     if (e) {
                         reject(e);
                     } else {

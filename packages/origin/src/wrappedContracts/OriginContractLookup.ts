@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import { Tx, BlockType } from 'web3/eth/types';
 import { TransactionReceipt, Logs } from 'web3/types';
 import { JsonRPCResponse } from 'web3/providers';
-import OriginContractLookupJSON from '../../build/contracts/OriginContractLookup.json';
+import OriginContractLookupJSON from '../../build/contracts/lightweight/OriginContractLookup.json';
 
 export class OriginContractLookup extends GeneralFunctions {
     web3: Web3;
@@ -18,7 +18,7 @@ export class OriginContractLookup extends GeneralFunctions {
                 : new web3.eth.Contract(
                       OriginContractLookupJSON.abi,
                       (OriginContractLookupJSON as any).networks.length > 0
-                          ? OriginContractLookupJSON.networks[0]
+                          ? (OriginContractLookupJSON as any).networks[0]
                           : null
                   )
         );
@@ -30,7 +30,8 @@ export class OriginContractLookup extends GeneralFunctions {
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
+                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
+                topics: undefined
             };
             if (eventFilter.topics) {
                 filterParams.topics = eventFilter.topics;

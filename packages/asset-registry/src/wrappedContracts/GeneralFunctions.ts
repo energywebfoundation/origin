@@ -19,7 +19,7 @@ export async function getClientVersion(web3: Web3): Promise<string> {
                 params: [],
                 id: 1
             },
-            (e, r) => {
+            (e: any, r: any) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -39,7 +39,7 @@ export async function replayTransaction(web3: Web3, txHash: string) {
                 params: [txHash, ['trace', 'vmTrace', 'stateDiff']],
                 id: 1
             },
-            (e, r) => {
+            (e: any, r: any) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -54,7 +54,7 @@ export class GeneralFunctions {
     web3Contract: any;
     web3: Web3;
 
-    constructor(web3Contract) {
+    constructor(web3Contract: any) {
         this.web3Contract = web3Contract;
     }
 
@@ -96,7 +96,7 @@ export class GeneralFunctions {
                     params: [txObj, ['trace']],
                     id: 1
                 },
-                (e, r) => {
+                (e: any, r: any) => {
                     if (e) {
                         reject(e);
                     } else {
@@ -115,7 +115,7 @@ export class GeneralFunctions {
         });
     }
 
-    async buildTransactionParams(method, params): Promise<SpecialTx> {
+    async buildTransactionParams(method: any, params: any): Promise<SpecialTx> {
         params = params || {};
         const networkGasPrice = await this.web3.eth.getGasPrice();
 

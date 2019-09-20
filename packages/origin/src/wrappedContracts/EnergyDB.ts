@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import EnergyDBJSON from '../../build/contracts/EnergyDB.json';
+import EnergyDBJSON from '../../build/contracts/lightweight/EnergyDB.json';
 
 export class EnergyDB extends GeneralFunctions {
     web3: Web3;

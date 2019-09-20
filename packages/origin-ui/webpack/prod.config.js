@@ -9,5 +9,19 @@ module.exports = merge(baseConfig, {
         new Dotenv({
           path: '.env.prod'
         })
-    ]
+    ],
+
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: 'ts-loader',
+          options: {
+              configFile: '../tsconfig.build.json',
+              projectReferences: true,
+              transpileOnly: false
+          }
+        }
+      ]
+    }
 });

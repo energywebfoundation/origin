@@ -7,7 +7,7 @@ import {
     EnergyCertificateBundleDBJSON,
     EnergyCertificateBundleLogicJSON,
     OriginContractLookupJSON
-} from '..';
+} from '../../contracts';
 import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 
 export async function migrateCertificateRegistryContracts(

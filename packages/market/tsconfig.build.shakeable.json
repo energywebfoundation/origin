@@ -1,0 +1,21 @@
+{
+    "extends": "./tsconfig.build.json",
+    "compilerOptions": {
+        "module": "es2015",
+        "outDir": "./dist-shakeable/js"
+    },
+    "references": [
+        {
+            "path": "../user-registry/tsconfig.build.shakeable.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../asset-registry/tsconfig.build.shakeable.json"
+        },
+        {
+            "path": "../utils-testbackend/tsconfig.build.json"
+        }
+    ]
+}

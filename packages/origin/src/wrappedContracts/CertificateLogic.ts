@@ -1,6 +1,6 @@
 import { SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
+import CertificateLogicJSON from '../../build/contracts/lightweight/CertificateLogic.json';
 import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class CertificateLogic extends CertificateSpecificContract {

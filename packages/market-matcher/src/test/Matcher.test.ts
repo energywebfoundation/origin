@@ -1,26 +1,11 @@
-import {
-    AssetProducingRegistryLogic,
-    migrateAssetRegistryContracts,
-    ProducingAsset
-} from '@energyweb/asset-registry';
-import {
-    Agreement,
-    Demand,
-    MarketLogic,
-    migrateMarketRegistryContracts,
-    Supply
-} from '@energyweb/market';
-import {
-    Certificate,
-    CertificateLogic,
-    migrateCertificateRegistryContracts
-} from '@energyweb/origin';
-import {
-    buildRights,
-    migrateUserRegistryContracts,
-    Role,
-    UserLogic
-} from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
+import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-registry';
+import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
+import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame, Unit } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import Web3 from 'web3';
