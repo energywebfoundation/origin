@@ -183,6 +183,18 @@ export class EntityStore implements IEntityStore {
             this.registerSupply(newSupply);
         });
 
+        marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+            this.logger.verbose(
+                `Event: DemandStatusChanged demand: ${event.returnValues._demandId}`
+            );
+            const newDemand = await new Demand.Entity(
+                event.returnValues._demandId,
+                this.config
+            ).sync();
+
+            this.updateDemand(newDemand);
+        });
+
         marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
             this.logger.verbose(
                 `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
@@ -204,6 +216,7 @@ export class EntityStore implements IEntityStore {
 
     private registerDemand(demand: Demand.Entity) {
         if (this.demands.has(demand.id)) {
+            this.logger.error(`Demand with ID ${demand.id} has already been registered.`);
             return;
         }
 
@@ -211,8 +224,21 @@ export class EntityStore implements IEntityStore {
         this.logger.verbose(`Registered new demand #${demand.id}`);
     }
 
+    private updateDemand(demand: Demand.Entity) {
+        if (!this.demands.has(demand.id)) {
+            this.logger.error(
+                `Unable to update demand ${demand.id} because it hasn't been registered.`
+            );
+            return;
+        }
+
+        this.demands.set(demand.id, demand);
+        this.logger.verbose(`Updated demand #${demand.id}`);
+    }
+
     private registerSupply(supply: Supply.Entity) {
         if (this.supplies.has(supply.id)) {
+            this.logger.error(`Supply with ID ${supply.id} has already been registered.`);
             return;
         }
 
@@ -222,6 +248,7 @@ export class EntityStore implements IEntityStore {
 
     private registerAgreement(agreement: Agreement.Entity) {
         if (this.agreements.has(agreement.id)) {
+            this.logger.error(`Agreement with ID ${agreement.id} has already been registered.`);
             return;
         }
 

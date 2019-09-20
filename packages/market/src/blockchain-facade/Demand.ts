@@ -48,7 +48,7 @@ export interface IDemandOnChainProperties extends BlockchainDataModelEntity.IOnC
 export interface IDemand extends IDemandOnChainProperties {
     id: string;
     offChainProperties: IDemandOffChainProperties;
-    fill: (entityId: string) => void;
+    fill: (entityId: string) => Promise<TransactionReceipt>;
 }
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {

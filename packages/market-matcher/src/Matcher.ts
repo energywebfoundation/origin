@@ -119,12 +119,13 @@ export class Matcher {
             );
 
             if (certificate.powerInW === missingEnergyForPeriod) {
-                await this.certificateService.matchAgreement(certificate, agreement);
-                return true;
+                return this.certificateService.matchAgreement(certificate, agreement);
             }
             if (missingEnergyForPeriod > 0 && certificate.powerInW > missingEnergyForPeriod) {
-                await this.certificateService.splitCertificate(certificate, missingEnergyForPeriod);
-                return true;
+                return this.certificateService.splitCertificate(
+                    certificate,
+                    missingEnergyForPeriod
+                );
             }
         }
 
@@ -137,7 +138,15 @@ export class Matcher {
             return false;
         }
 
+        this.logger.info(`Checking if certificate ${certificate.id} matches any demands...`);
+
         const matchingDemands = await this.findMatchingDemands(certificate);
+
+        if (!matchingDemands.length) {
+            this.logger.info(
+                `Couldn't find any matching demands for certificate #${certificate.id}.`
+            );
+        }
 
         for (const matchingDemand of matchingDemands) {
             const { demand } = matchingDemand;

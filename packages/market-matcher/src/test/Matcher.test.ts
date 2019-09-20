@@ -334,6 +334,9 @@ describe('Test StrategyBasedMatcher', async () => {
 
         it('certificate has been created', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
+
+            const certificate = await new Certificate.Entity('0', conf).sync();
+            assert.equal(certificate.owner, assetOwnerAddress);
         });
 
         it('certificate has been published for sale', async () => {
@@ -360,7 +363,7 @@ describe('Test StrategyBasedMatcher', async () => {
             await sleep(10000);
 
             const certificate = await new Certificate.Entity('0', conf).sync();
-            assert.equal(await certificate.getOwner(), accountTrader);
+            assert.equal(certificate.owner, accountTrader);
         }).timeout(11000);
     });
 
@@ -536,14 +539,12 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('demand should be matched with existing certificate', async () => {
+            const demand = await new Demand.Entity('1', conf).sync();
+
             await sleep(10000);
 
-            conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
-            };
             const certificate = await new Certificate.Entity(certificateId, conf).sync();
-            assert.equal(await certificate.getOwner(), accountTrader);
+            assert.equal(certificate.owner, demand.demandOwner);
         }).timeout(15000);
     });
 });

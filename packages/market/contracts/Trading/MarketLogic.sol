@@ -15,7 +15,7 @@ contract MarketLogic is AgreementLogic {
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
     event DemandUpdated(uint indexed _demandId);
-    event DemandPartiallyFilled(uint indexed _demandId, uint indexed _entityId, uint indexed _amount, address _entityOwner, address _demandOwner);
+    event DemandPartiallyFilled(uint indexed _demandId, uint indexed _entityId, uint indexed _amount);
 
     /// @notice constructor
     constructor(
@@ -91,7 +91,7 @@ contract MarketLogic is AgreementLogic {
         onlyRole(RoleManagement.Role.Matcher)
     {
         MarketDB.Demand memory demand = db.getDemand(_demandId);
-        require(demand.status == MarketDB.DemandStatus.ACTIVE, "demand cannot be in archived state");
+        require(demand.status == MarketDB.DemandStatus.ACTIVE, "demand should be in ACTIVE state");
 
         address originLogicRegistry = originContractLookup.originLogicRegistry();
 
@@ -100,7 +100,7 @@ contract MarketLogic is AgreementLogic {
             te.owner, demand.demandOwner, _entityId
         );
 
-        emit DemandPartiallyFilled(_demandId, _entityId, te.powerInW, te.owner, demand.demandOwner);
+        emit DemandPartiallyFilled(_demandId, _entityId, te.powerInW);
     }
 
 	/// @notice Function to create a supply
