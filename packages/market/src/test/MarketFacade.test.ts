@@ -369,11 +369,8 @@ describe('Market-Facade', () => {
             };
 
             const demand = await new Market.Demand.Entity('0', conf).sync();
-            const certificate = await new Certificate.Entity('0', conf).sync();
-            console.log({
-                certificate
-            });
-            const fillTx = await demand.fill('0');
+            let certificate = await new Certificate.Entity('0', conf).sync();
+            const fillTx = await demand.fill(certificate.id);
 
             const demandPartiallyFilledEvents = await marketLogic.getEvents(
                 'DemandPartiallyFilled',
@@ -383,11 +380,10 @@ describe('Market-Facade', () => {
                 }
             );
 
-            console.log({
-                returnValues: demandPartiallyFilledEvents[0].returnValues
-            });
-
             assert.equal(demandPartiallyFilledEvents.length, 1);
+
+            certificate = await certificate.sync();
+            assert.equal(await certificate.getOwner(), demand.demandOwner);
         });
     });
 
