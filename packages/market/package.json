@@ -30,6 +30,7 @@
     "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
+    "extractABI": "node ./scripts/extractABI.js",
     "flatten-contracts": "truffle-flattener contracts/**/* contracts/MarketContractLookup.sol > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
     "lint": "solium -d contracts && eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && eslint 'src/**/*{.ts,.tsx}' --fix",
@@ -38,8 +39,8 @@
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
-    "clean": "rm -rf build dist schemas db.json",
-    "build:static": "yarn compile && yarn build-schemas",
+    "clean": "rm -rf build dist dist-shakeable schemas db.json",
+    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "precommit": "lint-staged"
   },
   "types": "dist/js/src/index.d.ts",
@@ -65,5 +66,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "license": "GPL-3.0-only"
 }

@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
-import UserContractLookupJSON from '../../build/contracts/UserContractLookup.json';
+import UserContractLookupJSON from '../../build/contracts/lightweight/UserContractLookup.json';
 
 export class UserContractLookup extends GeneralFunctions {
     web3: Web3;
@@ -14,7 +14,7 @@ export class UserContractLookup extends GeneralFunctions {
                 : new web3.eth.Contract(
                       UserContractLookupJSON.abi,
                       (UserContractLookupJSON as any).networks.length > 0
-                          ? UserContractLookupJSON.networks[0]
+                          ? (UserContractLookupJSON as any).networks[0]
                           : null
                   )
         );
@@ -26,7 +26,8 @@ export class UserContractLookup extends GeneralFunctions {
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
+                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
+                topics: undefined
             };
             if (eventFilter.topics) {
                 filterParams.topics = eventFilter.topics;

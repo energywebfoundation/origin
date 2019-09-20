@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
         "composite": true,
-        "outDir": "./dist/js",
+        "outDir": "./dist/js"
     },
     "include": [
         "src/**/*"

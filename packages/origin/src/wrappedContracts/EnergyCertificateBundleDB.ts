@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import EnergyCertificateBundleDBJSON from '../../build/contracts/EnergyCertificateBundleDB.json';
+import EnergyCertificateBundleDBJSON from '../../build/contracts/lightweight/EnergyCertificateBundleDB.json';
 
 export class EnergyCertificateBundleDB extends GeneralFunctions {
     web3: Web3;

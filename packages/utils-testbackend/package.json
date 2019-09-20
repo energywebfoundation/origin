@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/js/src/index.js",
   "scripts": {
-    "start": "node dist/js/src/index.js",
+    "start": "ts-node src/index.ts",
     "build": "tsc -b tsconfig.build.json --verbose --pretty",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test": "rm -rf db.json && mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",

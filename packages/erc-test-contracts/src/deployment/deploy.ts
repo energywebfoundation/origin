@@ -2,9 +2,8 @@ import { deploy } from '@energyweb/utils-general';
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt } from 'web3/types';
 
+import Web3 from 'web3';
 import { Erc20TestTokenJSON, Erc721TestReceiverJSON } from '..';
-
-import Web3 = require('web3');
 
 export async function deployERC20TestToken(
     web3: Web3,

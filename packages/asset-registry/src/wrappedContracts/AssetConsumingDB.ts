@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import AssetConsumingDBJSON from '../../build/contracts/AssetConsumingDB.json';
+import AssetConsumingDBJSON from '../../build/contracts/lightweight/AssetConsumingDB.json';
 
 export class AssetConsumingDB extends GeneralFunctions {
     web3: Web3;

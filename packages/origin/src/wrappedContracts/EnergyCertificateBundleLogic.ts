@@ -1,7 +1,7 @@
 import { SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
 
-import EnergyCertificateBundleLogicJSON from '../../build/contracts/EnergyCertificateBundleLogic.json';
+import EnergyCertificateBundleLogicJSON from '../../build/contracts/lightweight/EnergyCertificateBundleLogic.json';
 import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class EnergyCertificateBundleLogic extends CertificateSpecificContract {

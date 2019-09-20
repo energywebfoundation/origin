@@ -1,21 +1,11 @@
 import 'mocha';
 
-import {
-    AssetProducingRegistryLogic,
-    migrateAssetRegistryContracts,
-    ProducingAsset
-} from '@energyweb/asset-registry';
-import {
-    buildRights,
-    migrateUserRegistryContracts,
-    Role,
-    UserLogic
-} from '@energyweb/user-registry';
-import {
-    migrateCertificateRegistryContracts,
-    CertificateLogic,
-    Certificate
-} from '@energyweb/origin';
+import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import * as GeneralLib from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';

@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
-import MarketDBJSON from '../../build/contracts/MarketDB.json';
+import MarketDBJSON from '../../build/contracts/lightweight/MarketDB.json';
 
 export class MarketDB extends GeneralFunctions {
     web3: Web3;
@@ -11,10 +11,7 @@ export class MarketDB extends GeneralFunctions {
         super(
             address
                 ? new web3.eth.Contract(MarketDBJSON.abi, address)
-                : new web3.eth.Contract(
-                      MarketDBJSON.abi,
-                      (MarketDBJSON as any).networks.length > 0 ? MarketDBJSON.networks[0] : null
-                  )
+                : new web3.eth.Contract(MarketDBJSON.abi, MarketDBJSON.networks[0])
         );
         this.web3 = web3;
     }

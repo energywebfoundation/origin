@@ -1,21 +1,15 @@
 import 'mocha';
-import {
-    AssetContractLookup,
-    AssetProducingRegistryLogic,
-    migrateAssetRegistryContracts
-} from '@energyweb/asset-registry';
-import {
-    buildRights,
-    migrateUserRegistryContracts,
-    Role,
-    UserLogic
-} from '@energyweb/user-registry';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin';
+
+import { AssetContractLookup, AssetProducingRegistryLogic } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
 
-import { MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON } from '..';
+import { MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON } from '../../contracts';
 import { DemandStatus } from '../blockchain-facade/Demand';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';

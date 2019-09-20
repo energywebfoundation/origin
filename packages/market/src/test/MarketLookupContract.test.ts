@@ -2,19 +2,16 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
-import {
-    migrateUserRegistryContracts,
-    UserLogic,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import { migrateAssetRegistryContracts, AssetContractLookup } from '@energyweb/asset-registry';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin';
+import { UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { AssetContractLookup } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
-import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
+import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '../../contracts';
 
 describe('MarketContractLookup', () => {
     const configFile = JSON.parse(
