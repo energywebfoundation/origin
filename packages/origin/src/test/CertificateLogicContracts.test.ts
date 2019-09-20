@@ -20,7 +20,7 @@ import {
 import {
     migrateAssetRegistryContracts
 } from '@energyweb/asset-registry/contracts';
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from '@energyweb/utils-general';
 import {
     TestReceiver,
     Erc20TestToken,

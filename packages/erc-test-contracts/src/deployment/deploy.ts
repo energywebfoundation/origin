@@ -1,4 +1,4 @@
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from '@energyweb/utils-general';
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt } from 'web3/types';
 

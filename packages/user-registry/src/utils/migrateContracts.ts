@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { deploy } from 'ew-utils-deployment';
+import { deploy } from '@energyweb/utils-general';
 import { UserContractLookup } from '../wrappedContracts/UserContractLookup';
 import UserDBJSON from '../../build/contracts/UserDB.json';
 import UserLogicJSON from '../../build/contracts/UserLogic.json';

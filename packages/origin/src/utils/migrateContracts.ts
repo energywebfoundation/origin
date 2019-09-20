@@ -1,13 +1,14 @@
-import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
+import { deploy } from '@energyweb/utils-general';
 import Web3 from 'web3';
-import { deploy } from 'ew-utils-deployment';
+
 import {
-    OriginContractLookupJSON,
-    CertificateLogicJSON,
     CertificateDBJSON,
+    CertificateLogicJSON,
+    EnergyCertificateBundleDBJSON,
     EnergyCertificateBundleLogicJSON,
-    EnergyCertificateBundleDBJSON
+    OriginContractLookupJSON
 } from '../../contracts';
+import { OriginContractLookup } from '../wrappedContracts/OriginContractLookup';
 
 export async function migrateCertificateRegistryContracts(
     web3: Web3,
