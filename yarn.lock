@@ -5419,13 +5419,6 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
 
-ew-utils-deployment@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/ew-utils-deployment/-/ew-utils-deployment-0.3.0.tgz#eea1bee83dc9b6f3412d6e4bb0838cd310066813"
-  integrity sha512-dJBmXxoADfmaglJaCyzQ8U207IDo0JxytDcVMka7euhLsfSkGkJAA+xubySIyffvOaz/93tRzNP8F1Q5Q//HPQ==
-  dependencies:
-    web3 "1.0.0-beta.37"
-
 ew-utils-general-precise-proofs@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/ew-utils-general-precise-proofs/-/ew-utils-general-precise-proofs-0.3.0.tgz#3618ec00ea5d8413a192f3c6b572e1fc17fad7d8"
