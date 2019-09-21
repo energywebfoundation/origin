@@ -76,7 +76,7 @@
     "@types/react-router-dom": "4.3.5",
     "@types/underscore": "1.8.14",
     "@types/web3": "1.0.14",
-    "@types/yup": "0.26.23",
+    "@types/yup": "0.26.24",
     "css-loader": "0.28.10",
     "dotenv-webpack": "1.7.0",
     "enzyme": "3.10.0",
