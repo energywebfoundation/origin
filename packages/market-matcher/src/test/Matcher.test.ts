@@ -543,8 +543,40 @@ describe('Test StrategyBasedMatcher', async () => {
 
             await sleep(10000);
 
-            const certificate = await new Certificate.Entity(certificateId, conf).sync();
-            assert.equal(certificate.owner, demand.demandOwner);
-        }).timeout(15000);
+            async function waitForConditionAndAssert(
+                conditionCheckFunction: () => Promise<boolean> | boolean,
+                assertFunction: () => Promise<void> | void,
+                interval: number,
+                timeout: number
+            ): Promise<void> {
+                let timePassed = 0;
+
+                while (timePassed < timeout) {
+                    if (await conditionCheckFunction()) {
+                        await assertFunction();
+                    }
+
+                    await sleep(interval);
+                    timePassed += interval;
+                }
+
+                await assertFunction();
+            }
+
+            await waitForConditionAndAssert(
+                async () => {
+                    const certificate = await new Certificate.Entity(certificateId, conf).sync();
+
+                    return certificate.owner === demand.demandOwner;
+                },
+                async () => {
+                    const certificate = await new Certificate.Entity(certificateId, conf).sync();
+
+                    assert.equal(certificate.owner, demand.demandOwner);
+                },
+                1000,
+                20000
+            );
+        }).timeout(30000);
     });
 });
