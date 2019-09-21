@@ -1,10 +1,8 @@
-import { Certificate } from '@energyweb/origin';
 import { Demand } from '@energyweb/market';
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
+import { ConsumingAsset } from '@energyweb/asset-registry';
 import { Configuration } from '@energyweb/utils-general';
 
 export enum Actions {
-    certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
     demandCreated = 'DEMAND_CREATED',
     demandUpdated = 'DEMAND_UPDATED',
     demandDeleted = 'DEMAND_DELETED',
@@ -12,11 +10,6 @@ export enum Actions {
     consumingAssetCreatedOrUpdated = 'CONSUMING_ASSET_CREATED_OR_UPDATED',
     configurationUpdated = 'CONFIGURATION_UPDATED'
 }
-
-export const certificateCreatedOrUpdated = (certificate: Certificate.Entity): any => ({
-    type: Actions.certificateCreatedOrUpdated,
-    certificate
-});
 
 export const demandCreated = (demand: Demand.Entity) => ({
     type: Actions.demandCreated,
@@ -38,7 +31,7 @@ export const consumingAssetCreatedOrUpdated = (consumingAsset: ConsumingAsset.En
     consumingAsset
 });
 
-export const configurationUpdated = (conf: Configuration.Entity): any => ({
+export const configurationUpdated = (conf: Configuration.Entity) => ({
     type: Actions.configurationUpdated,
     conf
 });

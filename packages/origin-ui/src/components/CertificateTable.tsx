@@ -14,12 +14,7 @@ import { Redirect } from 'react-router-dom';
 import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
-import {
-    getBaseURL,
-    getCertificates,
-    getConfiguration,
-    getProducingAssets
-} from '../features/selectors';
+import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
 import { IStoreState } from '../types';
 import { formatCurrency } from '../utils/Helper';
 import { NotificationType, showNotification } from '../utils/notifications';
@@ -38,6 +33,7 @@ import {
 } from './Table/PaginatedLoaderFilteredSorted';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
+import { getCertificates } from '../features/certificates/selectors';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -684,7 +680,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             townCountry: `${enrichedData.producingAsset.offChainProperties.city}, ${enrichedData.producingAsset.offChainProperties.country}`,
             compliance:
                 Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry],
-            owner: enrichedData.certificateOwner.organization,
+            owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
             certificationDate: new Date(
                 enrichedData.certificate.creationTime * 1000
             ).toDateString(),

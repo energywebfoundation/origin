@@ -12,7 +12,6 @@ import Web3 from 'web3';
 import { Demand } from '@energyweb/market';
 import {
     configurationUpdated,
-    certificateCreatedOrUpdated,
     demandDeleted,
     consumingAssetCreatedOrUpdated,
     demandCreated
@@ -27,6 +26,7 @@ import { setError, setLoading } from '../general/actions';
 import { getLoading } from '../general/selectors';
 import { updateCurrentUserId } from '../users/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
+import { certificateCreatedOrUpdated } from '../certificates/actions';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."

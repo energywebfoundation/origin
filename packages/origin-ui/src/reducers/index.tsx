@@ -1,4 +1,4 @@
-import certificates from './Certificates';
+import certificates from '../features/certificates/reducer';
 import producingAssets from '../features/producingAssets/reducer';
 import consumingAssets from './ConsumingAsset';
 import demands from './Demand';

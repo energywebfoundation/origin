@@ -13,8 +13,6 @@ export const getProducingAssets = (state: IStoreState) => state.producingAssets.
 
 export const getConsumingAssets = (state: IStoreState) => state.consumingAssets;
 
-export const getCertificates = (state: IStoreState) => state.certificates;
-
 export const getBaseURL = (state: IStoreState) => {
     return constructBaseURL(getOriginContractLookupAddress(state));
 };
