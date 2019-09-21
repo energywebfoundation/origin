@@ -38,7 +38,7 @@
     "@types/web3": "1.0.14",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.2.5",
-    "solium": "1.2.4",
+    "solium": "1.2.5",
     "truffle": "5.0.18"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts"
