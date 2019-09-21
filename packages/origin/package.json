@@ -51,7 +51,7 @@
     "@energyweb/utils-testbackend": "1.1.0",
     "@types/web3": "1.0.14",
     "axios": "0.19.0",
-    "ethlint": "1.2.4",
+    "ethlint": "1.2.5",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.4.4",
     "moment": "2.24.0",
