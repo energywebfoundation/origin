@@ -35,7 +35,7 @@
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@types/web3": "1.0.14",
+    "@types/web3": "1.0.19",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.2.5",
     "solium": "1.2.5",

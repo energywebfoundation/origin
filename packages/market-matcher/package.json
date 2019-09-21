@@ -46,7 +46,7 @@
         "@energyweb/utils-testbackend": "1.1.0",
         "@fluffy-spoon/substitute": "1.89.0",
         "@types/dotenv": "6.1.1",
-        "@types/web3": "1.0.14",
+        "@types/web3": "1.0.19",
         "ganache-cli": "6.6.0"
     },
     "postinstall": "rm -f node_modules/web3/index.d.ts",
