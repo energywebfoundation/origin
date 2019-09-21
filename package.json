@@ -2,7 +2,7 @@
     "name": "root",
     "private": true,
     "devDependencies": {
-        "@types/chai": "4.2.0",
+        "@types/chai": "4.2.3",
         "@types/mocha": "5.2.7",
         "@types/node": "10.14.18",
         "@typescript-eslint/eslint-plugin": "2.1.0",
