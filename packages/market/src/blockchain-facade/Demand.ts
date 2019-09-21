@@ -6,6 +6,8 @@ import {
     extendArray,
     TimeFrame
 } from '@energyweb/utils-general';
+// eslint-disable-next-line import/no-unresolved
+import { TransactionReceipt } from 'web3/types';
 
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
@@ -46,6 +48,7 @@ export interface IDemandOnChainProperties extends BlockchainDataModelEntity.IOnC
 export interface IDemand extends IDemandOnChainProperties {
     id: string;
     offChainProperties: IDemandOffChainProperties;
+    fill: (entityId: string) => Promise<TransactionReceipt>;
 }
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
@@ -127,6 +130,13 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
         await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
         return new Entity(this.id, this.configuration).sync();
+    }
+
+    async fill(entityId: string): Promise<TransactionReceipt> {
+        return this.marketLogicInstance.fillDemand(this.id, entityId, {
+            from: this.configuration.blockchainProperties.activeUser.address,
+            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+        });
     }
 
     async changeStatus(status: DemandStatus) {

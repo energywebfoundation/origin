@@ -75,7 +75,6 @@ export const createAsset = async (
         assetPropertiesOnChain.smartMeter.address,
         assetPropertiesOnChain.owner.address,
         assetPropertiesOnChain.active,
-        assetPropertiesOnChain.matcher.map(matcher => matcher.address),
         assetPropertiesOnChain.propertiesDocumentHash,
         assetPropertiesOnChain.url,
         assetPropertiesOnChain.maxOwnerChanges,
@@ -131,7 +130,6 @@ export class Entity extends Asset.Entity implements IProducingAsset {
             this.lastSmartMeterReadWh = asset.assetGeneral.lastSmartMeterReadWh;
             this.active = asset.assetGeneral.active;
             this.lastSmartMeterReadFileHash = asset.assetGeneral.lastSmartMeterReadFileHash;
-            this.matcher = [{ address: asset.assetGeneral.matcher }];
             this.propertiesDocumentHash = asset.assetGeneral.propertiesDocumentHash;
             this.url = asset.assetGeneral.url;
             this.initialized = true;

@@ -49,13 +49,6 @@ contract AssetGeneralDB is Owned, AssetGeneralStructContract, AssetDbInterface {
         external functions
     */
 
-    /// @notice adds a new matcher to an asset
-    /// @param _assetId the id of an asset
-    /// @param _matcher the address of the matcher to be added
-    function addMatcher(uint _assetId, address _matcher) external onlyOwner {
-        getAssetGeneralInternal(_assetId).matcher.push(_matcher);
-    }
-
     /// @notice set the flag whether an asset is active
     /// @param _assetId the id of an asset
     /// @param _active the flag whether the asset is active
@@ -176,58 +169,10 @@ contract AssetGeneralDB is Owned, AssetGeneralStructContract, AssetDbInterface {
         return getAssetGeneralInternal(_assetId).marketLookupContract;
     }
 
-    /// @notice gets the matcher-array
-    /// @param _assetId the id of an asset
-    /// @return array with matcher-addresses
-    function getMatcher(uint _assetId) external onlyOwner view returns (address[] memory) {
-        return getAssetGeneralInternal(_assetId).matcher;
-    }
-
     /// @notice gets the smartmeter of an asset
     /// @param _assetId the id of an asset
     /// @return eth-address of the smartmeter
     function getSmartMeter(uint _assetId) external onlyOwner view returns (address){
         return getAssetGeneralInternal(_assetId).smartMeter;
     }
-
-    /**
-        public functions
-    */
-
-    /// @notice Set the matcher-array
-    /// @param _assetId the id of an asset
-    /// @param _matcher array with matcher-addresses
-    function setMatcher(uint _assetId, address[] memory _matcher) public onlyOwner {
-        getAssetGeneralInternal(_assetId).matcher = _matcher;
-    }
-
-    function setMatcherExternal(uint _assetId, address[] calldata _matcher) external onlyOwner {
-        setMatcher(_assetId, _matcher);
-    }
-
-    function removeMatcherExternal(uint _assetId, address _removal) external onlyOwner returns (bool) {
-        return removeMatcher(_assetId, _removal);
-    }
-
-    /// @notice removes an matcher-address from the matcher-array of an asset
-    /// @param _assetId the id of an asset
-    /// @param _removal the address to be removed
-    /// @return flag whether the to be removed address was found in the array
-    function removeMatcher(uint _assetId, address _removal) public onlyOwner returns (bool) {
-
-        address[] storage matchers = getAssetGeneralInternal(_assetId).matcher;
-        for (uint i = 0; i < matchers.length; i++)
-        {
-            if(matchers[i] == _removal)
-            {
-                matchers[i] = matchers[matchers.length-1];
-                matchers.length--;
-                return true;
-            }
-        }
-    }
-
-
-
-
 }

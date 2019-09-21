@@ -1,25 +1,8 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
 import "../Asset/AssetProducingDB.sol";
 import "../AssetContractLookup.sol";
-import "../Interfaces/OriginMarketContractLookupInterface.sol";
 
 import "../Asset/AssetLogic.sol";
 import "@energyweb/utils-general/contracts/Msc/Owned.sol";
@@ -85,7 +68,6 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
 	/// @param _smartMeter smartmeter of the asset
 	/// @param _owner asset-owner
 	/// @param _active flag if the asset is already active
-	/// @param _matcher array with matcher addresses
 	/// @param _propertiesDocumentHash hash of the document with the properties of an asset
 	/// @param _url where to find the documentHash
 	/// @param _numOwnerChanges allowed amount of owner-changes of certificates created by the asset
@@ -94,7 +76,6 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
         address _smartMeter,
         address _owner,
         bool _active,
-        address[] calldata _matcher,
         string calldata _propertiesDocumentHash,
         string calldata _url,
         uint _numOwnerChanges
@@ -102,7 +83,7 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
         external
         returns (uint _assetId)
     {
-        checkBeforeCreation(_matcher, _owner, _smartMeter);
+        checkBeforeCreation(_owner, _smartMeter);
 
         AssetGeneral memory a = AssetGeneral({
             smartMeter: _smartMeter,
@@ -110,7 +91,6 @@ contract AssetProducingRegistryLogic is AssetLogic, AssetProducingInterface {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: "",
-            matcher: _matcher,
             propertiesDocumentHash: _propertiesDocumentHash,
             url: _url,
             marketLookupContract: address(0x0),

@@ -34,7 +34,6 @@ export interface BlockchainProperties {
     certificateLogicInstance?: any;
     userLogicInstance?: any;
     activeUser?: EthAccount;
-    matcherAccount?: EthAccount;
     privateKey?: string;
 }
 

@@ -125,38 +125,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         return db.getMarketLookupContract(_assetId);
     }
 
-	/// @notice gets the matcher-array
-	/// @param _assetId the id of an asset
-	/// @return array with matcher-addresses
-    function getMatcher(uint _assetId)
-        external
-        view
-        returns(address[] memory)
-    {
-        return db.getMatcher(_assetId);
-    }
-
-	/// @notice adds a new matcher-address to the matcher-array of an asset
-	/// @param _assetId the id of an asset
-	/// @param _new matcher-address to be included
-    function addMatcher(uint _assetId, address _new) external {
-
-        require(msg.sender == db.getAssetOwner(_assetId),"addMatcher: not the owner");
-        address[] memory matcher = db.getMatcher(_assetId);
-        assert(matcher.length < matcher.length + 1);
-        require(matcher.length+1 <= AssetContractLookup(owner).maxMatcherPerAsset(),"addMatcher: too many matcher already");
-
-        db.addMatcher(_assetId,_new);
-    }
-
-	/// @notice removes a matcher address from the array of an asset
-	/// @param _assetId the id of an asset
-	/// @param _remove matcher address to be removed
-    function removeMatcher(uint _assetId, address _remove) external  {
-        require(msg.sender == db.getAssetOwner(_assetId),"removeMatcher: not the owner");
-        require(db.removeMatcherExternal(_assetId,_remove),"removeMatcher: address not found");
-
-    }
 	/// @notice checks whether an AssetGeneral-struct already exists
 	/// @param _assetGeneral the AssetGeneral-struct
 	/// @return whether that struct exists
@@ -167,7 +135,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
             && _assetGeneral.lastSmartMeterReadWh == 0
             && !_assetGeneral.active
             && bytes(_assetGeneral.lastSmartMeterReadFileHash).length == 0
-            && _assetGeneral.matcher.length == 0
             && bytes(_assetGeneral.propertiesDocumentHash).length == 0
             && bytes(_assetGeneral.url).length == 0
             && address(_assetGeneral.marketLookupContract) == address(0x0)
@@ -215,7 +182,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         uint lastSmartMeterReadWh,
         bool active,
         string memory lastSmartMeterReadFileHash,
-        address[] memory matcher,
         string memory propertiesDocumentHash,
         string memory url,
         address marketLookupContract,
@@ -229,7 +195,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         lastSmartMeterReadWh = a.lastSmartMeterReadWh;
         active = a.active;
         lastSmartMeterReadFileHash = a.lastSmartMeterReadFileHash;
-        matcher = a.matcher;
         propertiesDocumentHash = a.propertiesDocumentHash;
         url = a.url;
         marketLookupContract = a.marketLookupContract;
@@ -252,11 +217,9 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
     }
 
 	/// @notice runs some checks before creating an asset
-	/// @param _matcher the matcher array
 	/// @param _owner the address of the asset-owner
 	/// @param _smartMeter the smartmeter used by that asset
-    function checkBeforeCreation(address[] memory _matcher, address _owner, address _smartMeter) internal view {
-        require(_matcher.length <= AssetContractLookup(owner).maxMatcherPerAsset(),"addMatcher: too many matcher already");
+    function checkBeforeCreation(address _owner, address _smartMeter) internal view {
         require(isRole(RoleManagement.Role.AssetManager, _owner),"user does not have the required role");
         require(isRole(RoleManagement.Role.AssetAdmin, msg.sender),"user does not have the required role");
         require(!checkAssetExist(_smartMeter),"smartmeter does already exist");

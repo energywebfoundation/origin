@@ -149,18 +149,32 @@ describe('Test StrategyBasedMatcher', async () => {
                 (deployedContracts as any).CertificateLogic
             );
             originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
-
-            matcherConfig.originContractLookupAddress = originContractLookupAddr;
         });
 
         it('should deploy market-registry contracts', async () => {
             const deployedContracts = await migrateMarketRegistryContracts(
                 web3 as any,
                 assetContractLookupAddr,
+                originContractLookupAddr,
                 privateKeyDeployment
             );
-            marketLogic = new MarketLogic(web3, (deployedContracts as any).MarketLogic);
+
+            const marketLogicAddress: string = (deployedContracts as any).MarketLogic;
+
+            marketLogic = new MarketLogic(web3, marketLogicAddress);
             marketContractLookupAddr = (deployedContracts as any).MarketContractLookup;
+
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                marketLogicAddress,
+                'matcher',
+                { privateKey: privateKeyDeployment }
+            );
+
+            await userLogic.setRoles(marketLogicAddress, buildRights([Role.Matcher]), {
+                privateKey: privateKeyDeployment
+            });
 
             matcherConfig.marketContractLookupAddress = marketContractLookupAddr;
         });
@@ -215,7 +229,6 @@ describe('Test StrategyBasedMatcher', async () => {
                 lastSmartMeterReadWh: 0,
                 active: true,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-                matcher: [{ address: accountDeployment }],
                 propertiesDocumentHash: null,
                 url: null,
                 maxOwnerChanges: 3
@@ -321,6 +334,9 @@ describe('Test StrategyBasedMatcher', async () => {
 
         it('certificate has been created', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
+
+            const certificate = await new Certificate.Entity('0', conf).sync();
+            assert.equal(certificate.owner, assetOwnerAddress);
         });
 
         it('certificate has been published for sale', async () => {
@@ -340,14 +356,14 @@ describe('Test StrategyBasedMatcher', async () => {
 
         it('certificate owner is the trader after successful match', async () => {
             conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
+                address: accountDeployment,
+                privateKey: privateKeyDeployment
             };
 
             await sleep(10000);
 
             const certificate = await new Certificate.Entity('0', conf).sync();
-            assert.equal(await certificate.getOwner(), accountTrader);
+            assert.equal(certificate.owner, accountTrader);
         }).timeout(11000);
     });
 
@@ -369,27 +385,14 @@ describe('Test StrategyBasedMatcher', async () => {
                 timeFrame: TimeFrame.hourly
             };
 
-            const matcherOffChainProps: Agreement.IMatcherOffChainProperties = {
-                currentWh: 0,
-                currentPeriod: 0
-            };
-
             const agreementProps: Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
-                matcherDBUrl: null,
-                matcherPropertiesDocumentHash: null,
                 demandId: '0',
-                supplyId: '0',
-                allowedMatcher: []
+                supplyId: '0'
             };
 
-            await Agreement.createAgreement(
-                agreementProps,
-                agreementOffChainProps,
-                matcherOffChainProps,
-                conf
-            );
+            await Agreement.createAgreement(agreementProps, agreementOffChainProps, conf);
 
             conf.blockchainProperties.activeUser = {
                 address: assetOwnerAddress,
@@ -536,14 +539,12 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('demand should be matched with existing certificate', async () => {
+            const demand = await new Demand.Entity('1', conf).sync();
+
             await sleep(10000);
 
-            conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
-            };
             const certificate = await new Certificate.Entity(certificateId, conf).sync();
-            assert.equal(await certificate.getOwner(), accountTrader);
+            assert.equal(certificate.owner, demand.demandOwner);
         }).timeout(15000);
     });
 });

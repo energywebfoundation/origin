@@ -28,12 +28,8 @@ contract AssetContractLookup is Owned, AssetContractLookupInterface {
     Updatable private assetProducingRegistryContract;
     UserContractLookupInterface private userRegistryContract;
 
-    uint private maxMatcherPerAssetNumber;
-
     /// @notice The constructor
-    constructor() Owned(msg.sender) public{
-        maxMatcherPerAssetNumber = 10;
-    }
+    constructor() Owned(msg.sender) public {}
 
     /// @notice function to initialize the contracts, setting the needed contract-addresses
     /// @param _userRegistry user-registry logic contract address
@@ -90,10 +86,6 @@ contract AssetContractLookup is Owned, AssetContractLookupInterface {
 
     function assetProducingRegistry() external view returns (address){
         return address(assetProducingRegistryContract);
-    }
-
-    function maxMatcherPerAsset() external view returns (uint){
-        return maxMatcherPerAssetNumber;
     }
 
     function userRegistry() external view returns (address){

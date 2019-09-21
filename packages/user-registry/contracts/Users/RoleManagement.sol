@@ -47,21 +47,21 @@ contract RoleManagement is Owned {
     /// @notice modifier for checking if an user is allowed to execute the intended action
     /// @param _role one of the roles of the enum Role
     modifier onlyRole (RoleManagement.Role _role) {
-        require (isRole(_role, msg.sender),"user does not have the required role");
+        require(isRole(_role, msg.sender), "user does not have the required role");
         _;
     }
 
     /// @notice modifier for checking that only a certain account can do an action
     /// @param _accountAddress the account that should be allowed to do that action
     modifier onlyAccount(address _accountAddress) {
-        require(msg.sender == _accountAddress,"account is not accountAddress");
+        require(msg.sender == _accountAddress, "account is not accountAddress");
         _;
     }
 
     /// @notice modifier that checks, whether an user exists
     /// @param _user the user that has to be checked for existence
     modifier userExists(address _user){
-        require(RolesInterface(userContractLookup.userRegistry()).doesUserExist(_user),"User does not exist");
+        require(RolesInterface(userContractLookup.userRegistry()).doesUserExist(_user), "User does not exist");
         _;
     }
 
@@ -69,7 +69,7 @@ contract RoleManagement is Owned {
     /// @param _role one of the roles of the enum Role
     /// @param _user the address of the user to be checked for the role
     modifier userHasRole(RoleManagement.Role _role, address _user){
-        require (isRole(_role, _user),"user does not have the required role");
+        require (isRole(_role, _user), "user does not have the required role");
         _;
     }
 

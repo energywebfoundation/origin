@@ -42,11 +42,10 @@ interface AssetConsumingInterface {
 	/// @param _smartMeter smartmeter address
 	/// @param _owner owner of the asset (eth-address)
 	/// @param _active active-flag
-	/// @param _matcher matcher-array
 	/// @param _propertiesDocumentHash hash of the document with the asset-properties
 	/// @param _url where to find the document
 	/// @return generated asset-id
-    function createAsset(address _smartMeter, address _owner, bool _active, address[] calldata _matcher, string calldata _propertiesDocumentHash, string calldata _url) external returns (uint);
+    function createAsset(address _smartMeter, address _owner, bool _active, string calldata _propertiesDocumentHash, string calldata _url) external returns (uint);
 
     /// @notice checks whether an asset already exists
 	/// @param _smartMeter smartmeter of an asset

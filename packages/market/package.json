@@ -25,7 +25,6 @@
     "build": "yarn build:static && yarn build-ts",
     "build-schema:AgreementPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts IAgreementOffChainProperties",
     "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts IDemandOffChainProperties",
-    "build-schema:MatcherPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts IMatcherOffChainProperties",
     "build-schema:SupplyPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Supply.ts ISupplyOffChainProperties",
     "build-schemas": "./scripts/buildSchemas.js",
     "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
@@ -47,6 +46,7 @@
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
     "@energyweb/asset-registry": "1.1.0",
+    "@energyweb/origin": "1.1.0",
     "@energyweb/user-registry": "1.1.0",
     "@energyweb/utils-general": "1.1.0",
     "web3": "1.0.0-beta.37",
@@ -57,14 +57,14 @@
     "ethlint": "1.2.5",
     "@energyweb/utils-testbackend": "1.1.0",
     "fs-extra": "8.0.1",
-    "ganache-cli": "6.4.3",
+    "ganache-cli": "6.1.8",
     "truffle": "5.0.18",
     "truffle-flattener": "1.4.2"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
-  "publishConfig" : {
-    "access" : "public",
+  "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   },
   "license": "GPL-3.0-only"

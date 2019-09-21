@@ -75,7 +75,6 @@ export const onboardDemo = async (
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
-                matcher: [{ address: action.data.matcher }],
                 propertiesDocumentHash: null,
                 url: null,
                 maxOwnerChanges: action.data.maxOwnerChanges
@@ -126,7 +125,6 @@ export const onboardDemo = async (
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
-                matcher: [{ address: action.data.matcher }],
                 propertiesDocumentHash: null,
                 url: null
             };

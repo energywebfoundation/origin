@@ -7,6 +7,7 @@ import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 export async function migrateMarketRegistryContracts(
     web3: Web3,
     assetContractLookupAddress: string,
+    originContractLookupAddress: string,
     deployKey: string
 ): Promise<JSON> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
@@ -20,8 +21,12 @@ export async function migrateMarketRegistryContracts(
         MarketLogicJSON.bytecode +
             web3.eth.abi
                 .encodeParameters(
-                    ['address', 'address'],
-                    [assetContractLookupAddress, marketContractLookupAddress]
+                    ['address', 'address', 'address'],
+                    [
+                        assetContractLookupAddress,
+                        originContractLookupAddress,
+                        marketContractLookupAddress
+                    ]
                 )
                 .substr(2),
         { privateKey: privateKeyDeployment }
@@ -38,6 +43,7 @@ export async function migrateMarketRegistryContracts(
 
     await marketContractLookup.init(
         assetContractLookupAddress,
+        originContractLookupAddress,
         marketLogicAddress,
         marketDBAddress,
         { privateKey: privateKeyDeployment }

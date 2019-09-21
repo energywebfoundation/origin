@@ -12,7 +12,8 @@ const SUPPORTED_EVENTS = [
     'LogAgreementCreated',
     'LogChangeOwner',
     'DemandStatusChanged',
-    'DemandUpdated'
+    'DemandUpdated',
+    'DemandPartiallyFilled'
 ];
 
 export class MarketLogic extends GeneralFunctions {
@@ -57,11 +58,28 @@ export class MarketLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents(event, filterParams);
     }
 
+    async getAllEvents(eventFilter?: ISearchLog) {
+        let filterParams;
+        if (eventFilter) {
+            filterParams = {
+                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
+                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
+                topics: eventFilter.topics ? eventFilter.topics : [null]
+            };
+        } else {
+            filterParams = {
+                fromBlock: 0,
+                toBlock: 'latest',
+                topics: [null]
+            };
+        }
+
+        return this.web3Contract.getPastEvents('allEvents', filterParams);
+    }
+
     async createAgreement(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
         _demandId: number,
         _supplyId: number,
         txParams?: ISpecialTx
@@ -69,8 +87,6 @@ export class MarketLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.createAgreement(
             _propertiesDocumentHash,
             _documentDBURL,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL,
             _demandId,
             _supplyId
         );
@@ -105,6 +121,12 @@ export class MarketLogic extends GeneralFunctions {
             _propertiesDocumentHash,
             _documentDBURL
         );
+
+        return this.send(method, txParams);
+    }
+
+    async fillDemand(_demandId: string, _entityId: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.fillDemand(_demandId, _entityId);
 
         return this.send(method, txParams);
     }
@@ -150,21 +172,6 @@ export class MarketLogic extends GeneralFunctions {
 
     async getAgreement(_agreementId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
-    }
-
-    async setMatcherProperties(
-        _agreementId: number,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.setMatcherProperties(
-            _agreementId,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL
-        );
-
-        return this.send(method, txParams);
     }
 
     async getAllSupplyListLength(txParams?: ISpecialTx) {

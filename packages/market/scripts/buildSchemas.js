@@ -75,11 +75,6 @@ async function run() {
     );
 
     await generateSchemaIfNew(
-        'yarn --silent build-schema:MatcherPropertiesOffChain',
-        '/schemas/MatcherOffChainProperties.schema.json'
-    );
-
-    await generateSchemaIfNew(
         'yarn --silent build-schema:DemandPropertiesOffChain',
         '/schemas/DemandOffChainProperties.schema.json'
     );

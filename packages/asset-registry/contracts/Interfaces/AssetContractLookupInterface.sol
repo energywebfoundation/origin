@@ -31,8 +31,4 @@ interface AssetContractLookupInterface {
 	/// @notice gets the userLogic-address
 	/// @return userLogic-contract-address
     function userRegistry() external view returns (address);
-
-	/// @notice gets the allowed maximum of matchers per asset
-	/// @return allowed maximum of matchers per asset
-    function maxMatcherPerAsset() external view returns (uint);
 }

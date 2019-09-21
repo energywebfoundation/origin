@@ -47,6 +47,7 @@ export const deployEmptyContracts = async () => {
     const marketContracts: any = await migrateMarketRegistryContracts(
         web3,
         assetContractLookup,
+        originContractLookup,
         adminPK
     );
     const marketContractLookup = marketContracts.MarketContractLookup;

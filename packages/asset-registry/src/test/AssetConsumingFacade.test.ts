@@ -48,9 +48,6 @@ describe('AssetConsumingLogic Facade', () => {
     const assetSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
 
-    const matcherPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
-    const matcher = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
-
     const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
@@ -127,7 +124,6 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null
         };
@@ -162,7 +158,6 @@ describe('AssetConsumingLogic Facade', () => {
                 lastSmartMeterReadWh: '0',
                 active: true,
                 lastSmartMeterReadFileHash: '',
-                matcher: [{ address: [matcher] }],
                 offChainProperties: assetPropsOffChain,
                 url: 'http://localhost:3030/ConsumingAsset'
             } as any,
@@ -179,7 +174,6 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            matcher: [{ address: matcher }],
             propertiesDocumentHash: null,
             url: null
         };
@@ -233,7 +227,6 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            matcher: [{ address: [matcher] }],
             url: 'http://localhost:3030/ConsumingAsset',
             offChainProperties: {
                 operationalSince: 10,

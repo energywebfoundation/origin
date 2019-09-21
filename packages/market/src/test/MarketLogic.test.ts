@@ -4,6 +4,7 @@ import { AssetContractLookup, AssetProducingRegistryLogic } from '@energyweb/ass
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
@@ -45,9 +46,6 @@ describe('MarketLogic', () => {
 
     const trader2PK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const accountTrader2 = web3.eth.accounts.privateKeyToAccount(trader2PK).address;
-
-    const matcherPK = '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c';
-    const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
 
     const testStatusChange = async (
         demandId: string,
@@ -97,9 +95,18 @@ describe('MarketLogic', () => {
 
         const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
+        const originContracts = await migrateCertificateRegistryContracts(
+            web3,
+            assetRegistryLookupAddr,
+            privateKeyDeployment
+        );
+
+        const originLookupAddr = (originContracts as any).OriginContractLookup;
+
         const marketContracts = await migrateMarketRegistryContracts(
             web3,
             assetRegistryLookupAddr,
+            originLookupAddr,
             privateKeyDeployment
         );
 
@@ -357,7 +364,6 @@ describe('MarketLogic', () => {
             '0x1000000000000000000000000000000000000005',
             accountAssetOwner,
             true,
-            ['0x1000000000000000000000000000000000000006'] as any,
             'propertiesDocumentHash',
             'url',
             10,
@@ -423,18 +429,12 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllSupplyListLength(), 1);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing supply as admin', async () => {
+    it('should fail when trying to create an agreement with a non-existing supply as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                0,
-                1,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
         }
@@ -442,18 +442,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing supply as assetOwner', async () => {
+    it('should fail when trying to create an agreement with a non-existing supply as assetOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                0,
-                1,
-                { privateKey: assetOwnerPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
+                privateKey: assetOwnerPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -461,18 +455,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing supply as trader', async () => {
+    it('should fail when trying to create an agreement with a non-existing supply as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                0,
-                1,
-                { privateKey: traderPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
+                privateKey: traderPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -480,18 +468,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing demand as admin', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                1,
-                0,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
         }
@@ -499,18 +481,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing demand as assetOwner', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand as assetOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                1,
-                0,
-                { privateKey: assetOwnerPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
+                privateKey: assetOwnerPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -518,18 +494,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing demand as trader', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                1,
-                0,
-                { privateKey: traderPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
+                privateKey: traderPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -537,18 +507,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing demand and non-existing supply as admin', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                1,
-                1,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
         }
@@ -556,18 +520,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing demand and non-existing supply as assetOwner', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as assetOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                1,
-                1,
-                { privateKey: assetOwnerPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
+                privateKey: assetOwnerPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -575,18 +533,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement with a non-existing demand and non-existing supply as trader', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                1,
-                1,
-                { privateKey: traderPK }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
+                privateKey: traderPK
+            });
         } catch (ex) {
             failed = true;
         }
@@ -594,18 +546,12 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an aggreement as admin', async () => {
+    it('should fail when trying to create an agreement as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createAgreement(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                'matcherPropertiesDocumentHash',
-                'matcherDocumentDBURL',
-                0,
-                0,
-                { privateKey: privateKeyDeployment }
-            );
+            await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 0, {
+                privateKey: privateKeyDeployment
+            });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'createDemand: wrong owner when creating');
@@ -629,12 +575,10 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllAgreementListLength(), 0);
     });
 
-    it('should create an aggreement as assetOwner', async () => {
+    it('should create an agreement as assetOwner', async () => {
         const tx = await marketLogic.createAgreement(
             'propertiesDocumentHash',
             'documentDBURL',
-            'matcherPropertiesDocumentHash',
-            'matcherDocumentDBURL',
             0,
             0,
             { privateKey: assetOwnerPK }
@@ -660,7 +604,7 @@ describe('MarketLogic', () => {
         }
     });
 
-    it('should be able to approve aggreement again as supplyOwner', async () => {
+    it('should be able to approve agreement again as supplyOwner', async () => {
         await marketLogic.approveAgreementSupply(0, { privateKey: assetOwnerPK });
     });
 
@@ -700,22 +644,16 @@ describe('MarketLogic', () => {
         assert.deepEqual(agreement, {
             0: 'propertiesDocumentHash',
             1: 'documentDBURL',
-            2: 'matcherPropertiesDocumentHash',
-            3: 'matcherDocumentDBURL',
-            4: '0',
-            5: '0',
-            6: true,
-            7: false,
-            8: ['0x1000000000000000000000000000000000000006'],
+            2: '0',
+            3: '0',
+            4: true,
+            5: false,
             _propertiesDocumentHash: 'propertiesDocumentHash',
             _documentDBURL: 'documentDBURL',
-            _matcherPropertiesDocumentHash: 'matcherPropertiesDocumentHash',
-            _matcherDBURL: 'matcherDocumentDBURL',
             _demandId: '0',
             _supplyId: '0',
             _approvedBySupplyOwner: true,
-            _approvedByDemandOwner: false,
-            _allowedMatcher: ['0x1000000000000000000000000000000000000006']
+            _approvedByDemandOwner: false
         });
     });
 
@@ -748,68 +686,17 @@ describe('MarketLogic', () => {
         assert.deepEqual(agreement, {
             0: 'propertiesDocumentHash',
             1: 'documentDBURL',
-            2: 'matcherPropertiesDocumentHash',
-            3: 'matcherDocumentDBURL',
-            4: '0',
-            5: '0',
-            6: true,
-            7: true,
-            8: ['0x1000000000000000000000000000000000000006'],
+            2: '0',
+            3: '0',
+            4: true,
+            5: true,
             _propertiesDocumentHash: 'propertiesDocumentHash',
             _documentDBURL: 'documentDBURL',
-            _matcherPropertiesDocumentHash: 'matcherPropertiesDocumentHash',
-            _matcherDBURL: 'matcherDocumentDBURL',
             _demandId: '0',
             _supplyId: '0',
             _approvedBySupplyOwner: true,
-            _approvedByDemandOwner: true,
-            _allowedMatcher: ['0x1000000000000000000000000000000000000006']
+            _approvedByDemandOwner: true
         });
-    });
-
-    it('should fail when trying to change matcher properties with wrong account (assetAdmin)', async () => {
-        let failed = false;
-        try {
-            await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
-                privateKey: privateKeyDeployment
-            });
-        } catch (e) {
-            failed = true;
-            assert.include(e.message, 'sender is not in matcher array');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should fail when trying to change matcher properties with wrong account (assetOwner)', async () => {
-        let failed = false;
-        try {
-            await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', {
-                privateKey: assetOwnerPK
-            });
-        } catch (e) {
-            failed = true;
-            assert.include(e.message, 'sender is not in matcher array');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should change matcher properties ', async () => {
-        await assetRegistry.addMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
-        //      const agreement = await marketLogic.setMatcherProperties(0, 'newProps', 'newURl', { privateKey:  });
-        let failed = false;
-        try {
-            await marketLogic.setMatcherProperties(0, 'newMatcherProps', 'newMatcherDB', {
-                privateKey: matcherPK
-            });
-        } catch (e) {
-            failed = true;
-            assert.include(e.message, 'sender is not in matcher array');
-        }
-        await assetRegistry.removeMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
-
-        assert.isTrue(failed);
     });
 
     it('should create a 2nd supply as assetOwner', async () => {
@@ -861,12 +748,10 @@ describe('MarketLogic', () => {
         }
     });
 
-    it('should create an aggreement as trader', async () => {
+    it('should create an agreement as trader', async () => {
         const tx = await marketLogic.createAgreement(
             'propertiesDocumentHash_2',
             'documentDBURL_2',
-            'matcherPropertiesDocumentHash_2',
-            'matcherDocumentDBURL_2',
             1,
             1,
             { privateKey: traderPK }
@@ -898,26 +783,20 @@ describe('MarketLogic', () => {
         assert.deepEqual(agreement, {
             0: 'propertiesDocumentHash_2',
             1: 'documentDBURL_2',
-            2: 'matcherPropertiesDocumentHash_2',
-            3: 'matcherDocumentDBURL_2',
-            4: '1',
-            5: '1',
-            6: false,
-            7: true,
-            8: ['0x1000000000000000000000000000000000000006'],
+            2: '1',
+            3: '1',
+            4: false,
+            5: true,
             _propertiesDocumentHash: 'propertiesDocumentHash_2',
             _documentDBURL: 'documentDBURL_2',
-            _matcherPropertiesDocumentHash: 'matcherPropertiesDocumentHash_2',
-            _matcherDBURL: 'matcherDocumentDBURL_2',
             _demandId: '1',
             _supplyId: '1',
             _approvedBySupplyOwner: false,
-            _approvedByDemandOwner: true,
-            _allowedMatcher: ['0x1000000000000000000000000000000000000006']
+            _approvedByDemandOwner: true
         });
     });
 
-    it('should be able to approve 2nd aggreement again as supplyOwner', async () => {
+    it('should be able to approve 2nd agreement again as supplyOwner', async () => {
         await marketLogic.approveAgreementDemand(1, { privateKey: traderPK });
     });
 
@@ -976,22 +855,16 @@ describe('MarketLogic', () => {
         assert.deepEqual(agreement, {
             0: 'propertiesDocumentHash_2',
             1: 'documentDBURL_2',
-            2: 'matcherPropertiesDocumentHash_2',
-            3: 'matcherDocumentDBURL_2',
-            4: '1',
-            5: '1',
-            6: true,
-            7: true,
-            8: ['0x1000000000000000000000000000000000000006'],
+            2: '1',
+            3: '1',
+            4: true,
+            5: true,
             _propertiesDocumentHash: 'propertiesDocumentHash_2',
             _documentDBURL: 'documentDBURL_2',
-            _matcherPropertiesDocumentHash: 'matcherPropertiesDocumentHash_2',
-            _matcherDBURL: 'matcherDocumentDBURL_2',
             _demandId: '1',
             _supplyId: '1',
             _approvedBySupplyOwner: true,
-            _approvedByDemandOwner: true,
-            _allowedMatcher: ['0x1000000000000000000000000000000000000006']
+            _approvedByDemandOwner: true
         });
     });
 
@@ -999,16 +872,10 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllAgreementListLength(), 2);
     });
 
-    it('should add 2nd matcher to asset', async () => {
-        await assetRegistry.addMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
-    });
-
-    it('should create a 3rd aggreement as trader', async () => {
+    it('should create a 3rd agreement as trader', async () => {
         const tx = await marketLogic.createAgreement(
             'propertiesDocumentHash_3',
             'documentDBURL_3',
-            'matcherPropertiesDocumentHash_3',
-            'matcherDocumentDBURL_3',
             1,
             1,
             { privateKey: traderPK }
@@ -1032,57 +899,14 @@ describe('MarketLogic', () => {
         });
     });
 
-    it('should fail when trying to set matcher properties when the agreement is not finished yet', async () => {
-        let failed = false;
-        try {
-            await marketLogic.setMatcherProperties(2, 'newProps', 'newDB', {
-                privateKey: matcherPK
-            });
-        } catch (e) {
-            failed = true;
-            assert.include(e.message, 'supply owner has not agreed yet');
-        }
-
-        assert.isTrue(failed);
-    });
-
     it('should create 3rd agreement', async () => {
         await marketLogic.approveAgreementSupply(2, { privateKey: assetOwnerPK });
     });
 
-    it('should change matcher properties', async () => {
-        await marketLogic.setMatcherProperties(2, 'newMatcherProps', 'newMatcherDB', {
-            privateKey: matcherPK
-        });
-
-        assert.deepEqual(await marketLogic.getAgreement(2), {
-            0: 'propertiesDocumentHash_3',
-            1: 'documentDBURL_3',
-            2: 'newMatcherProps',
-            3: 'newMatcherDB',
-            4: '1',
-            5: '1',
-            6: true,
-            7: true,
-            8: ['0x1000000000000000000000000000000000000006', matcherAccount],
-            _propertiesDocumentHash: 'propertiesDocumentHash_3',
-            _documentDBURL: 'documentDBURL_3',
-            _matcherPropertiesDocumentHash: 'newMatcherProps',
-            _matcherDBURL: 'newMatcherDB',
-            _demandId: '1',
-            _supplyId: '1',
-            _approvedBySupplyOwner: true,
-            _approvedByDemandOwner: true,
-            _allowedMatcher: ['0x1000000000000000000000000000000000000006', matcherAccount]
-        });
-    });
-
-    it('should create a 4th aggreement as assetOwner', async () => {
+    it('should create a 4th agreement as assetOwner', async () => {
         const tx = await marketLogic.createAgreement(
             'propertiesDocumentHash_4',
             'documentDBURL_4',
-            'matcherPropertiesDocumentHash_4',
-            'matcherDocumentDBURL_4',
             1,
             1,
             { privateKey: assetOwnerPK }
@@ -1104,20 +928,6 @@ describe('MarketLogic', () => {
             _demandId: '1',
             _supplyId: '1'
         });
-    });
-
-    it('should fail when trying to set Matcherproperties when the agreement is not finihsed yet', async () => {
-        let failed = false;
-        try {
-            await marketLogic.setMatcherProperties(3, 'newProps', 'newDB', {
-                privateKey: matcherPK
-            });
-        } catch (e) {
-            failed = true;
-            assert.include(e.message, 'demand owner has not agreed yet');
-        }
-
-        assert.isTrue(failed);
     });
 
     it('should be able to create a 3rd demand', async () => {

@@ -19,17 +19,20 @@ pragma solidity ^0.5.2;
 import "@energyweb/utils-general/contracts/Msc/Owned.sol";
 import "@energyweb/utils-general/contracts/Interfaces/Updatable.sol";
 import "@energyweb/user-registry/contracts/Interfaces/UserContractLookupInterface.sol";
-import "../contracts/Interfaces/MarketContractLookupInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
+import "@energyweb/origin/contracts/Interfaces/OriginContractLookupInterface.sol";
+
+import "../contracts/Interfaces/MarketContractLookupInterface.sol";
 
 /// @title Contract for storing the current logic-lib-addresses for the certificate of origin
 contract MarketContractLookup is Owned, MarketContractLookupInterface {
 
     Updatable private marketLogicRegistryContracts;
     AssetContractLookupInterface public assetContractLookupContract;
+    OriginContractLookupInterface public originContractLookupContract;
 
     /// @notice The constructor
-    constructor() Owned(msg.sender) public{ }
+    constructor() Owned(msg.sender) public { }
 
 	/// @notice function to initialize the contracts, setting the needed contract-addresses
 	/// @param _assetRegistry the asset Registry
@@ -37,6 +40,7 @@ contract MarketContractLookup is Owned, MarketContractLookupInterface {
 	/// @param _marketDB the market D B
     function init(
         AssetContractLookupInterface _assetRegistry,
+        OriginContractLookupInterface _originRegistry,
         Updatable _marketLogicRegistry,
         address _marketDB
     )
@@ -46,14 +50,17 @@ contract MarketContractLookup is Owned, MarketContractLookupInterface {
         require(
             address(_assetRegistry) != address(0x0)
             && address(_marketLogicRegistry) != address(0x0)
+            && address(_originRegistry) != address(0x0)
             && address(marketLogicRegistryContracts) == address(0x0)
-            && address(assetContractLookupContract) == address(0x0),
+            && address(assetContractLookupContract) == address(0x0)
+            && address(originContractLookupContract) == address(0x0),
             "already initialized"
         );
         require(address(_marketDB) != address(0x0), "marketDB cannot be 0");
 
         marketLogicRegistryContracts = _marketLogicRegistry;
         assetContractLookupContract = _assetRegistry;
+        originContractLookupContract = _originRegistry;
 
         marketLogicRegistryContracts.init(_marketDB, msg.sender);
     }
@@ -74,14 +81,19 @@ contract MarketContractLookup is Owned, MarketContractLookupInterface {
 
 	/// @notice marketlogic registry
 	/// @return the marketlogic-registry
-    function marketLogicRegistry() external view returns (address){
+    function marketLogicRegistry() external view returns (address) {
         return address(marketLogicRegistryContracts);
     }
 
 	/// @notice asset contract lookup
 	/// @return the assetregistry
-    function assetContractLookup() external view returns (address){
+    function assetContractLookup() external view returns (address) {
         return address(assetContractLookupContract);
     }
 
+    /// @notice origin contract lookup
+	/// @return the originregistry
+    function originContractLookup() external view returns (address) {
+        return address(originContractLookupContract);
+    }
 }

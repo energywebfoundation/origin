@@ -94,10 +94,22 @@ describe('CertificateLogic', () => {
                 'admin',
                 { privateKey: privateKeyDeployment }
             );
-
             await userLogic.setRoles(
                 accountDeployment,
                 buildRights([Role.UserAdmin, Role.AssetAdmin]),
+                { privateKey: privateKeyDeployment }
+            );
+
+            await userLogic.createUser(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                matcherAccount,
+                'matcher',
+                { privateKey: privateKeyDeployment }
+            );
+            await userLogic.setRoles(
+                matcherAccount,
+                buildRights([Role.Matcher]),
                 { privateKey: privateKeyDeployment }
             );
 
@@ -335,7 +347,6 @@ describe('CertificateLogic', () => {
                 assetSmartmeter,
                 accountAssetOwner,
                 true,
-                ['0x1000000000000000000000000000000000000005'] as any,
                 'propertiesDocumentHash',
                 'url',
                 2,
@@ -445,9 +456,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -506,9 +514,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntityParent.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntityParent.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntityParent.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -533,9 +538,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntityChildOne.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntityChildOne.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntityChildOne.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -560,9 +562,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntityChildTwo.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntityChildTwo.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntityChildTwo.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -621,7 +620,7 @@ describe('CertificateLogic', () => {
                         privateKey: privateKeyDeployment
                     });
                 } catch (ex) {
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'simpleTransfer, missing rights');
                     failed = true;
                 }
 
@@ -664,7 +663,7 @@ describe('CertificateLogic', () => {
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'simpleTransfer, missing rights');
                 }
 
                 assert.isTrue(failed);
@@ -740,7 +739,7 @@ describe('CertificateLogic', () => {
                 assert.equal(certificateSpecific.parentId, 0);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -752,7 +751,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -787,6 +785,13 @@ describe('CertificateLogic', () => {
                     _tokenId: '1'
                 });
                 //  }
+            });
+
+            it('should retire a certificate', async () => {
+                const tx = await certificateLogic.retireCertificate(1, {
+                    privateKey: traderPK
+                });
+
                 const retireEvent = await certificateLogic.getAllLogCertificateRetiredEvents({
                     fromBlock: tx.blockNumber,
                     toBlock: tx.blockNumber
@@ -810,7 +815,7 @@ describe('CertificateLogic', () => {
                 assert.equal(certificateSpecific.parentId, 0);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 2);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -822,7 +827,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -966,9 +970,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -987,7 +988,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'revert simpleTransfer, missing rights');
                 }
 
                 assert.isTrue(failed);
@@ -1023,7 +1024,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'simpleTransfer, missing rights');
                 }
 
                 assert.isTrue(failed);
@@ -1041,7 +1042,7 @@ describe('CertificateLogic', () => {
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'revert simpleTransfer, missing rights');
                 }
 
                 assert.isTrue(failed);
@@ -1152,7 +1153,7 @@ describe('CertificateLogic', () => {
                 assert.equal(certificateSpecific.parentId, 3);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -1164,7 +1165,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1203,17 +1203,6 @@ describe('CertificateLogic', () => {
                     _tokenId: '3'
                 });
                 //    }
-                const retireEvent = await certificateLogic.getAllLogCertificateRetiredEvents({
-                    fromBlock: tx.blockNumber,
-                    toBlock: tx.blockNumber
-                });
-
-                assert.equal(retireEvent.length, 1);
-                assert.equal(retireEvent[0].event, 'LogCertificateRetired');
-                assert.deepEqual(retireEvent[0].returnValues, {
-                    0: '3',
-                    _certificateId: '3'
-                });
 
                 assert.equal(await certificateLogic.getCertificateListLength(), 4);
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
@@ -1229,12 +1218,12 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 3);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 2);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -1246,7 +1235,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1340,9 +1328,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005'
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1481,7 +1466,7 @@ describe('CertificateLogic', () => {
                 assert.equal(certificateSpecific.parentId, 4);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -1493,7 +1478,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1531,17 +1515,6 @@ describe('CertificateLogic', () => {
                     _tokenId: '4'
                 });
                 //   }
-                const retireEvent = await certificateLogic.getAllLogCertificateRetiredEvents({
-                    fromBlock: tx.blockNumber,
-                    toBlock: tx.blockNumber
-                });
-
-                assert.equal(retireEvent.length, 1);
-                assert.equal(retireEvent[0].event, 'LogCertificateRetired');
-                assert.deepEqual(retireEvent[0].returnValues, {
-                    0: '4',
-                    _certificateId: '4'
-                });
 
                 assert.equal(await certificateLogic.getCertificateListLength(), 5);
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
@@ -1557,12 +1530,12 @@ describe('CertificateLogic', () => {
 
                 const certificateSpecific = cert.certificateSpecific;
 
-                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
+                assert.equal(certificateSpecific.status, Certificate.Status.Active);
                 assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
                 assert.equal(certificateSpecific.parentId, 4);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 2);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -1574,22 +1547,14 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
             });
         });
-        describe('escrow and approval', () => {
-            it('should set an escrow to the asset', async () => {
-                await assetRegistry.addMatcher(0, matcherAccount, { privateKey: assetOwnerPK });
-                assert.deepEqual(await assetRegistry.getMatcher(0), [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
-            });
 
+        describe('approval', () => {
             it('should return correct approval', async () => {
                 assert.isFalse(
                     await certificateLogic.isApprovedForAll(accountAssetOwner, approvedAccount)
@@ -1749,19 +1714,6 @@ describe('CertificateLogic', () => {
                 assert.isTrue(failed);
             });
 
-            it('should throw trying to transfer old certificate with new matcher', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.transferFrom(accountAssetOwner, accountTrader, 2, {
-                        privateKey: matcherPK
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
-                }
-                assert.isTrue(failed);
-            });
-
             it('should log energy again (certificate #5)', async () => {
                 const TIMESTAMP = moment().unix();
                 const tx = await assetRegistry.saveSmartMeterRead(
@@ -1848,78 +1800,13 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
             });
 
-            it('should throw trying to transfer old certificate with new matcher but missing role', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.transferFrom(accountAssetOwner, accountTrader, 5, {
-                        privateKey: matcherPK
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
-                }
-                assert.isTrue(failed);
-            });
-
-            it('should throw trying to safeTransferFrom without data old certificate with new matcher but missing role', async () => {
-                let failed = false;
-                try {
-                    const tx = await certificateLogic.safeTransferFrom(
-                        accountAssetOwner,
-                        testreceiver.web3Contract._address,
-                        5,
-                        null,
-                        { privateKey: matcherPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
-                }
-                assert.isTrue(failed);
-            });
-
-            it('should throw trying to safeTransferFrom with data old certificate with new matcher but missing role', async () => {
-                let failed = false;
-                try {
-                    const tx = await certificateLogic.safeTransferFrom(
-                        accountAssetOwner,
-                        testreceiver.web3Contract._address,
-                        5,
-                        '0x01',
-                        { privateKey: matcherPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
-                }
-                assert.isTrue(failed);
-            });
-
-            it('should set matcherAccount roles', async () => {
-                await userLogic.createUser(
-                    'propertiesDocumentHash',
-                    'documentDBURL',
-                    matcherAccount,
-                    'matcherAccount',
-                    { privateKey: privateKeyDeployment }
-                );
-                await userLogic.setRoles(matcherAccount, buildRights([Role.Trader]), {
-                    privateKey: privateKeyDeployment
-                });
-            });
-
             it('should transfer certificate #5 as matcher', async () => {
-                // console.log(await certificateLogic.checkMatcher((await assetRegistry.getMatcher(5) as any)));
                 assert.equal(
                     await certificateLogic.getApproved(5),
                     '0x0000000000000000000000000000000000000000'
@@ -1961,19 +1848,6 @@ describe('CertificateLogic', () => {
                     await certificateLogic.getApproved(5),
                     '0x0000000000000000000000000000000000000000'
                 );
-            });
-
-            it('should throw trying to call transer certificate #5 with matcher after it has been transfered', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.transferFrom(accountTrader, accountTrader, 5, {
-                        privateKey: matcherPK
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'simpleTransfer, missing rights');
-                }
-                assert.isTrue(failed);
             });
 
             it('should log energy again (certificate #6)', async () => {
@@ -2262,28 +2136,11 @@ describe('CertificateLogic', () => {
                 let failed = false;
                 try {
                     await certificateLogic.transferFrom(accountAssetOwner, accountTrader, 8, {
-                        privateKey: approvedPK
+                        privateKey: issuerPK
                     });
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
-                }
-                assert.isTrue(failed);
-            });
-
-            it('should throw trying to safeTransferFrom without data old certificate#8 with new approvedAccount but missing role', async () => {
-                let failed = false;
-                try {
-                    const tx = await certificateLogic.safeTransferFrom(
-                        accountAssetOwner,
-                        testreceiver.web3Contract._address,
-                        8,
-                        null,
-                        { privateKey: approvedPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'impleTransfer, missing rights');
                 }
                 assert.isTrue(failed);
             });
@@ -2296,11 +2153,11 @@ describe('CertificateLogic', () => {
                         testreceiver.web3Contract._address,
                         8,
                         '0x01',
-                        { privateKey: approvedPK }
+                        { privateKey: assetSmartmeterPK }
                     );
                 } catch (ex) {
                     failed = true;
-                    assert.include(ex.message, 'user does not have the required role');
+                    assert.include(ex.message, 'simpleTransfer, missing rights');
                 }
                 assert.isTrue(failed);
             });
@@ -2322,6 +2179,10 @@ describe('CertificateLogic', () => {
                 assert.equal(
                     await certificateLogic.getApproved(8),
                     '0x0000000000000000000000000000000000000000'
+                );
+                assert.equal(
+                    await certificateLogic.getCertificateOwner(8),
+                    accountAssetOwner
                 );
 
                 const tx = await certificateLogic.transferFrom(
@@ -3384,10 +3245,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.powerInW, 100);
                 assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract._address);
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 100);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3401,10 +3258,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.powerInW, 100);
                 assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract._address);
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 100);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3481,7 +3334,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3498,7 +3350,7 @@ describe('CertificateLogic', () => {
                 assert.equal(certificateSpecific.parentId, 15);
                 assert.equal(certificateSpecific.children.length, 0);
                 assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
+                assert.equal(certificateSpecific.ownerChangeCounter, 0);
 
                 const tradableEntity = cert.tradableEntity;
 
@@ -3510,7 +3362,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3592,116 +3443,6 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000005',
-                    matcherAccount
-                ]);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should throw when trying to remove not existing escrow as admin', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.removeEscrow(
-                        16,
-                        '0x1000000000000000000000000000000000000004',
-                        { privateKey: privateKeyDeployment }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to remove not existing escrow as trader', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.removeEscrow(
-                        16,
-                        '0x1000000000000000000000000000000000000004',
-                        { privateKey: traderPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to remove not existing escrow as owner', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.removeEscrow(
-                        16,
-                        '0x1000000000000000000000000000000000000004',
-                        { privateKey: assetOwnerPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'escrow address not in array');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to remove existing escrow as admin', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.removeEscrow(
-                        16,
-                        '0x1000000000000000000000000000000000000005',
-                        { privateKey: privateKeyDeployment }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to remove existing escrow as trader', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.removeEscrow(
-                        16,
-                        '0x1000000000000000000000000000000000000005',
-                        { privateKey: traderPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should remove existing escrow', async () => {
-                await certificateLogic.removeEscrow(
-                    16,
-                    '0x1000000000000000000000000000000000000005',
-                    { privateKey: assetOwnerPK }
-                );
-            });
-
-            it('should return the correct tradableEntity (Cert#16)', async () => {
-                const tradableEntity = await certificateLogic.getTradableEntity(16);
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [matcherAccount]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3730,200 +3471,12 @@ describe('CertificateLogic', () => {
                     '0x0000000000000000000000000000000000000000'
                 );
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [matcherAccount]);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
             });
 
-            it('should remove remaining escrow', async () => {
-                await certificateLogic.removeEscrow(16, matcherAccount, {
-                    privateKey: assetOwnerPK
-                });
-            });
-
-            it('should return the correct tradableEntity (Cert#16)', async () => {
-                const tradableEntity = await certificateLogic.getTradableEntity(16);
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should return the certificate #16', async () => {
-                const cert = await certificateLogic.getCertificate(16);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 16);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, []);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should throw when trying to add escrow as trader', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.addEscrowForEntity(
-                        16,
-                        '0x1000000000000000000000000000000000000000',
-                        { privateKey: traderPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to add escrow as admin', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.addEscrowForEntity(
-                        16,
-                        '0x1000000000000000000000000000000000000000',
-                        { privateKey: privateKeyDeployment }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should add escrow as owner of cert', async () => {
-                await certificateLogic.addEscrowForEntity(
-                    16,
-                    '0x1000000000000000000000000000000000000000',
-                    { privateKey: assetOwnerPK }
-                );
-            });
-
-            it('should add more escrows as owner of cert', async () => {
-                for (let i = 1; i < 10; i++) {
-                    await certificateLogic.addEscrowForEntity(
-                        16,
-                        '0x100000000000000000000000000000000000000' + i,
-                        { privateKey: assetOwnerPK }
-                    );
-                }
-            });
-
-            it('should return the correct tradableEntity (Cert#16)', async () => {
-                const tradableEntity = await certificateLogic.getTradableEntity(16);
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000000',
-                    '0x1000000000000000000000000000000000000001',
-                    '0x1000000000000000000000000000000000000002',
-                    '0x1000000000000000000000000000000000000003',
-                    '0x1000000000000000000000000000000000000004',
-                    '0x1000000000000000000000000000000000000005',
-                    '0x1000000000000000000000000000000000000006',
-                    '0x1000000000000000000000000000000000000007',
-                    '0x1000000000000000000000000000000000000008',
-                    '0x1000000000000000000000000000000000000009'
-                ]);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should return the certificate #16', async () => {
-                const cert = await certificateLogic.getCertificate(16);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 16);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.deepEqual(tradableEntity.escrow, [
-                    '0x1000000000000000000000000000000000000000',
-                    '0x1000000000000000000000000000000000000001',
-                    '0x1000000000000000000000000000000000000002',
-                    '0x1000000000000000000000000000000000000003',
-                    '0x1000000000000000000000000000000000000004',
-                    '0x1000000000000000000000000000000000000005',
-                    '0x1000000000000000000000000000000000000006',
-                    '0x1000000000000000000000000000000000000007',
-                    '0x1000000000000000000000000000000000000008',
-                    '0x1000000000000000000000000000000000000009'
-                ]);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should throw when trying to add too much escrow', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.addEscrowForEntity(
-                        16,
-                        '0x1000000000000000000000000000000000000010',
-                        { privateKey: assetOwnerPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'maximum amount of escrows reached');
-                }
-
-                assert.isTrue(failed);
-            });
         });
     });
 });
