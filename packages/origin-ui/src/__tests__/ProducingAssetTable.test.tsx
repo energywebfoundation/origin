@@ -35,7 +35,7 @@ jest.mock('@energyweb/user-registry', () => {
     };
 });
 
-describe.only('ProducingAssetTable', () => {
+describe('ProducingAssetTable', () => {
     afterAll(() => {
         jest.unmock('@energyweb/user-registry');
     });
