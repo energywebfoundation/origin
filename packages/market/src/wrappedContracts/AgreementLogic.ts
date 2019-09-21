@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
-import AgreementLogicJSON from '../../build/contracts/AgreementLogic.json';
+import AgreementLogicJSON from '../../build/contracts/lightweight/AgreementLogic.json';
 
 export class AgreementLogic extends GeneralFunctions {
     web3: Web3;
@@ -103,8 +103,6 @@ export class AgreementLogic extends GeneralFunctions {
     async createAgreement(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
         _demandId: number,
         _supplyId: number,
         txParams?: ISpecialTx
@@ -112,8 +110,6 @@ export class AgreementLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.createAgreement(
             _propertiesDocumentHash,
             _documentDBURL,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL,
             _demandId,
             _supplyId
         );
@@ -153,21 +149,6 @@ export class AgreementLogic extends GeneralFunctions {
 
     async getAgreement(_agreementId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
-    }
-
-    async setMatcherProperties(
-        _agreementId: number,
-        _matcherPropertiesDocumentHash: string,
-        _matcherDBURL: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.setMatcherProperties(
-            _agreementId,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL
-        );
-
-        return this.send(method, txParams);
     }
 
     async assetContractLookup(txParams?: ISpecialTx) {

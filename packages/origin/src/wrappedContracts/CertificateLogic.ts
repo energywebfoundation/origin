@@ -1,6 +1,6 @@
 import { SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
+import CertificateLogicJSON from '../../build/contracts/lightweight/CertificateLogic.json';
 import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class CertificateLogic extends CertificateSpecificContract {
@@ -139,46 +139,6 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.web3Contract.getPastEvents('ApprovalForAll', filterParams);
     }
 
-    async getAllLogEscrowRemovedEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogEscrowRemoved', filterParams);
-    }
-
-    async getAllLogEscrowAddedEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogEscrowAdded', filterParams);
-    }
-
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
         let filterParams;
         if (eventFilter) {
@@ -228,12 +188,6 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async approve(_approved: string, _entityId: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.approve(_approved, _entityId);
-
-        return await this.send(method, txParams);
-    }
-
-    async addEscrowForEntity(_certificateId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForEntity(_certificateId, _escrow);
 
         return await this.send(method, txParams);
     }
@@ -311,10 +265,6 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.web3Contract.methods.assetContractLookup().call(txParams);
     }
 
-    async checkMatcher(_matcher: string[], txParams?: SpecialTx) {
-        return await this.web3Contract.methods.checkMatcher(_matcher).call(txParams);
-    }
-
     async balanceOf(_owner: string, txParams?: SpecialTx) {
         return await this.web3Contract.methods.balanceOf(_owner).call(txParams);
     }
@@ -367,12 +317,6 @@ export class CertificateLogic extends CertificateSpecificContract {
 
     async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
         return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
-    }
-
-    async removeEscrow(_certificateId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeEscrow(_certificateId, _escrow);
-
-        return await this.send(method, txParams);
     }
 
     async publishForSale(

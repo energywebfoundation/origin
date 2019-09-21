@@ -67,7 +67,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         uint256 _entityId,
         bytes calldata _data
     )
-        onlyRole(RoleManagement.Role.Trader)
         external payable
     {
         internalSafeTransfer(_from, _to, _entityId, _data);
@@ -82,7 +81,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         address _to,
         uint256 _entityId
     )
-        onlyRole(RoleManagement.Role.Trader)
         external payable
     {
         bytes memory data = "";
@@ -98,7 +96,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         address _to,
         uint256 _entityId
     )
-        onlyRole(RoleManagement.Role.Trader)
         external
         payable
     {
@@ -111,7 +108,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         external functions
     */
 
-    function buyCertificateInternal(uint _certificateId, address buyer) internal{
+    function buyCertificateInternal(uint _certificateId, address buyer) internal {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
 
         require(buyer != cert.tradableEntity.owner, "Can't buy your own certificates.");
@@ -183,7 +180,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
             cert.certificateSpecific.children.length == 0,
             "Unable to retire certificates that have already been split."
         );
-
         if (cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired)) {
             db.setTradableEntityEscrowExternal(_certificateId, new address[](0));
             CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
@@ -238,7 +234,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     function splitCertificate(uint _certificateId, uint _power) external {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
         require(
-            msg.sender == cert.tradableEntity.owner || checkMatcher(cert.tradableEntity.escrow),
+            msg.sender == cert.tradableEntity.owner || isRole(RoleManagement.Role.Matcher, msg.sender),
             "You are not the owner of the certificate"
         );
 
@@ -253,7 +249,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     function splitAndPublishForSale(uint _certificateId, uint _power, uint _price, address _tokenAddress) external {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
         require(
-            msg.sender == cert.tradableEntity.owner || checkMatcher(cert.tradableEntity.escrow),
+            msg.sender == cert.tradableEntity.owner || isRole(RoleManagement.Role.Matcher, msg.sender),
             "You are not the owner of the certificate"
         );
 
@@ -326,6 +322,13 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         return (childIdOne, childIdTwo);
     }
 
+	/// @notice Retires a certificate
+	/// @param _certificateId The id of the requested certificate
+    function retireCertificateAuto(uint _certificateId) internal {
+        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
+        emit LogCertificateRetired(_certificateId);
+    }
+
     /// @notice Creates a certificate of origin. Checks in the AssetRegistry if requested wh are available.
     /// @param _assetId The id of the asset that generated the energy for the certificate
     /// @param _powerInW The amount of Watts the Certificate holds
@@ -335,7 +338,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     {
         AssetProducingDB.Asset memory asset =  AssetProducingInterface(address(assetContractLookup.assetProducingRegistry())).getAssetById(_assetId);
 
-        uint certId = CertificateDB(address(db)).createCertificateRaw(_assetId, _powerInW, asset.assetGeneral.matcher, asset.assetGeneral.owner, asset.assetGeneral.lastSmartMeterReadFileHash, asset.maxOwnerChanges);
+        uint certId = CertificateDB(address(db)).createCertificateRaw(_assetId, _powerInW, asset.assetGeneral.owner, asset.assetGeneral.lastSmartMeterReadFileHash, asset.maxOwnerChanges);
         emit Transfer(address(0),  asset.assetGeneral.owner, certId);
 
         emit LogCreatedCertificate(certId, _powerInW, asset.assetGeneral.owner);
@@ -382,8 +385,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
             "Maximum number of owner changes is surpassed."
         );
         uint ownerChangeCounter = _certificate.certificateSpecific.ownerChangeCounter + 1;
-
-        CertificateDB(address(db)).setOwnerChangeCounterResetEscrow(_certificateId,ownerChangeCounter);
 
         if(_certificate.certificateSpecific.maxOwnerChanges <= ownerChangeCounter){
             CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);

@@ -47,20 +47,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
     /**
         external functions
     */
-    /// @notice sets the counter of owner changes and resets all escrows
-    /// @dev should be called whenever a certificate gets transfered
-    /// @param _certificateId array-position of the certificate
-    /// @param _newCounter new counter of owner changes
-    function setOwnerChangeCounterResetEscrow(
-        uint _certificateId,
-        uint _newCounter
-    )
-        external
-        onlyOwnerOrSelf
-    {
-        this.setOwnerChangeCounter(_certificateId, _newCounter);
-        setTradableEntityEscrow(_certificateId, new address[](0));
-    }
 
     /// @notice gets the certificate-specific struct of a certificate
     /// @param _certificateId the id of the certificate
@@ -82,14 +68,12 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
     /// @notice creates a certificate with the provided parameters
     /// @param _assetId the asset-id that produced energy thus created the certificate
     /// @param _powerInW the power in wh
-    /// @param _escrow array with escrow-addresses
     /// @param _assetOwner the assetOwner -> owner of the new certificate
     /// @param _lastSmartMeterReadFileHash the filehash of the last meterreading
     /// @param _maxOwnerChanges the maximal amount of owner changes
     function createCertificateRaw(
         uint _assetId,
         uint _powerInW,
-        address[] memory _escrow,
         address _assetOwner,
         string memory _lastSmartMeterReadFileHash,
         uint _maxOwnerChanges
@@ -105,12 +89,8 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             forSale: false,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
-            escrow: _escrow,
-           // escrow: new address[](0),
             approvedAddress: address(0x0)
-
         });
-
 
         CertificateSpecificContract.CertificateSpecific memory certificateSpecific = CertificateSpecificContract.CertificateSpecific({
             status: uint(CertificateSpecificContract.Status.Active),
@@ -121,7 +101,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             maxOwnerChanges: _maxOwnerChanges,
             ownerChangeCounter: 0
         });
-
 
         _certId = createCertificate(
             tradableEntity,
@@ -151,7 +130,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             forSale: parent.tradableEntity.forSale,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
-            escrow: parent.tradableEntity.escrow,
             approvedAddress: parent.tradableEntity.approvedAddress
         });
 
@@ -177,7 +155,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             forSale: parent.tradableEntity.forSale,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
-            escrow: parent.tradableEntity.escrow,
             approvedAddress: parent.tradableEntity.approvedAddress
         });
 

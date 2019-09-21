@@ -5,7 +5,7 @@
         "rootDir": "./",
         "outDir": "./dist/js"
     },
-    "include": ["./src/**/*", "./build/**/*.json", "./schemas/*.json"],
+    "include": ["./contracts.ts", "./src/**/*", "./build/**/*.json", "./schemas/*.json"],
     "exclude": ["./src/test/*"],
     "references": [
         {

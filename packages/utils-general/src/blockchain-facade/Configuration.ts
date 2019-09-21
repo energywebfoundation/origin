@@ -18,7 +18,6 @@ export interface BlockchainProperties<TMarketLogic = any, TProducingAssetLogic =
     certificateLogicInstance?: TCertificateLogic;
     userLogicInstance?: TUserLogic;
     activeUser?: EthAccount;
-    matcherAccount?: EthAccount;
     privateKey?: string;
 }
 

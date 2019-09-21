@@ -2,18 +2,16 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
-import {
-    migrateUserRegistryContracts,
-    UserLogic,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import { migrateAssetRegistryContracts, AssetContractLookup } from '@energyweb/asset-registry';
+import { UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { AssetContractLookup } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
 import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
-import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '..';
+import { MarketContractLookupJSON, MarketLogicJSON, MarketDBJSON } from '../../contracts';
 
 describe('MarketContractLookup', () => {
     const configFile = JSON.parse(
@@ -59,12 +57,19 @@ describe('MarketContractLookup', () => {
             userContractLookupAddr,
             privateKeyDeployment
         );
-
         const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
+
+        const originContracts = await migrateCertificateRegistryContracts(
+            web3,
+            assetRegistryLookupAddr,
+            privateKeyDeployment
+        );
+        const originLookupAddr = (originContracts as any).OriginContractLookup;
 
         const marketContracts = await migrateMarketRegistryContracts(
             web3,
             assetRegistryLookupAddr,
+            originLookupAddr,
             privateKeyDeployment
         );
 
@@ -113,6 +118,7 @@ describe('MarketContractLookup', () => {
 
         try {
             await marketRegistryContract.init(
+                '0x1000000000000000000000000000000000000005',
                 '0x1000000000000000000000000000000000000005',
                 '0x1000000000000000000000000000000000000005',
                 '0x1000000000000000000000000000000000000005',

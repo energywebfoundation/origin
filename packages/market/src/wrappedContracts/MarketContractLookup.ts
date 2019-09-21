@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
-import MarketContractLookupJSON from '../../build/contracts/MarketContractLookup.json';
+import MarketContractLookupJSON from '../../build/contracts/lightweight/MarketContractLookup.json';
 
 export class MarketContractLookup extends GeneralFunctions {
     web3: Web3;
@@ -14,7 +14,7 @@ export class MarketContractLookup extends GeneralFunctions {
                 : new web3.eth.Contract(
                       MarketContractLookupJSON.abi,
                       (MarketContractLookupJSON as any).networks.length > 0
-                          ? MarketContractLookupJSON.networks[0]
+                          ? (MarketContractLookupJSON as any).networks[0]
                           : null
                   )
         );
@@ -26,7 +26,8 @@ export class MarketContractLookup extends GeneralFunctions {
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
+                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
+                topics: undefined
             };
             if (eventFilter.topics) {
                 filterParams.topics = eventFilter.topics;
@@ -66,12 +67,14 @@ export class MarketContractLookup extends GeneralFunctions {
 
     async init(
         _assetRegistry: string,
+        _originRegistry: string,
         _marketLogicRegistry: string,
         _marketDB: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.init(
             _assetRegistry,
+            _originRegistry,
             _marketLogicRegistry,
             _marketDB
         );
@@ -91,6 +94,10 @@ export class MarketContractLookup extends GeneralFunctions {
 
     async assetContractLookup(txParams?: ISpecialTx) {
         return this.web3Contract.methods.assetContractLookup().call(txParams);
+    }
+
+    async originContractLookup(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.originContractLookup().call(txParams);
     }
 
     async owner(txParams?: ISpecialTx) {

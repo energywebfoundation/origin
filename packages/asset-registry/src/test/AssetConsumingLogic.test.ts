@@ -1,19 +1,3 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
 import { assert } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
@@ -21,10 +5,12 @@ import Web3 from 'web3';
 import {
     UserContractLookup,
     UserLogic,
-    migrateUserRegistryContracts,
     buildRights,
     Role
 } from '@energyweb/user-registry';
+import {
+    migrateUserRegistryContracts
+} from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 import { AssetContractLookup } from '../wrappedContracts/AssetContractLookup';
 import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
@@ -37,7 +23,7 @@ import {
     AssetConsumingRegistryLogicJSON,
     AssetProducingDBJSON,
     AssetProducingRegistryLogicJSON
-} from '..';
+} from '../../contracts';
 import moment from 'moment';
 
 describe('AssetConsumingLogic', () => {
@@ -66,9 +52,6 @@ describe('AssetConsumingLogic', () => {
 
     const assetSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
-
-    const matcherPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
-    const matcher = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
 
     const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
@@ -171,7 +154,6 @@ describe('AssetConsumingLogic', () => {
                 assetSmartmeter,
                 assetOwnerAddress,
                 true,
-                [matcher] as any,
                 'propertiesDocumentHash',
                 'urlString',
                 { privateKey: privateKeyDeployment }
@@ -191,7 +173,6 @@ describe('AssetConsumingLogic', () => {
                 assetSmartmeter,
                 assetOwnerAddress,
                 true,
-                [matcher] as any,
                 'propertiesDocumentHash',
                 'urlString',
                 {
@@ -231,7 +212,6 @@ describe('AssetConsumingLogic', () => {
                 assetSmartmeter,
                 assetOwnerAddress,
                 true,
-                [matcher] as any,
                 'propertiesDocumentHash',
                 'urlString',
                 {
@@ -251,7 +231,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(emptyAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(emptyAsset.assetGeneral.length, 10);
+        assert.equal(emptyAsset.assetGeneral.length, 9);
 
         const ag = emptyAsset.assetGeneral;
 
@@ -260,7 +240,6 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 0);
         assert.isFalse(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, '');
-        assert.deepEqual(ag.matcher, []);
         assert.equal(ag.propertiesDocumentHash, '');
         assert.equal(ag.url, '');
         assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
@@ -272,7 +251,6 @@ describe('AssetConsumingLogic', () => {
             assetSmartmeter,
             assetOwnerAddress,
             true,
-            [matcher] as any,
             'propertiesDocumentHash',
             'urlString',
             { privateKey: privateKeyDeployment }
@@ -300,7 +278,6 @@ describe('AssetConsumingLogic', () => {
                 assetSmartmeter,
                 assetOwnerAddress,
                 true,
-                [matcher] as any,
                 'propertiesDocumentHash',
                 'urlString',
                 { privateKey: privateKeyDeployment }
@@ -323,7 +300,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -332,7 +309,6 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 0);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, '');
-        assert.deepEqual(ag.matcher, [matcher]);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
@@ -345,7 +321,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -354,7 +330,6 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 0);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, '');
-        assert.deepEqual(ag.matcher, [matcher]);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
@@ -407,7 +382,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -416,7 +391,6 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 100);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, [matcher]);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
@@ -472,7 +446,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -481,7 +455,6 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 200);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, [matcher]);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
@@ -522,7 +495,7 @@ describe('AssetConsumingLogic', () => {
             await assetConsumingLogic.setMarketLookupContract(
                 0,
                 '0x1000000000000000000000000000000000000005',
-                { privateKey: matcherPK }
+                { privateKey: assetSmartmeter2PK }
             );
         } catch (ex) {
             assert.include(ex.message, 'sender is not the assetOwner');
@@ -570,7 +543,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -579,51 +552,10 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 200);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, [matcher]);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x1000000000000000000000000000000000000005');
         assert.isFalse(ag.bundled);
-    });
-
-    it('should not add a matcher as admin', async () => {
-        let failed = false;
-
-        try {
-            await assetConsumingLogic.addMatcher(0, '0x1000000000000000000000000000000000000000', {
-                privateKey: privateKeyDeployment
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'addMatcher: not the owner');
-
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should not add a matcher as random user', async () => {
-        let failed = false;
-
-        try {
-            await assetConsumingLogic.addMatcher(0, '0x1000000000000000000000000000000000000000', {
-                privateKey: matcherPK
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'addMatcher: not the owner');
-
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should add a matcher', async () => {
-        await assetConsumingLogic.addMatcher(0, '0x1000000000000000000000000000000000000000', {
-            privateKey: assetOwnerPK
-        });
-        const matcherArray = await assetConsumingLogic.getMatcher(0);
-        assert.deepEqual(matcherArray, [matcher, '0x1000000000000000000000000000000000000000']);
     });
 
     it('should return the updated asset correctly', async () => {
@@ -632,7 +564,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -641,52 +573,10 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 200);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, [matcher, '0x1000000000000000000000000000000000000000']);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x1000000000000000000000000000000000000005');
         assert.isFalse(ag.bundled);
-    });
-
-    it('should not remove a matcher as admin', async () => {
-        let failed = false;
-
-        try {
-            await assetConsumingLogic.removeMatcher(0, matcher, {
-                privateKey: privateKeyDeployment
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'removeMatcher: not the owner');
-
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should not remove a matcher as random user', async () => {
-        let failed = false;
-
-        try {
-            await assetConsumingLogic.removeMatcher(0, matcher, {
-                privateKey: matcherPK
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'removeMatcher: not the owner');
-
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should remove a matcher', async () => {
-        await assetConsumingLogic.removeMatcher(0, matcher, {
-            privateKey: assetOwnerPK
-        });
-        const matcherArray = await assetConsumingLogic.getMatcher(0);
-
-        assert.deepEqual(matcherArray, ['0x1000000000000000000000000000000000000000']);
     });
 
     it('should return the updated asset correctly', async () => {
@@ -695,7 +585,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -704,31 +594,10 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 200);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, ['0x1000000000000000000000000000000000000000']);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x1000000000000000000000000000000000000005');
         assert.isFalse(ag.bundled);
-    });
-
-    it('should not remove a non existing-matcher', async () => {
-        let failed = false;
-        try {
-            await assetConsumingLogic.removeMatcher(0, matcher, {
-                privateKey: assetOwnerPK
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'removeMatcher: address not found');
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should remove remaining matcher', async () => {
-        await assetConsumingLogic.removeMatcher(0, '0x1000000000000000000000000000000000000000', {
-            privateKey: assetOwnerPK
-        });
     });
 
     it('should return the updated asset correctly', async () => {
@@ -737,7 +606,7 @@ describe('AssetConsumingLogic', () => {
         // all the properties are in 1 struct
         assert.equal(deployedAsset.length, 1);
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
+        assert.equal(deployedAsset.assetGeneral.length, 9);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -746,195 +615,9 @@ describe('AssetConsumingLogic', () => {
         assert.equal(ag.lastSmartMeterReadWh, 200);
         assert.isTrue(ag.active);
         assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, []);
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'urlString');
         assert.equal(ag.marketLookupContract, '0x1000000000000000000000000000000000000005');
-        assert.isFalse(ag.bundled);
-    });
-
-    it('should add more matcher', async () => {
-        for (let i = 0; i < 10; i++) {
-            await assetConsumingLogic.addMatcher(
-                0,
-                '0x100000000000000000000000000000000000000' + i,
-                { privateKey: assetOwnerPK }
-            );
-        }
-
-        const matcherArray = await assetConsumingLogic.getMatcher(0);
-        assert.deepEqual(matcherArray, [
-            '0x1000000000000000000000000000000000000000',
-            '0x1000000000000000000000000000000000000001',
-            '0x1000000000000000000000000000000000000002',
-            '0x1000000000000000000000000000000000000003',
-            '0x1000000000000000000000000000000000000004',
-            '0x1000000000000000000000000000000000000005',
-            '0x1000000000000000000000000000000000000006',
-            '0x1000000000000000000000000000000000000007',
-            '0x1000000000000000000000000000000000000008',
-            '0x1000000000000000000000000000000000000009'
-        ]);
-    });
-
-    it('should return the updated asset correctly', async () => {
-        const deployedAsset = await assetConsumingLogic.getAssetById(0);
-
-        // all the properties are in 1 struct
-        assert.equal(deployedAsset.length, 1);
-        // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
-
-        const ag = deployedAsset.assetGeneral;
-
-        assert.equal(ag.smartMeter, assetSmartmeter);
-        assert.equal(ag.owner, assetOwnerAddress);
-        assert.equal(ag.lastSmartMeterReadWh, 200);
-        assert.isTrue(ag.active);
-        assert.equal(ag.lastSmartMeterReadFileHash, 'newMeterReadFileHash');
-        assert.deepEqual(ag.matcher, [
-            '0x1000000000000000000000000000000000000000',
-            '0x1000000000000000000000000000000000000001',
-            '0x1000000000000000000000000000000000000002',
-            '0x1000000000000000000000000000000000000003',
-            '0x1000000000000000000000000000000000000004',
-            '0x1000000000000000000000000000000000000005',
-            '0x1000000000000000000000000000000000000006',
-            '0x1000000000000000000000000000000000000007',
-            '0x1000000000000000000000000000000000000008',
-            '0x1000000000000000000000000000000000000009'
-        ]);
-        assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(ag.url, 'urlString');
-        assert.equal(ag.marketLookupContract, '0x1000000000000000000000000000000000000005');
-        assert.isFalse(ag.bundled);
-    });
-
-    it('should not add a 10th matcher', async () => {
-        let failed = false;
-        try {
-            await assetConsumingLogic.addMatcher(0, '0x1000000000000000000000000000000000000010', {
-                privateKey: assetOwnerPK
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'addMatcher: too many matcher already');
-
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should remove all 10 matcher', async () => {
-        for (let i = 9; i >= 0; i--) {
-            await assetConsumingLogic.removeMatcher(
-                0,
-                '0x100000000000000000000000000000000000000' + i,
-                { privateKey: assetOwnerPK }
-            );
-        }
-
-        const matcherArray = await assetConsumingLogic.getMatcher(0);
-        assert.deepEqual(matcherArray, []);
-    });
-
-    it('should not onboard assets with too many matcher', async () => {
-        let failed = false;
-        try {
-            await assetConsumingLogic.createAsset(
-                assetSmartmeter,
-                assetOwnerAddress,
-                true,
-                [
-                    '0x1000000000000000000000000000000000000000',
-                    '0x1000000000000000000000000000000000000001',
-                    '0x1000000000000000000000000000000000000002',
-                    '0x1000000000000000000000000000000000000003',
-                    '0x1000000000000000000000000000000000000004',
-                    '0x1000000000000000000000000000000000000005',
-                    '0x1000000000000000000000000000000000000006',
-                    '0x1000000000000000000000000000000000000007',
-                    '0x1000000000000000000000000000000000000008',
-                    '0x1000000000000000000000000000000000000009',
-                    '0x1000000000000000000000000000000000000010'
-                ] as any,
-                'propertiesDocumentHash',
-                'urlString',
-                { privateKey: privateKeyDeployment }
-            );
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'addMatcher: too many matcher already');
-        }
-        assert.isTrue(failed);
-    });
-
-    it('should onboard assets with 10 matcher', async () => {
-        const tx = await assetConsumingLogic.createAsset(
-            assetSmartMeter2,
-            assetOwnerAddress,
-            true,
-            [
-                '0x1000000000000000000000000000000000000000',
-                '0x1000000000000000000000000000000000000001',
-                '0x1000000000000000000000000000000000000002',
-                '0x1000000000000000000000000000000000000003',
-                '0x1000000000000000000000000000000000000004',
-                '0x1000000000000000000000000000000000000005',
-                '0x1000000000000000000000000000000000000006',
-                '0x1000000000000000000000000000000000000007',
-                '0x1000000000000000000000000000000000000008',
-                '0x1000000000000000000000000000000000000009'
-            ] as any,
-            'propertiesDocumentHash#2',
-            'urlString#2',
-            { privateKey: privateKeyDeployment }
-        );
-
-        const event = (await assetConsumingLogic.getAllLogAssetCreatedEvents({
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        }))[0];
-
-        assert.equal(event.event, 'LogAssetCreated');
-        assert.deepEqual(event.returnValues, {
-            0: accountDeployment,
-            1: '1',
-            _sender: accountDeployment,
-            _assetId: '1'
-        });
-    });
-
-    it('should return the updated asset correctly', async () => {
-        const deployedAsset = await assetConsumingLogic.getAssetById(1);
-
-        // all the properties are in 1 struct
-        assert.equal(deployedAsset.length, 1);
-        // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 10);
-
-        const ag = deployedAsset.assetGeneral;
-
-        assert.equal(ag.smartMeter, assetSmartMeter2);
-        assert.equal(ag.owner, assetOwnerAddress);
-        assert.equal(ag.lastSmartMeterReadWh, 0);
-        assert.isTrue(ag.active);
-        assert.equal(ag.lastSmartMeterReadFileHash, '');
-        assert.deepEqual(ag.matcher, [
-            '0x1000000000000000000000000000000000000000',
-            '0x1000000000000000000000000000000000000001',
-            '0x1000000000000000000000000000000000000002',
-            '0x1000000000000000000000000000000000000003',
-            '0x1000000000000000000000000000000000000004',
-            '0x1000000000000000000000000000000000000005',
-            '0x1000000000000000000000000000000000000006',
-            '0x1000000000000000000000000000000000000007',
-            '0x1000000000000000000000000000000000000008',
-            '0x1000000000000000000000000000000000000009'
-        ]);
-        assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash#2');
-        assert.equal(ag.url, 'urlString#2');
-        assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
         assert.isFalse(ag.bundled);
     });
 });

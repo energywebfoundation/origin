@@ -3,7 +3,7 @@ import { Tx } from 'web3/eth/types';
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt, Logs } from 'web3/types';
 
-import Web3 = require('web3');
+import Web3 from 'web3';
 
 export declare interface ISpecialTx extends Tx {
     privateKey: string;

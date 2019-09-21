@@ -21,20 +21,9 @@ import "../../contracts/Origin/EnergyCertificateBundleDB.sol";
 
 interface EnergyCertificateBundleInterface {
 
-    /// @notice adds an escrow for an asset
-    /// @param _bundleId the id of a bundle
-    /// @param _escrow the escrow addres
-    function addEscrowForAsset(uint _bundleId, address _escrow) external;
-
     /// @notice retires a bundle
     /// @param _bundleId the id of a bundle
     function retireBundle(uint _bundleId) external;
-
-    /// @notice removes an escrow address for a bundle
-    /// @param _bundleId the id of a bundle
-    /// @param _escrow the escrow for a bundle
-    function removeEscrow(uint _bundleId, address _escrow) external;
-
 
     /// @notice gets a bundle struct
     /// @param _bundleId the id of a bundle

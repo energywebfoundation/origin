@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import AssetContractLookupJSON from '../../build/contracts/AssetContractLookup.json';
+import AssetContractLookupJSON from '../../build/contracts/lightweight/AssetContractLookup.json';
 
 export class AssetContractLookup extends GeneralFunctions {
     web3: Web3;
@@ -13,7 +13,7 @@ export class AssetContractLookup extends GeneralFunctions {
                 : new web3.eth.Contract(
                       AssetContractLookupJSON.abi,
                       (AssetContractLookupJSON as any).networks.length > 0
-                          ? AssetContractLookupJSON.networks[0]
+                          ? (AssetContractLookupJSON as any).networks[0]
                           : null
                   )
         );
@@ -25,7 +25,8 @@ export class AssetContractLookup extends GeneralFunctions {
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
+                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
+                topics: undefined
             };
             if (eventFilter.topics) {
                 filterParams.topics = eventFilter.topics;
@@ -89,10 +90,6 @@ export class AssetContractLookup extends GeneralFunctions {
 
     async userRegistry(txParams?: SpecialTx) {
         return await this.web3Contract.methods.userRegistry().call(txParams);
-    }
-
-    async maxMatcherPerAsset(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.maxMatcherPerAsset().call(txParams);
     }
 
     async owner(txParams?: SpecialTx) {

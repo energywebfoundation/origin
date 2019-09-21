@@ -48,13 +48,6 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
         external functions
     */
 
-    /// @notice Adds a new escrow address to an existing certificate
-    /// @param _entityId the entity-id
-    /// @param _escrow The new escrow-address
-    function addEscrowForAsset(uint _entityId, address _escrow) external onlyOwner {
-        energyList[_entityId].tradableEntity.escrow.push(_escrow);
-    }
-
     /*
     /// @ntoice
     function setOwnerToOperators(address _company, address _escrow, bool _allowed) external onlyOwner {
@@ -87,19 +80,11 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
             forSale: false,
             acceptedToken: _acceptedToken,
             onChainDirectPurchasePrice: _onChainDirectPurchasePrice,
-            escrow: new address[](0),
             approvedAddress: address(0x0)
         });
         energyList.push(Energy({tradableEntity: te}));
         _entityId = energyList.length>0?energyList.length-1:0;
         tokenAmountMapping[_owner]++;
-    }
-
-    /// @notice sets a new array of escrows for an entity
-    /// @param _entityId the id of the entity
-    /// @param _escrow the array with escrows
-    function setEscrow(uint _entityId, address[] calldata _escrow) external onlyOwner {
-        energyList[_entityId].tradableEntity.escrow = _escrow;
     }
 
     /// @notice sets the owner of a TradableEntity and adds an address for approval

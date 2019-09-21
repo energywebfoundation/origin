@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import EnergyCertificateBundleDBJSON from '../../build/contracts/EnergyCertificateBundleDB.json';
+import EnergyCertificateBundleDBJSON from '../../build/contracts/lightweight/EnergyCertificateBundleDB.json';
 
 export class EnergyCertificateBundleDB extends GeneralFunctions {
     web3: Web3;
@@ -65,31 +65,6 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
 
     async getApproved(_entityId: number, txParams?: SpecialTx) {
         return await this.web3Contract.methods.getApproved(_entityId).call(txParams);
-    }
-
-    async addEscrowForEntity(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForEntity(_entityId, _escrow);
-
-        return await this.send(method, txParams);
-    }
-
-    async setTradableEntityEscrowExternal(
-        _entityId: number,
-        _escrow: string[],
-        txParams?: SpecialTx
-    ) {
-        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(
-            _entityId,
-            _escrow
-        );
-
-        return await this.send(method, txParams);
-    }
-
-    async getTradableEntityEscrowLength(_entityId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods
-            .getTradableEntityEscrowLength(_entityId)
-            .call(txParams);
     }
 
     async getBundleListLength(txParams?: SpecialTx) {
@@ -261,12 +236,6 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
         return await this.web3Contract.methods
             .getCertificateChildrenLength(_certificateId)
             .call(txParams);
-    }
-
-    async removeEscrow(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeEscrow(_entityId, _escrow);
-
-        return await this.send(method, txParams);
     }
 
     async publishForSale(

@@ -148,7 +148,6 @@ usage: command to onboard a new consuming asset
 * <code>smartMeter</code>: ethereum address of the used smart meter
 * <code>smartMeterPK</code>: the private Key of the smart meter (needed for simulating meterreadings)
 * <code>owner</code>: the owner of an asset (has to have the asset manager rights)
-* <code>matcher</code>: the matcher authorised for the asset (must have matcher rights)
 * <code>operationalSince</code>: the unix-timestamp when the asset went into operation mode
 * <code>capacityWh</code>: maximal capcity of an asset
 * <code>lastSmartMeterReadWh</code>: the last meterreading, should be 0
@@ -178,7 +177,6 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
         "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
         "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-        "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
         "operationalSince": "1529971200",
         "capacityWh": 5000,
         "lastSmartMeterReadWh": 0,
@@ -204,7 +202,6 @@ usage: command to onboard a new producing asset
 * <code>smartMeter</code>: ethereum address of the smart meter
 * <code>smartMeterPK</code>: private key of the ethereum address (needed to simuate meterreading)
 * <code>owner</code>: ethereum address of the owner of the asset, has to have to asset manager rights
-* <code>matcher</code>: the matcher authorised for the asset (must have matcher rights)
 * <code>operationalSince</code>: UNIX-timestamp when the asset entered service
 * <code>capacityWh</code>: capacity of the asset
 * <code>lastSmartMeterReadWh</code>: last meterreading in Wh
@@ -246,7 +243,6 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
         "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
         "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-        "matcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e",
         "operationalSince": 1514764800,
         "capacityWh": 10000,
         "lastSmartMeterReadWh": 0,
@@ -649,7 +645,6 @@ usage: command to make an agreement - pairing a demand with an appropriate suppl
 * <code>currentPeriod</code>: current period of the contract
 * <code>demandId</code>: ID number of the demand that is being addressed
 * <code>supplyId</code>:ID number of the supply that is paired with the demand
-* <code>allowedMatcher</code>: address of the matcher allowed to pair the demand and supply
 
 #### example
 We want to make an agreement between the demand<code>0</code> and supply<code>0</code>. The agreed price between the two parties is set at <code>10 USD</code> with the timeframe of the contract being <code>hourly</code> for a period of <code>10</code>(hours). The current period and watt-hour readings are stored as <code>0</code> marking the genesis of the agreement. The trader with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is creating the agreement. Although the supplier must approve the agreement to actually confirm it.
@@ -669,8 +664,7 @@ We want to make an agreement between the demand<code>0</code> and supply<code>0<
       "currentWh": 0,
       "currentPeriod": 0,
       "demandId": 0,
-      "supplyId": 0,
-      "allowedMatcher": "0x585cc5c7829b1fd303ef5c019ed23815a205a59e"
+      "supplyId": 0
     }
 }
 </code>

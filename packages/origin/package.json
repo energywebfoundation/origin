@@ -22,11 +22,13 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn compile && yarn build-ts",
+    "build": "yarn build:static && yarn build-ts",
+    "build:static": "yarn compile && yarn extractABI",
     "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
-    "clean": "rm -rf dist build db.json",
+    "clean": "rm -rf dist dist-shakeable build db.json",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
+    "extractABI": "node ./scripts/extractABI.js",
     "flatten-contracts": "truffle-flattener contracts/Origin/* > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
     "lint": "solium -d contracts",
     "lint-fix": "solium -d contracts --fix",
@@ -34,8 +36,7 @@
     "start-test-backend": "rm -rf db.json && node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
-    "build:static": "yarn compile"
+    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\""
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
@@ -48,14 +49,14 @@
   "devDependencies": {
     "@energyweb/erc-test-contracts": "1.1.0",
     "@energyweb/utils-testbackend": "1.1.0",
-    "@types/web3": "1.0.14",
+    "@types/web3": "1.0.19",
     "axios": "0.19.0",
-    "ethlint": "1.2.4",
+    "ethlint": "1.2.5",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.4.4",
     "moment": "2.24.0",
     "truffle": "5.0.18",
-    "truffle-flattener": "1.3.0",
+    "truffle-flattener": "1.4.2",
     "websocket": "1.0.28"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",

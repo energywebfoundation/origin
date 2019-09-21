@@ -1,25 +1,13 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
+import "@energyweb/origin/contracts/Origin/CertificateLogic.sol";
+import "@energyweb/origin/contracts/Origin/TradableEntityContract.sol";
+import "@energyweb/origin/contracts/Interfaces/TradableEntityDBInterface.sol";
+import "@energyweb/origin/contracts/Interfaces/TradableEntityInterface.sol";
+import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol";
 import "../../contracts/Trading/MarketDB.sol";
 import "../../contracts/Trading/AgreementLogic.sol";
-import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol";
 
 /// @title The logic contract for the AgreementDB of Origin list
 contract MarketLogic is AgreementLogic {
@@ -27,13 +15,15 @@ contract MarketLogic is AgreementLogic {
     event createdNewSupply(address _sender, uint indexed _supplyId);
     event DemandStatusChanged(address _sender, uint indexed _demandId, uint16 indexed _status);
     event DemandUpdated(uint indexed _demandId);
+    event DemandPartiallyFilled(uint indexed _demandId, uint indexed _entityId, uint indexed _amount);
 
     /// @notice constructor
     constructor(
         AssetContractLookupInterface _assetContractLookup,
+        OriginContractLookupInterface _originContractLookup,
         MarketContractLookupInterface _marketContractLookup
     )
-        AgreementLogic(_assetContractLookup,_marketContractLookup)
+        AgreementLogic(_assetContractLookup, _originContractLookup, _marketContractLookup)
         public
     {
 
@@ -87,6 +77,30 @@ contract MarketLogic is AgreementLogic {
         db.updateDemand(_demandId, _propertiesDocumentHash, _documentDBURL);
 
         emit DemandUpdated(_demandId);
+    }
+
+    /// @notice Matches a tradable entity to a demand
+	/// @dev will return an event with the event-Id
+	/// @param _demandId index of the demand in the allDemands-array
+    /// @param _entityId ID of the tradable entity
+    function fillDemand(
+        uint _demandId,
+        uint _entityId
+    )
+        external
+        onlyRole(RoleManagement.Role.Matcher)
+    {
+        MarketDB.Demand memory demand = db.getDemand(_demandId);
+        require(demand.status == MarketDB.DemandStatus.ACTIVE, "demand should be in ACTIVE state");
+
+        address originLogicRegistry = originContractLookup.originLogicRegistry();
+
+        TradableEntityContract.TradableEntity memory te = TradableEntityDB(originLogicRegistry).getTradableEntity(_entityId);
+        CertificateLogic(originLogicRegistry).transferFrom(
+            te.owner, demand.demandOwner, _entityId
+        );
+
+        emit DemandPartiallyFilled(_demandId, _entityId, te.powerInW);
     }
 
 	/// @notice Function to create a supply
@@ -156,7 +170,7 @@ contract MarketLogic is AgreementLogic {
         _assetId = supply.assetId;
     }
 
-    function changeDemandStatus(uint _demandId, MarketDB.DemandStatus _status) 
+    function changeDemandStatus(uint _demandId, MarketDB.DemandStatus _status)
         public
         onlyRole(RoleManagement.Role.Trader)
         returns (MarketDB.DemandStatus)
@@ -169,11 +183,11 @@ contract MarketLogic is AgreementLogic {
         }
         if (demand.status == MarketDB.DemandStatus.ARCHIVED) {
             return MarketDB.DemandStatus.ARCHIVED;
-        } 
+        }
 
         MarketDB.DemandStatus status = db.setDemandStatus(_demandId, _status);
         emit DemandStatusChanged(msg.sender, _demandId, uint16(status));
-        
+
         return status;
     }
 }

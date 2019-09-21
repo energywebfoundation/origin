@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
 import Web3 from 'web3';
-import AssetProducingRegistryLogicJSON from '../../build/contracts/AssetProducingRegistryLogic.json';
+import AssetProducingRegistryLogicJSON from '../../build/contracts/lightweight/AssetProducingRegistryLogic.json';
 import moment from 'moment';
 
 export class AssetProducingRegistryLogic extends GeneralFunctions {
@@ -190,17 +190,10 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         return await this.web3Contract.methods.db().call(txParams);
     }
 
-    async addMatcher(_assetId: number, _new: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addMatcher(_assetId, _new);
-
-        return await this.send(method, txParams);
-    }
-
     async createAsset(
         _smartMeter: string,
         _owner: string,
         _active: boolean,
-        _matcher: string[],
         _propertiesDocumentHash: string,
         _url: string,
         _numOwnerChanges: number,
@@ -210,7 +203,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
             _smartMeter,
             _owner,
             _active,
-            _matcher,
             _propertiesDocumentHash,
             _url,
             _numOwnerChanges
@@ -273,12 +265,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async removeMatcher(_assetId: number, _remove: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeMatcher(_assetId, _remove);
-
-        return await this.send(method, txParams);
-    }
-
     async getAssetGeneral(_assetId: number, txParams?: SpecialTx) {
         return await this.web3Contract.methods.getAssetGeneral(_assetId).call(txParams);
     }
@@ -309,9 +295,5 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.init(_dbAddress, param1);
 
         return await this.send(method, txParams);
-    }
-
-    async getMatcher(_assetId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getMatcher(_assetId).call(txParams);
     }
 }

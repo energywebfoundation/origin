@@ -24,6 +24,7 @@ import "@energyweb/asset-registry/contracts/Interfaces/AssetGeneralInterface.sol
 import "@energyweb/asset-registry/contracts/Interfaces/AssetProducingInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetConsumingInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
+import "@energyweb/origin/contracts/Interfaces/OriginContractLookupInterface.sol";
 import "../../contracts/Interfaces/MarketContractLookupInterface.sol";
 
 contract AgreementLogic is RoleManagement, Updatable {
@@ -35,16 +36,19 @@ contract AgreementLogic is RoleManagement, Updatable {
     MarketDB public db;
 
     AssetContractLookupInterface public assetContractLookup;
+    OriginContractLookupInterface public originContractLookup;
 
     /// @notice constructor
     constructor(
         AssetContractLookupInterface _assetContractLookup,
+        OriginContractLookupInterface _originContractLookup,
         MarketContractLookupInterface _marketContractLookup
     )
         RoleManagement(UserContractLookupInterface(_assetContractLookup.userRegistry()), address(_marketContractLookup))
         public
     {
         assetContractLookup = _assetContractLookup;
+        originContractLookup = _originContractLookup;
     }
 
 	/// @notice Function to create a agreement
@@ -56,8 +60,6 @@ contract AgreementLogic is RoleManagement, Updatable {
     function createAgreement(
         string calldata _propertiesDocumentHash,
         string calldata _documentDBURL,
-        string calldata _matcherPropertiesDocumentHash,
-        string calldata _matcherDBURL,
         uint _demandId,
         uint _supplyId
     )
@@ -72,13 +74,9 @@ contract AgreementLogic is RoleManagement, Updatable {
         uint agreementId = db.createAgreementDB(
             _propertiesDocumentHash,
             _documentDBURL,
-            _matcherPropertiesDocumentHash,
-            _matcherDBURL,
             _demandId,
             _supplyId
         );
-
-        setAgreementMatcher(agreementId);
 
         if(msg.sender == demand.demandOwner){
             approveAgreementDemand(agreementId);
@@ -125,25 +123,19 @@ contract AgreementLogic is RoleManagement, Updatable {
         returns (
             string memory _propertiesDocumentHash,
             string memory _documentDBURL,
-            string memory _matcherPropertiesDocumentHash,
-            string memory _matcherDBURL,
             uint _demandId,
             uint _supplyId,
             bool _approvedBySupplyOwner,
-            bool _approvedByDemandOwner,
-            address[] memory _allowedMatcher
+            bool _approvedByDemandOwner
         )
     {
         MarketDB.Agreement memory agreement = db.getAgreementDB(_agreementId);
         _propertiesDocumentHash = agreement.propertiesDocumentHash;
         _documentDBURL = agreement.documentDBURL;
-        _matcherPropertiesDocumentHash = agreement.matcherPropertiesDocumentHash;
-        _matcherDBURL = agreement.matcherDBURL;
         _demandId = agreement.demandId;
         _supplyId = agreement.supplyId;
         _approvedBySupplyOwner = agreement.approvedBySupplyOwner;
         _approvedByDemandOwner = agreement.approvedByDemandOwner;
-        _allowedMatcher = agreement.allowedMatcher;
     }
 
     function getAgreementStruct(uint _agreementId)
@@ -183,57 +175,5 @@ contract AgreementLogic is RoleManagement, Updatable {
         if(db.approveAgreementSupplyDB(_agreementId)){
             emit LogAgreementFullySigned(_agreementId, agreement.demandId, agreement.supplyId);
         }
-    }
-
-    /// @notice sets the matcher for an agreement
-    /// @dev can only be called as long as there are no matchers set
-    /// @param _agreementId the agreement-Id
-    function setAgreementMatcher(uint _agreementId)
-        internal
-    {
-        MarketDB.Agreement memory agreement = db.getAgreementDB(_agreementId);
-
-        assert(agreement.allowedMatcher.length == 0);
-        MarketDB.Supply memory supply = db.getSupply(agreement.supplyId);
-
-        (,,,,,address[] memory matcherArray,,,,) = AssetGeneralInterface(
-            assetContractLookup.assetProducingRegistry()
-        ).getAssetGeneral(supply.assetId);
-
-        db.setAgreementMatcher(_agreementId, matcherArray);
-    }
-
-    /// @notice allows matcher to change the matcher-properties for an agreement
-    /// @param _agreementId the agreement-ID
-    /// @param _matcherPropertiesDocumentHash document-hash of the matcher properties
-    /// @param _matcherDBURL db-url of the document-hash
-    function setMatcherProperties(
-        uint _agreementId,
-        string calldata _matcherPropertiesDocumentHash,
-        string calldata _matcherDBURL
-    )
-        external
-    {
-        MarketDB.Agreement memory agreement = db.getAgreementDB(_agreementId);
-
-        require(agreement.approvedBySupplyOwner, "supply owner has not agreed yet");
-        require(agreement.approvedByDemandOwner, "demand owner has not agreed yet");
-        address[] memory agreementMatcher = agreement.allowedMatcher;
-
-        bool foundMatcher = false;
-
-        // we have to check all the matchers
-        for(uint i = 0; i < agreementMatcher.length; i++){
-
-            if ( agreementMatcher[i] == msg.sender) {
-                foundMatcher = true;
-                break;
-            }
-        }
-
-        require(foundMatcher, "sender is not in matcher array");
-
-        db.setMatcherPropertiesAndURL(_agreementId, _matcherPropertiesDocumentHash, _matcherDBURL);
-    
     }
 }

@@ -5,22 +5,15 @@ import * as Winston from 'winston';
 import {
     AssetConsumingRegistryLogic,
     AssetProducingRegistryLogic,
-    migrateAssetRegistryContracts,
     ProducingAsset
 } from '@energyweb/asset-registry';
-import { MarketLogic, migrateMarketRegistryContracts, Demand } from '@energyweb/market';
-import {
-    CertificateLogic,
-    migrateCertificateRegistryContracts,
-    Certificate
-} from '@energyweb/origin';
-import {
-    buildRights,
-    migrateUserRegistryContracts,
-    Role,
-    User,
-    UserLogic
-} from '@energyweb/user-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { MarketLogic, Demand } from '@energyweb/market';
+import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
+import { CertificateLogic, Certificate } from '@energyweb/origin';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 
 import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
 
@@ -91,6 +84,7 @@ export class Demo {
         const marketContracts: any = await migrateMarketRegistryContracts(
             this.web3,
             assetContracts.AssetContractLookup,
+            originContracts.OriginContractLookup,
             this.adminPK
         );
 
@@ -210,8 +204,7 @@ export class Demo {
             lastSmartMeterReadFileHash: '',
             propertiesDocumentHash: null,
             url: null,
-            maxOwnerChanges: 1000,
-            matcher: []
+            maxOwnerChanges: 1000
         };
 
         const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {

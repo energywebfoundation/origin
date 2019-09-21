@@ -43,9 +43,8 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@types/node": "9.6.28",
-    "@types/web3": "1.0.14",
-    "ethlint": "1.2.4",
+    "@types/web3": "1.0.19",
+    "ethlint": "1.2.5",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.6.0",
     "truffle": "5.0.18"

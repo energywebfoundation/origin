@@ -1,6 +1,6 @@
 import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
-import AssetConsumingDBJSON from '../../build/contracts/AssetConsumingDB.json';
+import AssetConsumingDBJSON from '../../build/contracts/lightweight/AssetConsumingDB.json';
 
 export class AssetConsumingDB extends GeneralFunctions {
     web3: Web3;
@@ -101,30 +101,6 @@ export class AssetConsumingDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async addMatcher(_assetId: number, _matcher: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addMatcher(_assetId, _matcher);
-
-        return await this.send(method, txParams);
-    }
-
-    async setMatcherExternal(_assetId: number, _matcher: string[], txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setMatcherExternal(_assetId, _matcher);
-
-        return await this.send(method, txParams);
-    }
-
-    async removeMatcherExternal(_assetId: number, _removal: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeMatcherExternal(_assetId, _removal);
-
-        return await this.send(method, txParams);
-    }
-
-    async setMatcher(_assetId: number, _matcher: string[], txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setMatcher(_assetId, _matcher);
-
-        return await this.send(method, txParams);
-    }
-
     async setLastSmartMeterReadFileHash(
         _assetId: number,
         _lastSmartMeterReadFileHash: string,
@@ -180,12 +156,6 @@ export class AssetConsumingDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async removeMatcher(_assetId: number, _removal: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeMatcher(_assetId, _removal);
-
-        return await this.send(method, txParams);
-    }
-
     async getAssetGeneral(_assetId: number, txParams?: SpecialTx) {
         return await this.web3Contract.methods.getAssetGeneral(_assetId).call(txParams);
     }
@@ -226,9 +196,5 @@ export class AssetConsumingDB extends GeneralFunctions {
         return await this.web3Contract.methods
             .getLastSmartMeterReadFileHash(_assetId)
             .call(txParams);
-    }
-
-    async getMatcher(_assetId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods.getMatcher(_assetId).call(txParams);
     }
 }

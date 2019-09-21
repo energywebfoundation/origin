@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
-import RoleManagementJSON from '../../build/contracts/RoleManagement.json';
+import RoleManagementJSON from '../../build/contracts/lightweight/RoleManagement.json';
 
 export enum Role {
     UserAdmin,

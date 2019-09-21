@@ -1,7 +1,7 @@
 import { SpecialTx, SearchLog } from './GeneralFunctions';
 import Web3 from 'web3';
 
-import EnergyCertificateBundleLogicJSON from '../../build/contracts/EnergyCertificateBundleLogic.json';
+import EnergyCertificateBundleLogicJSON from '../../build/contracts/lightweight/EnergyCertificateBundleLogic.json';
 import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
@@ -80,46 +80,6 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         }
 
         return await this.web3Contract.getPastEvents('LogBundleOwnerChanged', filterParams);
-    }
-
-    async getAllLogEscrowRemovedEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogEscrowRemoved', filterParams);
-    }
-
-    async getAllLogEscrowAddedEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogEscrowAdded', filterParams);
     }
 
     async getAllTransferEvents(eventFilter?: SearchLog) {
@@ -235,24 +195,12 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async addEscrowForEntity(_certificateId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForEntity(_certificateId, _escrow);
-
-        return await this.send(method, txParams);
-    }
-
     async getBundleListLength(txParams?: SpecialTx) {
         return await this.web3Contract.methods.getBundleListLength().call(txParams);
     }
 
     async update(_newLogic: string, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.update(_newLogic);
-
-        return await this.send(method, txParams);
-    }
-
-    async addEscrowForAsset(_bundleId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForAsset(_bundleId, _escrow);
 
         return await this.send(method, txParams);
     }
@@ -307,10 +255,6 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.web3Contract.methods.assetContractLookup().call(txParams);
     }
 
-    async checkMatcher(_matcher: string[], txParams?: SpecialTx) {
-        return await this.web3Contract.methods.checkMatcher(_matcher).call(txParams);
-    }
-
     async balanceOf(_owner: string, txParams?: SpecialTx) {
         return await this.web3Contract.methods.balanceOf(_owner).call(txParams);
     }
@@ -347,12 +291,6 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
 
     async isRole(_role: number, _caller: string, txParams?: SpecialTx) {
         return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
-    }
-
-    async removeEscrow(_bundleId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeEscrow(_bundleId, _escrow);
-
-        return await this.send(method, txParams);
     }
 
     async publishForSale(_certificateId: number, txParams?: SpecialTx) {
