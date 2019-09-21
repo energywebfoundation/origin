@@ -44,8 +44,8 @@
     },
     "devDependencies": {
         "@energyweb/utils-testbackend": "1.1.0",
-        "@fluffy-spoon/substitute": "^1.89.0",
-        "@types/dotenv": "^6.1.1",
+        "@fluffy-spoon/substitute": "1.89.0",
+        "@types/dotenv": "6.1.1",
         "@types/web3": "1.0.14",
         "ganache-cli": "6.6.0"
     },
