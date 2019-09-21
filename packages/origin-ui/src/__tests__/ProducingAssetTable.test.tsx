@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { createMemoryHistory } from 'history';
 import { createRootReducer } from '../reducers';
 import { ProducingAssetTable } from '../components/ProducingAssetTable';
 import { producingAssetCreatedOrUpdated } from '../features/producingAssets/actions';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { dataTestSelector } from '../utils/Helper';
+import createSagaMiddleware from 'redux-saga';
+import { routerMiddleware } from 'connected-react-router';
+import sagas from '../features/sagas';
 
 const flushPromises = () => new Promise(setImmediate);
 
@@ -15,8 +18,15 @@ jest.mock('@energyweb/user-registry', () => {
     return {
         User: {
             Entity: class Entity {
+                id: string;
+
+                constructor(id: string) {
+                    this.id = id;
+                }
+
                 sync() {
                     return {
+                        id: this.id,
                         organization: 'Example Organization'
                     };
                 }
@@ -25,7 +35,7 @@ jest.mock('@energyweb/user-registry', () => {
     };
 });
 
-describe('ProducingAssetTable', () => {
+describe.only('ProducingAssetTable', () => {
     afterAll(() => {
         jest.unmock('@energyweb/user-registry');
     });
@@ -33,7 +43,15 @@ describe('ProducingAssetTable', () => {
     it('correctly renders and search works', async () => {
         const history = createMemoryHistory();
 
-        const store = createStore(createRootReducer(history));
+        const sagaMiddleware = createSagaMiddleware();
+
+        const middleware = applyMiddleware(routerMiddleware(history), sagaMiddleware);
+
+        const store = createStore(createRootReducer(history), middleware);
+
+        Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
+            sagaMiddleware.run(sagas[saga]);
+        });
 
         const producingAssets: Array<Partial<ProducingAsset.Entity>> = [
             {
