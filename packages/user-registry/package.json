@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/web3": "1.0.14",
-    "ethlint": "1.2.4",
+    "ethlint": "1.2.5",
     "fs-extra": "8.0.1",
     "ganache-cli": "6.1.8",
     "truffle": "5.0.18"
