@@ -158,6 +158,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     /// @notice claims a set of certificates
     /// @param _idArray the ids of the certificates to be claimed
     function claimCertificateBulk(uint[] calldata _idArray) external {
+        require(_idArray.length <= 100, "maximum number of certificates to claim in one bulk tx is 100");
         for (uint i = 0; i < _idArray.length; i++) {
             retireCertificateInternal(_idArray[i], msg.sender);
         }
