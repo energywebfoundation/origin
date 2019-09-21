@@ -18,7 +18,6 @@ import {
     getBaseURL,
     getCertificates,
     getConfiguration,
-    getCurrentUser,
     getProducingAssets
 } from '../features/selectors';
 import { IStoreState } from '../types';
@@ -38,6 +37,7 @@ import {
     PaginatedLoaderFilteredSorted
 } from './Table/PaginatedLoaderFilteredSorted';
 import { TableMaterial } from './Table/TableMaterial';
+import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -51,6 +51,7 @@ interface IStateProps {
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
     currentUser: User.Entity;
+    users: User.Entity[];
     baseURL: string;
 }
 
@@ -124,7 +125,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async componentDidUpdate(newProps: Props) {
-        if (newProps.certificates !== this.props.certificates) {
+        if (
+            newProps.certificates !== this.props.certificates ||
+            newProps.users.length !== this.props.users.length
+        ) {
             await this.loadPage(1);
         }
     }
@@ -209,8 +213,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate,
                 producingAsset,
                 assetTypeLabel: producingAsset.offChainProperties.assetType,
-                certificateOwner: await new User.Entity(certificate.owner, this.props
-                    .configuration as any).sync(),
+                certificateOwner: getUserById(this.props.users, certificate.owner),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
@@ -776,6 +779,7 @@ export const CertificateTable = connect(
         certificates: ownProps.certificates || getCertificates(state),
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),
-        producingAssets: getProducingAssets(state)
+        producingAssets: getProducingAssets(state),
+        users: getUsers(state)
     })
 )(CertificateTableClass);

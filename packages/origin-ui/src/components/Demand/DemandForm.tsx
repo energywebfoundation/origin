@@ -22,7 +22,7 @@ import {
 import { getEnumValues } from '../../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../../types';
-import { getCurrentUser, getConfiguration, getBaseURL } from '../../features/selectors';
+import { getConfiguration, getBaseURL } from '../../features/selectors';
 import './DemandForm.scss';
 import {
     MultiSelectAutocomplete,
@@ -39,6 +39,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getDemandViewLink } from '../../utils/routing';
 import { FormikDatePicker } from '../FormikDatePicker';
 import { AssetTypeSelector } from '../AssetTypeSelector';
+import { getCurrentUser } from '../../features/users/selectors';
 
 export function calculateTotalEnergyDemand(
     startDate: Moment,

@@ -24,9 +24,10 @@ import { Configuration } from '@energyweb/utils-general';
 import './Header.scss';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCurrentUser, getConfiguration } from '../features/selectors';
+import { getBaseURL, getConfiguration } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 import { AccountDetailsModal } from '../elements/Modal/AccountDetailsModal';
+import { getCurrentUser } from '../features/users/selectors';
 
 interface IStateProps {
     configuration: Configuration.Entity;

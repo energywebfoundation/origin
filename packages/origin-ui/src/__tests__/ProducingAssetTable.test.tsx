@@ -5,7 +5,7 @@ import { createStore } from 'redux';
 import { createMemoryHistory } from 'history';
 import { createRootReducer } from '../reducers';
 import { ProducingAssetTable } from '../components/ProducingAssetTable';
-import { producingAssetCreatedOrUpdated } from '../features/actions';
+import { producingAssetCreatedOrUpdated } from '../features/producingAssets/actions';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { dataTestSelector } from '../utils/Helper';
 

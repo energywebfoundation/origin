@@ -1,14 +1,14 @@
 import { call, put, delay, select, take, all, fork } from 'redux-saga/effects';
 import { Configuration } from '@energyweb/utils-general';
 import { SagaIterator } from 'redux-saga';
-import { Actions } from '../actions';
 import { hideAccountChangedModal, showAccountChangedModal } from './actions';
 import { getConfiguration } from '../selectors';
 import { getAccountChangedModalVisible, getAccountChangedModalEnabled } from './selectors';
+import { UsersActions } from '../users/actions';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
-        yield take(Actions.currentUserUpdated);
+        yield take(UsersActions.updateCurrentUserId);
         const conf: Configuration.Entity = yield select(getConfiguration);
         const initialAccounts: string[] = yield call(
             conf.blockchainProperties.web3.eth.getAccounts

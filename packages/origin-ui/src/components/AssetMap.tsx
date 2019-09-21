@@ -8,7 +8,7 @@ import { IStoreState } from '../types';
 import { Configuration } from '@energyweb/utils-general';
 import { Link } from 'react-router-dom';
 import { getProducingAssetDetailLink } from '../utils/routing';
-import { getBaseURL } from '../features/selectors';
+import { getBaseURL, getProducingAssets, getConfiguration } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 
 interface IOwnProps {
@@ -162,7 +162,7 @@ class AssetMapClass extends React.Component<Props, IState> {
 }
 
 export const AssetMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
-    assets: ownProps.assets || state.producingAssets,
+    assets: ownProps.assets || getProducingAssets(state),
     baseURL: getBaseURL(state),
-    configuration: state.configuration
+    configuration: getConfiguration(state)
 }))(AssetMapClass);

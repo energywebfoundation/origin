@@ -7,7 +7,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { getBaseURL, getConfiguration, getCurrentUser, getDemands } from '../../features/selectors';
+import { getBaseURL, getConfiguration, getDemands } from '../../features/selectors';
 import { IStoreState } from '../../types';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import {
@@ -29,6 +29,7 @@ import {
 } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
 import { calculateTotalEnergyDemand } from './DemandForm';
+import { getCurrentUser } from '../../features/users/selectors';
 
 interface IStateProps {
     configuration: Configuration.Entity;
