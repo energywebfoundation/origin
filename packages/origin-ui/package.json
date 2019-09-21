@@ -74,7 +74,7 @@
     "@types/react-dom": "16.8.4",
     "@types/react-redux": "7.1.2",
     "@types/react-router-dom": "4.3.5",
-    "@types/underscore": "1.8.14",
+    "@types/underscore": "1.9.3",
     "@types/web3": "1.0.14",
     "@types/yup": "0.26.23",
     "css-loader": "0.28.10",
