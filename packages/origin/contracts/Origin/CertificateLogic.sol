@@ -180,11 +180,11 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
             cert.certificateSpecific.children.length == 0,
             "Unable to retire certificates that have already been split."
         );
-        if (cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired)) {
-            db.setTradableEntityEscrowExternal(_certificateId, new address[](0));
-            CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
-            emit LogCertificateRetired(_certificateId);
-        }
+        
+        require(cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired), "cannot claim a certificate that has already been claimed");
+        
+        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
+        emit LogCertificateRetired(_certificateId);
     }
 
     function splitAndBuyCertificate(uint _certificateId, uint _energy)

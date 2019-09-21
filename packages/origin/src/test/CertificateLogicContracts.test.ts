@@ -3002,19 +3002,18 @@ describe('CertificateLogic', () => {
                 });
             });
 
-            it('should be able to call retire cert#14 as owner, but no event', async () => {
+            it('trying to claim already claimed cert#14 should fail', async () => {
                 assert.isTrue(await certificateLogic.isRetired(14));
-                const tx = await certificateLogic.retireCertificate(14, {
-                    privateKey: assetOwnerPK
-                });
+                
+                try {
+                    await certificateLogic.retireCertificate(14, {
+                        privateKey: assetOwnerPK
+                    });
+                } catch (error) {
+                    assert.include(error.message, 'cannot claim a certificate that has already been claimed');
+                }
+
                 assert.isTrue(await certificateLogic.isRetired(14));
-
-                const retiredEvents = await certificateLogic.getAllLogCertificateRetiredEvents({
-                    fromBlock: tx.blockNumber,
-                    toBlock: tx.blockNumber
-                });
-
-                assert.equal(retiredEvents.length, 0);
             });
 
             it('should throw when trying to retire a splitted certificate', async () => {

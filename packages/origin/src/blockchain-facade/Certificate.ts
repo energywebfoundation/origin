@@ -388,3 +388,15 @@ export async function claimCertificates(
 
     return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(certificateIdsAsNumber, accountProperties);
 };
+
+export async function claim(
+    certificateId: string,
+    configuration: Configuration
+) {
+    const accountProperties = {
+        from: configuration.blockchainProperties.activeUser.address,
+        privateKey: configuration.blockchainProperties.activeUser.privateKey
+    };
+
+    return configuration.blockchainProperties.certificateLogicInstance.retireCertificate(parseInt(certificateId, 10), accountProperties);
+};

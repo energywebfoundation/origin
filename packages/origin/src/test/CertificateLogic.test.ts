@@ -83,6 +83,38 @@ describe('CertificateLogic-Facade', () => {
         };
     }
 
+    async function generateCertificateAndGetId(energy = 100): Promise<string> {
+        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SMART_METER_READ = Number(
+            (await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh
+        );
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
+            .length;
+
+        setActiveUser(assetOwnerPK);
+        
+        await assetRegistry.saveSmartMeterRead(
+            0,
+            LAST_SMART_METER_READ + energy,
+            '',
+            0,
+            {
+                privateKey: assetSmartmeterPK
+            }
+        );
+        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
+            privateKey: assetOwnerPK
+        });
+        await certificateLogic.approveCertificationRequest(
+            INITIAL_CERTIFICATION_REQUESTS_LENGTH,
+            {
+                privateKey: issuerPK
+            }
+        );
+
+        return (Number(await Certificate.getCertificateListLength(conf)) - 1).toString(); // latestCertificateId
+    }
+
     it('should set ERC20 token', async () => {
         erc20TestTokenAddress = (await deployERC20TestToken(
             web3,
@@ -1787,5 +1819,36 @@ describe('CertificateLogic-Facade', () => {
             Number(await erc20TestToken.balanceOf(accountTrader)),
             TRADER_STARTING_TOKEN_BALANCE
         );
+    });
+
+    it('should bulk claim certificates', async () => {
+        setActiveUser(assetOwnerPK);
+
+        const certificatesToClaim = [
+            await generateCertificateAndGetId(),
+            await generateCertificateAndGetId()
+        ];
+
+        for (const certificateId of certificatesToClaim) {
+            const certificate = await new Certificate.Entity(
+                certificateId,
+                conf
+            ).sync();
+
+            assert.equal(certificate.status, Certificate.Status.Active);
+        }
+        
+        await certificateLogic.claimCertificateBulk(certificatesToClaim.map(cId => parseInt(cId, 10)), {
+            privateKey: assetOwnerPK
+        });
+
+        for (const certificateId of certificatesToClaim) {
+            const certificate = await new Certificate.Entity(
+                certificateId,
+                conf
+            ).sync();
+
+            assert.equal(certificate.status, Certificate.Status.Retired);
+        }
     });
 });
