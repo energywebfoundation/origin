@@ -32,7 +32,7 @@
     "node-fetch": "2.5.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
-    "write-json-file": "3.1.0",
+    "write-json-file": "3.2.0",
     "yaeti": "1.0.2"
   },
   "devDependencies": {
