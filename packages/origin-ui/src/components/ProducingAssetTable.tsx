@@ -23,7 +23,7 @@ import { getProducingAssetDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getConfiguration, getProducingAssets, getBaseURL } from '../features/selectors';
-import { Share } from '@material-ui/icons';
+import { Assignment } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
 import { getCertificates } from '../features/certificates/selectors';
@@ -248,7 +248,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
 
         if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
             actions.push({
-                icon: <Share />,
+                icon: <Assignment />,
                 name: 'Request I-RECs',
                 onClick: (row: number) => this.requestIRECs(row)
             });
