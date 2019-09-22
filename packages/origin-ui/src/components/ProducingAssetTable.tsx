@@ -29,7 +29,7 @@ import {
     getCurrentUser,
     getBaseURL
 } from '../features/selectors';
-import { Share } from '@material-ui/icons';
+import { Assignment } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
 
 interface IStateProps {
@@ -253,7 +253,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
 
         if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
             actions.push({
-                icon: <Share />,
+                icon: <Assignment />,
                 name: 'Request I-RECs',
                 onClick: (row: number) => this.requestIRECs(row)
             });

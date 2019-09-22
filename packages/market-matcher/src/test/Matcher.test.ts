@@ -17,7 +17,31 @@ const PROVIDER_URL = 'http://localhost:8545';
 const BACKEND_URL = 'http://localhost:3030';
 const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-describe('Test StrategyBasedMatcher', async () => {
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function waitForConditionAndAssert(
+    conditionCheckFunction: () => Promise<boolean> | boolean,
+    assertFunction: () => Promise<void> | void,
+    interval: number,
+    timeout: number
+): Promise<void> {
+    let timePassed = 0;
+
+    while (timePassed < timeout) {
+        if (await conditionCheckFunction()) {
+            await assertFunction();
+
+            return;
+        }
+
+        await sleep(interval);
+        timePassed += interval;
+    }
+
+    await assertFunction();
+}
+
+describe.only('Test StrategyBasedMatcher', async () => {
     const web3 = new Web3(PROVIDER_URL);
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
@@ -60,8 +84,6 @@ describe('Test StrategyBasedMatcher', async () => {
             privateKey: privateKeyDeployment
         }
     };
-
-    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     describe('Setup', () => {
         it('should deploy user-registry contracts', async () => {
@@ -360,11 +382,20 @@ describe('Test StrategyBasedMatcher', async () => {
                 privateKey: privateKeyDeployment
             };
 
-            await sleep(10000);
+            await waitForConditionAndAssert(
+                async () => {
+                    const certificate = await new Certificate.Entity('0', conf).sync();
 
-            const certificate = await new Certificate.Entity('0', conf).sync();
-            assert.equal(certificate.owner, accountTrader);
-        }).timeout(11000);
+                    return certificate.owner === accountTrader;
+                },
+                async () => {
+                    const certificate = await new Certificate.Entity('0', conf).sync();
+                    assert.equal(certificate.owner, accountTrader);
+                },
+                1000,
+                20000
+            );
+        }).timeout(21000);
     });
 
     describe('Agreement -> Certificate matching tests', () => {
@@ -541,10 +572,20 @@ describe('Test StrategyBasedMatcher', async () => {
         it('demand should be matched with existing certificate', async () => {
             const demand = await new Demand.Entity('1', conf).sync();
 
-            await sleep(10000);
+            await waitForConditionAndAssert(
+                async () => {
+                    const certificate = await new Certificate.Entity(certificateId, conf).sync();
 
-            const certificate = await new Certificate.Entity(certificateId, conf).sync();
-            assert.equal(certificate.owner, demand.demandOwner);
-        }).timeout(15000);
+                    return certificate.owner === demand.demandOwner;
+                },
+                async () => {
+                    const certificate = await new Certificate.Entity(certificateId, conf).sync();
+
+                    assert.equal(certificate.owner, demand.demandOwner);
+                },
+                1000,
+                20000
+            );
+        }).timeout(30000);
     });
 });

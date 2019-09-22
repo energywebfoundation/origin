@@ -155,6 +155,39 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         }
     }
 
+    /// @notice claims a set of certificates
+    /// @param _idArray the ids of the certificates to be claimed
+    function claimCertificateBulk(uint[] calldata _idArray) external {
+        require(_idArray.length <= 100, "maximum number of certificates to claim in one bulk tx is 100");
+        for (uint i = 0; i < _idArray.length; i++) {
+            retireCertificateInternal(_idArray[i], msg.sender);
+        }
+    }
+
+    /// @notice Request a certificate to retire. Only Certificate owner can retire
+    /// @param _certificateId The id of the certificate
+    function retireCertificate(
+        uint _certificateId
+    )
+        external
+    {
+        retireCertificateInternal(_certificateId, msg.sender);
+    }
+
+    function retireCertificateInternal(uint _certificateId, address claimer) internal {
+        CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
+        require(cert.tradableEntity.owner == claimer, "You have to be the owner of the contract.");
+        require(
+            cert.certificateSpecific.children.length == 0,
+            "Unable to retire certificates that have already been split."
+        );
+        
+        require(cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired), "cannot claim a certificate that has already been claimed");
+        
+        CertificateSpecificDB(address(db)).setStatus(_certificateId, CertificateSpecificContract.Status.Retired);
+        emit LogCertificateRetired(_certificateId);
+    }
+
     function splitAndBuyCertificate(uint _certificateId, uint _energy)
         external
         onlyRole(RoleManagement.Role.Trader)
@@ -194,25 +227,6 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         returns (uint)
     {
         return createCertificate(_assetId, _powerInW);
-    }
-
-    /// @notice Request a certificate to retire. Only Certificate owner can retire
-    /// @param _certificateId The id of the certificate
-    function retireCertificate(
-        uint _certificateId
-    )
-        external
-    {
-        CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
-        require(cert.tradableEntity.owner == msg.sender, "You have to be the owner of the contract.");
-        require(
-            cert.certificateSpecific.children.length == 0,
-            "Unable to retire certificates that have already been split."
-        );
-
-        if (cert.certificateSpecific.status != uint(CertificateSpecificContract.Status.Retired)) {
-            retireCertificateAuto(_certificateId);
-        }
     }
 
     /// @notice Splits a certificate into two smaller ones, where (total - _power = 2ndCertificate)

@@ -5,3 +5,4 @@ dist-shakeable
 db.json
 .vscode
 *.log
+package-lock.json

@@ -3,7 +3,9 @@
 .ColumnBatchActions {
     display: flex;
     justify-content: space-between;
-    height: 36px;
+    height: 46px;
+    line-height: 46px;
+    padding-bottom: 10px;
 
     &_counter {
         color: $primaryColor;
@@ -12,12 +14,6 @@
     &_list {
         list-style: none;
         display: inline-flex;
-
-        &_item {
-            color: $primaryColor;
-            text-transform: uppercase;
-            padding: 0 10px;
-            cursor: pointer;
-        }
+        text-transform: uppercase;
     }
 }
