@@ -25,7 +25,8 @@ import { CertificationRequestsTable } from './CertificationRequestsTable';
 import { getCertificatesLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getCurrentUser, getDemands } from '../features/selectors';
+import { getBaseURL, getDemands } from '../features/selectors';
+import { getCurrentUser } from '../features/users/selectors';
 
 interface IStateProps {
     demands: Demand.Entity[];

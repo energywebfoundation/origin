@@ -14,13 +14,7 @@ import { Redirect } from 'react-router-dom';
 import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
-import {
-    getBaseURL,
-    getCertificates,
-    getConfiguration,
-    getCurrentUser,
-    getProducingAssets
-} from '../features/selectors';
+import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
 import { IStoreState } from '../types';
 import { formatCurrency } from '../utils/Helper';
 import { NotificationType, showNotification } from '../utils/notifications';
@@ -38,6 +32,8 @@ import {
     PaginatedLoaderFilteredSorted
 } from './Table/PaginatedLoaderFilteredSorted';
 import { TableMaterial } from './Table/TableMaterial';
+import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
+import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 
 interface IOwnProps {
@@ -52,6 +48,7 @@ interface IStateProps {
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
     currentUser: User.Entity;
+    users: User.Entity[];
     baseURL: string;
 }
 
@@ -129,7 +126,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async componentDidUpdate(newProps: Props) {
-        if (newProps.certificates !== this.props.certificates) {
+        if (
+            newProps.certificates !== this.props.certificates ||
+            newProps.users.length !== this.props.users.length
+        ) {
             await this.loadPage(1);
         }
     }
@@ -214,8 +214,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate,
                 producingAsset,
                 assetTypeLabel: producingAsset.offChainProperties.assetType,
-                certificateOwner: await new User.Entity(certificate.owner, this.props
-                    .configuration as any).sync(),
+                certificateOwner: getUserById(this.props.users, certificate.owner),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
@@ -731,7 +730,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             townCountry: `${enrichedData.producingAsset.offChainProperties.city}, ${enrichedData.producingAsset.offChainProperties.country}`,
             compliance:
                 Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry],
-            owner: enrichedData.certificateOwner.organization,
+            owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
             certificationDate: new Date(
                 enrichedData.certificate.creationTime * 1000
             ).toDateString(),
@@ -833,6 +832,7 @@ export const CertificateTable = connect(
         certificates: ownProps.certificates || getCertificates(state),
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),
-        producingAssets: getProducingAssets(state)
+        producingAssets: getProducingAssets(state),
+        users: getUsers(state)
     })
 )(CertificateTableClass);

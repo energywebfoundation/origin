@@ -11,11 +11,13 @@ import {
 } from '@material-ui/core';
 import { IStoreState } from '../../types/index';
 import { connect } from 'react-redux';
-import { getCurrentUser, getConfiguration } from '../../features/selectors';
+import { getConfiguration } from '../../features/selectors';
+import { getCurrentUser } from '../../features/users/selectors';
+import { User } from '@energyweb/user-registry';
 
 interface IStateProps {
     configuration: IStoreState['configuration'];
-    currentUser: IStoreState['currentUser'];
+    currentUser: User.Entity;
 }
 
 interface IOwnProps {
