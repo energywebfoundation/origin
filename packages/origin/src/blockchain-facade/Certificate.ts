@@ -322,6 +322,18 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         return this.configuration.blockchainProperties.certificateLogicInstance.isRetired(this.id);
     }
 
+    async claim() {
+        const accountProperties = {
+            from: this.configuration.blockchainProperties.activeUser.address,
+            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+        };
+
+        return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+            parseInt(this.id, 10),
+            accountProperties
+        );
+    }
+
     async getAllCertificateEvents(): Promise<Log[]> {
         const allEvents = await this.configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
             {
@@ -387,16 +399,4 @@ export async function claimCertificates(
     };
 
     return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(certificateIdsAsNumber, accountProperties);
-};
-
-export async function claim(
-    certificateId: string,
-    configuration: Configuration
-) {
-    const accountProperties = {
-        from: configuration.blockchainProperties.activeUser.address,
-        privateKey: configuration.blockchainProperties.activeUser.privateKey
-    };
-
-    return configuration.blockchainProperties.certificateLogicInstance.retireCertificate(parseInt(certificateId, 10), accountProperties);
 };
