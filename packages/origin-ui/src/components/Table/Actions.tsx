@@ -30,7 +30,9 @@ const styles = () =>
             }
         },
         speedDialActionTooltip: {
-            backgroundColor: STYLE_CONFIG.PRIMARY_COLOR
+            color: 'white',
+            backgroundColor: STYLE_CONFIG.PRIMARY_COLOR,
+            whiteSpace: 'nowrap'
         }
     });
 
@@ -76,7 +78,7 @@ class ActionsClass extends React.Component<IProps, IState> {
 
         return (
             <SpeedDial
-                ButtonProps={{
+                FabProps={{
                     className: classes.speedDialButton
                 }}
                 ariaLabel={`speed-dial-${id}`}
@@ -104,10 +106,8 @@ class ActionsClass extends React.Component<IProps, IState> {
                         tooltipOpen
                         onClick={() => action.onClick(id)}
                         classes={{
-                            button: classes.speedDialActionButton
-                        }}
-                        TooltipClasses={{
-                            tooltip: classes.speedDialActionTooltip
+                            fab: classes.speedDialActionButton,
+                            staticTooltipLabel: classes.speedDialActionTooltip
                         }}
                     />
                 ))}
