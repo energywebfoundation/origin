@@ -22,12 +22,13 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn build:static && yarn build-ts",
+    "build": "yarn build:ts",
+    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-schema:AgreementPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Agreement.ts IAgreementOffChainProperties",
     "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts IDemandOffChainProperties",
     "build-schema:SupplyPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Supply.ts ISupplyOffChainProperties",
     "build-schemas": "./scripts/buildSchemas.js",
-    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "extractABI": "node ./scripts/extractABI.js",
@@ -40,7 +41,6 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
     "clean": "rm -rf build dist dist-shakeable schemas db.json",
-    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "precommit": "lint-staged"
   },
   "types": "dist/js/src/index.d.ts",
