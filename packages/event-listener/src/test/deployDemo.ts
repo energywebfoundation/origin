@@ -212,8 +212,9 @@ export class Demo {
             complianceRegistry: Compliance.IREC,
             facilityName: 'Wuthering Heights Windfarm',
             capacityWh: 0,
-            country: 'Poland',
-            address: 'Warsaw, Mazovian',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '',
             gpsLongitude: '',
             operationalSince: 0,
