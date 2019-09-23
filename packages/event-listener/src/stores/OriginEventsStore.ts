@@ -1,6 +1,6 @@
 import { User } from '@energyweb/user-registry';
 
-interface IPartiallyFilledDemand {
+export interface IPartiallyFilledDemand {
     demandId: number;
     certificateId: number;
     amount: number;
@@ -34,18 +34,6 @@ export class OriginEventsStore implements IOriginEventsStore {
 
     constructor() {
         this.tempStorage = [];
-    }
-
-    public getNewIssuedCertificates(user: User.Entity): number {
-        return this.userStorage(user).newIssuedCertificates;
-    }
-
-    public getNewMatchingCertificates(user: User.Entity): number {
-        return this.userStorage(user).newMatchingCertificates;
-    }
-
-    public getNewPartiallyFilledDemands(user: User.Entity): IPartiallyFilledDemand[] {
-        return this.userStorage(user).newPartiallyFilledDemands;
     }
 
     public incrementNewIssuedCertificates(certOwner: User.Entity): void {
@@ -97,6 +85,18 @@ export class OriginEventsStore implements IOriginEventsStore {
             };
             this.tempStorage.push(userStorage);
         }
+    }
+
+    public getNewIssuedCertificates(user: User.Entity): number {
+        return this.userStorage(user).newIssuedCertificates;
+    }
+
+    public getNewMatchingCertificates(user: User.Entity): number {
+        return this.userStorage(user).newMatchingCertificates;
+    }
+
+    public getNewPartiallyFilledDemands(user: User.Entity): IPartiallyFilledDemand[] {
+        return this.userStorage(user).newPartiallyFilledDemands;
     }
 
     public getAllUsers(): User.Entity[] {

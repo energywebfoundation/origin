@@ -9,9 +9,9 @@ import Web3 from 'web3';
 import { SCAN_INTERVAL } from '..';
 import { initOriginConfig } from '../config/origin.config';
 import NotificationTypes from '../notification/NotificationTypes';
-import { IEmailResponse, IEmailServiceProvider } from '../services/email.service';
+import { IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
-import { IOriginEventsStore } from '../stores/OriginEventsStore';
+import { IOriginEventsStore, IPartiallyFilledDemand } from '../stores/OriginEventsStore';
 
 export interface IOriginEventListener extends IEventListener {
     originLookupAddress: string;
@@ -147,68 +147,63 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     public async notify() {
-        const allUsers: User.Entity[] = this.originEventsStore.getAllUsers();
+        const notifyUsers: User.Entity[] = this.originEventsStore
+            .getAllUsers()
+            .filter(user => user.offChainProperties.notifications);
 
-        for (const user of allUsers) {
+        for (const user of notifyUsers) {
             const emailAddress: string = user.offChainProperties.email;
-            const notificationsEnabled: boolean = user.offChainProperties.notifications;
-
             const newIssuedCertificates: number = this.originEventsStore.getNewIssuedCertificates(
                 user
             );
-
-            if (newIssuedCertificates > 0 && notificationsEnabled) {
-                this.conf.logger.info(`Sending email to ${emailAddress}...`);
-
-                const response: IEmailResponse = await this.emailService.send({
-                    to: [emailAddress],
-                    subject: `[Origin] ${NotificationTypes.CERTS_APPROVED}`,
-                    html: `
-                        Local issuer approved your certificates. 
-                        There are ${newIssuedCertificates} new certificates in your inbox:
-                        ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox
-                    `
-                });
-
-                if (!response.success) {
-                    this.conf.logger.error(
-                        `Unable to send email to ${emailAddress}: ${response.error}`
-                    );
-                    return;
-                }
-
-                this.conf.logger.info('Sent.');
-
-                this.originEventsStore.resetNewIssuedCertificates(user);
-            }
-
             const newMatchingCertificates: number = this.originEventsStore.getNewMatchingCertificates(
                 user
             );
+            const newPartiallyFilledDemand: IPartiallyFilledDemand[] = this.originEventsStore.getNewPartiallyFilledDemands(
+                user
+            );
 
-            if (newMatchingCertificates > 0 && notificationsEnabled) {
-                this.conf.logger.info(`Sending email to ${emailAddress}...`);
+            this.conf.logger.info(`Sending notification emails to ${emailAddress}...`);
 
-                const response: IEmailResponse = await this.emailService.send({
-                    to: [emailAddress],
-                    subject: `[Origin] ${NotificationTypes.FOUND_MATCHING_SUPPLY}`,
-                    html: `
-                        We found ${newMatchingCertificates} certificates matching your demand. Open Origin and check it out:
-                        ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/
-                    `
-                });
-
-                if (!response.success) {
-                    this.conf.logger.error(
-                        `Unable to send email to ${emailAddress}: ${response.error}`
-                    );
-                    return;
-                }
-
-                this.conf.logger.info('Sent.');
-
-                this.originEventsStore.resetNewMatchingCertificates(user);
+            if (newIssuedCertificates > 0) {
+                await this.emailService.send(
+                    {
+                        to: [emailAddress],
+                        subject: `[Origin] ${NotificationTypes.CERTS_APPROVED}`,
+                        html: `Local issuer approved your certificates.\nThere are ${newIssuedCertificates} new certificates in your inbox:\n${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox`
+                    },
+                    () => this.originEventsStore.resetNewIssuedCertificates(user)
+                );
             }
+
+            if (newMatchingCertificates > 0) {
+                await this.emailService.send(
+                    {
+                        to: [emailAddress],
+                        subject: `[Origin] ${NotificationTypes.FOUND_MATCHING_SUPPLY}`,
+                        html: `We found ${newMatchingCertificates} certificates matching your demand. Open Origin and check it out:\n${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/`
+                    },
+                    () => this.originEventsStore.resetNewMatchingCertificates(user)
+                );
+            }
+
+            if (newPartiallyFilledDemand.length > 0) {
+                await this.emailService.send(
+                    {
+                        to: [emailAddress],
+                        subject: `[Origin] ${NotificationTypes.DEMAND_PARTIALLY_FILLED}`,
+                        html: `Matched the following certificates to your demands:\n${newPartiallyFilledDemand
+                            .map(
+                                match =>
+                                    `Matched certificate ${match.certificateId} with amount ${match.amount} Wh to demand ${match.demandId}.`
+                            )
+                            .join('\n')}`
+                    },
+                    () => this.originEventsStore.resetNewMatchingCertificates(user)
+                );
+            }
+
+            this.conf.logger.info('Sent.');
         }
     }
 

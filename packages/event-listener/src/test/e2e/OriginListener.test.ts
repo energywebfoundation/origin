@@ -1,12 +1,12 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { EmailServiceProvider } from '../services/email.service';
-import { IOriginEventListener, OriginEventListener } from '../listeners/origin.listener';
-import { OriginEventsStore } from '../stores/OriginEventsStore';
-import { Demo } from './deployDemo';
-import { TestEmailAdapter } from './TestAdapter';
-import NotificationTypes from '../notification/NotificationTypes';
+import { EmailServiceProvider } from '../../services/email.service';
+import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
+import { OriginEventsStore } from '../../stores/OriginEventsStore';
+import { Demo } from '../deployDemo';
+import { TestEmailAdapter } from '../TestAdapter';
+import NotificationTypes from '../../notification/NotificationTypes';
 
 const SCAN_INTERVAL = 3000;
 const APPROX_EMAIL_SENDING_TIME = 3000;
@@ -24,6 +24,7 @@ describe('Origin Listener Tests', async () => {
     let demo;
     let listener: IOriginEventListener;
     let emailService;
+    let store;
 
     before(async () => {
         demo = new Demo(process.env.WEB3, deployKey);
@@ -33,14 +34,19 @@ describe('Origin Listener Tests', async () => {
     beforeEach(async () => {
         const web3 = new Web3(process.env.WEB3);
         emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
+        store = new OriginEventsStore();
 
         listener = new OriginEventListener(
             demo.originContractLookup,
             web3,
             emailService,
-            new OriginEventsStore(),
+            store,
             SCAN_INTERVAL
         );
+    });
+
+    afterEach(async () => {
+        listener.stop();
     });
 
     it('an email is sent when a certificate is created', async () => {
@@ -54,8 +60,6 @@ describe('Origin Listener Tests', async () => {
         assert.isTrue(
             emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
         );
-
-        listener.stop();
     });
 
     it('an email is sent supply is found for a demand', async () => {
@@ -75,7 +79,5 @@ describe('Origin Listener Tests', async () => {
         assert.isTrue(
             emailService.sentEmails[1].subject.includes(NotificationTypes.FOUND_MATCHING_SUPPLY)
         );
-
-        listener.stop();
     });
 });
