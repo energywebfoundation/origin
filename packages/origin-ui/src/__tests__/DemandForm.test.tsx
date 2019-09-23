@@ -113,7 +113,6 @@ describe('DemandForm', () => {
                 now.format('YYYYddd, MMM D')
             );
 
-            // click 10th day in a month
             const daysElements = document.querySelectorAll(
                 '.MuiPickersDay-day:not(.MuiPickersDay-hidden)'
             );
