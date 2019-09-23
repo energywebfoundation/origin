@@ -43,7 +43,7 @@
         "cors": "2.8.5",
         "dotenv": "8.1.0",
         "express": "4.17.1",
-        "fs-extra": "8.0.1",
+        "fs-extra": "8.1.0",
         "js-beautify": "1.10.0",
         "mandrill-api": "1.0.45",
         "nodemailer": "6.3.0",
