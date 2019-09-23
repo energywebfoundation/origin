@@ -541,7 +541,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
 
             await certificate.publishForSale(1, Currency.USD);
 
-            assert.equal(certificate.powerInW, energy);
+            assert.equal(certificate.energy, energy);
         }).timeout(10000);
 
         it('should create a demand', async () => {

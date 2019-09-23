@@ -39,7 +39,7 @@ import "../../contracts/Origin/CertificateSpecificContract.sol";
 
 contract CertificateLogic is CertificateInterface, CertificateSpecificContract, TradableEntityContract {
     /// @notice Logs the creation of an event
-    event LogCreatedCertificate(uint indexed _certificateId, uint powerInW, address owner);
+    event LogCreatedCertificate(uint indexed _certificateId, uint energy, address owner);
     event LogCertificateRetired(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
 
@@ -194,9 +194,9 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
 
-        require(_energy > 0 && _energy <= cert.tradableEntity.powerInW, "Energy has to be higher than 0 and lower or equal than certificate energy");
+        require(_energy > 0 && _energy <= cert.tradableEntity.energy, "Energy has to be higher than 0 and lower or equal than certificate energy");
 
-        if (_energy == cert.tradableEntity.powerInW) {
+        if (_energy == cert.tradableEntity.energy) {
             buyCertificateInternal(_certificateId, msg.sender);
         } else {
             require(cert.tradableEntity.forSale == true, "Unable to split and buy a certificate that is not for sale.");
@@ -218,43 +218,43 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
 
     /// @notice creates a new Entity / certificate
     /// @param _assetId the id of the producing asset
-    /// @param _powerInW the power that has been produced
+    /// @param _energy the energy that has been produced
     function createTradableEntity(
         uint _assetId,
-        uint _powerInW
+        uint _energy
     )
         internal
         returns (uint)
     {
-        return createCertificate(_assetId, _powerInW);
+        return createCertificate(_assetId, _energy);
     }
 
-    /// @notice Splits a certificate into two smaller ones, where (total - _power = 2ndCertificate)
+    /// @notice Splits a certificate into two smaller ones, where (total - _energy = 2ndCertificate)
     /// @param _certificateId The id of the certificate
-    /// @param _power The amount of power in W for the 1st certificate
-    function splitCertificate(uint _certificateId, uint _power) external {
+    /// @param _energy The amount of energy in Wh for the 1st certificate
+    function splitCertificate(uint _certificateId, uint _energy) external {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
         require(
             msg.sender == cert.tradableEntity.owner || isRole(RoleManagement.Role.Matcher, msg.sender),
             "You are not the owner of the certificate"
         );
 
-        splitCertificateInternal(_certificateId, _power);
+        splitCertificateInternal(_certificateId, _energy);
     }
 
     /// @notice Splits a certificate and publishes the first split certificate for sale
     /// @param _certificateId The id of the certificate
-    /// @param _power The amount of power in W for the 1st certificate
+    /// @param _energy The amount of energy in W for the 1st certificate
     /// @param _price the purchase price
     /// @param _tokenAddress the address of the ERC20 token address
-    function splitAndPublishForSale(uint _certificateId, uint _power, uint _price, address _tokenAddress) external {
+    function splitAndPublishForSale(uint _certificateId, uint _energy, uint _price, address _tokenAddress) external {
         CertificateDB.Certificate memory cert = CertificateDB(address(db)).getCertificate(_certificateId);
         require(
             msg.sender == cert.tradableEntity.owner || isRole(RoleManagement.Role.Matcher, msg.sender),
             "You are not the owner of the certificate"
         );
 
-        (uint childOneId, ) = splitCertificateInternal(_certificateId, _power);
+        (uint childOneId, ) = splitCertificateInternal(_certificateId, _energy);
 
         TradableEntityDBInterface(address(db)).setOnChainDirectPurchasePrice(childOneId, _price);
         TradableEntityDBInterface(address(db)).setTradableToken(childOneId, _tokenAddress);
@@ -297,13 +297,13 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         internal functions
     */
 
-    /// @notice Splits a certificate into two smaller ones, where (total - _power = 2ndCertificate)
+    /// @notice Splits a certificate into two smaller ones, where (total - _energy = 2ndCertificate)
     /// @param _certificateId The id of the certificate
-    /// @param _power The amount of power in W for the 1st certificate
-    function splitCertificateInternal(uint _certificateId, uint _power) internal returns (uint childOneId, uint childTwoId) {
+    /// @param _energy The amount of energy in W for the 1st certificate
+    function splitCertificateInternal(uint _certificateId, uint _energy) internal returns (uint childOneId, uint childTwoId) {
         CertificateDB.Certificate memory parent = CertificateDB(address(db)).getCertificate(_certificateId);
 
-        require(parent.tradableEntity.powerInW > _power, "The certificate doesn't have enough power to be split.");
+        require(parent.tradableEntity.energy > _energy, "The certificate doesn't have enough energy to be split.");
         require(
             parent.certificateSpecific.status == uint(CertificateSpecificContract.Status.Active),
             "Unable to split certificate. You can only split Active certificates."
@@ -313,7 +313,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
             "This certificate has already been split."
         );
 
-        (uint childIdOne, uint childIdTwo) = CertificateDB(address(db)).createChildCertificate(_certificateId, _power);
+        (uint childIdOne, uint childIdTwo) = CertificateDB(address(db)).createChildCertificate(_certificateId, _energy);
         emit Transfer(address(0), parent.tradableEntity.owner, childIdOne);
         emit Transfer(address(0), parent.tradableEntity.owner, childIdTwo);
 
@@ -332,17 +332,17 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
 
     /// @notice Creates a certificate of origin. Checks in the AssetRegistry if requested wh are available.
     /// @param _assetId The id of the asset that generated the energy for the certificate
-    /// @param _powerInW The amount of Watts the Certificate holds
-    function createCertificate(uint _assetId, uint _powerInW)
+    /// @param _energy The amount of Wh the Certificate holds
+    function createCertificate(uint _assetId, uint _energy)
         internal
         returns (uint)
     {
         AssetProducingDB.Asset memory asset =  AssetProducingInterface(address(assetContractLookup.assetProducingRegistry())).getAssetById(_assetId);
 
-        uint certId = CertificateDB(address(db)).createCertificateRaw(_assetId, _powerInW, asset.assetGeneral.owner, asset.assetGeneral.lastSmartMeterReadFileHash, asset.maxOwnerChanges);
+        uint certId = CertificateDB(address(db)).createCertificateRaw(_assetId, _energy, asset.assetGeneral.owner, asset.assetGeneral.lastSmartMeterReadFileHash, asset.maxOwnerChanges);
         emit Transfer(address(0),  asset.assetGeneral.owner, certId);
 
-        emit LogCreatedCertificate(certId, _powerInW, asset.assetGeneral.owner);
+        emit LogCreatedCertificate(certId, _energy, asset.assetGeneral.owner);
         return certId;
 
     }

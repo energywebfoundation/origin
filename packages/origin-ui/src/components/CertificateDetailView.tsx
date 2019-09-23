@@ -230,7 +230,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
 
                     {
                         label: 'Certified Energy (kWh)',
-                        data: (selectedCertificate.powerInW / 1000).toLocaleString()
+                        data: (selectedCertificate.energy / 1000).toLocaleString()
                     },
                     {
                         label: 'Creation Date',

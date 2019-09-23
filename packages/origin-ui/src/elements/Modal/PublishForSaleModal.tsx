@@ -62,7 +62,7 @@ class PublishForSaleModal extends React.Component<
         this.state = {
             show: props.showModal,
             minKwh,
-            kwh: props.certificate ? props.certificate.powerInW / 1000 : minKwh,
+            kwh: props.certificate ? props.certificate.energy / 1000 : minKwh,
             price: 1,
             currency: this.availableCurrencies[0],
             erc20TokenAddress: '',
@@ -91,7 +91,7 @@ class PublishForSaleModal extends React.Component<
             )).timestamp;
 
             this.setState({
-                kwh: this.props.certificate.powerInW / 1000,
+                kwh: this.props.certificate.energy / 1000,
                 certCreationDate: moment.unix(timestamp).toString()
             });
         }
@@ -132,7 +132,7 @@ class PublishForSaleModal extends React.Component<
                 const kwhValid =
                     !isNaN(kwh) &&
                     kwh >= this.state.minKwh &&
-                    kwh <= this.props.certificate.powerInW / 1000 &&
+                    kwh <= this.props.certificate.energy / 1000 &&
                     countDecimals(kwh) <= 3;
 
                 this.setState({

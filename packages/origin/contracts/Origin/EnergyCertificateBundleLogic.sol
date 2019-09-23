@@ -37,7 +37,7 @@ import "../../contracts/Origin/CertificateSpecificContract.sol";
 contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpecificContract {
 
     /// @notice Logs the creation of an event
-    event LogCreatedBundle(uint indexed _bundleId, uint powerInW, address owner);
+    event LogCreatedBundle(uint indexed _bundleId, uint energy, address owner);
     /// @notice Logs the request of an retirement of a bundle
     event LogBundleRetired(uint indexed _bundleId);
     /// @notice Logs when the ownership of a bundle has changed
@@ -113,15 +113,15 @@ contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpec
 
     /// @notice creates a new bundle
     /// @param _assetId the id of the producing asset
-    /// @param _powerInW the power that has been produced
+    /// @param _energy the energy that has been produced
     function createTradableEntity(
         uint _assetId,
-        uint _powerInW
+        uint _energy
     )
         internal
         returns (uint)
     {
-        return createBundle(_assetId, _powerInW);
+        return createBundle(_assetId, _energy);
     }
 
     /// @notice Request a bundle to retire. Only bundle owner can retire
@@ -176,9 +176,9 @@ contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpec
 
     /// @notice Creates a bundle. Checks in the AssetRegistry if requested wh are available.
     /// @param _assetId The id of the asset that generated the energy for the bundle
-    /// @param _powerInW The amount of Watts the bundle holds
+    /// @param _energy The amount of Watts the bundle holds
     /// @return the id of the new bundle
-    function createBundle(uint _assetId, uint _powerInW)
+    function createBundle(uint _assetId, uint _energy)
         internal
         returns (uint)
     {
@@ -188,7 +188,7 @@ contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpec
         TradableEntityContract.TradableEntity memory tradableEntity = TradableEntityContract.TradableEntity({
             assetId: _assetId,
             owner: asset.assetGeneral.owner,
-            powerInW: _powerInW,
+            energy: _energy,
             forSale: false,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
@@ -212,7 +212,7 @@ contract EnergyCertificateBundleLogic is TradableEntityContract, CertificateSpec
 
         emit Transfer(address(0),  asset.assetGeneral.owner, bundleId);
 
-        emit LogCreatedBundle(bundleId, _powerInW, asset.assetGeneral.owner);
+        emit LogCreatedBundle(bundleId, _energy, asset.assetGeneral.owner);
         return bundleId;
 
     }

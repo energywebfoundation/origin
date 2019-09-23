@@ -23,7 +23,7 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
 
     pricePerUnit(unit: Unit): number;
     sync(): Promise<ICertificate>;
-    splitCertificate(power: number): Promise<TransactionReceipt>;
+    splitCertificate(energy: number): Promise<TransactionReceipt>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
 }
 
@@ -139,7 +139,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
 
             this.assetId = cert.tradableEntity.assetId;
             this.owner = cert.tradableEntity.owner;
-            this.powerInW = Number(cert.tradableEntity.powerInW);
+            this.energy = Number(cert.tradableEntity.energy);
             this.forSale = cert.tradableEntity.forSale;
             this.acceptedToken = cert.tradableEntity.acceptedToken;
             this.onChainDirectPurchasePrice = cert.tradableEntity.onChainDirectPurchasePrice;
@@ -224,17 +224,17 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         }
     }
 
-    async splitCertificate(power: number): Promise<TransactionReceipt> {
+    async splitCertificate(energy: number): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
             return this.configuration.blockchainProperties.certificateLogicInstance.splitCertificate(
                 this.id,
-                power,
+                energy,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
             return this.configuration.blockchainProperties.certificateLogicInstance.splitCertificate(
                 this.id,
-                power,
+                energy,
                 { from: this.configuration.blockchainProperties.activeUser.address }
             );
         }
@@ -256,7 +256,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
             throw Error('Please specify either an ERC20 token address or a currency.');
         }
 
-        const certificateEnergy = Number(this.powerInW);
+        const certificateEnergy = Number(this.energy);
         const saleParams = {
             onChainPrice: isErc20Sale ? Math.floor(price) : 0,
             tokenAddress: isErc20Sale
@@ -309,7 +309,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         const isOffChainSettlement = Number(this.acceptedToken) === 0x0;
         const price = isOffChainSettlement ? this.offChainSettlementOptions.price : this.onChainDirectPurchasePrice;
 
-        return price / this.powerInW * unit;
+        return price / this.energy * unit;
     }
 
     async getCertificateOwner(): Promise<string> {

@@ -58,13 +58,13 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
     /// @notice creates a new TradableEntity-entry
     /// @param _assetId the asset-id that produced the energy
     /// @param _owner the asset-owner (= the new entity-owner)
-    /// @param _powerInW the amount of energy produced
+    /// @param _energy the amount of energy produced
     /// @param _acceptedToken the accepted ERC20-Token
     /// @param _onChainDirectPurchasePrice the price set onchain for direct purchase (using an ERC20 contract)
     function createTradableEntityEntry(
         uint _assetId,
         address _owner,
-        uint _powerInW,
+        uint _energy,
         address _acceptedToken,
         uint _onChainDirectPurchasePrice
     )
@@ -76,7 +76,7 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
         TradableEntity memory te = TradableEntity({
             assetId: _assetId,
             owner: _owner,
-            powerInW: _powerInW,
+            energy: _energy,
             forSale: false,
             acceptedToken: _acceptedToken,
             onChainDirectPurchasePrice: _onChainDirectPurchasePrice,

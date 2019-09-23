@@ -107,7 +107,7 @@ export class EnergyDB extends GeneralFunctions {
     async createTradableEntityEntry(
         _assetId: number,
         _owner: string,
-        _powerInW: number,
+        _energy: number,
         _acceptedToken: string,
         _onChainDirectPurchasePrice: number,
         txParams?: SpecialTx
@@ -115,7 +115,7 @@ export class EnergyDB extends GeneralFunctions {
         const method = this.web3Contract.methods.createTradableEntityEntry(
             _assetId,
             _owner,
-            _powerInW,
+            _energy,
             _acceptedToken,
             _onChainDirectPurchasePrice
         );

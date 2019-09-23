@@ -72,13 +72,13 @@ export class Matcher {
     }
 
     private async executeMatching(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
-        const requiredPower = demand.offChainProperties.targetWhPerPeriod;
+        const requiredEnergy = demand.offChainProperties.targetWhPerPeriod;
 
-        if (certificate.powerInW === requiredPower) {
+        if (certificate.energy === requiredEnergy) {
             return this.certificateService.matchDemand(certificate, demand);
         }
-        if (requiredPower > 0 && certificate.powerInW > requiredPower) {
-            return this.certificateService.splitCertificate(certificate, requiredPower);
+        if (requiredEnergy > 0 && certificate.energy > requiredEnergy) {
+            return this.certificateService.splitCertificate(certificate, requiredEnergy);
         }
 
         return false;
@@ -115,13 +115,13 @@ export class Matcher {
             const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
 
             this.logger.debug(
-                `Certificate's available power ${certificate.powerInW}, missingEnergyForPeriod ${missingEnergyForPeriod}`
+                `Certificate's available energy ${certificate.energy}, missingEnergyForPeriod ${missingEnergyForPeriod}`
             );
 
-            if (certificate.powerInW === missingEnergyForPeriod) {
+            if (certificate.energy === missingEnergyForPeriod) {
                 return this.certificateService.matchAgreement(certificate, agreement);
             }
-            if (missingEnergyForPeriod > 0 && certificate.powerInW > missingEnergyForPeriod) {
+            if (missingEnergyForPeriod > 0 && certificate.energy > missingEnergyForPeriod) {
                 return this.certificateService.splitCertificate(
                     certificate,
                     missingEnergyForPeriod

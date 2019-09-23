@@ -100,7 +100,7 @@ contract MarketLogic is AgreementLogic {
             te.owner, demand.demandOwner, _entityId
         );
 
-        emit DemandPartiallyFilled(_demandId, _entityId, te.powerInW);
+        emit DemandPartiallyFilled(_demandId, _entityId, te.energy);
     }
 
 	/// @notice Function to create a supply

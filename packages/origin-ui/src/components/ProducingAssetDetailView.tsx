@@ -80,7 +80,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
                             .map((certificate: Certificate.Entity) =>
                                 certificate.owner === selectedAsset.owner.address &&
                                 certificate.assetId.toString() === selectedAsset.id
-                                    ? certificate.powerInW
+                                    ? certificate.energy
                                     : 0
                             )
                             .reduce((a, b) => a + b)
