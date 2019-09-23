@@ -5,7 +5,6 @@ nginx
 db.json
 jest.config.js
 webpack
-src/__tests__/*
 
 # declaration files
 *.d.ts 

@@ -22,6 +22,7 @@ module.exports = {
         }],
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "error",
         "func-names": "off",
         "consistent-return": "off",
         "class-methods-use-this": "off",

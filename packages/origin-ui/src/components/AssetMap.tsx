@@ -5,7 +5,6 @@ import { Asset } from '@energyweb/asset-registry';
 import { connect } from 'react-redux';
 import { User } from '@energyweb/user-registry';
 import { IStoreState } from '../types';
-import { Configuration } from '@energyweb/utils-general';
 import { Link } from 'react-router-dom';
 import { getProducingAssetDetailLink } from '../utils/routing';
 import { getBaseURL, getProducingAssets, getConfiguration } from '../features/selectors';
