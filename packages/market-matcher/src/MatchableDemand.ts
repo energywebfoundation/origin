@@ -77,15 +77,22 @@ export class MatchableDemand {
     }
 
     private matchesLocation(asset: ProducingAsset.IProducingAsset) {
+        if (!this.demand.offChainProperties.location) {
+            return true;
+        }
+
         try {
             const matchableLocation = this.locationService.translateAddress(
                 asset.offChainProperties.address,
                 asset.offChainProperties.country
             );
 
-            return !!matchableLocation;
+            return this.locationService.matches(
+                this.demand.offChainProperties.location,
+                matchableLocation
+            );
         } catch (e) {
-            return true;
+            return false;
         }
     }
 }

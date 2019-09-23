@@ -29,6 +29,10 @@ export class LocationService {
         throw new Error('unable to translate address');
     }
 
+    public matches(currentLocation: string[], requestedLocation: string) {
+        return currentLocation.some(location => location.includes(requestedLocation));
+    }
+
     private clear(input: string) {
         const terms = [['Nakhon Province', 'Nakhon Pathom']];
 

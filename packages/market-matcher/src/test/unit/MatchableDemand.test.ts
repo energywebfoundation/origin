@@ -14,6 +14,7 @@ interface IMockOptions {
     price?: number;
     currency?: Currency;
     producingAssetAssetType?: string;
+    address?: string;
 }
 
 describe('MatchableDemand tests', () => {
@@ -22,6 +23,10 @@ describe('MatchableDemand tests', () => {
         const energyPrice = 100 * 1e6;
         const currency = Currency.USD;
         const assetType = 'Solar';
+        const location = ['Thailand;Central;Nakhon Pathom'];
+        const country = 'Thailand';
+        const address =
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140';
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
@@ -29,6 +34,7 @@ describe('MatchableDemand tests', () => {
             demandOffChainProperties.maxPricePerMwh.returns(energyPrice);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
+            demandOffChainProperties.location.returns(location);
 
             const demand = Substitute.for<Demand.IDemand>();
             demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
@@ -49,6 +55,8 @@ describe('MatchableDemand tests', () => {
             producingAssetOffChainProperties.assetType.returns(
                 options.producingAssetAssetType || assetType
             );
+            producingAssetOffChainProperties.country.returns(country);
+            producingAssetOffChainProperties.address.returns(options.address || address);
 
             const producingAsset = Substitute.for<ProducingAsset.IProducingAsset>();
             producingAsset.offChainProperties.returns(producingAssetOffChainProperties);
@@ -142,6 +150,21 @@ describe('MatchableDemand tests', () => {
 
             assert.isFalse(result);
             assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
+        });
+
+        it('should not match demand with from different location', () => {
+            const { demand, certificate, producingAsset } = createMatchingMocks({
+                address: 'Warsaw, Poland'
+            });
+
+            const matchableDemand = new MatchableDemand(demand);
+            const { result, reason } = matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
+
+            assert.isFalse(result);
+            assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_LOCATION);
         });
     });
     describe('Supply', () => {
