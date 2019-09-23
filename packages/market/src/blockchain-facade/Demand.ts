@@ -21,7 +21,7 @@ export interface IDemandOffChainProperties {
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;
-    targetWhPerPeriod: number;
+    energyPerTimeFrame: number;
     registryCompliance?: Compliance;
     startTime: string;
     endTime: string;

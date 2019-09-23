@@ -466,7 +466,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 currency: Currency.USD,
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
-                targetWhPerPeriod: certificate.energy,
+                energyPerTimeFrame: certificate.energy,
                 registryCompliance: asset.offChainProperties.complianceRegistry,
                 startTime: '',
                 endTime: ''

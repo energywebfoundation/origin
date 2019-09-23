@@ -250,7 +250,7 @@ describe('Market-Facade', () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: 10,
+                energyPerTimeFrame: 10,
                 registryCompliance: GeneralLib.Compliance.EEC,
                 startTime: START_TIME,
                 endTime: END_TIME
@@ -297,7 +297,7 @@ describe('Market-Facade', () => {
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
                 registryCompliance: 2,
-                targetWhPerPeriod: 10,
+                energyPerTimeFrame: 10,
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 typeOfPublicSupport: 'string',
                 startTime: START_TIME,

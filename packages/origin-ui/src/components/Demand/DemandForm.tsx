@@ -180,7 +180,7 @@ class DemandFormClass extends React.Component<Props, IState> {
             endDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
             activeUntilDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
             demandNeedsInMWh: Math.round(
-                demand.offChainProperties.targetWhPerPeriod / 1000000
+                demand.offChainProperties.energyPerTimeFrame / 1000000
             ).toString(),
             maxPricePerMWh: Math.round(demand.offChainProperties.maxPricePerMwh / 100).toString(),
             procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
@@ -294,7 +294,7 @@ class DemandFormClass extends React.Component<Props, IState> {
             endTime: values.endDate.unix().toString(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
+            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
         };
 
         if (values.procureFromSingleFacility) {

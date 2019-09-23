@@ -72,7 +72,7 @@ export class Matcher {
     }
 
     private async executeMatching(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
-        const requiredEnergy = demand.offChainProperties.targetWhPerPeriod;
+        const requiredEnergy = demand.offChainProperties.energyPerTimeFrame;
 
         if (certificate.energy === requiredEnergy) {
             return this.certificateService.matchDemand(certificate, demand);

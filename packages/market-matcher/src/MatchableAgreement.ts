@@ -24,8 +24,6 @@ export class MatchableAgreement {
     }
 
     public async missingEnergyForDemand(demand: Demand.IDemand) {
-        const { targetWhPerPeriod } = demand.offChainProperties;
-
-        return targetWhPerPeriod;
+        return demand.offChainProperties.energyPerTimeFrame;
     }
 }

@@ -155,7 +155,7 @@ export const marketDemo = async (demoFile?: string) => {
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
-                    targetWhPerPeriod: action.data.targetWhPerPeriod,
+                    energyPerTimeFrame: action.data.energyPerTimeFrame,
                     registryCompliance: assetCompliance,
                     startTime: action.data.startTime,
                     endTime: action.data.endTime

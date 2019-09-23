@@ -229,7 +229,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: 1e6,
+                energyPerTimeFrame: 1e6,
                 registryCompliance: Compliance.EEC,
                 startTime: '1559466472732',
                 endTime: '1559466492732'
@@ -556,7 +556,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: energy,
+                energyPerTimeFrame: energy,
                 registryCompliance: Compliance.EEC,
                 startTime: '1559466472732',
                 endTime: '1559466492732'

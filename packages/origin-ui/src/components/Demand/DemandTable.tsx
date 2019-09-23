@@ -253,7 +253,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                 calculateTotalEnergyDemand(
                     moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
                     moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-                    demand.offChainProperties.targetWhPerPeriod,
+                    demand.offChainProperties.energyPerTimeFrame,
                     demand.offChainProperties.timeFrame
                 ) / 1000000
             ).toLocaleString();
@@ -290,7 +290,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     demand.offChainProperties.vintage.length === 2
                         ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
                         : NO_VALUE_TEXT,
-                demand: (demand.offChainProperties.targetWhPerPeriod / 1000000).toLocaleString(),
+                demand: (demand.offChainProperties.energyPerTimeFrame / 1000000).toLocaleString(),
                 max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
                     Currency[demand.offChainProperties.currency]
                 }`,

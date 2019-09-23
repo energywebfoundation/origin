@@ -28,7 +28,7 @@ export class MatchableDemand {
         return new Validator<MatchingErrorReason>()
             .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
             .validate(
-                offChainProperties.targetWhPerPeriod <= Number(certificate.energy),
+                offChainProperties.energyPerTimeFrame <= Number(certificate.energy),
                 MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
             .validate(
@@ -62,7 +62,7 @@ export class MatchableDemand {
         return new Validator<MatchingErrorReason>()
             .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
             .validate(
-                supply.offChainProperties.availableWh >= offChainProperties.targetWhPerPeriod,
+                supply.offChainProperties.availableWh >= offChainProperties.energyPerTimeFrame,
                 MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
             .validate(

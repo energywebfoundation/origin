@@ -30,7 +30,7 @@ describe('MatchableDemand tests', () => {
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
-            demandOffChainProperties.targetWhPerPeriod.returns(certificateEnergy);
+            demandOffChainProperties.energyPerTimeFrame.returns(certificateEnergy);
             demandOffChainProperties.maxPricePerMwh.returns(energyPrice);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
@@ -175,7 +175,7 @@ describe('MatchableDemand tests', () => {
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
-            demandOffChainProperties.targetWhPerPeriod.returns(supplyEnergy);
+            demandOffChainProperties.energyPerTimeFrame.returns(supplyEnergy);
             demandOffChainProperties.maxPricePerMwh.returns(energyPrice * 1e6);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
