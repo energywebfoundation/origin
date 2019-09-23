@@ -49,13 +49,14 @@
     "@energyweb/origin": "1.1.0",
     "@energyweb/user-registry": "1.1.0",
     "@energyweb/utils-general": "1.1.0",
+    "moment": "^2.24.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1"
   },
   "devDependencies": {
+    "@energyweb/utils-testbackend": "1.1.0",
     "@types/web3": "1.0.19",
     "ethlint": "1.2.5",
-    "@energyweb/utils-testbackend": "1.1.0",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.1.8",
     "truffle": "5.0.18",

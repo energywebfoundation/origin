@@ -41,34 +41,6 @@ import { FormikDatePicker } from '../FormikDatePicker';
 import { AssetTypeSelector } from '../AssetTypeSelector';
 import { getCurrentUser } from '../../features/users/selectors';
 
-export function calculateTotalEnergyDemand(
-    startDate: Moment,
-    endDate: Moment,
-    targetWhPerPeriod: number,
-    timeframe: TimeFrame
-) {
-    let numberOfTimesDemandWillRepeat = 0;
-
-    const demandDuration = moment.duration(endDate.diff(startDate));
-
-    switch (timeframe) {
-        case TimeFrame.daily:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
-            break;
-        case TimeFrame.weekly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
-            break;
-        case TimeFrame.monthly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
-            break;
-        case TimeFrame.yearly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
-            break;
-    }
-
-    return targetWhPerPeriod * numberOfTimesDemandWillRepeat;
-}
-
 const REPEATABLE_TIMEFRAMES = [
     {
         label: 'Day',
@@ -235,7 +207,7 @@ class DemandFormClass extends React.Component<Props, IState> {
             return 0;
         }
 
-        return calculateTotalEnergyDemand(
+        return Demand.calculateTotalEnergyDemand(
             startDate,
             endDate,
             parseInt(demandNeedsInMWh, 10) * 1000000,

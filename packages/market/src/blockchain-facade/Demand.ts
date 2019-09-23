@@ -9,6 +9,7 @@ import {
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt } from 'web3/types';
 
+import moment from 'moment';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -228,4 +229,34 @@ export const deleteDemand = async (
     }
 
     return success;
+};
+
+export const calculateTotalEnergyDemand = (
+    startDate: number | moment.Moment,
+    endDate: number | moment.Moment,
+    energyPerTimeFrame: number,
+    timeFrame: TimeFrame
+) => {
+    let numberOfTimesDemandWillRepeat = 0;
+
+    const demandDuration = moment.duration(moment(endDate).diff(moment(startDate)));
+
+    switch (timeFrame) {
+        case TimeFrame.daily:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
+            break;
+        case TimeFrame.weekly:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
+            break;
+        case TimeFrame.monthly:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
+            break;
+        case TimeFrame.yearly:
+            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
+            break;
+        default:
+            break;
+    }
+
+    return energyPerTimeFrame * numberOfTimesDemandWillRepeat;
 };

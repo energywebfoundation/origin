@@ -28,7 +28,6 @@ import {
     RECORD_INDICATOR
 } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
-import { calculateTotalEnergyDemand } from './DemandForm';
 import { getCurrentUser } from '../../features/users/selectors';
 
 interface IStateProps {
@@ -250,7 +249,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     : NO_VALUE_TEXT;
 
             const overallDemand = (
-                calculateTotalEnergyDemand(
+                Demand.calculateTotalEnergyDemand(
                     moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
                     moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
                     demand.offChainProperties.energyPerTimeFrame,
