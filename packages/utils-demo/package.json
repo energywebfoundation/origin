@@ -21,7 +21,7 @@
   },
   "types": "dist/js/index.d.ts",
   "dependencies": {
-    "concurrently": "4.1.1",
+    "concurrently": "4.1.2",
     "@energyweb/asset-registry": "1.1.0",
     "@energyweb/erc-test-contracts": "1.1.0",
     "@energyweb/market": "1.1.0",
