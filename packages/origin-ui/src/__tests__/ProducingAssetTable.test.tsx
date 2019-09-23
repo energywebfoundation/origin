@@ -69,8 +69,9 @@ describe('ProducingAssetTable', () => {
                 offChainProperties: ({
                     facilityName: 'Wuthering Heights facility',
                     assetType: 'Solar',
-                    city: 'Sopot',
-                    country: 'Poland',
+                    country: 'Thailand',
+                    address:
+                        '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
                     capacityWh: 9876543
                 } as Partial<ProducingAsset.IOffChainProperties>) as any,
                 lastSmartMeterReadWh: 7777
@@ -90,7 +91,7 @@ describe('ProducingAssetTable', () => {
                 offChainProperties: ({
                     facilityName: 'Biomass Energy Facility',
                     assetType: 'Gaseous;Agricultural gas',
-                    city: 'Amsterdam',
+                    address: 'Amsterdam',
                     country: 'Netherlands',
                     capacityWh: 736123
                 } as Partial<ProducingAsset.IOffChainProperties>) as any,
@@ -114,14 +115,14 @@ describe('ProducingAssetTable', () => {
             expect(rendered.find('span.MuiTablePagination-caption').text()).toBe(
                 `${firstIndex}-${lastIndex} of ${total}`
             );
-        }
+        };
 
         rendered.update();
 
         expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
             'Example Organization',
             'Wuthering Heights facility',
-            'Sopot, Poland',
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
             'Solar',
             '9,876.543',
             '7.777',
@@ -164,7 +165,7 @@ describe('ProducingAssetTable', () => {
         expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
             'Example Organization',
             'Wuthering Heights facility',
-            'Sopot, Poland',
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
             'Solar',
             '9,876.543',
             '7.777'

@@ -88,11 +88,7 @@ export const onboardDemo = async (
                 operationalSince: action.data.operationalSince,
                 capacityWh: action.data.capacityWh,
                 country: action.data.country,
-                region: action.data.region,
-                zip: action.data.zip,
-                city: action.data.city,
-                street: action.data.street,
-                houseNumber: action.data.houseNumber,
+                address: action.data.address,
                 gpsLatitude: action.data.gpsLatitude,
                 gpsLongitude: action.data.gpsLongitude,
                 assetType: assetTypeConfig,
@@ -131,15 +127,11 @@ export const onboardDemo = async (
 
             const assetConsumingPropsOffChain: Asset.Asset.IOffChainProperties = {
                 capacityWh: action.data.capacityWh,
-                city: action.data.city,
                 country: action.data.country,
+                address: action.data.address,
                 gpsLatitude: action.data.gpsLatitude,
                 gpsLongitude: action.data.gpsLongitude,
-                houseNumber: action.data.houseNumber,
                 operationalSince: action.data.operationalSince,
-                region: action.data.region,
-                street: action.data.street,
-                zip: action.data.zip,
                 facilityName: action.data.facilityName
             };
 

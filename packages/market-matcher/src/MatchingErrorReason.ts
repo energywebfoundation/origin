@@ -5,5 +5,6 @@ export enum MatchingErrorReason {
     NON_MATCHING_CURRENCY,
     NON_MATCHING_ASSET_TYPE,
     WRONG_ASSET_ID,
-    OUT_OF_RANGE
+    OUT_OF_RANGE,
+    NON_MATCHING_LOCATION
 }

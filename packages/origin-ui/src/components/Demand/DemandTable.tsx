@@ -112,9 +112,10 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         const { location } = demand.offChainProperties;
 
         if (location) {
-            if (location.regions && location.regions.length) {
-                text += location.regions.join(', ');
-            }
+            text = location
+                .map(l => l.split(';')[1])
+                .filter(r => r)
+                .join(', ');
         }
 
         return text || NO_VALUE_TEXT;

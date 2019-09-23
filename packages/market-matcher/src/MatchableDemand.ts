@@ -1,12 +1,14 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, IRECAssetService, Unit } from '@energyweb/utils-general';
+import { Currency, IRECAssetService, Unit, LocationService } from '@energyweb/utils-general';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
 export class MatchableDemand {
     private assetService = new IRECAssetService();
+
+    private locationService = new LocationService();
 
     constructor(public demand: Demand.IDemand) {}
 
@@ -44,6 +46,10 @@ export class MatchableDemand {
                 ),
                 MatchingErrorReason.NON_MATCHING_ASSET_TYPE
             )
+            .validate(
+                this.matchesLocation(producingAsset),
+                MatchingErrorReason.NON_MATCHING_LOCATION
+            )
             .result();
     }
 
@@ -68,5 +74,25 @@ export class MatchableDemand {
 
     private get isActive() {
         return this.demand.status === Demand.DemandStatus.ACTIVE;
+    }
+
+    private matchesLocation(asset: ProducingAsset.IProducingAsset) {
+        if (!this.demand.offChainProperties.location) {
+            return true;
+        }
+
+        try {
+            const matchableLocation = this.locationService.translateAddress(
+                asset.offChainProperties.address,
+                asset.offChainProperties.country
+            );
+
+            return this.locationService.matches(
+                this.demand.offChainProperties.location,
+                matchableLocation
+            );
+        } catch (e) {
+            return false;
+        }
     }
 }

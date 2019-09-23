@@ -196,29 +196,26 @@ class DemandFormClass extends React.Component<Props, IState> {
         }
 
         if (demand.offChainProperties.location) {
-            if (
-                demand.offChainProperties.location.regions &&
-                demand.offChainProperties.location.regions.length > 0
-            ) {
-                newState.selectedRegions = demand.offChainProperties.location.regions.map(
-                    (region): IAutocompleteMultiSelectOptionType => ({
+            newState.selectedRegions = demand.offChainProperties.location.map(
+                (location): IAutocompleteMultiSelectOptionType => {
+                    const region = location.split(';')[1];
+                    return {
                         label: region,
                         value: region
-                    })
-                );
-            }
+                    };
+                }
+            );
 
-            if (
-                demand.offChainProperties.location.provinces &&
-                demand.offChainProperties.location.provinces.length > 0
-            ) {
-                newState.selectedProvinces = demand.offChainProperties.location.provinces.map(
-                    (province): IAutocompleteMultiSelectOptionType => ({
+            newState.selectedProvinces = demand.offChainProperties.location.map(
+                (location): IAutocompleteMultiSelectOptionType => {
+                    const province = location.split(';')[2];
+
+                    return {
                         label: province,
                         value: province
-                    })
-                );
-            }
+                    };
+                }
+            );
         }
 
         if (demand.offChainProperties.assetType && demand.offChainProperties.assetType.length > 0) {
@@ -308,21 +305,23 @@ class DemandFormClass extends React.Component<Props, IState> {
             offChainProps.assetType = selectedAssetType;
         }
 
-        if (selectedRegions && selectedRegions.length > 0) {
-            offChainProps.location = {
-                regions: selectedRegions.map(i => i.value)
-            };
-        }
+        // TODO: hierarchical region/provinces
 
-        if (selectedProvinces && selectedProvinces.length > 0) {
-            if (typeof offChainProps.location === 'undefined') {
-                offChainProps.location = {
-                    provinces: selectedProvinces.map(i => i.value)
-                };
-            } else {
-                offChainProps.location.provinces = selectedProvinces.map(i => i.value);
-            }
-        }
+        // if (selectedRegions && selectedRegions.length > 0) {
+        //     offChainProps.location = {
+        //         regions: selectedRegions.map(i => i.value)
+        //     };
+        // }
+
+        // if (selectedProvinces && selectedProvinces.length > 0) {
+        //     if (typeof offChainProps.location === 'undefined') {
+        //         offChainProps.location = {
+        //             provinces: selectedProvinces.map(i => i.value)
+        //         };
+        //     } else {
+        //         offChainProps.location.provinces = selectedProvinces.map(i => i.value);
+        //     }
+        // }
 
         if (
             vintage &&

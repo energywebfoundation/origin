@@ -725,7 +725,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
                 'x'
             ).format('MMM YY'),
-            townCountry: `${enrichedData.producingAsset.offChainProperties.city}, ${enrichedData.producingAsset.offChainProperties.country}`,
+            townCountry: `${enrichedData.producingAsset.offChainProperties.address}, ${enrichedData.producingAsset.offChainProperties.country}`,
             compliance:
                 Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry],
             owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,

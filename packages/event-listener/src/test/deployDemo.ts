@@ -212,17 +212,14 @@ export class Demo {
             complianceRegistry: Compliance.IREC,
             facilityName: 'Wuthering Heights Windfarm',
             capacityWh: 0,
-            city: 'Warsaw',
-            country: 'Poland',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '',
             gpsLongitude: '',
-            houseNumber: '1',
             operationalSince: 0,
             otherGreenAttributes: '',
-            region: 'Mazovian',
-            street: 'Backstreet',
-            typeOfPublicSupport: '',
-            zip: '00-000'
+            typeOfPublicSupport: ''
         };
 
         try {
@@ -274,7 +271,7 @@ export class Demo {
             timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150000,
             currency: Currency.USD,
-            location: { provinces: ['string'], regions: ['string'] },
+            location: ['Thailand;Central;Nakhon Pathom'],
             assetType: ['Wind'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',

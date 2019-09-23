@@ -238,17 +238,14 @@ const deployDemo = async () => {
         complianceRegistry: Compliance.IREC,
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
-        city: 'Warsaw',
-        country: 'Poland',
+        country: 'Thailand',
+        address:
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '',
         gpsLongitude: '',
-        houseNumber: '1',
         operationalSince: 0,
         otherGreenAttributes: '',
-        region: 'Mazovian',
-        street: 'Backstreet',
-        typeOfPublicSupport: '',
-        zip: '00-000'
+        typeOfPublicSupport: ''
     };
 
     try {
@@ -303,7 +300,7 @@ describe('Application[E2E]', () => {
         expect(renderedApp.find('table tbody tr td').map(el => el.text())).toEqual([
             'Asset Manager organization',
             'Wuthering Heights Windfarm',
-            'Warsaw, Poland',
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
             'Wind',
             '0',
             '0'

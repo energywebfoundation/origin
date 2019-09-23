@@ -42,37 +42,6 @@ if (!fs.existsSync(program.input)) {
     process.exit(1);
 }
 
-const parseAddress = (country, address) => {
-    console.log(address);
-    if (country === 'Thailand') {
-        const zipRegex = /[0-9]{5}/;
-        const split = address.split(',').reverse();
-        console.log(split);
-        const province = split[0];
-
-        const matchZapResult = province.match(zipRegex);
-        const zip = matchZapResult ? matchZapResult[0].trim() : '';
-
-        const region = zip ? (province.split(zipRegex)[0] || '').trim() : '';
-
-        return {
-            street: (split[3] || '').trim(),
-            city: (split[2] || '').trim(),
-            zip,
-            region
-        };
-    }
-
-    console.log(`country ${country} not implemented`);
-
-    return {
-        street: '',
-        city: '',
-        zip: '',
-        region: ''
-    };
-};
-
 const processAssets = async parsedContent => {
     const assets = [];
     const flow = [];
@@ -85,8 +54,6 @@ const processAssets = async parsedContent => {
         const maxCapacity = parseFloat(asset['Electrical Capacity (MW)']) * 10 ** 6;
         const country = asset.Country.split(':')[1].trim();
         const address = asset['Address (ex. Country)'];
-
-        const { street, city, zip, region } = parseAddress(country, address);
 
         const name = asset.Name;
         const registrationDate = asset['Registration Date'];
@@ -124,11 +91,7 @@ const processAssets = async parsedContent => {
                 active: true,
                 lastSmartMeterReadFileHash: '',
                 country,
-                region,
-                zip,
-                city,
-                street,
-                houseNumber: '',
+                address,
                 gpsLatitude: latitude.toString(),
                 gpsLongitude: longitude.toString(),
                 assetType,

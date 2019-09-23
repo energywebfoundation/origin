@@ -4,16 +4,9 @@ import Web3 from 'web3';
 import 'mocha';
 import { Configuration } from '@energyweb/utils-general';
 import { logger } from '../Logger';
-import {
-    UserContractLookup,
-    UserLogic,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts,
-} from '@energyweb/user-registry/contracts';
-import { migrateAssetRegistryContracts  } from '../../contracts';
+import { UserContractLookup, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { migrateAssetRegistryContracts } from '../../contracts';
 import { Asset, ConsumingAsset, AssetConsumingRegistryLogic } from '..';
 
 describe('AssetConsumingLogic Facade', () => {
@@ -60,7 +53,7 @@ describe('AssetConsumingLogic Facade', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             accountDeployment,
-            'admin', 
+            'admin',
             { privateKey: privateKeyDeployment }
         );
 
@@ -131,12 +124,9 @@ describe('AssetConsumingLogic Facade', () => {
         const assetPropsOffChain: Asset.IOffChainProperties = {
             operationalSince: 10,
             capacityWh: 10,
-            country: 'USA',
-            region: 'AnyState',
-            zip: '012345',
-            city: 'Anytown',
-            street: 'Main-Street',
-            houseNumber: '42',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             facilityName: 'Wuthering Heights Windfarm'
@@ -181,12 +171,9 @@ describe('AssetConsumingLogic Facade', () => {
         const assetPropsOffChain: Asset.IOffChainProperties = {
             operationalSince: 10,
             capacityWh: 10,
-            country: 'USA',
-            region: 'AnyState',
-            zip: '012345',
-            city: 'Anytown',
-            street: 'Main-Street',
-            houseNumber: '42',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             facilityName: 'Wuthering Heights Windfarm'
@@ -231,12 +218,9 @@ describe('AssetConsumingLogic Facade', () => {
             offChainProperties: {
                 operationalSince: 10,
                 capacityWh: 10,
-                country: 'USA',
-                region: 'AnyState',
-                zip: '012345',
-                city: 'Anytown',
-                street: 'Main-Street',
-                houseNumber: '42',
+                country: 'Thailand',
+                address:
+                    '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
                 facilityName: 'Wuthering Heights Windfarm'

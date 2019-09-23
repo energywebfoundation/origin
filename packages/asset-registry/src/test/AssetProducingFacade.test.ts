@@ -1,14 +1,7 @@
 import 'mocha';
 
-import {
-    buildRights,
-    Role,
-    UserContractLookup,
-    UserLogic
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts,
-} from '@energyweb/user-registry/contracts';
+import { buildRights, Role, UserContractLookup, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import * as fs from 'fs';
@@ -131,12 +124,9 @@ describe('AssetProducing Facade', () => {
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
             operationalSince: 0,
             capacityWh: 10,
-            country: 'USA',
-            region: 'AnyState',
-            zip: '012345',
-            city: 'Anytown',
-            street: 'Main-Street',
-            houseNumber: '42',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             assetType: 'Wind',
@@ -186,12 +176,9 @@ describe('AssetProducing Facade', () => {
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
             operationalSince: 0,
             capacityWh: 10,
-            country: 'USA',
-            region: 'AnyState',
-            zip: '012345',
-            city: 'Anytown',
-            street: 'Main-Street',
-            houseNumber: '42',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             assetType: 'Wind',
@@ -240,12 +227,9 @@ describe('AssetProducing Facade', () => {
             offChainProperties: {
                 operationalSince: 0,
                 capacityWh: 10,
-                country: 'USA',
-                region: 'AnyState',
-                zip: '012345',
-                city: 'Anytown',
-                street: 'Main-Street',
-                houseNumber: '42',
+                country: 'Thailand',
+                address:
+                    '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
                 assetType: 'Wind',
