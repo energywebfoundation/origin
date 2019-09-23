@@ -300,7 +300,7 @@ describe('Application[E2E]', () => {
         expect(renderedApp.find('table tbody tr td').map(el => el.text())).toEqual([
             'Asset Manager organization',
             'Wuthering Heights Windfarm',
-            'Warsaw, Poland',
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
             'Wind',
             '0',
             '0'
