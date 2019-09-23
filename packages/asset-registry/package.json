@@ -24,12 +24,13 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn build:static && yarn build-ts",
+    "build": "yarn build:ts",
+    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build && yarn deploy-contracts",
     "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts IOffChainProperties",
     "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties",
     "build-schemas": "./scripts/buildSchemas.js",
-    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",
@@ -42,8 +43,7 @@
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
-    "clean": "rm -rf build dist dist-shakeable schemas db.json",
-    "build:static": "yarn compile && yarn extractABI && yarn build-schemas"
+    "clean": "rm -rf build dist dist-shakeable schemas db.json"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {

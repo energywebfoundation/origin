@@ -29,6 +29,7 @@ before_install:
 
 install:
     - yarn
+    - yarn build:static
     - yarn build
 
 jobs:

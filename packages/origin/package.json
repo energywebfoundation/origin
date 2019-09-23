@@ -22,9 +22,9 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn build:static && yarn build-ts",
+    "build": "yarn build:ts",
     "build:static": "yarn compile && yarn extractABI",
-    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "clean": "rm -rf dist dist-shakeable build db.json",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
