@@ -22,7 +22,7 @@ contract TradableEntityContract {
     struct TradableEntity {
         uint assetId;
         address owner;
-        uint powerInW;
+        uint energy;
         bool forSale;
         address acceptedToken;
         uint onChainDirectPurchasePrice;

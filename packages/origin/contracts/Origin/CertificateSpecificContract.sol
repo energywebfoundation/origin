@@ -68,7 +68,7 @@ contract CertificateSpecificContract is TradableEntityLogic {
 
     function createTradableEntity(
         uint _assetId,
-        uint _powerInW
+        uint energy
     )
         internal
         returns (uint);

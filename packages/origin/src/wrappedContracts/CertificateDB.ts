@@ -131,7 +131,7 @@ export class CertificateDB extends GeneralFunctions {
 
     async createCertificateRaw(
         _assetId: number,
-        _powerInW: number,
+        _energy: number,
         _assetOwner: string,
         _lastSmartMeterReadFileHash: string,
         _maxOwnerChanges: number,
@@ -139,7 +139,7 @@ export class CertificateDB extends GeneralFunctions {
     ) {
         const method = this.web3Contract.methods.createCertificateRaw(
             _assetId,
-            _powerInW,
+            _energy,
             _assetOwner,
             _lastSmartMeterReadFileHash,
             _maxOwnerChanges
@@ -280,8 +280,8 @@ export class CertificateDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async createChildCertificate(_parentId: number, _power: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.createChildCertificate(_parentId, _power);
+    async createChildCertificate(_parentId: number, _energy: number, txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.createChildCertificate(_parentId, _energy);
 
         return await this.send(method, txParams);
     }

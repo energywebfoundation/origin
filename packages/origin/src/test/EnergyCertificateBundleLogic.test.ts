@@ -465,7 +465,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -614,7 +614,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -735,7 +735,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -868,7 +868,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -1136,7 +1136,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -1523,7 +1523,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -1700,7 +1700,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -1834,7 +1834,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -1926,7 +1926,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2020,7 +2020,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2128,7 +2128,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2222,7 +2222,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2311,7 +2311,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2417,7 +2417,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2580,7 +2580,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2673,7 +2673,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2833,7 +2833,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2916,7 +2916,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -2948,7 +2948,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3028,7 +3028,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3111,7 +3111,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3143,7 +3143,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3239,7 +3239,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3322,7 +3322,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3354,7 +3354,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3450,7 +3450,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3533,7 +3533,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3599,7 +3599,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x1000000000000000000000000000000000000006'
@@ -3659,7 +3659,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x1000000000000000000000000000000000000006'
@@ -3713,7 +3713,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3776,7 +3776,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3894,7 +3894,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -3931,7 +3931,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x1000000000000000000000000000000000000006'
@@ -3986,7 +3986,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -4065,7 +4065,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -4175,7 +4175,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -4212,7 +4212,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x1000000000000000000000000000000000000006'
@@ -4267,7 +4267,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'
@@ -4331,7 +4331,7 @@ describe('EnergyCertificateBundleLogic', () => {
 
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
-                assert.equal(tradableEntity.powerInW, 100);
+                assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
                     '0x0000000000000000000000000000000000000000'

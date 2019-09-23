@@ -215,8 +215,8 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.web3Contract.methods.getBundle(_bundleId).call(txParams);
     }
 
-    async createTradableEntity(_assetId: number, _powerInW: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.createTradableEntity(_assetId, _powerInW);
+    async createTradableEntity(_assetId: number, _energy: number, txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.createTradableEntity(_assetId, _energy);
 
         return await this.send(method, txParams);
     }

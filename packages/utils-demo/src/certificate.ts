@@ -191,7 +191,7 @@ export const certificateDemo = async (
 
                 for (const cId of certificate.children) {
                     const c = await new Certificate.Entity(cId.toString(), conf).sync();
-                    conf.logger.info('Child Certificate #' + cId + ' - PowerInW: ' + c.powerInW);
+                    conf.logger.info('Child Certificate #' + cId + ' - energy: ' + c.energy);
                 }
             } catch (e) {
                 conf.logger.error('Could not split certificates\n' + e);

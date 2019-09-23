@@ -82,7 +82,7 @@ export class BuyCertificateBulkModal extends React.Component<
     }
 
     render() {
-        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.powerInW), 0);
+        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.energy), 0);
 
         return (
             <Dialog open={this.state.show} onClose={this.handleClose}>
