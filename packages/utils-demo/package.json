@@ -29,7 +29,7 @@
     "@energyweb/user-registry": "1.1.0",
     "@energyweb/utils-general": "1.1.0",
     "@energyweb/utils-testbackend": "1.1.0",
-    "node-fetch": "2.5.0",
+    "node-fetch": "2.6.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
     "write-json-file": "3.1.0",
