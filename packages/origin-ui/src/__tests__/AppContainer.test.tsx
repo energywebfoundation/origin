@@ -37,6 +37,7 @@ import ganache from 'ganache-cli';
 import axios from 'axios';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createMemoryHistory } from 'history';
+import { IStoreState } from '../types';
 
 const wait = (ms: number) => {
     return new Promise(resolve => {
@@ -113,6 +114,7 @@ const deployDemo = async () => {
     const marketContracts: any = await migrateMarketRegistryContracts(
         web3,
         assetContracts.AssetContractLookup,
+        originContracts.OriginContractLookup,
         adminPK
     );
 
@@ -157,7 +159,7 @@ const deployDemo = async () => {
     const certificateLogic = new CertificateLogic(web3, deployResult.certificateLogic);
     const marketLogic = new MarketLogic(web3, deployResult.marketLogic);
 
-    const conf: Configuration.Entity = {
+    const conf: IStoreState['configuration'] = {
         blockchainProperties: {
             activeUser: {
                 address: ACCOUNTS.ADMIN.address,
@@ -228,8 +230,7 @@ const deployDemo = async () => {
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
         url: null,
-        maxOwnerChanges: 1000,
-        matcher: []
+        maxOwnerChanges: 1000
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {

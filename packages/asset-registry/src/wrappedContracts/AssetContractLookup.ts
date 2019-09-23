@@ -92,10 +92,6 @@ export class AssetContractLookup extends GeneralFunctions {
         return await this.web3Contract.methods.userRegistry().call(txParams);
     }
 
-    async maxMatcherPerAsset(txParams?: SpecialTx) {
-        return await this.web3Contract.methods.maxMatcherPerAsset().call(txParams);
-    }
-
     async owner(txParams?: SpecialTx) {
         return await this.web3Contract.methods.owner().call(txParams);
     }

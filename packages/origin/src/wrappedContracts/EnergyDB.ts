@@ -65,37 +65,6 @@ export class EnergyDB extends GeneralFunctions {
         return await this.web3Contract.methods.getApproved(_entityId).call(txParams);
     }
 
-    async addEscrowForEntity(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForEntity(_entityId, _escrow);
-
-        return await this.send(method, txParams);
-    }
-
-    async setTradableEntityEscrowExternal(
-        _entityId: number,
-        _escrow: string[],
-        txParams?: SpecialTx
-    ) {
-        const method = this.web3Contract.methods.setTradableEntityEscrowExternal(
-            _entityId,
-            _escrow
-        );
-
-        return await this.send(method, txParams);
-    }
-
-    async getTradableEntityEscrowLength(_entityId: number, txParams?: SpecialTx) {
-        return await this.web3Contract.methods
-            .getTradableEntityEscrowLength(_entityId)
-            .call(txParams);
-    }
-
-    async addEscrowForAsset(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.addEscrowForAsset(_entityId, _escrow);
-
-        return await this.send(method, txParams);
-    }
-
     async setTradableEntityOwnerAndAddApproval(
         _entityId: number,
         _owner: string,
@@ -119,12 +88,6 @@ export class EnergyDB extends GeneralFunctions {
 
     async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: SpecialTx) {
         const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-
-        return await this.send(method, txParams);
-    }
-
-    async setEscrow(_entityId: number, _escrow: string[], txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.setEscrow(_entityId, _escrow);
 
         return await this.send(method, txParams);
     }
@@ -191,12 +154,6 @@ export class EnergyDB extends GeneralFunctions {
         txParams?: SpecialTx
     ) {
         const method = this.web3Contract.methods.setOwnerToOperators(_company, _escrow, _allowed);
-
-        return await this.send(method, txParams);
-    }
-
-    async removeEscrow(_entityId: number, _escrow: string, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.removeEscrow(_entityId, _escrow);
 
         return await this.send(method, txParams);
     }

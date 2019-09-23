@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './ColumnBatchActions.scss';
+import { Button } from '@material-ui/core';
 
 export interface IBatchableAction {
     label: string;
@@ -37,13 +38,14 @@ export class ColumnBatchActions extends Component<IProps> {
                 <span className="ColumnBatchActions_counter">{this.counter}</span>
                 <div className="ColumnBatchActions_list">
                     {batchableActions.map(action => (
-                        <div
+                        <Button
                             onClick={() => this.handleAction(action)}
-                            className="ColumnBatchActions_list_item"
                             key={action.label}
+                            color="primary"
+                            variant="outlined"
                         >
                             {action.label}
-                        </div>
+                        </Button>
                     ))}
                 </div>
             </div>

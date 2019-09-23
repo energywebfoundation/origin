@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
-import { createBlockchainProperties as issuerCreateBlockchainProperties } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import { container } from 'tsyringe';
@@ -30,11 +29,6 @@ const createBlockchainConf = async (
         web3,
         matcherConfig.marketContractLookupAddress
     );
-    const originConf = await issuerCreateBlockchainProperties(
-        web3,
-        matcherConfig.originContractLookupAddress
-    );
-    marketConf.certificateLogicInstance = originConf.certificateLogicInstance;
     marketConf.activeUser = matcherConfig.matcherAccount;
 
     return {

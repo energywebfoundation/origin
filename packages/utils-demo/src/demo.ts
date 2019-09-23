@@ -234,32 +234,22 @@ export const marketDemo = async (demoFile?: string) => {
                     timeFrame: timeFrame
                 };
 
-                const matcherOffchainProps: Agreement.IMatcherOffChainProperties = {
-                    currentWh: action.data.currentWh,
-                    currentPeriod: action.data.currentPeriod
-                };
-
                 const agreementProps: Agreement.IAgreementOnChainProperties = {
                     propertiesDocumentHash: null,
                     url: null,
-                    matcherDBUrl: null,
-                    matcherPropertiesDocumentHash: null,
                     demandId: action.data.demandId,
-                    supplyId: action.data.supplyId,
-                    allowedMatcher: [action.data.allowedMatcher]
+                    supplyId: action.data.supplyId
                 };
 
                 try {
                     const agreement = await Agreement.createAgreement(
                         agreementProps,
                         agreementOffchainProps,
-                        matcherOffchainProps,
                         conf
                     );
                     delete agreement.proofs;
                     delete agreement.configuration;
                     delete agreement.propertiesDocumentHash;
-                    delete agreement.matcherPropertiesDocumentHash;
                     if (agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner) {
                         conf.logger.info('Agreement Confirmed');
                     } else if (!agreement.approvedByDemandOwner) {

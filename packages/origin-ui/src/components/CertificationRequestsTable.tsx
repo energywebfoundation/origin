@@ -13,9 +13,10 @@ import {
 } from './Table/PaginatedLoader';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getCurrentUser, getProducingAssets, getConfiguration } from '../features/selectors';
+import { getProducingAssets, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
+import { getCurrentUser } from '../features/users/selectors';
 
 interface IEnrichedData {
     certificationRequestId: number;

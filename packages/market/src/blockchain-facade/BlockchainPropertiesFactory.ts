@@ -14,23 +14,29 @@
 //
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
 
-import * as EwGeneralLib from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
+import { createBlockchainProperties as issuerCreateBlockchainProperties } from '@energyweb/origin';
 import { MarketContractLookup, MarketLogic } from '..';
 
 export const createBlockchainProperties = async (
     web3: Web3,
     marketContractLookupAddress: string
-): Promise<EwGeneralLib.Configuration.BlockchainProperties> => {
+): Promise<Configuration.BlockchainProperties> => {
     const marketLookupContractInstance: MarketContractLookup = new MarketContractLookup(
         web3,
         marketContractLookupAddress
     );
 
-    const assetBlockchainProperties: EwGeneralLib.Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
+    const assetBlockchainProperties: Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
         web3,
         await marketLookupContractInstance.assetContractLookup()
+    );
+
+    const originBlockchainProperties: Configuration.BlockchainProperties = await issuerCreateBlockchainProperties(
+        web3,
+        await marketLookupContractInstance.originContractLookup()
     );
 
     return {
@@ -41,6 +47,7 @@ export const createBlockchainProperties = async (
         ),
         producingAssetLogicInstance: assetBlockchainProperties.producingAssetLogicInstance,
         userLogicInstance: assetBlockchainProperties.userLogicInstance,
+        certificateLogicInstance: originBlockchainProperties.certificateLogicInstance,
         web3: web3 as any
     };
 };

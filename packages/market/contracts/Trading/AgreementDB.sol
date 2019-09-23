@@ -24,13 +24,10 @@ contract AgreementDB is Owned {
     struct Agreement {
         string propertiesDocumentHash;
         string documentDBURL;
-        string matcherPropertiesDocumentHash;
-        string matcherDBURL;
         uint demandId;
         uint supplyId;
         bool approvedBySupplyOwner;
         bool approvedByDemandOwner;
-        address[] allowedMatcher;
     }
 
     /// @notice list with all created agreements
@@ -73,8 +70,6 @@ contract AgreementDB is Owned {
     (
         string calldata _propertiesDocumentHash,
         string calldata _documentDBURL,
-        string calldata _matcherPropertiesDocumentHash,
-        string calldata _matcherDBURL,
         uint _demandId,
         uint _supplyId
    )
@@ -82,52 +77,15 @@ contract AgreementDB is Owned {
         onlyOwner
         returns (uint _agreementId)
     {
-
-        address[] memory emptyMatcher = new address[](0);
         allAgreements.push(Agreement({
             propertiesDocumentHash: _propertiesDocumentHash,
             documentDBURL: _documentDBURL,
-            matcherPropertiesDocumentHash: _matcherPropertiesDocumentHash,
-            matcherDBURL: _matcherDBURL,
             demandId: _demandId,
             supplyId: _supplyId,
             approvedBySupplyOwner: false,
-            approvedByDemandOwner: false,
-            allowedMatcher: emptyMatcher
+            approvedByDemandOwner: false
         }));
-        _agreementId = allAgreements.length>0?allAgreements.length-1:0;
-
-    }
-
-    /// @notice set the matchers for an agreement
-    /// @param _agreementId id of an agreement
-    /// @param _matchers matcher-array 
-    function setAgreementMatcher(
-        uint _agreementId,
-        address[] calldata _matchers
-    )
-        external 
-        onlyOwner
-    {
-        Agreement storage a = allAgreements[_agreementId];
-        a.allowedMatcher = _matchers;
-    }
-
-    /// @notice sets the matcherProperties for an agreement
-    /// @param _agreementId id of an agreement
-    /// @param _matcherPropertiesDocumentHash document-hash of the matcher properties
-    /// @param _matcherDBURL db-url of the document-hash
-    function setMatcherPropertiesAndURL(
-        uint _agreementId,
-        string calldata _matcherPropertiesDocumentHash,
-        string calldata _matcherDBURL
-    )
-        external 
-        onlyOwner
-    {
-        Agreement storage a = allAgreements[_agreementId];
-        a.matcherPropertiesDocumentHash = _matcherPropertiesDocumentHash;
-        a.matcherDBURL = _matcherDBURL;
+        _agreementId = allAgreements.length > 0 ? allAgreements.length - 1 : 0;
     }
 
 	/// @notice Returns a agreement-struct

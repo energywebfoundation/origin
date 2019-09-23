@@ -23,7 +23,6 @@ export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainPr
     lastSmartMeterReadWh: number;
     active: boolean;
     lastSmartMeterReadFileHash: string;
-    matcher: Configuration.EthAccount[];
 }
 
 export interface IOffChainProperties {
@@ -44,7 +43,6 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     lastSmartMeterReadFileHash: string;
-    matcher: Configuration.EthAccount[];
     propertiesDocumentHash: string;
     url: string;
     active: boolean;

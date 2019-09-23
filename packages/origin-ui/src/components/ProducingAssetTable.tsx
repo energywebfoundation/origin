@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, Unit } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
@@ -22,21 +22,18 @@ import {
 import { getProducingAssetDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import {
-    getConfiguration,
-    getCertificates,
-    getProducingAssets,
-    getCurrentUser,
-    getBaseURL
-} from '../features/selectors';
-import { Share } from '@material-ui/icons';
+import { getConfiguration, getProducingAssets, getBaseURL } from '../features/selectors';
+import { Assignment } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
+import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
+import { getCertificates } from '../features/certificates/selectors';
 
 interface IStateProps {
     configuration: Configuration.Entity;
     certificates: Certificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
     currentUser: User.Entity;
+    users: User.Entity[];
     baseURL: string;
 }
 
@@ -45,7 +42,6 @@ type Props = IStateProps;
 interface IEnrichedProducingAssetData {
     asset: ProducingAsset.Entity;
     organizationName: string;
-    notSoldCertificates: Certificate.Entity[];
 }
 
 interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
@@ -70,7 +66,10 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
     }
 
     async componentDidUpdate(newProps: Props) {
-        if (newProps.producingAssets !== this.props.producingAssets) {
+        if (
+            newProps.producingAssets !== this.props.producingAssets ||
+            newProps.users.length !== this.props.users.length
+        ) {
             await this.loadPage(1);
         }
     }
@@ -79,19 +78,11 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         producingAssets: ProducingAsset.Entity[]
     ): Promise<IEnrichedProducingAssetData[]> {
         const promises = producingAssets.map(async asset => {
-            const user = await new User.Entity(
-                asset.owner.address,
-                this.props.configuration
-            ).sync();
+            const user = getUserById(this.props.users, asset.owner.address);
 
             return {
                 asset,
-                notSoldCertificates: this.props.certificates.filter(
-                    (certificate: Certificate.Entity) =>
-                        certificate.owner === asset.owner.address &&
-                        certificate.assetId.toString() === asset.id
-                ),
-                organizationName: user.organization
+                organizationName: user && user.organization
             };
         });
 
@@ -226,8 +217,10 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
                 ', ' +
                 enrichedData.asset.offChainProperties.country,
             type: enrichedData.asset.offChainProperties.assetType,
-            capacity: (enrichedData.asset.offChainProperties.capacityWh / 1000).toLocaleString(),
-            read: (enrichedData.asset.lastSmartMeterReadWh / 1000).toLocaleString()
+            capacity: (
+                enrichedData.asset.offChainProperties.capacityWh / Unit.kWh
+            ).toLocaleString(),
+            read: (enrichedData.asset.lastSmartMeterReadWh / Unit.kWh).toLocaleString()
         }));
     }
 
@@ -253,7 +246,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
 
         if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
             actions.push({
-                icon: <Share />,
+                icon: <Assignment />,
                 name: 'Request I-RECs',
                 onClick: (row: number) => this.requestIRECs(row)
             });
@@ -288,6 +281,7 @@ export const ProducingAssetTable = connect(
         configuration: getConfiguration(state),
         certificates: getCertificates(state),
         producingAssets: getProducingAssets(state),
+        users: getUsers(state),
         currentUser: getCurrentUser(state),
         baseURL: getBaseURL(state)
     })

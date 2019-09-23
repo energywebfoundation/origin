@@ -3,6 +3,8 @@ import { Certificate } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
+// eslint-disable-next-line import/no-unresolved
+import { TransactionReceipt } from 'web3/types';
 
 import { IEntityStore } from './EntityStore';
 
@@ -19,7 +21,10 @@ export class CertificateService {
         agreement: Agreement.IAgreement
     ) {
         const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-        if (await this.isAlreadyTransferred(certificate, demand.demandOwner)) {
+        if (
+            (await this.isAlreadyTransferred(certificate, demand.demandOwner)) ||
+            demand.status !== Demand.DemandStatus.ACTIVE
+        ) {
             return false;
         }
 
@@ -27,21 +32,27 @@ export class CertificateService {
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
 
-        await certificate.transferFrom(demand.demandOwner);
-        return true;
+        const fillTx: TransactionReceipt = await demand.fill(certificate.id);
+
+        return fillTx.status;
     }
 
     public async splitCertificate(
         certificate: Certificate.ICertificate,
         requiredEnergy: number
-    ): Promise<void> {
+    ): Promise<boolean> {
         this.logger.info(`Splitting certificate ${certificate.id} at ${requiredEnergy}`);
 
-        await certificate.splitCertificate(requiredEnergy);
+        const splitTx = await certificate.splitCertificate(requiredEnergy);
+
+        return splitTx.status;
     }
 
     public async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
-        if (await this.isAlreadyTransferred(certificate, demand.demandOwner)) {
+        if (
+            (await this.isAlreadyTransferred(certificate, demand.demandOwner)) ||
+            demand.status !== Demand.DemandStatus.ACTIVE
+        ) {
             return false;
         }
 
@@ -49,9 +60,9 @@ export class CertificateService {
             `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
 
-        await certificate.transferFrom(demand.demandOwner);
+        const fillTx: TransactionReceipt = await demand.fill(certificate.id);
 
-        return true;
+        return fillTx.status;
     }
 
     private async isAlreadyTransferred(certificate: Certificate.ICertificate, owner: string) {

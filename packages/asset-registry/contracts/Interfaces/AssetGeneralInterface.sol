@@ -25,8 +25,5 @@ interface AssetGeneralInterface {
     function getAssetListLength() external view returns (uint);
     function getLastMeterReadingAndHash(uint _assetId) external view returns (uint _lastSmartMeterReadWh, string memory _lastSmartMeterReadFileHash);
     function getAssetOwner(uint _assetId) external view returns (address);
-    function addMatcher(uint _assetId, address _new) external ;
-    function getMatcher(uint _assetId) external view returns(address[] memory);
-    function removeMatcher(uint _assetId, address _remove) external;
-    function getAssetGeneral(uint _assetId) external view returns (address smartMeter, address owner, uint lastSmartMeterReadWh, bool active, string memory lastSmartMeterReadFileHash, address[] memory matcher, string memory propertiesDocumentHash, string memory url, address marketLookupContract, bool bundled);
+    function getAssetGeneral(uint _assetId) external view returns (address smartMeter, address owner, uint lastSmartMeterReadWh, bool active, string memory lastSmartMeterReadFileHash, string memory propertiesDocumentHash, string memory url, address marketLookupContract, bool bundled);
 }

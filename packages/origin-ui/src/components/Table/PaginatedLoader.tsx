@@ -1,4 +1,4 @@
-import { Component, ReactText } from 'react';
+import { Component } from 'react';
 import { ICustomFilter } from './FiltersHeader';
 
 export const DEFAULT_PAGE_SIZE = 25;

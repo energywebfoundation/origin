@@ -21,7 +21,7 @@
   },
   "types": "dist/js/index.d.ts",
   "dependencies": {
-    "concurrently": "4.1.1",
+    "concurrently": "4.1.2",
     "@energyweb/asset-registry": "1.1.0",
     "@energyweb/erc-test-contracts": "1.1.0",
     "@energyweb/market": "1.1.0",
@@ -29,14 +29,14 @@
     "@energyweb/user-registry": "1.1.0",
     "@energyweb/utils-general": "1.1.0",
     "@energyweb/utils-testbackend": "1.1.0",
-    "node-fetch": "2.5.0",
+    "node-fetch": "2.6.0",
     "web3": "1.0.0-beta.37",
     "winston": "3.2.1",
-    "write-json-file": "3.1.0",
+    "write-json-file": "3.2.0",
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@types/web3": "1.0.14",
+    "@types/web3": "1.0.19",
     "ganache-cli": "6.6.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts"

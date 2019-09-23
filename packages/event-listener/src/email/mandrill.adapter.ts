@@ -6,14 +6,14 @@ import { IEmail, IEmailResponse } from '../services/email.service';
 export class MandrillEmailAdapter implements IEmailAdapter {
     private mandrill;
 
-    constructor(apiKey: string) {
+    constructor(private apiKey: string) {
         this.mandrill = new mandrill.Mandrill(apiKey);
     }
 
     public async send(from: string, email: IEmail): Promise<IEmailResponse> {
         const { to, subject, html } = email;
 
-        const toFormatted = to.map(toAddress => {
+        const toFormatted = to.map((toAddress: string) => {
             return {
                 email: toAddress,
                 name: toAddress,
@@ -31,14 +31,14 @@ export class MandrillEmailAdapter implements IEmailAdapter {
                 'Reply-To': process.env.EMAIL_REPLY_TO
             },
             merge: true,
-            tags: ['Mandrill automatic email']
+            tags: ['origin', 'no-reply']
         };
 
         const result = await this.sendMandrill(message);
 
         return {
             success: result[0].status === 'sent',
-            error: result[0].reject_reason ? `Mandrill Error: ${result[0].reject_reason}` : null
+            error: result[0].reject_reason ? `Mandrill Error: ${JSON.stringify(result[0])}` : null
         };
     }
 
@@ -46,6 +46,7 @@ export class MandrillEmailAdapter implements IEmailAdapter {
         return new Promise((resolve, reject) => {
             this.mandrill.messages.send(
                 {
+                    key: this.apiKey,
                     message,
                     async: true,
                     ip_pool: 'Main Pool'

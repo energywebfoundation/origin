@@ -25,13 +25,9 @@ import './DetailView.scss';
 import { Configuration } from '@energyweb/utils-general';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import {
-    getBaseURL,
-    getCertificates,
-    getConfiguration,
-    getProducingAssets
-} from '../features/selectors';
+import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
 import { getProducingAssetDetailLink, getCertificateDetailLink } from '../utils/routing';
+import { getCertificates } from '../features/certificates/selectors';
 
 interface IOwnProps {
     id: number;

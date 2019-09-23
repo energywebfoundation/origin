@@ -14,13 +14,7 @@ import { Redirect } from 'react-router-dom';
 import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
-import {
-    getBaseURL,
-    getCertificates,
-    getConfiguration,
-    getCurrentUser,
-    getProducingAssets
-} from '../features/selectors';
+import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
 import { IStoreState } from '../types';
 import { formatCurrency } from '../utils/Helper';
 import { NotificationType, showNotification } from '../utils/notifications';
@@ -38,6 +32,9 @@ import {
     PaginatedLoaderFilteredSorted
 } from './Table/PaginatedLoaderFilteredSorted';
 import { TableMaterial } from './Table/TableMaterial';
+import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
+import { getCertificates } from '../features/certificates/selectors';
+import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 
 interface IOwnProps {
     certificates?: Certificate.Entity[];
@@ -51,6 +48,7 @@ interface IStateProps {
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
     currentUser: User.Entity;
+    users: User.Entity[];
     baseURL: string;
 }
 
@@ -77,6 +75,7 @@ interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
     buyModalForCertificate: Certificate.Entity;
     buyModalForProducingAsset: ProducingAsset.Entity;
     showBuyBulkModal: boolean;
+    showClaimBulkModal: boolean;
     paginatedData: IEnrichedCertificateData[];
 }
 
@@ -103,15 +102,18 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             buyModalForCertificate: null,
             buyModalForProducingAsset: null,
             showBuyBulkModal: false,
+            showClaimBulkModal: false,
             currentSort: ['certificate.creationTime'],
             sortAscending: false
         };
 
         this.getTokenSymbol = this.getTokenSymbol.bind(this);
         this.buyCertificateBulk = this.buyCertificateBulk.bind(this);
+        this.claimCertificateBulk = this.claimCertificateBulk.bind(this);
         this.hidePublishForSaleModal = this.hidePublishForSaleModal.bind(this);
         this.hideBuyModal = this.hideBuyModal.bind(this);
         this.hideBuyBulkModal = this.hideBuyBulkModal.bind(this);
+        this.hideClaimBulkModal = this.hideClaimBulkModal.bind(this);
         this.customSelectCounterGenerator = this.customSelectCounterGenerator.bind(this);
     }
 
@@ -124,7 +126,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async componentDidUpdate(newProps: Props) {
-        if (newProps.certificates !== this.props.certificates) {
+        if (
+            newProps.certificates !== this.props.certificates ||
+            newProps.users.length !== this.props.users.length
+        ) {
             await this.loadPage(1);
         }
     }
@@ -209,8 +214,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate,
                 producingAsset,
                 assetTypeLabel: producingAsset.offChainProperties.assetType,
-                certificateOwner: await new User.Entity(certificate.owner, this.props
-                    .configuration as any).sync(),
+                certificateOwner: getUserById(this.props.users, certificate.owner),
                 offChainSettlementOptions,
                 acceptedCurrency,
                 isOffChainSettlement
@@ -316,6 +320,32 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         this.setState({
             selectedCertificates,
             showBuyBulkModal: true
+        });
+    }
+
+    async claimCertificateBulk(selectedIndexes) {
+        if (selectedIndexes.length === 0) {
+            showNotification(
+                `No certificates have been selected. Please select at least one certificate.`,
+                NotificationType.Error
+            );
+
+            return;
+        }
+
+        if (selectedIndexes.length > 100) {
+            showNotification(`Please select less than 100 certificates.`, NotificationType.Error);
+
+            return;
+        }
+
+        const selectedCertificates = this.state.paginatedData
+            .filter((item, index) => selectedIndexes.includes(index))
+            .map(i => i.certificate);
+
+        this.setState({
+            selectedCertificates,
+            showClaimBulkModal: true
         });
     }
 
@@ -453,7 +483,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     get filters(): ICustomFilterDefinition[] {
-        if (this.props.selectedState !== SelectedState.ForSale) {
+        if (![SelectedState.ForSale, SelectedState.Claimed].includes(this.props.selectedState)) {
             return [];
         }
 
@@ -467,6 +497,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             ) / 1000;
 
         return [
+            {
+                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAsset.offChainProperties.country::${RECORD_INDICATOR}producingAsset.offChainProperties.city::${RECORD_INDICATOR}certificateOwner.organization`,
+                label: 'Search',
+                input: {
+                    type: CustomFilterInputType.string
+                },
+                search: true
+            },
             {
                 property: `${RECORD_INDICATOR}producingAsset.offChainProperties.assetType`,
                 label: 'Asset Type',
@@ -556,6 +594,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         });
     }
 
+    hideClaimBulkModal() {
+        this.setState({
+            showClaimBulkModal: false
+        });
+    }
+
     customSelectCounterGenerator(selectedIndexes: number[]) {
         if (selectedIndexes.length > 0) {
             const selectedCertificates = this.state.paginatedData
@@ -577,6 +621,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             actions.push({
                 label: 'Buy',
                 handler: this.buyCertificateBulk
+            });
+        }
+
+        if (this.props.selectedState === SelectedState.Inbox) {
+            actions.push({
+                label: 'Claim',
+                handler: this.claimCertificateBulk
             });
         }
 
@@ -625,11 +676,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     get hiddenColumns() {
         const hiddenColumns = this.props.hiddenColumns || [];
 
-        const showPrice = [
-            SelectedState.ForSale,
-            SelectedState.ForDemand,
-            SelectedState.Claimed
-        ].includes(this.props.selectedState);
+        const showPrice = [SelectedState.ForSale, SelectedState.ForDemand].includes(
+            this.props.selectedState
+        );
 
         if (!showPrice) {
             hiddenColumns.push('price', 'currency');
@@ -681,7 +730,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             townCountry: `${enrichedData.producingAsset.offChainProperties.address}, ${enrichedData.producingAsset.offChainProperties.country}`,
             compliance:
                 Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry],
-            owner: enrichedData.certificateOwner.organization,
+            owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
             certificationDate: new Date(
                 enrichedData.certificate.creationTime * 1000
             ).toDateString(),
@@ -704,6 +753,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             sellModalForCertificate,
             showBuyBulkModal,
             showBuyModal,
+            showClaimBulkModal,
             showSellModal,
             sortAscending,
             total
@@ -765,6 +815,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     showModal={showBuyBulkModal}
                     callback={this.hideBuyBulkModal}
                 />
+
+                <ClaimCertificateBulkModal
+                    certificates={selectedCertificates}
+                    showModal={showClaimBulkModal}
+                    callback={this.hideClaimBulkModal}
+                />
             </>
         );
     }
@@ -776,6 +832,7 @@ export const CertificateTable = connect(
         certificates: ownProps.certificates || getCertificates(state),
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),
-        producingAssets: getProducingAssets(state)
+        producingAssets: getProducingAssets(state),
+        users: getUsers(state)
     })
 )(CertificateTableClass);

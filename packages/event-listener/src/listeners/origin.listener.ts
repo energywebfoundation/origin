@@ -66,6 +66,11 @@ export class OriginEventListener implements IOriginEventListener {
             currentBlockNumber
         );
 
+        const marketContractEventHandler = new ContractEventHandler(
+            this.conf.blockchainProperties.marketLogicInstance,
+            currentBlockNumber
+        );
+
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const certId = event.returnValues._certificateId;
             this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
@@ -87,6 +92,15 @@ export class OriginEventListener implements IOriginEventListener {
             );
 
             await this.checkDemands(publishedCertificate);
+        });
+
+        marketContractEventHandler.onEvent('DemandPartiallyFilled', async (event: any) => {
+            const { _demandId, _entityId, _amount } = event.returnValues;
+            // const transferredCert = await new Certificate.Entity(_entityId, this.conf).sync();
+
+            this.conf.logger.info(
+                `Event: DemandPartiallyFilled: Matched certificate #${_entityId} with energy ${_amount} to Demand #${_demandId}.`
+            );
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
@@ -134,7 +148,7 @@ export class OriginEventListener implements IOriginEventListener {
 
                 const response: IEmailResponse = await this.emailService.send({
                     to: [emailAddress],
-                    subject: `[Origin] ${NotificationTypes.DEMAND_MATCH}`,
+                    subject: `[Origin] ${NotificationTypes.FOUND_MATCHING_SUPPLY}`,
                     html: `
                         We found ${counter.matchedDemands} matching your demand. Open Origin and check it out:
                         ${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/

@@ -87,7 +87,6 @@ contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
     /// @param _smartMeter the smartmeter of the asset
     /// @param _owner the owner of the asset (onboarded user in the user-contracts)
     /// @param _active flag whether this asset is active already
-    /// @param _matcher array with matcher-addresses
     /// @param _propertiesDocumentHash hash of the documents with the corresponding properties
     /// @param _url address where to find that document
     /// @return returns the asset-id of the newly onboarded asset
@@ -95,7 +94,6 @@ contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
         address _smartMeter,
         address _owner,
         bool _active,
-        address[] calldata _matcher,
         string calldata _propertiesDocumentHash,
         string calldata _url
     )
@@ -103,7 +101,7 @@ contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
         returns (uint _assetId)
     {
         // in order to avoid "stack too deep" erros we're checking all the modifiers in a seperate function
-        checkBeforeCreation(_matcher, _owner, _smartMeter);
+        checkBeforeCreation(_owner, _smartMeter);
 
         AssetGeneral memory a = AssetGeneral({
             smartMeter: _smartMeter,
@@ -111,7 +109,6 @@ contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: "",
-            matcher: _matcher,
             propertiesDocumentHash: _propertiesDocumentHash,
             url: _url,
             marketLookupContract: address(0x0),
@@ -152,7 +149,4 @@ contract AssetConsumingRegistryLogic is AssetLogic, AssetConsumingInterface {
     function checkAssetExistExternal(address _smartMeter) external view returns (bool) {
         return checkAssetExist(_smartMeter);
     }
-
-
-
 }

@@ -16,6 +16,9 @@
         },
         {
             "path": "../utils-testbackend/tsconfig.build.json"
+        },
+        {
+            "path": "../origin/tsconfig.build.shakeable.json"
         }
     ]
 }

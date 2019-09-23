@@ -21,6 +21,7 @@ import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC721.sol";
 import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC721TokenReceiver.sol";
 import "@energyweb/utils-general/contracts/Interfaces/Updatable.sol";
 import "@energyweb/user-registry/contracts/Users/RoleManagement.sol";
+import "@energyweb/user-registry/contracts/Users/UserLogic.sol";
 import "@energyweb/user-registry/contracts/Interfaces/UserContractLookupInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetProducingInterface.sol";
 import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterface.sol";
@@ -44,11 +45,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
     /// @notice Logs when an ApprovedForAll gets triggered
     event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
-
-    /// @notice Logs when an escrow gets removed
-    event LogEscrowRemoved(uint indexed _certificateId, address _escrow);
-    /// @notice Logs when an escrow gets added
-    event LogEscrowAdded(uint indexed _certificateId, address _escrow);
 
     /// @notice Logs when an entity is published for sale
     event LogPublishForSale(uint indexed _entityId, uint _price, address _token);
@@ -135,18 +131,10 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @param _entityId the entity-id
     function approve(address _approved, uint256 _entityId) external payable {
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(address(db)).getTradableEntity(_entityId);
-        require(te.owner == msg.sender || checkMatcher(te.escrow), "approve: not owner / matcher");
+        require(te.owner == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender), "approve: not owner / matcher");
         db.addApprovalExternal(_entityId, _approved);
 
-        emit Approval(msg.sender,_approved, _entityId);
-    }
-
-    /// @notice Removes an escrow-address of a certifiacte
-    /// @param _certificateId The id of the certificate
-    /// @param _escrow The address to be removed
-    function removeEscrow(uint _certificateId, address _escrow) external onlyEntityOwner(_certificateId){
-        require(db.removeEscrow(_certificateId, _escrow), "escrow address not in array");
-        emit LogEscrowRemoved(_certificateId, _escrow);
+        emit Approval(msg.sender, _approved, _entityId);
     }
 
     /// @notice makes the tradable entity available for sale
@@ -193,21 +181,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
      /**
         external non erc721 functions
     */
-
-    /// @notice adds a new escrow address to a certificate
-    /// @param _certificateId The id of the certificate
-    /// @param _escrow The additional escrow address
-    function addEscrowForEntity(uint _certificateId, address _escrow)
-        external
-        onlyEntityOwner(_certificateId)
-    {
-        require(
-            db.getTradableEntityEscrowLength(_certificateId) < OriginContractLookupInterface(owner).maxMatcherPerCertificate(),
-            "maximum amount of escrows reached"
-        );
-        db.addEscrowForEntity(_certificateId, _escrow);
-        emit LogEscrowAdded(_certificateId, _escrow);
-    }
 
     /// @notice initializes the contract by binding it to a logic contract
     /// @param _database Sets the logic contract
@@ -277,29 +250,15 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice gets the tradable token
     /// @param _entityId the id of an entity
     /// @return the tradable token (ERC20 contract)
-    function getTradableToken(uint _entityId) external view returns (address){
+    function getTradableToken(uint _entityId) external view returns (address) {
         return db.getTradableToken(_entityId);
     }
 
     /// @notice functions that checks whether this contract supports a certain interfaceId
     /// @param _interfaceID the interfaceId
     /// @return true if interfaceId == 0x80ac58cd
-    function supportsInterface(bytes4 _interfaceID) external view returns (bool){
+    function supportsInterface(bytes4 _interfaceID) external view returns (bool) {
         if(_interfaceID == 0x80ac58cd) return true;
-    }
-
-    /**
-        public functions
-     */
-    /// @notice Checks if the msg.sender is included in the matcher-array
-    /// @param _matcher the array with matchers
-    /// @return true when the msg.sender is in the matcher-array
-    function checkMatcher(address[] memory _matcher) public view returns (bool){
-
-        // we iterate through the matcherarray, the length is defined by the maxMatcherPerAsset-parameter of the Coo-contract or the array-length if it's shorter
-        for(uint i = 0; i < ( AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset() < _matcher.length? AssetContractLookupInterface(assetContractLookup).maxMatcherPerAsset():_matcher.length); i++){
-            if(_matcher[i] == msg.sender) return true;
-        }
     }
 
     /**
@@ -327,19 +286,18 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     {
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(address(db)).getTradableEntity(_entityId);
 
-        require(te.owner == _from,"not the owner of the entity");
+        require(te.owner == _from, "not the owner of the entity");
         require(te.owner != address(0x0), "0x0 as owner is not allowed");
         require(msg.value == 0, "sending value is not allowed");
-      //  require((te.owner == _from) && (te.owner != 0x0) && (msg.value == 0),"owner not matching or send value");
         require(
             te.owner == msg.sender
-            || checkMatcher(te.escrow)
             || db.getOwnerToOperators(te.owner, msg.sender)
-            || te.approvedAddress == msg.sender, "simpleTransfer, missing rights"
+            || te.approvedAddress == msg.sender
+            || isRole(RoleManagement.Role.Matcher, msg.sender), "simpleTransfer, missing rights"
         );
-        db.setTradableEntityOwnerAndAddApproval(_entityId, _to,address(0x0));
+        db.setTradableEntityOwnerAndAddApproval(_entityId, _to, address(0x0));
         db.removeTokenAndPrice(_entityId);
-        emit Transfer(_from,_to,_entityId);
+        emit Transfer(_from, _to, _entityId);
     }
 
     /// @notice checks requirements for a safe transder
@@ -355,7 +313,7 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     )
         internal
     {
-        require(isContract(_to),"_to is not a contract");
-        require(ERC721TokenReceiver(_to).onERC721Received(address(this),_from,_entityId,_data) == 0x150b7a02,"_to did not respond correctly");
+        require(isContract(_to), "_to is not a contract");
+        require(ERC721TokenReceiver(_to).onERC721Received(address(this),_from,_entityId,_data) == 0x150b7a02, "_to did not respond correctly");
     }
 }

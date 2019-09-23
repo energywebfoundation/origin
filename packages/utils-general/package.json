@@ -1,59 +1,58 @@
 {
-    "name": "@energyweb/utils-general",
-    "description": "",
-    "license": "GPL-3.0",
-    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/utils-general#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/energywebfoundation/origin.git"
-    },
-    "bugs": {
-        "url": "https://github.com/energywebfoundation/origin/issues"
-    },
-    "version": "1.1.0",
-    "main": "dist/js/src/index.js",
-    "files": [
-        "contracts",
-        "dist/js/build",
-        "dist/js/src"
-    ],
-    "directories": {
-        "test": "test"
-    },
-    "scripts": {
-        "build": "yarn compile && yarn build-ts",
-        "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
-        "compile": "truffle compile",
-        "deploy-contracts": "truffle migrate",
-        "lint": "solium -d contracts",
-        "lint-fix": "solium -d contracts --fix",
-        "prepare": "scripts/build.js",
-        "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
-        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-        "test-ts": "mocha -r ts-node/register src/test/*.test.ts",
-        "test": "yarn test-ts",
-        "clean": "rm -rf build dist",
-        "build:static": "yarn compile"
-    },
-    "types": "dist/js/src/index.d.ts",
-    "dependencies": {
-        "axios": "0.19.0",
-        "ew-utils-general-precise-proofs": "0.3.0",
-        "jsonschema": "1.2.4",
-        "web3": "1.0.0-beta.37",
-        "winston": "3.2.1"
-    },
-    "devDependencies": {
-        "@types/web3": "1.0.14",
-        "ethlint": "1.2.4",
-        "fs-extra": "8.0.1",
-        "ganache-cli": "6.6.0",
-        "truffle": "5.0.18"
-    },
-    "postinstall": "rm -f node_modules/web3/index.d.ts",
-    "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
-    "publishConfig": {
-        "access": "public",
-        "registry": "https://registry.npmjs.org"
-    }
+  "name": "@energyweb/utils-general",
+  "description": "",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/utils-general#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "version": "1.1.0",
+  "main": "dist/js/src/index.js",
+  "files": [
+    "contracts",
+    "dist/js/build",
+    "dist/js/src"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "yarn compile && yarn build-ts",
+    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "compile": "truffle compile",
+    "deploy-contracts": "truffle migrate",
+    "lint": "solium -d contracts",
+    "lint-fix": "solium -d contracts --fix",
+    "prepare": "scripts/build.js",
+    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "test-ts": "mocha -r ts-node/register src/test/*.test.ts",
+    "clean": "rm -rf build dist",
+    "build:static": "yarn compile"
+  },
+  "types": "dist/js/src/index.d.ts",
+  "dependencies": {
+    "axios": "0.19.0",
+    "ew-utils-general-precise-proofs": "0.3.0",
+    "jsonschema": "1.2.4",
+    "web3": "1.0.0-beta.37",
+    "winston": "3.2.1"
+  },
+  "devDependencies": {
+    "@types/web3": "1.0.19",
+    "ethlint": "1.2.5",
+    "fs-extra": "8.0.1",
+    "ganache-cli": "6.6.0",
+    "truffle": "5.0.18"
+  },
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
+  "publishConfig" : {
+    "access" : "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }
