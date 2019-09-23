@@ -3,6 +3,7 @@ import Web3 from 'web3';
 
 import { EmailServiceProvider } from '../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../listeners/origin.listener';
+import { OriginEventsStore } from '../stores/OriginEventsStore';
 import { Demo } from './deployDemo';
 import { TestEmailAdapter } from './TestAdapter';
 import NotificationTypes from '../notification/NotificationTypes';
@@ -37,6 +38,7 @@ describe('Origin Listener Tests', async () => {
             demo.originContractLookup,
             web3,
             emailService,
+            new OriginEventsStore(),
             SCAN_INTERVAL
         );
     });

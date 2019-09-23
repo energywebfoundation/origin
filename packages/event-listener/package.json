@@ -14,7 +14,7 @@
     "version": "1.1.0",
     "main": "dist/js/src/index.js",
     "scripts": {
-        "start": "ts-node src/index.js",
+        "start": "ts-node src/index.ts",
         "start-all": "yarn start",
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",

@@ -17,16 +17,9 @@ export interface IEmailServiceProvider {
 }
 
 export class EmailServiceProvider implements IEmailServiceProvider {
-    public adapter: IEmailAdapter;
-
     public sentEmails: IEmail[] = [];
 
-    private fromEmail: string;
-
-    constructor(adapter: IEmailAdapter, fromEmail: string) {
-        this.adapter = adapter;
-        this.fromEmail = fromEmail;
-    }
+    constructor(public adapter: IEmailAdapter, private fromEmail: string) {}
 
     public async send(email: IEmail): Promise<IEmailResponse> {
         const response: IEmailResponse = await this.adapter.send(this.fromEmail, email);

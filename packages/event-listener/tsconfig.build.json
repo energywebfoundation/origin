@@ -4,6 +4,7 @@
         "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
+        "experimentalDecorators": true,
         "types": ["mocha"]
     },
     "include": ["./src/**/*"],
