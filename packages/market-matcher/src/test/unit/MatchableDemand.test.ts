@@ -46,7 +46,7 @@ describe('MatchableDemand tests', () => {
                 price: options.price || energyPrice,
                 currency: options.currency || currency
             });
-            certificate.powerInW.returns(options.energy || certificateEnergy);
+            certificate.energy.returns(options.energy || certificateEnergy);
             certificate.pricePerUnit(Unit.MWh).returns(options.price || energyPrice);
 
             const producingAssetOffChainProperties = Substitute.for<
@@ -92,7 +92,7 @@ describe('MatchableDemand tests', () => {
             assert.equal(reason[0], MatchingErrorReason.NON_ACTIVE_DEMAND);
         });
 
-        it('should not match active demand with exceeding power', () => {
+        it('should not match active demand with exceeding energy', () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
                 energy: certificateEnergy - 1
             });
@@ -220,7 +220,7 @@ describe('MatchableDemand tests', () => {
             assert.equal(reason[0], MatchingErrorReason.NON_ACTIVE_DEMAND);
         });
 
-        it('should not match active demand with exceeding power', () => {
+        it('should not match active demand with exceeding energy', () => {
             const { demand, supply } = createMatchingMocks({
                 energy: supplyEnergy - 1
             });

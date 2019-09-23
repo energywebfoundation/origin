@@ -22,10 +22,13 @@
     "test": "test"
   },
   "scripts": {
+    "build": "yarn build:ts",
+    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "build-and-deploy": "yarn build:ts && yarn deploy-contracts",
+    "build-schemas": "./scripts/buildSchemas.js",
+    "build-schema:UserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Users/User.ts IUserOffChainProperties",
     "clean": "rm -rf build schemas db.json dist dist-shakeable",
-    "build": "yarn build:static && yarn build-ts",
-    "build-and-deploy": "npm run build-ts && npm run deploy-contracts",
-    "build-ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "extractABI": "node ./scripts/extractABI.js",
@@ -35,10 +38,7 @@
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
-    "build-schemas": "./scripts/buildSchemas.js",
-    "build-schema:UserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Users/User.ts IUserOffChainProperties",
     "precommit": "lint-staged"
   },
   "types": "dist/js/src/index.d.ts",

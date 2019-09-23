@@ -466,7 +466,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 currency: Currency.USD,
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
-                targetWhPerPeriod: certificate.powerInW,
+                targetWhPerPeriod: certificate.energy,
                 registryCompliance: asset.offChainProperties.complianceRegistry,
                 startTime: '',
                 endTime: ''
@@ -490,9 +490,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const maxCertificateEnergyInkWh =
             this.props.certificates.reduce(
                 (a, b) =>
-                    parseInt(b.powerInW.toString(), 10) > a
-                        ? parseInt(b.powerInW.toString(), 10)
-                        : a,
+                    parseInt(b.energy.toString(), 10) > a ? parseInt(b.energy.toString(), 10) : a,
                 0
             ) / 1000;
 
@@ -569,7 +567,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: `${FILTER_SPECIAL_TYPES.DIVIDE}::${RECORD_INDICATOR}certificate.powerInW::1000`,
+                property: `${FILTER_SPECIAL_TYPES.DIVIDE}::${RECORD_INDICATOR}certificate.energy::1000`,
                 label: 'Certified Energy (kWh)',
                 input: {
                     type: CustomFilterInputType.slider,
@@ -607,7 +605,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 .map(i => i.certificate);
 
             const energy =
-                selectedCertificates.reduce((a, b) => a + parseInt(b.powerInW.toString(), 10), 0) /
+                selectedCertificates.reduce((a, b) => a + parseInt(b.energy.toString(), 10), 0) /
                 1000;
 
             return `${selectedIndexes.length} selected (${energy} kWh)`;
@@ -715,7 +713,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 id: 'energy',
                 label: 'Certified energy (kWh)',
-                sortProperties: [['certificate.powerInW', (value: string) => parseInt(value, 10)]]
+                sortProperties: [['certificate.energy', (value: string) => parseInt(value, 10)]]
             }
         ] as const).filter(column => !this.hiddenColumns.includes(column.id));
     }
@@ -738,7 +736,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 ? formatCurrency(enrichedData.offChainSettlementOptions.price / 100)
                 : enrichedData.certificate.onChainDirectPurchasePrice.toLocaleString(),
             currency: enrichedData.acceptedCurrency,
-            energy: (enrichedData.certificate.powerInW / 1000).toLocaleString()
+            energy: (enrichedData.certificate.energy / 1000).toLocaleString()
         }));
     }
 

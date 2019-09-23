@@ -204,8 +204,8 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async splitCertificate(_certificateId: number, _power: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.splitCertificate(_certificateId, _power);
+    async splitCertificate(_certificateId: number, _energy: number, txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.splitCertificate(_certificateId, _energy);
 
         return await this.send(method, txParams);
     }
@@ -281,8 +281,8 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.web3Contract.methods.owner().call(txParams);
     }
 
-    async splitAndBuyCertificate(_certificateId: number, _power: number, txParams?: SpecialTx) {
-        const method = this.web3Contract.methods.splitAndBuyCertificate(_certificateId, _power);
+    async splitAndBuyCertificate(_certificateId: number, _energy: number, txParams?: SpecialTx) {
+        const method = this.web3Contract.methods.splitAndBuyCertificate(_certificateId, _energy);
 
         return await this.send(method, txParams);
     }

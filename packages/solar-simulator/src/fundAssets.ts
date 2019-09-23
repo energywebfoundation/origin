@@ -32,7 +32,7 @@ const processAssets = async (assets: any[]) => {
     const required = new BN(value).mul(new BN(assets.length));
 
     if (required.gt(new BN(fundingAccountBalance.toString()))) {
-        console.log(required.gt(fundingAccountBalance));
+        console.log(required.gt(new BN(fundingAccountBalance.toString())));
         console.error(
             `Not enough funds on funding account. Required ${required} has ${fundingAccountBalance}`
         );

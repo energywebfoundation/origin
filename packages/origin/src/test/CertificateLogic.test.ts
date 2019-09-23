@@ -303,7 +303,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -420,7 +420,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountTrader,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -466,7 +466,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -501,7 +501,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -544,7 +544,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: erc20TestTokenAddress,
             onChainDirectPurchasePrice: '100',
@@ -628,7 +628,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountTrader,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -671,7 +671,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -709,7 +709,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: ['3', '4'],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -740,7 +740,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 60,
+            energy: 60,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -763,7 +763,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 40,
+            energy: 40,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -807,7 +807,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 60,
+            energy: 60,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -850,7 +850,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -917,7 +917,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: testReceiverAddress,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -960,7 +960,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -1027,7 +1027,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: testReceiverAddress,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -1141,14 +1141,14 @@ describe('CertificateLogic-Facade', () => {
             conf
         ).sync();
 
-        assert.equal(certificateOne.powerInW, 200);
+        assert.equal(certificateOne.energy, 200);
 
         const certificateTwo = await new Certificate.Entity(
             (STARTING_CERTIFICATE_LENGTH + 1).toString(),
             conf
         ).sync();
 
-        assert.equal(certificateTwo.powerInW, 382);
+        assert.equal(certificateTwo.energy, 382);
     });
 
     it('issuer should not be able to issue certificates twice for the same certification request', async () => {
@@ -1262,7 +1262,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 100,
+            energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -1302,7 +1302,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 30,
+            energy: 30,
             forSale: true,
             acceptedToken: '0x1230000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '10',
@@ -1330,7 +1330,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 70,
+            energy: 70,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -1365,7 +1365,7 @@ describe('CertificateLogic-Facade', () => {
             assetId: '0',
             children: [],
             owner: accountAssetOwner,
-            powerInW: 70,
+            energy: 70,
             forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: '0',
@@ -1392,7 +1392,7 @@ describe('CertificateLogic-Facade', () => {
         );
         const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
             .length;
-        const CERTIFICATE_POWER = 100;
+        const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
         const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
@@ -1403,7 +1403,7 @@ describe('CertificateLogic-Facade', () => {
 
         await assetRegistry.saveSmartMeterRead(
             0,
-            LAST_SMART_METER_READ + CERTIFICATE_POWER,
+            LAST_SMART_METER_READ + CERTIFICATE_ENERGY,
             '',
             0,
             {
@@ -1434,7 +1434,7 @@ describe('CertificateLogic-Facade', () => {
 
         setActiveUser(traderPK);
 
-        await parentCertificate.buyCertificate(CERTIFICATE_POWER / 2);
+        await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
         assert.equal(
             await erc20TestToken.balanceOf(accountAssetOwner),
@@ -1456,7 +1456,7 @@ describe('CertificateLogic-Facade', () => {
 
         assert.equal(firstChildCertificate.status, Certificate.Status.Active);
         assert.equal(firstChildCertificate.forSale, false);
-        assert.equal(firstChildCertificate.powerInW, CERTIFICATE_POWER / 2);
+        assert.equal(firstChildCertificate.energy, CERTIFICATE_ENERGY / 2);
 
         const secondChildCertificate = await new Certificate.Entity(
             (STARTING_CERTIFICATE_LENGTH + 2).toString(),
@@ -1465,10 +1465,10 @@ describe('CertificateLogic-Facade', () => {
 
         assert.equal(secondChildCertificate.status, Certificate.Status.Active);
         assert.equal(secondChildCertificate.forSale, true);
-        assert.equal(secondChildCertificate.powerInW, CERTIFICATE_POWER / 2);
+        assert.equal(secondChildCertificate.energy, CERTIFICATE_ENERGY / 2);
     });
 
-    it('should fail to split and buy and split certificate when trying to buy higher power than certificate has', async () => {
+    it('should fail to split and buy and split certificate when trying to buy higher ENERGY than certificate has', async () => {
         const STARTING_CERTIFICATE_LENGTH = Number(
             await Certificate.getCertificateListLength(conf)
         );
@@ -1478,14 +1478,14 @@ describe('CertificateLogic-Facade', () => {
         );
         const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
             .length;
-        const CERTIFICATE_POWER = 100;
+        const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
 
         setActiveUser(assetOwnerPK);
 
         await assetRegistry.saveSmartMeterRead(
             0,
-            LAST_SMART_METER_READ + CERTIFICATE_POWER,
+            LAST_SMART_METER_READ + CERTIFICATE_ENERGY,
             '',
             0,
             {
@@ -1509,7 +1509,7 @@ describe('CertificateLogic-Facade', () => {
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, Currency.EUR);
 
         try {
-            await parentCertificate.buyCertificate(CERTIFICATE_POWER * 2);
+            await parentCertificate.buyCertificate(CERTIFICATE_ENERGY * 2);
         } catch (error) {
             assert.include(
                 error.message,
@@ -1533,14 +1533,14 @@ describe('CertificateLogic-Facade', () => {
         );
         const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
             .length;
-        const CERTIFICATE_POWER = 100;
+        const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
 
         setActiveUser(assetOwnerPK);
 
         await assetRegistry.saveSmartMeterRead(
             0,
-            LAST_SMART_METER_READ + CERTIFICATE_POWER,
+            LAST_SMART_METER_READ + CERTIFICATE_ENERGY,
             '',
             0,
             {
@@ -1565,7 +1565,7 @@ describe('CertificateLogic-Facade', () => {
 
         setActiveUser(traderPK);
 
-        await parentCertificate.buyCertificate(CERTIFICATE_POWER);
+        await parentCertificate.buyCertificate(CERTIFICATE_ENERGY);
 
         parentCertificate = await parentCertificate.sync();
 
@@ -1584,7 +1584,7 @@ describe('CertificateLogic-Facade', () => {
         );
         const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
             .length;
-        const CERTIFICATE_POWER = 100;
+        const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
         const CERTIFICATE_CURRENCY = Currency.EUR;
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
@@ -1596,7 +1596,7 @@ describe('CertificateLogic-Facade', () => {
 
         await assetRegistry.saveSmartMeterRead(
             0,
-            LAST_SMART_METER_READ + CERTIFICATE_POWER,
+            LAST_SMART_METER_READ + CERTIFICATE_ENERGY,
             '',
             0,
             {
@@ -1636,7 +1636,7 @@ describe('CertificateLogic-Facade', () => {
 
         setActiveUser(traderPK);
 
-        await parentCertificate.buyCertificate(CERTIFICATE_POWER / 2);
+        await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
         assert.equal(
             await erc20TestToken.balanceOf(accountAssetOwner),
@@ -1655,7 +1655,7 @@ describe('CertificateLogic-Facade', () => {
 
         assert.equal(firstChildCertificate.status, Certificate.Status.Active);
         assert.equal(firstChildCertificate.forSale, false);
-        assert.equal(firstChildCertificate.powerInW, CERTIFICATE_POWER / 2);
+        assert.equal(firstChildCertificate.energy, CERTIFICATE_ENERGY / 2);
         assert.equal(firstChildCertificate.onChainDirectPurchasePrice, 0);
         assert.deepEqual(
             await firstChildCertificate.getOffChainSettlementOptions(),
@@ -1669,7 +1669,7 @@ describe('CertificateLogic-Facade', () => {
 
         assert.equal(secondChildCertificate.status, Certificate.Status.Active);
         assert.equal(secondChildCertificate.forSale, true);
-        assert.equal(secondChildCertificate.powerInW, CERTIFICATE_POWER / 2);
+        assert.equal(secondChildCertificate.energy, CERTIFICATE_ENERGY / 2);
         assert.equal(secondChildCertificate.onChainDirectPurchasePrice, 0);
         assert.deepEqual(
             await secondChildCertificate.getOffChainSettlementOptions(),
@@ -1687,14 +1687,14 @@ describe('CertificateLogic-Facade', () => {
         );
         const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
             .length;
-        const CERTIFICATE_POWER = 100;
+        const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
 
         setActiveUser(assetOwnerPK);
 
         await assetRegistry.saveSmartMeterRead(
             0,
-            LAST_SMART_METER_READ + CERTIFICATE_POWER,
+            LAST_SMART_METER_READ + CERTIFICATE_ENERGY,
             '',
             0,
             {
@@ -1715,7 +1715,7 @@ describe('CertificateLogic-Facade', () => {
 
         await assetRegistry.saveSmartMeterRead(
             0,
-            LAST_SMART_METER_READ + CERTIFICATE_POWER * 2,
+            LAST_SMART_METER_READ + CERTIFICATE_ENERGY * 2,
             '',
             0,
             {

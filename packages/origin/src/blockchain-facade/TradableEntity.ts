@@ -22,7 +22,7 @@ import { TransactionReceipt } from 'web3/types';
 export interface IOnChainProperties {
     assetId: number;
     owner: string;
-    powerInW: number;
+    energy: number;
     forSale: boolean;
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
@@ -107,7 +107,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     implements IOnChainProperties {
     assetId: number;
     owner: string;
-    powerInW: number;
+    energy: number;
     forSale: boolean;
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;

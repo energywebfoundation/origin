@@ -54,7 +54,7 @@ class ClaimCertificateBulkModalClass extends React.Component<Props> {
     }
 
     render() {
-        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.powerInW), 0);
+        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.energy), 0);
 
         return (
             <Dialog open={this.props.showModal} onClose={this.handleClose}>

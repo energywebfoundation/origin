@@ -62,7 +62,7 @@ export class BuyCertificateModal extends React.Component<
     async componentDidUpdate(prevProps: IBuyCertificateModalProps) {
         if (this.props.certificate && this.props.certificate !== prevProps.certificate) {
             this.setState({
-                kwh: this.props.certificate.powerInW / 1000,
+                kwh: this.props.certificate.energy / 1000,
                 validation: {
                     kwh: true
                 }
@@ -111,7 +111,7 @@ export class BuyCertificateModal extends React.Component<
                 const kwhValid =
                     !isNaN(kwh) &&
                     kwh >= 0.001 &&
-                    kwh <= this.props.certificate.powerInW / 1000 &&
+                    kwh <= this.props.certificate.energy / 1000 &&
                     countDecimals(kwh) <= 3;
 
                 this.setState({

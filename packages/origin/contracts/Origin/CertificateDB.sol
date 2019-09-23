@@ -67,13 +67,13 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
 
     /// @notice creates a certificate with the provided parameters
     /// @param _assetId the asset-id that produced energy thus created the certificate
-    /// @param _powerInW the power in wh
+    /// @param _energy the energy in wh
     /// @param _assetOwner the assetOwner -> owner of the new certificate
     /// @param _lastSmartMeterReadFileHash the filehash of the last meterreading
     /// @param _maxOwnerChanges the maximal amount of owner changes
     function createCertificateRaw(
         uint _assetId,
-        uint _powerInW,
+        uint _energy,
         address _assetOwner,
         string memory _lastSmartMeterReadFileHash,
         uint _maxOwnerChanges
@@ -85,7 +85,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
         TradableEntityContract.TradableEntity memory tradableEntity = TradableEntityContract.TradableEntity({
             assetId: _assetId,
             owner: _assetOwner,
-            powerInW: _powerInW,
+            energy: _energy,
             forSale: false,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
@@ -110,11 +110,11 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
 
     /// @notice Creates 2 new children certificates
     /// @param _parentId the id of the parent certificate
-    /// @param _power the power that should be splitted
+    /// @param _energy the energy that should be splitted
     /// @return The ids of the certificate
     function createChildCertificate(
         uint _parentId,
-        uint _power
+        uint _energy
     )
         public
         onlyOwner
@@ -126,7 +126,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
         TradableEntityContract.TradableEntity memory childOneEntity = TradableEntityContract.TradableEntity({
             assetId: parent.tradableEntity.assetId,
             owner: parent.tradableEntity.owner,
-            powerInW: _power,
+            energy: _energy,
             forSale: parent.tradableEntity.forSale,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
@@ -151,7 +151,7 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
         TradableEntityContract.TradableEntity memory childTwoEntity = TradableEntityContract.TradableEntity({
             assetId: parent.tradableEntity.assetId,
             owner: parent.tradableEntity.owner,
-            powerInW: parent.tradableEntity.powerInW - _power,
+            energy: parent.tradableEntity.energy - _energy,
             forSale: parent.tradableEntity.forSale,
             acceptedToken: address(0x0),
             onChainDirectPurchasePrice: 0,
