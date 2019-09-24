@@ -302,7 +302,7 @@ export const calculateMissingEnergyDemand = async (
         filter: { _demandId: demand.id }
     });
 
-    const filledTimeSeries = await Promise.all(
+    const filledDemandsTimeSeries = await Promise.all(
         filledEvents.map(async log => {
             const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
             const nearestTime = moment
@@ -314,5 +314,7 @@ export const calculateMissingEnergyDemand = async (
         })
     );
 
-    return TS.aggregateByTime(demandTimeSeries.concat(filledTimeSeries));
+    const filledDemandInRange = TS.inRange(filledDemandsTimeSeries, start.unix(), end.unix());
+
+    return TS.aggregateByTime(demandTimeSeries.concat(filledDemandInRange));
 };

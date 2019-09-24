@@ -55,23 +55,34 @@ describe('Demand unit tests', () => {
             return config;
         };
 
-        it('should return demand time-series if there is no filled events', async () => {
-            const config = createConfig([], []);
-
+        const createDemand = (
+            start: moment.Moment,
+            end: moment.Moment,
+            timeFrame: TimeFrame,
+            energyPerTimeFrame: number
+        ) => {
             const demand = Substitute.for<IDemand>();
             const offChainProperties = Substitute.for<IDemandOffChainProperties>();
+
+            offChainProperties.startTime.returns(start.toISOString());
+            offChainProperties.endTime.returns(end.toISOString());
+            offChainProperties.timeFrame.returns(timeFrame);
+            offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
+
+            demand.offChainProperties.returns(offChainProperties);
+
+            return demand;
+        };
+
+        it('should return demand time-series if there is no filled events', async () => {
             const deliveries = 2;
 
             const start = moment().startOf('day');
             const end = start.clone().add(deliveries, 'day');
             const energyPerTimeFrame = 1000;
 
-            offChainProperties.startTime.returns(start.toISOString());
-            offChainProperties.endTime.returns(end.toISOString());
-            offChainProperties.timeFrame.returns(TimeFrame.daily);
-            offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
-
-            demand.offChainProperties.returns(offChainProperties);
+            const config = createConfig([], []);
+            const demand = createDemand(start, end, TimeFrame.daily, energyPerTimeFrame);
 
             const missingEnergy = await calculateMissingEnergyDemand(demand, config);
 
@@ -81,11 +92,12 @@ describe('Demand unit tests', () => {
 
         it('should return demand time-series respecting filled events', async () => {
             const deliveries = 4;
+
             const start = moment().startOf('day');
             const end = start.clone().add(deliveries, 'day');
+            const energyPerTimeFrame = 1000;
 
             const fillAmount = 200;
-            const energyPerTimeFrame = 1000;
 
             const blockOne = start.unix();
             const blockTwo = start
@@ -97,16 +109,7 @@ describe('Demand unit tests', () => {
             const blockTwoEvent = { blockNumber: 2, value: fillAmount };
 
             const config = createConfig([blockOne, blockTwo], [blockOneEvent, blockTwoEvent]);
-
-            const demand = Substitute.for<IDemand>();
-            const offChainProperties = Substitute.for<IDemandOffChainProperties>();
-
-            offChainProperties.startTime.returns(start.toISOString());
-            offChainProperties.endTime.returns(end.toISOString());
-            offChainProperties.timeFrame.returns(TimeFrame.daily);
-            offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
-
-            demand.offChainProperties.returns(offChainProperties);
+            const demand = createDemand(start, end, TimeFrame.daily, energyPerTimeFrame);
 
             const missingEnergy = await calculateMissingEnergyDemand(demand, config);
 
@@ -115,6 +118,72 @@ describe('Demand unit tests', () => {
             assert.equal(missingEnergy[1].value, energyPerTimeFrame);
             assert.equal(missingEnergy[2].value, energyPerTimeFrame - fillAmount);
             assert.equal(missingEnergy[3].value, energyPerTimeFrame);
+        });
+
+        it('should return demand time-series respecting filled events in the same block', async () => {
+            const deliveries = 3;
+
+            const start = moment().startOf('day');
+            const end = start.clone().add(deliveries, 'day');
+            const energyPerTimeFrame = 1000;
+
+            const fillAmount = 200;
+
+            const blockOne = start.unix();
+            const blockTwo = start
+                .clone()
+                .add(2, 'day')
+                .unix();
+
+            const blockOneEvent = { blockNumber: 1, value: fillAmount };
+            const blockTwoEventOne = { blockNumber: 2, value: fillAmount };
+            const blockTwoEventTwo = { blockNumber: 2, value: fillAmount * 2 };
+
+            const config = createConfig(
+                [blockOne, blockTwo],
+                [blockOneEvent, blockTwoEventOne, blockTwoEventTwo]
+            );
+            const demand = createDemand(start, end, TimeFrame.daily, energyPerTimeFrame);
+
+            const missingEnergy = await calculateMissingEnergyDemand(demand, config);
+
+            assert.equal(missingEnergy.length, deliveries);
+            assert.equal(missingEnergy[0].value, energyPerTimeFrame - fillAmount);
+            assert.equal(missingEnergy[1].value, energyPerTimeFrame);
+            assert.equal(missingEnergy[2].value, energyPerTimeFrame - fillAmount * 3);
+        });
+
+        it('should return demand time-series respecting filled events and ignoring filled events out of range', async () => {
+            const deliveries = 3;
+
+            const start = moment().startOf('day');
+            const end = start.clone().add(deliveries, 'day');
+            const energyPerTimeFrame = 1000;
+
+            const fillAmount = 200;
+
+            const blockOne = start.unix();
+            const blockTwo = start
+                .clone()
+                .add(10, 'day')
+                .unix();
+
+            const blockOneEvent = { blockNumber: 1, value: fillAmount };
+            const blockTwoIgnoredEventOne = { blockNumber: 2, value: fillAmount };
+            const blockTwoIgnoredEventTwo = { blockNumber: 2, value: fillAmount * 2 };
+
+            const config = createConfig(
+                [blockOne, blockTwo],
+                [blockOneEvent, blockTwoIgnoredEventOne, blockTwoIgnoredEventTwo]
+            );
+            const demand = createDemand(start, end, TimeFrame.daily, energyPerTimeFrame);
+
+            const missingEnergy = await calculateMissingEnergyDemand(demand, config);
+
+            assert.equal(missingEnergy.length, deliveries);
+            assert.equal(missingEnergy[0].value, energyPerTimeFrame - fillAmount);
+            assert.equal(missingEnergy[1].value, energyPerTimeFrame);
+            assert.equal(missingEnergy[2].value, energyPerTimeFrame);
         });
     });
 });

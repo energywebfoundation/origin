@@ -32,4 +32,11 @@ export class TS {
 
         return Array.from(reduced);
     }
+
+    public static inRange(timeSeries: TimeSeries, startTimeStamp: number, endTimeStamp: number) {
+        return timeSeries.filter(
+            timeSeriesElement =>
+                timeSeriesElement.time >= startTimeStamp && timeSeriesElement.time <= endTimeStamp
+        );
+    }
 }
