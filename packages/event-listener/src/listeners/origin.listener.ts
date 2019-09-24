@@ -11,7 +11,11 @@ import { initOriginConfig } from '../config/origin.config';
 import NotificationTypes from '../notification/NotificationTypes';
 import { IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
-import { IOriginEventsStore, IPartiallyFilledDemand } from '../stores/OriginEventsStore';
+import {
+    IOriginEventsStore,
+    IPartiallyFilledDemand,
+    ICertificateMatchesDemand
+} from '../stores/OriginEventsStore';
 
 export interface IOriginEventListener extends IEventListener {
     originLookupAddress: string;
@@ -64,12 +68,6 @@ export class OriginEventListener implements IOriginEventListener {
             ).sync();
 
             this.originEventsStore.registerNewIssuedCertificates(newCertificate.owner);
-
-            this.conf.logger.info(
-                `New certificate approved. Buffered emails count: ${this.originEventsStore.getNewIssuedCertificates(
-                    newCertificate.owner
-                )}`
-            );
         });
 
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
@@ -100,15 +98,12 @@ export class OriginEventListener implements IOriginEventListener {
             });
 
             for (const demand of demandsMatchCertificate) {
-                this.originEventsStore.registerNewMatchingCertificates(demand);
-
-                this.conf.logger.info(
-                    `New certificate found for demand ${
-                        demand.id
-                    }. Buffered emails count: ${this.originEventsStore.getNewMatchingCertificates(
-                        demand.demandOwner
-                    )}`
+                this.originEventsStore.registerNewMatchingCertificates(
+                    demand,
+                    publishedCertificate.id
                 );
+
+                this.conf.logger.info(`New certificate found for demand ${demand.id}`);
             }
         });
 
@@ -152,7 +147,7 @@ export class OriginEventListener implements IOriginEventListener {
             const newIssuedCertificates: number = this.originEventsStore.getNewIssuedCertificates(
                 user.id
             );
-            const newMatchingCertificates: number = this.originEventsStore.getNewMatchingCertificates(
+            const newMatchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getNewMatchingCertificates(
                 user.id
             );
             const newPartiallyFilledDemand: IPartiallyFilledDemand[] = this.originEventsStore.getNewPartiallyFilledDemands(
@@ -170,13 +165,21 @@ export class OriginEventListener implements IOriginEventListener {
                 );
             }
 
-            if (newMatchingCertificates > 0) {
-                const url = `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/`;
+            if (newMatchingCertificates.length > 0) {
+                let urls = newMatchingCertificates.map(
+                    match =>
+                        `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/${match.demandId}`
+                );
+                urls = urls.filter((url, index) => urls.indexOf(url) === index); // Remove duplicate urls
 
                 await this.sendNotificationEmail(
                     NotificationTypes.FOUND_MATCHING_SUPPLY,
                     emailAddress,
-                    `We found ${newMatchingCertificates} certificates matching your demand. Open Origin and check it out:<br /><a href="${url}">${url}</a>`,
+                    `We found ${
+                        newMatchingCertificates.length
+                    } certificates matching your demands. Open Origin and check it out:${urls.map(
+                        url => `<br /><a href="${url}">${url}</a>`
+                    )}`,
                     () => this.originEventsStore.resetNewMatchingCertificates(user.id)
                 );
             }

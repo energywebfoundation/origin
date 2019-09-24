@@ -6,10 +6,15 @@ export interface IPartiallyFilledDemand {
     amount: number;
 }
 
+export interface ICertificateMatchesDemand {
+    demandId: string;
+    certificateId: string;
+}
+
 interface IUserTempStorage {
     userId: string;
     newIssuedCertificates: number;
-    newMatchingCertificates: number;
+    newMatchingCertificates: ICertificateMatchesDemand[];
     newPartiallyFilledDemands: IPartiallyFilledDemand[];
 }
 
@@ -17,11 +22,11 @@ export interface IOriginEventsStore {
     getAllUsers(): string[];
 
     getNewIssuedCertificates(userId: string): number;
-    getNewMatchingCertificates(userId: string): number;
+    getNewMatchingCertificates(userId: string): ICertificateMatchesDemand[];
     getNewPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[];
 
     registerNewIssuedCertificates(certOwnerId: string): void;
-    registerNewMatchingCertificates(demand: Demand.Entity): void;
+    registerNewMatchingCertificates(demand: Demand.Entity, certificateId: string): void;
     registerNewPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
 
     resetNewIssuedCertificates(userId: string): void;
@@ -37,61 +42,66 @@ export class OriginEventsStore implements IOriginEventsStore {
     }
 
     public registerNewIssuedCertificates(certOwnerId: string): void {
-        let userStorage: IUserTempStorage = this.userStorage(certOwnerId);
+        const userStorage: IUserTempStorage = this.userStorage(certOwnerId);
 
-        if (userStorage) {
-            userStorage.newIssuedCertificates += 1;
-        } else {
-            userStorage = {
+        if (!userStorage) {
+            this.tempStorage.push({
                 userId: certOwnerId,
                 newIssuedCertificates: 1,
-                newMatchingCertificates: 0,
+                newMatchingCertificates: [],
                 newPartiallyFilledDemands: []
-            };
-            this.tempStorage.push(userStorage);
+            });
+            return;
         }
+
+        userStorage.newIssuedCertificates += 1;
     }
 
-    public registerNewMatchingCertificates(demand: Demand.Entity): void {
-        let userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
+    public registerNewMatchingCertificates(demand: Demand.Entity, certificateId: string): void {
+        const userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
 
-        if (userStorage) {
-            userStorage.newMatchingCertificates += 1;
-        } else {
-            userStorage = {
+        const entry: ICertificateMatchesDemand = {
+            demandId: demand.id,
+            certificateId
+        };
+
+        if (!userStorage) {
+            this.tempStorage.push({
                 userId: demand.demandOwner,
                 newIssuedCertificates: 0,
-                newMatchingCertificates: 1,
+                newMatchingCertificates: [entry],
                 newPartiallyFilledDemands: []
-            };
-            this.tempStorage.push(userStorage);
+            });
+            return;
         }
+
+        userStorage.newMatchingCertificates.push(entry);
     }
 
     public registerNewPartiallyFilledDemand(
         demandOwner: string,
         demand: IPartiallyFilledDemand
     ): void {
-        let userStorage: IUserTempStorage = this.userStorage(demandOwner);
+        const userStorage: IUserTempStorage = this.userStorage(demandOwner);
 
-        if (userStorage) {
-            userStorage.newPartiallyFilledDemands.push(demand);
-        } else {
-            userStorage = {
+        if (!userStorage) {
+            this.tempStorage.push({
                 userId: demandOwner,
                 newIssuedCertificates: 0,
-                newMatchingCertificates: 0,
+                newMatchingCertificates: [],
                 newPartiallyFilledDemands: [demand]
-            };
-            this.tempStorage.push(userStorage);
+            });
+            return;
         }
+
+        userStorage.newPartiallyFilledDemands.push(demand);
     }
 
     public getNewIssuedCertificates(userId: string): number {
         return this.userStorage(userId).newIssuedCertificates;
     }
 
-    public getNewMatchingCertificates(userId: string): number {
+    public getNewMatchingCertificates(userId: string): ICertificateMatchesDemand[] {
         return this.userStorage(userId).newMatchingCertificates;
     }
 
@@ -108,7 +118,7 @@ export class OriginEventsStore implements IOriginEventsStore {
     }
 
     public resetNewMatchingCertificates(userId: string): void {
-        this.userStorage(userId).newMatchingCertificates = 0;
+        this.userStorage(userId).newMatchingCertificates = [];
     }
 
     public resetNewPartiallyFilledDemands(userId: string): void {
