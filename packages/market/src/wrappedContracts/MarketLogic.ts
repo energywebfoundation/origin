@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import { EventLog } from 'web3/types'; // eslint-disable-line import/no-unresolved
 import MarketLogicJSON from '../../build/contracts/lightweight/MarketLogic.json';
 import { DemandStatus } from '../blockchain-facade/Demand';
 import { GeneralFunctions, ISearchLog, ISpecialTx } from './GeneralFunctions';
@@ -35,7 +36,7 @@ export class MarketLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getEvents(event, eventFilter?: ISearchLog) {
+    async getEvents(event, eventFilter?: ISearchLog): Promise<EventLog[]> {
         if (!SUPPORTED_EVENTS.includes(event)) {
             throw new Error('This event does not exist.');
         }

@@ -231,32 +231,114 @@ export const deleteDemand = async (
     return success;
 };
 
+const durationInTimePeriod = (
+    start: number | moment.Moment,
+    end: number | moment.Moment,
+    timeFrame: TimeFrame
+) => {
+    const demandDuration = moment.duration(moment(end).diff(moment(start)));
+    let durationInTimeFrame = 0;
+    let unit = '';
+
+    switch (timeFrame) {
+        case TimeFrame.daily:
+            durationInTimeFrame = Math.ceil(demandDuration.asDays());
+            unit = 'day';
+            break;
+        case TimeFrame.weekly:
+            durationInTimeFrame = Math.ceil(demandDuration.asWeeks());
+            unit = 'week';
+            break;
+        case TimeFrame.monthly:
+            durationInTimeFrame = Math.ceil(demandDuration.asMonths());
+            unit = 'month';
+            break;
+        case TimeFrame.yearly:
+            durationInTimeFrame = Math.ceil(demandDuration.asYears());
+            unit = 'year';
+            break;
+        default:
+            break;
+    }
+
+    return { durationInTimeFrame, unit };
+};
+
 export const calculateTotalEnergyDemand = (
     startDate: number | moment.Moment,
     endDate: number | moment.Moment,
     energyPerTimeFrame: number,
     timeFrame: TimeFrame
 ) => {
-    let numberOfTimesDemandWillRepeat = 0;
+    const { durationInTimeFrame } = durationInTimePeriod(startDate, endDate, timeFrame);
 
-    const demandDuration = moment.duration(moment(endDate).diff(moment(startDate)));
+    return energyPerTimeFrame * durationInTimeFrame;
+};
 
-    switch (timeFrame) {
-        case TimeFrame.daily:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
-            break;
-        case TimeFrame.weekly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
-            break;
-        case TimeFrame.monthly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
-            break;
-        case TimeFrame.yearly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
-            break;
-        default:
-            break;
+const generateTimeSeries = (
+    start: moment.Moment,
+    length: number,
+    resolution: string,
+    value: number
+) =>
+    [...Array(length).keys()].map(i => ({
+        time: start.clone().add(Number(i), resolution as moment.unitOfTime.DurationConstructor),
+        value
+    }));
+
+type TimeSeriesElement = { time: moment.Moment; value: number };
+
+const aggregateByDate = (timeSeries: TimeSeriesElement[]) =>
+    timeSeries
+        .reduce((dict, current) => {
+            const key = current.time.unix();
+            const value = dict.has(key) ? dict.get(key).value + current.value : current.value;
+
+            return dict.set(key, { ...current, value });
+        }, new Map<number, TimeSeriesElement>())
+        .values();
+
+export const calculateMissingEnergyDemand = async (
+    demand: IDemand,
+    config: Configuration.Entity
+) => {
+    const { startTime, endTime, timeFrame, energyPerTimeFrame } = demand.offChainProperties;
+
+    if (timeFrame === TimeFrame.hourly || timeFrame === TimeFrame.halfHourly) {
+        throw new Error('Hourly and half-hourly demands are not supported');
     }
 
-    return energyPerTimeFrame * numberOfTimesDemandWillRepeat;
+    const start = moment(startTime);
+    const end = moment(endTime);
+    const { durationInTimeFrame, unit } = durationInTimePeriod(start, end, timeFrame);
+    const demandTimeSeries = generateTimeSeries(
+        start,
+        durationInTimeFrame,
+        unit,
+        energyPerTimeFrame
+    );
+
+    const marketLogic: MarketLogic = config.blockchainProperties.marketLogicInstance;
+    const filledEvents = await marketLogic.getEvents('DemandPartiallyFilled', {
+        filter: { _demandId: demand.id }
+    });
+
+    const emptyFilledTimeSeries = generateTimeSeries(start, durationInTimeFrame, unit, 0);
+    const filledTimeSeries = await Promise.all(
+        filledEvents.map(async log => {
+            const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
+            const nearestTime = moment
+                .unix(block.timestamp)
+                .startOf(unit as moment.unitOfTime.StartOf);
+
+            return { time: nearestTime, value: Number(log.returnValues._amount) * -1 };
+        })
+    );
+
+    const aggregated = Array.from(aggregateByDate(emptyFilledTimeSeries.concat(filledTimeSeries)));
+
+    return demandTimeSeries.map((item, index) => ({
+        ...item,
+        value: item.value + aggregated[index].value
+    }));
 };

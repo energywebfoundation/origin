@@ -7,7 +7,8 @@ export declare interface ISpecialTx extends Tx {
 }
 
 export declare interface ISearchLog extends Logs {
-    toBlock: number;
+    toBlock?: number;
+    filter?: any;
 }
 
 export async function getClientVersion(web3: Web3): Promise<string> {

@@ -316,7 +316,7 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@fluffy-spoon/substitute@1.89.0":
+"@fluffy-spoon/substitute@1.89.0", "@fluffy-spoon/substitute@^1.89.0":
   version "1.89.0"
   resolved "https://registry.yarnpkg.com/@fluffy-spoon/substitute/-/substitute-1.89.0.tgz#6d2be1ac04f6df7ea70abb1c92d7589614eb5cca"
   integrity sha512-jTcRqFBBuLYduWbbLERdQQmrCtudw1vZYyfRPEmvIOreABE9oIPNJB8hHpfyw5ecLr8bRSDAaB1q5864y2YGJQ==
