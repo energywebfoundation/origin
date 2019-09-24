@@ -1,4 +1,4 @@
-import { User } from '@energyweb/user-registry';
+import { Demand } from '@energyweb/market';
 
 export interface IPartiallyFilledDemand {
     demandId: number;
@@ -7,26 +7,26 @@ export interface IPartiallyFilledDemand {
 }
 
 interface IUserTempStorage {
-    user: User.Entity;
+    userId: string;
     newIssuedCertificates: number;
     newMatchingCertificates: number;
     newPartiallyFilledDemands: IPartiallyFilledDemand[];
 }
 
 export interface IOriginEventsStore {
-    getAllUsers(): User.Entity[];
+    getAllUsers(): string[];
 
-    getNewIssuedCertificates(user: User.Entity): number;
-    getNewMatchingCertificates(user: User.Entity): number;
-    getNewPartiallyFilledDemands(user: User.Entity): IPartiallyFilledDemand[];
+    getNewIssuedCertificates(userId: string): number;
+    getNewMatchingCertificates(userId: string): number;
+    getNewPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[];
 
-    incrementNewIssuedCertificates(certOwner: User.Entity): void;
-    incrementNewMatchingCertificates(demandOwner: User.Entity): void;
-    addNewPartiallyFilledDemand(demandOwner: User.Entity, demand: IPartiallyFilledDemand): void;
+    registerNewIssuedCertificates(certOwnerId: string): void;
+    registerNewMatchingCertificates(demand: Demand.Entity): void;
+    registerNewPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
 
-    resetNewIssuedCertificates(user: User.Entity): void;
-    resetNewMatchingCertificates(user: User.Entity): void;
-    resetNewPartiallyFilledDemands(user: User.Entity): void;
+    resetNewIssuedCertificates(userId: string): void;
+    resetNewMatchingCertificates(userId: string): void;
+    resetNewPartiallyFilledDemands(userId: string): void;
 }
 
 export class OriginEventsStore implements IOriginEventsStore {
@@ -36,14 +36,14 @@ export class OriginEventsStore implements IOriginEventsStore {
         this.tempStorage = [];
     }
 
-    public incrementNewIssuedCertificates(certOwner: User.Entity): void {
-        let userStorage: IUserTempStorage = this.userStorage(certOwner);
+    public registerNewIssuedCertificates(certOwnerId: string): void {
+        let userStorage: IUserTempStorage = this.userStorage(certOwnerId);
 
         if (userStorage) {
             userStorage.newIssuedCertificates += 1;
         } else {
             userStorage = {
-                user: certOwner,
+                userId: certOwnerId,
                 newIssuedCertificates: 1,
                 newMatchingCertificates: 0,
                 newPartiallyFilledDemands: []
@@ -52,14 +52,14 @@ export class OriginEventsStore implements IOriginEventsStore {
         }
     }
 
-    public incrementNewMatchingCertificates(demandOwner: User.Entity): void {
-        let userStorage: IUserTempStorage = this.userStorage(demandOwner);
+    public registerNewMatchingCertificates(demand: Demand.Entity): void {
+        let userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
 
         if (userStorage) {
             userStorage.newMatchingCertificates += 1;
         } else {
             userStorage = {
-                user: demandOwner,
+                userId: demand.demandOwner,
                 newIssuedCertificates: 0,
                 newMatchingCertificates: 1,
                 newPartiallyFilledDemands: []
@@ -68,8 +68,8 @@ export class OriginEventsStore implements IOriginEventsStore {
         }
     }
 
-    public addNewPartiallyFilledDemand(
-        demandOwner: User.Entity,
+    public registerNewPartiallyFilledDemand(
+        demandOwner: string,
         demand: IPartiallyFilledDemand
     ): void {
         let userStorage: IUserTempStorage = this.userStorage(demandOwner);
@@ -78,7 +78,7 @@ export class OriginEventsStore implements IOriginEventsStore {
             userStorage.newPartiallyFilledDemands.push(demand);
         } else {
             userStorage = {
-                user: demandOwner,
+                userId: demandOwner,
                 newIssuedCertificates: 0,
                 newMatchingCertificates: 0,
                 newPartiallyFilledDemands: [demand]
@@ -87,35 +87,37 @@ export class OriginEventsStore implements IOriginEventsStore {
         }
     }
 
-    public getNewIssuedCertificates(user: User.Entity): number {
-        return this.userStorage(user).newIssuedCertificates;
+    public getNewIssuedCertificates(userId: string): number {
+        return this.userStorage(userId).newIssuedCertificates;
     }
 
-    public getNewMatchingCertificates(user: User.Entity): number {
-        return this.userStorage(user).newMatchingCertificates;
+    public getNewMatchingCertificates(userId: string): number {
+        return this.userStorage(userId).newMatchingCertificates;
     }
 
-    public getNewPartiallyFilledDemands(user: User.Entity): IPartiallyFilledDemand[] {
-        return this.userStorage(user).newPartiallyFilledDemands;
+    public getNewPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[] {
+        return this.userStorage(userId).newPartiallyFilledDemands;
     }
 
-    public getAllUsers(): User.Entity[] {
-        return this.tempStorage.map(storage => storage.user);
+    public getAllUsers(): string[] {
+        return this.tempStorage.map(storage => storage.userId);
     }
 
-    public resetNewIssuedCertificates(user: User.Entity): void {
-        this.userStorage(user).newIssuedCertificates = 0;
+    public resetNewIssuedCertificates(userId: string): void {
+        this.userStorage(userId).newIssuedCertificates = 0;
     }
 
-    public resetNewMatchingCertificates(user: User.Entity): void {
-        this.userStorage(user).newMatchingCertificates = 0;
+    public resetNewMatchingCertificates(userId: string): void {
+        this.userStorage(userId).newMatchingCertificates = 0;
     }
 
-    public resetNewPartiallyFilledDemands(user: User.Entity): void {
-        this.userStorage(user).newPartiallyFilledDemands = [];
+    public resetNewPartiallyFilledDemands(userId: string): void {
+        this.userStorage(userId).newPartiallyFilledDemands = [];
     }
 
-    private userStorage(user: User.Entity): IUserTempStorage {
-        return this.tempStorage.find(storage => storage.user.id === user.id);
+    private userStorage(userId: string): IUserTempStorage {
+        return this.tempStorage.find(
+            storage => storage.userId.toLowerCase() === userId.toLowerCase()
+        );
     }
 }

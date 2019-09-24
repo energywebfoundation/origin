@@ -13,7 +13,7 @@ export interface IEmailResponse {
 
 export interface IEmailServiceProvider {
     adapter: IEmailAdapter;
-    send: (email: IEmail, callback: () => void) => void;
+    send: (email: IEmail, callback?: () => void) => void;
 }
 
 export class EmailServiceProvider implements IEmailServiceProvider {
@@ -21,7 +21,7 @@ export class EmailServiceProvider implements IEmailServiceProvider {
 
     constructor(public adapter: IEmailAdapter, private fromEmail: string) {}
 
-    public async send(email: IEmail): Promise<void> {
+    public async send(email: IEmail, callback?: () => void): Promise<void> {
         const response: IEmailResponse = await this.adapter.send(this.fromEmail, email);
 
         if (!response.success) {
@@ -30,5 +30,9 @@ export class EmailServiceProvider implements IEmailServiceProvider {
         }
 
         this.sentEmails.push(email);
+
+        if (callback) {
+            callback();
+        }
     }
 }
