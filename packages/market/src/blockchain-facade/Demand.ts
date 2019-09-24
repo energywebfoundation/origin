@@ -4,7 +4,9 @@ import {
     Configuration,
     Currency,
     extendArray,
-    TimeFrame
+    TimeFrame,
+    Resolution,
+    TS
 } from '@energyweb/utils-general';
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt } from 'web3/types';
@@ -238,30 +240,30 @@ const durationInTimePeriod = (
 ) => {
     const demandDuration = moment.duration(moment(end).diff(moment(start)));
     let durationInTimeFrame = 0;
-    let unit = '';
+    let resolution: Resolution = 'day';
 
     switch (timeFrame) {
         case TimeFrame.daily:
             durationInTimeFrame = Math.ceil(demandDuration.asDays());
-            unit = 'day';
+            resolution = 'day';
             break;
         case TimeFrame.weekly:
             durationInTimeFrame = Math.ceil(demandDuration.asWeeks());
-            unit = 'week';
+            resolution = 'week';
             break;
         case TimeFrame.monthly:
             durationInTimeFrame = Math.ceil(demandDuration.asMonths());
-            unit = 'month';
+            resolution = 'month';
             break;
         case TimeFrame.yearly:
             durationInTimeFrame = Math.ceil(demandDuration.asYears());
-            unit = 'year';
+            resolution = 'year';
             break;
         default:
             break;
     }
 
-    return { durationInTimeFrame, unit };
+    return { durationInTimeFrame, resolution };
 };
 
 export const calculateTotalEnergyDemand = (
@@ -275,29 +277,6 @@ export const calculateTotalEnergyDemand = (
     return energyPerTimeFrame * durationInTimeFrame;
 };
 
-const generateTimeSeries = (
-    start: moment.Moment,
-    length: number,
-    resolution: string,
-    value: number
-) =>
-    [...Array(length).keys()].map(i => ({
-        time: start.clone().add(Number(i), resolution as moment.unitOfTime.DurationConstructor),
-        value
-    }));
-
-type TimeSeriesElement = { time: moment.Moment; value: number };
-
-const aggregateByDate = (timeSeries: TimeSeriesElement[]) =>
-    timeSeries
-        .reduce((dict, current) => {
-            const key = current.time.unix();
-            const value = dict.has(key) ? dict.get(key).value + current.value : current.value;
-
-            return dict.set(key, { ...current, value });
-        }, new Map<number, TimeSeriesElement>())
-        .values();
-
 export const calculateMissingEnergyDemand = async (
     demand: IDemand,
     config: Configuration.Entity
@@ -310,11 +289,11 @@ export const calculateMissingEnergyDemand = async (
 
     const start = moment(startTime);
     const end = moment(endTime);
-    const { durationInTimeFrame, unit } = durationInTimePeriod(start, end, timeFrame);
-    const demandTimeSeries = generateTimeSeries(
-        start,
+    const { durationInTimeFrame, resolution } = durationInTimePeriod(start, end, timeFrame);
+    const demandTimeSeries = TS.generate(
+        start.unix(),
         durationInTimeFrame,
-        unit,
+        resolution,
         energyPerTimeFrame
     );
 
@@ -323,22 +302,17 @@ export const calculateMissingEnergyDemand = async (
         filter: { _demandId: demand.id }
     });
 
-    const emptyFilledTimeSeries = generateTimeSeries(start, durationInTimeFrame, unit, 0);
     const filledTimeSeries = await Promise.all(
         filledEvents.map(async log => {
             const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
             const nearestTime = moment
                 .unix(block.timestamp)
-                .startOf(unit as moment.unitOfTime.StartOf);
+                .startOf(resolution as moment.unitOfTime.StartOf)
+                .unix();
 
             return { time: nearestTime, value: Number(log.returnValues._amount) * -1 };
         })
     );
 
-    const aggregated = Array.from(aggregateByDate(emptyFilledTimeSeries.concat(filledTimeSeries)));
-
-    return demandTimeSeries.map((item, index) => ({
-        ...item,
-        value: item.value + aggregated[index].value
-    }));
+    return TS.aggregateByTime(demandTimeSeries.concat(filledTimeSeries));
 };
