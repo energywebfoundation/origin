@@ -4,7 +4,7 @@ import {
     IPaginatedLoaderFilteredSortedProps,
     getInitialPaginatedLoaderFilteredSortedState
 } from '../components/Table/PaginatedLoaderFilteredSorted';
-import { IPaginatedLoaderFetchDataParameters, IPaginatedLoaderFetchDataReturnValues } from '../components/Table/PaginatedLoader';
+import { IPaginatedLoaderFetchDataReturnValues } from '../components/Table/PaginatedLoader';
 
 describe('PaginatedLoaderFilteredSorted', () => {
     it('sortData correctly sorts records by multiple properties', async () => {
@@ -22,13 +22,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 };
             }
 
-            getPaginatedData({
-                pageSize,
-                offset,
-                filters
-            }: IPaginatedLoaderFetchDataParameters): Promise<
-                IPaginatedLoaderFetchDataReturnValues
-            > {
+            getPaginatedData(): Promise<IPaginatedLoaderFetchDataReturnValues> {
                 throw new Error('Method not implemented.');
             }
         }
@@ -150,13 +144,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 };
             }
 
-            getPaginatedData({
-                pageSize,
-                offset,
-                filters
-            }: IPaginatedLoaderFetchDataParameters): Promise<
-                IPaginatedLoaderFetchDataReturnValues
-            > {
+            getPaginatedData(): Promise<IPaginatedLoaderFetchDataReturnValues> {
                 throw new Error('Method not implemented.');
             }
         }

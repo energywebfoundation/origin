@@ -19,7 +19,7 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { getEnumValues } from '../../utils/Helper';
+import { getEnumValues, dataTest } from '../../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../../types';
 import { getConfiguration, getBaseURL } from '../../features/selectors';
@@ -278,15 +278,17 @@ class DemandFormClass extends React.Component<Props, IState> {
             return;
         }
 
-        const { selectedRegions, selectedProvinces, selectedAssetType, vintage } = this.state;
+        const { selectedAssetType, vintage } = this.state;
 
         const { baseURL, currentUser, configuration, edit, demand, history } = this.props;
 
         formikActions.setSubmitting(true);
 
-        configuration.blockchainProperties.activeUser = {
-            address: currentUser.id
-        };
+        if (configuration) {
+            configuration.blockchainProperties.activeUser = {
+                address: currentUser.id
+            };
+        }
 
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
@@ -428,7 +430,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                         }
 
                         return (
-                            <Form>
+                            <Form {...dataTest('demandForm')}>
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
                                         <Typography className="mt-3">General</Typography>
@@ -437,6 +439,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('demandNeedsInMWh')}
                                         >
                                             <Field
                                                 label="Demand needs (MWh)"
@@ -453,6 +456,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('maxPricePerMWh')}
                                         >
                                             <Field
                                                 label="Max price (per MWh)"
@@ -469,6 +473,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('currency')}
                                         >
                                             <InputLabel required>Currency</InputLabel>
                                             <Field
@@ -498,6 +503,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             required
                                             component={FormikDatePicker}
                                             disabled={disabled}
+                                            {...dataTest('startDate')}
                                         />
                                         <Field
                                             name="activeUntilDate"
@@ -509,6 +515,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             required
                                             component={FormikDatePicker}
                                             disabled={disabled}
+                                            {...dataTest('activeUntilDate')}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
@@ -567,6 +574,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('timeframe')}
                                         >
                                             <InputLabel required>Every</InputLabel>
                                             <Field
@@ -600,11 +608,12 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             required
                                             component={FormikDatePicker}
                                             disabled={disabled}
+                                            {...dataTest('endDate')}
                                         />
 
                                         <div className="mt-3">
                                             Total demand:{' '}
-                                            <b>
+                                            <b {...dataTest('totalDemand')}>
                                                 {(
                                                     this.totalDemand(
                                                         values.startDate,
@@ -656,6 +665,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                     <Tooltip
                                         title={buttonTooltip}
                                         disableHoverListener={!buttonTooltip}
+                                        {...dataTest('submitButtonTooltip')}
                                     >
                                         <span>
                                             <Button
@@ -666,6 +676,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                 disabled={
                                                     disabled || !isValid || !this.isUserTraderRole()
                                                 }
+                                                {...dataTest('submitButton')}
                                             >
                                                 {submitButtonText}
                                             </Button>
