@@ -17,7 +17,6 @@ export async function startAPI() {
             ENTITY.USER,
             ENTITY.TRADABLE_ENTITY,
             ENTITY.PRODUCING_ASSET,
-            ENTITY.PRODUCING_ASSET_NOT_BOUND,
             ENTITY.CONSUMING_ASSET,
             ENTITY.DEMAND,
             ENTITY.SUPPLY,
@@ -101,39 +100,8 @@ export async function startAPI() {
     createRoutesForEntityBoundToContract(app, ENTITY.USER);
     createRoutesForEntityBoundToContract(app, ENTITY.TRADABLE_ENTITY);
     createRoutesForEntityBoundToContract(app, ENTITY.PRODUCING_ASSET);
+    createRoutesForEntityBoundToContract(app, ENTITY.CONSUMING_ASSET);
     createRoutesForEntityBoundToContract(app, ENTITY.DEMAND);
-
-    /**
-     * Producing Asset
-     */
-    app.get('/ProducingAsset/:id', (req, res) => {
-        console.log(`GET - ProducingAssetNotBound ${req.params.id}`);
-        res.send(storage.get(ENTITY.PRODUCING_ASSET_NOT_BOUND, req.params.id));
-    });
-
-    app.put('/ProducingAsset/:id', (req, res) => {
-        console.log(`PUT - ProducingAssetNotBound ${req.params.id}`);
-
-        storage.set(ENTITY.PRODUCING_ASSET_NOT_BOUND, req.params.id, req.body);
-
-        res.send('success');
-    });
-
-    /**
-     * Consuming Asset
-     */
-    app.get('/ConsumingAsset/:id', (req, res) => {
-        console.log(`GET - ConsumingAsset ${req.params.id}`);
-        res.send(storage.get(ENTITY.CONSUMING_ASSET, req.params.id));
-    });
-
-    app.put('/ConsumingAsset/:id', (req, res) => {
-        console.log(`PUT - ConsumingAsset ${req.params.id}`);
-
-        storage.set(ENTITY.CONSUMING_ASSET, req.params.id, req.body);
-
-        res.send('success');
-    });
 
     /**
      * Supply

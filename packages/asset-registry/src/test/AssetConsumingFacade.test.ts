@@ -149,7 +149,7 @@ describe('AssetConsumingLogic Facade', () => {
                 active: true,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
-                url: 'http://localhost:3030/ConsumingAsset'
+                url: `http://localhost:3030/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract._address}`
             } as any,
             asset
         );
@@ -214,7 +214,7 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: 'http://localhost:3030/ConsumingAsset',
+            url: `http://localhost:3030/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract._address}`,
             offChainProperties: {
                 operationalSince: 10,
                 capacityWh: 10,
