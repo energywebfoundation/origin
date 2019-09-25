@@ -1,7 +1,6 @@
 import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 
-import moment from 'moment';
 import { MatchingErrorReason } from './MatchingErrorReason';
 import { Validator } from './Validator';
 
@@ -15,7 +14,7 @@ export class MatchableAgreement {
     ) {
         const { offChainProperties } = this.agreement;
 
-        const missingEnergyInCurrentPeriod = await this.missingEnergyForDemand(demand);
+        const missingEnergyInCurrentPeriod = await demand.missingEnergyInCurrentPeriod();
 
         return new Validator<MatchingErrorReason>()
             .validate(
@@ -33,9 +32,5 @@ export class MatchableAgreement {
                 MatchingErrorReason.OUT_OF_RANGE
             )
             .result();
-    }
-
-    public async missingEnergyForDemand(demand: Demand.IDemand) {
-        return demand.missingEnergyInPeriod(moment().unix());
     }
 }

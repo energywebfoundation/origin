@@ -49,6 +49,7 @@ export interface IDemand extends IDemandOnChainProperties {
     offChainProperties: IDemandOffChainProperties;
     fill: (entityId: string) => Promise<TransactionReceipt>;
     missingEnergyInPeriod: (timeStamp: number) => Promise<TimeSeriesElement>;
+    missingEnergyInCurrentPeriod: () => Promise<TimeSeriesElement>;
 }
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
@@ -162,6 +163,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             .unix();
 
         return missingEnergy.find(timeSeriesElement => timeSeriesElement.time === currentPeriod);
+    }
+
+    async missingEnergyInCurrentPeriod(): Promise<TimeSeriesElement> {
+        return this.missingEnergyInPeriod(moment().unix());
     }
 }
 

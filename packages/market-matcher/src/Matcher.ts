@@ -72,7 +72,7 @@ export class Matcher {
     }
 
     private async executeMatching(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
-        const requiredEnergy = demand.offChainProperties.energyPerTimeFrame;
+        const { value: requiredEnergy } = await demand.missingEnergyInCurrentPeriod();
 
         if (certificate.energy === requiredEnergy) {
             return this.certificateService.matchDemand(certificate, demand);
@@ -112,7 +112,7 @@ export class Matcher {
         for (const matchingAgreement of matchingAgreements) {
             const { agreement } = matchingAgreement;
             const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
+            const missingEnergyForPeriod = await demand.missingEnergyInCurrentPeriod();
 
             this.logger.debug(
                 `Certificate's available energy ${certificate.energy}, missingEnergyForPeriod ${missingEnergyForPeriod}`
