@@ -18,23 +18,23 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
 
 export class Demo {
-    public originContractLookup;
+    public originContractLookup: string;
 
-    public certificateLogic;
+    public certificateLogic: CertificateLogic;
 
-    public assetProducingRegistryLogic;
+    public assetProducingRegistryLogic: AssetProducingRegistryLogic;
 
-    private connectionConfig;
+    private connectionConfig: any;
 
     private conf: Configuration.Entity;
 
-    private adminPK;
+    private adminPK: string;
 
-    private web3;
+    private web3: Web3;
 
-    private ACCOUNTS;
+    private ACCOUNTS: any;
 
-    private logger;
+    private logger: Winston.Logger;
 
     private latestDeployedSmReadIndex = 0;
 

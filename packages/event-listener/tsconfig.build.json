@@ -4,7 +4,8 @@
         "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
-        "types": ["mocha"]
+        "types": ["mocha"],
+        "noImplicitAny": true
     },
     "include": ["./src/**/*"],
     "references": [

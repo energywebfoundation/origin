@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 
-import { EmailServiceProvider } from '../../services/email.service';
+import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
 import { OriginEventsStore } from '../../stores/OriginEventsStore';
 import { Demo } from '../deployDemo';
@@ -36,7 +36,7 @@ async function waitForConditionAndAssert(
 }
 
 function notificationSent(emailService: any, notification: NotificationTypes) {
-    return emailService.sentEmails.some(email => email.subject.includes(notification));
+    return emailService.sentEmails.some((email: IEmail) => email.subject.includes(notification));
 }
 
 describe('Origin Listener Tests', async () => {
@@ -45,10 +45,10 @@ describe('Origin Listener Tests', async () => {
     process.env.WEB3 = 'http://localhost:8545';
     const deployKey = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-    let demo;
+    let demo: any;
     let listener: IOriginEventListener;
     let emailService: any;
-    let store;
+    let store: any;
 
     before(async () => {
         demo = new Demo(process.env.WEB3, deployKey);
