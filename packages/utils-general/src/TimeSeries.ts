@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export type TimeSeriesElement = { time: number; value: number };
 export type TimeSeries = TimeSeriesElement[];
-export type Resolution = 'day' | 'week' | 'month' | 'year';
+export type Resolution = 'hour' | 'day' | 'week' | 'month' | 'year';
 
 export class TS {
     public static generate(

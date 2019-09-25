@@ -260,6 +260,9 @@ const timeFrameToResolution = (timeFrame: TimeFrame): Resolution => {
     let resolution: Resolution = 'day';
 
     switch (timeFrame) {
+        case TimeFrame.hourly:
+            resolution = 'hour';
+            break;
         case TimeFrame.daily:
             resolution = 'day';
             break;
@@ -324,8 +327,8 @@ export const calculateMissingEnergyDemand = async (
 ) => {
     const { startTime, endTime, timeFrame, energyPerTimeFrame } = demand.offChainProperties;
 
-    if (timeFrame === TimeFrame.hourly || timeFrame === TimeFrame.halfHourly) {
-        throw new Error('Hourly and half-hourly demands are not supported');
+    if (timeFrame === TimeFrame.halfHourly) {
+        throw new Error('Half-hourly demands are not supported');
     }
 
     const start = moment(startTime);
