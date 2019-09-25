@@ -5,15 +5,8 @@ import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { createRootReducer } from '../reducers';
-import {
-    User,
-    UserLogic,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts
-} from '@energyweb/user-registry/contracts';
+import { User, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import {
     ProducingAsset,
     AssetProducingRegistryLogic,
@@ -31,7 +24,7 @@ import { CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { MarketLogic } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Compliance } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';
 import axios from 'axios';
@@ -239,8 +232,7 @@ const deployDemo = async () => {
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
         country: 'Thailand',
-        address:
-            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+        address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '',
         gpsLongitude: '',
         operationalSince: 0,
@@ -306,12 +298,13 @@ describe('Application[E2E]', () => {
             '0'
         ]);
 
-        expect(renderedApp.find('span.MuiTablePagination-caption').text()).toBe(
-            '1-1 of 1'
-        );
+        expect(renderedApp.find('span.MuiTablePagination-caption').text()).toBe('1-1 of 1');
 
         // Go to asset details
-        renderedApp.find('table tbody tr td').first().simulate('click');
+        renderedApp
+            .find('table tbody tr td')
+            .first()
+            .simulate('click');
 
         renderedApp.update();
 

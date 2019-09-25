@@ -1,6 +1,5 @@
 import { MemoryAdapter } from './memoryAdapter';
 import fs from 'fs-extra';
-import beautify from 'js-beautify';
 
 export class FileAdapter extends MemoryAdapter {
     _filePath = null;
@@ -22,7 +21,7 @@ export class FileAdapter extends MemoryAdapter {
     }
 
     async persist() {
-        await fs.writeFile(this._filePath, beautify.js(JSON.stringify(this._storage)));
+        await fs.writeFile(this._filePath, JSON.stringify(this._storage));
     }
 
     async set(key, value) {
