@@ -4,7 +4,6 @@
         "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
-        "noImplicitAny": true
     },
     "include": ["./contracts.ts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"],
     "references": [

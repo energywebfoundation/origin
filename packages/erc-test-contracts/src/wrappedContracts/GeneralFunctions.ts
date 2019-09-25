@@ -1,9 +1,6 @@
-// eslint-disable-next-line import/no-unresolved
-import { Tx } from 'web3/eth/types';
-// eslint-disable-next-line import/no-unresolved
-import { TransactionReceipt, Logs } from 'web3/types';
-
 import Web3 from 'web3';
+import { Tx } from 'web3/eth/types'; // eslint-disable-line import/no-unresolved
+import { TransactionReceipt, Logs } from 'web3/types'; // eslint-disable-line import/no-unresolved
 
 export declare interface ISpecialTx extends Tx {
     privateKey: string;
@@ -22,7 +19,7 @@ export async function getClientVersion(web3: Web3): Promise<string> {
                 params: [],
                 id: 1
             },
-            (e, r) => {
+            (e: any, r: any) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -42,7 +39,7 @@ export async function replayTransaction(web3: Web3, txHash: string) {
                 params: [txHash, ['trace', 'vmTrace', 'stateDiff']],
                 id: 1
             },
-            (e, r) => {
+            (e: any, r: any) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -58,7 +55,7 @@ export class GeneralFunctions {
 
     web3: Web3;
 
-    constructor(web3Contract) {
+    constructor(web3Contract: any) {
         this.web3Contract = web3Contract;
     }
 
@@ -100,7 +97,7 @@ export class GeneralFunctions {
                     params: [txObj, ['trace']],
                     id: 1
                 },
-                (e, r) => {
+                (e: any, r: any) => {
                     if (e) {
                         reject(e);
                     } else {
@@ -119,25 +116,25 @@ export class GeneralFunctions {
         });
     }
 
-    async buildTransactionParams(method, params): Promise<ISpecialTx> {
-        const txParams = params || {};
+    async buildTransactionParams(method: any, params: any): Promise<ISpecialTx> {
+        const parameters = params || {};
         const networkGasPrice = await this.web3.eth.getGasPrice();
 
         let methodGas;
 
-        if (txParams.privateKey) {
-            const privateKey = txParams.privateKey.startsWith('0x')
-                ? txParams.privateKey
-                : `0x${txParams.privateKey}`;
+        if (parameters.privateKey) {
+            const privateKey = parameters.privateKey.startsWith('0x')
+                ? parameters.privateKey
+                : `0x${parameters.privateKey}`;
 
-            txParams.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
+            parameters.from = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
         }
 
-        txParams.from = txParams.from || (await this.web3.eth.getAccounts())[0];
+        parameters.from = parameters.from || (await this.web3.eth.getAccounts())[0];
 
         try {
             methodGas = await method.estimateGas({
-                from: txParams.from
+                from: parameters.from
             });
         } catch (ex) {
             if (!(await getClientVersion(this.web3)).includes('Parity')) {
@@ -145,24 +142,24 @@ export class GeneralFunctions {
             }
 
             const errorResult = await this.getErrorMessage(this.web3, {
-                from: txParams.from,
+                from: parameters.from,
                 to: this.web3Contract._address,
-                data: txParams ? txParams.data : '',
+                data: parameters ? parameters.data : '',
                 gas: this.web3.utils.toHex(7000000)
             });
             throw new Error(errorResult);
         }
 
         return {
-            from: txParams.from,
-            gas: Math.round((txParams.gas ? txParams.gas : methodGas) * 2),
-            gasPrice: txParams.gasPrice ? txParams.gasPrice : networkGasPrice.toString(),
-            nonce: txParams.nonce
-                ? txParams.nonce
-                : await this.web3.eth.getTransactionCount(txParams.from),
-            data: txParams.data ? txParams.data : await method.encodeABI(),
+            from: parameters.from,
+            gas: Math.round((parameters.gas ? parameters.gas : methodGas) * 2),
+            gasPrice: parameters.gasPrice ? parameters.gasPrice : networkGasPrice.toString(),
+            nonce: parameters.nonce
+                ? parameters.nonce
+                : await this.web3.eth.getTransactionCount(parameters.from),
+            data: parameters.data ? parameters.data : await method.encodeABI(),
             to: this.web3Contract._address,
-            privateKey: txParams.privateKey ? txParams.privateKey : ''
+            privateKey: parameters.privateKey ? parameters.privateKey : ''
         };
     }
 }

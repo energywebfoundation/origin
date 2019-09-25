@@ -2,7 +2,7 @@ import * as Asset from '@energyweb/asset-registry';
 import * as GeneralLib from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 
-function sleep(ms) {
+function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 

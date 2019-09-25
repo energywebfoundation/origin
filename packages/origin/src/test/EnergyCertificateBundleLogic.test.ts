@@ -4027,7 +4027,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract._address,
                     testreceiver.web3Contract._address,
-                    14,
+                    '14',
                     null,
                     { privateKey: privateKeyDeployment }
                 );
@@ -4093,7 +4093,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await testreceiver.safeTransferFrom(
                         testreceiver.web3Contract._address,
                         testreceiver.web3Contract._address,
-                        14,
+                        '14',
                         null,
                         { privateKey: privateKeyDeployment }
                     );
@@ -4293,7 +4293,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract._address,
                     testreceiver.web3Contract._address,
-                    15,
+                    '15',
                     '0x01',
                     { privateKey: privateKeyDeployment }
                 );

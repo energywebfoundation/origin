@@ -5,24 +5,21 @@ import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
 export class Erc20TestToken extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = Erc20TestTokenJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = Erc20TestTokenJSON;
         super(
             address
-                ? new web3.eth.Contract(Erc20TestTokenJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      Erc20TestTokenJSON.abi,
-                      (Erc20TestTokenJSON as any).networks.length > 0
-                          ? Erc20TestTokenJSON.networks[0]
-                          : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllTransferEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -42,7 +39,7 @@ export class Erc20TestToken extends GeneralFunctions {
     }
 
     async getAllApprovalEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

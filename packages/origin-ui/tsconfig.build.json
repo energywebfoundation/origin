@@ -4,7 +4,8 @@
         "outDir": "./dist/",
         "module": "es2015",
         "moduleResolution": "node",
-        "declaration": false
+        "declaration": false,
+        "noImplicitAny": false
     },
     "include": ["./src/**/*"],
     "references": [

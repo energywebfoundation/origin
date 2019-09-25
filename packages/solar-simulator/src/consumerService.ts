@@ -10,7 +10,7 @@ import Web3 from 'web3';
 import * as Winston from 'winston';
 import CONFIG from '../config/config.json';
 
-export function wait(milliseconds) {
+export function wait(milliseconds: number) {
     return new Promise(resolve => {
         setTimeout(resolve, milliseconds);
     });
@@ -49,7 +49,7 @@ async function getAssetConf() {
     return conf;
 }
 
-function parseTime(timeString) {
+function parseTime(timeString: string) {
     return moment(timeString).tz(SOLAR_ASSET_GENERATION_TIMEZONE);
 }
 

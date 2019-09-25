@@ -1175,7 +1175,7 @@ describe('CertificateLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract._address,
                     testreceiver.web3Contract._address,
-                    3,
+                    '3',
                     '',
                     {
                         privateKey: traderPK
@@ -1488,7 +1488,7 @@ describe('CertificateLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract._address,
                     testreceiver.web3Contract._address,
-                    4,
+                    '4',
                     '0x01',
                     {
                         privateKey: traderPK

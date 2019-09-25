@@ -42,7 +42,7 @@ if (!fs.existsSync(program.input)) {
     process.exit(1);
 }
 
-const processAssets = async parsedContent => {
+const processAssets = async (parsedContent: any) => {
     const assets = [];
     const flow = [];
 
@@ -109,7 +109,7 @@ const processAssets = async parsedContent => {
     return { assets, flow };
 };
 
-const parseContent = path => {
+const parseContent = (path: string) => {
     const inputContent = fs.readFileSync(path);
 
     return parse(inputContent, { columns: true, trim: true });

@@ -3,11 +3,9 @@
     "compilerOptions": {
         "composite": true,
         "rootDir": "./",
-        "outDir": "./dist/js",
-        "noImplicitAny": true
+        "outDir": "./dist/js"
     },
     "include": [
         "src/**/*", "build/**/*.json", "test/*"
-    ],
-    "exclude": ["./src/test/*"]
+    ]
 }

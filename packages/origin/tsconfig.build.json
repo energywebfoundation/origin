@@ -3,8 +3,7 @@
     "compilerOptions": {
         "composite": true,
         "rootDir": "./",
-        "outDir": "./dist/js",
-        "noImplicitAny": true
+        "outDir": "./dist/js"
     },
     "include": ["./contracts.ts", "./src/**/*", "./dist/ts/**/*", "./build/**/*.json"],
     "references": [
