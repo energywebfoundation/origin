@@ -62,7 +62,7 @@ describe('Origin Listener Tests', async () => {
         );
     });
 
-    it('an email is sent supply is found for a demand', async () => {
+    it('an email is sent when a supply is found for a demand', async () => {
         await demo.deployDemand();
 
         await listener.start();
@@ -78,6 +78,30 @@ describe('Origin Listener Tests', async () => {
         );
         assert.isTrue(
             emailService.sentEmails[1].subject.includes(NotificationTypes.FOUND_MATCHING_SUPPLY)
+        );
+    });
+
+    it('an email is sent when a demand has been partially filled', async () => {
+        const demand = await demo.deployDemand();
+
+        await listener.start();
+
+        await demo.deploySmartMeterRead(3e7);
+        await demo.publishForSale(1);
+
+        await demo.fillDemand(demand.id, '1');
+
+        await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
+
+        assert.equal(emailService.sentEmails.length, 2);
+        assert.isTrue(
+            emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
+        );
+        assert.isTrue(
+            emailService.sentEmails[1].subject.includes(NotificationTypes.FOUND_MATCHING_SUPPLY)
+        );
+        assert.isTrue(
+            emailService.sentEmails[2].subject.includes(NotificationTypes.DEMAND_PARTIALLY_FILLED)
         );
     });
 });
