@@ -11,8 +11,32 @@ import NotificationTypes from '../../notification/NotificationTypes';
 const SCAN_INTERVAL = 3000;
 const APPROX_EMAIL_SENDING_TIME = 3000;
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function waitForConditionAndAssert(
+    conditionCheckFunction: () => Promise<boolean> | boolean,
+    assertFunction: () => Promise<void> | void,
+    timeout: number
+): Promise<void> {
+    let timePassed = 0;
+    const interval = 1000;
+
+    while (timePassed < timeout) {
+        if (await conditionCheckFunction()) {
+            await assertFunction();
+
+            return;
+        }
+
+        await sleep(interval);
+        timePassed += interval;
+    }
+
+    await assertFunction();
+}
+
+function notificationSent(emailService: any, notification: NotificationTypes) {
+    return emailService.sentEmails.some(email => email.subject.includes(notification));
 }
 
 describe('Origin Listener Tests', async () => {
@@ -23,7 +47,7 @@ describe('Origin Listener Tests', async () => {
 
     let demo;
     let listener: IOriginEventListener;
-    let emailService;
+    let emailService: any;
     let store;
 
     before(async () => {
@@ -54,11 +78,13 @@ describe('Origin Listener Tests', async () => {
 
         await demo.deploySmartMeterRead(1e7);
 
-        await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
-
-        assert.equal(emailService.sentEmails.length, 1);
-        assert.isTrue(
-            emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length > 0,
+            () => {
+                assert.equal(emailService.sentEmails.length, 1);
+                assert.isTrue(notificationSent(emailService, NotificationTypes.CERTS_APPROVED));
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });
 
@@ -70,14 +96,16 @@ describe('Origin Listener Tests', async () => {
         await demo.deploySmartMeterRead(2e7);
         await demo.publishForSale(0);
 
-        await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
-
-        assert.equal(emailService.sentEmails.length, 2);
-        assert.isTrue(
-            emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
-        );
-        assert.isTrue(
-            emailService.sentEmails[1].subject.includes(NotificationTypes.FOUND_MATCHING_SUPPLY)
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length > 1,
+            () => {
+                assert.equal(emailService.sentEmails.length, 2);
+                assert.isTrue(notificationSent(emailService, NotificationTypes.CERTS_APPROVED));
+                assert.isTrue(
+                    notificationSent(emailService, NotificationTypes.FOUND_MATCHING_SUPPLY)
+                );
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });
 
@@ -91,17 +119,20 @@ describe('Origin Listener Tests', async () => {
 
         await demo.fillDemand(demand.id, '1');
 
-        await sleep(SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME);
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length > 2,
+            () => {
+                assert.equal(emailService.sentEmails.length, 3);
 
-        assert.equal(emailService.sentEmails.length, 2);
-        assert.isTrue(
-            emailService.sentEmails[0].subject.includes(NotificationTypes.CERTS_APPROVED)
-        );
-        assert.isTrue(
-            emailService.sentEmails[1].subject.includes(NotificationTypes.FOUND_MATCHING_SUPPLY)
-        );
-        assert.isTrue(
-            emailService.sentEmails[2].subject.includes(NotificationTypes.DEMAND_PARTIALLY_FILLED)
+                assert.isTrue(notificationSent(emailService, NotificationTypes.CERTS_APPROVED));
+                assert.isTrue(
+                    notificationSent(emailService, NotificationTypes.FOUND_MATCHING_SUPPLY)
+                );
+                assert.isTrue(
+                    notificationSent(emailService, NotificationTypes.DEMAND_PARTIALLY_FILLED)
+                );
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });
 });

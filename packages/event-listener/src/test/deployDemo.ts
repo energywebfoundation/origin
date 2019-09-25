@@ -222,6 +222,28 @@ export class Demo {
         };
         await User.createUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
 
+        const marketLogicPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: this.conf.blockchainProperties.marketLogicInstance.web3Contract._address,
+            active: true,
+            roles: buildRights([Role.Matcher]),
+            organization: 'MarketLogic matcher'
+        };
+        const marketLogicPropsOffChain: User.IUserOffChainProperties = {
+            firstName: 'MarketLogic',
+            surname: 'Matcher',
+            email: 'marketlogicmatcher@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: '',
+            notifications: true
+        };
+        await User.createUser(marketLogicPropsOnChain, marketLogicPropsOffChain, this.conf);
+
         const assetProducingProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.ASSET_MANAGER.address },
@@ -315,6 +337,15 @@ export class Demo {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.MATCHER;
 
         const demand = await new Demand.Entity(demandId, this.conf).sync();
-        await demand.fill(certId);
+
+        const certificate = await new Certificate.Entity(certId, this.conf).sync();
+        console.log({
+            demand,
+            certificate
+        });
+
+        const fillTx = await demand.fill(certificate.id);
+
+        return fillTx.status;
     }
 }
