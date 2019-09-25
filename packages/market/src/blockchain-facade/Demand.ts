@@ -27,8 +27,8 @@ export interface IDemandOffChainProperties {
     typeOfPublicSupport?: string;
     energyPerTimeFrame: number;
     registryCompliance?: Compliance;
-    startTime: string;
-    endTime: string;
+    startTime: number;
+    endTime: number;
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
 }
@@ -331,12 +331,10 @@ export const calculateMissingEnergyDemand = async (
         throw new Error('Half-hourly demands are not supported');
     }
 
-    const start = moment(startTime);
-    const end = moment(endTime);
-    const durationInTimeFrame = durationInTimePeriod(start, end, timeFrame);
+    const durationInTimeFrame = durationInTimePeriod(startTime, endTime, timeFrame);
     const resolution = timeFrameToResolution(timeFrame);
     const demandTimeSeries = TS.generate(
-        start.unix(),
+        startTime,
         durationInTimeFrame,
         resolution,
         energyPerTimeFrame
@@ -359,7 +357,7 @@ export const calculateMissingEnergyDemand = async (
         })
     );
 
-    const filledDemandInRange = TS.inRange(filledDemandsTimeSeries, start.unix(), end.unix());
+    const filledDemandInRange = TS.inRange(filledDemandsTimeSeries, startTime, endTime);
 
     return TS.aggregateByTime(demandTimeSeries.concat(filledDemandInRange));
 };

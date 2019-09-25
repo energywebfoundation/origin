@@ -11,6 +11,7 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
 
+import moment from 'moment';
 import * as Market from '..';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
@@ -232,8 +233,10 @@ describe('Market-Facade', () => {
     });
 
     describe('Demand-Facade', () => {
-        const START_TIME = '1559466472732';
-        const END_TIME = '1559466492732';
+        const START_TIME = moment().unix();
+        const END_TIME = moment()
+            .add(1, 'hour')
+            .unix();
 
         it('should create a demand', async () => {
             conf.blockchainProperties.activeUser = {
@@ -456,7 +459,7 @@ describe('Market-Facade', () => {
                 privateKey: traderPK
             };
 
-            startTime = Date.now();
+            startTime = moment().unix();
 
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
@@ -577,7 +580,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            startTime = Date.now();
+            startTime = moment().unix();
 
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,

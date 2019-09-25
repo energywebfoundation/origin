@@ -64,8 +64,8 @@ describe('Demand unit tests', () => {
             const demand = Substitute.for<IDemand>();
             const offChainProperties = Substitute.for<IDemandOffChainProperties>();
 
-            offChainProperties.startTime.returns(start.toISOString());
-            offChainProperties.endTime.returns(end.toISOString());
+            offChainProperties.startTime.returns(start.unix());
+            offChainProperties.endTime.returns(end.unix());
             offChainProperties.timeFrame.returns(timeFrame);
             offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
 

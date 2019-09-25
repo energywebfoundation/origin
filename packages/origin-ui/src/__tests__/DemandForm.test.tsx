@@ -218,13 +218,13 @@ describe('DemandForm', () => {
         expect(submitButton.getDOMNode().hasAttribute('disabled')).toBe(false);
 
         createDemand = (offChainProps: Demand.IDemandOffChainProperties) => {
-            expect(moment.unix(parseInt(offChainProps.startTime, 10)).format('YYYY-MM-D')).toBe(
+            expect(moment.unix(offChainProps.startTime).format('YYYY-MM-D')).toBe(
                 now
                     .clone()
                     .set('date', 1)
                     .format('YYYY-MM-D')
             );
-            expect(moment.unix(parseInt(offChainProps.endTime, 10)).format('YYYY-MM-D')).toBe(
+            expect(moment.unix(offChainProps.endTime).format('YYYY-MM-D')).toBe(
                 now
                     .clone()
                     .set('date', 10)

@@ -148,9 +148,9 @@ class DemandFormClass extends React.Component<Props, IState> {
     setupFormBasedOnDemand(demand: Demand.Entity) {
         const initialFormValuesFromDemand: IFormValues = {
             currency: Currency[demand.offChainProperties.currency] as IFormValues['currency'],
-            startDate: moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-            endDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-            activeUntilDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            startDate: moment.unix(demand.offChainProperties.startTime),
+            endDate: moment.unix(demand.offChainProperties.endTime),
+            activeUntilDate: moment.unix(demand.offChainProperties.endTime),
             demandNeedsInMWh: Math.round(
                 demand.offChainProperties.energyPerTimeFrame / 1000000
             ).toString(),
@@ -264,8 +264,8 @@ class DemandFormClass extends React.Component<Props, IState> {
 
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
-            startTime: values.startDate.unix().toString(),
-            endTime: values.endDate.unix().toString(),
+            startTime: values.startDate.unix(),
+            endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
             energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)

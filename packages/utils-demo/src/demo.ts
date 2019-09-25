@@ -28,9 +28,10 @@ import Web3 from 'web3';
 import { certificateDemo } from './certificate';
 import { CONFIG } from './config';
 import { logger } from './Logger';
+import moment from 'moment';
 
 export const marketDemo = async (demoFile?: string) => {
-    const startTime = Date.now();
+    const startTime = moment().unix();
 
     const connectionConfig = JSON.parse(
         fs.readFileSync('./connection-config.json', 'utf8').toString()
@@ -296,5 +297,5 @@ export const marketDemo = async (demoFile?: string) => {
                 await certificateDemo(passString, conf, adminPK, erc20TestAddress);
         }
     }
-    conf.logger.info('Total Time: ' + (Date.now() - startTime) / 1000 + ' seconds');
+    conf.logger.info('Total Time: ' + (moment().unix() - startTime) + ' seconds');
 };

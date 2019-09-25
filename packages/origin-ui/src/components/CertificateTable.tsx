@@ -468,8 +468,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
                 energyPerTimeFrame: certificate.energy,
                 registryCompliance: asset.offChainProperties.complianceRegistry,
-                startTime: '',
-                endTime: ''
+                startTime: 0,
+                endTime: 0
             };
 
             await Demand.createDemand(offChainProperties, this.props.configuration);

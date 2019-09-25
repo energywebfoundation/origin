@@ -460,8 +460,8 @@
                 "typeOfPublicSupport": "string",
                 "energyPerTimeFrame": 10,
                 "registryCompliance": "EEC",
-                "startTime": "1559477971484",
-                "endTime": "1589877971484"
+                "startTime": 155947797,
+                "endTime": 158987797
             }
         },
         {

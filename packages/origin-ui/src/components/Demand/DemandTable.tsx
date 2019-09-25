@@ -250,8 +250,8 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
             const overallDemand = (
                 Demand.calculateTotalEnergyDemand(
-                    moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-                    moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+                    moment.unix(demand.offChainProperties.startTime),
+                    moment.unix(demand.offChainProperties.endTime),
                     demand.offChainProperties.energyPerTimeFrame,
                     demand.offChainProperties.timeFrame
                 ) / 1000000
@@ -268,13 +268,9 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             return {
                 buyer: enrichedDemandData.demandOwner.organization,
                 duration:
-                    moment
-                        .unix(parseInt(demand.offChainProperties.startTime, 10))
-                        .format('DD MMM YY') +
+                    moment.unix(demand.offChainProperties.startTime).format('DD MMM YY') +
                     ' - ' +
-                    moment
-                        .unix(parseInt(demand.offChainProperties.endTime, 10))
-                        .format('DD MMM YY'),
+                    moment.unix(demand.offChainProperties.endTime).format('DD MMM YY'),
                 region: this.getRegionText(demand),
                 assetType,
                 repeatable:
