@@ -24,24 +24,21 @@ export function buildRights(roles: Role[]): number {
 export class RoleManagement extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = RoleManagementJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = RoleManagementJSON;
         super(
             address
                 ? new web3.eth.Contract(RoleManagementJSON.abi, address)
                 : new web3.eth.Contract(
-                      RoleManagementJSON.abi,
-                      (RoleManagementJSON as any).networks.length > 0
-                          ? RoleManagementJSON.networks[0]
-                          : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
