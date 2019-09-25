@@ -3,7 +3,8 @@
     "compilerOptions": {
         "composite": true,
         "rootDir": "./",
-        "outDir": "./dist/js"
+        "outDir": "./dist/js",
+        "noImplicitAny": true
     },
     "include": [
         "src/**/*", "build/**/*.json", "test/*"

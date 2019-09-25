@@ -32,7 +32,7 @@ export class MarketLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getEvents(event, eventFilter?: ISearchLog) {
+    async getEvents(event: string, eventFilter?: ISearchLog) {
         if (!SUPPORTED_EVENTS.includes(event)) {
             throw new Error('This event does not exist.');
         }

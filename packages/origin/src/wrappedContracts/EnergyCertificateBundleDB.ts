@@ -4,24 +4,24 @@ import EnergyCertificateBundleDBJSON from '../../build/contracts/lightweight/Ene
 
 export class EnergyCertificateBundleDB extends GeneralFunctions {
     web3: Web3;
-    buildFile = EnergyCertificateBundleDBJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = EnergyCertificateBundleDBJSON;
         super(
             address
-                ? new web3.eth.Contract(EnergyCertificateBundleDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      EnergyCertificateBundleDBJSON.abi,
-                      (EnergyCertificateBundleDBJSON as any).networks.length > 0
-                          ? EnergyCertificateBundleDBJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -41,7 +41,7 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
     }
 
     async getAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

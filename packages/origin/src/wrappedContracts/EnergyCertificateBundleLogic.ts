@@ -6,24 +6,24 @@ import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     web3: Web3;
-    buildFile = EnergyCertificateBundleLogicJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = EnergyCertificateBundleLogicJSON;
         super(web3, address);
 
         this.web3Contract = address
-            ? new web3.eth.Contract(EnergyCertificateBundleLogicJSON.abi, address)
+            ? new web3.eth.Contract(buildFile.abi, address)
             : new web3.eth.Contract(
-                  EnergyCertificateBundleLogicJSON.abi,
-                  (EnergyCertificateBundleLogicJSON as any).networks.length > 0
-                      ? EnergyCertificateBundleLogicJSON.networks[0]
-                      : null
-              );
+                buildFile.abi,
+                buildFile.networks.length > 0
+                    ? buildFile.networks[0]
+                    : null
+            );
         this.web3 = web3;
     }
 
     async getAllLogCreatedBundleEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -43,7 +43,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllLogBundleRetiredEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -63,7 +63,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllLogBundleOwnerChangedEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -83,7 +83,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllTransferEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -103,7 +103,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllApprovalEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -123,7 +123,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllApprovalForAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -143,7 +143,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -163,7 +163,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     }
 
     async getAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -221,7 +221,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: SpecialTx) {
+    async safeTransferFrom(_from: string, _to: string, _entityId: string, _data?: any, txParams?: SpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
 

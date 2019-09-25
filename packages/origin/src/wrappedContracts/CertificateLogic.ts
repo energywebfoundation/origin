@@ -5,22 +5,23 @@ import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class CertificateLogic extends CertificateSpecificContract {
     web3: Web3;
-    buildFile = CertificateLogicJSON;
 
     constructor(web3: Web3, address?: string) {
         super(web3, address);
+
+        const buildFile: any = CertificateLogicJSON;
         this.web3Contract = address
-            ? new web3.eth.Contract(CertificateLogicJSON.abi, address)
+            ? new web3.eth.Contract(buildFile.abi, address)
             : new web3.eth.Contract(
-                  CertificateLogicJSON.abi,
-                  (CertificateLogicJSON as any).networks.length > 0
-                      ? CertificateLogicJSON.networks[0]
-                      : null
-              );
+                buildFile.abi,
+                buildFile.networks.length > 0
+                    ? buildFile.networks[0]
+                    : null
+            );
     }
 
     async getAllLogCreatedCertificateEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -40,7 +41,7 @@ export class CertificateLogic extends CertificateSpecificContract {
     }
 
     async getAllLogCertificateRetiredEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -60,7 +61,7 @@ export class CertificateLogic extends CertificateSpecificContract {
     }
 
     async getAllLogCertificateSplitEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -80,7 +81,7 @@ export class CertificateLogic extends CertificateSpecificContract {
     }
 
     async getAllTransferEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -100,7 +101,7 @@ export class CertificateLogic extends CertificateSpecificContract {
     }
 
     async getAllApprovalEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -120,7 +121,7 @@ export class CertificateLogic extends CertificateSpecificContract {
     }
 
     async getAllApprovalForAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -140,7 +141,7 @@ export class CertificateLogic extends CertificateSpecificContract {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -227,7 +228,7 @@ export class CertificateLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: SpecialTx) {
+    async safeTransferFrom(_from: string, _to: string, _entityId: string, _data?: any, txParams?: SpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
 
