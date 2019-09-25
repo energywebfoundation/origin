@@ -118,13 +118,16 @@ export class Matcher {
                 `Certificate's available energy ${certificate.energy}, missingEnergyForPeriod ${missingEnergyForPeriod}`
             );
 
-            if (certificate.energy === missingEnergyForPeriod) {
+            if (certificate.energy === missingEnergyForPeriod.value) {
                 return this.certificateService.matchAgreement(certificate, agreement);
             }
-            if (missingEnergyForPeriod > 0 && certificate.energy > missingEnergyForPeriod) {
+            if (
+                missingEnergyForPeriod.value > 0 &&
+                certificate.energy > missingEnergyForPeriod.value
+            ) {
                 return this.certificateService.splitCertificate(
                     certificate,
-                    missingEnergyForPeriod
+                    missingEnergyForPeriod.value
                 );
             }
         }
@@ -170,7 +173,15 @@ export class Matcher {
                     matchableAgreement.agreement.supplyId.toString(),
                     this.config
                 ).sync();
-                const { result } = matchableAgreement.matchesCertificate(certificate, supply);
+                const demand = await new Demand.Entity(
+                    matchableAgreement.agreement.demandId.toString(),
+                    this.config
+                ).sync();
+                const { result } = await matchableAgreement.matchesCertificate(
+                    certificate,
+                    supply,
+                    demand
+                );
                 return result;
             });
 
