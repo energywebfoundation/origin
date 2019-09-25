@@ -5,24 +5,24 @@ import moment from 'moment';
 
 export class AssetProducingRegistryLogic extends GeneralFunctions {
     web3: Web3;
-    buildFile = AssetProducingRegistryLogicJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = AssetProducingRegistryLogicJSON;
         super(
             address
-                ? new web3.eth.Contract(AssetProducingRegistryLogicJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      AssetProducingRegistryLogicJSON.abi,
-                      (AssetProducingRegistryLogicJSON as any).networks.length > 0
-                          ? AssetProducingRegistryLogicJSON.networks[0]
-                          : null
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllLogNewMeterReadEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -42,7 +42,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
     }
 
     async getAllLogAssetCreatedEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -62,7 +62,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
     }
 
     async getAllLogAssetFullyInitializedEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -82,7 +82,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
     }
 
     async getAllLogAssetSetActiveEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -102,7 +102,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
     }
 
     async getAllLogAssetSetInactiveEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -126,7 +126,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

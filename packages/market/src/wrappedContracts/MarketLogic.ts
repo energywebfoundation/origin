@@ -19,17 +19,14 @@ const SUPPORTED_EVENTS = [
 export class MarketLogic extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = MarketLogicJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = MarketLogicJSON;
         super(
             address
-                ? new web3.eth.Contract(MarketLogicJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      MarketLogicJSON.abi,
-                      (MarketLogicJSON as any).networks.length > 0
-                          ? MarketLogicJSON.networks[0]
-                          : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;

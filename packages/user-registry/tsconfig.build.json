@@ -7,7 +7,6 @@
         "noImplicitAny": true
     },
     "include": ["./contracts.ts", "./src/**/*", "./build/**/*.json", "./schemas/*.json"],
-    "exclude": ["./src/test/*"],
     "references": [
         {
             "path": "../utils-general/tsconfig.build.json"
