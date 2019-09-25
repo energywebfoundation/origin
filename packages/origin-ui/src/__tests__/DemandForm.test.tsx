@@ -11,7 +11,7 @@ import sagas from '../features/sagas';
 import { DemandForm } from '../components/Demand/DemandForm';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import { TimeFrame, Currency } from '@energyweb/utils-general';
+import { TimeFrame, Currency, Unit } from '@energyweb/utils-general';
 import { addUser, updateCurrentUserId } from '../features/users/actions';
 import { User } from '@energyweb/user-registry';
 import { Demand } from '@energyweb/market';
@@ -48,6 +48,14 @@ jest.mock('@energyweb/market', () => {
         Demand: {
             createDemand(offChainProps: any) {
                 return createDemand(offChainProps);
+            },
+            calculateTotalEnergyDemand(
+                startDate: number | moment.Moment, // eslint-disable-line @typescript-eslint/no-unused-vars
+                endDate: number | moment.Moment, // eslint-disable-line @typescript-eslint/no-unused-vars
+                energyPerTimeFrame: number, // eslint-disable-line @typescript-eslint/no-unused-vars
+                timeFrame: TimeFrame // eslint-disable-line @typescript-eslint/no-unused-vars
+            ) {
+                return 9 * Unit.MWh;
             }
         }
     };
@@ -230,7 +238,7 @@ describe('DemandForm', () => {
                 currency: Currency.EUR,
                 timeFrame: TimeFrame.daily,
                 maxPricePerMwh: 100,
-                targetWhPerPeriod: 1000000
+                energyPerTimeFrame: 1000000
             });
 
             return {
