@@ -1,14 +1,17 @@
 import Web3 from 'web3';
-import { Tx } from 'web3/eth/types'; // eslint-disable-line import/no-unresolved
-import { TransactionReceipt, Logs } from 'web3/types'; // eslint-disable-line import/no-unresolved
+import { Tx, BlockType } from 'web3/eth/types'; // eslint-disable-line import/no-unresolved
+import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
+import Contract from 'web3/eth/contract';
 
 export declare interface ISpecialTx extends Tx {
     privateKey: string;
 }
 
-export declare interface ISearchLog extends Logs {
-    toBlock?: number;
-    filter?: any;
+export declare interface ISearchLog {
+    filter?: object;
+    fromBlock?: BlockType;
+    toBlock?: BlockType;
+    topics?: string[];
 }
 
 export async function getClientVersion(web3: Web3): Promise<string> {
@@ -52,11 +55,11 @@ export async function replayTransaction(web3: Web3, txHash: string) {
 }
 
 export class GeneralFunctions {
-    web3Contract: any;
+    web3Contract: Contract;
 
     web3: Web3;
 
-    constructor(web3Contract: any) {
+    constructor(web3Contract: Contract) {
         this.web3Contract = web3Contract;
     }
 
@@ -144,7 +147,7 @@ export class GeneralFunctions {
 
             const errorResult = await this.getErrorMessage(this.web3, {
                 from: parameters.from,
-                to: this.web3Contract._address,
+                to: this.web3Contract.options.address,
                 data: parameters ? parameters.data : '',
                 gas: this.web3.utils.toHex(7000000)
             });
@@ -159,7 +162,7 @@ export class GeneralFunctions {
                 ? parameters.nonce
                 : await this.web3.eth.getTransactionCount(parameters.from),
             data: parameters.data ? parameters.data : await method.encodeABI(),
-            to: this.web3Contract._address,
+            to: this.web3Contract.options.address,
             privateKey: parameters.privateKey ? parameters.privateKey : ''
         };
     }

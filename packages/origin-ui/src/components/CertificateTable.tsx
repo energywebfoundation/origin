@@ -231,7 +231,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate.assetId.toString(),
                 this.props.configuration
             ).sync();
-            const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+            const { result } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
             return result;
         });
 

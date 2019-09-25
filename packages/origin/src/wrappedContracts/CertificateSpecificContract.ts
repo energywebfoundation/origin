@@ -1,4 +1,4 @@
-import { GeneralFunctions, SpecialTx, getClientVersion } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, getClientVersion } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import CertificateSpecificContractJSON from '../../build/contracts/lightweight/CertificateSpecificContract.json';
 
@@ -20,13 +20,13 @@ export class CertificateSpecificContract extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAssetRequestedCertsForSMReadsLength(_assetId: number, txParams?: SpecialTx) {
+    async getAssetRequestedCertsForSMReadsLength(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
             .getAssetRequestedCertsForSMReadsLength(_assetId)
             .call(txParams);
     }
 
-    async getCertificationRequests(txParams?: SpecialTx) {
+    async getCertificationRequests(txParams?: ISpecialTx) {
         const length = await this.web3Contract.methods
             .getCertificationRequestsLength()
             .call(txParams);
@@ -44,7 +44,7 @@ export class CertificateSpecificContract extends GeneralFunctions {
     async requestCertificates(
         _assetId: number,
         limitingSmartMeterReadIndex: number,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.requestCertificates(
             _assetId,
@@ -54,7 +54,7 @@ export class CertificateSpecificContract extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async approveCertificationRequest(_certicationRequestIndex: number, txParams?: SpecialTx) {
+    async approveCertificationRequest(_certicationRequestIndex: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approveCertificationRequest(
             _certicationRequestIndex
         );

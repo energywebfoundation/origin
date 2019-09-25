@@ -271,7 +271,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
 
     get offChainURL() {
         const certificateLogicAddress = this.configuration.blockchainProperties
-            .certificateLogicInstance.web3Contract._address;
+            .certificateLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}`;
     }

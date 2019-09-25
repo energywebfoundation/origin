@@ -68,7 +68,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
     }
 
     getUrl(): string {
-        const userLogicInstanceAddress = this.configuration.blockchainProperties.userLogicInstance.web3Contract._address.toLowerCase();
+        const userLogicInstanceAddress = this.configuration.blockchainProperties.userLogicInstance.web3Contract.options.address.toLowerCase();
 
         return `${this.configuration.offChainDataSource.baseUrl}/User/${userLogicInstanceAddress}`;
     }

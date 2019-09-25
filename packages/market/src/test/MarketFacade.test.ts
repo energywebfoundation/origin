@@ -268,7 +268,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
+                url: `http://localhost:3030/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -287,7 +287,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
+                url: `http://localhost:3030/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);

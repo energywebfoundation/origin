@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 import TestReceiverJSON from '../../build/contracts/TestReceiver.json';
 
 export class TestReceiver extends GeneralFunctions {

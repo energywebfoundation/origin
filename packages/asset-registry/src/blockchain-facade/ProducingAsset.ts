@@ -114,7 +114,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
 
     getUrl(): string {
         const producingAssetLogicAddress = this.configuration.blockchainProperties
-            .producingAssetLogicInstance.web3Contract._address;
+            .producingAssetLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset/${producingAssetLogicAddress}`;
     }

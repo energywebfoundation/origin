@@ -145,7 +145,7 @@ export class GeneralFunctions {
 
             const errorResult = await this.getErrorMessage(this.web3, {
                 from: params.from,
-                to: this.web3Contract._address,
+                to: this.web3Contract.options.address,
                 data: params ? params.data : '',
                 gas: this.web3.utils.toHex(7000000)
             });
@@ -160,7 +160,7 @@ export class GeneralFunctions {
                 ? params.nonce
                 : await this.web3.eth.getTransactionCount(params.from),
             data: params.data ? params.data : await method.encodeABI(),
-            to: this.web3Contract._address,
+            to: this.web3Contract.options.address,
             privateKey: params.privateKey ? params.privateKey : ''
         };
     }

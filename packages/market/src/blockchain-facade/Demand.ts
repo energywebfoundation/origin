@@ -77,7 +77,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     }
 
     getUrl(): string {
-        const marketLogicAddress = this.marketLogicInstance.web3Contract._address;
+        const marketLogicAddress = this.marketLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/Demand/${marketLogicAddress}`;
     }

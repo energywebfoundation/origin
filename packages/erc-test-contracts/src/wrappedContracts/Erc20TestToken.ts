@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
+import { GeneralFunctions, ISearchLog, ISpecialTx } from '@energyweb/utils-general';
 import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
 
 export class Erc20TestToken extends GeneralFunctions {
@@ -38,7 +38,7 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('Transfer', filterParams);
+        return this.web3Contract.getPastEvents('Transfer', eventFilter);
     }
 
     async getAllApprovalEvents(eventFilter?: ISearchLog) {
@@ -58,26 +58,11 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('Approval', filterParams);
+        return this.web3Contract.getPastEvents('Approval', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async name(txParams?: ISpecialTx) {

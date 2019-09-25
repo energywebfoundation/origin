@@ -117,15 +117,15 @@ describe('AssetContractLookup', () => {
     it('should have the right registries', async () => {
         assert.equal(
             await assetContractLookup.assetConsumingRegistry(),
-            assetConsumingLogic.web3Contract._address
+            assetConsumingLogic.web3Contract.options.address
         );
         assert.equal(
             await assetContractLookup.assetProducingRegistry(),
-            assetProducingLogic.web3Contract._address
+            assetProducingLogic.web3Contract.options.address
         );
         assert.equal(
             await assetContractLookup.userRegistry(),
-            userContractLookup.web3Contract._address
+            userContractLookup.web3Contract.options.address
         );
     });
 
