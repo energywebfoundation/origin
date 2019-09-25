@@ -2,9 +2,9 @@ import axios from 'axios';
 import { assert, should } from 'chai';
 import Web3 from 'web3';
 
-import { Demo } from './deployDemo';
+import { Demo } from '../deployDemo';
 
-import { EventServiceProvider } from '../services/event.service';
+import { EventServiceProvider } from '../../services/event.service';
 
 describe('Event Service Tests', async () => {
     process.env.UI_BASE_URL = 'http://localhost:3000';

@@ -59,6 +59,10 @@ export class Demo {
             SMART_METER: {
                 address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
                 privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
+            },
+            MATCHER: {
+                address: '0x3409c66069b3C4933C654beEAA136cc5ce6D7BD0'.toLowerCase(),
+                privateKey: '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed'
             }
         };
 
@@ -196,6 +200,50 @@ export class Demo {
         };
         await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, this.conf);
 
+        const matcherPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: this.ACCOUNTS.MATCHER.address,
+            active: true,
+            roles: buildRights([Role.Matcher]),
+            organization: 'Matcher organization'
+        };
+        const matcherPropsOffChain: User.IUserOffChainProperties = {
+            firstName: 'Matcher',
+            surname: 'M',
+            email: 'matcher@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: '',
+            notifications: true
+        };
+        await User.createUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
+
+        const marketLogicPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: this.conf.blockchainProperties.marketLogicInstance.web3Contract._address,
+            active: true,
+            roles: buildRights([Role.Matcher]),
+            organization: 'MarketLogic matcher'
+        };
+        const marketLogicPropsOffChain: User.IUserOffChainProperties = {
+            firstName: 'MarketLogic',
+            surname: 'Matcher',
+            email: 'marketlogicmatcher@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: '',
+            notifications: true
+        };
+        await User.createUser(marketLogicPropsOnChain, marketLogicPropsOffChain, this.conf);
+
         const assetProducingProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.ASSET_MANAGER.address },
@@ -283,5 +331,21 @@ export class Demo {
         };
 
         return Demand.createDemand(demandOffChainProps, this.conf);
+    }
+
+    async fillDemand(demandId: string, certId: string) {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.MATCHER;
+
+        const demand = await new Demand.Entity(demandId, this.conf).sync();
+
+        const certificate = await new Certificate.Entity(certId, this.conf).sync();
+        console.log({
+            demand,
+            certificate
+        });
+
+        const fillTx = await demand.fill(certificate.id);
+
+        return fillTx.status;
     }
 }
