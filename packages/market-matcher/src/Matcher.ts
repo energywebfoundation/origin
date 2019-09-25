@@ -194,8 +194,11 @@ export class Matcher {
         return this.entityStore
             .getDemands()
             .map(demand => new MatchableDemand(demand))
-            .filter(matchableDemand => {
-                const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+            .filter(async matchableDemand => {
+                const { result } = await matchableDemand.matchesCertificate(
+                    certificate,
+                    producingAsset
+                );
                 return result;
             });
     }

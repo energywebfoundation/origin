@@ -204,8 +204,8 @@ export class OriginEventListener implements IOriginEventListener {
             this.conf
         ).sync();
 
-        const matchedDemands = demands.filter(demand => {
-            const { result } = new MatchableDemand(demand).matchesCertificate(
+        const matchedDemands = demands.filter(async demand => {
+            const { result } = await new MatchableDemand(demand).matchesCertificate(
                 certificate,
                 producingAsset
             );

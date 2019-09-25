@@ -6,7 +6,8 @@ import {
     extendArray,
     TimeFrame,
     Resolution,
-    TS
+    TS,
+    TimeSeriesElement
 } from '@energyweb/utils-general';
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt } from 'web3/types';
@@ -47,6 +48,7 @@ export interface IDemand extends IDemandOnChainProperties {
     id: string;
     offChainProperties: IDemandOffChainProperties;
     fill: (entityId: string) => Promise<TransactionReceipt>;
+    missingEnergyInPeriod: (timeStamp: number) => Promise<TimeSeriesElement>;
 }
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
@@ -145,6 +147,22 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
 
         return new Entity(this.id, this.configuration).sync();
     }
+
+    async missingEnergy() {
+        return calculateMissingEnergyDemand(this, this.configuration);
+    }
+
+    async missingEnergyInPeriod(timeStamp: number): Promise<TimeSeriesElement> {
+        const missingEnergy = await calculateMissingEnergyDemand(this, this.configuration);
+        const resolution = timeFrameToResolution(this.offChainProperties.timeFrame);
+
+        const currentPeriod = moment
+            .unix(timeStamp)
+            .startOf(resolution)
+            .unix();
+
+        return missingEnergy.find(timeSeriesElement => timeSeriesElement.time === currentPeriod);
+    }
 }
 
 export const getAllDemandsListLength = async (configuration: Configuration.Entity) => {
@@ -233,6 +251,29 @@ export const deleteDemand = async (
     return success;
 };
 
+const timeFrameToResolution = (timeFrame: TimeFrame): Resolution => {
+    let resolution: Resolution = 'day';
+
+    switch (timeFrame) {
+        case TimeFrame.daily:
+            resolution = 'day';
+            break;
+        case TimeFrame.weekly:
+            resolution = 'week';
+            break;
+        case TimeFrame.monthly:
+            resolution = 'month';
+            break;
+        case TimeFrame.yearly:
+            resolution = 'year';
+            break;
+        default:
+            break;
+    }
+
+    return resolution;
+};
+
 const durationInTimePeriod = (
     start: number | moment.Moment,
     end: number | moment.Moment,
@@ -240,30 +281,25 @@ const durationInTimePeriod = (
 ) => {
     const demandDuration = moment.duration(moment(end).diff(moment(start)));
     let durationInTimeFrame = 0;
-    let resolution: Resolution = 'day';
 
     switch (timeFrame) {
         case TimeFrame.daily:
             durationInTimeFrame = Math.ceil(demandDuration.asDays());
-            resolution = 'day';
             break;
         case TimeFrame.weekly:
             durationInTimeFrame = Math.ceil(demandDuration.asWeeks());
-            resolution = 'week';
             break;
         case TimeFrame.monthly:
             durationInTimeFrame = Math.ceil(demandDuration.asMonths());
-            resolution = 'month';
             break;
         case TimeFrame.yearly:
             durationInTimeFrame = Math.ceil(demandDuration.asYears());
-            resolution = 'year';
             break;
         default:
             break;
     }
 
-    return { durationInTimeFrame, resolution };
+    return durationInTimeFrame;
 };
 
 export const calculateTotalEnergyDemand = (
@@ -272,7 +308,7 @@ export const calculateTotalEnergyDemand = (
     energyPerTimeFrame: number,
     timeFrame: TimeFrame
 ) => {
-    const { durationInTimeFrame } = durationInTimePeriod(startDate, endDate, timeFrame);
+    const durationInTimeFrame = durationInTimePeriod(startDate, endDate, timeFrame);
 
     return energyPerTimeFrame * durationInTimeFrame;
 };
@@ -289,7 +325,8 @@ export const calculateMissingEnergyDemand = async (
 
     const start = moment(startTime);
     const end = moment(endTime);
-    const { durationInTimeFrame, resolution } = durationInTimePeriod(start, end, timeFrame);
+    const durationInTimeFrame = durationInTimePeriod(start, end, timeFrame);
+    const resolution = timeFrameToResolution(timeFrame);
     const demandTimeSeries = TS.generate(
         start.unix(),
         durationInTimeFrame,
