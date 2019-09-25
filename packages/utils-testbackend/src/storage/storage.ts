@@ -25,7 +25,7 @@ export class CustomStorage {
         });
     }
 
-    get(type: ENTITY, key?: string) {
+    get(type: ENTITY, key?: string): string {
         if (arguments.length > 2) {
             throw new Error('Storage::get()::Too many arguments passed');
         }
