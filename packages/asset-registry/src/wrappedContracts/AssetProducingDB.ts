@@ -1,4 +1,4 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import AssetProducingDBJSON from '../../build/contracts/lightweight/AssetProducingDB.json';
 
@@ -20,68 +20,37 @@ export class AssetProducingDB extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams: any;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+        return await this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+    async getAllEvents(eventFilter?: ISearchLog) {
+        return await this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async getLastSmartMeterReadWh(_assetId: number, txParams?: SpecialTx) {
+    async getLastSmartMeterReadWh(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getLastSmartMeterReadWh(_assetId).call(txParams);
     }
 
-    async getIsBundled(_assetId: number, txParams?: SpecialTx) {
+    async getIsBundled(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getIsBundled(_assetId).call(txParams);
     }
 
-    async getLastMeterReadingAndHash(_assetId: number, txParams?: SpecialTx) {
+    async getLastMeterReadingAndHash(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getLastMeterReadingAndHash(_assetId).call(txParams);
     }
 
-    async getAssetBySmartMeter(_smartMeter: string, txParams?: SpecialTx) {
+    async getAssetBySmartMeter(_smartMeter: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetBySmartMeter(_smartMeter).call(txParams);
     }
 
-    async setIsBundled(_assetId: number, _bundled: boolean, txParams?: SpecialTx) {
+    async setIsBundled(_assetId: number, _bundled: boolean, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setIsBundled(_assetId, _bundled);
 
         return await this.send(method, txParams);
     }
 
-    async setAssetOwner(_assetId: number, _owner: string, txParams?: SpecialTx) {
+    async setAssetOwner(_assetId: number, _owner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setAssetOwner(_assetId, _owner);
 
         return await this.send(method, txParams);
@@ -90,7 +59,7 @@ export class AssetProducingDB extends GeneralFunctions {
     async setLastSmartMeterReadWh(
         _assetId: number,
         _lastSmartMeterReadWh: number,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.setLastSmartMeterReadWh(
             _assetId,
@@ -103,7 +72,7 @@ export class AssetProducingDB extends GeneralFunctions {
     async setLastSmartMeterReadFileHash(
         _assetId: number,
         _lastSmartMeterReadFileHash: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.setLastSmartMeterReadFileHash(
             _assetId,
@@ -116,7 +85,7 @@ export class AssetProducingDB extends GeneralFunctions {
     async setMarketLookupContract(
         _assetId: number,
         _marketLookupContract: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.setMarketLookupContract(
             _assetId,
@@ -130,7 +99,7 @@ export class AssetProducingDB extends GeneralFunctions {
         _assetId: number,
         _lastSmartMeterReadWh: number,
         _lastSmartMeterReadFileHash: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.setSmartMeterRead(
             _assetId,
@@ -141,57 +110,57 @@ export class AssetProducingDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async getAssetOwner(_assetId: number, txParams?: SpecialTx) {
+    async getAssetOwner(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetOwner(_assetId).call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
+    async owner(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
         return await this.send(method, txParams);
     }
 
-    async getAssetGeneral(_assetId: number, txParams?: SpecialTx) {
+    async getAssetGeneral(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetGeneral(_assetId).call(txParams);
     }
 
-    async getAssetListLength(txParams?: SpecialTx) {
+    async getAssetListLength(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetListLength().call(txParams);
     }
 
-    async getAssetById(_assetId: number, txParams?: SpecialTx) {
+    async getAssetById(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetById(_assetId).call(txParams);
     }
 
-    async getActive(_assetId: number, txParams?: SpecialTx) {
+    async getActive(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getActive(_assetId).call(txParams);
     }
 
-    async addFullAsset(_a: any, txParams?: SpecialTx) {
+    async addFullAsset(_a: any, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.addFullAsset(_a);
 
         return await this.send(method, txParams);
     }
 
-    async getMarketLookupContract(_assetId: number, txParams?: SpecialTx) {
+    async getMarketLookupContract(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getMarketLookupContract(_assetId).call(txParams);
     }
 
-    async setActive(_assetId: number, _active: boolean, txParams?: SpecialTx) {
+    async setActive(_assetId: number, _active: boolean, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setActive(_assetId, _active);
 
         return await this.send(method, txParams);
     }
 
-    async getSmartMeter(_assetId: number, txParams?: SpecialTx) {
+    async getSmartMeter(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getSmartMeter(_assetId).call(txParams);
     }
 
-    async getLastSmartMeterReadFileHash(_assetId: number, txParams?: SpecialTx) {
+    async getLastSmartMeterReadFileHash(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
             .getLastSmartMeterReadFileHash(_assetId)
             .call(txParams);

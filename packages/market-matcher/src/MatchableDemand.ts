@@ -2,6 +2,7 @@ import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Currency, IRECAssetService, Unit, LocationService } from '@energyweb/utils-general';
+import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
@@ -12,7 +13,7 @@ export class MatchableDemand {
 
     constructor(public demand: Demand.IDemand) {}
 
-    public matchesCertificate(
+    public async matchesCertificate(
         certificate: Certificate.ICertificate,
         producingAsset: ProducingAsset.IProducingAsset
     ) {
@@ -25,11 +26,16 @@ export class MatchableDemand {
 
         const { offChainProperties } = this.demand;
 
+        const missingEnergyInCurrentPeriod = await this.demand.missingEnergyInPeriod(
+            moment().unix()
+        );
+
         return new Validator<MatchingErrorReason>()
             .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
+            .validate(missingEnergyInCurrentPeriod !== undefined, MatchingErrorReason.OUT_OF_RANGE)
             .validate(
-                offChainProperties.targetWhPerPeriod <= Number(certificate.energy),
-                MatchingErrorReason.NOT_ENOUGH_ENERGY
+                missingEnergyInCurrentPeriod && missingEnergyInCurrentPeriod.value > 0,
+                MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
             .validate(
                 certificate.pricePerUnit(Unit.MWh) <= offChainProperties.maxPricePerMwh,
@@ -62,7 +68,7 @@ export class MatchableDemand {
         return new Validator<MatchingErrorReason>()
             .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
             .validate(
-                supply.offChainProperties.availableWh >= offChainProperties.targetWhPerPeriod,
+                supply.offChainProperties.availableWh >= offChainProperties.energyPerTimeFrame,
                 MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
             .validate(

@@ -1,4 +1,4 @@
-import { GeneralFunctions, SpecialTx, SearchLog, getClientVersion } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import AssetContractLookupJSON from '../../build/contracts/lightweight/AssetContractLookup.json';
 
@@ -20,47 +20,15 @@ export class AssetContractLookup extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: undefined
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+        return await this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+    async getAllEvents(eventFilter?: ISearchLog) {
+        return await this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async assetProducingRegistry(txParams?: SpecialTx) {
+    async assetProducingRegistry(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.assetProducingRegistry().call(txParams);
     }
 
@@ -70,7 +38,7 @@ export class AssetContractLookup extends GeneralFunctions {
         _assetConsumingRegistry: string,
         _assetProducingDB: string,
         _assetConsumingDB: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.init(
             _userRegistry,
@@ -84,19 +52,19 @@ export class AssetContractLookup extends GeneralFunctions {
         return await this.send(method, transactionParams);
     }
 
-    async assetConsumingRegistry(txParams?: SpecialTx) {
+    async assetConsumingRegistry(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.assetConsumingRegistry().call(txParams);
     }
 
-    async userRegistry(txParams?: SpecialTx) {
+    async userRegistry(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.userRegistry().call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
+    async owner(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.owner().call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
         return await this.send(method, txParams);
@@ -105,7 +73,7 @@ export class AssetContractLookup extends GeneralFunctions {
     async update(
         _assetProducingRegistry: string,
         _assetConsumingRegistry: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.update(
             _assetProducingRegistry,

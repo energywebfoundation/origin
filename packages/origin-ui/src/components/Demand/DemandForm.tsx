@@ -41,34 +41,6 @@ import { FormikDatePicker } from '../FormikDatePicker';
 import { AssetTypeSelector } from '../AssetTypeSelector';
 import { getCurrentUser } from '../../features/users/selectors';
 
-export function calculateTotalEnergyDemand(
-    startDate: Moment,
-    endDate: Moment,
-    targetWhPerPeriod: number,
-    timeframe: TimeFrame
-) {
-    let numberOfTimesDemandWillRepeat = 0;
-
-    const demandDuration = moment.duration(endDate.diff(startDate));
-
-    switch (timeframe) {
-        case TimeFrame.daily:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
-            break;
-        case TimeFrame.weekly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
-            break;
-        case TimeFrame.monthly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
-            break;
-        case TimeFrame.yearly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
-            break;
-    }
-
-    return targetWhPerPeriod * numberOfTimesDemandWillRepeat;
-}
-
 const REPEATABLE_TIMEFRAMES = [
     {
         label: 'Day',
@@ -176,11 +148,11 @@ class DemandFormClass extends React.Component<Props, IState> {
     setupFormBasedOnDemand(demand: Demand.Entity) {
         const initialFormValuesFromDemand: IFormValues = {
             currency: Currency[demand.offChainProperties.currency] as IFormValues['currency'],
-            startDate: moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-            endDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-            activeUntilDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            startDate: moment.unix(demand.offChainProperties.startTime),
+            endDate: moment.unix(demand.offChainProperties.endTime),
+            activeUntilDate: moment.unix(demand.offChainProperties.endTime),
             demandNeedsInMWh: Math.round(
-                demand.offChainProperties.targetWhPerPeriod / 1000000
+                demand.offChainProperties.energyPerTimeFrame / 1000000
             ).toString(),
             maxPricePerMWh: Math.round(demand.offChainProperties.maxPricePerMwh / 100).toString(),
             procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
@@ -235,9 +207,9 @@ class DemandFormClass extends React.Component<Props, IState> {
             return 0;
         }
 
-        return calculateTotalEnergyDemand(
-            startDate,
-            endDate,
+        return Demand.calculateTotalEnergyDemand(
+            startDate.unix(),
+            endDate.unix(),
             parseInt(demandNeedsInMWh, 10) * 1000000,
             timeframe
         );
@@ -292,11 +264,11 @@ class DemandFormClass extends React.Component<Props, IState> {
 
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
-            startTime: values.startDate.unix().toString(),
-            endTime: values.endDate.unix().toString(),
+            startTime: values.startDate.unix(),
+            endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
+            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
         };
 
         if (values.procureFromSingleFacility) {

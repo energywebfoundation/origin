@@ -59,7 +59,7 @@ describe('UserContractLookup', () => {
     });
 
     it('should have the right userRegistry', async () => {
-        assert.equal(await userContractLookup.userRegistry(), userRegistry.web3Contract._address);
+        assert.equal(await userContractLookup.userRegistry(), userRegistry.web3Contract.options.address);
     });
 
     it('should throw an error when calling init again', async () => {
@@ -67,8 +67,8 @@ describe('UserContractLookup', () => {
 
         try {
             await userContractLookup.init(
-                userRegistry.web3Contract._address,
-                userRegistry.web3Contract._address,
+                userRegistry.web3Contract.options.address,
+                userRegistry.web3Contract.options.address,
                 { privateKey: privateKeyDeployment }
             );
         } catch (ex) {

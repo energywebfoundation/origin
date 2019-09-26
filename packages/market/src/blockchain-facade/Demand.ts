@@ -4,11 +4,15 @@ import {
     Configuration,
     Currency,
     extendArray,
-    TimeFrame
+    TimeFrame,
+    Resolution,
+    TS,
+    TimeSeriesElement
 } from '@energyweb/utils-general';
 // eslint-disable-next-line import/no-unresolved
 import { TransactionReceipt } from 'web3/types';
 
+import moment from 'moment';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -21,10 +25,10 @@ export interface IDemandOffChainProperties {
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;
-    targetWhPerPeriod: number;
+    energyPerTimeFrame: number;
     registryCompliance?: Compliance;
-    startTime: string;
-    endTime: string;
+    startTime: number;
+    endTime: number;
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
 }
@@ -44,6 +48,8 @@ export interface IDemand extends IDemandOnChainProperties {
     id: string;
     offChainProperties: IDemandOffChainProperties;
     fill: (entityId: string) => Promise<TransactionReceipt>;
+    missingEnergyInPeriod: (timeStamp: number) => Promise<TimeSeriesElement>;
+    missingEnergyInCurrentPeriod: () => Promise<TimeSeriesElement>;
 }
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
@@ -71,7 +77,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     }
 
     getUrl(): string {
-        const marketLogicAddress = this.marketLogicInstance.web3Contract._address;
+        const marketLogicAddress = this.marketLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/Demand/${marketLogicAddress}`;
     }
@@ -141,6 +147,26 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
         });
 
         return new Entity(this.id, this.configuration).sync();
+    }
+
+    async missingEnergy() {
+        return calculateMissingEnergyDemand(this, this.configuration);
+    }
+
+    async missingEnergyInPeriod(timeStamp: number): Promise<TimeSeriesElement> {
+        const missingEnergy = await calculateMissingEnergyDemand(this, this.configuration);
+        const resolution = timeFrameToResolution(this.offChainProperties.timeFrame);
+
+        const currentPeriod = moment
+            .unix(timeStamp)
+            .startOf(resolution)
+            .unix();
+
+        return missingEnergy.find(timeSeriesElement => timeSeriesElement.time === currentPeriod);
+    }
+
+    async missingEnergyInCurrentPeriod(): Promise<TimeSeriesElement> {
+        return this.missingEnergyInPeriod(moment().unix());
     }
 }
 
@@ -228,4 +254,109 @@ export const deleteDemand = async (
     }
 
     return success;
+};
+
+const timeFrameToResolution = (timeFrame: TimeFrame): Resolution => {
+    let resolution: Resolution = 'day';
+
+    switch (timeFrame) {
+        case TimeFrame.hourly:
+            resolution = 'hour';
+            break;
+        case TimeFrame.daily:
+            resolution = 'day';
+            break;
+        case TimeFrame.weekly:
+            resolution = 'week';
+            break;
+        case TimeFrame.monthly:
+            resolution = 'month';
+            break;
+        case TimeFrame.yearly:
+            resolution = 'year';
+            break;
+        default:
+            break;
+    }
+
+    return resolution;
+};
+
+const durationInTimePeriod = (start: number, end: number, timeFrame: TimeFrame) => {
+    const demandDuration = moment.duration(moment.unix(end).diff(moment.unix(start)));
+    let durationInTimeFrame = 0;
+
+    switch (timeFrame) {
+        case TimeFrame.daily:
+            durationInTimeFrame = Math.ceil(demandDuration.asDays());
+            break;
+        case TimeFrame.weekly:
+            durationInTimeFrame = Math.ceil(demandDuration.asWeeks());
+            break;
+        case TimeFrame.monthly:
+            durationInTimeFrame = Math.ceil(demandDuration.asMonths());
+            break;
+        case TimeFrame.yearly:
+            durationInTimeFrame = Math.ceil(demandDuration.asYears());
+            break;
+        case TimeFrame.hourly:
+            durationInTimeFrame = Math.ceil(demandDuration.asHours());
+            break;
+        default:
+            break;
+    }
+
+    return durationInTimeFrame;
+};
+
+export const calculateTotalEnergyDemand = (
+    startDate: number,
+    endDate: number,
+    energyPerTimeFrame: number,
+    timeFrame: TimeFrame
+) => {
+    const durationInTimeFrame = durationInTimePeriod(startDate, endDate, timeFrame);
+
+    return energyPerTimeFrame * durationInTimeFrame;
+};
+
+export const calculateMissingEnergyDemand = async (
+    demand: IDemand,
+    config: Configuration.Entity
+) => {
+    const { startTime, endTime, timeFrame, energyPerTimeFrame } = demand.offChainProperties;
+
+    if (timeFrame === TimeFrame.halfHourly) {
+        throw new Error('Half-hourly demands are not supported');
+    }
+
+    const durationInTimeFrame = durationInTimePeriod(startTime, endTime, timeFrame);
+    const resolution = timeFrameToResolution(timeFrame);
+    const demandTimeSeries = TS.generate(
+        startTime,
+        durationInTimeFrame,
+        resolution,
+        energyPerTimeFrame
+    );
+
+    const marketLogic: MarketLogic = config.blockchainProperties.marketLogicInstance;
+    const filledEvents = await marketLogic.getEvents('DemandPartiallyFilled', {
+        filter: { _demandId: demand.id }
+    });
+
+    const filledDemandsTimeSeries = await Promise.all(
+        filledEvents.map(async log => {
+            const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
+            const nearestTime = moment
+                .unix(block.timestamp)
+                .startOf(resolution as moment.unitOfTime.StartOf)
+                .unix();
+
+            return { time: nearestTime, value: Number(log.returnValues._amount) * -1 };
+        })
+    );
+
+    const filledDemandInRange = TS.inRange(filledDemandsTimeSeries, startTime, endTime);
+
+    return TS.aggregateByTime(demandTimeSeries.concat(filledDemandInRange));
 };

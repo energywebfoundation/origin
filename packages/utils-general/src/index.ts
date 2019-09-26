@@ -12,3 +12,5 @@ export { IAssetService, IRECAssetService, DecodedAssetType, EncodedAssetType } f
 export { extendArray } from './extensions/array.extensions';
 export { THAILAND_REGIONS_PROVINCES_MAP } from './blockchain-facade/Location';
 export { LocationService } from './blockchain-facade/LocationService';
+export { TimeSeries, Resolution, TimeSeriesElement, TS } from "./TimeSeries";
+export { GeneralFunctions, ISearchLog, ISpecialTx, getClientVersion } from './GeneralFunctions';

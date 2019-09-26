@@ -16,6 +16,7 @@ import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 
 import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
+import moment from 'moment';
 
 export class Demo {
     public originContractLookup: string;
@@ -324,10 +325,12 @@ export class Demo {
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
-            targetWhPerPeriod: 1e6,
+            energyPerTimeFrame: 1e6,
             registryCompliance: Compliance.EEC,
-            startTime: '1559466472732',
-            endTime: '1559466492732'
+            startTime: moment().unix(),
+            endTime: moment()
+                .add(1, 'hour')
+                .unix()
         };
 
         return Demand.createDemand(demandOffChainProps, this.conf);

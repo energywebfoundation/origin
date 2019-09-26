@@ -72,7 +72,7 @@ export class Matcher {
     }
 
     private async executeMatching(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
-        const requiredEnergy = demand.offChainProperties.targetWhPerPeriod;
+        const { value: requiredEnergy } = await demand.missingEnergyInCurrentPeriod();
 
         if (certificate.energy === requiredEnergy) {
             return this.certificateService.matchDemand(certificate, demand);
@@ -112,19 +112,22 @@ export class Matcher {
         for (const matchingAgreement of matchingAgreements) {
             const { agreement } = matchingAgreement;
             const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await matchingAgreement.missingEnergyForDemand(demand);
+            const missingEnergyForPeriod = await demand.missingEnergyInCurrentPeriod();
 
             this.logger.debug(
                 `Certificate's available energy ${certificate.energy}, missingEnergyForPeriod ${missingEnergyForPeriod}`
             );
 
-            if (certificate.energy === missingEnergyForPeriod) {
+            if (certificate.energy === missingEnergyForPeriod.value) {
                 return this.certificateService.matchAgreement(certificate, agreement);
             }
-            if (missingEnergyForPeriod > 0 && certificate.energy > missingEnergyForPeriod) {
+            if (
+                missingEnergyForPeriod.value > 0 &&
+                certificate.energy > missingEnergyForPeriod.value
+            ) {
                 return this.certificateService.splitCertificate(
                     certificate,
-                    missingEnergyForPeriod
+                    missingEnergyForPeriod.value
                 );
             }
         }
@@ -170,7 +173,15 @@ export class Matcher {
                     matchableAgreement.agreement.supplyId.toString(),
                     this.config
                 ).sync();
-                const { result } = matchableAgreement.matchesCertificate(certificate, supply);
+                const demand = await new Demand.Entity(
+                    matchableAgreement.agreement.demandId.toString(),
+                    this.config
+                ).sync();
+                const { result } = await matchableAgreement.matchesCertificate(
+                    certificate,
+                    supply,
+                    demand
+                );
                 return result;
             });
 
@@ -194,8 +205,11 @@ export class Matcher {
         return this.entityStore
             .getDemands()
             .map(demand => new MatchableDemand(demand))
-            .filter(matchableDemand => {
-                const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+            .filter(async matchableDemand => {
+                const { result } = await matchableDemand.matchesCertificate(
+                    certificate,
+                    producingAsset
+                );
                 return result;
             });
     }

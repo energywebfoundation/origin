@@ -129,18 +129,18 @@ describe('AssetProducingLogic', () => {
     });
 
     it('should have the right owner', async () => {
-        assert.equal(await assetProducingLogic.owner(), assetContractLookup.web3Contract._address);
+        assert.equal(await assetProducingLogic.owner(), assetContractLookup.web3Contract.options.address);
     });
 
     it('should have the right userContractLookup', async () => {
         assert.equal(
             await assetProducingLogic.userContractLookup(),
-            userContractLookup.web3Contract._address
+            userContractLookup.web3Contract.options.address
         );
     });
 
     it('should have the right userContractLookup', async () => {
-        assert.equal(await assetProducingLogic.db(), assetProducingDB.web3Contract._address);
+        assert.equal(await assetProducingLogic.db(), assetProducingDB.web3Contract.options.address);
     });
 
     it('should not have any assets in the contract after deployment', async () => {

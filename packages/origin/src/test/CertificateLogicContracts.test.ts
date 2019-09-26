@@ -187,23 +187,23 @@ describe('CertificateLogic', () => {
         it('should have the right owner', async () => {
             assert.equal(
                 await certificateLogic.owner(),
-                originRegistryContract.web3Contract._address
+                originRegistryContract.web3Contract.options.address
             );
         });
 
         it('should have the lookup-contracts', async () => {
             assert.equal(
                 await certificateLogic.assetContractLookup(),
-                assetRegistryContract.web3Contract._address
+                assetRegistryContract.web3Contract.options.address
             );
             assert.equal(
                 await certificateLogic.userContractLookup(),
-                userRegistryContract.web3Contract._address
+                userRegistryContract.web3Contract.options.address
             );
         });
 
         it('should the correct DB', async () => {
-            assert.equal(await certificateLogic.db(), certificateDB.web3Contract._address);
+            assert.equal(await certificateLogic.db(), certificateDB.web3Contract.options.address);
         });
 
         it('should have balances of 0', async () => {
@@ -308,13 +308,13 @@ describe('CertificateLogic', () => {
             await userLogic.createUser(
                 'propertiesDocumentHash',
                 'documentDBURL',
-                testreceiver.web3Contract._address,
+                testreceiver.web3Contract.options.address,
                 'testreceiver',
                 { privateKey: privateKeyDeployment }
             );
 
             await userLogic.setRoles(
-                testreceiver.web3Contract._address,
+                testreceiver.web3Contract.options.address,
                 buildRights([Role.Trader]),
                 {
                     privateKey: privateKeyDeployment
@@ -357,13 +357,13 @@ describe('CertificateLogic', () => {
         it('should set MarketLogicAddress', async () => {
             await assetRegistry.setMarketLookupContract(
                 0,
-                originRegistryContract.web3Contract._address,
+                originRegistryContract.web3Contract.options.address,
                 { privateKey: assetOwnerPK }
             );
 
             assert.equal(
                 await assetRegistry.getMarketLookupContract(0),
-                originRegistryContract.web3Contract._address
+                originRegistryContract.web3Contract.options.address
             );
         });
 
@@ -943,7 +943,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     0
                 );
             });
@@ -1035,7 +1035,7 @@ describe('CertificateLogic', () => {
                 try {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
-                        testreceiver.web3Contract._address,
+                        testreceiver.web3Contract.options.address,
                         '3',
                         '',
                         { privateKey: privateKeyDeployment }
@@ -1053,7 +1053,7 @@ describe('CertificateLogic', () => {
                 try {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
-                        testreceiver.web3Contract._address,
+                        testreceiver.web3Contract.options.address,
                         '3',
                         '',
                         { privateKey: traderPK }
@@ -1091,7 +1091,7 @@ describe('CertificateLogic', () => {
                 try {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
-                        certificateLogic.web3Contract._address,
+                        certificateLogic.web3Contract.options.address,
                         '3',
                         '',
                         { privateKey: assetOwnerPK }
@@ -1127,10 +1127,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '3',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '3'
                 });
                 //   }
@@ -1138,7 +1138,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     1
                 );
             });
@@ -1158,7 +1158,7 @@ describe('CertificateLogic', () => {
                 const tradableEntity = cert.tradableEntity;
 
                 assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
+                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
@@ -1173,8 +1173,8 @@ describe('CertificateLogic', () => {
 
             it('should be able to transfer token again', async () => {
                 const tx = await testreceiver.safeTransferFrom(
-                    testreceiver.web3Contract._address,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
+                    testreceiver.web3Contract.options.address,
                     '3',
                     '',
                     {
@@ -1195,11 +1195,11 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents.length, 1);
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
-                    0: testreceiver.web3Contract._address,
-                    1: testreceiver.web3Contract._address,
+                    0: testreceiver.web3Contract.options.address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '3',
-                    _from: testreceiver.web3Contract._address,
-                    _to: testreceiver.web3Contract._address,
+                    _from: testreceiver.web3Contract.options.address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '3'
                 });
                 //    }
@@ -1208,7 +1208,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     1
                 );
             });
@@ -1228,7 +1228,7 @@ describe('CertificateLogic', () => {
                 const tradableEntity = cert.tradableEntity;
 
                 assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
+                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
@@ -1301,7 +1301,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     1
                 );
             });
@@ -1390,7 +1390,7 @@ describe('CertificateLogic', () => {
                 try {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
-                        testreceiver.web3Contract._address,
+                        testreceiver.web3Contract.options.address,
                         '4',
                         '0x01',
                         { privateKey: privateKeyDeployment }
@@ -1407,7 +1407,7 @@ describe('CertificateLogic', () => {
                 try {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
-                        testreceiver.web3Contract._address,
+                        testreceiver.web3Contract.options.address,
                         '4',
                         '0x01',
                         { privateKey: traderPK }
@@ -1422,7 +1422,7 @@ describe('CertificateLogic', () => {
             it('should call safetransferFrom as assetManager and correct receiver ', async () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '4',
                     '0x01',
                     { privateKey: assetOwnerPK }
@@ -1440,10 +1440,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '4',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '4'
                 });
                 //   }
@@ -1451,7 +1451,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     2
                 );
             });
@@ -1471,7 +1471,7 @@ describe('CertificateLogic', () => {
                 const tradableEntity = cert.tradableEntity;
 
                 assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
+                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
@@ -1486,8 +1486,8 @@ describe('CertificateLogic', () => {
 
             it('should be able to transfer token again', async () => {
                 const tx = await testreceiver.safeTransferFrom(
-                    testreceiver.web3Contract._address,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
+                    testreceiver.web3Contract.options.address,
                     '4',
                     '0x01',
                     {
@@ -1507,11 +1507,11 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents.length, 1);
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
-                    0: testreceiver.web3Contract._address,
-                    1: testreceiver.web3Contract._address,
+                    0: testreceiver.web3Contract.options.address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '4',
-                    _from: testreceiver.web3Contract._address,
-                    _to: testreceiver.web3Contract._address,
+                    _from: testreceiver.web3Contract.options.address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '4'
                 });
                 //   }
@@ -1520,7 +1520,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     2
                 );
             });
@@ -1540,7 +1540,7 @@ describe('CertificateLogic', () => {
                 const tradableEntity = cert.tradableEntity;
 
                 assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract._address);
+                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
                     tradableEntity.acceptedToken,
@@ -1773,7 +1773,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     2
                 );
             });
@@ -1841,7 +1841,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 2);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     2
                 );
                 assert.equal(
@@ -1909,7 +1909,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 2);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     2
                 );
             });
@@ -1922,7 +1922,7 @@ describe('CertificateLogic', () => {
 
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '6',
                     null,
                     { privateKey: matcherPK }
@@ -1939,10 +1939,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '6',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '6'
                 });
                 //   }
@@ -1950,7 +1950,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 2);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     3
                 );
                 assert.equal(
@@ -2018,7 +2018,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 2);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     3
                 );
             });
@@ -2031,7 +2031,7 @@ describe('CertificateLogic', () => {
 
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '7',
                     '0x01',
                     { privateKey: matcherPK }
@@ -2048,10 +2048,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '7',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '7'
                 });
                 //   }
@@ -2059,7 +2059,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 2);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     4
                 );
                 assert.equal(
@@ -2127,7 +2127,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 2);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     4
                 );
             });
@@ -2150,7 +2150,7 @@ describe('CertificateLogic', () => {
                 try {
                     const tx = await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
-                        testreceiver.web3Contract._address,
+                        testreceiver.web3Contract.options.address,
                         '8',
                         '0x01',
                         { privateKey: assetSmartmeterPK }
@@ -2214,7 +2214,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     4
                 );
                 assert.equal(
@@ -2282,7 +2282,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     4
                 );
             });
@@ -2295,7 +2295,7 @@ describe('CertificateLogic', () => {
 
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '9',
                     null,
                     { privateKey: approvedPK }
@@ -2312,10 +2312,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '9',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '9'
                 });
                 //    }
@@ -2323,7 +2323,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     5
                 );
                 assert.equal(
@@ -2391,7 +2391,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     5
                 );
             });
@@ -2404,7 +2404,7 @@ describe('CertificateLogic', () => {
 
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '10',
                     '0x01',
                     { privateKey: approvedPK }
@@ -2421,10 +2421,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '10',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '10'
                 });
                 //     }
@@ -2432,7 +2432,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     6
                 );
                 assert.equal(
@@ -2500,7 +2500,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     6
                 );
             });
@@ -2587,7 +2587,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     6
                 );
                 assert.equal(
@@ -2655,7 +2655,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     6
                 );
             });
@@ -2689,7 +2689,7 @@ describe('CertificateLogic', () => {
 
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '12',
                     null,
                     { privateKey: approvedPK }
@@ -2706,10 +2706,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '12',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '12'
                 });
                 //   }
@@ -2717,7 +2717,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     7
                 );
                 assert.equal(
@@ -2784,7 +2784,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     7
                 );
             });
@@ -2818,7 +2818,7 @@ describe('CertificateLogic', () => {
 
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
-                    testreceiver.web3Contract._address,
+                    testreceiver.web3Contract.options.address,
                     '13',
                     null,
                     { privateKey: approvedPK }
@@ -2835,10 +2835,10 @@ describe('CertificateLogic', () => {
                 assert.equal(allTransferEvents[0].event, 'Transfer');
                 assert.deepEqual(allTransferEvents[0].returnValues, {
                     0: accountAssetOwner,
-                    1: testreceiver.web3Contract._address,
+                    1: testreceiver.web3Contract.options.address,
                     2: '13',
                     _from: accountAssetOwner,
-                    _to: testreceiver.web3Contract._address,
+                    _to: testreceiver.web3Contract.options.address,
                     _tokenId: '13'
                 });
                 //   }
@@ -2846,7 +2846,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
                 );
                 assert.equal(
@@ -2885,7 +2885,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 2);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
                 );
                 assert.equal(
@@ -2953,7 +2953,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
                 );
             });
@@ -3096,7 +3096,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 4);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
                 );
             });
@@ -3116,7 +3116,7 @@ describe('CertificateLogic', () => {
                 let failed = false;
 
                 try {
-                    await certificateLogic.setTradableToken(15, erc20Test.web3Contract._address, {
+                    await certificateLogic.setTradableToken(15, erc20Test.web3Contract.options.address, {
                         privateKey: privateKeyDeployment
                     });
                 } catch (ex) {
@@ -3131,7 +3131,7 @@ describe('CertificateLogic', () => {
                 let failed = false;
 
                 try {
-                    await certificateLogic.setTradableToken(15, erc20Test.web3Contract._address, {
+                    await certificateLogic.setTradableToken(15, erc20Test.web3Contract.options.address, {
                         privateKey: traderPK
                     });
                 } catch (ex) {
@@ -3143,13 +3143,13 @@ describe('CertificateLogic', () => {
             });
 
             it('should set tradableToken as owner', async () => {
-                await certificateLogic.setTradableToken(15, erc20Test.web3Contract._address, {
+                await certificateLogic.setTradableToken(15, erc20Test.web3Contract.options.address, {
                     privateKey: assetOwnerPK
                 });
 
                 assert.equal(
                     await certificateLogic.getTradableToken(15),
-                    erc20Test.web3Contract._address
+                    erc20Test.web3Contract.options.address
                 );
             });
 
@@ -3166,7 +3166,7 @@ describe('CertificateLogic', () => {
             });
 
             it('should set certificate for sale', async () => {
-                await certificateLogic.publishForSale(15, 0, erc20Test.web3Contract._address, {
+                await certificateLogic.publishForSale(15, 0, erc20Test.web3Contract.options.address, {
                     privateKey: assetOwnerPK
                 });
                 const cert = await certificateLogic.getCertificate(15);
@@ -3242,7 +3242,7 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract._address);
+                assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract.options.address);
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 100);
                 assert.equal(
                     tradableEntity.approvedAddress,
@@ -3255,7 +3255,7 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract._address);
+                assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract.options.address);
                 assert.equal(tradableEntity.onChainDirectPurchasePrice, 100);
                 assert.equal(
                     tradableEntity.approvedAddress,
@@ -3317,7 +3317,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
                 );
             });
@@ -3426,7 +3426,7 @@ describe('CertificateLogic', () => {
                 assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 4);
                 assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
                 assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract._address),
+                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
                 );
             });

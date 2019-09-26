@@ -563,7 +563,7 @@ usage: command to create a demand
 * <code>minCO2Offset</code>: minimum amount of CO2 offset required
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
-* <code>targetWhPerPeriod</code>: required watt-hour per period (timeframe)
+* <code>energyPerTimeFrame</code>: required energy per time frame
 * <code>registryCompliance</code>: complaince as string (none,
     IREC,
     EEC,
@@ -589,7 +589,7 @@ We want to report a demand with target watt-hour per period(timeframe) as <code>
         "minCO2Offset": 10,
         "otherGreenAttributes": "string",
         "typeOfPublicSupport": "string",
-        "targetWhPerPeriod": 10,
+        "energyPerTimeFrame": 10,
         "registryCompliance": "EEC"
     }
 }

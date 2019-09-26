@@ -264,7 +264,7 @@ describe('CertificateLogic-Facade', () => {
     it('should set marketcontract in asset + log a new meterreading ', async () => {
         await assetRegistry.setMarketLookupContract(
             0,
-            originRegistryContract.web3Contract._address,
+            originRegistryContract.web3Contract.options.address,
             { privateKey: assetOwnerPK }
         );
 

@@ -57,18 +57,18 @@ describe('UserLogic', () => {
     });
 
     it('should have the right owner', async () => {
-        assert.equal(await userLogic.owner(), userContractLookup.web3Contract._address);
+        assert.equal(await userLogic.owner(), userContractLookup.web3Contract.options.address);
     });
 
     it('should have the right db', async () => {
-        assert.equal(await userLogic.db(), userDB.web3Contract._address);
+        assert.equal(await userLogic.db(), userDB.web3Contract.options.address);
     });
 
     it('should throw an error when calling init again', async () => {
         let failed = false;
 
         try {
-            await userLogic.init(userLogic.web3Contract._address, userLogic.web3Contract._address, {
+            await userLogic.init(userLogic.web3Contract.options.address, userLogic.web3Contract.options.address, {
                 privateKey: privateKeyDeployment
             });
         } catch (ex) {

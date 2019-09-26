@@ -10,6 +10,7 @@ import { Compliance, Configuration, Currency, TimeFrame, Unit } from '@energyweb
 import { assert } from 'chai';
 import Web3 from 'web3';
 
+import moment from 'moment';
 import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -229,10 +230,12 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: 1e6,
+                energyPerTimeFrame: 1 * Unit.MWh,
                 registryCompliance: Compliance.EEC,
-                startTime: '1559466472732',
-                endTime: '1559466492732'
+                startTime: moment().unix(),
+                endTime: moment()
+                    .add(1, 'hour')
+                    .unix()
             };
 
             await Demand.createDemand(demandOffChainProps, conf);
@@ -402,7 +405,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 privateKey: traderPK
             };
 
-            const startTime = Math.floor(Date.now() / 1000);
+            const startTime = moment().unix();
 
             const agreementOffChainProps: Agreement.IAgreementOffChainProperties = {
                 start: startTime,
@@ -556,10 +559,12 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: energy,
+                energyPerTimeFrame: energy,
                 registryCompliance: Compliance.EEC,
-                startTime: '1559466472732',
-                endTime: '1559466492732'
+                startTime: moment().unix(),
+                endTime: moment()
+                    .add(1, 'hour')
+                    .unix()
             };
 
             await Demand.createDemand(demandOffChainProps, conf);

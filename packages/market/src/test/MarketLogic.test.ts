@@ -139,19 +139,22 @@ describe('MarketLogic', () => {
     });
 
     it('should have the right owner', async () => {
-        assert.equal(await marketLogic.owner(), marketRegistryContract.web3Contract._address);
+        assert.equal(
+            await marketLogic.owner(),
+            marketRegistryContract.web3Contract.options.address
+        );
     });
 
     it('should have the lookup-contracts', async () => {
         assert.equal(
             await marketLogic.assetContractLookup(),
-            assetRegistryContract.web3Contract._address
+            assetRegistryContract.web3Contract.options.address
         );
         assert.equal(await marketLogic.userContractLookup(), userContractLookupAddr);
     });
 
     it('should have the right db', async () => {
-        assert.equal(await marketLogic.db(), marketDB.web3Contract._address);
+        assert.equal(await marketLogic.db(), marketDB.web3Contract.options.address);
     });
 
     it('should fail when trying to call init', async () => {
@@ -1043,11 +1046,7 @@ describe('MarketLogic', () => {
             privateKey: traderPK
         });
 
-        const demandUpdatedEvents = await marketLogic.getEvents('DemandUpdated', {
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        });
-
+        const demandUpdatedEvents = await marketLogic.getEvents('DemandUpdated');
         const updatedDemandId = demandUpdatedEvents[0].returnValues._demandId;
 
         assert.equal(updatedDemandId, demandId);

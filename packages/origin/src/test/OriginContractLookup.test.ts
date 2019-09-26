@@ -106,11 +106,11 @@ describe('OriginContractLookup', () => {
     it('should have the right registries', async () => {
         assert.equal(
             await originRegistryContract.originLogicRegistry(),
-            certificateLogic.web3Contract._address
+            certificateLogic.web3Contract.options.address
         );
         assert.equal(
             await originRegistryContract.assetContractLookup(),
-            assetRegistryContract.web3Contract._address
+            assetRegistryContract.web3Contract.options.address
         );
     });
 

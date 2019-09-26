@@ -154,7 +154,7 @@ describe('AssetProducing Facade', () => {
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
                 maxOwnerChanges: '3',
-                url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`
+                url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
             } as any,
             asset
         );
@@ -222,7 +222,7 @@ describe('AssetProducing Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract._address}`,
+            url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
             maxOwnerChanges: '3',
             offChainProperties: {
                 operationalSince: 0,

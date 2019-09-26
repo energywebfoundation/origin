@@ -231,7 +231,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate.assetId.toString(),
                 this.props.configuration
             ).sync();
-            const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+            const { result } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
             return result;
         });
 
@@ -466,10 +469,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 currency: Currency.USD,
                 otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
-                targetWhPerPeriod: certificate.energy,
+                energyPerTimeFrame: certificate.energy,
                 registryCompliance: asset.offChainProperties.complianceRegistry,
-                startTime: '',
-                endTime: ''
+                startTime: 0,
+                endTime: 0
             };
 
             await Demand.createDemand(offChainProperties, this.props.configuration);

@@ -1,4 +1,4 @@
-import { TransactionReceipt, Log } from 'web3/types';
+import { TransactionReceipt, EventLog } from 'web3/types';
 import { Currency, Unit } from '@energyweb/utils-general';
 import { Configuration } from '../utils/types';
 
@@ -64,7 +64,7 @@ export const isRetired = async (
 export const getAllCertificateEvents = async (
     certId: number,
     configuration: Configuration
-): Promise<Log[]> => {
+): Promise<EventLog[]> => {
     const allEvents = await configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
         {
             topics: [
@@ -334,7 +334,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         );
     }
 
-    async getAllCertificateEvents(): Promise<Log[]> {
+    async getAllCertificateEvents(): Promise<EventLog[]> {
         const allEvents = await this.configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
             {
                 topics: [

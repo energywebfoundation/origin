@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import AgreementLogicJSON from '../../build/contracts/lightweight/AgreementLogic.json';
 
 export class AgreementLogic extends GeneralFunctions {
@@ -35,7 +35,7 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('LogAgreementFullySigned', filterParams);
+        return this.web3Contract.getPastEvents('LogAgreementFullySigned', eventFilter);
     }
 
     async getAllLogAgreementCreatedEvents(eventFilter?: ISearchLog) {
@@ -55,7 +55,7 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('LogAgreementCreated', filterParams);
+        return this.web3Contract.getPastEvents('LogAgreementCreated', eventFilter);
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
@@ -75,26 +75,11 @@ export class AgreementLogic extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async createAgreement(

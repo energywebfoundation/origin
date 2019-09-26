@@ -89,8 +89,8 @@ export class OriginEventListener implements IOriginEventListener {
                 this.conf
             ).sync();
 
-            const demandsMatchCertificate: Demand.Entity[] = demands.filter(demand => {
-                const { result } = new MatchableDemand(demand).matchesCertificate(
+            const demandsMatchCertificate: Demand.Entity[] = demands.filter(async demand => {
+                const { result } = await new MatchableDemand(demand).matchesCertificate(
                     publishedCertificate,
                     producingAsset
                 );

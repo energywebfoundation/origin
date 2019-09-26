@@ -1,7 +1,8 @@
 import Web3 from 'web3';
+import { EventLog } from 'web3/types'; // eslint-disable-line import/no-unresolved
+import { GeneralFunctions, ISearchLog, ISpecialTx } from '@energyweb/utils-general';
 import MarketLogicJSON from '../../build/contracts/lightweight/MarketLogic.json';
 import { DemandStatus } from '../blockchain-facade/Demand';
-import { GeneralFunctions, ISearchLog, ISpecialTx } from './GeneralFunctions';
 
 const SUPPORTED_EVENTS = [
     'allEvents',
@@ -32,46 +33,16 @@ export class MarketLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getEvents(event: string, eventFilter?: ISearchLog) {
+    async getEvents(event: string, eventFilter?: ISearchLog): Promise<EventLog[]> {
         if (!SUPPORTED_EVENTS.includes(event)) {
             throw new Error('This event does not exist.');
         }
 
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents(event, filterParams);
+        return this.web3Contract.getPastEvents(event, eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.getEvents('allEvents', eventFilter);
     }
 
     async createAgreement(

@@ -1,4 +1,4 @@
-import { GeneralFunctions } from './GeneralFunctions';
+import { GeneralFunctions } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import TradableEntityContractJSON from '../../build/contracts/lightweight/TradableEntityContract.json';
 
