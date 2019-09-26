@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import MarketContractLookupJSON from '../../build/contracts/lightweight/MarketContractLookup.json';
 
 export class MarketContractLookup extends GeneralFunctions {
@@ -22,43 +22,11 @@ export class MarketContractLookup extends GeneralFunctions {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: undefined
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async marketLogicRegistry(txParams?: ISpecialTx) {

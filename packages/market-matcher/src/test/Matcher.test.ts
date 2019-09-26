@@ -10,6 +10,7 @@ import { Compliance, Configuration, Currency, TimeFrame, Unit } from '@energyweb
 import { assert } from 'chai';
 import Web3 from 'web3';
 
+import moment from 'moment';
 import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -224,15 +225,17 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 timeFrame: TimeFrame.hourly,
                 maxPricePerMwh: 150,
                 currency: Currency.USD,
-                location: { provinces: ['string'], regions: ['string'] },
+                location: ['Thailand;Central;Nakhon Pathom'],
                 assetType: ['Solar'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: 1e6,
+                energyPerTimeFrame: 1 * Unit.MWh,
                 registryCompliance: Compliance.EEC,
-                startTime: '1559466472732',
-                endTime: '1559466492732'
+                startTime: moment().unix(),
+                endTime: moment()
+                    .add(1, 'hour')
+                    .unix()
             };
 
             await Demand.createDemand(demandOffChainProps, conf);
@@ -260,14 +263,11 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 facilityName: 'MatcherTestFacility',
                 operationalSince: 0,
                 capacityWh: 10,
-                country: 'USA',
-                region: 'AnyState',
-                zip: '012345',
-                city: 'Anytown',
-                street: 'Main-Street',
-                houseNumber: '42',
-                gpsLatitude: '0.0123123',
-                gpsLongitude: '31.1231',
+                country: 'Thailand',
+                address:
+                    '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+                gpsLatitude: '14.059500',
+                gpsLongitude: '99.977800',
                 assetType: 'Solar',
                 complianceRegistry: Compliance.EEC,
                 otherGreenAttributes: '',
@@ -405,7 +405,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 privateKey: traderPK
             };
 
-            const startTime = Math.floor(Date.now() / 1000);
+            const startTime = moment().unix();
 
             const agreementOffChainProps: Agreement.IAgreementOffChainProperties = {
                 start: startTime,
@@ -554,15 +554,17 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 timeFrame: TimeFrame.hourly,
                 maxPricePerMwh: 150,
                 currency: Currency.USD,
-                location: { provinces: ['string'], regions: ['string'] },
+                location: ['Thailand;Central;Nakhon Pathom'],
                 assetType: ['Solar'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: energy,
+                energyPerTimeFrame: energy,
                 registryCompliance: Compliance.EEC,
-                startTime: '1559466472732',
-                endTime: '1559466492732'
+                startTime: moment().unix(),
+                endTime: moment()
+                    .add(1, 'hour')
+                    .unix()
             };
 
             await Demand.createDemand(demandOffChainProps, conf);

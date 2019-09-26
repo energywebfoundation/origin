@@ -11,6 +11,7 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import Web3 from 'web3';
 
+import moment from 'moment';
 import * as Market from '..';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
@@ -37,9 +38,9 @@ describe('Market-Facade', () => {
     let marketLogic: MarketLogic;
     let certificateLogic: CertificateLogic;
 
-    let userContractLookupAddr;
-    let assetContractLookupAddr;
-    let originContractLookupAddr;
+    let userContractLookupAddr: string;
+    let assetContractLookupAddr: string;
+    let originContractLookupAddr: string;
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -214,12 +215,9 @@ describe('Market-Facade', () => {
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
             operationalSince: 0,
             capacityWh: 10,
-            country: 'USA',
-            region: 'AnyState',
-            zip: '012345',
-            city: 'Anytown',
-            street: 'Main-Street',
-            houseNumber: '42',
+            country: 'Thailand',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             assetType: 'Wind',
@@ -235,8 +233,10 @@ describe('Market-Facade', () => {
     });
 
     describe('Demand-Facade', () => {
-        const START_TIME = '1559466472732';
-        const END_TIME = '1559466492732';
+        const START_TIME = moment().unix();
+        const END_TIME = moment()
+            .add(1, 'hour')
+            .unix();
 
         it('should create a demand', async () => {
             conf.blockchainProperties.activeUser = {
@@ -248,12 +248,12 @@ describe('Market-Facade', () => {
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: GeneralLib.Currency.USD,
-                location: { provinces: ['string'], regions: ['string'] },
+                location: ['Thailand;Central;Nakhon Pathom'],
                 assetType: ['Solar'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                targetWhPerPeriod: 10,
+                energyPerTimeFrame: 10,
                 registryCompliance: GeneralLib.Compliance.EEC,
                 startTime: START_TIME,
                 endTime: END_TIME
@@ -268,7 +268,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
+                url: `http://localhost:3030/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -287,7 +287,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3030/Demand/${marketLogic.web3Contract._address}`,
+                url: `http://localhost:3030/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -295,12 +295,12 @@ describe('Market-Facade', () => {
             assert.deepEqual(demand.offChainProperties, {
                 assetType: ['Solar'],
                 currency: GeneralLib.Currency.USD,
-                location: { provinces: ['string'], regions: ['string'] },
+                location: ['Thailand;Central;Nakhon Pathom'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
                 registryCompliance: 2,
-                targetWhPerPeriod: 10,
+                energyPerTimeFrame: 10,
                 timeFrame: GeneralLib.TimeFrame.hourly,
                 typeOfPublicSupport: 'string',
                 startTime: START_TIME,
@@ -452,14 +452,15 @@ describe('Market-Facade', () => {
     });
 
     describe('Agreement-Facade', () => {
-        let startTime;
+        let startTime: number;
+
         it('should create an agreement', async () => {
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
                 privateKey: traderPK
             };
 
-            startTime = Date.now();
+            startTime = moment().unix();
 
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
@@ -580,7 +581,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            startTime = Date.now();
+            startTime = moment().unix();
 
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,

@@ -2,8 +2,10 @@ import axios from 'axios';
 import Web3 from 'web3';
 
 import { EmailServiceProvider, IEmailServiceProvider } from './email.service';
+import { IEmailAdapter } from '../email/IEmailAdapter';
 import { MandrillEmailAdapter } from '../email/mandrill.adapter';
 import { IOriginEventListener, OriginEventListener } from '../listeners/origin.listener';
+import { OriginEventsStore, IOriginEventsStore } from '../stores/OriginEventsStore';
 
 export interface IEventServiceProvider {
     apiUrl: string;
@@ -12,21 +14,18 @@ export interface IEventServiceProvider {
 }
 
 export class EventServiceProvider implements IEventServiceProvider {
-    public apiUrl: string;
-
     public listeners: IOriginEventListener[];
-
-    public web3: Web3;
 
     public emailService: IEmailServiceProvider;
 
-    constructor(apiUrl: string, web3: Web3) {
-        this.apiUrl = apiUrl;
-        this.web3 = web3;
+    private originEventsStore: IOriginEventsStore;
+
+    constructor(public apiUrl: string, public web3: Web3) {
         this.listeners = [];
 
-        const emailAdapter = new MandrillEmailAdapter(process.env.MANDRILL_API_KEY);
+        const emailAdapter: IEmailAdapter = new MandrillEmailAdapter(process.env.MANDRILL_API_KEY);
         this.emailService = new EmailServiceProvider(emailAdapter, process.env.EMAIL_FROM);
+        this.originEventsStore = new OriginEventsStore();
     }
 
     public async start() {
@@ -48,7 +47,8 @@ export class EventServiceProvider implements IEventServiceProvider {
                 const listener: IOriginEventListener = new OriginEventListener(
                     contract,
                     this.web3,
-                    this.emailService
+                    this.emailService,
+                    this.originEventsStore
                 );
 
                 this.listeners.push(listener);

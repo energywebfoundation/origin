@@ -27,7 +27,7 @@ import {
 import moment from 'moment';
 
 describe('AssetConsumingLogic', () => {
-    const configFile = JSON.parse(
+    const configFile: any = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
     );
 
@@ -57,7 +57,7 @@ describe('AssetConsumingLogic', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy the contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        const userContracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
@@ -77,9 +77,9 @@ describe('AssetConsumingLogic', () => {
             }
         );
 
-        const userContractLookupAddr = (userContracts as any).UserContractLookup;
+        const userContractLookupAddr: string = (userContracts as any).UserContractLookup;
 
-        const deployedContracts = await migrateAssetRegistryContracts(
+        const deployedContracts: any = await migrateAssetRegistryContracts(
             web3,
             userContractLookupAddr,
             privateKeyDeployment
@@ -129,18 +129,18 @@ describe('AssetConsumingLogic', () => {
     });
 
     it('should have the right owner', async () => {
-        assert.equal(await assetConsumingLogic.owner(), assetContractLookup.web3Contract._address);
+        assert.equal(await assetConsumingLogic.owner(), assetContractLookup.web3Contract.options.address);
     });
 
     it('should have the right userContractLookup', async () => {
         assert.equal(
             await assetConsumingLogic.userContractLookup(),
-            userContractLookup.web3Contract._address
+            userContractLookup.web3Contract.options.address
         );
     });
 
     it('should have the right db', async () => {
-        assert.equal(await assetConsumingLogic.db(), assetConsumingDB.web3Contract._address);
+        assert.equal(await assetConsumingLogic.db(), assetConsumingDB.web3Contract.options.address);
     });
 
     it('should not have any assets in the contract after deployment', async () => {

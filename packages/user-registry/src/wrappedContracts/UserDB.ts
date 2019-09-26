@@ -1,26 +1,25 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import UserDBJSON from '../../build/contracts/lightweight/UserDB.json';
 
 export class UserDB extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = UserDBJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = UserDBJSON;
         super(
             address
-                ? new web3.eth.Contract(UserDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      UserDBJSON.abi,
-                      (UserDBJSON as any).networks.length > 0 ? UserDBJSON.networks[0] : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -36,26 +35,11 @@ export class UserDB extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async setOrganization(_user: string, _organization: string, txParams?: ISpecialTx) {

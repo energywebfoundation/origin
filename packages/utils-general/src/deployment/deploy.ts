@@ -1,4 +1,6 @@
-export async function deploy(web3, byteCode: string, txParams?): Promise<any> {
+import Web3 from 'web3';
+
+export async function deploy(web3: Web3, byteCode: string, txParams?: any): Promise<any> {
     if (byteCode.length === 0) {
         throw new Error('no bytecode provided');
     }

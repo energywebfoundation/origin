@@ -93,7 +93,7 @@ export class IRECAssetService implements IAssetService {
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
         const encoded: EncodedAssetType = this.AssetTypes.map(group => group.join(';'));
-        const unknown = [];
+        const unknown: string[] = [];
 
         const areValid = assetTypes
             .map(assetType => {

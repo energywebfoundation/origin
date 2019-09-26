@@ -114,7 +114,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
 
     getUrl(): string {
         const producingAssetLogicAddress = this.configuration.blockchainProperties
-            .producingAssetLogicInstance.web3Contract._address;
+            .producingAssetLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset/${producingAssetLogicAddress}`;
     }
@@ -172,7 +172,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
         const logic: AssetProducingRegistryLogic = this.configuration.blockchainProperties
             .producingAssetLogicInstance;
 
-        return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map(read => ({
+        return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({
             energy: Number(read.energy),
             timestamp: Number(read.timestamp)
         }));

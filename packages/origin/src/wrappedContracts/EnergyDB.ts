@@ -1,67 +1,36 @@
-import { GeneralFunctions, SpecialTx, SearchLog } from './GeneralFunctions';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import EnergyDBJSON from '../../build/contracts/lightweight/EnergyDB.json';
 
 export class EnergyDB extends GeneralFunctions {
     web3: Web3;
-    buildFile = EnergyDBJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = EnergyDBJSON;
         super(
             address
-                ? new web3.eth.Contract(EnergyDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      EnergyDBJSON.abi,
-                      (EnergyDBJSON as any).networks.length > 0 ? EnergyDBJSON.networks[0] : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0 ? buildFile.networks[0] : null
+                )
         );
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('LogChangeOwner', filterParams);
+    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+        return await this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: SearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return await this.web3Contract.getPastEvents('allEvents', filterParams);
+    async getAllEvents(eventFilter?: ISearchLog) {
+        return await this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async getTradableEntityOwner(_entityId: number, txParams?: SpecialTx) {
+    async getTradableEntityOwner(_entityId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getTradableEntityOwner(_entityId).call(txParams);
     }
 
-    async getApproved(_entityId: number, txParams?: SpecialTx) {
+    async getApproved(_entityId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getApproved(_entityId).call(txParams);
     }
 
@@ -69,7 +38,7 @@ export class EnergyDB extends GeneralFunctions {
         _entityId: number,
         _owner: string,
         _approve: string,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.setTradableEntityOwnerAndAddApproval(
             _entityId,
@@ -80,25 +49,25 @@ export class EnergyDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async addApprovalExternal(_entityId: number, _approve: string, txParams?: SpecialTx) {
+    async addApprovalExternal(_entityId: number, _approve: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.addApprovalExternal(_entityId, _approve);
 
         return await this.send(method, txParams);
     }
 
-    async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: SpecialTx) {
+    async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
 
         return await this.send(method, txParams);
     }
 
-    async getOwnerToOperators(_company: string, _escrow: string, txParams?: SpecialTx) {
+    async getOwnerToOperators(_company: string, _escrow: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
             .getOwnerToOperators(_company, _escrow)
             .call(txParams);
     }
 
-    async setTradableEntityOwnerExternal(_entityId: number, _owner: string, txParams?: SpecialTx) {
+    async setTradableEntityOwnerExternal(_entityId: number, _owner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setTradableEntityOwnerExternal(_entityId, _owner);
 
         return await this.send(method, txParams);
@@ -110,7 +79,7 @@ export class EnergyDB extends GeneralFunctions {
         _energy: number,
         _acceptedToken: string,
         _onChainDirectPurchasePrice: number,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createTradableEntityEntry(
             _assetId,
@@ -123,25 +92,25 @@ export class EnergyDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async getTradableEntity(_entityId: number, txParams?: SpecialTx) {
+    async getTradableEntity(_entityId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getTradableEntity(_entityId).call(txParams);
     }
 
-    async owner(txParams?: SpecialTx) {
+    async owner(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.owner().call(txParams);
     }
 
-    async getBalanceOf(_owner: string, txParams?: SpecialTx) {
+    async getBalanceOf(_owner: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getBalanceOf(_owner).call(txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: SpecialTx) {
+    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.changeOwner(_newOwner);
 
         return await this.send(method, txParams);
     }
 
-    async removeTokenAndPrice(_entityId: number, txParams?: SpecialTx) {
+    async removeTokenAndPrice(_entityId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.removeTokenAndPrice(_entityId);
 
         return await this.send(method, txParams);
@@ -151,44 +120,44 @@ export class EnergyDB extends GeneralFunctions {
         _company: string,
         _escrow: string,
         _allowed: boolean,
-        txParams?: SpecialTx
+        txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.setOwnerToOperators(_company, _escrow, _allowed);
 
         return await this.send(method, txParams);
     }
 
-    async publishForSale(_entityId: number, txParams?: SpecialTx) {
+    async publishForSale(_entityId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.publishForSale(_entityId);
 
         return await this.send(method, txParams);
     }
 
-    async unpublishForSale(_entityId: number, txParams?: SpecialTx) {
+    async unpublishForSale(_entityId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.unpublishForSale(_entityId);
 
         return await this.send(method, txParams);
     }
 
-    async setTradableEntity(_entityId: number, _entity: any, txParams?: SpecialTx) {
+    async setTradableEntity(_entityId: number, _entity: any, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setTradableEntity(_entityId, _entity);
 
         return await this.send(method, txParams);
     }
 
-    async setTradableToken(_entityId: number, _token: string, txParams?: SpecialTx) {
+    async setTradableToken(_entityId: number, _token: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setTradableToken(_entityId, _token);
 
         return await this.send(method, txParams);
     }
 
-    async getOnChainDirectPurchasePrice(_entityId: number, txParams?: SpecialTx) {
+    async getOnChainDirectPurchasePrice(_entityId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
             .getOnChainDirectPurchasePrice(_entityId)
             .call(txParams);
     }
 
-    async getTradableToken(_entityId: number, txParams?: SpecialTx) {
+    async getTradableToken(_entityId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getTradableToken(_entityId).call(txParams);
     }
 }

@@ -1,28 +1,25 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from './GeneralFunctions';
+import { GeneralFunctions, ISearchLog, ISpecialTx } from '@energyweb/utils-general';
 import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
 
 export class Erc20TestToken extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = Erc20TestTokenJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = Erc20TestTokenJSON;
         super(
             address
-                ? new web3.eth.Contract(Erc20TestTokenJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      Erc20TestTokenJSON.abi,
-                      (Erc20TestTokenJSON as any).networks.length > 0
-                          ? Erc20TestTokenJSON.networks[0]
-                          : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllTransferEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -38,11 +35,11 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('Transfer', filterParams);
+        return this.web3Contract.getPastEvents('Transfer', eventFilter);
     }
 
     async getAllApprovalEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
@@ -58,26 +55,11 @@ export class Erc20TestToken extends GeneralFunctions {
             };
         }
 
-        return this.web3Contract.getPastEvents('Approval', filterParams);
+        return this.web3Contract.getPastEvents('Approval', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest',
-                topics: eventFilter.topics ? eventFilter.topics : [null]
-            };
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest',
-                topics: [null]
-            };
-        }
-
-        return this.web3Contract.getPastEvents('allEvents', filterParams);
+        return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async name(txParams?: ISpecialTx) {

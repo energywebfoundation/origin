@@ -66,7 +66,7 @@ describe('MarketContractLookup', () => {
         );
         const originLookupAddr = (originContracts as any).OriginContractLookup;
 
-        const marketContracts = await migrateMarketRegistryContracts(
+        const marketContracts: any = await migrateMarketRegistryContracts(
             web3,
             assetRegistryLookupAddr,
             originLookupAddr,
@@ -105,11 +105,11 @@ describe('MarketContractLookup', () => {
     it('should have the right registries', async () => {
         assert.equal(
             await marketRegistryContract.marketLogicRegistry(),
-            marketLogic.web3Contract._address
+            marketLogic.web3Contract.options.address
         );
         assert.equal(
             await marketRegistryContract.assetContractLookup(),
-            assetRegistryContract.web3Contract._address
+            assetRegistryContract.web3Contract.options.address
         );
     });
 

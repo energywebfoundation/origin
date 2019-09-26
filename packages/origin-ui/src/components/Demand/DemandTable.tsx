@@ -28,7 +28,6 @@ import {
     RECORD_INDICATOR
 } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
-import { calculateTotalEnergyDemand } from './DemandForm';
 import { getCurrentUser } from '../../features/users/selectors';
 
 interface IStateProps {
@@ -112,9 +111,10 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         const { location } = demand.offChainProperties;
 
         if (location) {
-            if (location.regions && location.regions.length) {
-                text += location.regions.join(', ');
-            }
+            text = location
+                .map(l => l.split(';')[1])
+                .filter(r => r)
+                .join(', ');
         }
 
         return text || NO_VALUE_TEXT;
@@ -249,10 +249,10 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     : NO_VALUE_TEXT;
 
             const overallDemand = (
-                calculateTotalEnergyDemand(
-                    moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-                    moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-                    demand.offChainProperties.targetWhPerPeriod,
+                Demand.calculateTotalEnergyDemand(
+                    demand.offChainProperties.startTime,
+                    demand.offChainProperties.endTime,
+                    demand.offChainProperties.energyPerTimeFrame,
                     demand.offChainProperties.timeFrame
                 ) / 1000000
             ).toLocaleString();
@@ -268,13 +268,9 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             return {
                 buyer: enrichedDemandData.demandOwner.organization,
                 duration:
-                    moment
-                        .unix(parseInt(demand.offChainProperties.startTime, 10))
-                        .format('DD MMM YY') +
+                    moment.unix(demand.offChainProperties.startTime).format('DD MMM YY') +
                     ' - ' +
-                    moment
-                        .unix(parseInt(demand.offChainProperties.endTime, 10))
-                        .format('DD MMM YY'),
+                    moment.unix(demand.offChainProperties.endTime).format('DD MMM YY'),
                 region: this.getRegionText(demand),
                 assetType,
                 repeatable:
@@ -289,7 +285,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     demand.offChainProperties.vintage.length === 2
                         ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
                         : NO_VALUE_TEXT,
-                demand: (demand.offChainProperties.targetWhPerPeriod / 1000000).toLocaleString(),
+                demand: (demand.offChainProperties.energyPerTimeFrame / 1000000).toLocaleString(),
                 max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
                     Currency[demand.offChainProperties.currency]
                 }`,

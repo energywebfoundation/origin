@@ -10,6 +10,11 @@ function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
         yield take(UsersActions.updateCurrentUserId);
         const conf: Configuration.Entity = yield select(getConfiguration);
+
+        if (!conf) {
+            return;
+        }
+
         const initialAccounts: string[] = yield call(
             conf.blockchainProperties.web3.eth.getAccounts
         );

@@ -183,15 +183,12 @@ export const marketDemo = async (demoFile?: string) => {
                     timeFrame: timeFrame,
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
-                    location: {
-                        provinces: [action.data.provinces],
-                        regions: [action.data.regions]
-                    },
+                    location: [action.data.location],
                     assetType: assetTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
-                    targetWhPerPeriod: action.data.targetWhPerPeriod,
+                    energyPerTimeFrame: action.data.energyPerTimeFrame,
                     registryCompliance: assetCompliance,
                     startTime: action.data.startTime,
                     endTime: action.data.endTime

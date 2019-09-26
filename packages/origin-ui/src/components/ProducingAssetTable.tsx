@@ -209,21 +209,19 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
     ] as const;
 
     get rows() {
-        return this.state.paginatedData.map(enrichedData => {
-            return {
-                owner: enrichedData.organizationName,
-                facilityName: enrichedData.asset.offChainProperties.facilityName,
-                townCountry:
-                    enrichedData.asset.offChainProperties.city +
-                    ', ' +
-                    enrichedData.asset.offChainProperties.country,
-                type: enrichedData.asset.offChainProperties.assetType,
-                capacity: (
-                    enrichedData.asset.offChainProperties.capacityWh / Unit.kWh
-                ).toLocaleString(),
-                read: (enrichedData.asset.lastSmartMeterReadWh / Unit.kWh).toLocaleString()
-            };
-        });
+        return this.state.paginatedData.map(enrichedData => ({
+            owner: enrichedData.organizationName,
+            facilityName: enrichedData.asset.offChainProperties.facilityName,
+            townCountry:
+                enrichedData.asset.offChainProperties.address +
+                ', ' +
+                enrichedData.asset.offChainProperties.country,
+            type: enrichedData.asset.offChainProperties.assetType,
+            capacity: (
+                enrichedData.asset.offChainProperties.capacityWh / Unit.kWh
+            ).toLocaleString(),
+            read: (enrichedData.asset.lastSmartMeterReadWh / Unit.kWh).toLocaleString()
+        }));
     }
 
     render(): JSX.Element {

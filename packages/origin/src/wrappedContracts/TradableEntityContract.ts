@@ -1,21 +1,21 @@
-import { GeneralFunctions } from './GeneralFunctions';
+import { GeneralFunctions } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import TradableEntityContractJSON from '../../build/contracts/lightweight/TradableEntityContract.json';
 
 export class TradableEntityContract extends GeneralFunctions {
     web3: Web3;
-    buildFile = TradableEntityContractJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = TradableEntityContractJSON;
         super(
             address
                 ? new web3.eth.Contract(TradableEntityContractJSON.abi, address)
                 : new web3.eth.Contract(
-                      TradableEntityContractJSON.abi,
-                      (TradableEntityContractJSON as any).networks.length > 0
-                          ? TradableEntityContractJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }

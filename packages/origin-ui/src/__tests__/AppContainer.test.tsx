@@ -5,15 +5,8 @@ import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { createRootReducer } from '../reducers';
-import {
-    User,
-    UserLogic,
-    buildRights,
-    Role
-} from '@energyweb/user-registry';
-import {
-    migrateUserRegistryContracts
-} from '@energyweb/user-registry/contracts';
+import { User, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import {
     ProducingAsset,
     AssetProducingRegistryLogic,
@@ -31,7 +24,7 @@ import { CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { MarketLogic } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Compliance } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import ganache from 'ganache-cli';
 import axios from 'axios';
@@ -238,17 +231,13 @@ const deployDemo = async () => {
         complianceRegistry: Compliance.IREC,
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
-        city: 'Warsaw',
-        country: 'Poland',
+        country: 'Thailand',
+        address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '',
         gpsLongitude: '',
-        houseNumber: '1',
         operationalSince: 0,
         otherGreenAttributes: '',
-        region: 'Mazovian',
-        street: 'Backstreet',
-        typeOfPublicSupport: '',
-        zip: '00-000'
+        typeOfPublicSupport: ''
     };
 
     try {
@@ -303,18 +292,19 @@ describe('Application[E2E]', () => {
         expect(renderedApp.find('table tbody tr td').map(el => el.text())).toEqual([
             'Asset Manager organization',
             'Wuthering Heights Windfarm',
-            'Warsaw, Poland',
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
             'Wind',
             '0',
             '0'
         ]);
 
-        expect(renderedApp.find('span.MuiTablePagination-caption').text()).toBe(
-            '1-1 of 1'
-        );
+        expect(renderedApp.find('span.MuiTablePagination-caption').text()).toBe('1-1 of 1');
 
         // Go to asset details
-        renderedApp.find('table tbody tr td').first().simulate('click');
+        renderedApp
+            .find('table tbody tr td')
+            .first()
+            .simulate('click');
 
         renderedApp.update();
 

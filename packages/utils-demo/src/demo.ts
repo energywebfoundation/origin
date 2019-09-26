@@ -28,9 +28,10 @@ import Web3 from 'web3';
 import { certificateDemo } from './certificate';
 import { CONFIG } from './config';
 import { logger } from './Logger';
+import moment from 'moment';
 
 export const marketDemo = async (demoFile?: string) => {
-    const startTime = Date.now();
+    const startTime = moment().unix();
 
     const connectionConfig = JSON.parse(
         fs.readFileSync('./connection-config.json', 'utf8').toString()
@@ -150,25 +151,19 @@ export const marketDemo = async (demoFile?: string) => {
                     timeFrame: timeFrame,
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
-                    location: {
-                        provinces: action.data.provinces,
-                        regions: action.data.regions
-                    },
+                    location: [action.data.location],
                     assetType: assetTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
-                    targetWhPerPeriod: action.data.targetWhPerPeriod,
+                    energyPerTimeFrame: action.data.energyPerTimeFrame,
                     registryCompliance: assetCompliance,
                     startTime: action.data.startTime,
                     endTime: action.data.endTime
                 };
 
                 try {
-                    const demand = await Demand.createDemand(
-                        demandOffchainProps,
-                        conf
-                    );
+                    const demand = await Demand.createDemand(demandOffchainProps, conf);
                     delete demand.proofs;
                     delete demand.configuration;
                     conf.logger.info('Demand Created, ID: ' + demand.id);
@@ -302,5 +297,5 @@ export const marketDemo = async (demoFile?: string) => {
                 await certificateDemo(passString, conf, adminPK, erc20TestAddress);
         }
     }
-    conf.logger.info('Total Time: ' + (Date.now() - startTime) / 1000 + ' seconds');
+    conf.logger.info('Total Time: ' + (moment().unix() - startTime) + ' seconds');
 };

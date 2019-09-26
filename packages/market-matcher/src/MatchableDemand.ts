@@ -1,16 +1,19 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, IRECAssetService, Unit } from '@energyweb/utils-general';
+import { Currency, IRECAssetService, Unit, LocationService } from '@energyweb/utils-general';
+import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
 export class MatchableDemand {
     private assetService = new IRECAssetService();
 
+    private locationService = new LocationService();
+
     constructor(public demand: Demand.IDemand) {}
 
-    public matchesCertificate(
+    public async matchesCertificate(
         certificate: Certificate.ICertificate,
         producingAsset: ProducingAsset.IProducingAsset
     ) {
@@ -23,11 +26,16 @@ export class MatchableDemand {
 
         const { offChainProperties } = this.demand;
 
+        const missingEnergyInCurrentPeriod = await this.demand.missingEnergyInPeriod(
+            moment().unix()
+        );
+
         return new Validator<MatchingErrorReason>()
             .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
+            .validate(missingEnergyInCurrentPeriod !== undefined, MatchingErrorReason.OUT_OF_RANGE)
             .validate(
-                offChainProperties.targetWhPerPeriod <= Number(certificate.energy),
-                MatchingErrorReason.NOT_ENOUGH_ENERGY
+                missingEnergyInCurrentPeriod && missingEnergyInCurrentPeriod.value > 0,
+                MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
             .validate(
                 certificate.pricePerUnit(Unit.MWh) <= offChainProperties.maxPricePerMwh,
@@ -44,6 +52,10 @@ export class MatchableDemand {
                 ),
                 MatchingErrorReason.NON_MATCHING_ASSET_TYPE
             )
+            .validate(
+                this.matchesLocation(producingAsset),
+                MatchingErrorReason.NON_MATCHING_LOCATION
+            )
             .result();
     }
 
@@ -56,7 +68,7 @@ export class MatchableDemand {
         return new Validator<MatchingErrorReason>()
             .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
             .validate(
-                supply.offChainProperties.availableWh >= offChainProperties.targetWhPerPeriod,
+                supply.offChainProperties.availableWh >= offChainProperties.energyPerTimeFrame,
                 MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
             .validate(
@@ -68,5 +80,25 @@ export class MatchableDemand {
 
     private get isActive() {
         return this.demand.status === Demand.DemandStatus.ACTIVE;
+    }
+
+    private matchesLocation(asset: ProducingAsset.IProducingAsset) {
+        if (!this.demand.offChainProperties.location) {
+            return true;
+        }
+
+        try {
+            const matchableLocation = this.locationService.translateAddress(
+                asset.offChainProperties.address,
+                asset.offChainProperties.country
+            );
+
+            return this.locationService.matches(
+                this.demand.offChainProperties.location,
+                matchableLocation
+            );
+        } catch (e) {
+            return false;
+        }
     }
 }

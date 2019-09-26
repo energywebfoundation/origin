@@ -19,7 +19,7 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { getEnumValues } from '../../utils/Helper';
+import { getEnumValues, dataTest } from '../../utils/Helper';
 import { connect } from 'react-redux';
 import { IStoreState } from '../../types';
 import { getConfiguration, getBaseURL } from '../../features/selectors';
@@ -40,34 +40,6 @@ import { getDemandViewLink } from '../../utils/routing';
 import { FormikDatePicker } from '../FormikDatePicker';
 import { AssetTypeSelector } from '../AssetTypeSelector';
 import { getCurrentUser } from '../../features/users/selectors';
-
-export function calculateTotalEnergyDemand(
-    startDate: Moment,
-    endDate: Moment,
-    targetWhPerPeriod: number,
-    timeframe: TimeFrame
-) {
-    let numberOfTimesDemandWillRepeat = 0;
-
-    const demandDuration = moment.duration(endDate.diff(startDate));
-
-    switch (timeframe) {
-        case TimeFrame.daily:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asDays());
-            break;
-        case TimeFrame.weekly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asWeeks());
-            break;
-        case TimeFrame.monthly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asMonths());
-            break;
-        case TimeFrame.yearly:
-            numberOfTimesDemandWillRepeat = Math.ceil(demandDuration.asYears());
-            break;
-    }
-
-    return targetWhPerPeriod * numberOfTimesDemandWillRepeat;
-}
 
 const REPEATABLE_TIMEFRAMES = [
     {
@@ -176,11 +148,11 @@ class DemandFormClass extends React.Component<Props, IState> {
     setupFormBasedOnDemand(demand: Demand.Entity) {
         const initialFormValuesFromDemand: IFormValues = {
             currency: Currency[demand.offChainProperties.currency] as IFormValues['currency'],
-            startDate: moment.unix(parseInt(demand.offChainProperties.startTime, 10)),
-            endDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
-            activeUntilDate: moment.unix(parseInt(demand.offChainProperties.endTime, 10)),
+            startDate: moment.unix(demand.offChainProperties.startTime),
+            endDate: moment.unix(demand.offChainProperties.endTime),
+            activeUntilDate: moment.unix(demand.offChainProperties.endTime),
             demandNeedsInMWh: Math.round(
-                demand.offChainProperties.targetWhPerPeriod / 1000000
+                demand.offChainProperties.energyPerTimeFrame / 1000000
             ).toString(),
             maxPricePerMWh: Math.round(demand.offChainProperties.maxPricePerMwh / 100).toString(),
             procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
@@ -196,29 +168,26 @@ class DemandFormClass extends React.Component<Props, IState> {
         }
 
         if (demand.offChainProperties.location) {
-            if (
-                demand.offChainProperties.location.regions &&
-                demand.offChainProperties.location.regions.length > 0
-            ) {
-                newState.selectedRegions = demand.offChainProperties.location.regions.map(
-                    (region): IAutocompleteMultiSelectOptionType => ({
+            newState.selectedRegions = demand.offChainProperties.location.map(
+                (location): IAutocompleteMultiSelectOptionType => {
+                    const region = location.split(';')[1];
+                    return {
                         label: region,
                         value: region
-                    })
-                );
-            }
+                    };
+                }
+            );
 
-            if (
-                demand.offChainProperties.location.provinces &&
-                demand.offChainProperties.location.provinces.length > 0
-            ) {
-                newState.selectedProvinces = demand.offChainProperties.location.provinces.map(
-                    (province): IAutocompleteMultiSelectOptionType => ({
+            newState.selectedProvinces = demand.offChainProperties.location.map(
+                (location): IAutocompleteMultiSelectOptionType => {
+                    const province = location.split(';')[2];
+
+                    return {
                         label: province,
                         value: province
-                    })
-                );
-            }
+                    };
+                }
+            );
         }
 
         if (demand.offChainProperties.assetType && demand.offChainProperties.assetType.length > 0) {
@@ -238,9 +207,9 @@ class DemandFormClass extends React.Component<Props, IState> {
             return 0;
         }
 
-        return calculateTotalEnergyDemand(
-            startDate,
-            endDate,
+        return Demand.calculateTotalEnergyDemand(
+            startDate.unix(),
+            endDate.unix(),
             parseInt(demandNeedsInMWh, 10) * 1000000,
             timeframe
         );
@@ -281,23 +250,25 @@ class DemandFormClass extends React.Component<Props, IState> {
             return;
         }
 
-        const { selectedRegions, selectedProvinces, selectedAssetType, vintage } = this.state;
+        const { selectedAssetType, vintage } = this.state;
 
         const { baseURL, currentUser, configuration, edit, demand, history } = this.props;
 
         formikActions.setSubmitting(true);
 
-        configuration.blockchainProperties.activeUser = {
-            address: currentUser.id
-        };
+        if (configuration) {
+            configuration.blockchainProperties.activeUser = {
+                address: currentUser.id
+            };
+        }
 
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
-            startTime: values.startDate.unix().toString(),
-            endTime: values.endDate.unix().toString(),
+            startTime: values.startDate.unix(),
+            endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            targetWhPerPeriod: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
+            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
         };
 
         if (values.procureFromSingleFacility) {
@@ -308,21 +279,23 @@ class DemandFormClass extends React.Component<Props, IState> {
             offChainProps.assetType = selectedAssetType;
         }
 
-        if (selectedRegions && selectedRegions.length > 0) {
-            offChainProps.location = {
-                regions: selectedRegions.map(i => i.value)
-            };
-        }
+        // TODO: hierarchical region/provinces
 
-        if (selectedProvinces && selectedProvinces.length > 0) {
-            if (typeof offChainProps.location === 'undefined') {
-                offChainProps.location = {
-                    provinces: selectedProvinces.map(i => i.value)
-                };
-            } else {
-                offChainProps.location.provinces = selectedProvinces.map(i => i.value);
-            }
-        }
+        // if (selectedRegions && selectedRegions.length > 0) {
+        //     offChainProps.location = {
+        //         regions: selectedRegions.map(i => i.value)
+        //     };
+        // }
+
+        // if (selectedProvinces && selectedProvinces.length > 0) {
+        //     if (typeof offChainProps.location === 'undefined') {
+        //         offChainProps.location = {
+        //             provinces: selectedProvinces.map(i => i.value)
+        //         };
+        //     } else {
+        //         offChainProps.location.provinces = selectedProvinces.map(i => i.value);
+        //     }
+        // }
 
         if (
             vintage &&
@@ -429,7 +402,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                         }
 
                         return (
-                            <Form>
+                            <Form {...dataTest('demandForm')}>
                                 <Grid container spacing={3}>
                                     <Grid item xs={6}>
                                         <Typography className="mt-3">General</Typography>
@@ -438,6 +411,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('demandNeedsInMWh')}
                                         >
                                             <Field
                                                 label="Demand needs (MWh)"
@@ -454,6 +428,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('maxPricePerMWh')}
                                         >
                                             <Field
                                                 label="Max price (per MWh)"
@@ -470,6 +445,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('currency')}
                                         >
                                             <InputLabel required>Currency</InputLabel>
                                             <Field
@@ -499,6 +475,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             required
                                             component={FormikDatePicker}
                                             disabled={disabled}
+                                            {...dataTest('startDate')}
                                         />
                                         <Field
                                             name="activeUntilDate"
@@ -510,6 +487,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             required
                                             component={FormikDatePicker}
                                             disabled={disabled}
+                                            {...dataTest('activeUntilDate')}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
@@ -568,6 +546,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             variant="filled"
                                             className="mt-3"
                                             required
+                                            {...dataTest('timeframe')}
                                         >
                                             <InputLabel required>Every</InputLabel>
                                             <Field
@@ -601,11 +580,12 @@ class DemandFormClass extends React.Component<Props, IState> {
                                             required
                                             component={FormikDatePicker}
                                             disabled={disabled}
+                                            {...dataTest('endDate')}
                                         />
 
                                         <div className="mt-3">
                                             Total demand:{' '}
-                                            <b>
+                                            <b {...dataTest('totalDemand')}>
                                                 {(
                                                     this.totalDemand(
                                                         values.startDate,
@@ -657,6 +637,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                     <Tooltip
                                         title={buttonTooltip}
                                         disableHoverListener={!buttonTooltip}
+                                        {...dataTest('submitButtonTooltip')}
                                     >
                                         <span>
                                             <Button
@@ -667,6 +648,7 @@ class DemandFormClass extends React.Component<Props, IState> {
                                                 disabled={
                                                     disabled || !isValid || !this.isUserTraderRole()
                                                 }
+                                                {...dataTest('submitButton')}
                                             >
                                                 {submitButtonText}
                                             </Button>

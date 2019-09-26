@@ -55,7 +55,7 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
     }
     if (!target.findBy) {
         target.findBy = function<T>(e: Partial<T>): T[] {
-            return this.filter(item => {
+            return this.filter((item: T) => {
                 let include = true;
                 for (let k in e) {
                     include = include && item[k] == e[k];
@@ -93,7 +93,7 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
                 key = ekey;
                 sorting = e[ekey] == 'asc' ? 1 : -1;
             }
-            return this.sort((a1, a2) => {
+            return this.sort((a1: any, a2: any) => {
                 if (!a1) return 1;
                 if (!a1[key]) return 1;
                 if (!a2) return -1;
@@ -108,11 +108,11 @@ export function extendArray<T>(target: any = Array.prototype): Array<T> & ArrayE
     return target as any;
 }
 
-function isNumeric(n) {
+function isNumeric(n: any) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function isString(s) {
+function isString(s: any) {
     return typeof s === 'string' || s instanceof String;
 }
 

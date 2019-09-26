@@ -10,6 +10,7 @@ module.exports = {
         "import/no-extraneous-dependencies": ["error", {
             "packageDir": [__dirname, path.join(__dirname, '../../')]
         }],
-        "no-useless-constructor": "off"
+        "no-useless-constructor": "off",
+        "@typescript-eslint/no-use-before-define": "off"
     }
 };

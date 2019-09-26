@@ -10,7 +10,7 @@ import { UserContractLookupJSON, UserLogicJSON, UserDBJSON } from '../../contrac
 import { Role, buildRights } from '../wrappedContracts/RoleManagement';
 
 describe('UserLogic', () => {
-    const configFile = JSON.parse(
+    const configFile: any = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
     );
 
@@ -27,7 +27,7 @@ describe('UserLogic', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     it('should deploy the contracts', async () => {
-        const contracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        const contracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         let numberContracts = 0;
 
@@ -57,18 +57,18 @@ describe('UserLogic', () => {
     });
 
     it('should have the right owner', async () => {
-        assert.equal(await userLogic.owner(), userContractLookup.web3Contract._address);
+        assert.equal(await userLogic.owner(), userContractLookup.web3Contract.options.address);
     });
 
     it('should have the right db', async () => {
-        assert.equal(await userLogic.db(), userDB.web3Contract._address);
+        assert.equal(await userLogic.db(), userDB.web3Contract.options.address);
     });
 
     it('should throw an error when calling init again', async () => {
         let failed = false;
 
         try {
-            await userLogic.init(userLogic.web3Contract._address, userLogic.web3Contract._address, {
+            await userLogic.init(userLogic.web3Contract.options.address, userLogic.web3Contract.options.address, {
                 privateKey: privateKeyDeployment
             });
         } catch (ex) {

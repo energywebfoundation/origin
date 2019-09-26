@@ -2,7 +2,7 @@ import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Currency, Unit } from '@energyweb/utils-general';
-import { Substitute } from '@fluffy-spoon/substitute';
+import { Substitute, Arg } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 
 import { MatchableDemand } from '../../MatchableDemand';
@@ -14,23 +14,36 @@ interface IMockOptions {
     price?: number;
     currency?: Currency;
     producingAssetAssetType?: string;
+    address?: string;
+    isFilledDemand?: boolean;
 }
 
 describe('MatchableDemand tests', () => {
     describe('Certificates', () => {
+        const missingDemand = 1000;
         const certificateEnergy = 1000;
         const energyPrice = 100 * 1e6;
         const currency = Currency.USD;
         const assetType = 'Solar';
+        const location = ['Thailand;Central;Nakhon Pathom'];
+        const country = 'Thailand';
+        const address =
+            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140';
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
-            demandOffChainProperties.targetWhPerPeriod.returns(certificateEnergy);
+            demandOffChainProperties.energyPerTimeFrame.returns(certificateEnergy);
             demandOffChainProperties.maxPricePerMwh.returns(energyPrice);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
+            demandOffChainProperties.location.returns(location);
 
             const demand = Substitute.for<Demand.IDemand>();
+            demand
+                .missingEnergyInPeriod(Arg.all())
+                .returns(
+                    Promise.resolve({ time: 0, value: options.isFilledDemand ? 0 : missingDemand })
+                );
             demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
             demand.offChainProperties.returns(demandOffChainProperties);
 
@@ -49,6 +62,8 @@ describe('MatchableDemand tests', () => {
             producingAssetOffChainProperties.assetType.returns(
                 options.producingAssetAssetType || assetType
             );
+            producingAssetOffChainProperties.country.returns(country);
+            producingAssetOffChainProperties.address.returns(options.address || address);
 
             const producingAsset = Substitute.for<ProducingAsset.IProducingAsset>();
             producingAsset.offChainProperties.returns(producingAssetOffChainProperties);
@@ -60,22 +75,25 @@ describe('MatchableDemand tests', () => {
             };
         };
 
-        it('should match certificate', () => {
+        it('should match certificate', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({});
 
             const matchableDemand = new MatchableDemand(demand);
-            const { result } = matchableDemand.matchesCertificate(certificate, producingAsset);
+            const { result } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
 
             assert.isTrue(result);
         });
 
-        it('should not match non active demand', () => {
+        it('should not match non active demand', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
                 status: Demand.DemandStatus.ARCHIVED
             });
 
             const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesCertificate(
+            const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingAsset
             );
@@ -84,28 +102,28 @@ describe('MatchableDemand tests', () => {
             assert.equal(reason[0], MatchingErrorReason.NON_ACTIVE_DEMAND);
         });
 
-        it('should not match active demand with exceeding energy', () => {
+        it('should not match already filled demand', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
-                energy: certificateEnergy - 1
+                isFilledDemand: true
             });
 
             const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesCertificate(
+            const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingAsset
             );
 
             assert.isFalse(result);
-            assert.equal(reason[0], MatchingErrorReason.NOT_ENOUGH_ENERGY);
+            assert.equal(reason[0], MatchingErrorReason.PERIOD_ALREADY_FILLED);
         });
 
-        it('should not match demand with lower expected price', () => {
+        it('should not match demand with lower expected price', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
                 price: energyPrice + 1
             });
 
             const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesCertificate(
+            const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingAsset
             );
@@ -114,13 +132,13 @@ describe('MatchableDemand tests', () => {
             assert.equal(reason[0], MatchingErrorReason.TOO_EXPENSIVE);
         });
 
-        it('should not match demand with difference currency', () => {
+        it('should not match demand with difference currency', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
                 currency: Currency.EUR
             });
 
             const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesCertificate(
+            const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingAsset
             );
@@ -129,19 +147,34 @@ describe('MatchableDemand tests', () => {
             assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_CURRENCY);
         });
 
-        it('should not match demand with not compatible asset type', () => {
+        it('should not match demand with not compatible asset type', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
                 producingAssetAssetType: 'Wind'
             });
 
             const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesCertificate(
+            const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingAsset
             );
 
             assert.isFalse(result);
             assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
+        });
+
+        it('should not match demand with from different location', async () => {
+            const { demand, certificate, producingAsset } = createMatchingMocks({
+                address: 'Warsaw, Poland'
+            });
+
+            const matchableDemand = new MatchableDemand(demand);
+            const { result, reason } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
+
+            assert.isFalse(result);
+            assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_LOCATION);
         });
     });
     describe('Supply', () => {
@@ -152,7 +185,7 @@ describe('MatchableDemand tests', () => {
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
-            demandOffChainProperties.targetWhPerPeriod.returns(supplyEnergy);
+            demandOffChainProperties.energyPerTimeFrame.returns(supplyEnergy);
             demandOffChainProperties.maxPricePerMwh.returns(energyPrice * 1e6);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
