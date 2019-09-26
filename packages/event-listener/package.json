@@ -49,7 +49,7 @@
     },
     "devDependencies": {
         "@types/web3": "1.0.19",
-        "ganache-cli": "6.1.8",
+        "ganache-cli": "6.4.5",
         "mocha": "6.2.0"
     },
     "publishConfig": {

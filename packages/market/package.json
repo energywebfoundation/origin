@@ -60,8 +60,7 @@
     "@types/web3": "1.0.19",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
-    "ganache-cli": "6.1.8",
-    "truffle": "5.0.18",
+    "ganache-cli": "6.4.5",
     "truffle-flattener": "1.4.2"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
