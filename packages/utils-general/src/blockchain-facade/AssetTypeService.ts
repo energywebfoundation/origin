@@ -88,7 +88,7 @@ export class IRECAssetService implements IAssetService {
     }
 
     includesAssetType(current: string, requested: string[]): boolean {
-        return requested.some(requestedAssetType => current === requestedAssetType);
+        return requested.some(requestedAssetType => current.startsWith(requestedAssetType));
     }
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
