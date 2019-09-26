@@ -88,12 +88,12 @@ export class IRECAssetService implements IAssetService {
     }
 
     filterForHighestSpecificity(types: string[]): string[] {
-        const decodedRequested = types.map(type => [...this.decode([type])[0]]);
+        const decodedTypes = types.map(type => [...this.decode([type])[0]]);
 
         return this.encode(
-            decodedRequested.filter(
+            decodedTypes.filter(
                 type =>
-                    !decodedRequested.some(
+                    !decodedTypes.some(
                         nestedType => nestedType[0] === type[0] && type.length < nestedType.length
                     )
             )
