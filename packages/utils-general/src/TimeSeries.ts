@@ -14,6 +14,7 @@ export class TS {
         return [...Array(length).keys()].map(i => ({
             time: moment
                 .unix(startTimeStamp)
+                .startOf(resolution as moment.unitOfTime.StartOf)
                 .add(i, resolution as moment.unitOfTime.DurationConstructor)
                 .unix(),
             value

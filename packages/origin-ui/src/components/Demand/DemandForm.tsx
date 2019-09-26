@@ -208,8 +208,8 @@ class DemandFormClass extends React.Component<Props, IState> {
         }
 
         return Demand.calculateTotalEnergyDemand(
-            startDate,
-            endDate,
+            startDate.unix(),
+            endDate.unix(),
             parseInt(demandNeedsInMWh, 10) * 1000000,
             timeframe
         );

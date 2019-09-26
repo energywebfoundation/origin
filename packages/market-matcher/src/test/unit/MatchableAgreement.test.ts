@@ -1,6 +1,6 @@
 import { Agreement, Supply, Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Substitute, Arg } from '@fluffy-spoon/substitute';
+import { Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 
 import { MatchableAgreement } from '../../MatchableAgreement';
@@ -41,7 +41,7 @@ describe('MatchableAgreement tests', () => {
             const demand = Substitute.for<Demand.IDemand>();
             demand.id.returns(assetId);
             demand
-                .missingEnergyInPeriod(Arg.all())
+                .missingEnergyInCurrentPeriod()
                 .returns(Promise.resolve({ time: 0, value: options.isFilledDemand ? 0 : 1000 }));
 
             return {

@@ -230,7 +230,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
-                energyPerTimeFrame: 1e6,
+                energyPerTimeFrame: 1 * Unit.MWh,
                 registryCompliance: Compliance.EEC,
                 startTime: moment().unix(),
                 endTime: moment()

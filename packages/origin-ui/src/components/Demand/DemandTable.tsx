@@ -250,8 +250,8 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
             const overallDemand = (
                 Demand.calculateTotalEnergyDemand(
-                    moment.unix(demand.offChainProperties.startTime),
-                    moment.unix(demand.offChainProperties.endTime),
+                    demand.offChainProperties.startTime,
+                    demand.offChainProperties.endTime,
                     demand.offChainProperties.energyPerTimeFrame,
                     demand.offChainProperties.timeFrame
                 ) / 1000000

@@ -282,12 +282,8 @@ const timeFrameToResolution = (timeFrame: TimeFrame): Resolution => {
     return resolution;
 };
 
-const durationInTimePeriod = (
-    start: number | moment.Moment,
-    end: number | moment.Moment,
-    timeFrame: TimeFrame
-) => {
-    const demandDuration = moment.duration(moment(end).diff(moment(start)));
+const durationInTimePeriod = (start: number, end: number, timeFrame: TimeFrame) => {
+    const demandDuration = moment.duration(moment.unix(end).diff(moment.unix(start)));
     let durationInTimeFrame = 0;
 
     switch (timeFrame) {
@@ -303,6 +299,9 @@ const durationInTimePeriod = (
         case TimeFrame.yearly:
             durationInTimeFrame = Math.ceil(demandDuration.asYears());
             break;
+        case TimeFrame.hourly:
+            durationInTimeFrame = Math.ceil(demandDuration.asHours());
+            break;
         default:
             break;
     }
@@ -311,8 +310,8 @@ const durationInTimePeriod = (
 };
 
 export const calculateTotalEnergyDemand = (
-    startDate: number | moment.Moment,
-    endDate: number | moment.Moment,
+    startDate: number,
+    endDate: number,
     energyPerTimeFrame: number,
     timeFrame: TimeFrame
 ) => {
