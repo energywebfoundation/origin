@@ -109,6 +109,14 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
         let data;
 
         if (selectedAsset) {
+            let image = solar;
+
+            if (selectedAsset.offChainProperties.assetType.includes('Wind')) {
+                image = wind;
+            } else if (selectedAsset.offChainProperties.assetType.includes('Hydro-electric Head')) {
+                image = hydro;
+            }
+
             data = [
                 [
                     {
@@ -141,13 +149,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
                         data: this.assetTypeService.getDisplayText(
                             selectedAsset.offChainProperties.assetType
                         ),
-                        // TODO: handle more asset types icons
-                        image:
-                            selectedAsset.offChainProperties.assetType === 'Wind'
-                                ? wind
-                                : selectedAsset.offChainProperties.assetType === 'Solar'
-                                ? solar
-                                : hydro,
+                        image,
                         rowspan: 2
                     },
                     {
