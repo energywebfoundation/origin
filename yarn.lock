@@ -6067,6 +6067,15 @@ ganache-cli@6.4.4:
     source-map-support "0.5.9"
     yargs "11.1.0"
 
+ganache-cli@6.4.5:
+  version "6.4.5"
+  resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.4.5.tgz#6aa24c985f73f9b27ceef8b9bcc1c8dabf3018f0"
+  integrity sha512-YHCE6AglvFShkPbU8iyxHqLxnSC3QdApIEgbuKUBiOPMLwNlINDOOsC8PFkX3oYZwRkuhexwv8olYZTvGoglrQ==
+  dependencies:
+    bn.js "4.11.8"
+    source-map-support "0.5.9"
+    yargs "11.1.0"
+
 ganache-cli@6.5.0:
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.5.0.tgz#5b2198c2931d3f2d3a2e239943a7b7073f9df651"
@@ -6080,15 +6089,6 @@ ganache-cli@6.6.0:
   version "6.6.0"
   resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.6.0.tgz#84fed23ec428a6155114a5701cba55401364e149"
   integrity sha512-6egwnHYLaROx9z1NjmyX/wAqhkqg+CleRh5cegiUn+2za17kZnmeYiSfjMfmo0hUf/d8LsvwZ9xuBhRjoXr51Q==
-  dependencies:
-    ethereumjs-util "6.1.0"
-    source-map-support "0.5.12"
-    yargs "13.2.4"
-
-ganache-cli@6.7.0:
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.7.0.tgz#b59845578221bdf686cf124d007c5ee62e85a62f"
-  integrity sha512-9CZsClo9hl5MxGL7hkk14mie89Q94P0idh92jcV7LmppTYTCG7SHatuwcfqN7emFHArMt3fneN4QbH2do2N6Ow==
   dependencies:
     ethereumjs-util "6.1.0"
     source-map-support "0.5.12"
