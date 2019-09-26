@@ -88,7 +88,48 @@ export class IRECAssetService implements IAssetService {
     }
 
     includesAssetType(current: string, requested: string[]): boolean {
-        return requested.some(requestedAssetType => current === requestedAssetType);
+        console.log('requested', requested);
+        const decodedRequested = requested.map(type => [...this.decode([type])[0]]);
+
+        console.log({
+            current,
+            decodedRequested
+        });
+
+        const requestedFlattened = decodedRequested.filter(type => {
+            if (type.length === 2 || type.length === 3) {
+                // change to 3
+                return true;
+            }
+
+            return !decodedRequested.some(
+                nestedType =>
+                    nestedType[0] === type[0] &&
+                    type.length === 1 &&
+                    nestedType.length !== type.length
+            );
+        });
+
+        console.log({
+            requestedFlattened
+        });
+
+        for (const assetType of requestedFlattened) {
+            const decodedTypeToCheck = [...this.decode([current])[0]];
+
+            if (
+                JSON.stringify(assetType) === JSON.stringify(decodedTypeToCheck) ||
+                (assetType.length < decodedTypeToCheck.length &&
+                    assetType.every(
+                        (type, index) =>
+                            type === decodedTypeToCheck[index] || !decodedTypeToCheck[index]
+                    ))
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
