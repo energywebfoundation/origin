@@ -2,9 +2,9 @@ import axios from 'axios';
 import { assert, should } from 'chai';
 import Web3 from 'web3';
 
-import { Demo } from './deployDemo';
+import { Demo } from '../deployDemo';
 
-import { EventServiceProvider } from '../services/event.service';
+import { EventServiceProvider } from '../../services/event.service';
 
 describe('Event Service Tests', async () => {
     process.env.UI_BASE_URL = 'http://localhost:3000';
@@ -12,7 +12,7 @@ describe('Event Service Tests', async () => {
     process.env.WEB3 = 'http://localhost:8545';
     const deployKey = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
-    let demo;
+    let demo: any;
 
     before(async () => {
         demo = new Demo(process.env.WEB3, deployKey);

@@ -6,166 +6,52 @@ import { CertificateSpecificContract } from './CertificateSpecificContract';
 
 export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
     web3: Web3;
-    buildFile = EnergyCertificateBundleLogicJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = EnergyCertificateBundleLogicJSON;
         super(web3, address);
 
         this.web3Contract = address
-            ? new web3.eth.Contract(EnergyCertificateBundleLogicJSON.abi, address)
+            ? new web3.eth.Contract(buildFile.abi, address)
             : new web3.eth.Contract(
-                  EnergyCertificateBundleLogicJSON.abi,
-                  (EnergyCertificateBundleLogicJSON as any).networks.length > 0
-                      ? EnergyCertificateBundleLogicJSON.networks[0]
-                      : null
-              );
+                buildFile.abi,
+                buildFile.networks.length > 0
+                    ? buildFile.networks[0]
+                    : null
+            );
         this.web3 = web3;
     }
 
     async getAllLogCreatedBundleEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('LogCreatedBundle', eventFilter);
     }
 
     async getAllLogBundleRetiredEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('LogBundleRetired', eventFilter);
     }
 
     async getAllLogBundleOwnerChangedEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('LogBundleOwnerChanged', eventFilter);
     }
 
     async getAllTransferEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('Transfer', eventFilter);
     }
 
     async getAllApprovalEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('Approval', eventFilter);
     }
 
     async getAllApprovalForAllEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('ApprovalForAll', eventFilter);
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
         return await this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        
-
-        return await this.web3Contract.getPastEvents('allEvents', eventFilter);
+         return await this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async supportsInterface(_interfaceID: string, txParams?: ISpecialTx) {
@@ -208,7 +94,7 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: ISpecialTx) {
+    async safeTransferFrom(_from: string, _to: string, _entityId: string, _data?: any, txParams?: ISpecialTx) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
 

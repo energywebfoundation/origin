@@ -5,17 +5,14 @@ import TestReceiverJSON from '../../build/contracts/TestReceiver.json';
 export class TestReceiver extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = TestReceiverJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = TestReceiverJSON;
         super(
             address
-                ? new web3.eth.Contract(TestReceiverJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      TestReceiverJSON.abi,
-                      (TestReceiverJSON as any).networks.length > 0
-                          ? TestReceiverJSON.networks[0]
-                          : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
@@ -38,7 +35,13 @@ export class TestReceiver extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from, _to, _entityId, _data?, txParams?: ISpecialTx) {
+    async safeTransferFrom(
+        _from: string,
+        _to: string,
+        _entityId: string,
+        _data?: any,
+        txParams?: ISpecialTx
+    ) {
         if (_data) {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
 

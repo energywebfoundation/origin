@@ -4,18 +4,18 @@ import AssetConsumingDBJSON from '../../build/contracts/lightweight/AssetConsumi
 
 export class AssetConsumingDB extends GeneralFunctions {
     web3: Web3;
-    buildFile = AssetConsumingDBJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = AssetConsumingDBJSON;
         super(
             address
-                ? new web3.eth.Contract(AssetConsumingDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      AssetConsumingDBJSON.abi,
-                      (AssetConsumingDBJSON as any).networks.length > 0
-                          ? AssetConsumingDBJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }

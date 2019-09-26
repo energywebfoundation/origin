@@ -18,7 +18,7 @@ export class LocationService {
         const province = zip ? (provinceWithZip.split(zipRegex)[0] || '').trim() : '';
 
         for (const region in THAILAND_REGIONS_PROVINCES_MAP) {
-            const provinces = THAILAND_REGIONS_PROVINCES_MAP[region] as string[];
+            const provinces = (THAILAND_REGIONS_PROVINCES_MAP as any)[region] as string[];
             const included = provinces.some(p => p == province);
 
             if (included) {

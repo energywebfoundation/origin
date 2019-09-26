@@ -10,7 +10,7 @@ import { UserContractLookupJSON, UserLogicJSON, UserDBJSON } from '../../contrac
 import { Role, buildRights } from '../wrappedContracts/RoleManagement';
 
 describe('UserLogic', () => {
-    const configFile = JSON.parse(
+    const configFile: any = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
     );
 
@@ -27,7 +27,7 @@ describe('UserLogic', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     it('should deploy the contracts', async () => {
-        const contracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        const contracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         let numberContracts = 0;
 

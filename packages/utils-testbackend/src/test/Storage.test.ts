@@ -5,7 +5,7 @@ import { assert } from 'chai';
 import { startAPI } from '../api';
 
 describe('Storage tests', async () => {
-    let apiServer;
+    let apiServer: any;
 
     before(async () => {
         apiServer = await startAPI();

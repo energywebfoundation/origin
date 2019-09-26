@@ -13,28 +13,26 @@ export interface IEmailResponse {
 
 export interface IEmailServiceProvider {
     adapter: IEmailAdapter;
-    send: (email: IEmail) => Promise<IEmailResponse>;
+    send: (email: IEmail, callback?: () => void) => void;
 }
 
 export class EmailServiceProvider implements IEmailServiceProvider {
-    public adapter: IEmailAdapter;
-
     public sentEmails: IEmail[] = [];
 
-    private fromEmail: string;
+    constructor(public adapter: IEmailAdapter, private fromEmail: string) {}
 
-    constructor(adapter: IEmailAdapter, fromEmail: string) {
-        this.adapter = adapter;
-        this.fromEmail = fromEmail;
-    }
-
-    public async send(email: IEmail): Promise<IEmailResponse> {
+    public async send(email: IEmail, callback?: () => void): Promise<void> {
         const response: IEmailResponse = await this.adapter.send(this.fromEmail, email);
 
-        if (response.success) {
-            this.sentEmails.push(email);
+        if (!response.success) {
+            console.error(`Unable to send email to ${email.to.join(', ')}: ${response.error}`);
+            return;
         }
 
-        return response;
+        this.sentEmails.push(email);
+
+        if (callback) {
+            callback();
+        }
     }
 }

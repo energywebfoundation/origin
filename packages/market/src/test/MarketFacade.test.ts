@@ -38,9 +38,9 @@ describe('Market-Facade', () => {
     let marketLogic: MarketLogic;
     let certificateLogic: CertificateLogic;
 
-    let userContractLookupAddr;
-    let assetContractLookupAddr;
-    let originContractLookupAddr;
+    let userContractLookupAddr: string;
+    let assetContractLookupAddr: string;
+    let originContractLookupAddr: string;
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -452,7 +452,8 @@ describe('Market-Facade', () => {
     });
 
     describe('Agreement-Facade', () => {
-        let startTime;
+        let startTime: number;
+
         it('should create an agreement', async () => {
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,

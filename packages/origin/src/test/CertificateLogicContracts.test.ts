@@ -83,7 +83,7 @@ describe('CertificateLogic', () => {
         it('should deploy the contracts', async () => {
             // isGanache = (await getClientVersion(web3)).includes('EthereumJS');
 
-            const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+            const userContracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
             userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
@@ -116,7 +116,7 @@ describe('CertificateLogic', () => {
             const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
             userRegistryContract = new UserContractLookup(web3 as any, userContractLookupAddr);
-            const assetContracts = await migrateAssetRegistryContracts(
+            const assetContracts: any = await migrateAssetRegistryContracts(
                 web3,
                 userContractLookupAddr,
                 privateKeyDeployment
@@ -125,7 +125,7 @@ describe('CertificateLogic', () => {
             const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
             const assetProducingAddr = (assetContracts as any).AssetProducingRegistryLogic;
-            const originContracts = await migrateCertificateRegistryContracts(
+            const originContracts: any = await migrateCertificateRegistryContracts(
                 web3,
                 assetRegistryLookupAddr,
                 privateKeyDeployment
@@ -240,7 +240,7 @@ describe('CertificateLogic', () => {
                 await certificateLogic.safeTransferFrom(
                     accountDeployment,
                     accountTrader,
-                    0,
+                    '0',
                     '0x00',
                     { privateKey: privateKeyDeployment }
                 );
@@ -254,7 +254,7 @@ describe('CertificateLogic', () => {
         it('should throw when trying to call safeTransferFrom a non existing certificate', async () => {
             let failed = false;
             try {
-                await certificateLogic.safeTransferFrom(accountDeployment, accountTrader, 0, {
+                await certificateLogic.safeTransferFrom(accountDeployment, accountTrader, '0', {
                     privateKey: privateKeyDeployment
                 });
             } catch (ex) {
@@ -982,7 +982,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        3,
+                        '3',
                         '',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1000,7 +1000,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        3,
+                        '3',
                         '',
                         { privateKey: traderPK }
                     );
@@ -1018,7 +1018,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        3,
+                        '3',
                         '',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1036,7 +1036,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        3,
+                        '3',
                         '',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1054,7 +1054,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        3,
+                        '3',
                         '',
                         { privateKey: traderPK }
                     );
@@ -1072,7 +1072,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        3,
+                        '3',
                         '',
                         { privateKey: assetOwnerPK }
                     );
@@ -1092,7 +1092,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         certificateLogic.web3Contract.options.address,
-                        3,
+                        '3',
                         '',
                         { privateKey: assetOwnerPK }
                     );
@@ -1110,7 +1110,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    3,
+                    '3',
                     '',
                     { privateKey: assetOwnerPK }
                 );
@@ -1175,7 +1175,7 @@ describe('CertificateLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract.options.address,
                     testreceiver.web3Contract.options.address,
-                    3,
+                    '3',
                     '',
                     {
                         privateKey: traderPK
@@ -1340,7 +1340,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        4,
+                        '4',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1357,7 +1357,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        4,
+                        '4',
                         '0x01',
                         { privateKey: traderPK }
                     );
@@ -1374,7 +1374,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        4,
+                        '4',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1391,7 +1391,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        4,
+                        '4',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1408,7 +1408,7 @@ describe('CertificateLogic', () => {
                     await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        4,
+                        '4',
                         '0x01',
                         { privateKey: traderPK }
                     );
@@ -1423,7 +1423,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    4,
+                    '4',
                     '0x01',
                     { privateKey: assetOwnerPK }
                 );
@@ -1488,7 +1488,7 @@ describe('CertificateLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract.options.address,
                     testreceiver.web3Contract.options.address,
-                    4,
+                    '4',
                     '0x01',
                     {
                         privateKey: traderPK
@@ -1923,7 +1923,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    6,
+                    '6',
                     null,
                     { privateKey: matcherPK }
                 );
@@ -2032,7 +2032,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    7,
+                    '7',
                     '0x01',
                     { privateKey: matcherPK }
                 );
@@ -2151,7 +2151,7 @@ describe('CertificateLogic', () => {
                     const tx = await certificateLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        8,
+                        '8',
                         '0x01',
                         { privateKey: assetSmartmeterPK }
                     );
@@ -2296,7 +2296,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    9,
+                    '9',
                     null,
                     { privateKey: approvedPK }
                 );
@@ -2405,7 +2405,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    10,
+                    '10',
                     '0x01',
                     { privateKey: approvedPK }
                 );
@@ -2690,7 +2690,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    12,
+                    '12',
                     null,
                     { privateKey: approvedPK }
                 );
@@ -2819,7 +2819,7 @@ describe('CertificateLogic', () => {
                 const tx = await certificateLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    13,
+                    '13',
                     null,
                     { privateKey: approvedPK }
                 );

@@ -137,7 +137,7 @@ describe('EnergyCertificateBundleLogic', () => {
             const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
             const assetProducingAddr = (assetContracts as any).AssetProducingRegistryLogic;
-            const originContracts = await migrateEnergyBundleContracts(
+            const originContracts: any = await migrateEnergyBundleContracts(
                 web3,
                 assetRegistryLookupAddr,
                 privateKeyDeployment
@@ -266,7 +266,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 await energyCertificateBundleLogic.safeTransferFrom(
                     accountDeployment,
                     accountTrader,
-                    0,
+                    '0',
                     '0x00',
                     { privateKey: privateKeyDeployment }
                 );
@@ -283,7 +283,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 await energyCertificateBundleLogic.safeTransferFrom(
                     accountDeployment,
                     accountTrader,
-                    0,
+                    '0',
                     { privateKey: privateKeyDeployment }
                 );
             } catch (ex) {
@@ -886,7 +886,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        1,
+                        '1',
                         null,
                         { privateKey: privateKeyDeployment }
                     );
@@ -904,7 +904,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        1,
+                        '1',
                         null,
                         { privateKey: traderPK }
                     );
@@ -922,7 +922,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        1,
+                        '1',
                         null,
                         { privateKey: assetOwnerPK }
                     );
@@ -940,7 +940,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        1,
+                        '1',
                         null,
                         { privateKey: privateKeyDeployment }
                     );
@@ -958,7 +958,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        1,
+                        '1',
                         null,
                         { privateKey: traderPK }
                     );
@@ -976,7 +976,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        1,
+                        '1',
                         null,
                         { privateKey: assetOwnerPK }
                     );
@@ -993,7 +993,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        1,
+                        '1',
                         null,
                         { privateKey: privateKeyDeployment }
                     );
@@ -1011,7 +1011,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        1,
+                        '1',
                         null,
                         { privateKey: traderPK }
                     );
@@ -1027,7 +1027,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    1,
+                    '1',
                     null,
                     { privateKey: assetOwnerPK }
                 );
@@ -1154,7 +1154,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1172,7 +1172,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: traderPK }
                     );
@@ -1190,7 +1190,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: assetOwnerPK }
                     );
@@ -1208,7 +1208,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1226,7 +1226,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: traderPK }
                     );
@@ -1244,7 +1244,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: assetOwnerPK }
                     );
@@ -1261,7 +1261,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );
@@ -1279,7 +1279,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        2,
+                        '2',
                         '0x01',
                         { privateKey: traderPK }
                     );
@@ -1295,7 +1295,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    2,
+                    '2',
                     '0x01',
                     { privateKey: assetOwnerPK }
                 );
@@ -1876,7 +1876,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    5,
+                    '5',
                     null,
                     { privateKey: matcherPK }
                 );
@@ -2038,7 +2038,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        6,
+                        '6',
                         '0x01',
                         { privateKey: matcherPK }
                     );
@@ -2078,7 +2078,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    6,
+                    '6',
                     '0x01',
                     { privateKey: matcherPK }
                 );
@@ -2438,7 +2438,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        8,
+                        '8',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -2458,7 +2458,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        8,
+                        '8',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -2478,7 +2478,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        8,
+                        '8',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -2499,7 +2499,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        8,
+                        '8',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -2516,7 +2516,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        8,
+                        '8',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -2530,7 +2530,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    8,
+                    '8',
                     null,
                     { privateKey: approvedPK }
                 );
@@ -2694,7 +2694,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        9,
+                        '9',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -2714,7 +2714,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        9,
+                        '9',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -2733,7 +2733,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         testreceiver.web3Contract.options.address,
-                        9,
+                        '9',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -2753,7 +2753,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        9,
+                        '9',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -2769,7 +2769,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     const tx = await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        9,
+                        '9',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -2783,7 +2783,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    9,
+                    '9',
                     '0x01',
                     { privateKey: approvedPK }
                 );
@@ -3158,7 +3158,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        11,
+                        '11',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -3175,7 +3175,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        11,
+                        '11',
                         null,
                         { privateKey: approvedPK }
                     );
@@ -3189,7 +3189,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    11,
+                    '11',
                     null,
                     { privateKey: approvedPK }
                 );
@@ -3369,7 +3369,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         accountTrader,
-                        12,
+                        '12',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -3386,7 +3386,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await energyCertificateBundleLogic.safeTransferFrom(
                         accountAssetOwner,
                         energyCertificateBundleLogic.web3Contract.options.address,
-                        12,
+                        '12',
                         '0x01',
                         { privateKey: approvedPK }
                     );
@@ -3400,7 +3400,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    12,
+                    '12',
                     '0x01',
                     { privateKey: approvedPK }
                 );
@@ -3947,7 +3947,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    14,
+                    '14',
                     null,
                     { privateKey: assetOwnerPK }
                 );
@@ -4027,7 +4027,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract.options.address,
                     testreceiver.web3Contract.options.address,
-                    14,
+                    '14',
                     null,
                     { privateKey: privateKeyDeployment }
                 );
@@ -4093,7 +4093,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await testreceiver.safeTransferFrom(
                         testreceiver.web3Contract.options.address,
                         testreceiver.web3Contract.options.address,
-                        14,
+                        '14',
                         null,
                         { privateKey: privateKeyDeployment }
                     );
@@ -4228,7 +4228,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await energyCertificateBundleLogic.safeTransferFrom(
                     accountAssetOwner,
                     testreceiver.web3Contract.options.address,
-                    15,
+                    '15',
                     '0x01',
                     { privateKey: assetOwnerPK }
                 );
@@ -4293,7 +4293,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 const tx = await testreceiver.safeTransferFrom(
                     testreceiver.web3Contract.options.address,
                     testreceiver.web3Contract.options.address,
-                    15,
+                    '15',
                     '0x01',
                     { privateKey: privateKeyDeployment }
                 );
@@ -4359,7 +4359,7 @@ describe('EnergyCertificateBundleLogic', () => {
                     await testreceiver.safeTransferFrom(
                         testreceiver.web3Contract.options.address,
                         testreceiver.web3Contract.options.address,
-                        15,
+                        '15',
                         '0x01',
                         { privateKey: privateKeyDeployment }
                     );

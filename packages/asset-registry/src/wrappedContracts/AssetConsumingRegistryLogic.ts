@@ -5,18 +5,18 @@ import moment from 'moment';
 
 export class AssetConsumingRegistryLogic extends GeneralFunctions {
     web3: Web3;
-    buildFile = AssetConsumingRegistryLogicJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = AssetConsumingRegistryLogicJSON;
         super(
             address
-                ? new web3.eth.Contract(AssetConsumingRegistryLogicJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      AssetConsumingRegistryLogicJSON.abi,
-                      (AssetConsumingRegistryLogicJSON as any).networks.length > 0
-                          ? AssetConsumingRegistryLogicJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }

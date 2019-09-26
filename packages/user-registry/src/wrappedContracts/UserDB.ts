@@ -5,22 +5,21 @@ import UserDBJSON from '../../build/contracts/lightweight/UserDB.json';
 export class UserDB extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = UserDBJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = UserDBJSON;
         super(
             address
-                ? new web3.eth.Contract(UserDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      UserDBJSON.abi,
-                      (UserDBJSON as any).networks.length > 0 ? UserDBJSON.networks[0] : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

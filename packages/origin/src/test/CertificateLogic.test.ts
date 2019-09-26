@@ -65,9 +65,9 @@ describe('CertificateLogic-Facade', () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     let conf: Configuration.Entity;
-    let blockCreationTime;
+    let blockCreationTime: string;
 
-    function setActiveUser(privateKey) {
+    function setActiveUser(privateKey: string) {
         conf.blockchainProperties.activeUser = {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
@@ -146,7 +146,7 @@ describe('CertificateLogic-Facade', () => {
         const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
         const assetProducingAddr = (assetContracts as any).AssetProducingRegistryLogic;
-        const originContracts = await migrateCertificateRegistryContracts(
+        const originContracts: any = await migrateCertificateRegistryContracts(
             web3 as any,
             assetRegistryLookupAddr,
             privateKeyDeployment

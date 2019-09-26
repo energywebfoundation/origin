@@ -29,7 +29,7 @@ import { AssetProducingDB } from '../wrappedContracts/AssetProducingDB';
 import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
 
 describe('AssetProducingLogic', () => {
-    const configFile = JSON.parse(
+    const configFile: any = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
     );
 
@@ -59,7 +59,7 @@ describe('AssetProducingLogic', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy the contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        const userContracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
@@ -81,7 +81,7 @@ describe('AssetProducingLogic', () => {
 
         const userContractLookupAddr = (userContracts as any).UserContractLookup;
 
-        const deployedContracts = await migrateAssetRegistryContracts(
+        const deployedContracts: any = await migrateAssetRegistryContracts(
             web3,
             userContractLookupAddr,
             privateKeyDeployment

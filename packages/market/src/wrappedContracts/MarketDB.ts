@@ -5,19 +5,18 @@ import MarketDBJSON from '../../build/contracts/lightweight/MarketDB.json';
 export class MarketDB extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = MarketDBJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = MarketDBJSON;
         super(
             address
-                ? new web3.eth.Contract(MarketDBJSON.abi, address)
-                : new web3.eth.Contract(MarketDBJSON.abi, MarketDBJSON.networks[0])
+                ? new web3.eth.Contract(buildFile.abi, address)
+                : new web3.eth.Contract(buildFile.abi, buildFile.networks[0])
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

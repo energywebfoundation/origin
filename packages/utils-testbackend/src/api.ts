@@ -1,4 +1,5 @@
-import express from 'express';
+
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { ENTITY } from './enums/Entity';
@@ -7,7 +8,7 @@ import { FileAdapter } from './storage/fileAdapter';
 import { STATUS_CODES } from './enums/StatusCodes';
 
 export async function startAPI() {
-    const app = express();
+    const app: Express = express();
 
     app.use(cors());
     app.set('case sensitive routing', false);
@@ -31,13 +32,13 @@ export async function startAPI() {
 
     app.options('*', cors());
 
-    function createRoutesForEntityBoundToContract(app, entity: ENTITY) {
+    function createRoutesForEntityBoundToContract(app: Express, entity: ENTITY) {
         app.get(`/${entity}/:contractAddress/:id`, (req, res) => {
             const contractAddress = req.params.contractAddress.toLowerCase();
 
             console.log(`GET - ${entity} ${req.params.id} (contract ${contractAddress})`);
 
-            const existingData = storage.get(entity, contractAddress);
+            const existingData: any = storage.get(entity, contractAddress);
 
             if (!existingData) {
                 res.status(STATUS_CODES.NOT_FOUND).end();
@@ -46,7 +47,7 @@ export async function startAPI() {
             }
 
             if (existingData in STATUS_CODES) {
-                res.status(STATUS_CODES[existingData]).end();
+                res.status(existingData).end();
 
                 return;
             }
@@ -58,7 +59,7 @@ export async function startAPI() {
             const contractAddress = req.params.contractAddress.toLowerCase();
             console.log(`PUT - ${entity} ${req.params.id} (contract ${contractAddress})`);
 
-            let existingData = storage.get(entity, contractAddress);
+            let existingData: any = storage.get(entity, contractAddress);
 
             if (!existingData) {
                 existingData = {};
@@ -79,7 +80,7 @@ export async function startAPI() {
             const contractAddress = req.params.contractAddress.toLowerCase();
             console.log(`DELETE - ${entity} ${req.params.id}`);
 
-            let existingData = storage.get(entity, contractAddress);
+            let existingData: any = storage.get(entity, contractAddress);
 
             if (!existingData) {
                 existingData = {};

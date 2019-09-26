@@ -4,18 +4,18 @@ import CertificateSpecificContractJSON from '../../build/contracts/lightweight/C
 
 export class CertificateSpecificContract extends GeneralFunctions {
     web3: Web3;
-    buildFile: any = CertificateSpecificContractJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = CertificateSpecificContractJSON;
         super(
             address
-                ? new web3.eth.Contract(CertificateSpecificContractJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      CertificateSpecificContractJSON.abi,
-                      (CertificateSpecificContractJSON as any).networks.length > 0
-                          ? CertificateSpecificContractJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }

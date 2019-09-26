@@ -34,7 +34,7 @@ describe('MarketLogic', () => {
     let marketDB: MarketDB;
     let marketLogic: MarketLogic;
     let isGanache: boolean;
-    let userContractLookupAddr;
+    let userContractLookupAddr: string;
     let userLogic: UserLogic;
     let assetRegistry: AssetProducingRegistryLogic;
 
@@ -103,7 +103,7 @@ describe('MarketLogic', () => {
 
         const originLookupAddr = (originContracts as any).OriginContractLookup;
 
-        const marketContracts = await migrateMarketRegistryContracts(
+        const marketContracts: any = await migrateMarketRegistryContracts(
             web3,
             assetRegistryLookupAddr,
             originLookupAddr,

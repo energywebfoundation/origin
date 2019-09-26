@@ -26,7 +26,7 @@ describe('Demand tests', () => {
             blockchainProperties: {
                 marketLogicInstance: {
                     getAllDemandListLength: () => testDemands.length,
-                    getDemand: async id => testDemands[id]
+                    getDemand: async (id: string) => testDemands[parseInt(id, 10)]
                 }
             }
         } as Configuration.Entity;
