@@ -100,7 +100,7 @@ describe('AssetTypeService tests', () => {
 
     it('should find demanded asset types when demanded assets are less specific than current', () => {
         const demandAssetTypes = ['Solar'];
-        const supplyAssetTypes = 'Solar;Photovoltaic';
+        const supplyAssetTypes = 'Solar;Photovoltaic;Roof mounted';
 
         const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
         assert.isTrue(res);
