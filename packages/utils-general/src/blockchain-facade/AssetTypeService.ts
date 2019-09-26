@@ -87,34 +87,25 @@ export class IRECAssetService implements IAssetService {
         return encodedAssetType.map(assetType => assetType.split(';'));
     }
 
+    filterForHighestSpecificity(types: string[]): string[] {
+        const decodedRequested = types.map(type => [...this.decode([type])[0]]);
+
+        return this.encode(
+            decodedRequested.filter(
+                type =>
+                    !decodedRequested.some(
+                        nestedType => nestedType[0] === type[0] && type.length < nestedType.length
+                    )
+            )
+        );
+    }
+
     includesAssetType(current: string, requested: string[]): boolean {
-        console.log('requested', requested);
-        const decodedRequested = requested.map(type => [...this.decode([type])[0]]);
+        const highestSpecificityTypes = this.filterForHighestSpecificity(requested).map(type => [
+            ...this.decode([type])[0]
+        ]);
 
-        console.log({
-            current,
-            decodedRequested
-        });
-
-        const requestedFlattened = decodedRequested.filter(type => {
-            if (type.length === 2 || type.length === 3) {
-                // change to 3
-                return true;
-            }
-
-            return !decodedRequested.some(
-                nestedType =>
-                    nestedType[0] === type[0] &&
-                    type.length === 1 &&
-                    nestedType.length !== type.length
-            );
-        });
-
-        console.log({
-            requestedFlattened
-        });
-
-        for (const assetType of requestedFlattened) {
+        for (const assetType of highestSpecificityTypes) {
             const decodedTypeToCheck = [...this.decode([current])[0]];
 
             if (
