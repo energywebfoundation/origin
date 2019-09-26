@@ -4,24 +4,24 @@ import CertificateDBJSON from '../../build/contracts/lightweight/CertificateDB.j
 
 export class CertificateDB extends GeneralFunctions {
     web3: Web3;
-    buildFile = CertificateDBJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = CertificateDBJSON;
         super(
             address
-                ? new web3.eth.Contract(CertificateDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      CertificateDBJSON.abi,
-                      (CertificateDBJSON as any).networks.length > 0
-                          ? CertificateDBJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

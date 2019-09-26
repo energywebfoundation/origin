@@ -67,7 +67,7 @@ describe('OriginContractLookup', () => {
         const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
 
         const assetProducingAddr = (assetContracts as any).AssetProducingRegistryLogic;
-        const originContracts = await migrateCertificateRegistryContracts(
+        const originContracts: any = await migrateCertificateRegistryContracts(
             web3,
             assetRegistryLookupAddr,
             privateKeyDeployment

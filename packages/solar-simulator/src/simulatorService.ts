@@ -109,7 +109,7 @@ function processRows(
     return parsedRows;
 }
 
-let DATA;
+let DATA: any;
 
 async function getData() {
     if (DATA) {
@@ -159,7 +159,7 @@ export async function startAPI() {
             timeStart,
             timeEnd,
             accumulated,
-            ENERGY_UNIT[asset.energy_unit]
+            (ENERGY_UNIT as any)[asset.energy_unit]
         );
 
         if (LIMIT !== -1) {
@@ -189,7 +189,7 @@ export async function startAPI() {
             serial_number: asset.serial_number,
             latitude: asset.latitude,
             longitude: asset.longitude,
-            energy_unit: ENERGY_UNIT[asset.energy_unit]
+            energy_unit: (ENERGY_UNIT as any)[asset.energy_unit]
         };
 
         return res.json(response);

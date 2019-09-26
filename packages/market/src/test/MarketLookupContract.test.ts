@@ -66,7 +66,7 @@ describe('MarketContractLookup', () => {
         );
         const originLookupAddr = (originContracts as any).OriginContractLookup;
 
-        const marketContracts = await migrateMarketRegistryContracts(
+        const marketContracts: any = await migrateMarketRegistryContracts(
             web3,
             assetRegistryLookupAddr,
             originLookupAddr,

@@ -1,13 +1,13 @@
-import mandrill from 'mandrill-api/mandrill';
+import { Mandrill } from 'mandrill-api';
 
 import { IEmailAdapter } from './IEmailAdapter';
 import { IEmail, IEmailResponse } from '../services/email.service';
 
 export class MandrillEmailAdapter implements IEmailAdapter {
-    private mandrill;
+    private mandrill: Mandrill;
 
     constructor(private apiKey: string) {
-        this.mandrill = new mandrill.Mandrill(apiKey);
+        this.mandrill = new Mandrill(apiKey);
     }
 
     public async send(from: string, email: IEmail): Promise<IEmailResponse> {
@@ -21,7 +21,7 @@ export class MandrillEmailAdapter implements IEmailAdapter {
             };
         });
 
-        const message = {
+        const message: any = {
             html,
             subject,
             from_email: from,
@@ -34,7 +34,7 @@ export class MandrillEmailAdapter implements IEmailAdapter {
             tags: ['origin', 'no-reply']
         };
 
-        const result = await this.sendMandrill(message);
+        const result: any = await this.sendMandrill(message);
 
         return {
             success: result[0].status === 'sent',
@@ -42,18 +42,12 @@ export class MandrillEmailAdapter implements IEmailAdapter {
         };
     }
 
-    private sendMandrill(message) {
-        return new Promise((resolve, reject) => {
-            this.mandrill.messages.send(
-                {
-                    key: this.apiKey,
-                    message,
-                    async: true,
-                    ip_pool: 'Main Pool'
-                },
-                resolve,
-                reject
-            );
+    private async sendMandrill(message: any) {
+        return this.mandrill.messages.send({
+            key: this.apiKey,
+            message,
+            async: true,
+            ip_pool: 'Main Pool'
         });
     }
 }

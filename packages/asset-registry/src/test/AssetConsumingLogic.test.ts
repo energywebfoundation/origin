@@ -27,7 +27,7 @@ import {
 import moment from 'moment';
 
 describe('AssetConsumingLogic', () => {
-    const configFile = JSON.parse(
+    const configFile: any = JSON.parse(
         fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
     );
 
@@ -57,7 +57,7 @@ describe('AssetConsumingLogic', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy the contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        const userContracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
 
@@ -77,9 +77,9 @@ describe('AssetConsumingLogic', () => {
             }
         );
 
-        const userContractLookupAddr = (userContracts as any).UserContractLookup;
+        const userContractLookupAddr: string = (userContracts as any).UserContractLookup;
 
-        const deployedContracts = await migrateAssetRegistryContracts(
+        const deployedContracts: any = await migrateAssetRegistryContracts(
             web3,
             userContractLookupAddr,
             privateKeyDeployment

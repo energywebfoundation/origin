@@ -4,24 +4,24 @@ import AssetProducingDBJSON from '../../build/contracts/lightweight/AssetProduci
 
 export class AssetProducingDB extends GeneralFunctions {
     web3: Web3;
-    buildFile = AssetProducingDBJSON;
 
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = AssetProducingDBJSON;
         super(
             address
-                ? new web3.eth.Contract(AssetProducingDBJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      AssetProducingDBJSON.abi,
-                      (AssetProducingDBJSON as any).networks.length > 0
-                          ? AssetProducingDBJSON.networks[0]
-                          : null
-                  )
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: SearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

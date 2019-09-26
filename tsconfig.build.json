@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
       "sourceMap": true,
-      "noImplicitAny": false,
+      "noImplicitAny": true,
       "declaration": true,
       "module": "commonjs",
       "moduleResolution": "node",

@@ -5,22 +5,21 @@ import UserLogicJSON from '../../build/contracts/lightweight/UserLogic.json';
 export class UserLogic extends GeneralFunctions {
     web3: Web3;
 
-    buildFile = UserLogicJSON;
-
     constructor(web3: Web3, address?: string) {
+        const buildFile: any = UserLogicJSON;
         super(
             address
-                ? new web3.eth.Contract(UserLogicJSON.abi, address)
+                ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                      UserLogicJSON.abi,
-                      (UserLogicJSON as any).networks.length > 0 ? UserLogicJSON.networks[0] : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        let filterParams;
+        let filterParams: any;
         if (eventFilter) {
             filterParams = {
                 fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,

@@ -17,7 +17,7 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
     dataLog: string;
     creationTime: number;
     parentId: number;
-    children: number[];
+    children: string[];
     maxOwnerChanges: number;
     ownerChangerCounter: number;
 
@@ -123,7 +123,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
     dataLog: string;
     creationTime: number;
     parentId: number;
-    children: number[];
+    children: string[];
     maxOwnerChanges: number;
     ownerChangerCounter: number;
 
@@ -245,10 +245,10 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         tokenAddressOrCurrency: string | Currency,
         wh?: number
     ): Promise<void> {
-        const isErc20Sale = this.configuration.blockchainProperties.web3.utils.isAddress(
+        const isErc20Sale: boolean = this.configuration.blockchainProperties.web3.utils.isAddress(
             tokenAddressOrCurrency
         );
-        const isFiatSale = Currency[tokenAddressOrCurrency] !== undefined;
+        const isFiatSale: boolean = typeof tokenAddressOrCurrency !== 'string';
 
         let certificate;
 
@@ -296,12 +296,12 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
 
             await this.sync();
 
-            certificate = await new Entity(this.children['0'], this.configuration).sync();
+            certificate = await new Entity(this.children[0], this.configuration).sync();
         }
 
         await certificate.setOffChainSettlementOptions({
             price: saleParams.offChainPrice,
-            currency: saleParams.offChainCurrency
+            currency: (saleParams.offChainCurrency as Currency)
         });
     }
 
