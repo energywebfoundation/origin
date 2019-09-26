@@ -57,9 +57,9 @@
     "@energyweb/utils-testbackend": "1.1.0",
     "@types/web3": "1.0.19",
     "ethlint": "1.2.5",
-    "fs-extra": "8.1.0",
-    "ganache-cli": "6.1.8",
-    "truffle": "5.0.18"
+    "ganache-cli": "6.4.5",
+    "truffle": "5.0.37",
+    "fs-extra": "8.1.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

@@ -15,10 +15,15 @@ module.exports = {
       gasPrice: 0x01      // <-- Use this low gas price
     }
   },
-  solc: {
-    optimizer: {
-      enabled: true,
-      runs: 200
+  compilers: {
+    solc: {
+        version: '0.5.11',
+        settings: {
+            optimizer: {
+                enabled: true,
+                runs: 200
+            }
+        }
     }
-  }
+}
 };
