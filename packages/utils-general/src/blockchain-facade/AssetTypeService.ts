@@ -100,27 +100,18 @@ export class IRECAssetService implements IAssetService {
         );
     }
 
-    includesAssetType(current: string, requested: string[]): boolean {
-        const highestSpecificityTypes = this.filterForHighestSpecificity(requested).map(type => [
+    includesAssetType(checkedType: string, types: string[]): boolean {
+        if (types.some(t => t === checkedType)) {
+            return true;
+        }
+
+        const highestSpecificityTypes = this.filterForHighestSpecificity(types).map(type => [
             ...this.decode([type])[0]
         ]);
 
-        for (const assetType of highestSpecificityTypes) {
-            const decodedTypeToCheck = [...this.decode([current])[0]];
-
-            if (
-                JSON.stringify(assetType) === JSON.stringify(decodedTypeToCheck) ||
-                (assetType.length < decodedTypeToCheck.length &&
-                    assetType.every(
-                        (type, index) =>
-                            type === decodedTypeToCheck[index] || !decodedTypeToCheck[index]
-                    ))
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return highestSpecificityTypes.some(requestedAssetType =>
+            checkedType.startsWith(this.encode([requestedAssetType])[0])
+        );
     }
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
