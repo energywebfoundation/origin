@@ -107,4 +107,8 @@ export class IRECAssetService implements IAssetService {
 
         return { areValid, unknown };
     }
+
+    getDisplayText(assetType: string) {
+        return this.decode([assetType])[0].join(' - ');
+    }
 }
