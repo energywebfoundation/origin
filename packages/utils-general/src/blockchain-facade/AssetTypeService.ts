@@ -87,8 +87,31 @@ export class IRECAssetService implements IAssetService {
         return encodedAssetType.map(assetType => assetType.split(';'));
     }
 
-    includesAssetType(current: string, requested: string[]): boolean {
-        return requested.some(requestedAssetType => current.startsWith(requestedAssetType));
+    filterForHighestSpecificity(types: string[]): string[] {
+        const decodedTypes = types.map(type => [...this.decode([type])[0]]);
+
+        return this.encode(
+            decodedTypes.filter(
+                type =>
+                    !decodedTypes.some(
+                        nestedType => nestedType[0] === type[0] && type.length < nestedType.length
+                    )
+            )
+        );
+    }
+
+    includesAssetType(checkedType: string, types: string[]): boolean {
+        if (types.some(t => t === checkedType)) {
+            return true;
+        }
+
+        const highestSpecificityTypes = this.filterForHighestSpecificity(types).map(type => [
+            ...this.decode([type])[0]
+        ]);
+
+        return highestSpecificityTypes.some(requestedAssetType =>
+            checkedType.startsWith(this.encode([requestedAssetType])[0])
+        );
     }
 
     validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
@@ -106,5 +129,9 @@ export class IRECAssetService implements IAssetService {
             .every(assetType => assetType);
 
         return { areValid, unknown };
+    }
+
+    getDisplayText(assetType: string) {
+        return this.decode([assetType])[0].join(' - ');
     }
 }

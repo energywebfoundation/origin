@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { Moment } from 'moment';
 import { dataTest } from '../../utils/Helper';
+import { AssetTypeSelector } from '../AssetTypeSelector';
 
 interface IProps {
     filter: ICustomFilter;
@@ -82,6 +83,13 @@ export class IndividualFilter extends Component<IProps> {
                             ))}
                         </Select>
                     </FormControl>
+                );
+            case CustomFilterInputType.assetType:
+                return (
+                    <AssetTypeSelector
+                        selectedType={filter.selectedValue ? filter.selectedValue : []}
+                        onChange={e => this.props.changeFilterValue(filter, e)}
+                    />
                 );
             case CustomFilterInputType.dropdown:
                 return (

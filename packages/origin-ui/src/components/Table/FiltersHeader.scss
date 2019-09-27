@@ -36,6 +36,11 @@
             position: relative;
             vertical-align: top;
 
+            &-fullWidth {
+                display: block;
+                width: 100%;
+            }
+
             &_sliderWrapper {
                 width: calc(100% - 28px);
                 display: inline-flex;

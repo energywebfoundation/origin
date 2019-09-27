@@ -31,7 +31,8 @@
     "prepare": "scripts/build.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test": "mocha -r ts-node/register src/test/*.test.ts",
+    "test": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts",
+    "test:watch": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --watch --watch-extensions ts",
     "clean": "rm -rf build dist"
   },
   "types": "dist/js/src/index.d.ts",

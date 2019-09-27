@@ -33,7 +33,11 @@ export class AssetTypeSelector extends React.Component<Props> {
             .map(t => this.irecAssetService.encode([t]).pop());
     }
 
-    filterSelected(currentType: string, types: string[], selected) {
+    filterSelected(
+        currentType: string,
+        types: string[],
+        selected: IAutocompleteMultiSelectOptionType[]
+    ) {
         const isSelected = (selected || []).find(type => type.value === currentType);
 
         if (!isSelected) {
@@ -46,10 +50,7 @@ export class AssetTypeSelector extends React.Component<Props> {
     assetTypesToSelectionOptions(types: EncodedAssetType) {
         return types.map(t => ({
             value: t,
-            label: this.irecAssetService
-                .decode([t])
-                .pop()
-                .join(' - ')
+            label: this.irecAssetService.getDisplayText(t)
         }));
     }
 
@@ -68,8 +69,8 @@ export class AssetTypeSelector extends React.Component<Props> {
         const selectedTypesLevelOne = this.selectedOptionsByLevel(1);
         const selectedTypesLevelTwo = this.selectedOptionsByLevel(2);
 
-        const levelTwoTypes = [];
-        const levelThreeTypes = [];
+        const levelTwoTypes: string[] = [];
+        const levelThreeTypes: string[] = [];
 
         const availableL1Types = this.allTypesByLevel(1);
         const availableL2Types = this.allTypesByLevel(2);
@@ -86,7 +87,7 @@ export class AssetTypeSelector extends React.Component<Props> {
                 continue;
             }
 
-            levelTwoTypes.push(...this.assetTypesToSelectionOptions(level2Types));
+            levelTwoTypes.push(...level2Types);
 
             for (const currentLevel2Type of level2Types) {
                 const level3Types = this.filterSelected(
@@ -95,15 +96,55 @@ export class AssetTypeSelector extends React.Component<Props> {
                     selectedTypesLevelTwo
                 );
 
-                if (!level3Types.length) {
-                    continue;
+                if (level3Types.length > 0) {
+                    levelThreeTypes.push(...level3Types);
                 }
-
-                levelThreeTypes.push(...this.assetTypesToSelectionOptions(level3Types));
             }
         }
 
-        return { levelTwoTypes, levelThreeTypes };
+        for (const selectedLevelTwoOption of selectedTypesLevelTwo) {
+            const level3Types = this.filterSelected(
+                selectedLevelTwoOption.value,
+                availableL3Types,
+                selectedTypesLevelTwo
+            );
+
+            if (level3Types.length > 0) {
+                levelThreeTypes.push(...level3Types);
+            }
+        }
+
+        return {
+            levelTwoTypes: this.assetTypesToSelectionOptions(levelTwoTypes),
+            levelThreeTypes: this.assetTypesToSelectionOptions([...new Set(levelThreeTypes)])
+        };
+    }
+
+    getDerivedTypesFromType(type: string): string[] {
+        const derivedTypes: string[] = [];
+
+        const availableL2Types = this.allTypesByLevel(2);
+        const availableL3Types = this.allTypesByLevel(3);
+
+        const optionLevel2Types = this.filterSelected(
+            type,
+            availableL2Types,
+            this.assetTypesToSelectionOptions([type])
+        );
+
+        derivedTypes.push(...optionLevel2Types);
+
+        optionLevel2Types.map(t => {
+            derivedTypes.push(
+                ...this.filterSelected(
+                    t,
+                    availableL3Types,
+                    this.assetTypesToSelectionOptions(optionLevel2Types)
+                )
+            );
+        });
+
+        return derivedTypes;
     }
 
     setTypeByLevel(newSelectedOptions: IAutocompleteMultiSelectOptionType[] | null, level: Level) {
@@ -123,6 +164,23 @@ export class AssetTypeSelector extends React.Component<Props> {
                 ...this.selectedTypeDecoded.filter(t => t.length !== level),
                 ...newSelectedOptionsArray.map(o => [o.value])
             ]);
+        }
+
+        if (level === 1 && newSelectedOptionsArray.length > 0) {
+            const alreadySelectedLevelOneOptions = this.selectedOptionsByLevel(1);
+
+            const newOptions = newSelectedOptionsArray.filter(o =>
+                alreadySelectedLevelOneOptions.every(
+                    selectedOption => selectedOption.value !== o.value
+                )
+            );
+
+            const selectedToAdd = newOptions.reduce(
+                (a, b) => [...a, ...this.getDerivedTypesFromType(b.value)],
+                []
+            );
+
+            newEncodedType = [...new Set([...newEncodedType, ...selectedToAdd])];
         }
 
         this.props.onChange(newEncodedType);

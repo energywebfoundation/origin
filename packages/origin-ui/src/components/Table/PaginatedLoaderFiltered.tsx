@@ -7,6 +7,7 @@ import {
 } from './PaginatedLoader';
 import { getPropertyByPath, indexOfEnd } from '../../utils/Helper';
 import moment, { Moment } from 'moment';
+import { IRECAssetService } from '@energyweb/utils-general';
 
 export type IPaginatedLoaderFilteredProps = {};
 
@@ -26,7 +27,8 @@ export function getInitialPaginatedLoaderFilteredState(): IPaginatedLoaderFilter
 export enum FILTER_SPECIAL_TYPES {
     COMBINE = 'FILTER_COMBINE',
     DATE_YEAR = 'FILTER_DATE_YEAR',
-    DIVIDE = 'FILTER_DIVIDE'
+    DIVIDE = 'FILTER_DIVIDE',
+    SPLIT_INCLUDES = 'SPLIT_INCLUDES'
 }
 
 export const RECORD_INDICATOR = 'RECORD|';
@@ -85,6 +87,8 @@ export abstract class PaginatedLoaderFiltered<
     Props extends IPaginatedLoaderFilteredProps,
     State extends IPaginatedLoaderFilteredState
 > extends PaginatedLoader<Props, State> implements IPaginatedLoader {
+    protected assetTypeService = new IRECAssetService();
+
     async loadPage(page: number, filters?: ICustomFilter[]) {
         const { appliedFilters } = this.state;
 
@@ -121,10 +125,16 @@ export abstract class PaginatedLoaderFiltered<
                         }
                         break;
                     case CustomFilterInputType.multiselect:
-                        if (!filter.selectedValue.includes(filteredPropertyResolvedValue)) {
-                            return false;
+                        return filter.selectedValue.includes(filteredPropertyResolvedValue);
+                    case CustomFilterInputType.assetType:
+                        if (!filter.selectedValue || filter.selectedValue.length === 0) {
+                            return true;
                         }
-                        break;
+
+                        return this.assetTypeService.includesAssetType(
+                            filteredPropertyResolvedValue as string,
+                            filter.selectedValue as string[]
+                        );
                     case CustomFilterInputType.dropdown:
                         if (
                             filter.selectedValue &&
