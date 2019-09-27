@@ -1,4 +1,4 @@
-import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -184,6 +184,28 @@ describe('Demand unit tests', () => {
             assert.equal(missingEnergy[0].value, energyPerTimeFrame - fillAmount);
             assert.equal(missingEnergy[1].value, energyPerTimeFrame);
             assert.equal(missingEnergy[2].value, energyPerTimeFrame);
+        });
+
+        it('should return demand time-series respecting filled events in hourly resolution', async () => {
+            const deliveries = 1;
+
+            const start = moment();
+            const end = start.clone().add(1, 'hour');
+            const energyPerTimeFrame = 1 * Unit.MWh;
+
+            const fillAmount = 1 * Unit.MWh;
+
+            const blockOne = start.unix();
+
+            const blockOneEvent = { blockNumber: 1, value: fillAmount };
+
+            const config = createConfig([blockOne], [blockOneEvent]);
+            const demand = createDemand(start, end, TimeFrame.hourly, energyPerTimeFrame);
+
+            const missingEnergy = await calculateMissingEnergyDemand(demand, config);
+
+            assert.equal(missingEnergy.length, deliveries);
+            assert.equal(missingEnergy[0].value, energyPerTimeFrame - fillAmount);
         });
     });
 });
