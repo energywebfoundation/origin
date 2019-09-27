@@ -180,7 +180,7 @@ describe('CertificateLogic-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030'
+                baseUrl: 'http://localhost:3032'
             },
             logger
         };
