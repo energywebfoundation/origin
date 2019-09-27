@@ -1,6 +1,8 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 
+import { Unit } from '@energyweb/utils-general';
+
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
 import { OriginEventsStore } from '../../stores/OriginEventsStore';
@@ -78,7 +80,7 @@ describe('Origin Listener Tests', async () => {
     it('an email is sent when a certificate is created', async () => {
         await listener.start();
 
-        currentSmRead += 1e7;
+        currentSmRead += 1 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
 
         await waitForConditionAndAssert(
@@ -96,7 +98,7 @@ describe('Origin Listener Tests', async () => {
 
         await listener.start();
 
-        currentSmRead += 1e7;
+        currentSmRead += 1 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
         await demo.publishForSale(demo.latestDeployedSmReadIndex);
 
@@ -116,7 +118,7 @@ describe('Origin Listener Tests', async () => {
 
         await listener.start();
 
-        currentSmRead += 1e7;
+        currentSmRead += 0.5 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
         await demo.publishForSale(demo.latestDeployedSmReadIndex);
 
@@ -140,7 +142,7 @@ describe('Origin Listener Tests', async () => {
 
         await listener.start();
 
-        currentSmRead += 1e7;
+        currentSmRead += 1 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
         await demo.publishForSale(demo.latestDeployedSmReadIndex);
 

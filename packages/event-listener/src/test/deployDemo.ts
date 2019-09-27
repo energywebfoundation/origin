@@ -15,7 +15,7 @@ import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 
-import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
 
 export class Demo {
@@ -329,7 +329,7 @@ export class Demo {
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
-            energyPerTimeFrame: 1e5,
+            energyPerTimeFrame: 1 * Unit.MWh,
             registryCompliance: Compliance.EEC,
             startTime: moment().unix(),
             endTime: moment()

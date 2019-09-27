@@ -371,10 +371,6 @@ export const calculateMissingEnergyDemand = async (
             return { time: nearestTime, value: Number(log.returnValues._amount) * -1 };
         })
     );
-    console.log({
-        filledEvents,
-        filledDemandsTimeSeries
-    });
 
     const filledDemandInRange = TS.inRange(
         filledDemandsTimeSeries,

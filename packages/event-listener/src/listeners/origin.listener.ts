@@ -119,11 +119,6 @@ export class OriginEventListener implements IOriginEventListener {
                 `Event: DemandPartiallyFilled: Matched certificate #${_entityId} with energy ${_amount} to Demand #${_demandId}.`
             );
 
-            console.log({
-                missingEnergy: await demand.missingEnergy(),
-                full: await demand.isFulfilled()
-            });
-
             if (await demand.isFulfilled()) {
                 this.originEventsStore.registerFulfilledDemand(demand.demandOwner, _demandId);
 
@@ -152,29 +147,30 @@ export class OriginEventListener implements IOriginEventListener {
 
         for (const user of notifyUsers) {
             const emailAddress: string = user.offChainProperties.email;
-            const newIssuedCertificates: number = this.originEventsStore.getIssuedCertificates(
+            const issuedCertificates: number = this.originEventsStore.getIssuedCertificates(
                 user.id
             );
-            const newMatchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getMatchingCertificates(
+            const matchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getMatchingCertificates(
                 user.id
             );
-            const newPartiallyFilledDemand: IPartiallyFilledDemand[] = this.originEventsStore.getPartiallyFilledDemands(
+            const partiallyFilledDemands: IPartiallyFilledDemand[] = this.originEventsStore.getPartiallyFilledDemands(
                 user.id
             );
+            const fulfilledDemands: number[] = this.originEventsStore.getFulfilledDemands(user.id);
 
-            if (newIssuedCertificates > 0) {
+            if (issuedCertificates > 0) {
                 const url = `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox`;
 
                 await this.sendNotificationEmail(
                     EmailTypes.CERTS_APPROVED,
                     emailAddress,
-                    `Local issuer approved your certificates.<br />There are ${newIssuedCertificates} new certificates in your inbox:<br /><a href="${url}">${url}</a>`,
+                    `Local issuer approved your certificates.<br />There are ${issuedCertificates} new certificates in your inbox:<br /><a href="${url}">${url}</a>`,
                     () => this.originEventsStore.resetIssuedCertificates(user.id)
                 );
             }
 
-            if (newMatchingCertificates.length > 0) {
-                let urls = newMatchingCertificates.map(
+            if (matchingCertificates.length > 0) {
+                let urls = matchingCertificates.map(
                     match =>
                         `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/${match.demandId}`
                 );
@@ -184,7 +180,7 @@ export class OriginEventListener implements IOriginEventListener {
                     EmailTypes.FOUND_MATCHING_SUPPLY,
                     emailAddress,
                     `We found ${
-                        newMatchingCertificates.length
+                        matchingCertificates.length
                     } certificates matching your demands. Open Origin and check it out:${urls.map(
                         url => `<br /><a href="${url}">${url}</a>`
                     )}`,
@@ -192,17 +188,28 @@ export class OriginEventListener implements IOriginEventListener {
                 );
             }
 
-            if (newPartiallyFilledDemand.length > 0) {
+            if (partiallyFilledDemands.length > 0) {
                 await this.sendNotificationEmail(
                     EmailTypes.DEMAND_PARTIALLY_FILLED,
                     emailAddress,
-                    `Matched the following certificates to your demands:\n${newPartiallyFilledDemand
+                    `Matched the following certificates to your demands:\n${partiallyFilledDemands
                         .map(
                             match =>
                                 `Matched certificate ${match.certificateId} with amount ${match.amount} Wh to demand ${match.demandId}.`
                         )
                         .join('\n')}`,
                     () => this.originEventsStore.resetPartiallyFilledDemands(user.id)
+                );
+            }
+
+            if (fulfilledDemands.length > 0) {
+                await this.sendNotificationEmail(
+                    EmailTypes.DEMAND_FULFILLED,
+                    emailAddress,
+                    `Your following demand(s) have been fulfilled:\n${fulfilledDemands
+                        .map(demandId => `Demand #${demandId}.`)
+                        .join('\n')}`,
+                    () => this.originEventsStore.resetFulfilledDemands(user.id)
                 );
             }
         }
