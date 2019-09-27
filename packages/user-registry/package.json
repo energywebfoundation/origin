@@ -38,7 +38,7 @@
     "start-test-backend": "node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test-contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
+    "test:contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8545 && yarn test\"",
     "precommit": "lint-staged"
   },
   "types": "dist/js/src/index.d.ts",

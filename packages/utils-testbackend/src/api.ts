@@ -184,5 +184,5 @@ export async function startAPI() {
 
     await storage.initialize();
 
-    return app.listen(3030);
+    return app.listen(process.env.PORT || 3030);
 }
