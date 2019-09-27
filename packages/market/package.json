@@ -41,6 +41,7 @@
     "test:unit": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test:contracts": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8546 && yarn test\"",
+    "test:concurrent" : "yarn test:contracts",
     "clean": "rm -rf build dist dist-shakeable schemas db.json",
     "precommit": "lint-staged"
   },

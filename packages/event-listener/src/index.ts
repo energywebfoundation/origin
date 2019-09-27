@@ -12,7 +12,7 @@ export const SCAN_INTERVAL = 3000;
         path: '.env.dev'
     });
 
-    const web3 = new Web3(process.env.WEB3 || 'http://localhost:8545');
+    const web3 = new Web3(process.env.WEB3 || 'http://localhost:8550');
 
     const eventService = new EventServiceProvider(process.env.API_BASE_URL, web3);
 
