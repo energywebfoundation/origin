@@ -130,7 +130,7 @@ describe('ProducingAssetTable', () => {
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
-            'Gaseous;Agricultural gas',
+            'Gaseous - Agricultural gas',
             '736.123',
             '0.312'
         ]);
@@ -149,7 +149,7 @@ describe('ProducingAssetTable', () => {
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
-            'Gaseous;Agricultural gas',
+            'Gaseous - Agricultural gas',
             '736.123',
             '0.312'
         ]);

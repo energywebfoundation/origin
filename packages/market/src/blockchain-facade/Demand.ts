@@ -330,6 +330,12 @@ export const calculateTotalEnergyDemand = (
     return energyPerTimeFrame * durationInTimeFrame;
 };
 
+export const alignToResolution = (timeStamp: number, resolution: Resolution) =>
+    moment
+        .unix(timeStamp)
+        .startOf(resolution as moment.unitOfTime.StartOf)
+        .unix();
+
 export const calculateMissingEnergyDemand = async (
     demand: IDemand,
     config: Configuration.Entity
@@ -370,7 +376,11 @@ export const calculateMissingEnergyDemand = async (
         filledDemandsTimeSeries
     });
 
-    const filledDemandInRange = TS.inRange(filledDemandsTimeSeries, startTime, endTime);
+    const filledDemandInRange = TS.inRange(
+        filledDemandsTimeSeries,
+        alignToResolution(startTime, resolution),
+        alignToResolution(endTime, resolution)
+    );
 
     return TS.aggregateByTime(demandTimeSeries.concat(filledDemandInRange));
 };

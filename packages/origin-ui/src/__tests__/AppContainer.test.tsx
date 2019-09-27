@@ -317,7 +317,7 @@ describe('Application[E2E]', () => {
             'IREC ',
             'Other Green Attributes (private)',
             ' ',
-            'Asset Type (private)',
+            'Asset Type',
             'Wind ',
             '',
             'Meter Read',

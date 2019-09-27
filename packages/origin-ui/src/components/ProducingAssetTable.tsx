@@ -216,7 +216,9 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
                 enrichedData.asset.offChainProperties.address +
                 ', ' +
                 enrichedData.asset.offChainProperties.country,
-            type: enrichedData.asset.offChainProperties.assetType,
+            type: this.assetTypeService.getDisplayText(
+                enrichedData.asset.offChainProperties.assetType
+            ),
             capacity: (
                 enrichedData.asset.offChainProperties.capacityWh / Unit.kWh
             ).toLocaleString(),

@@ -510,31 +510,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 property: `${RECORD_INDICATOR}producingAsset.offChainProperties.assetType`,
                 label: 'Asset Type',
                 input: {
-                    type: CustomFilterInputType.multiselect,
-                    availableOptions: [
-                        {
-                            label: 'Solar',
-                            value: 'Solar'
-                        },
-                        {
-                            label: 'Wind',
-                            value: 'Wind'
-                        },
-                        {
-                            label: 'Agricultural gas',
-                            value: 'Gaseous;Agricultural gas'
-                        },
-                        {
-                            label: 'Hydro',
-                            value: 'Hydro-electric Head;Run-of-river head installation'
-                        }
-                    ],
-                    defaultOptions: [
-                        'Solar',
-                        'Wind',
-                        'Gaseous;Agricultural gas',
-                        'Hydro-electric Head;Run-of-river head installation'
-                    ]
+                    type: CustomFilterInputType.assetType,
+                    defaultOptions: []
                 }
             },
             {
@@ -723,7 +700,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     get rows() {
         return this.state.paginatedData.map(enrichedData => ({
-            assetType: enrichedData.producingAsset.offChainProperties.assetType,
+            assetType: this.assetTypeService.getDisplayText(
+                enrichedData.producingAsset.offChainProperties.assetType
+            ),
             commissioningDate: moment(
                 enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
                 'x'

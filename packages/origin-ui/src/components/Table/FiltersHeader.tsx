@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import './FiltersHeader.scss';
 import { FilterIcon } from '../icons/FilterIcon';
 import { IndividualFilter } from './IndividualFilter';
+import clsx from 'clsx';
 
 export enum CustomFilterInputType {
+    assetType = 'assetType',
     string = 'string',
     multiselect = 'multiselect',
     dropdown = 'dropdown',
@@ -152,7 +154,15 @@ export class FiltersHeader extends Component<IProps, IState> {
                             <div className="Filter_menu">
                                 {standardFilters.map((filter, index) => {
                                     return (
-                                        <div className="Filter_menu_item" key={index}>
+                                        <div
+                                            className={clsx('Filter_menu_item', {
+                                                'Filter_menu_item-fullWidth':
+                                                    filter.input &&
+                                                    filter.input.type ===
+                                                        CustomFilterInputType.assetType
+                                            })}
+                                            key={index}
+                                        >
                                             <IndividualFilter
                                                 filter={filter}
                                                 changeFilterValue={this.changeFilterValue}
