@@ -8,7 +8,7 @@ import Web3 from 'web3';
 
 import { SCAN_INTERVAL } from '..';
 import { initOriginConfig } from '../config/origin.config';
-import NotificationTypes from '../notification/NotificationTypes';
+import EmailTypes from '../email/EmailTypes';
 import { IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
 import {
@@ -67,7 +67,7 @@ export class OriginEventListener implements IOriginEventListener {
                 this.conf
             ).sync();
 
-            this.originEventsStore.registerNewIssuedCertificates(newCertificate.owner);
+            this.originEventsStore.registerIssuedCertificate(newCertificate.owner);
         });
 
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
@@ -98,10 +98,7 @@ export class OriginEventListener implements IOriginEventListener {
             });
 
             for (const demand of demandsMatchCertificate) {
-                this.originEventsStore.registerNewMatchingCertificates(
-                    demand,
-                    publishedCertificate.id
-                );
+                this.originEventsStore.registerMatchingCertificate(demand, publishedCertificate.id);
 
                 this.conf.logger.info(`New certificate found for demand ${demand.id}`);
             }
@@ -112,7 +109,7 @@ export class OriginEventListener implements IOriginEventListener {
 
             const demand = await new Demand.Entity(_demandId, this.conf).sync();
 
-            this.originEventsStore.registerNewPartiallyFilledDemand(demand.demandOwner, {
+            this.originEventsStore.registerPartiallyFilledDemand(demand.demandOwner, {
                 demandId: _demandId,
                 certificateId: _entityId,
                 amount: _amount
@@ -121,6 +118,17 @@ export class OriginEventListener implements IOriginEventListener {
             this.conf.logger.info(
                 `Event: DemandPartiallyFilled: Matched certificate #${_entityId} with energy ${_amount} to Demand #${_demandId}.`
             );
+
+            console.log({
+                missingEnergy: await demand.missingEnergy(),
+                full: await demand.isFulfilled()
+            });
+
+            if (await demand.isFulfilled()) {
+                this.originEventsStore.registerFulfilledDemand(demand.demandOwner, _demandId);
+
+                this.conf.logger.info(`DemandFulfilled: Demand #${_demandId} has been fulfilled.`);
+            }
         });
 
         this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
@@ -144,13 +152,13 @@ export class OriginEventListener implements IOriginEventListener {
 
         for (const user of notifyUsers) {
             const emailAddress: string = user.offChainProperties.email;
-            const newIssuedCertificates: number = this.originEventsStore.getNewIssuedCertificates(
+            const newIssuedCertificates: number = this.originEventsStore.getIssuedCertificates(
                 user.id
             );
-            const newMatchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getNewMatchingCertificates(
+            const newMatchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getMatchingCertificates(
                 user.id
             );
-            const newPartiallyFilledDemand: IPartiallyFilledDemand[] = this.originEventsStore.getNewPartiallyFilledDemands(
+            const newPartiallyFilledDemand: IPartiallyFilledDemand[] = this.originEventsStore.getPartiallyFilledDemands(
                 user.id
             );
 
@@ -158,10 +166,10 @@ export class OriginEventListener implements IOriginEventListener {
                 const url = `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox`;
 
                 await this.sendNotificationEmail(
-                    NotificationTypes.CERTS_APPROVED,
+                    EmailTypes.CERTS_APPROVED,
                     emailAddress,
                     `Local issuer approved your certificates.<br />There are ${newIssuedCertificates} new certificates in your inbox:<br /><a href="${url}">${url}</a>`,
-                    () => this.originEventsStore.resetNewIssuedCertificates(user.id)
+                    () => this.originEventsStore.resetIssuedCertificates(user.id)
                 );
             }
 
@@ -173,20 +181,20 @@ export class OriginEventListener implements IOriginEventListener {
                 urls = urls.filter((url, index) => urls.indexOf(url) === index); // Remove duplicate urls
 
                 await this.sendNotificationEmail(
-                    NotificationTypes.FOUND_MATCHING_SUPPLY,
+                    EmailTypes.FOUND_MATCHING_SUPPLY,
                     emailAddress,
                     `We found ${
                         newMatchingCertificates.length
                     } certificates matching your demands. Open Origin and check it out:${urls.map(
                         url => `<br /><a href="${url}">${url}</a>`
                     )}`,
-                    () => this.originEventsStore.resetNewMatchingCertificates(user.id)
+                    () => this.originEventsStore.resetMatchingCertificates(user.id)
                 );
             }
 
             if (newPartiallyFilledDemand.length > 0) {
                 await this.sendNotificationEmail(
-                    NotificationTypes.DEMAND_PARTIALLY_FILLED,
+                    EmailTypes.DEMAND_PARTIALLY_FILLED,
                     emailAddress,
                     `Matched the following certificates to your demands:\n${newPartiallyFilledDemand
                         .map(
@@ -194,14 +202,14 @@ export class OriginEventListener implements IOriginEventListener {
                                 `Matched certificate ${match.certificateId} with amount ${match.amount} Wh to demand ${match.demandId}.`
                         )
                         .join('\n')}`,
-                    () => this.originEventsStore.resetNewPartiallyFilledDemands(user.id)
+                    () => this.originEventsStore.resetPartiallyFilledDemands(user.id)
                 );
             }
         }
     }
 
     private async sendNotificationEmail(
-        notificationType: NotificationTypes,
+        notificationType: EmailTypes,
         emailAddress: string,
         html: string,
         callback: () => void

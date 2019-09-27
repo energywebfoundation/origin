@@ -13,25 +13,29 @@ export interface ICertificateMatchesDemand {
 
 interface IUserTempStorage {
     userId: string;
-    newIssuedCertificates: number;
-    newMatchingCertificates: ICertificateMatchesDemand[];
-    newPartiallyFilledDemands: IPartiallyFilledDemand[];
+    issuedCertificates: number;
+    matchingCertificates: ICertificateMatchesDemand[];
+    partiallyFilledDemands: IPartiallyFilledDemand[];
+    fulfilledDemands: number[];
 }
 
 export interface IOriginEventsStore {
     getAllUsers(): string[];
 
-    getNewIssuedCertificates(userId: string): number;
-    getNewMatchingCertificates(userId: string): ICertificateMatchesDemand[];
-    getNewPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[];
+    getIssuedCertificates(userId: string): number;
+    getMatchingCertificates(userId: string): ICertificateMatchesDemand[];
+    getPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[];
+    getFulfilledDemands(userId: string): number[];
 
-    registerNewIssuedCertificates(certOwnerId: string): void;
-    registerNewMatchingCertificates(demand: Demand.Entity, certificateId: string): void;
-    registerNewPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
+    registerIssuedCertificate(certOwnerId: string): void;
+    registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void;
+    registerPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
+    registerFulfilledDemand(demandOwner: string, demandId: number): void;
 
-    resetNewIssuedCertificates(userId: string): void;
-    resetNewMatchingCertificates(userId: string): void;
-    resetNewPartiallyFilledDemands(userId: string): void;
+    resetIssuedCertificates(userId: string): void;
+    resetMatchingCertificates(userId: string): void;
+    resetPartiallyFilledDemands(userId: string): void;
+    resetFulfilledDemands(userId: string): void;
 }
 
 export class OriginEventsStore implements IOriginEventsStore {
@@ -41,91 +45,90 @@ export class OriginEventsStore implements IOriginEventsStore {
         this.tempStorage = [];
     }
 
-    public registerNewIssuedCertificates(certOwnerId: string): void {
+    public registerIssuedCertificate(certOwnerId: string): void {
         const userStorage: IUserTempStorage = this.userStorage(certOwnerId);
-
-        if (!userStorage) {
-            this.tempStorage.push({
-                userId: certOwnerId,
-                newIssuedCertificates: 1,
-                newMatchingCertificates: [],
-                newPartiallyFilledDemands: []
-            });
-            return;
-        }
-
-        userStorage.newIssuedCertificates += 1;
+        userStorage.issuedCertificates += 1;
     }
 
-    public registerNewMatchingCertificates(demand: Demand.Entity, certificateId: string): void {
+    public registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void {
         const userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
 
-        const entry: ICertificateMatchesDemand = {
+        userStorage.matchingCertificates.push({
             demandId: demand.id,
             certificateId
-        };
-
-        if (!userStorage) {
-            this.tempStorage.push({
-                userId: demand.demandOwner,
-                newIssuedCertificates: 0,
-                newMatchingCertificates: [entry],
-                newPartiallyFilledDemands: []
-            });
-            return;
-        }
-
-        userStorage.newMatchingCertificates.push(entry);
+        });
     }
 
-    public registerNewPartiallyFilledDemand(
+    public registerPartiallyFilledDemand(
         demandOwner: string,
         demand: IPartiallyFilledDemand
     ): void {
         const userStorage: IUserTempStorage = this.userStorage(demandOwner);
-
-        if (!userStorage) {
-            this.tempStorage.push({
-                userId: demandOwner,
-                newIssuedCertificates: 0,
-                newMatchingCertificates: [],
-                newPartiallyFilledDemands: [demand]
-            });
-            return;
-        }
-
-        userStorage.newPartiallyFilledDemands.push(demand);
+        userStorage.partiallyFilledDemands.push(demand);
     }
 
-    public getNewIssuedCertificates(userId: string): number {
-        return this.userStorage(userId).newIssuedCertificates;
+    public registerFulfilledDemand(demandOwner: string, demandId: number): void {
+        const userStorage: IUserTempStorage = this.userStorage(demandOwner);
+        userStorage.fulfilledDemands.push(demandId);
     }
 
-    public getNewMatchingCertificates(userId: string): ICertificateMatchesDemand[] {
-        return this.userStorage(userId).newMatchingCertificates;
+    public getIssuedCertificates(userId: string): number {
+        return this.userStorage(userId).issuedCertificates;
     }
 
-    public getNewPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[] {
-        return this.userStorage(userId).newPartiallyFilledDemands;
+    public getMatchingCertificates(userId: string): ICertificateMatchesDemand[] {
+        return this.userStorage(userId).matchingCertificates;
+    }
+
+    public getPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[] {
+        return this.userStorage(userId).partiallyFilledDemands;
+    }
+
+    public getFulfilledDemands(userId: string): number[] {
+        return this.userStorage(userId).fulfilledDemands;
     }
 
     public getAllUsers(): string[] {
         return this.tempStorage.map(storage => storage.userId);
     }
 
-    public resetNewIssuedCertificates(userId: string): void {
-        this.userStorage(userId).newIssuedCertificates = 0;
+    public resetIssuedCertificates(userId: string): void {
+        this.userStorage(userId).issuedCertificates = 0;
     }
 
-    public resetNewMatchingCertificates(userId: string): void {
-        this.userStorage(userId).newMatchingCertificates = [];
+    public resetMatchingCertificates(userId: string): void {
+        this.userStorage(userId).matchingCertificates = [];
     }
 
-    public resetNewPartiallyFilledDemands(userId: string): void {
-        this.userStorage(userId).newPartiallyFilledDemands = [];
+    public resetPartiallyFilledDemands(userId: string): void {
+        this.userStorage(userId).partiallyFilledDemands = [];
+    }
+
+    public resetFulfilledDemands(userId: string): void {
+        this.userStorage(userId).fulfilledDemands = [];
+    }
+
+    private initStorageForUser(userId: string): void {
+        this.tempStorage.push({
+            userId,
+            issuedCertificates: 0,
+            matchingCertificates: [],
+            partiallyFilledDemands: [],
+            fulfilledDemands: []
+        });
+    }
+
+    private isUserInitialized(userId: string): boolean {
+        return this.tempStorage.some(
+            storage => storage.userId.toLowerCase() === userId.toLowerCase()
+        );
     }
 
     private userStorage(userId: string): IUserTempStorage {
+        if (!this.isUserInitialized(userId)) {
+            this.initStorageForUser(userId);
+        }
+
         return this.tempStorage.find(
             storage => storage.userId.toLowerCase() === userId.toLowerCase()
         );
