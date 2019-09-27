@@ -37,8 +37,8 @@ const wait = (ms: number) => {
         setTimeout(resolve, ms);
     });
 };
-
-const API_BASE_URL = 'http://localhost:3030';
+const API_PORT = 3036;
+const API_BASE_URL = `http://localhost:${API_PORT}`;
 
 jest.setTimeout(80000);
 
@@ -54,7 +54,7 @@ const startGanache = async () => {
             total_accounts: 20
         });
 
-        ganacheServer.listen(8545, function(err, blockchain) {
+        ganacheServer.listen(8550, function(err, blockchain) {
             resolve({
                 blockchain,
                 ganacheServer
@@ -65,7 +65,7 @@ const startGanache = async () => {
 
 const deployDemo = async () => {
     const connectionConfig = {
-        web3: 'http://localhost:8545',
+        web3: 'http://localhost:8550',
         deployKey: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
     };
 
@@ -253,7 +253,7 @@ describe('Application[E2E]', () => {
     let CONTRACT;
 
     beforeAll(async () => {
-        apiServer = await startAPI();
+        apiServer = await startAPI(API_PORT);
         await startGanache();
         const { deployResult } = await deployDemo();
 

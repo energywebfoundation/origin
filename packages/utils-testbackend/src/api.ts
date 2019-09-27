@@ -7,7 +7,7 @@ import { CustomStorage } from './storage/storage';
 import { FileAdapter } from './storage/fileAdapter';
 import { STATUS_CODES } from './enums/StatusCodes';
 
-export async function startAPI() {
+export async function startAPI(port?: number) {
     const app: Express = express();
 
     app.use(cors());
@@ -184,5 +184,5 @@ export async function startAPI() {
 
     await storage.initialize();
 
-    return app.listen(process.env.PORT || 3030);
+    return app.listen(port || process.env.PORT || 3030);
 }
