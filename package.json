@@ -18,7 +18,7 @@
         "lint-staged": "9.4.0",
         "mocha": "6.2.0",
         "prettier": "1.18.2",
-        "truffle": "^5.0.37",
+        "truffle": "5.0.38",
         "ts-node": "8.4.1",
         "typescript": "3.6.3",
         "typescript-json-schema": "0.40.0",
