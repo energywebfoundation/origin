@@ -20,7 +20,7 @@
   "dependencies": {
     "@energyweb/asset-registry": "1.1.0",
     "@energyweb/utils-general": "1.1.0",
-    "@types/moment-timezone": "^0.5.12",
+    "@types/moment-timezone": "0.5.12",
     "axios": "0.19.0",
     "bip39": "3.0.2",
     "bn.js": "5.0.0",
