@@ -159,21 +159,20 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     Number(enrichedCertificateData.certificate.status) ===
                     Certificate.Status.Active;
 
-                if (!this.checkRecordPassesFilters(enrichedCertificateData, filters)) {
-                    return false;
-                }
-
                 return (
-                    (isActive &&
+                    this.checkRecordPassesFilters(enrichedCertificateData, filters) &&
+                    ((isActive &&
                         ownerOf &&
                         !forSale &&
                         this.props.selectedState === SelectedState.Inbox) ||
-                    (claimed && this.props.selectedState === SelectedState.Claimed) ||
-                    (isActive && forSale && this.props.selectedState === SelectedState.ForSale) ||
-                    (isActive &&
-                        forSale &&
-                        forDemand &&
-                        this.props.selectedState === SelectedState.ForDemand)
+                        (claimed && this.props.selectedState === SelectedState.Claimed) ||
+                        (isActive &&
+                            forSale &&
+                            this.props.selectedState === SelectedState.ForSale) ||
+                        (isActive &&
+                            forSale &&
+                            forDemand &&
+                            this.props.selectedState === SelectedState.ForDemand))
                 );
             }
         );
