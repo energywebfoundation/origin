@@ -161,19 +161,32 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
     } as Certificate.Entity;
 };
 
-export const setupStore = (initialHistoryEntries?: string[]) => {
+interface ISetupStoreOptions {
+    mockUserFetcher: boolean;
+}
+
+const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
+    mockUserFetcher: true
+};
+
+export const setupStore = (
+    initialHistoryEntries?: string[],
+    options: ISetupStoreOptions = DEFAULT_SETUP_STORE_OPTIONS
+) => {
     const { store, history } = setupStoreInternal(initialHistoryEntries);
 
-    const mockUserFetcher = {
-        async fetch(id: string) {
-            return ({
-                id,
-                organization: 'Example Organization'
-            } as Partial<User.Entity>) as User.Entity;
-        }
-    };
+    if (options.mockUserFetcher) {
+        const mockUserFetcher = {
+            async fetch(id: string) {
+                return ({
+                    id,
+                    organization: 'Example Organization'
+                } as Partial<User.Entity>) as User.Entity;
+            }
+        };
 
-    store.dispatch(updateFetcher(mockUserFetcher));
+        store.dispatch(updateFetcher(mockUserFetcher));
+    }
 
     return {
         store,

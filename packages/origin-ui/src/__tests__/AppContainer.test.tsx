@@ -23,7 +23,9 @@ describe('Application[E2E]', () => {
     });
 
     it('correctly navigates to producing asset details', async () => {
-        const { store, history } = setupStore([`/${CONTRACT}/assets/?rpc=http://localhost:8545`]);
+        const { store, history } = setupStore([`/${CONTRACT}/assets/?rpc=http://localhost:8545`], {
+            mockUserFetcher: false
+        });
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>
