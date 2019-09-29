@@ -50,7 +50,7 @@
     "devDependencies": {
         "@types/web3": "1.0.20",
         "ganache-cli": "6.4.5",
-        "mocha": "6.2.0"
+        "mocha": "6.2.1"
     },
     "publishConfig": {
         "access": "public",
