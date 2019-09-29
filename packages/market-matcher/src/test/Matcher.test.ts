@@ -42,7 +42,7 @@ async function waitForConditionAndAssert(
     await assertFunction();
 }
 
-describe.only('Test StrategyBasedMatcher', async () => {
+describe('Test StrategyBasedMatcher', async () => {
     const web3 = new Web3(PROVIDER_URL);
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;

@@ -206,14 +206,22 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             }
 
-            const producingAsset = this.props.producingAssets.find(
-                (asset: ProducingAsset.Entity) => asset.id === certificate.assetId.toString()
-            );
+            const producingAsset =
+                typeof certificate.assetId !== 'undefined' &&
+                this.props.producingAssets.find(
+                    asset => asset.id === certificate.assetId.toString()
+                );
+
+            let assetTypeLabel = '';
+
+            if (producingAsset && producingAsset.offChainProperties) {
+                assetTypeLabel = producingAsset.offChainProperties.assetType;
+            }
 
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel: producingAsset.offChainProperties.assetType,
+                assetTypeLabel,
                 certificateOwner: getUserById(this.props.users, certificate.owner),
                 offChainSettlementOptions,
                 acceptedCurrency,
@@ -699,27 +707,52 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     get rows() {
-        return this.state.paginatedData.map(enrichedData => ({
-            assetType: this.assetTypeService.getDisplayText(
-                enrichedData.producingAsset.offChainProperties.assetType
-            ),
-            commissioningDate: moment(
-                enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
-                'x'
-            ).format('MMM YY'),
-            townCountry: `${enrichedData.producingAsset.offChainProperties.address}, ${enrichedData.producingAsset.offChainProperties.country}`,
-            compliance:
-                Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry],
-            owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
-            certificationDate: new Date(
-                enrichedData.certificate.creationTime * 1000
-            ).toDateString(),
-            price: enrichedData.isOffChainSettlement
-                ? formatCurrency(enrichedData.offChainSettlementOptions.price / 100)
-                : enrichedData.certificate.onChainDirectPurchasePrice.toLocaleString(),
-            currency: enrichedData.acceptedCurrency,
-            energy: (enrichedData.certificate.energy / 1000).toLocaleString()
-        }));
+        return this.state.paginatedData.map(enrichedData => {
+            let assetType = '';
+            let commissioningDate = '';
+            let townCountry = '';
+            let compliance = '';
+            let price = '';
+
+            if (enrichedData.producingAsset && enrichedData.producingAsset.offChainProperties) {
+                assetType = this.assetTypeService.getDisplayText(
+                    enrichedData.producingAsset.offChainProperties.assetType
+                );
+
+                commissioningDate = moment(
+                    enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
+                    'x'
+                ).format('MMM YY');
+
+                townCountry = `${enrichedData.producingAsset.offChainProperties.address}, ${enrichedData.producingAsset.offChainProperties.country}`;
+
+                compliance =
+                    Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry];
+            }
+
+            if (
+                enrichedData.isOffChainSettlement &&
+                typeof enrichedData.offChainSettlementOptions.price === 'number'
+            ) {
+                price = formatCurrency(enrichedData.offChainSettlementOptions.price / 100);
+            } else if (enrichedData.certificate.onChainDirectPurchasePrice) {
+                price = enrichedData.certificate.onChainDirectPurchasePrice.toLocaleString();
+            }
+
+            return {
+                assetType,
+                commissioningDate,
+                townCountry,
+                compliance,
+                owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
+                certificationDate: new Date(
+                    enrichedData.certificate.creationTime * 1000
+                ).toDateString(),
+                price,
+                currency: enrichedData.acceptedCurrency,
+                energy: (enrichedData.certificate.energy / 1000).toLocaleString()
+            };
+        });
     }
 
     render() {

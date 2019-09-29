@@ -49,6 +49,11 @@ function* requestUserSaga(): SagaIterator {
 
     while (true) {
         const action: IRequestUserAction = yield take(UsersActions.requestUser);
+
+        if (!action.payload) {
+            return;
+        }
+
         const userId = action.payload.toLowerCase();
 
         yield fork(fetchUserSaga, userId, usersBeingFetched);
