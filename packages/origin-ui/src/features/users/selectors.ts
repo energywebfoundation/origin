@@ -18,3 +18,5 @@ export const getUserById = (users: IUsersState['users'], id: string) => {
 
     return users.find(u => u.id.toLowerCase() === id.toLowerCase());
 };
+
+export const getUserFetcher = (state: IStoreState) => state.users.fetcher;

@@ -4,32 +4,7 @@ import { ProducingAssetTable } from '../components/ProducingAssetTable';
 import { dataTestSelector } from '../utils/Helper';
 import { setupStore, WrapperComponent, createRenderedHelpers } from './utils/helpers';
 
-jest.mock('@energyweb/user-registry', () => {
-    return {
-        User: {
-            Entity: class Entity {
-                id: string;
-
-                constructor(id: string) {
-                    this.id = id;
-                }
-
-                sync() {
-                    return {
-                        id: this.id,
-                        organization: 'Example Organization'
-                    };
-                }
-            }
-        }
-    };
-});
-
 describe('ProducingAssetTable', () => {
-    afterAll(() => {
-        jest.unmock('@energyweb/user-registry');
-    });
-
     it('correctly renders and search works', async () => {
         const { store, history, addProducingAsset } = setupStore();
 

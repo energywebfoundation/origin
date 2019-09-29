@@ -10,32 +10,7 @@ import {
     WrapperComponent
 } from './utils/helpers';
 
-jest.mock('@energyweb/user-registry', () => {
-    return {
-        User: {
-            Entity: class Entity {
-                id: string;
-
-                constructor(id: string) {
-                    this.id = id;
-                }
-
-                sync() {
-                    return {
-                        id: this.id,
-                        organization: 'Example Organization'
-                    };
-                }
-            }
-        }
-    };
-});
-
 describe('CertificateTable', () => {
-    afterAll(() => {
-        jest.unmock('@energyweb/user-registry');
-    });
-
     it('correctly renders', async () => {
         const { store, history, setCurrentUser, addProducingAsset, addCertificate } = setupStore();
 

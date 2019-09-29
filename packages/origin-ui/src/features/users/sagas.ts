@@ -6,19 +6,12 @@ import {
     IRequestUserAction,
     addUser,
     requestUser,
-    IUpdateCurrentUserIdAction
+    IUpdateCurrentUserIdAction,
+    IUserFetcher
 } from './actions';
 import { getConfiguration } from '../selectors';
-import { getUserById, getUsers } from './selectors';
+import { getUserById, getUsers, getUserFetcher } from './selectors';
 import { User } from '@energyweb/user-registry';
-import { IStoreState } from '../../types';
-
-async function fetchUser(
-    id: string,
-    configuration: IStoreState['configuration']
-): Promise<User.Entity> {
-    return new User.Entity(id, configuration).sync();
-}
 
 function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
     const users: User.Entity[] = yield select(getUsers);
@@ -32,9 +25,10 @@ function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
     usersBeingFetched.set(userId, true);
 
     const configuration: Configuration.Entity = yield select(getConfiguration);
+    const fetcher: IUserFetcher = yield select(getUserFetcher);
 
     try {
-        const fetchedUser: User.Entity = yield call(fetchUser, userId, configuration);
+        const fetchedUser: User.Entity = yield call(fetcher.fetch, userId, configuration);
 
         yield put(addUser(fetchedUser));
     } catch (error) {

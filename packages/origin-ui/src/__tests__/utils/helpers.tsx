@@ -5,7 +5,7 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import sagas from '../../features/sagas';
 import { User } from '@energyweb/user-registry';
-import { addUser, updateCurrentUserId } from '../../features/users/actions';
+import { addUser, updateCurrentUserId, updateFetcher } from '../../features/users/actions';
 import { ReactWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
@@ -163,6 +163,17 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
 
 export const setupStore = (initialHistoryEntries?: string[]) => {
     const { store, history } = setupStoreInternal(initialHistoryEntries);
+
+    const mockUserFetcher = {
+        async fetch(id: string) {
+            return ({
+                id,
+                organization: 'Example Organization'
+            } as Partial<User.Entity>) as User.Entity;
+        }
+    };
+
+    store.dispatch(updateFetcher(mockUserFetcher));
 
     return {
         store,
