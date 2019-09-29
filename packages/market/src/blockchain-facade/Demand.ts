@@ -149,12 +149,15 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
         return new Entity(this.id, this.configuration).sync();
     }
 
-    async missingEnergy() {
+    async missingEnergy(): Promise<TimeSeriesElement[]> {
         return calculateMissingEnergyDemand(this, this.configuration);
     }
 
     async missingEnergyInPeriod(timeStamp: number): Promise<TimeSeriesElement> {
-        const missingEnergy = await calculateMissingEnergyDemand(this, this.configuration);
+        const missingEnergy: TimeSeriesElement[] = await calculateMissingEnergyDemand(
+            this,
+            this.configuration
+        );
         const resolution = timeFrameToResolution(this.offChainProperties.timeFrame);
 
         const currentPeriod = moment
@@ -162,11 +165,18 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             .startOf(resolution)
             .unix();
 
-        return missingEnergy.find(timeSeriesElement => timeSeriesElement.time === currentPeriod);
+        return missingEnergy.find(
+            (timeSeriesElement: TimeSeriesElement) => timeSeriesElement.time === currentPeriod
+        );
     }
 
     async missingEnergyInCurrentPeriod(): Promise<TimeSeriesElement> {
         return this.missingEnergyInPeriod(moment().unix());
+    }
+
+    async isFulfilled(): Promise<boolean> {
+        const missingEnergy: TimeSeriesElement[] = await this.missingEnergy();
+        return missingEnergy.every((ts: TimeSeriesElement) => ts.value === 0);
     }
 }
 
@@ -320,6 +330,12 @@ export const calculateTotalEnergyDemand = (
     return energyPerTimeFrame * durationInTimeFrame;
 };
 
+export const alignToResolution = (timeStamp: number, resolution: Resolution) =>
+    moment
+        .unix(timeStamp)
+        .startOf(resolution as moment.unitOfTime.StartOf)
+        .unix();
+
 export const calculateMissingEnergyDemand = async (
     demand: IDemand,
     config: Configuration.Entity
@@ -356,7 +372,11 @@ export const calculateMissingEnergyDemand = async (
         })
     );
 
-    const filledDemandInRange = TS.inRange(filledDemandsTimeSeries, startTime, endTime);
+    const filledDemandInRange = TS.inRange(
+        filledDemandsTimeSeries,
+        alignToResolution(startTime, resolution),
+        alignToResolution(endTime, resolution)
+    );
 
     return TS.aggregateByTime(demandTimeSeries.concat(filledDemandInRange));
 };

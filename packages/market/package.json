@@ -58,7 +58,7 @@
   "devDependencies": {
     "@energyweb/utils-testbackend": "1.1.0",
     "@fluffy-spoon/substitute": "^1.89.0",
-    "@types/web3": "1.0.19",
+    "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.4.5",

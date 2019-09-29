@@ -15,7 +15,7 @@ import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 
-import { Configuration, TimeFrame, Currency, Compliance } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
 
 export class Demo {
@@ -24,6 +24,8 @@ export class Demo {
     public certificateLogic: CertificateLogic;
 
     public assetProducingRegistryLogic: AssetProducingRegistryLogic;
+
+    private nextDeployedSmReadIndex = 0;
 
     private connectionConfig: any;
 
@@ -36,8 +38,6 @@ export class Demo {
     private ACCOUNTS: any;
 
     private logger: Winston.Logger;
-
-    private latestDeployedSmReadIndex = 0;
 
     constructor(web3Url: string, deployKey: string) {
         this.connectionConfig = {
@@ -72,6 +72,10 @@ export class Demo {
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         });
+    }
+
+    get latestDeployedSmReadIndex(): number {
+        return this.nextDeployedSmReadIndex - 1;
     }
 
     async deploy() {
@@ -289,19 +293,19 @@ export class Demo {
             0,
             smRead,
             'newSmartMeterRead',
-            this.latestDeployedSmReadIndex,
+            this.nextDeployedSmReadIndex,
             {
                 privateKey: this.ACCOUNTS.SMART_METER.privateKey
             }
         );
-        await this.certificateLogic.requestCertificates(0, this.latestDeployedSmReadIndex, {
+        await this.certificateLogic.requestCertificates(0, this.nextDeployedSmReadIndex, {
             privateKey: this.ACCOUNTS.ASSET_MANAGER.privateKey
         });
-        await this.certificateLogic.approveCertificationRequest(this.latestDeployedSmReadIndex, {
+        await this.certificateLogic.approveCertificationRequest(this.nextDeployedSmReadIndex, {
             privateKey: this.adminPK
         });
 
-        this.latestDeployedSmReadIndex += 1;
+        this.nextDeployedSmReadIndex += 1;
     }
 
     async publishForSale(certificateId: number) {
@@ -325,7 +329,7 @@ export class Demo {
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
-            energyPerTimeFrame: 1e6,
+            energyPerTimeFrame: 1 * Unit.MWh,
             registryCompliance: Compliance.EEC,
             startTime: moment().unix(),
             endTime: moment()
@@ -340,13 +344,7 @@ export class Demo {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.MATCHER;
 
         const demand = await new Demand.Entity(demandId, this.conf).sync();
-
         const certificate = await new Certificate.Entity(certId, this.conf).sync();
-        console.log({
-            demand,
-            certificate
-        });
-
         const fillTx = await demand.fill(certificate.id);
 
         return fillTx.status;

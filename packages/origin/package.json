@@ -50,7 +50,7 @@
   "devDependencies": {
     "@energyweb/erc-test-contracts": "1.1.0",
     "@energyweb/utils-testbackend": "1.1.0",
-    "@types/web3": "1.0.19",
+    "@types/web3": "1.0.20",
     "axios": "0.19.0",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
