@@ -57,7 +57,7 @@
     "redux-devtools-extension": "2.13.8",
     "redux-saga": "1.1.1",
     "toastr": "2.1.4",
-    "ts-loader": "6.1.2",
+    "ts-loader": "6.2.0",
     "url-loader": "2.1.0",
     "web3": "1.2.1",
     "webpack": "4.41.0",
