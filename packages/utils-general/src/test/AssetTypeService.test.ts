@@ -85,9 +85,9 @@ describe('AssetTypeService tests', () => {
             [['Wind', 'Wind;Onshore', 'Solar'], 'Wind;Onshore', true],
             [['Wind', 'Wind;Onshore'], 'Wind;Offshore', false],
             [['Wind', 'Wind;Onshore', 'Solar;Photovoltaic'], 'Wind;Offshore', false],
-            [['Wind', 'Wind;Onshore', 'Wind;Offshore'], 'Wind', true],
+            [['Wind', 'Wind;Onshore', 'Wind;Offshore'], 'Wind', false],
             [['Wind;Onshore', 'Wind;Offshore'], 'Wind', false],
-            [['Marine', 'Marine;Tidal'], 'Marine', true]
+            [['Marine', 'Marine;Tidal'], 'Marine', false]
         ];
 
         for (const [assetTypes, typeToCheck, expectedResult] of TEST_MATRIX) {

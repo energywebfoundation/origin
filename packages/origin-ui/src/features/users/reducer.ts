@@ -1,14 +1,22 @@
-import { UsersActions, IUsersAction } from './actions';
+import { UsersActions, IUsersAction, IUserFetcher } from './actions';
 import { User } from '@energyweb/user-registry';
+import { IStoreState } from '../../types';
 
 export interface IUsersState {
     users: User.Entity[];
     currentUserId: string;
+    fetcher: IUserFetcher;
 }
+
+const fetcher: IUserFetcher = {
+    fetch: async (id: string, configuration: IStoreState['configuration']) =>
+        new User.Entity(id, configuration).sync()
+};
 
 const defaultState: IUsersState = {
     users: [],
-    currentUserId: null
+    currentUserId: null,
+    fetcher
 };
 
 export default function reducer(state = defaultState, action: IUsersAction): IUsersState {
@@ -45,6 +53,12 @@ export default function reducer(state = defaultState, action: IUsersAction): IUs
             return {
                 ...state,
                 currentUserId: action.payload
+            };
+
+        case UsersActions.updateFetcher:
+            return {
+                ...state,
+                fetcher: action.payload
             };
 
         default:

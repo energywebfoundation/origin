@@ -127,14 +127,17 @@ export abstract class PaginatedLoaderFiltered<
                     case CustomFilterInputType.multiselect:
                         return filter.selectedValue.includes(filteredPropertyResolvedValue);
                     case CustomFilterInputType.assetType:
-                        if (!filter.selectedValue || filter.selectedValue.length === 0) {
-                            return true;
+                        if (
+                            filter.selectedValue &&
+                            filter.selectedValue.length !== 0 &&
+                            !this.assetTypeService.includesAssetType(
+                                filteredPropertyResolvedValue as string,
+                                filter.selectedValue as string[]
+                            )
+                        ) {
+                            return false;
                         }
-
-                        return this.assetTypeService.includesAssetType(
-                            filteredPropertyResolvedValue as string,
-                            filter.selectedValue as string[]
-                        );
+                        break;
                     case CustomFilterInputType.dropdown:
                         if (
                             filter.selectedValue &&

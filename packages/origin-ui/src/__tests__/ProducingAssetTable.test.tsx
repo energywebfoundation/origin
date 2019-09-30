@@ -1,129 +1,44 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import { createMemoryHistory } from 'history';
-import { createRootReducer } from '../reducers';
 import { ProducingAssetTable } from '../components/ProducingAssetTable';
-import { producingAssetCreatedOrUpdated } from '../features/producingAssets/actions';
-import { ProducingAsset } from '@energyweb/asset-registry';
 import { dataTestSelector } from '../utils/Helper';
-import createSagaMiddleware from 'redux-saga';
-import { routerMiddleware } from 'connected-react-router';
-import sagas from '../features/sagas';
-
-const flushPromises = () => new Promise(setImmediate);
-
-jest.mock('@energyweb/user-registry', () => {
-    return {
-        User: {
-            Entity: class Entity {
-                id: string;
-
-                constructor(id: string) {
-                    this.id = id;
-                }
-
-                sync() {
-                    return {
-                        id: this.id,
-                        organization: 'Example Organization'
-                    };
-                }
-            }
-        }
-    };
-});
+import { setupStore, WrapperComponent, createRenderedHelpers } from './utils/helpers';
 
 describe('ProducingAssetTable', () => {
-    afterAll(() => {
-        jest.unmock('@energyweb/user-registry');
-    });
-
     it('correctly renders and search works', async () => {
-        const history = createMemoryHistory();
+        const { store, history, addProducingAsset } = setupStore();
 
-        const sagaMiddleware = createSagaMiddleware();
-
-        const middleware = applyMiddleware(routerMiddleware(history), sagaMiddleware);
-
-        const store = createStore(createRootReducer(history), middleware);
-
-        Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
-            sagaMiddleware.run(sagas[saga]);
+        addProducingAsset({
+            id: '0'
         });
 
-        const producingAssets: Array<Partial<ProducingAsset.Entity>> = [
-            {
-                id: '0',
-                configuration: {
-                    blockchainProperties: {
-                        activeUser: {
-                            address: '0x0'
-                        }
-                    } as any
-                } as any,
-                owner: {
-                    address: '0x0'
-                },
-                offChainProperties: ({
-                    facilityName: 'Wuthering Heights facility',
-                    assetType: 'Solar',
-                    country: 'Thailand',
-                    address:
-                        '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
-                    capacityWh: 9876543
-                } as Partial<ProducingAsset.IOffChainProperties>) as any,
-                lastSmartMeterReadWh: 7777
-            },
-            {
-                id: '1',
-                configuration: {
-                    blockchainProperties: {
-                        activeUser: {
-                            address: '0x0'
-                        }
-                    } as any
-                } as any,
-                owner: {
-                    address: '0x0'
-                },
-                offChainProperties: ({
-                    facilityName: 'Biomass Energy Facility',
-                    assetType: 'Gaseous;Agricultural gas',
-                    address: 'Amsterdam',
-                    country: 'Netherlands',
-                    capacityWh: 736123
-                } as Partial<ProducingAsset.IOffChainProperties>) as any,
-                lastSmartMeterReadWh: 312
-            }
-        ];
-
-        for (const asset of producingAssets) {
-            store.dispatch(producingAssetCreatedOrUpdated(asset as ProducingAsset.Entity));
-        }
+        addProducingAsset({
+            id: '1',
+            facilityName: 'Biomass Energy Facility',
+            assetType: 'Gaseous;Agricultural gas',
+            address: 'Amsterdam',
+            country: 'Netherlands',
+            capacityWh: 736123,
+            lastSmartMeterReadWh: 312
+        });
 
         const rendered = mount(
-            <Provider store={store}>
+            <WrapperComponent store={store} history={history}>
                 <ProducingAssetTable />
-            </Provider>
+            </WrapperComponent>
         );
 
-        await flushPromises();
+        const { refresh, assertPagination, assertMainTableContent } = createRenderedHelpers(
+            rendered
+        );
 
-        const assertPagination = (firstIndex: number, lastIndex: number, total: number) => {
-            expect(rendered.find('span.MuiTablePagination-caption').text()).toBe(
-                `${firstIndex}-${lastIndex} of ${total}`
-            );
-        };
+        await refresh();
 
-        rendered.update();
-
-        expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
+        assertMainTableContent([
             'Example Organization',
             'Wuthering Heights facility',
             '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
-            'Solar',
+            'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777',
             // next asset
@@ -141,11 +56,9 @@ describe('ProducingAssetTable', () => {
 
         searchInput.simulate('change', { target: { value: 'Biomass' } });
 
-        await flushPromises();
+        await refresh();
 
-        rendered.update();
-
-        expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
+        assertMainTableContent([
             'Example Organization',
             'Biomass Energy Facility',
             'Amsterdam, Netherlands',
@@ -158,15 +71,13 @@ describe('ProducingAssetTable', () => {
 
         searchInput.simulate('change', { target: { value: 'Wuthering Heights' } });
 
-        await flushPromises();
+        await refresh();
 
-        rendered.update();
-
-        expect(rendered.find('table tbody tr td').map(el => el.text())).toEqual([
+        assertMainTableContent([
             'Example Organization',
             'Wuthering Heights facility',
             '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
-            'Solar',
+            'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777'
         ]);
