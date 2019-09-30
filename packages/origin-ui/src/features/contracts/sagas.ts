@@ -201,7 +201,9 @@ function* initEventHandler() {
 
 function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
     yield takeEvery(ContractsActions.setOriginContractLookupAddress, function*() {
-        let originContractLookupAddress: string = yield select(getOriginContractLookupAddress);
+        let originContractLookupAddress: string | undefined = yield select(
+            getOriginContractLookupAddress
+        );
         const loading: boolean = yield select(getLoading);
 
         if (originContractLookupAddress && loading) {
