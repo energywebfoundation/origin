@@ -82,19 +82,6 @@ export class AssetProducingDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setMarketLookupContract(
-        _assetId: number,
-        _marketLookupContract: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.setMarketLookupContract(
-            _assetId,
-            _marketLookupContract
-        );
-
-        return await this.send(method, txParams);
-    }
-
     async setSmartMeterRead(
         _assetId: number,
         _lastSmartMeterReadWh: number,
@@ -144,10 +131,6 @@ export class AssetProducingDB extends GeneralFunctions {
         const method = this.web3Contract.methods.addFullAsset(_a);
 
         return await this.send(method, txParams);
-    }
-
-    async getMarketLookupContract(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getMarketLookupContract(_assetId).call(txParams);
     }
 
     async setActive(_assetId: number, _active: boolean, txParams?: ISpecialTx) {

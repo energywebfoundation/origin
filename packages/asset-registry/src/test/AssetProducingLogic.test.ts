@@ -211,7 +211,7 @@ describe('AssetProducingLogic', () => {
         const deployedAsset = await assetProducingLogic.getAssetBySmartMeter(assetSmartmeter);
 
         assert.equal(deployedAsset.length, 2);
-        assert.equal(deployedAsset.assetGeneral.length, 9);
+        assert.equal(deployedAsset.assetGeneral.length, 8);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -222,7 +222,6 @@ describe('AssetProducingLogic', () => {
         assert.equal(ag.lastSmartMeterReadFileHash, '');
         assert.equal(ag.propertiesDocumentHash, '');
         assert.equal(ag.url, '');
-        assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
         assert.isFalse(ag.bundled);
     });
 
@@ -275,7 +274,7 @@ describe('AssetProducingLogic', () => {
         assert.equal(deployedAsset.maxOwnerChanges, 2);
 
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 9);
+        assert.equal(deployedAsset.assetGeneral.length, 8);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -286,7 +285,6 @@ describe('AssetProducingLogic', () => {
         assert.equal(ag.lastSmartMeterReadFileHash, '');
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'url');
-        assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
         assert.isFalse(ag.bundled);
     });
 
@@ -297,7 +295,7 @@ describe('AssetProducingLogic', () => {
         assert.equal(deployedAsset.maxOwnerChanges, 2);
 
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 9);
+        assert.equal(deployedAsset.assetGeneral.length, 8);
 
         const ag = deployedAsset.assetGeneral;
 
@@ -308,7 +306,6 @@ describe('AssetProducingLogic', () => {
         assert.equal(ag.lastSmartMeterReadFileHash, '');
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'url');
-        assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
         assert.isFalse(ag.bundled);
     });
 
@@ -321,7 +318,6 @@ describe('AssetProducingLogic', () => {
         assert.equal(ag.lastSmartMeterReadFileHash, '');
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'url');
-        assert.equal(ag.marketLookupContract, '0x0000000000000000000000000000000000000000');
         assert.isFalse(ag.bundled);
     });
 
@@ -520,79 +516,6 @@ describe('AssetProducingLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should return 0x0 when an asset does not have a marketLogicContractLookup-address set', async () => {
-        assert.equal(
-            await assetProducingLogic.getMarketLookupContract(0),
-            '0x0000000000000000000000000000000000000000'
-        );
-    });
-
-    it('should fail trying to set marketAddress as admin', async () => {
-        let failed = false;
-
-        try {
-            await assetProducingLogic.setMarketLookupContract(
-                0,
-                '0x1000000000000000000000000000000000000005',
-                {
-                    privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
-                }
-            );
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'sender is not the assetOwner');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should fail trying to set marketAddress as random user', async () => {
-        let failed = false;
-
-        try {
-            await assetProducingLogic.setMarketLookupContract(
-                0,
-                '0x1000000000000000000000000000000000000005',
-                { privateKey: assetSmartmeter2PK }
-            );
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'sender is not the assetOwner');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should fail trying to set marketAddress as admin', async () => {
-        let failed = false;
-
-        try {
-            await assetProducingLogic.setMarketLookupContract(
-                0,
-                '0x1000000000000000000000000000000000000005',
-                { privateKey: privateKeyDeployment }
-            );
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'sender is not the assetOwner');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should set marketAddress', async () => {
-        await assetProducingLogic.setMarketLookupContract(
-            0,
-            '0x1000000000000000000000000000000000000005',
-            { privateKey: assetOwnerPK }
-        );
-
-        assert.equal(
-            await assetProducingLogic.getMarketLookupContract(0),
-            '0x1000000000000000000000000000000000000005'
-        );
-    });
-
     it('should return updated assetGeneral correctly', async () => {
         const ag = await assetProducingLogic.getAssetGeneral(0);
 
@@ -604,8 +527,7 @@ describe('AssetProducingLogic', () => {
             4: 'lastSmartMeterReadFileHash#2',
             5: 'propertiesDocumentHash',
             6: 'url',
-            7: '0x1000000000000000000000000000000000000005',
-            8: false,
+            7: false,
             smartMeter: assetSmartmeter,
             owner: assetOwnerAddress,
             lastSmartMeterReadWh: '200',
@@ -613,7 +535,6 @@ describe('AssetProducingLogic', () => {
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash#2',
             propertiesDocumentHash: 'propertiesDocumentHash',
             url: 'url',
-            marketLookupContract: '0x1000000000000000000000000000000000000005',
             bundled: false
         });
     });
@@ -674,8 +595,7 @@ describe('AssetProducingLogic', () => {
             4: 'lastSmartMeterReadFileHash#2',
             5: 'propertiesDocumentHash',
             6: 'url',
-            7: '0x1000000000000000000000000000000000000005',
-            8: true,
+            7: true,
             smartMeter: assetSmartmeter,
             owner: assetOwnerAddress,
             lastSmartMeterReadWh: '200',
@@ -683,7 +603,6 @@ describe('AssetProducingLogic', () => {
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash#2',
             propertiesDocumentHash: 'propertiesDocumentHash',
             url: 'url',
-            marketLookupContract: '0x1000000000000000000000000000000000000005',
             bundled: true
         });
 
@@ -694,7 +613,7 @@ describe('AssetProducingLogic', () => {
         assert.equal(deployedAsset.maxOwnerChanges, 2);
 
         // checking the number of properties in assetGeneral
-        assert.equal(deployedAsset.assetGeneral.length, 9);
+        assert.equal(deployedAsset.assetGeneral.length, 8);
 
         ag = deployedAsset.assetGeneral;
 
@@ -705,7 +624,6 @@ describe('AssetProducingLogic', () => {
         assert.equal(ag.lastSmartMeterReadFileHash, 'lastSmartMeterReadFileHash#2');
         assert.equal(ag.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(ag.url, 'url');
-        assert.equal(ag.marketLookupContract, '0x1000000000000000000000000000000000000005');
         assert.isTrue(ag.bundled);
     });
 

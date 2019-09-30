@@ -134,7 +134,7 @@ const deployDemo = async () => {
     deployResult.marketLogic = marketContracts.MarketLogic;
 
     await axios.put(
-        `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${deployResult.originContractLookup.toLowerCase()}`,
+        `${API_BASE_URL}/OriginContractLookup/${deployResult.originContractLookup.toLowerCase()}`,
         {
             marketContractLookup: deployResult.marketContractLookup.toLowerCase()
         }

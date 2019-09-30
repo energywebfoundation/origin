@@ -362,19 +362,6 @@ describe('EnergyCertificateBundleLogic', () => {
             );
         });
 
-        it('should set MarketLogicAddress', async () => {
-            await assetRegistry.setMarketLookupContract(
-                0,
-                originRegistryContract.web3Contract.options.address,
-                { privateKey: assetOwnerPK }
-            );
-
-            assert.equal(
-                await assetRegistry.getMarketLookupContract(0),
-                originRegistryContract.web3Contract.options.address
-            );
-        });
-
         it('should enable bundle', async () => {
             await assetRegistry.setBundleActive(0, true, { privateKey: assetOwnerPK });
         });

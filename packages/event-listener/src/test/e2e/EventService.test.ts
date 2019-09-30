@@ -19,9 +19,9 @@ describe('Event Service Tests', async () => {
         await demo.deploy();
     });
 
-    it('gets an instance of OriginContractLookupMarketLookupMapping', async () => {
+    it('gets an instance of OriginContractLookup', async () => {
         const response = await axios.get(
-            `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${demo.originContractLookup}`
+            `${process.env.API_BASE_URL}/OriginContractLookup/${demo.originContractLookup}`
         );
         should().exist(response.data.marketContractLookup);
     });

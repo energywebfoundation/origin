@@ -313,24 +313,6 @@ describe.only('Test StrategyBasedMatcher', async () => {
         it('starts the matcher', async () => {
             await startMatcher(matcherConfig);
         });
-
-        it('sets the market lookup contract', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
-            };
-
-            try {
-                await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(
-                    asset.id,
-                    originContractLookupAddr,
-                    { privateKey: assetOwnerPK }
-                );
-                conf.logger.info(`Certificates for Asset #${asset.id} initialized`);
-            } catch (e) {
-                conf.logger.error(`Could not initialize certificates\n${e}`);
-            }
-        });
     });
 
     describe('Certificate -> Demand matching tests', () => {

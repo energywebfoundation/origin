@@ -114,31 +114,6 @@ export const certificateDemo = async (
 
             break;
 
-        case 'SET_MARKET_CONTRACT':
-            console.log('-----------------------------------------------------------');
-
-            conf.blockchainProperties.activeUser = {
-                address: adminAccount.address,
-                privateKey: adminPK
-            };
-
-            const contractConfig = JSON.parse(
-                fs.readFileSync('./config/contractConfig.json', 'utf8').toString()
-            );
-
-            try {
-                await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(
-                    action.data.assetId,
-                    contractConfig.originContractLookup,
-                    { privateKey: action.data.assetOwnerPK }
-                );
-                conf.logger.info('Certificates for Asset #' + action.data.assetId + ' initialized');
-            } catch (e) {
-                conf.logger.error('Could not intialize certificates\n' + e);
-            }
-            console.log('-----------------------------------------------------------');
-            break;
-
         case 'TRANSFER_CERTIFICATE':
             console.log('-----------------------------------------------------------');
 

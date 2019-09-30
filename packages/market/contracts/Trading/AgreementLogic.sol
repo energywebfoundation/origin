@@ -95,7 +95,7 @@ contract AgreementLogic is RoleManagement, Updatable {
         public
         onlyOwner
     {
-        require(address(db) == address(0x0),"init: already initialize");
+        require(address(db) == address(0x0), "init: already initialize");
         db = MarketDB(_database);
     }
 

@@ -16,9 +16,7 @@ export const initOriginConfig = async (
     );
 
     const response = await axios.get(
-        `${
-            process.env.API_BASE_URL
-        }/OriginContractLookupMarketLookupMapping/${originLookupAddress.toLowerCase()}`
+        `${process.env.API_BASE_URL}/OriginContractLookup/${originLookupAddress.toLowerCase()}`
     );
 
     const marketBlockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(

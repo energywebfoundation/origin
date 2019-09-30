@@ -34,7 +34,7 @@ export class EventServiceProvider implements IEventServiceProvider {
     }
 
     public async refreshListenerList() {
-        const result = await axios.get(`${this.apiUrl}/OriginContractLookupMarketLookupMapping/`);
+        const result = await axios.get(`${this.apiUrl}/OriginContractLookup/`);
 
         const latestOriginContracts = Object.keys(result.data);
         const currentlyListeningContracts = this.listeners.map(
