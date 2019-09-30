@@ -1,4 +1,4 @@
 import { IStoreState } from '../../types';
 
-export const getOriginContractLookupAddress = (state: IStoreState): string =>
-    state.contracts.originContractLookupAddress;
+export const getMarketContractLookupAddress = (state: IStoreState): string =>
+    state.contracts.marketContractLookupAddress;

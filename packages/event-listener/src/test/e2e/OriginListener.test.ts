@@ -65,7 +65,7 @@ describe('Origin Listener Tests', async () => {
         store = new OriginEventsStore();
 
         listener = new OriginEventListener(
-            demo.originContractLookup,
+            demo.marketContractLookup,
             web3,
             emailService,
             store,

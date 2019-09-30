@@ -79,7 +79,6 @@ describe('Test StrategyBasedMatcher', async () => {
         web3Url: PROVIDER_URL,
         offChainDataSourceUrl: BACKEND_URL,
         marketContractLookupAddress: '',
-        originContractLookupAddress: '',
         matcherAccount: {
             address: accountDeployment,
             privateKey: privateKeyDeployment

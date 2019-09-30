@@ -3,30 +3,20 @@ import Web3 from 'web3';
 import * as Winston from 'winston';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
-import { createBlockchainProperties } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 
 export const initOriginConfig = async (
-    originLookupAddress: string,
+    marketContractLookup: string,
     web3: Web3
 ): Promise<Configuration.Entity> => {
-    const blockchainProperties: Configuration.BlockchainProperties = await createBlockchainProperties(
+    const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
         web3,
-        originLookupAddress
+        marketContractLookup
     );
 
-    const response = await axios.get(
-        `${
-            process.env.API_BASE_URL
-        }/OriginContractLookupMarketLookupMapping/${originLookupAddress.toLowerCase()}`
-    );
-
-    const marketBlockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
-        web3,
-        response.data.marketContractLookup
-    );
-
-    blockchainProperties.marketLogicInstance = marketBlockchainProperties.marketLogicInstance;
+    await axios.put(`${process.env.API_BASE_URL}/MarketContractLookup`, {
+        address: marketContractLookup.toLowerCase()
+    });
 
     return {
         blockchainProperties,

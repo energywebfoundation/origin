@@ -18,7 +18,7 @@ import {
 } from '../stores/OriginEventsStore';
 
 export interface IOriginEventListener extends IEventListener {
-    originLookupAddress: string;
+    marketLookupAddress: string;
     emailService: IEmailServiceProvider;
 }
 
@@ -32,7 +32,7 @@ export class OriginEventListener implements IOriginEventListener {
     private interval: any;
 
     constructor(
-        public originLookupAddress: string,
+        public marketLookupAddress: string,
         public web3: Web3,
         public emailService: IEmailServiceProvider,
         private originEventsStore: IOriginEventsStore,
@@ -45,7 +45,7 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     public async start(): Promise<void> {
-        this.conf = await initOriginConfig(this.originLookupAddress, this.web3);
+        this.conf = await initOriginConfig(this.marketLookupAddress, this.web3);
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
@@ -134,7 +134,7 @@ export class OriginEventListener implements IOriginEventListener {
         this.interval = setInterval(this.notify.bind(this), this.notificationInterval);
 
         this.started = true;
-        this.conf.logger.info(`Started listener for ${this.originLookupAddress}`);
+        this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);
     }
 
     private async notify() {
@@ -159,7 +159,7 @@ export class OriginEventListener implements IOriginEventListener {
             const fulfilledDemands: number[] = this.originEventsStore.getFulfilledDemands(user.id);
 
             if (issuedCertificates > 0) {
-                const url = `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/inbox`;
+                const url = `${process.env.UI_BASE_URL}/${this.marketLookupAddress}/certificates/inbox`;
 
                 await this.sendNotificationEmail(
                     EmailTypes.CERTS_APPROVED,
@@ -172,7 +172,7 @@ export class OriginEventListener implements IOriginEventListener {
             if (matchingCertificates.length > 0) {
                 let urls = matchingCertificates.map(
                     match =>
-                        `${process.env.UI_BASE_URL}/${this.originLookupAddress}/certificates/for_demand/${match.demandId}`
+                        `${process.env.UI_BASE_URL}/${this.marketLookupAddress}/certificates/for_demand/${match.demandId}`
                 );
                 urls = urls.filter((url, index) => urls.indexOf(url) === index); // Remove duplicate urls
 

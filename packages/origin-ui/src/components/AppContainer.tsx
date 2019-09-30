@@ -28,8 +28,8 @@ import { bindActionCreators } from 'redux';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
 import {
-    TSetOriginContractLookupAddress,
-    setOriginContractLookupAddress
+    TSetMarketContractLookupAddress,
+    setMarketContractLookupAddress
 } from '../features/contracts/actions';
 import { getBaseURL } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
@@ -46,7 +46,7 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-    setOriginContractLookupAddress: TSetOriginContractLookupAddress;
+    setMarketContractLookupAddress: TSetMarketContractLookupAddress;
 }
 
 type Props = RouteComponentProps<IMatchParams> & IStateProps & IDispatchProps;
@@ -55,7 +55,7 @@ class AppContainerClass extends React.Component<Props> {
     async componentDidMount(): Promise<void> {
         const contractAddress = this.props.match.params.contractAddress;
 
-        this.props.setOriginContractLookupAddress(contractAddress);
+        this.props.setMarketContractLookupAddress(contractAddress);
     }
 
     render(): JSX.Element {
@@ -95,7 +95,7 @@ export const AppContainer = withRouter(
         dispatch =>
             bindActionCreators(
                 {
-                    setOriginContractLookupAddress
+                    setMarketContractLookupAddress
                 },
                 dispatch
             )

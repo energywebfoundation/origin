@@ -16,7 +16,6 @@ import { CertificateService } from './CertificateService';
 export interface IMatcherConfig {
     web3Url: string;
     marketContractLookupAddress: string;
-    originContractLookupAddress: string;
     matcherAccount: Configuration.EthAccount;
     offChainDataSourceUrl: string;
 }

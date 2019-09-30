@@ -136,24 +136,33 @@ export async function startAPI(port?: number) {
         res.send('success');
     });
 
-    app.get('/OriginContractLookupMarketLookupMapping/:id?', (req, res) => {
-        console.log(`GET - OriginContractLookupMarketLookupMapping ${req.params.id}`);
+    app.get('/MarketContractLookup', (req, res) => {
+        console.log(`GET - MarketContractLookup`);
+        
+        const contracts = storage.get(ENTITY.MARKET_LOOKUP, 'contracts');
 
-        res.send(
-            storage.get(
-                ENTITY.ORIGIN_LOOKUP,
-                req.params.id !== undefined ? req.params.id.toLowerCase() : null
-            )
-        );
+        if (!contracts) {
+            res.send([]);
+        }
+
+        res.send(contracts);
     });
 
-    app.put('/OriginContractLookupMarketLookupMapping/:id', (req, res) => {
-        console.log(`PUT - OriginContractLookupMarketLookupMapping ${req.params.id}`);
+    app.put('/MarketContractLookup', (req, res) => {
+        console.log(`PUT - MarketContractLookup`);
+
+        let contracts: string[] = storage.get(ENTITY.MARKET_LOOKUP, 'contracts');
+
+        if (!contracts) {
+            contracts = [];
+        }
+
+        contracts.push(req.body.address);
 
         storage.set(
-            ENTITY.ORIGIN_LOOKUP,
-            req.params.id && req.params.id.toLowerCase(),
-            req.body
+            ENTITY.MARKET_LOOKUP,
+            'contracts',
+            contracts
         );
 
         res.send('success');

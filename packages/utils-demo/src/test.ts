@@ -8,14 +8,10 @@ async function main() {
 
     await marketDemo();
 
-    if (contractConfig && contractConfig.originContractLookup) {
+    if (contractConfig && contractConfig.marketContractLookup) {
         await axios.put(
-            `${
-                CONFIG.API_BASE_URL
-            }/OriginContractLookupMarketLookupMapping/${contractConfig.originContractLookup.toLowerCase()}`,
-            {
-                marketContractLookup: contractConfig.marketContractLookup.toLowerCase()
-            }
+            `${CONFIG.API_BASE_URL}/MarketContractLookup`,
+            { address: contractConfig.marketContractLookup.toLowerCase() }
         );
     }
 }
