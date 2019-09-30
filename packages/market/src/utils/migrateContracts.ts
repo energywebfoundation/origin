@@ -40,12 +40,6 @@ export async function migrateMarketRegistryContracts(
     )).contractAddress;
 
     const marketContractLookup = new MarketContractLookup(web3, marketContractLookupAddress);
-    console.log({
-        assetContractLookupAddress,
-        originContractLookupAddress,
-        marketLogicAddress,
-        marketDBAddress
-    });
 
     await marketContractLookup.init(
         assetContractLookupAddress,
@@ -54,10 +48,6 @@ export async function migrateMarketRegistryContracts(
         marketDBAddress,
         { privateKey: privateKeyDeployment }
     );
-    console.log({
-        marketContractLookup,
-        state: 'inited'
-    });
 
     const resultMapping = {} as any;
     resultMapping.MarketContractLookup = marketContractLookupAddress;

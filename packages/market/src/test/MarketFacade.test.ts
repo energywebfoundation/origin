@@ -160,7 +160,6 @@ describe('Market-Facade', () => {
             privateKeyDeployment
         );
         const marketLogicAddress = (deployedContracts as any).MarketLogic;
-        console.log({ marketLogicAddress });
         marketLogic = new MarketLogic(web3 as any, marketLogicAddress);
 
         await userLogic.createUser(
