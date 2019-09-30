@@ -1,10 +1,12 @@
 import { User } from '@energyweb/user-registry';
+import { IStoreState } from '../../types';
 
 export enum UsersActions {
     addUser = 'ADD_USER',
     updateUser = 'UPDATE_USER',
     updateCurrentUserId = 'UPDATE_CURRENT_USER_ID',
-    requestUser = 'REQUEST_USER'
+    requestUser = 'REQUEST_USER',
+    updateFetcher = 'UPDATE_USER_FETCHER'
 }
 
 export interface IAddUserAction {
@@ -55,8 +57,25 @@ export const requestUser = (payload: IRequestUserAction['payload']) => ({
 
 export type TRequestUserAction = typeof requestUser;
 
+export interface IUserFetcher {
+    fetch: (id: string, configuration: IStoreState['configuration']) => Promise<User.Entity>;
+}
+
+export interface IUpdateFetcherAction {
+    type: UsersActions.updateFetcher;
+    payload: IUserFetcher;
+}
+
+export const updateFetcher = (payload: IUpdateFetcherAction['payload']) => ({
+    type: UsersActions.updateFetcher,
+    payload
+});
+
+export type TUpdateFetcherAction = typeof updateFetcher;
+
 export type IUsersAction =
     | IAddUserAction
     | IUpdateUserAction
     | IUpdateCurrentUserIdAction
-    | IRequestUserAction;
+    | IRequestUserAction
+    | IUpdateFetcherAction;

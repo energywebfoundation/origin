@@ -50,7 +50,7 @@ class CertificatesClass extends React.Component<Props> {
     CertificateTable(key: SelectedState, demandId?: number) {
         let demand: Demand.Entity = null;
         if (demandId !== undefined) {
-            demand = this.props.demands.find((d: Demand.Entity) => d.id === demandId.toString());
+            demand = this.props.demands.find(d => d.id === demandId.toString());
         }
 
         return <CertificateTable selectedState={key} demand={demand} />;
