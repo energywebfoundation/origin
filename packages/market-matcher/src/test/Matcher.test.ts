@@ -14,8 +14,8 @@ import moment from 'moment';
 import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
-const PROVIDER_URL = 'http://localhost:8545';
-const BACKEND_URL = 'http://localhost:3030';
+const PROVIDER_URL = 'http://localhost:8549';
+const BACKEND_URL = 'http://localhost:3034';
 const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

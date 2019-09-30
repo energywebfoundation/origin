@@ -189,7 +189,7 @@ describe('Market-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030'
+                baseUrl: 'http://localhost:3031'
             },
             logger
         };
@@ -268,7 +268,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3030/Demand/${marketLogic.web3Contract.options.address}`,
+                url: `http://localhost:3031/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -287,7 +287,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3030/Demand/${marketLogic.web3Contract.options.address}`,
+                url: `http://localhost:3031/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -413,7 +413,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(supply, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Supply',
+                url: 'http://localhost:3031/Supply',
                 assetId: '0',
                 offChainProperties: {
                     availableWh: 10,
@@ -434,7 +434,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(supply, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Supply',
+                url: 'http://localhost:3031/Supply',
                 assetId: '0',
                 offChainProperties: {
                     availableWh: 10,
@@ -493,7 +493,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Agreement',
+                url: 'http://localhost:3031/Agreement',
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: false,
@@ -522,7 +522,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Agreement',
+                url: 'http://localhost:3031/Agreement',
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: false,
@@ -559,7 +559,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '0',
                 initialized: true,
-                url: 'http://localhost:3030/Agreement',
+                url: 'http://localhost:3031/Agreement',
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
@@ -614,7 +614,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '1',
                 initialized: true,
-                url: 'http://localhost:3030/Agreement',
+                url: 'http://localhost:3031/Agreement',
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
@@ -651,7 +651,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '1',
                 initialized: true,
-                url: 'http://localhost:3030/Agreement',
+                url: 'http://localhost:3031/Agreement',
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
