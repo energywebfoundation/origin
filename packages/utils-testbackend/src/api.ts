@@ -136,8 +136,8 @@ export async function startAPI(port?: number) {
         res.send('success');
     });
 
-    app.get('/OriginContractLookup/:id?', (req, res) => {
-        console.log(`GET - OriginContractLookup ${req.params.id}`);
+    app.get('/OriginContractLookupMarketLookupMapping/:id?', (req, res) => {
+        console.log(`GET - OriginContractLookupMarketLookupMapping ${req.params.id}`);
 
         res.send(
             storage.get(
@@ -147,8 +147,8 @@ export async function startAPI(port?: number) {
         );
     });
 
-    app.put('/OriginContractLookup/:id', (req, res) => {
-        console.log(`PUT - OriginContractLookup ${req.params.id}`);
+    app.put('/OriginContractLookupMarketLookupMapping/:id', (req, res) => {
+        console.log(`PUT - OriginContractLookupMarketLookupMapping ${req.params.id}`);
 
         storage.set(
             ENTITY.ORIGIN_LOOKUP,

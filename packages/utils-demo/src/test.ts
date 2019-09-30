@@ -12,7 +12,7 @@ async function main() {
         await axios.put(
             `${
                 CONFIG.API_BASE_URL
-            }/OriginContractLookup/${contractConfig.originContractLookup.toLowerCase()}`,
+            }/OriginContractLookupMarketLookupMapping/${contractConfig.originContractLookup.toLowerCase()}`,
             {
                 marketContractLookup: contractConfig.marketContractLookup.toLowerCase()
             }

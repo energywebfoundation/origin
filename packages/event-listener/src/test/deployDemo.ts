@@ -124,7 +124,7 @@ export class Demo {
         await axios.put(
             `${
                 process.env.API_BASE_URL
-            }/OriginContractLookup/${deployResult.originContractLookup.toLowerCase()}`,
+            }/OriginContractLookupMarketLookupMapping/${deployResult.originContractLookup.toLowerCase()}`,
             {
                 marketContractLookup: deployResult.marketContractLookup.toLowerCase()
             }

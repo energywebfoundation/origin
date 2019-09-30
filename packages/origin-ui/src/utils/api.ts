@@ -10,7 +10,7 @@ export async function getMarketLogicInstance(
     web3: Web3
 ) {
     const response = await axios.get(
-        `${API_BASE_URL}/OriginContractLookup/${originIssuerContractLookupAddress.toLowerCase()}`
+        `${API_BASE_URL}/OriginContractLookupMarketLookupMapping/${originIssuerContractLookupAddress.toLowerCase()}`
     );
 
     const marketBlockchainProperties: Configuration.BlockchainProperties = (await marketCreateBlockchainProperties(
@@ -22,7 +22,7 @@ export async function getMarketLogicInstance(
 }
 
 export async function getOriginContractLookupAddressFromAPI(): Promise<string> {
-    const response = await axios.get(`${API_BASE_URL}/OriginContractLookup/`);
+    const response = await axios.get(`${API_BASE_URL}/OriginContractLookupMarketLookupMapping/`);
 
     if (!response.data) {
         return null;
