@@ -49,7 +49,7 @@
         "test:asset-registry": "lerna run --scope @energyweb/asset-registry --stream test:concurrent",
         "test:market": "lerna run --scope @energyweb/market --stream test:concurrent",
         "test:origin": "lerna run --scope @energyweb/origin --stream test:concurrent",
-        "test:matcher": "lerna run test --scope @energyweb/market-matcher --stream",
+        "test:matcher": "lerna run test:concurrent --scope @energyweb/market-matcher --stream",
         "test:user-registry": "lerna run test:concurrent --scope @energyweb/user-registry --stream",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream"
