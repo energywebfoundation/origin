@@ -34,16 +34,16 @@ export class EventServiceProvider implements IEventServiceProvider {
     }
 
     public async refreshListenerList() {
-        const result = await axios.get(`${this.apiUrl}/OriginContractLookupMarketLookupMapping/`);
+        const result = await axios.get(`${this.apiUrl}/MarketContractLookup`);
 
-        const latestOriginContracts = Object.keys(result.data);
+        const latestMarketContracts = result.data;
         const currentlyListeningContracts = this.listeners.map(
-            listener => listener.originLookupAddress
+            listener => listener.marketLookupAddress
         );
 
         // Add any listener from backend if missing
-        for (const contract of latestOriginContracts) {
-            if (!currentlyListeningContracts.includes(contract)) {
+        for (const contract of latestMarketContracts) {
+            if (contract && !currentlyListeningContracts.includes(contract)) {
                 const listener: IOriginEventListener = new OriginEventListener(
                     contract,
                     this.web3,
@@ -57,7 +57,7 @@ export class EventServiceProvider implements IEventServiceProvider {
 
         // Remove listeners if deleted from backend
         for (const [i, listener] of this.listeners.entries()) {
-            if (!latestOriginContracts.includes(listener.originLookupAddress)) {
+            if (!latestMarketContracts.includes(listener.marketLookupAddress)) {
                 listener.stop();
                 this.listeners.splice(i, 1);
             }

@@ -19,7 +19,7 @@ describe('Application[E2E]', () => {
         ganacheServer = await startGanache();
         const { deployResult } = await deployDemo();
 
-        CONTRACT = deployResult.originContractLookup;
+        CONTRACT = deployResult.marketContractLookup;
     });
 
     it('correctly navigates to producing asset details', async () => {

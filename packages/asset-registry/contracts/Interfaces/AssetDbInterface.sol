@@ -82,16 +82,6 @@ interface AssetDbInterface {
 	/// @param _bundled bundled flag
     function setIsBundled(uint _assetId, bool _bundled) external;
 
-	/// @notice set the marketLookup contract
-	/// @param _assetId the id of an asset
-	/// @param _marketLookupContract new marketLookup contract
-    function setMarketLookupContract(uint _assetId, address _marketLookupContract) external;
-
-	/// @notice gets the marketLookup contract
-	/// @param _assetId the id of an asset
-	/// @return the marketcontract lookup
-    function getMarketLookupContract(uint _assetId) external view returns (address);
-
 	/// @notice sets a new meterreading and its filehash
 	/// @param _assetId the id of an asset
 	/// @param _lastSmartMeterReadWh meterreading in Wh

@@ -1,15 +1,18 @@
 import { call, put, select, take, all, fork, apply, takeEvery, cancel } from 'redux-saga/effects';
 import { SagaIterator, eventChannel } from 'redux-saga';
-import { ContractsActions, setOriginContractLookupAddress } from './actions';
-import { getOriginContractLookupAddress } from './selectors';
+import { ContractsActions, setMarketContractLookupAddress } from './actions';
+import { getMarketContractLookupAddress } from './selectors';
 import { push, getSearch } from 'connected-react-router';
 import { constructBaseURL, getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate, createBlockchainProperties } from '@energyweb/origin';
+import { Certificate } from '@energyweb/origin';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
-import { Demand } from '@energyweb/market';
+import {
+    Demand,
+    createBlockchainProperties as marketCreateBlockchainProperties
+} from '@energyweb/market';
 import {
     configurationUpdated,
     demandDeleted,
@@ -17,11 +20,7 @@ import {
     demandCreated
 } from '../actions';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import {
-    getMarketLogicInstance,
-    API_BASE_URL,
-    getOriginContractLookupAddressFromAPI
-} from '../../utils/api';
+import { API_BASE_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
 import { setError, setLoading } from '../general/actions';
 import { getLoading } from '../general/selectors';
 import { updateCurrentUserId } from '../users/actions';
@@ -33,7 +32,7 @@ enum ERROR {
 }
 
 async function initConf(
-    originIssuerContractLookupAddress: string,
+    marketContractLookupAddress: string,
     routerSearch: string
 ): Promise<Configuration.Entity> {
     let web3: Web3 = null;
@@ -53,14 +52,9 @@ async function initConf(
         web3 = new Web3(web3.currentProvider);
     }
 
-    const blockchainProperties: Configuration.BlockchainProperties = await createBlockchainProperties(
+    const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
         web3,
-        originIssuerContractLookupAddress
-    );
-
-    blockchainProperties.marketLogicInstance = await getMarketLogicInstance(
-        originIssuerContractLookupAddress,
-        web3
+        marketContractLookupAddress
     );
 
     return {
@@ -199,17 +193,20 @@ function* initEventHandler() {
     }
 }
 
-function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
-    yield takeEvery(ContractsActions.setOriginContractLookupAddress, function*() {
-        let originContractLookupAddress: string = yield select(getOriginContractLookupAddress);
+function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
+    yield takeEvery(ContractsActions.setMarketContractLookupAddress, function*() {
+        let marketContractLookupAddress: string | undefined = yield select(
+            getMarketContractLookupAddress
+        );
+
         const loading: boolean = yield select(getLoading);
 
-        if (originContractLookupAddress && loading) {
+        if (marketContractLookupAddress && marketContractLookupAddress !== 'undefined' && loading) {
             const routerSearch: string = yield select(getSearch);
 
             let configuration: Configuration.Entity;
             try {
-                configuration = yield call(initConf, originContractLookupAddress, routerSearch);
+                configuration = yield call(initConf, marketContractLookupAddress, routerSearch);
 
                 yield put(configurationUpdated(configuration));
 
@@ -272,12 +269,12 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
 
             yield call(initEventHandler);
         } else {
-            originContractLookupAddress = yield call(getOriginContractLookupAddressFromAPI);
+            marketContractLookupAddress = yield call(getMarketContractLookupAddressFromAPI);
 
-            if (originContractLookupAddress) {
-                yield put(setOriginContractLookupAddress(originContractLookupAddress));
+            if (marketContractLookupAddress) {
+                yield put(setMarketContractLookupAddress(marketContractLookupAddress));
 
-                yield put(push(constructBaseURL(originContractLookupAddress)));
+                yield put(push(constructBaseURL(marketContractLookupAddress)));
             } else {
                 yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
                 yield put(setLoading(false));
@@ -287,5 +284,5 @@ function* fillOriginContractLookupAddressIfMissing(): SagaIterator {
 }
 
 export function* contractsSaga(): SagaIterator {
-    yield all([fork(fillOriginContractLookupAddressIfMissing)]);
+    yield all([fork(fillMarketContractLookupAddressIfMissing)]);
 }

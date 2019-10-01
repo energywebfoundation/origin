@@ -13,7 +13,7 @@
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
     "start": "node --max-old-space-size=8192 ./node_modules/.bin/webpack-dev-server --config webpack/dev.config.js --watch",
     "start-all": "yarn start",
-    "test": "jest",
+    "test": "rm -rf db.json && jest",
     "test:watch": "jest -u --watchAll",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",

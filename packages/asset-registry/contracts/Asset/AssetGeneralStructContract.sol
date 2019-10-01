@@ -27,7 +27,6 @@ contract AssetGeneralStructContract {
         string lastSmartMeterReadFileHash;
         string propertiesDocumentHash;
         string url;
-        address marketLookupContract;
         bool bundled;
     }
 }

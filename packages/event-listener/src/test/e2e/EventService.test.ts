@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { assert, should } from 'chai';
+import { assert } from 'chai';
 import Web3 from 'web3';
 
 import { Demo } from '../deployDemo';
@@ -19,11 +19,10 @@ describe('Event Service Tests', async () => {
         await demo.deploy();
     });
 
-    it('gets an instance of OriginContractLookupMarketLookupMapping', async () => {
-        const response = await axios.get(
-            `${process.env.API_BASE_URL}/OriginContractLookupMarketLookupMapping/${demo.originContractLookup}`
-        );
-        should().exist(response.data.marketContractLookup);
+    it('gets an instance of marketContractLookup', async () => {
+        const response = await axios.get(`${process.env.API_BASE_URL}/MarketContractLookup`);
+        assert.equal(response.data.length, 1);
+        assert.equal(typeof response.data[0], 'string');
     });
 
     it('initializes event service', async () => {

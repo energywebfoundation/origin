@@ -354,19 +354,6 @@ describe('CertificateLogic', () => {
             );
         });
 
-        it('should set MarketLogicAddress', async () => {
-            await assetRegistry.setMarketLookupContract(
-                0,
-                originRegistryContract.web3Contract.options.address,
-                { privateKey: assetOwnerPK }
-            );
-
-            assert.equal(
-                await assetRegistry.getMarketLookupContract(0),
-                originRegistryContract.web3Contract.options.address
-            );
-        });
-
         it('should return right interface', async () => {
             assert.isTrue(await certificateLogic.supportsInterface('0x80ac58cd'));
             assert.isFalse(await certificateLogic.supportsInterface('0x80ac58c1'));

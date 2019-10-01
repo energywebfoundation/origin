@@ -19,7 +19,7 @@ import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb
 import moment from 'moment';
 
 export class Demo {
-    public originContractLookup: string;
+    public marketContractLookup: string;
 
     public certificateLogic: CertificateLogic;
 
@@ -109,7 +109,7 @@ export class Demo {
             marketLogic: ''
         };
 
-        this.originContractLookup = originContracts.OriginContractLookup;
+        this.marketContractLookup = marketContracts.MarketContractLookup;
 
         deployResult.userContractLookup = userContracts.UserContractLookup;
         deployResult.assetContractLookup = assetContracts.AssetContractLookup;
@@ -121,14 +121,9 @@ export class Demo {
         deployResult.certificateLogic = originContracts.CertificateLogic;
         deployResult.marketLogic = marketContracts.MarketLogic;
 
-        await axios.put(
-            `${
-                process.env.API_BASE_URL
-            }/OriginContractLookupMarketLookupMapping/${deployResult.originContractLookup.toLowerCase()}`,
-            {
-                marketContractLookup: deployResult.marketContractLookup.toLowerCase()
-            }
-        );
+        await axios.put(`${process.env.API_BASE_URL}/MarketContractLookup`, {
+            address: this.marketContractLookup.toLowerCase()
+        });
 
         const userLogic = new UserLogic(this.web3, deployResult.userLogic);
         this.assetProducingRegistryLogic = new AssetProducingRegistryLogic(

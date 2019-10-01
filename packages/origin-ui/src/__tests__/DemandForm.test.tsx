@@ -9,6 +9,8 @@ import { setupStore, createRenderedHelpers, WrapperComponent } from './utils/hel
 
 let createDemand: (offChainProps: Demand.IDemandOffChainProperties) => void = null;
 
+jest.setTimeout(80000);
+
 jest.mock('@energyweb/market', () => {
     return {
         Demand: {

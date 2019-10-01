@@ -261,13 +261,7 @@ describe('CertificateLogic-Facade', () => {
         await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
     });
 
-    it('should set marketcontract in asset + log a new meterreading ', async () => {
-        await assetRegistry.setMarketLookupContract(
-            0,
-            originRegistryContract.web3Contract.options.address,
-            { privateKey: assetOwnerPK }
-        );
-
+    it('should log a new meterreading ', async () => {
         await assetRegistry.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });

@@ -100,19 +100,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setMarketLookupContract(
-        _assetId: number,
-        _marketContractLookup: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.setMarketLookupContract(
-            _assetId,
-            _marketContractLookup
-        );
-
-        return await this.send(method, txParams);
-    }
-
     async getAssetOwner(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetOwner(_assetId).call(txParams);
     }
@@ -168,10 +155,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
-    }
-
-    async getMarketLookupContract(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getMarketLookupContract(_assetId).call(txParams);
     }
 
     async setActive(_assetId: number, _active: boolean, txParams?: ISpecialTx) {

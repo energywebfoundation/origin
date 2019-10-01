@@ -66,7 +66,7 @@ yarn test
 yarn run:origin
 ```
 
-Find line like `@energyweb/utils-demo: [backend] PUT - OriginContractLookupMarketLookupMapping 0xb4ec89404c4a24f4c80d157ba9ad803cbc4db614` where the contracts address is used to visit the UI at
+Find line like `@energyweb/utils-demo: [backend] PUT - MarketContractLookup 0xb4ec89404c4a24f4c80d157ba9ad803cbc4db614` where the contracts address is used to visit the UI at
 
 `http://localhost:3000/0xb4ec89404c4a24f4c80d157ba9ad803cbc4db614`
 
