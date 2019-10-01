@@ -14,14 +14,14 @@ export const initOriginConfig = async (
         marketContractLookup
     );
 
-    await axios.put(`${process.env.API_BASE_URL}/MarketContractLookup`, {
+    await axios.put(`${process.env.BACKEND_URL}/MarketContractLookup`, {
         address: marketContractLookup.toLowerCase()
     });
 
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: process.env.API_BASE_URL
+            baseUrl: process.env.BACKEND_URL
         },
         logger: Winston.createLogger({
             level: 'debug',

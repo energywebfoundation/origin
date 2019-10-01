@@ -1,3 +1,8 @@
+import { assert } from 'chai';
+import Web3 from 'web3';
+import moment from 'moment';
+import dotenv from 'dotenv';
+
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
@@ -7,16 +12,9 @@ import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame, Unit } from '@energyweb/utils-general';
-import { assert } from 'chai';
-import Web3 from 'web3';
 
-import moment from 'moment';
 import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
-
-const PROVIDER_URL = 'http://localhost:8549';
-const BACKEND_URL = 'http://localhost:3034';
-const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -43,7 +41,12 @@ async function waitForConditionAndAssert(
 }
 
 describe('Test StrategyBasedMatcher', async () => {
-    const web3 = new Web3(PROVIDER_URL);
+    dotenv.config({
+        path: '.env.test'
+    });
+
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
@@ -76,8 +79,8 @@ describe('Test StrategyBasedMatcher', async () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     const matcherConfig: IMatcherConfig = {
-        web3Url: PROVIDER_URL,
-        offChainDataSourceUrl: BACKEND_URL,
+        web3Url: process.env.Web3,
+        offChainDataSourceUrl: process.env.BACKEND_URL,
         marketContractLookupAddress: '',
         matcherAccount: {
             address: accountDeployment,
@@ -215,7 +218,7 @@ describe('Test StrategyBasedMatcher', async () => {
                     web3
                 },
                 offChainDataSource: {
-                    baseUrl: BACKEND_URL
+                    baseUrl: process.env.BACKEND_URL
                 },
                 logger
             };

@@ -1,7 +1,8 @@
 import { assert } from 'chai';
-import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
+import dotenv from 'dotenv';
+
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { UserContractLookup } from '../wrappedContracts/UserContractLookup';
 import { UserLogic } from '../wrappedContracts/UserLogic';
@@ -9,20 +10,18 @@ import { UserDB } from '../wrappedContracts/UserDB';
 import { UserContractLookupJSON, UserLogicJSON, UserDBJSON } from '../../contracts';
 
 describe('UserContractLookup', () => {
-    const configFile: any = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
-    );
-    // const configFile = JSON.parse(fs.readFileSync('connection-config.json', 'utf8'));
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const web3: Web3 = new Web3(configFile.develop.web3);
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
+
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     let userContractLookup: UserContractLookup;
     let userRegistry: UserLogic;
     let userDB: UserDB;
-
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
-        ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 

@@ -1,5 +1,5 @@
-import * as Asset from '@energyweb/asset-registry';
-import * as GeneralLib from '@energyweb/utils-general';
+import { ConsumingAsset, Asset, ProducingAsset } from '@energyweb/asset-registry';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 
 function sleep(ms: number) {
@@ -8,7 +8,7 @@ function sleep(ms: number) {
 
 export const onboardDemo = async (
     actionString: string,
-    conf: GeneralLib.Configuration.Entity,
+    conf: Configuration.Entity,
     adminPrivateKey: string
 ) => {
     const action = JSON.parse(actionString);
@@ -53,7 +53,7 @@ export const onboardDemo = async (
         case 'CREATE_PRODUCING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetProducingProps: Asset.ProducingAsset.IOnChainProperties = {
+            const assetProducingProps: ProducingAsset.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
@@ -65,10 +65,9 @@ export const onboardDemo = async (
             };
 
             const assetTypeConfig = action.data.assetType;
-            const assetCompliance =
-                GeneralLib.Compliance[action.data.complianceRegistry as keyof typeof GeneralLib.Compliance];
+            const assetCompliance = Compliance[action.data.complianceRegistry as keyof typeof Compliance];
 
-            const assetProducingPropsOffChain: Asset.ProducingAsset.IOffChainProperties = {
+            const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
                 operationalSince: action.data.operationalSince,
                 capacityWh: action.data.capacityWh,
                 country: action.data.country,
@@ -83,7 +82,7 @@ export const onboardDemo = async (
             };
 
             try {
-                await Asset.ProducingAsset.createAsset(
+                await ProducingAsset.createAsset(
                     assetProducingProps,
                     assetProducingPropsOffChain,
                     conf
@@ -98,7 +97,7 @@ export const onboardDemo = async (
         case 'CREATE_CONSUMING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetConsumingProps: Asset.ConsumingAsset.IOnChainProperties = {
+            const assetConsumingProps: ConsumingAsset.IOnChainProperties = {
                 certificatesUsedForWh: action.data.certificatesCreatedForWh,
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
@@ -109,7 +108,7 @@ export const onboardDemo = async (
                 url: null
             };
 
-            const assetConsumingPropsOffChain: Asset.Asset.IOffChainProperties = {
+            const assetConsumingPropsOffChain: Asset.IOffChainProperties = {
                 capacityWh: action.data.capacityWh,
                 country: action.data.country,
                 address: action.data.address,
@@ -120,7 +119,7 @@ export const onboardDemo = async (
             };
 
             try {
-                await Asset.ConsumingAsset.createAsset(
+                await ConsumingAsset.createAsset(
                     assetConsumingProps,
                     assetConsumingPropsOffChain,
                     conf

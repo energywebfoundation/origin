@@ -1,30 +1,31 @@
-import { assert } from 'chai';
-import * as fs from 'fs';
+import Web3 from 'web3';
 import 'mocha';
+import dotenv from 'dotenv';
+import { assert } from 'chai';
+
+import { Configuration } from '@energyweb/utils-general';
+
 import {
     UserLogic,
     UserContractLookup
 } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { User } from '..';
-import { Configuration } from '@energyweb/utils-general';
 import { logger } from '../blockchain-facade/Logger';
-import Web3 from 'web3';
 import { buildRights, Role } from '../wrappedContracts/RoleManagement';
 
 describe('UserLogic Facade', () => {
-    const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
-    );
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const web3 = new Web3(configFile.develop.web3);
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
+
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     let userContractLookup: UserContractLookup;
     let userRegistry: UserLogic;
-
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
-        ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
@@ -84,7 +85,7 @@ describe('UserLogic Facade', () => {
                 }
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3033'
+                baseUrl: process.env.BACKEND_URL
             },
             logger
         };

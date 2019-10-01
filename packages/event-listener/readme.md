@@ -8,17 +8,16 @@ This repository/package is not designed for productive usage. Instead it should 
 
 ### Configuration
 
-Create a `.env.dev` file in the root of the package with the following contents:
+Create a `.env.prod` file in the root of the package with the following contents:
 
-**.env.dev**
+**.env.prod**
 ```
-MODE="development"
 UI_BASE_URL="http://localhost:3000"
-API_BASE_URL="http://localhost:3035"
+BACKEND_URL="http://localhost:3035"
 WEB3="http://localhost:8550"
 MANDRILL_API_KEY="REPLACE_WITH_YOUR_API_KEY"
-EMAIL_FROM="origin-no-reply@energyweb.org"
-EMAIL_REPLY_TO="reply-to@energyweb.org"
+EMAIL_FROM="no-reply@example.com"
+EMAIL_REPLY_TO="reply-to@example.com"
 ```
 
 ### Run

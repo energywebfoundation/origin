@@ -1,24 +1,25 @@
 import { assert } from 'chai';
-import * as fs from 'fs';
 import Web3 from 'web3';
 import 'mocha';
+import dotenv from 'dotenv';
+
 import { Configuration } from '@energyweb/utils-general';
-import { logger } from '../Logger';
 import { UserContractLookup, UserLogic, buildRights, Role } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+
+import { logger } from '../Logger';
 import { migrateAssetRegistryContracts } from '../../contracts';
 import { Asset, ConsumingAsset, AssetConsumingRegistryLogic } from '..';
 
 describe('AssetConsumingLogic Facade', () => {
-    const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
-    );
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const web3 = new Web3(configFile.develop.web3);
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
-        ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
@@ -105,7 +106,7 @@ describe('AssetConsumingLogic Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030'
+                baseUrl: process.env.BACKEND_URL
             },
             logger
         };
@@ -149,7 +150,7 @@ describe('AssetConsumingLogic Facade', () => {
                 active: true,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
-                url: `http://localhost:3030/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`
             } as any,
             asset
         );
@@ -214,7 +215,7 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `http://localhost:3030/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`,
+            url: `${process.env.BACKEND_URL}/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`,
             offChainProperties: {
                 operationalSince: 10,
                 capacityWh: 10,

@@ -1,18 +1,8 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it; Chirag Parmar, chirag.parmar@slock.it
+import * as fs from 'fs';
+import Web3 from 'web3';
+import dotenv from 'dotenv';
+import moment from 'moment';
+
 import {
     AssetConsumingRegistryLogic,
     AssetProducingRegistryLogic
@@ -22,20 +12,18 @@ import { CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { deployERC20TestToken } from '@energyweb/erc-test-contracts';
-import * as fs from 'fs';
-import Web3 from 'web3';
 
 import { certificateDemo } from './certificate';
-import { CONFIG } from './config';
 import { logger } from './Logger';
-import moment from 'moment';
 
 export const marketDemo = async (demoFile?: string) => {
     const startTime = moment().unix();
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const connectionConfig = JSON.parse(
-        fs.readFileSync('./connection-config.json', 'utf8').toString()
-    );
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
     let demoConfig;
     if (!demoFile) {
@@ -48,12 +36,7 @@ export const marketDemo = async (demoFile?: string) => {
         fs.readFileSync('./config/contractConfig.json', 'utf8').toString()
     );
 
-    const web3 = new Web3(connectionConfig.develop.web3);
-
-    const adminPK = demoConfig.topAdminPrivateKey.startsWith('0x')
-        ? demoConfig.topAdminPrivateKey
-        : '0x' + demoConfig.topAdminPrivateKey;
-
+    const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPK);
 
     // create logic instances
@@ -90,7 +73,7 @@ export const marketDemo = async (demoFile?: string) => {
             web3
         },
         offChainDataSource: {
-            baseUrl: CONFIG.API_BASE_URL
+            baseUrl: process.env.BACKEND_URL
         },
         logger
     };

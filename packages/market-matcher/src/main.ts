@@ -11,7 +11,7 @@ const config = {
         address: process.env.MATCHER_PUB_KEY,
         privateKey: process.env.MATCHER_PRIV_KEY
     },
-    offChainDataSourceUrl: process.env.API_BASE_URL
+    offChainDataSourceUrl: process.env.BACKEND_URL
 };
 
 startMatcher(config);

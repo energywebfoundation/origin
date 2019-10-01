@@ -3,5 +3,4 @@ package-lock.json
 dist
 db.json
 
-.env.dev
 .env.prod
