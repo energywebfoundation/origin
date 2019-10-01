@@ -28,7 +28,7 @@ import "@energyweb/asset-registry/contracts/Interfaces/AssetContractLookupInterf
 
 import "../..//contracts/Interfaces/ERC165.sol";
 import "../../contracts/Origin/TradableEntityContract.sol";
-import "../../contracts/Origin/EnergyDB.sol";
+import "../../contracts/Origin/TradableEntityDB.sol";
 import "../../contracts/Interfaces/TradableEntityDBInterface.sol";
 import "../../contracts/Interfaces/OriginContractLookupInterface.sol";
 import "../../contracts/Interfaces/TradableEntityInterface.sol";
