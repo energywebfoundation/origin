@@ -2,5 +2,3 @@ node_modules
 package-lock.json
 dist
 db.json
-
-.env.prod

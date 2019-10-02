@@ -9,7 +9,7 @@ export const SCAN_INTERVAL = 3000;
 
 (async () => {
     dotenv.config({
-        path: '.env'
+        path: '../../.env'
     });
 
     const web3 = new Web3(process.env.WEB3 || 'http://localhost:8550');

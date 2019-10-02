@@ -42,6 +42,7 @@
         "run:ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 40",
         "run:simulator:server": "lerna run start-simulation --scope @energyweb/solar-simulator --stream",
         "run:simulator:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
+        "run:matcher": "lerna run start --scope @energyweb/market-matcher --stream",
         "run:event-listener": "lerna run start --scope @energyweb/event-listener --stream",
         "test": "yarn test:ui && lerna run test:concurrent --stream --parallel",
         "test:serial": "yarn test:ui && lerna run test:concurrent --stream",
