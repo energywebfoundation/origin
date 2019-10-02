@@ -8,10 +8,6 @@ import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 
 export const deployEmptyContracts = async () => {
-    dotenv.config({
-        path: '.env.test'
-    });
-
     const web3: Web3 = new Web3(process.env.WEB3);
     const deployKey: string = process.env.DEPLOY_KEY;
 

@@ -20,7 +20,7 @@ const CHECK_INTERVAL: number = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000
 
 const SOLAR_ASSET_GENERATION_TIMEZONE: string =
     CONFIG.config.SOLAR_ASSET_GENERATION_TIMEZONE || 'Europe/Berlin';
-const WEB3_URL = CONFIG.config.WEB3_URL || 'http://localhost:8545';
+const WEB3_URL = process.env.WEB3 || 'http://localhost:8545';
 const ASSET_CONTRACT_LOOKUP_ADDRESS =
     CONFIG.config.ASSET_CONTRACT_LOOKUP_ADDRESS || '0x24B207fFf1a1097d3c3D69fcE461544f83c6E774';
 const ENERGY_API_BASE_URL = CONFIG.config.ENERGY_API_BASE_URL || `http://localhost:3031`;

@@ -18,9 +18,6 @@ import { logger } from './Logger';
 
 export const marketDemo = async (demoFile?: string) => {
     const startTime = moment().unix();
-    dotenv.config({
-        path: '.env.test'
-    });
 
     const web3: Web3 = new Web3(process.env.WEB3);
     const deployKey: string = process.env.DEPLOY_KEY;

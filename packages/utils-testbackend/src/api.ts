@@ -169,6 +169,10 @@ export async function startAPI(port?: number) {
     });
 
     await storage.initialize();
+    
+    const backendPort: number = port || parseInt(process.env.PORT, 10) || 3030;
 
-    return app.listen(port || process.env.PORT || 3030);
+    console.log(`Running the test backend on port: ${backendPort}`);
+
+    return app.listen(backendPort);
 }
