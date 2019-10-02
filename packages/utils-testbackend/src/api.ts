@@ -170,7 +170,7 @@ export async function startAPI(port?: number) {
 
     await storage.initialize();
     
-    const backendPort: number = port || parseInt(process.env.PORT, 10) || 3030;
+    const backendPort: number = parseInt(process.env.PORT, 10) || port || 3030;
 
     console.log(`Running the test backend on port: ${backendPort}`);
 
