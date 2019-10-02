@@ -79,7 +79,7 @@ describe('Test StrategyBasedMatcher', async () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     const matcherConfig: IMatcherConfig = {
-        web3Url: process.env.Web3,
+        web3Url: process.env.WEB3,
         offChainDataSourceUrl: process.env.BACKEND_URL,
         marketContractLookupAddress: '',
         matcherAccount: {
@@ -148,7 +148,7 @@ describe('Test StrategyBasedMatcher', async () => {
             await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
                 privateKey: privateKeyDeployment
             });
-        }).timeout(5000);
+        });
 
         it('should deploy asset-registry contracts', async () => {
             const deployedContracts = await migrateAssetRegistryContracts(
@@ -336,7 +336,7 @@ describe('Test StrategyBasedMatcher', async () => {
             await certificateLogic.approveCertificationRequest(0, {
                 privateKey: issuerPK
             });
-        }).timeout(10000);
+        });
 
         it('certificate has been created', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
@@ -379,7 +379,7 @@ describe('Test StrategyBasedMatcher', async () => {
                 1000,
                 20000
             );
-        }).timeout(21000);
+        });
     });
 
     describe('Agreement -> Certificate matching tests', () => {
@@ -416,7 +416,7 @@ describe('Test StrategyBasedMatcher', async () => {
 
             const agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
             await agreement.approveAgreementSupply();
-        }).timeout(6000);
+        });
 
         it('creates a smart meter reading', async () => {
             conf.blockchainProperties.activeUser = {
@@ -439,7 +439,7 @@ describe('Test StrategyBasedMatcher', async () => {
             await certificateLogic.approveCertificationRequest(1, {
                 privateKey: issuerPK
             });
-        }).timeout(10000);
+        });
 
         it('certificate has been created', async () => {
             conf.blockchainProperties.activeUser = {
@@ -459,7 +459,7 @@ describe('Test StrategyBasedMatcher', async () => {
             await sleep(10000);
 
             assert.equal(await Certificate.getCertificateListLength(conf), 4);
-        }).timeout(11000);
+        });
 
         it('asset owner is still the owner of the original certificate', async () => {
             const certificate = await new Certificate.Entity('1', conf).sync();
@@ -526,7 +526,7 @@ describe('Test StrategyBasedMatcher', async () => {
             await certificate.publishForSale(1, Currency.USD);
 
             assert.equal(certificate.energy, energy);
-        }).timeout(10000);
+        });
 
         it('should create a demand', async () => {
             conf.blockchainProperties.activeUser = {
@@ -572,6 +572,6 @@ describe('Test StrategyBasedMatcher', async () => {
                 1000,
                 20000
             );
-        }).timeout(30000);
+        });
     });
 });
