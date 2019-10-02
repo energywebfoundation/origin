@@ -1,13 +1,16 @@
-import {
-    createBlockchainProperties as assetCreateBlockchainProperties,
-    ProducingAsset
-} from '@energyweb/asset-registry';
-import { Configuration } from '@energyweb/utils-general';
 import axios from 'axios';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
 import * as Winston from 'winston';
+import dotenv from 'dotenv';
+
+import {
+    createBlockchainProperties as assetCreateBlockchainProperties,
+    ProducingAsset
+} from '@energyweb/asset-registry';
+import { Configuration } from '@energyweb/utils-general';
+
 import CONFIG from '../config/config.json';
 
 export function wait(milliseconds: number) {
@@ -16,17 +19,20 @@ export function wait(milliseconds: number) {
     });
 }
 
+dotenv.config({
+    path: '../../.env'
+});
+
 const CHECK_INTERVAL: number = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
 
 const SOLAR_ASSET_GENERATION_TIMEZONE: string =
     CONFIG.config.SOLAR_ASSET_GENERATION_TIMEZONE || 'Europe/Berlin';
-const WEB3_URL = process.env.WEB3 || 'http://localhost:8545';
-const ASSET_CONTRACT_LOOKUP_ADDRESS =
-    CONFIG.config.ASSET_CONTRACT_LOOKUP_ADDRESS || '0x24B207fFf1a1097d3c3D69fcE461544f83c6E774';
-const ENERGY_API_BASE_URL = CONFIG.config.ENERGY_API_BASE_URL || `http://localhost:3031`;
+const WEB3 = process.env.WEB3 || 'http://localhost:8545';
+const { ASSET_CONTRACT_LOOKUP_ADDRESS } = process.env;
+const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
 
 async function getAssetConf() {
-    const web3 = new Web3(WEB3_URL);
+    const web3 = new Web3(WEB3);
 
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
