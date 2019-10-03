@@ -6,8 +6,9 @@ import { deployEmptyContracts } from './deployEmpty';
 
 async function main() {
     dotenv.config({
-        path: '.env.test'
+        path: '../../.env'
     });
+
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo();

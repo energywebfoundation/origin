@@ -7,7 +7,7 @@ module.exports = merge(baseConfig, {
 
     plugins: [
         new Dotenv({
-          path: '.env.prod'
+          path: '../../.env'
         })
     ],
 

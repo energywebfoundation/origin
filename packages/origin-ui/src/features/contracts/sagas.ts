@@ -20,7 +20,7 @@ import {
     demandCreated
 } from '../actions';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { API_BASE_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
+import { BACKEND_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
 import { setError, setLoading } from '../general/actions';
 import { getLoading } from '../general/selectors';
 import { updateCurrentUserId } from '../users/actions';
@@ -60,7 +60,7 @@ async function initConf(
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: API_BASE_URL
+            baseUrl: BACKEND_URL
         },
 
         logger: Winston.createLogger({

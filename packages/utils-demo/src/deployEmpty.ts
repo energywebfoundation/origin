@@ -1,21 +1,17 @@
-import * as fs from 'fs';
 import Web3 from 'web3';
 import { logger } from './Logger';
+import dotenv from 'dotenv';
+
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 
 export const deployEmptyContracts = async () => {
-    const connectionConfig = JSON.parse(
-        fs.readFileSync('./connection-config.json', 'utf8').toString()
-    );
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
-    const web3 = new Web3(connectionConfig.develop.web3);
-
-    const adminPK = connectionConfig.develop.deployKey.startsWith('0x')
-        ? connectionConfig.develop.deployKey
-        : '0x' + connectionConfig.develop.deployKey;
+    const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     console.log('-----------------------------------------------------------');
 

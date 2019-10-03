@@ -5,7 +5,7 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { API_BASE_URL } from '../../utils/api';
+import { BACKEND_URL } from '../../utils/api';
 import { MarketLogic } from '@energyweb/market';
 import { IStoreState } from '../../types';
 import axios from 'axios';
@@ -88,7 +88,7 @@ export const deployDemo = async () => {
     deployResult.certificateLogic = originContracts.CertificateLogic;
     deployResult.marketLogic = marketContracts.MarketLogic;
 
-    await axios.put(`${API_BASE_URL}/MarketContractLookup`, {
+    await axios.put(`${BACKEND_URL}/MarketContractLookup`, {
         address: deployResult.marketContractLookup.toLowerCase()
     });
 
@@ -118,7 +118,7 @@ export const deployDemo = async () => {
             web3
         },
         offChainDataSource: {
-            baseUrl: API_BASE_URL
+            baseUrl: BACKEND_URL
         },
         logger
     };

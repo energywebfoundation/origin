@@ -1,8 +1,12 @@
 {
     "name": "root",
     "private": true,
+    "dependencies": {
+        "dotenv": "8.1.0"
+    },
     "devDependencies": {
         "@types/chai": "4.2.3",
+        "@types/dotenv": "6.1.1",
         "@types/mocha": "5.2.7",
         "@types/node": "10.14.18",
         "@typescript-eslint/eslint-plugin": "2.3.1",
@@ -37,9 +41,10 @@
         "run:backend": "lerna run start --scope @energyweb/utils-testbackend --stream",
         "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
         "run:origin": "lerna run start-all --scope @energyweb/origin-ui --scope @energyweb/utils-demo --parallel",
-        "run:ganache": "lerna run start-ganache --scope @energyweb/utils-demo --stream",
+        "run:ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 40",
         "run:simulator:server": "lerna run start-simulation --scope @energyweb/solar-simulator --stream",
         "run:simulator:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
+        "run:matcher": "lerna run start --scope @energyweb/market-matcher --stream",
         "run:event-listener": "lerna run start --scope @energyweb/event-listener --stream",
         "test": "yarn test:ui && lerna run test:concurrent --stream --parallel",
         "test:serial": "yarn test:ui && lerna run test:concurrent --stream",

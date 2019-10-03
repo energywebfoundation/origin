@@ -16,6 +16,7 @@
 
 import * as fs from 'fs';
 import Web3 from 'web3';
+import dotenv from 'dotenv';
 
 import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
@@ -27,16 +28,14 @@ import {
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
 
-import { CONFIG } from './config';
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
 
 export const marketDemo = async (demoFile?: string) => {
     const startTime = Date.now();
 
-    const connectionConfig = JSON.parse(
-        fs.readFileSync('./connection-config.json', 'utf8').toString()
-    );
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
     let demoConfig;
     if (!demoFile) {
@@ -49,11 +48,7 @@ export const marketDemo = async (demoFile?: string) => {
         fs.readFileSync('./config/contractConfig.json', 'utf8').toString()
     );
 
-    const web3 = new Web3(connectionConfig.develop.web3);
-
-    const adminPK = demoConfig.topAdminPrivateKey.startsWith('0x')
-        ? demoConfig.topAdminPrivateKey
-        : '0x' + demoConfig.topAdminPrivateKey;
+    const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     const adminAccount = web3.eth.accounts.privateKeyToAccount(adminPK);
 
@@ -91,7 +86,7 @@ export const marketDemo = async (demoFile?: string) => {
             web3
         },
         offChainDataSource: {
-            baseUrl: CONFIG.API_BASE_URL
+            baseUrl: process.env.BACKEND_URL
         },
         logger
     };

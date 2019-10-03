@@ -50,7 +50,6 @@ The configuration and flow of actions is done "by default" with the file [demo-c
 *NOTE: you could also pass a customized demo file into the <code>marketDemo()</code> function in the test script(<code>/src/test.ts</code>)*
 
 The following keys are required:
-* topAdminPrivateKey: the private key of the topAdmin
 * flow: an array with flow actions. They will get executed in the ordering within the config-file
 
 ### flow actions
