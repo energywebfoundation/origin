@@ -29,7 +29,7 @@ describe('Application[E2E]', () => {
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>
-                <Route path="/:contractAddress/" component={AppContainer} />
+                <Route path="/" component={AppContainer} />
             </WrapperComponent>
         );
 

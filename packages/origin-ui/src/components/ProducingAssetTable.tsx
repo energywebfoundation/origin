@@ -285,6 +285,6 @@ export const ProducingAssetTable = connect(
         producingAssets: getProducingAssets(state),
         users: getUsers(state),
         currentUser: getCurrentUser(state),
-        baseURL: getBaseURL(state)
+        baseURL: getBaseURL()
     })
 )(ProducingAssetTableClass);

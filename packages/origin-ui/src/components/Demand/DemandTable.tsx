@@ -330,7 +330,7 @@ export const DemandTable = withRouter(
             configuration: getConfiguration(state),
             demands: getDemands(state),
             currentUser: getCurrentUser(state),
-            baseURL: getBaseURL(state)
+            baseURL: getBaseURL()
         })
     )(DemandTableClass)
 );

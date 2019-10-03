@@ -230,7 +230,7 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
 
 export const ConsumingAssetDetailView = connect(
     (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state),
+        baseURL: getBaseURL(),
         certificates: getCertificates(state),
         configuration: getConfiguration(state),
         consumingAssets: getConsumingAssets(state)

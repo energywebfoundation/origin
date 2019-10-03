@@ -2,8 +2,8 @@ import { call, put, select, take, all, fork, apply, takeEvery, cancel } from 're
 import { SagaIterator, eventChannel } from 'redux-saga';
 import { ContractsActions, setMarketContractLookupAddress } from './actions';
 import { getMarketContractLookupAddress } from './selectors';
-import { push, getSearch } from 'connected-react-router';
-import { constructBaseURL, getConfiguration } from '../selectors';
+import { getSearch } from 'connected-react-router';
+import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate } from '@energyweb/origin';
@@ -273,8 +273,6 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
             if (marketContractLookupAddress) {
                 yield put(setMarketContractLookupAddress(marketContractLookupAddress));
-
-                yield put(push(constructBaseURL(marketContractLookupAddress)));
             } else {
                 yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
                 yield put(setLoading(false));

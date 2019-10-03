@@ -96,7 +96,7 @@ class HeaderClass extends React.Component<Props, IHeaderState> {
 export const Header = withRouter(
     connect((state: IStoreState) => ({
         configuration: getConfiguration(state),
-        baseURL: getBaseURL(state),
+        baseURL: getBaseURL(),
         currentUser: getCurrentUser(state)
     }))(HeaderClass)
 );

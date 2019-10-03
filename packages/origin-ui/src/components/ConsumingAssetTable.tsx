@@ -169,6 +169,6 @@ export const ConsumingAssetTable = connect(
     (state: IStoreState): IStateProps => ({
         configuration: getConfiguration(state),
         consumingAssets: getConsumingAssets(state),
-        baseURL: getBaseURL(state)
+        baseURL: getBaseURL()
     })
 )(ConsumingAssetTableClass);
