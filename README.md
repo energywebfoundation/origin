@@ -50,7 +50,6 @@ yarn
 ## Build
 
 ```shell
-yarn build:static
 yarn build
 ```
 
