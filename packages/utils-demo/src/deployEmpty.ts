@@ -1,6 +1,5 @@
 import Web3 from 'web3';
 import { logger } from './Logger';
-import dotenv from 'dotenv';
 
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
