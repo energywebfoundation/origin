@@ -32,12 +32,6 @@ interface IDispatchProps {
 type Props = IStateProps & IDispatchProps;
 
 class AppContainerClass extends React.Component<Props> {
-    async componentDidMount(): Promise<void> {
-        const contractAddress = this.props.match.params.contractAddress;
-
-        this.props.setMarketContractLookupAddress(contractAddress);
-    }
-
     render(): JSX.Element {
         const { baseURL, error, loading } = this.props;
 
