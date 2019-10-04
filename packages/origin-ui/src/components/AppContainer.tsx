@@ -8,13 +8,8 @@ import './AppContainer.scss';
 import { Demands } from './Demand/Demands';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
-import {
-    TSetMarketContractLookupAddress,
-    setMarketContractLookupAddress
-} from '../features/contracts/actions';
 import { getBaseURL } from '../features/selectors';
 import { getAssetsLink, getCertificatesLink, getDemandsLink } from '../utils/routing';
 import { getError, getLoading } from '../features/general/selectors';
@@ -25,11 +20,7 @@ interface IStateProps {
     loading: boolean;
 }
 
-interface IDispatchProps {
-    setMarketContractLookupAddress: TSetMarketContractLookupAddress;
-}
-
-type Props = IStateProps & IDispatchProps;
+type Props = IStateProps;
 
 class AppContainerClass extends React.Component<Props> {
     render(): JSX.Element {
@@ -65,13 +56,6 @@ export const AppContainer = withRouter(
             baseURL: getBaseURL(),
             error: getError(state),
             loading: getLoading(state)
-        }),
-        dispatch =>
-            bindActionCreators(
-                {
-                    setMarketContractLookupAddress
-                },
-                dispatch
-            )
+        })
     )(AppContainerClass)
 );

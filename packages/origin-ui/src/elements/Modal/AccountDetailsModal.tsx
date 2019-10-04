@@ -13,20 +13,40 @@ import {
     TextField
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { STYLE_CONFIG } from '../../styles/styleConfig';
+import { connect } from 'react-redux';
+import { IStoreState } from '../../types';
+import { getConfiguration } from '../../features/selectors';
+import { getMarketContractLookupAddress } from '../../features/contracts/selectors';
+import { getCurrentUser } from '../../features/users/selectors';
+import { bindActionCreators } from 'redux';
+import {
+    TSetMarketContractLookupAddress,
+    setMarketContractLookupAddress
+} from '../../features/contracts/actions';
 
-interface IAccountDetailsModalProps {
-    conf: Configuration.Entity;
-    currentUser: User.Entity;
+interface IOwnProps {
     showModal: boolean;
     callback: () => void;
 }
 
-interface IAccountDetailsModalState {
+interface IStateProps {
+    configuration: Configuration.Entity;
+    currentUser: User.Entity;
+    marketLookupAddress: string;
+}
+
+interface IDispatchProps {
+    setMarketContractLookupAddress: TSetMarketContractLookupAddress;
+}
+
+type Props = IOwnProps & IStateProps & IDispatchProps;
+
+interface IState {
     show: boolean;
     notificationsEnabled: boolean;
+    marketLookupAddress: string;
 }
 
 const PurpleSwitch = withStyles({
@@ -43,10 +63,7 @@ const PurpleSwitch = withStyles({
     track: {}
 })(Switch);
 
-class AccountDetailsModal extends React.Component<
-    IAccountDetailsModalProps,
-    IAccountDetailsModalState
-> {
+class AccountDetailsModalClass extends React.Component<Props, IState> {
     constructor(props, context) {
         super(props, context);
 
@@ -56,20 +73,28 @@ class AccountDetailsModal extends React.Component<
 
         this.state = {
             show: props.showModal,
-            notificationsEnabled: props.currentUser.offChainProperties.notifications
+            notificationsEnabled: props.currentUser.offChainProperties.notifications,
+            marketLookupAddress: ''
         };
     }
 
-    static getDerivedStateFromProps(nextProps) {
+    static getDerivedStateFromProps(nextProps: Props): Partial<IState> {
         return {
             show: nextProps.showModal
         };
     }
 
+    componentDidMount() {
+        this.setState({
+            marketLookupAddress: this.props.marketLookupAddress
+        });
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.currentUser && this.props.currentUser !== prevProps.currentUser) {
             this.setState({
-                notificationsEnabled: this.props.currentUser.offChainProperties.notifications
+                notificationsEnabled: this.props.currentUser.offChainProperties.notifications,
+                marketLookupAddress: this.props.marketLookupAddress
             });
         }
     }
@@ -83,24 +108,46 @@ class AccountDetailsModal extends React.Component<
     async saveChanges() {
         const { currentUser } = this.props;
 
-        if (this.state.notificationsEnabled === currentUser.offChainProperties.notifications) {
+        const notificationChanged =
+            this.state.notificationsEnabled !== currentUser.offChainProperties.notifications;
+        const contractChanged = this.state.marketLookupAddress !== this.props.marketLookupAddress;
+
+        if (!notificationChanged && !contractChanged) {
             this.handleClose();
             showNotification(`No changes have been made.`, NotificationType.Error);
 
             return;
         }
 
-        const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
-        newProperties.notifications = this.state.notificationsEnabled;
+        if (notificationChanged) {
+            const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
+            newProperties.notifications = this.state.notificationsEnabled;
 
-        currentUser.configuration.blockchainProperties.activeUser = {
-            address: currentUser.id
-        };
+            currentUser.configuration.blockchainProperties.activeUser = {
+                address: currentUser.id
+            };
 
-        await currentUser.update(newProperties);
+            await currentUser.update(newProperties);
+        }
+
+        if (contractChanged) {
+            this.props.setMarketContractLookupAddress({
+                address: this.state.marketLookupAddress,
+                userDefined: true
+            });
+        }
 
         showNotification(`User settings have been updated.`, NotificationType.Success);
         this.handleClose();
+    }
+
+    get propertiesChanged() {
+        const notificationChanged =
+            this.state.notificationsEnabled !==
+            this.props.currentUser.offChainProperties.notifications;
+        const contractChanged = this.state.marketLookupAddress !== this.props.marketLookupAddress;
+
+        return notificationChanged || contractChanged;
     }
 
     handleClose() {
@@ -119,10 +166,21 @@ class AccountDetailsModal extends React.Component<
                 <DialogTitle>{currentUser ? currentUser.organization : 'Guest'}</DialogTitle>
                 <DialogContent>
                     <TextField
-                        label="e-mail"
+                        label="E-mail"
                         value={currentUser ? currentUser.offChainProperties.email : 'Unknown'}
                         fullWidth
                         disabled
+                        className="my-3"
+                    />
+                    <TextField
+                        label="Market Lookup Address"
+                        value={this.state.marketLookupAddress}
+                        onChange={e =>
+                            this.setState({
+                                marketLookupAddress: e.target.value
+                            })
+                        }
+                        fullWidth
                         className="my-3"
                     />
                     <FormGroup>
@@ -144,10 +202,7 @@ class AccountDetailsModal extends React.Component<
                     <Button
                         onClick={this.saveChanges}
                         color="primary"
-                        disabled={
-                            this.state.notificationsEnabled ===
-                            currentUser.offChainProperties.notifications
-                        }
+                        disabled={!this.propertiesChanged}
                     >
                         Update
                     </Button>
@@ -157,4 +212,17 @@ class AccountDetailsModal extends React.Component<
     }
 }
 
-export { AccountDetailsModal };
+export const AccountDetailsModal = connect(
+    (state: IStoreState): IStateProps => ({
+        currentUser: getCurrentUser(state),
+        configuration: getConfiguration(state),
+        marketLookupAddress: getMarketContractLookupAddress(state)
+    }),
+    dispatch =>
+        bindActionCreators(
+            {
+                setMarketContractLookupAddress
+            },
+            dispatch
+        )
+)(AccountDetailsModalClass);
