@@ -117,6 +117,6 @@ describe('DemandForm', () => {
 
         await refresh();
 
-        expect(store.getState().router.location.pathname).toBe(`//demands/view/3123`);
+        expect(store.getState().router.location.pathname).toBe(`/demands/view/3123`);
     });
 });

@@ -4,7 +4,10 @@ export enum ContractsActions {
 
 export interface ISetMarketContractLookupAddressAction {
     type: ContractsActions.setMarketContractLookupAddress;
-    payload: string;
+    payload: {
+        address: string;
+        userDefined?: boolean;
+    };
 }
 
 export const setMarketContractLookupAddress = (
@@ -15,5 +18,8 @@ export const setMarketContractLookupAddress = (
 });
 
 export type TSetMarketContractLookupAddress = typeof setMarketContractLookupAddress;
+
+export const MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY =
+    'CONTRACTS_MARKET_CONTRACT_LOOKUP_ADDRESS';
 
 export type IContractsAction = ISetMarketContractLookupAddressAction;

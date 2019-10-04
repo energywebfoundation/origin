@@ -344,7 +344,7 @@ class ProducingAssetDetailViewClass extends React.Component<Props, IState> {
 
 export const ProducingAssetDetailView = connect(
     (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state),
+        baseURL: getBaseURL(),
         certificates: getCertificates(state),
         configuration: getConfiguration(state),
         producingAssets: getProducingAssets(state)

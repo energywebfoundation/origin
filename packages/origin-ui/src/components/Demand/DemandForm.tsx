@@ -667,7 +667,7 @@ class DemandFormClass extends React.Component<Props, IState> {
 export const DemandForm = withRouter(
     connect(
         (state: IStoreState): IStateProps => ({
-            baseURL: getBaseURL(state),
+            baseURL: getBaseURL(),
             currentUser: getCurrentUser(state),
             configuration: getConfiguration(state)
         })

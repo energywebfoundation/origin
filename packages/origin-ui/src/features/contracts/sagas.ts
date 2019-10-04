@@ -1,9 +1,13 @@
-import { call, put, select, take, all, fork, apply, takeEvery, cancel } from 'redux-saga/effects';
+import { call, put, select, take, all, fork, apply, cancel, takeEvery } from 'redux-saga/effects';
 import { SagaIterator, eventChannel } from 'redux-saga';
-import { ContractsActions, setMarketContractLookupAddress } from './actions';
-import { getMarketContractLookupAddress } from './selectors';
-import { push, getSearch } from 'connected-react-router';
-import { constructBaseURL, getConfiguration } from '../selectors';
+import {
+    setMarketContractLookupAddress,
+    ContractsActions,
+    ISetMarketContractLookupAddressAction,
+    MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
+} from './actions';
+import { getSearch } from 'connected-react-router';
+import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate } from '@energyweb/origin';
@@ -22,7 +26,6 @@ import {
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { BACKEND_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
 import { setError, setLoading } from '../general/actions';
-import { getLoading } from '../general/selectors';
 import { updateCurrentUserId } from '../users/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
@@ -194,95 +197,109 @@ function* initEventHandler() {
 }
 
 function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
-    yield takeEvery(ContractsActions.setMarketContractLookupAddress, function*() {
-        let marketContractLookupAddress: string | undefined = yield select(
-            getMarketContractLookupAddress
+    const savedAddress = localStorage.getItem(MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY);
+    let marketContractLookupAddress: string = savedAddress;
+
+    if (!marketContractLookupAddress) {
+        marketContractLookupAddress = yield call(getMarketContractLookupAddressFromAPI);
+    }
+
+    if (marketContractLookupAddress) {
+        yield put(
+            setMarketContractLookupAddress({
+                address: marketContractLookupAddress
+            })
+        );
+    } else {
+        yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
+        yield put(setLoading(false));
+
+        return;
+    }
+
+    const routerSearch: string = yield select(getSearch);
+
+    let configuration: Configuration.Entity;
+    try {
+        configuration = yield call(initConf, marketContractLookupAddress, routerSearch);
+
+        yield put(configurationUpdated(configuration));
+
+        yield put(setLoading(false));
+    } catch (error) {
+        console.error('ContractsSaga::WrongNetwork', error);
+        yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
+        yield put(setLoading(false));
+
+        yield cancel();
+    }
+
+    try {
+        const accounts: string[] = yield call(
+            configuration.blockchainProperties.web3.eth.getAccounts
         );
 
-        const loading: boolean = yield select(getLoading);
+        yield put(updateCurrentUserId(accounts[0]));
+    } catch (error) {
+        console.error('ContractsSaga::UserDoesntExist', error);
+    }
 
-        if (marketContractLookupAddress && marketContractLookupAddress !== 'undefined' && loading) {
-            const routerSearch: string = yield select(getSearch);
+    const producingAssets: ProducingAsset.Entity[] = yield apply(
+        ProducingAsset,
+        ProducingAsset.getAllAssets,
+        [configuration]
+    );
 
-            let configuration: Configuration.Entity;
-            try {
-                configuration = yield call(initConf, marketContractLookupAddress, routerSearch);
+    for (const asset of producingAssets) {
+        yield put(producingAssetCreatedOrUpdated(asset));
+    }
 
-                yield put(configurationUpdated(configuration));
+    const consumingAssets: ConsumingAsset.Entity[] = yield apply(
+        ConsumingAsset,
+        ConsumingAsset.getAllAssets,
+        [configuration]
+    );
 
-                yield put(setLoading(false));
-            } catch (error) {
-                console.error('ContractsSaga::WrongNetwork', error);
-                yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-                yield put(setLoading(false));
+    for (const asset of consumingAssets) {
+        yield put(consumingAssetCreatedOrUpdated(asset));
+    }
 
-                yield cancel();
-            }
+    const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [configuration]);
 
-            try {
-                const accounts: string[] = yield call(
-                    configuration.blockchainProperties.web3.eth.getAccounts
-                );
+    for (const demand of demands) {
+        yield put(demandCreated(demand));
+    }
 
-                yield put(updateCurrentUserId(accounts[0]));
-            } catch (error) {
-                console.error('ContractsSaga::UserDoesntExist', error);
-            }
+    const certificates: Certificate.Entity[] = yield apply(
+        Certificate,
+        Certificate.getAllCertificates,
+        [configuration]
+    );
 
-            const producingAssets: ProducingAsset.Entity[] = yield apply(
-                ProducingAsset,
-                ProducingAsset.getAllAssets,
-                [configuration]
+    for (const certificate of certificates) {
+        yield put(certificateCreatedOrUpdated(certificate));
+    }
+
+    yield call(initEventHandler);
+}
+
+function* persistUserDefinedMarketLookupContract(): SagaIterator {
+    yield takeEvery(ContractsActions.setMarketContractLookupAddress, function*(
+        action: ISetMarketContractLookupAddressAction
+    ) {
+        if (action.payload.userDefined) {
+            localStorage.setItem(
+                MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY,
+                action.payload.address
             );
-
-            for (const asset of producingAssets) {
-                yield put(producingAssetCreatedOrUpdated(asset));
-            }
-
-            const consumingAssets: ConsumingAsset.Entity[] = yield apply(
-                ConsumingAsset,
-                ConsumingAsset.getAllAssets,
-                [configuration]
-            );
-
-            for (const asset of consumingAssets) {
-                yield put(consumingAssetCreatedOrUpdated(asset));
-            }
-
-            const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [
-                configuration
-            ]);
-
-            for (const demand of demands) {
-                yield put(demandCreated(demand));
-            }
-
-            const certificates: Certificate.Entity[] = yield apply(
-                Certificate,
-                Certificate.getAllCertificates,
-                [configuration]
-            );
-
-            for (const certificate of certificates) {
-                yield put(certificateCreatedOrUpdated(certificate));
-            }
-
-            yield call(initEventHandler);
-        } else {
-            marketContractLookupAddress = yield call(getMarketContractLookupAddressFromAPI);
-
-            if (marketContractLookupAddress) {
-                yield put(setMarketContractLookupAddress(marketContractLookupAddress));
-
-                yield put(push(constructBaseURL(marketContractLookupAddress)));
-            } else {
-                yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-                yield put(setLoading(false));
-            }
         }
+        yield;
     });
 }
 
 export function* contractsSaga(): SagaIterator {
-    yield all([fork(fillMarketContractLookupAddressIfMissing)]);
+    yield all([
+        fork(fillMarketContractLookupAddressIfMissing),
+        fork(persistUserDefinedMarketLookupContract)
+    ]);
 }

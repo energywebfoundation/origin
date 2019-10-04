@@ -840,7 +840,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
 export const CertificateTable = connect(
     (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
-        baseURL: getBaseURL(state),
+        baseURL: getBaseURL(),
         certificates: ownProps.certificates || getCertificates(state),
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),

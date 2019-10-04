@@ -3,7 +3,6 @@ import { PageContent } from '../../elements/PageContent/PageContent';
 import { DemandTable } from './DemandTable';
 import { connect } from 'react-redux';
 import { getDemandsLink } from '../../utils/routing';
-import { IStoreState } from '../../types';
 import { getBaseURL } from '../../features/selectors';
 import { DemandForm } from './DemandForm';
 import { NavLink, Route, Redirect } from 'react-router-dom';
@@ -107,7 +106,7 @@ class DemandsClass extends React.Component<Props> {
 }
 
 export const Demands = connect(
-    (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state)
+    (): IStateProps => ({
+        baseURL: getBaseURL()
     })
 )(DemandsClass);

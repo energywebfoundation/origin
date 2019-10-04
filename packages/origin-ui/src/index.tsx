@@ -41,7 +41,7 @@ ReactDOM.render(
         <MuiPickersUtilsProvider utils={MomentUtils}>
             <Provider store={store}>
                 <ConnectedRouter history={history}>
-                    <Route path="/:contractAddress?" component={AppContainer} />
+                    <Route path="/" component={AppContainer} />
                 </ConnectedRouter>
             </Provider>
         </MuiPickersUtilsProvider>

@@ -11,7 +11,7 @@ const defaultState: IContractsState = {
 export default function reducer(state = defaultState, action: IContractsAction): IContractsState {
     switch (action.type) {
         case ContractsActions.setMarketContractLookupAddress:
-            return { ...state, marketContractLookupAddress: action.payload };
+            return { ...state, marketContractLookupAddress: action.payload.address };
 
         default:
             return state;

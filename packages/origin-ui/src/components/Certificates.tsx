@@ -195,7 +195,7 @@ class CertificatesClass extends React.Component<Props> {
 
 export const Certificates = connect(
     (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state),
+        baseURL: getBaseURL(),
         currentUser: getCurrentUser(state),
         demands: getDemands(state)
     })
