@@ -12,18 +12,14 @@ let ganacheServer;
 let apiServer;
 
 describe('Application[E2E]', () => {
-    let CONTRACT;
-
     beforeAll(async () => {
         apiServer = await startAPI();
         ganacheServer = await startGanache();
-        const { deployResult } = await deployDemo();
-
-        CONTRACT = deployResult.marketContractLookup;
+        await deployDemo();
     });
 
     it('correctly navigates to producing asset details', async () => {
-        const { store, history } = setupStore([`/${CONTRACT}/assets/?rpc=http://localhost:8545`], {
+        const { store, history } = setupStore([`/assets/?rpc=http://localhost:8545`], {
             mockUserFetcher: false
         });
 
