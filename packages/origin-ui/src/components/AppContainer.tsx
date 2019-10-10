@@ -7,6 +7,7 @@ import './AppContainer.scss';
 import { Demands } from './Demand/Demands';
 import { Account } from './Account/Account';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
+import { RequestPasswordModal } from '../elements/Modal/RequestPasswordModal';
 import { useSelector } from 'react-redux';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
@@ -44,6 +45,7 @@ export function AppContainer() {
                 <Route path={baseURL} component={Asset} />
             </Switch>
             <AccountChangedModal />
+            <RequestPasswordModal />
         </div>
     );
 }

@@ -10,20 +10,12 @@
         justify-content: space-between;
 
         .ViewProfile {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-evenly;
             height: 40px;
             line-height: 40px;
-            align-items: center;
             margin-bottom: 6px;
-            font-size: 12px;
-            background: $backgroundColorDark;
-            padding: 10px;
-            color: white;
 
-            &:hover {
-                text-decoration: none;
+            .MuiSelect-select {
+                padding: 6px 24px 7px 0;
             }
 
             &_icon {

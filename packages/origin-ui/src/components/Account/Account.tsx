@@ -5,7 +5,6 @@ import { getAccountLink } from '../../utils/routing';
 import { getBaseURL } from '../../features/selectors';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { AccountImport } from './AccountImport';
-import { AccountUnlock } from './AccountUnlock';
 import { AccountSettings } from './AccountSettings';
 
 export function Account() {
@@ -21,11 +20,6 @@ export function Account() {
             key: 'import',
             label: 'Import',
             component: AccountImport
-        },
-        {
-            key: 'unlock',
-            label: 'Unlock',
-            component: AccountUnlock
         }
     ];
 
