@@ -53,6 +53,8 @@ async function initConf(
         }
     } else if ((window as any).web3) {
         web3 = new Web3(web3.currentProvider);
+    } else if (process.env.WEB3) {
+        web3 = new Web3(process.env.WEB3);
     }
 
     const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(

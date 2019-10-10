@@ -127,7 +127,21 @@ export function Header() {
         }
     };
 
-    const activeAccount = useSelector(getActiveAccount);
+    let activeAccount = useSelector(getActiveAccount);
+
+    if (selectorAccounts.length === 0) {
+        selectorAccounts.push({
+            id: '0x0',
+            isLocked: false,
+            isPrivateKey: false,
+            label: 'Guest',
+            value: '0x0'
+        });
+
+        activeAccount = {
+            address: '0x0'
+        };
+    }
 
     return (
         <div className="HeaderWrapper">
@@ -165,6 +179,7 @@ export function Header() {
                         }}
                         startAdornment={<></>}
                         onChange={e => handleChange(e.target.value as string)}
+                        disabled={selectorAccounts.length < 2}
                     >
                         {selectorAccounts.map(a => (
                             <MenuItem value={a.id} key={a.id}>

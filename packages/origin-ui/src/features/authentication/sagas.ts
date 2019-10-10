@@ -80,7 +80,7 @@ function* addDefaultWeb3Account(): SagaIterator {
     while (true) {
         const action: IConfigurationUpdatedAction = yield take(Actions.configurationUpdated);
 
-        if (!action.conf) {
+        if (!action.conf || !(window as any).ethereum) {
             return;
         }
 
