@@ -35,7 +35,7 @@ describe('Application[E2E]', () => {
 
         rendered.update();
 
-        expect(rendered.find('a.ViewProfile').text()).toBe('admin');
+        expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe('admin');
 
         assertMainTableContent([
             'Asset Manager organization',
