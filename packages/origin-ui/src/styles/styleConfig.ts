@@ -82,7 +82,8 @@ export const DEFAULT_MATERIAL_THEME = () => {
                 head: {
                     color: STYLE_CONFIG.WHITE,
                     fontWeight: 'bold',
-                    borderBottom: '3px solid #252525'
+                    borderBottom: '3px solid #252525',
+                    fontSize: '12px'
                 }
             }
         }
