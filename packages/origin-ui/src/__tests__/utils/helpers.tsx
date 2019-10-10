@@ -244,7 +244,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
 
     return {
         assertPagination: (firstIndex: number, lastIndex: number, total: number) => {
-            expect(rendered.find('span.MuiTablePagination-caption').text()).toBe(
+            expect(rendered.find('p.MuiTablePagination-caption').text()).toBe(
                 `${firstIndex}-${lastIndex} of ${total}`
             );
         },

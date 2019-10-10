@@ -26,9 +26,9 @@ import {
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { BACKEND_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
 import { setError, setLoading } from '../general/actions';
-import { updateCurrentUserId } from '../users/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
+import { IStoreState } from '../../types';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -219,7 +219,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
     const routerSearch: string = yield select(getSearch);
 
-    let configuration: Configuration.Entity;
+    let configuration: IStoreState['configuration'];
     try {
         configuration = yield call(initConf, marketContractLookupAddress, routerSearch);
 
@@ -232,16 +232,6 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         yield put(setLoading(false));
 
         yield cancel();
-    }
-
-    try {
-        const accounts: string[] = yield call(
-            configuration.blockchainProperties.web3.eth.getAccounts
-        );
-
-        yield put(updateCurrentUserId(accounts[0]));
-    } catch (error) {
-        console.error('ContractsSaga::UserDoesntExist', error);
     }
 
     const producingAssets: ProducingAsset.Entity[] = yield apply(

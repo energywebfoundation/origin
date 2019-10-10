@@ -10,6 +10,10 @@ export const getDemandsLink = (baseURL: string) => {
     return `${baseURL}/demands`;
 };
 
+export const getAccountLink = (baseURL: string) => {
+    return `${baseURL}/account`;
+};
+
 export const getDemandEditLink = (baseURL: string, id: string) => {
     return `${getDemandsLink(baseURL)}/edit/${id}`;
 };

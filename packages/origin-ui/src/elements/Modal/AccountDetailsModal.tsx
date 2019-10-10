@@ -123,10 +123,6 @@ class AccountDetailsModalClass extends React.Component<Props, IState> {
             const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
             newProperties.notifications = this.state.notificationsEnabled;
 
-            currentUser.configuration.blockchainProperties.activeUser = {
-                address: currentUser.id
-            };
-
             await currentUser.update(newProperties);
         }
 

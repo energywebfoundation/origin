@@ -5,6 +5,7 @@ import { hideAccountChangedModal, showAccountChangedModal } from './actions';
 import { getConfiguration } from '../selectors';
 import { getAccountChangedModalVisible, getAccountChangedModalEnabled } from './selectors';
 import { UsersActions } from '../users/actions';
+import { isUsingInBrowserPK } from '../authentication/selectors';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -21,8 +22,9 @@ function* showAccountChangedModalOnChange(): SagaIterator {
 
         while (true) {
             const accountChangedModalEnabled: boolean = yield select(getAccountChangedModalEnabled);
+            const usingInBrowserPrivateKey: boolean = yield select(isUsingInBrowserPK);
 
-            if (!accountChangedModalEnabled) {
+            if (!accountChangedModalEnabled || usingInBrowserPrivateKey) {
                 break;
             }
 

@@ -39,10 +39,6 @@ class ClaimCertificateBulkModalClass extends React.Component<Props> {
     async claimCertificates() {
         const certificateIds: string[] = this.props.certificates.map(cert => cert.id);
 
-        this.props.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
-        };
-
         await Certificate.claimCertificates(certificateIds, this.props.configuration);
 
         showNotification(`Certificates have been claimed.`, NotificationType.Success);

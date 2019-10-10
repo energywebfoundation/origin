@@ -20,6 +20,11 @@
             font-size: 12px;
             background: $backgroundColorDark;
             padding: 10px;
+            color: white;
+
+            &:hover {
+                text-decoration: none;
+            }
 
             &_icon {
                 margin-right: 10px;
