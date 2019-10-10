@@ -47,6 +47,7 @@ export function RequestPasswordModal() {
                         fullWidth
                         className="my-3"
                         autoFocus
+                        type="password"
                     />
                 </DialogContent>
                 <DialogActions>
