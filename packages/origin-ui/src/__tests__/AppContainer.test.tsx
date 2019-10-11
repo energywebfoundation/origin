@@ -151,7 +151,9 @@ describe('Application[E2E]', () => {
 
         expect(submitButton.getDOMNode().hasAttribute('disabled')).toBe(false);
 
-        expect(rendered.find(dataTestSelector('totalDemand')).text()).toBe('9 MWh');
+        expect(rendered.find(dataTestSelector('totalDemand')).text()).toEqual(
+            expect.stringMatching(/9 MWh|10 Mwh/gm)
+        );
 
         submitForm('demandForm');
 
@@ -183,7 +185,7 @@ describe('Application[E2E]', () => {
                 '1',
                 '1.00 EUR',
                 'Active',
-                '9',
+                expect.stringMatching(/9|10/gm),
                 'EditCloneDeleteShow supplies'
             ])
         );
