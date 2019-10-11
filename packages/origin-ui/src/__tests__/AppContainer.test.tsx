@@ -164,7 +164,7 @@ describe('Application[E2E]', () => {
 
         expect(store.getState().router.location.pathname).toBe('/demands/list');
 
-        await wait(1000);
+        await wait(2000);
         await refresh();
 
         expect(rendered.find('table tbody.MuiTableBody-root tr td').map(el => el.text())).toEqual(
