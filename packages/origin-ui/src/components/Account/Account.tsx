@@ -6,6 +6,7 @@ import { getBaseURL } from '../../features/selectors';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
+import { dataTest } from '../../utils/Helper';
 
 export function Account() {
     const baseURL = useSelector(getBaseURL);
@@ -34,6 +35,7 @@ export function Account() {
                                     exact={true}
                                     to={`${getAccountLink(baseURL)}/${menu.key}`}
                                     activeClassName="active"
+                                    {...dataTest(`account-link-${menu.key}`)}
                                 >
                                     {menu.label}
                                 </NavLink>

@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { importAccount, clearEncryptedAccounts } from '../../features/authentication/actions';
 import { getEncryptedAccounts } from '../../features/authentication/selectors';
+import { dataTest } from '../../utils/Helper';
 
 export function AccountImport() {
     const encryptedAccounts = useSelector(getEncryptedAccounts);
@@ -76,20 +77,16 @@ export function AccountImport() {
                         })}
                     >
                         {props => {
-                            const { isValid, values } = props;
-
-                            console.log('render', {
-                                isValid,
-                                values
-                            });
+                            const { isValid } = props;
 
                             return (
-                                <Form>
+                                <Form {...dataTest('account-import-form')}>
                                     <FormControl
                                         fullWidth
                                         variant="filled"
                                         className="mt-3"
                                         required
+                                        {...dataTest('account-import-privateKey')}
                                     >
                                         <Field
                                             label="Private key"
@@ -107,6 +104,7 @@ export function AccountImport() {
                                         variant="filled"
                                         className="mt-3"
                                         required
+                                        {...dataTest('account-import-password')}
                                     >
                                         <Field
                                             label="Password"
@@ -126,6 +124,7 @@ export function AccountImport() {
                                         color="primary"
                                         disabled={!isValid}
                                         className={classes.button}
+                                        {...dataTest('account-import-button-submit')}
                                     >
                                         Continue
                                     </Button>

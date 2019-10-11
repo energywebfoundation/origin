@@ -7,7 +7,6 @@ import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
 import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 import { dataTestSelector } from '../utils/Helper';
 import { TimeFrame } from '@energyweb/utils-general';
-import { importAccount } from '../features/authentication/actions';
 
 jest.setTimeout(80000);
 
@@ -24,7 +23,7 @@ describe('Application[E2E]', () => {
     it('correctly navigates to producing asset details', async () => {
         const { store, history } = setupStore([`/assets/?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
-            logActions: false
+            logActions: true
         });
 
         const rendered = mount(
@@ -39,24 +38,14 @@ describe('Application[E2E]', () => {
             fillDate,
             fillInputField,
             fillSelect,
-            refresh
+            refresh,
+            click,
+            submitForm
         } = createRenderedHelpers(rendered);
 
-        await wait(500);
+        await wait(5000);
 
-        store.dispatch(
-            importAccount({
-                privateKey: ACCOUNTS.TRADER.privateKey,
-                password: 'a'
-            })
-        );
-
-        await wait(500);
-        await refresh();
-
-        expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe(
-            'Trader organization'
-        );
+        rendered.update();
 
         assertMainTableContent([
             'Asset Manager organization',
@@ -103,21 +92,27 @@ describe('Application[E2E]', () => {
             ''
         ]);
 
+        // Go to Account -> Import and import trader account
+
+        click('header-link-account-settings');
+        click('account-link-import');
+
+        fillInputField('account-import-privateKey', ACCOUNTS.TRADER.privateKey);
+        fillInputField('account-import-password', 'a');
+
+        submitForm('account-import-form');
+
+        await wait(1000);
+        await refresh();
+
+        expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe(
+            'Trader organization'
+        );
+
         // Go to Demands -> Create and create a demand
 
-        rendered
-            .find(`${dataTestSelector('header-link-demands')}`)
-            .hostNodes()
-            .simulate('click', {
-                button: 0
-            });
-
-        rendered
-            .find(`${dataTestSelector('demands-link-create')}`)
-            .hostNodes()
-            .simulate('click', {
-                button: 0
-            });
+        click('header-link-demands');
+        click('demands-link-create');
 
         const submitButton = rendered.find(`button${dataTestSelector('submitButton')}`);
 
@@ -156,7 +151,7 @@ describe('Application[E2E]', () => {
 
         expect(rendered.find(dataTestSelector('totalDemand')).text()).toBe('9 MWh');
 
-        rendered.find(`form${dataTestSelector('demandForm')}`).simulate('submit');
+        submitForm('demandForm');
 
         await wait(4000);
         await refresh();

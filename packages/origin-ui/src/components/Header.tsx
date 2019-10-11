@@ -193,7 +193,11 @@ export function Header() {
                         ))}
                     </Select>
                     &nbsp;
-                    <Link to={getAccountLink(baseURL)} className={classes.settingsIcon}>
+                    <Link
+                        to={getAccountLink(baseURL)}
+                        className={classes.settingsIcon}
+                        {...dataTest('header-link-account-settings')}
+                    >
                         <Settings color="primary" />
                     </Link>
                 </div>

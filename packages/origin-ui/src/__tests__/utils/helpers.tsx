@@ -269,12 +269,26 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
         },
         refresh,
         fillInputField: (name: string, value: string) => {
-            const input = rendered.find(`${dataTestSelector(name)} input`);
+            const input = rendered.find(`${dataTestSelector(name)} input`).hostNodes();
             const inputField = input.getDOMNode();
 
-            expect(inputField.getAttribute('name')).toBe(name);
+            const inputFieldName = inputField.getAttribute('name');
 
-            input.simulate('change', { target: { value, name } });
+            input.simulate('change', { target: { value, name: inputFieldName } });
+        },
+        click: (dataTest: string) => {
+            return rendered
+                .find(`${dataTestSelector(dataTest)}`)
+                .hostNodes()
+                .simulate('click', {
+                    button: 0
+                });
+        },
+        submitForm: (dataTest: string) => {
+            rendered
+                .find(dataTestSelector(dataTest))
+                .hostNodes()
+                .simulate('submit');
         },
         fillDate: async (name: string, dayOfMonth: number) => {
             const now = moment();
