@@ -43,7 +43,7 @@ describe('Application[E2E]', () => {
             submitForm
         } = createRenderedHelpers(rendered);
 
-        await wait(5000);
+        await wait(8000);
 
         rendered.update();
 
