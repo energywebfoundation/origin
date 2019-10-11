@@ -8,6 +8,8 @@ import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
 import { dataTestSelector } from '../utils/Helper';
 import { TimeFrame } from '@energyweb/utils-general';
 
+import moment from 'moment';
+
 jest.setTimeout(80000);
 
 let ganacheServer;
@@ -157,6 +159,34 @@ describe('Application[E2E]', () => {
         await refresh();
 
         expect(store.getState().router.location.pathname).toContain('/demands/view/');
+
+        click('demands-link-list');
+
+        expect(store.getState().router.location.pathname).toBe('/demands/list');
+
+        await wait(1000);
+        await refresh();
+
+        expect(rendered.find('table tbody.MuiTableBody-root tr td').map(el => el.text())).toEqual(
+            expect.arrayContaining([
+                'Trader organization',
+                `${moment()
+                    .date(1)
+                    .format('DD MMM YY')} - ${moment()
+                    .date(10)
+                    .format('DD MMM YY')}`,
+                'any',
+                'any',
+                'daily',
+                'no',
+                'any',
+                '1',
+                '1.00 EUR',
+                'Active',
+                '9',
+                'EditCloneDeleteShow supplies'
+            ])
+        );
 
         rendered.unmount();
 
