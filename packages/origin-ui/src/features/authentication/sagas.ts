@@ -84,15 +84,19 @@ function* addDefaultWeb3Account(): SagaIterator {
             return;
         }
 
-        const accounts: string[] = yield call(
-            action.conf.blockchainProperties.web3.eth.getAccounts
-        );
+        try {
+            const accounts: string[] = yield call(
+                action.conf.blockchainProperties.web3.eth.getAccounts
+            );
 
-        yield put(
-            addAccount({
-                address: accounts[0]
-            })
-        );
+            yield put(
+                addAccount({
+                    address: accounts[0]
+                })
+            );
+        } catch (error) {
+            console.error('addDefaultWeb3Account() error', error);
+        }
     }
 }
 

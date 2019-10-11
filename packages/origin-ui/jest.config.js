@@ -7,8 +7,8 @@ module.exports = {
         '\\.(css|less|sass|scss)$': '<rootDir>/src/__tests__/config/mocks/styleMock.js',
         '\\.(gif|ttf|eot|svg)$': '<rootDir>/src/__tests__/config/mocks/fileMock.js'
     },
-    setupFilesAfterEnv: ['jest-enzyme'],
-    testEnvironment: 'enzyme',
+    setupFilesAfterEnv: ['<rootDir>src/__tests__/config/test-setup.js'],
+    testEnvironment: 'jest-environment-jsdom-fifteen',
     globals: {
         'ts-jest': {
             tsConfig: 'tsconfig.build.json'

@@ -1,10 +1,14 @@
 import * as Configuration from './Configuration';
+
 export class ContractEventHandler {
     lastBlockChecked: number;
+
     unhandledEvents: any[];
+
     contractInstance: any;
 
     onEventRegistry: Map<string, any>;
+
     onAnyContractEventRegistry: any[];
 
     constructor(contractInstance: any, lastBlockChecked: number) {
@@ -17,16 +21,22 @@ export class ContractEventHandler {
     }
 
     async tick(configuration: Configuration.Entity) {
-        const blockNumber = await configuration.blockchainProperties.web3.eth.getBlockNumber();
+        try {
+            const blockNumber = await configuration.blockchainProperties.web3.eth.getBlockNumber();
 
-        if (blockNumber > this.lastBlockChecked) {
-            const events = await this.contractInstance.getWeb3Contract().getPastEvents('allEvents', {
-                fromBlock: Math.min(this.lastBlockChecked + 1, blockNumber),
-                toBlock: blockNumber
-            });
-            this.unhandledEvents = events.reverse().concat(this.unhandledEvents);
-            this.lastBlockChecked = blockNumber;
-            this.walkThroughUnhandledEvent();
+            if (blockNumber > this.lastBlockChecked) {
+                const events = await this.contractInstance
+                    .getWeb3Contract()
+                    .getPastEvents('allEvents', {
+                        fromBlock: Math.min(this.lastBlockChecked + 1, blockNumber),
+                        toBlock: blockNumber
+                    });
+                this.unhandledEvents = events.reverse().concat(this.unhandledEvents);
+                this.lastBlockChecked = blockNumber;
+                this.walkThroughUnhandledEvent();
+            }
+        } catch (error) {
+            console.log('ContractEventHandler::tick(): Error', error);
         }
     }
 
@@ -35,13 +45,11 @@ export class ContractEventHandler {
             const event: any = this.unhandledEvents.pop();
 
             if (this.onEventRegistry.get(event.event)) {
-                this.onEventRegistry.get(event.event).forEach(
-                    (onEvent: Function) => onEvent(event)
-                );
+                this.onEventRegistry
+                    .get(event.event)
+                    .forEach((onEvent: Function) => onEvent(event));
             }
-            this.onAnyContractEventRegistry.forEach(
-                (onEvent: Function) => onEvent(event)
-            );
+            this.onAnyContractEventRegistry.forEach((onEvent: Function) => onEvent(event));
             this.walkThroughUnhandledEvent();
         }
     }

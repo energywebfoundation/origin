@@ -16,30 +16,40 @@ function* showAccountChangedModalOnChange(): SagaIterator {
             return;
         }
 
-        const initialAccounts: string[] = yield call(
-            conf.blockchainProperties.web3.eth.getAccounts
-        );
+        try {
+            const initialAccounts: string[] = yield call(
+                conf.blockchainProperties.web3.eth.getAccounts
+            );
 
-        while (true) {
-            const accountChangedModalEnabled: boolean = yield select(getAccountChangedModalEnabled);
-            const usingInBrowserPrivateKey: boolean = yield select(isUsingInBrowserPK);
+            while (true) {
+                const accountChangedModalEnabled: boolean = yield select(
+                    getAccountChangedModalEnabled
+                );
+                const usingInBrowserPrivateKey: boolean = yield select(isUsingInBrowserPK);
 
-            if (!accountChangedModalEnabled || usingInBrowserPrivateKey) {
-                break;
-            }
-
-            const accountChangedModalVisible: boolean = yield select(getAccountChangedModalVisible);
-            const accounts: string[] = yield call(conf.blockchainProperties.web3.eth.getAccounts);
-
-            if (accountChangedModalVisible) {
-                if (initialAccounts[0] === accounts[0]) {
-                    yield put(hideAccountChangedModal());
+                if (!accountChangedModalEnabled || usingInBrowserPrivateKey) {
+                    break;
                 }
-            } else if (initialAccounts[0] !== accounts[0]) {
-                yield put(showAccountChangedModal());
-            }
 
-            yield delay(1000);
+                const accountChangedModalVisible: boolean = yield select(
+                    getAccountChangedModalVisible
+                );
+                const accounts: string[] = yield call(
+                    conf.blockchainProperties.web3.eth.getAccounts
+                );
+
+                if (accountChangedModalVisible) {
+                    if (initialAccounts[0] === accounts[0]) {
+                        yield put(hideAccountChangedModal());
+                    }
+                } else if (initialAccounts[0] !== accounts[0]) {
+                    yield put(showAccountChangedModal());
+                }
+
+                yield delay(1000);
+            }
+        } catch (error) {
+            console.error('showAccountChangedModalOnChange() error', error);
         }
     }
 }

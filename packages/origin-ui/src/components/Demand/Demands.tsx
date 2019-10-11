@@ -9,6 +9,7 @@ import { NavLink, Route, Redirect } from 'react-router-dom';
 import { DemandEdit } from './DemandEdit';
 import { DemandClone } from './DemandClone';
 import { DemandView } from './DemandView';
+import { dataTest } from '../../utils/Helper';
 
 interface IStateProps {
     baseURL: string;
@@ -65,6 +66,7 @@ class DemandsClass extends React.Component<Props> {
                                         exact={true}
                                         to={`${getDemandsLink(baseURL)}/${menu.key}`}
                                         activeClassName="active"
+                                        {...dataTest(`demands-link-${menu.key}`)}
                                     >
                                         {menu.label}
                                     </NavLink>

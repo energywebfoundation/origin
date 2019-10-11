@@ -18,6 +18,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
+import { createLogger } from 'redux-logger';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -45,14 +46,27 @@ export async function waitForConditionAndAssert(
     await assertFunction();
 }
 
-const setupStoreInternal = (initialHistoryEntries?: string[]) => {
+const setupStoreInternal = (initialHistoryEntries: string[], logActions = false) => {
     const history = createMemoryHistory({
         initialEntries: initialHistoryEntries
     });
 
     const sagaMiddleware = createSagaMiddleware();
 
-    const middleware = applyMiddleware(routerMiddleware(history), sagaMiddleware);
+    const middlewareToApply = [routerMiddleware(history), sagaMiddleware];
+
+    if (logActions) {
+        const logger = createLogger({
+            level: {
+                prevState: false,
+                nextState: false
+            }
+        });
+
+        middlewareToApply.push(logger);
+    }
+
+    const middleware = applyMiddleware(...middlewareToApply);
 
     const store = createStore(createRootReducer(history), middleware);
 
@@ -163,17 +177,19 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
 
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
+    logActions: boolean;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
-    mockUserFetcher: true
+    mockUserFetcher: true,
+    logActions: false
 };
 
 export const setupStore = (
     initialHistoryEntries?: string[],
     options: ISetupStoreOptions = DEFAULT_SETUP_STORE_OPTIONS
 ) => {
-    const { store, history } = setupStoreInternal(initialHistoryEntries);
+    const { store, history } = setupStoreInternal(initialHistoryEntries, options.logActions);
 
     if (options.mockUserFetcher) {
         const mockUserFetcher = {

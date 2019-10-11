@@ -29,6 +29,7 @@ import {
 import { requestUser } from '../features/users/actions';
 import { setActiveAccount, unlockAccount } from '../features/authentication/actions';
 import { showRequestPasswordModal } from '../features/general/actions';
+import { dataTest } from '../utils/Helper';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -157,7 +158,9 @@ export function Header() {
                         <NavLink to={getCertificatesLink(baseURL)}>Certificates</NavLink>
                     </li>
                     <li>
-                        <NavLink to={getDemandsLink(baseURL)}>Demands</NavLink>
+                        <NavLink to={getDemandsLink(baseURL)} {...dataTest('header-link-demands')}>
+                            Demands
+                        </NavLink>
                     </li>
                 </ul>
 

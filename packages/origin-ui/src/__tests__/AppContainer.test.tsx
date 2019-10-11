@@ -3,8 +3,11 @@ import { mount } from 'enzyme';
 import { AppContainer } from '../components/AppContainer';
 import { Route } from 'react-router-dom';
 import { WrapperComponent, setupStore, wait, createRenderedHelpers } from './utils/helpers';
-import { startGanache, deployDemo } from './utils/demo';
+import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
 import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
+import { dataTestSelector } from '../utils/Helper';
+import { TimeFrame } from '@energyweb/utils-general';
+import { importAccount } from '../features/authentication/actions';
 
 jest.setTimeout(80000);
 
@@ -19,8 +22,9 @@ describe('Application[E2E]', () => {
     });
 
     it('correctly navigates to producing asset details', async () => {
-        const { store, history } = setupStore([`/assets/?rpc=http://localhost:8545`], {
-            mockUserFetcher: false
+        const { store, history } = setupStore([`/assets/?rpc=ws://localhost:8545`], {
+            mockUserFetcher: false,
+            logActions: false
         });
 
         const rendered = mount(
@@ -29,19 +33,36 @@ describe('Application[E2E]', () => {
             </WrapperComponent>
         );
 
-        const { assertMainTableContent, assertPagination } = createRenderedHelpers(rendered);
+        const {
+            assertMainTableContent,
+            assertPagination,
+            fillDate,
+            fillInputField,
+            fillSelect,
+            refresh
+        } = createRenderedHelpers(rendered);
 
-        await wait(10000);
+        await wait(500);
 
-        rendered.update();
+        store.dispatch(
+            importAccount({
+                privateKey: ACCOUNTS.TRADER.privateKey,
+                password: 'a'
+            })
+        );
 
-        expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe('Guest');
+        await wait(500);
+        await refresh();
+
+        expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe(
+            'Trader organization'
+        );
 
         assertMainTableContent([
             'Asset Manager organization',
             'Wuthering Heights Windfarm',
             '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
-            'Wind',
+            'Wind - Onshore',
             '0',
             '0'
         ]);
@@ -66,7 +87,7 @@ describe('Application[E2E]', () => {
             'Other Green Attributes (private)',
             ' ',
             'Asset Type',
-            'Wind ',
+            'Wind - Onshore ',
             '',
             'Meter Read',
             '0 kWh',
@@ -81,6 +102,66 @@ describe('Application[E2E]', () => {
             '',
             ''
         ]);
+
+        // Go to Demands -> Create and create a demand
+
+        rendered
+            .find(`${dataTestSelector('header-link-demands')}`)
+            .hostNodes()
+            .simulate('click', {
+                button: 0
+            });
+
+        rendered
+            .find(`${dataTestSelector('demands-link-create')}`)
+            .hostNodes()
+            .simulate('click', {
+                button: 0
+            });
+
+        const submitButton = rendered.find(`button${dataTestSelector('submitButton')}`);
+
+        expect(submitButton.text()).toBe('Create demand');
+        expect(submitButton.getDOMNode().hasAttribute('disabled')).toBe(true);
+
+        expect(
+            rendered
+                .find(`span${dataTestSelector('submitButtonTooltip')}`)
+                .getDOMNode()
+                .getAttribute('title')
+        ).toBe('Form needs to be valid to proceed.');
+
+        expect(rendered.find(dataTestSelector('totalDemand')).text()).toBe('0 MWh');
+
+        fillInputField('demandNeedsInMWh', '1');
+
+        fillInputField('maxPricePerMWh', '1');
+
+        await fillSelect('currency', 'EUR', ['EUR', 'USD', 'SGD', 'THB']);
+
+        await fillSelect('timeframe', TimeFrame.daily.toString(), ['Day', 'Week', 'Month', 'Year']);
+
+        await fillDate('startDate', 1);
+        await fillDate('activeUntilDate', 10);
+        await fillDate('endDate', 10);
+
+        expect(
+            rendered
+                .find(`span${dataTestSelector('submitButtonTooltip')}`)
+                .getDOMNode()
+                .getAttribute('title')
+        ).toBe(null);
+
+        expect(submitButton.getDOMNode().hasAttribute('disabled')).toBe(false);
+
+        expect(rendered.find(dataTestSelector('totalDemand')).text()).toBe('9 MWh');
+
+        rendered.find(`form${dataTestSelector('demandForm')}`).simulate('submit');
+
+        await wait(4000);
+        await refresh();
+
+        expect(store.getState().router.location.pathname).toContain('/demands/view/');
 
         rendered.unmount();
 
