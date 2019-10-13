@@ -170,11 +170,9 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
         props.onChange(value);
     }
 
-    const theme = useTheme();
-
     const useStyles = makeStyles(createInputAutocompleteStyle);
 
-    const classes = useStyles(theme);
+    const classes = useStyles(useTheme());
     const { label, placeholder, options, selectedValues, disabled } = props;
 
     return (

@@ -36,8 +36,6 @@ export function AccountImport() {
         actions.setSubmitting(false);
     };
 
-    const theme = useTheme();
-
     const useStyles = makeStyles(() =>
         createStyles({
             container: {
@@ -55,7 +53,7 @@ export function AccountImport() {
         })
     );
 
-    const classes = useStyles(theme);
+    const classes = useStyles(useTheme());
 
     return (
         <Paper>

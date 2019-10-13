@@ -39,8 +39,6 @@ const PurpleSwitch = withStyles({
 export function AccountSettings() {
     const dispatch = useDispatch();
 
-    const theme = useTheme();
-
     const useStyles = makeStyles(() =>
         createStyles({
             container: {
@@ -52,7 +50,7 @@ export function AccountSettings() {
         })
     );
 
-    const classes = useStyles(theme);
+    const classes = useStyles(useTheme());
 
     const currentUser = useSelector(getCurrentUser);
 

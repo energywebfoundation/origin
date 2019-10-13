@@ -4,13 +4,7 @@ import logo from '../../assets/logo.svg';
 import { AccountCircle, VpnKeySharp, Lock, Settings } from '@material-ui/icons';
 import './Header.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { getBaseURL } from '../features/selectors';
-import {
-    getAssetsLink,
-    getCertificatesLink,
-    getDemandsLink,
-    getAccountLink
-} from '../utils/routing';
+import { useLinks } from '../utils/routing';
 import { getUserById, getUsers } from '../features/users/selectors';
 import {
     isUsingInBrowserPK,
@@ -47,7 +41,6 @@ const useStyles = makeStyles(() =>
 );
 
 export function Header() {
-    const baseURL = useSelector(getBaseURL);
     const isUsingPK = useSelector(isUsingInBrowserPK);
     const accounts = useSelector(getAccounts);
     const users = useSelector(getUsers);
@@ -56,6 +49,8 @@ export function Header() {
     const dispatch = useDispatch();
 
     const classes = useStyles(useTheme());
+
+    const { getAssetsLink, getCertificatesLink, getDemandsLink, getAccountLink } = useLinks();
 
     const privateKeyIndicator = <VpnKeySharp className={classes.icon} />;
 
@@ -147,18 +142,18 @@ export function Header() {
     return (
         <div className="HeaderWrapper">
             <div className="Header">
-                <NavLink to={getAssetsLink(baseURL)}>
+                <NavLink to={getAssetsLink()}>
                     <img src={logo} />
                 </NavLink>
                 <ul className="NavMenu nav">
                     <li>
-                        <NavLink to={getAssetsLink(baseURL)}>Assets</NavLink>
+                        <NavLink to={getAssetsLink()}>Assets</NavLink>
                     </li>
                     <li>
-                        <NavLink to={getCertificatesLink(baseURL)}>Certificates</NavLink>
+                        <NavLink to={getCertificatesLink()}>Certificates</NavLink>
                     </li>
                     <li>
-                        <NavLink to={getDemandsLink(baseURL)} {...dataTest('header-link-demands')}>
+                        <NavLink to={getDemandsLink()} {...dataTest('header-link-demands')}>
                             Demands
                         </NavLink>
                     </li>
@@ -194,7 +189,7 @@ export function Header() {
                     </Select>
                     &nbsp;
                     <Link
-                        to={getAccountLink(baseURL)}
+                        to={getAccountLink()}
                         className={classes.settingsIcon}
                         {...dataTest('header-link-account-settings')}
                     >

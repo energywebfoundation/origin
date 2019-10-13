@@ -11,19 +11,20 @@ import { RequestPasswordModal } from '../elements/Modal/RequestPasswordModal';
 import { useSelector } from 'react-redux';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
-import { getBaseURL } from '../features/selectors';
-import {
-    getAssetsLink,
-    getCertificatesLink,
-    getDemandsLink,
-    getAccountLink
-} from '../utils/routing';
+import { useLinks } from '../utils/routing';
 import { getError, getLoading } from '../features/general/selectors';
 
 export function AppContainer() {
-    const baseURL = useSelector(getBaseURL);
     const error = useSelector(getError);
     const loading = useSelector(getLoading);
+
+    const {
+        baseURL,
+        getAccountLink,
+        getDemandsLink,
+        getAssetsLink,
+        getCertificatesLink
+    } = useLinks();
 
     if (error) {
         return <ErrorComponent message={error} />;
@@ -37,10 +38,10 @@ export function AppContainer() {
         <div className={`AppWrapper`}>
             <Header />
             <Switch>
-                <Route path={getAssetsLink(baseURL)} component={Asset} />
-                <Route path={getCertificatesLink(baseURL)} component={Certificates} />
-                <Route path={getDemandsLink(baseURL)} component={Demands} />
-                <Route path={getAccountLink(baseURL)} component={Account} />
+                <Route path={getAssetsLink()} component={Asset} />
+                <Route path={getCertificatesLink()} component={Certificates} />
+                <Route path={getDemandsLink()} component={Demands} />
+                <Route path={getAccountLink()} component={Account} />
 
                 <Route path={baseURL} component={Asset} />
             </Switch>
