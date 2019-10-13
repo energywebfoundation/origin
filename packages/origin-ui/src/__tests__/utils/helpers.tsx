@@ -1,5 +1,5 @@
 import { createMemoryHistory } from 'history';
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware, { Task } from 'redux-saga';
 import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
@@ -70,13 +70,15 @@ const setupStoreInternal = (initialHistoryEntries: string[], logActions = false)
 
     const store = createStore(createRootReducer(history), middleware);
 
-    Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
-        sagaMiddleware.run(sagas[saga]);
-    });
+    const sagasTasks: Task[] = Object.keys(sagas).reduce(
+        (a, saga) => [...a, sagaMiddleware.run(sagas[saga])],
+        []
+    );
 
     return {
         store,
-        history
+        history,
+        sagasTasks
     };
 };
 
@@ -189,7 +191,10 @@ export const setupStore = (
     initialHistoryEntries?: string[],
     options: ISetupStoreOptions = DEFAULT_SETUP_STORE_OPTIONS
 ) => {
-    const { store, history } = setupStoreInternal(initialHistoryEntries, options.logActions);
+    const { store, history, sagasTasks } = setupStoreInternal(
+        initialHistoryEntries,
+        options.logActions
+    );
 
     if (options.mockUserFetcher) {
         const mockUserFetcher = {
@@ -225,7 +230,11 @@ export const setupStore = (
             const entity = createCertificate(properties);
             store.dispatch(certificateCreatedOrUpdated(entity));
         },
-        history
+        history,
+        sagasTasks,
+        cleanupStore: () => {
+            sagasTasks.map(task => task.cancel());
+        }
     };
 };
 

@@ -4,6 +4,7 @@ import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
+import { dataTest } from '../utils/Helper';
 
 interface IOwnProps {
     selectedType: EncodedAssetType;
@@ -209,6 +210,7 @@ export class AssetTypeSelector extends React.Component<Props> {
                     selectedValues={selectedTypesLevelOne}
                     classes={{ root: 'mt-3' }}
                     disabled={disabled}
+                    {...dataTest('asset-type-selector-level-1')}
                 />
                 {levelTwoTypes.length > 0 && (
                     <MultiSelectAutocomplete
@@ -219,6 +221,7 @@ export class AssetTypeSelector extends React.Component<Props> {
                         selectedValues={selectedTypesLevelTwo}
                         classes={{ root: 'mt-3' }}
                         disabled={disabled}
+                        {...dataTest('asset-type-selector-level-2')}
                     />
                 )}
                 {levelThreeTypes.length > 0 && (
@@ -230,6 +233,7 @@ export class AssetTypeSelector extends React.Component<Props> {
                         selectedValues={selectedTypesLevelThree}
                         classes={{ root: 'mt-3' }}
                         disabled={disabled}
+                        {...dataTest('asset-type-selector-level-3')}
                     />
                 )}
             </>
