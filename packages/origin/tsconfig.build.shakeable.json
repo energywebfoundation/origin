@@ -18,7 +18,7 @@
             "path": "../asset-registry/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../utils-testbackend/tsconfig.build.json"
+            "path": "../origin-backend/tsconfig.build.json"
         }
     ]
 }

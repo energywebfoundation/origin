@@ -2,9 +2,12 @@
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
         "composite": true,
-        "outDir": "./dist/js"
+        "outDir": "./dist/js",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "ormconfig.json"
     ]
 }
