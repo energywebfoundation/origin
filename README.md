@@ -100,6 +100,7 @@ This section lists key entry points to start your journey with Origin.
 6. [erc-test-contracts](https://github.com/energywebfoundation/origin/tree/master/packages/erc-test-contracts) - Test ERC20 token for demo purposes, especially for doing an on-chain test purchase of a certificate using tokens
 7. [utils-general](https://github.com/energywebfoundation/origin/tree/master/packages/utils-general) - Contains logic for more straightforward interaction with contracts, such as watching events. It is also a base layer for other libraries to build upon. It provides a foundation for things like off-chain data storage that is universal for all entities.
 8. [solar-simulator](https://github.com/energywebfoundation/origin/tree/master/packages/solar-simulator) - This service simulates smart-meter readings based on example solar data from whole year in 15-mins intervals. Also allows you to generate the config based on data from public I-REC registry.
+9. [event-listener](https://github.com/energywebfoundation/origin/tree/master/packages/event-listener) - Event listeners listen to events on the blockchain and react accordingly.
 
 ## Deployment
 
