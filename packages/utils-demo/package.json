@@ -37,7 +37,7 @@
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "ganache-cli": "6.4.5",
+    "ganache-cli": "6.7.0",
     "@types/web3": "1.0.20"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts"

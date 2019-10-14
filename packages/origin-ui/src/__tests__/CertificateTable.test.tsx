@@ -12,7 +12,14 @@ import {
 
 describe('CertificateTable', () => {
     it('correctly renders', async () => {
-        const { store, history, setCurrentUser, addProducingAsset, addCertificate } = setupStore();
+        const {
+            store,
+            history,
+            setCurrentUser,
+            addProducingAsset,
+            addCertificate,
+            cleanupStore
+        } = setupStore();
 
         setCurrentUser({
             id: '0x123'
@@ -85,5 +92,7 @@ describe('CertificateTable', () => {
         ]);
 
         assertPagination(1, 2, 2);
+
+        cleanupStore();
     });
 });

@@ -50,7 +50,11 @@ function* requestUserSaga(): SagaIterator {
 
         const userId = action.payload.toLowerCase();
 
-        yield fork(fetchUserSaga, userId, usersBeingFetched);
+        try {
+            yield fork(fetchUserSaga, userId, usersBeingFetched);
+        } catch (error) {
+            console.error('requestUserSaga: error', error);
+        }
     }
 }
 

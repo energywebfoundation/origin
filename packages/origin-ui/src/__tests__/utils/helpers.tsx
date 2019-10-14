@@ -1,5 +1,5 @@
 import { createMemoryHistory } from 'history';
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware, { Task } from 'redux-saga';
 import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
@@ -18,6 +18,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
+import { createLogger } from 'redux-logger';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -45,24 +46,39 @@ export async function waitForConditionAndAssert(
     await assertFunction();
 }
 
-const setupStoreInternal = (initialHistoryEntries?: string[]) => {
+const setupStoreInternal = (initialHistoryEntries: string[], logActions = false) => {
     const history = createMemoryHistory({
         initialEntries: initialHistoryEntries
     });
 
     const sagaMiddleware = createSagaMiddleware();
 
-    const middleware = applyMiddleware(routerMiddleware(history), sagaMiddleware);
+    const middlewareToApply = [routerMiddleware(history), sagaMiddleware];
+
+    if (logActions) {
+        const logger = createLogger({
+            level: {
+                prevState: false,
+                nextState: false
+            }
+        });
+
+        middlewareToApply.push(logger);
+    }
+
+    const middleware = applyMiddleware(...middlewareToApply);
 
     const store = createStore(createRootReducer(history), middleware);
 
-    Object.keys(sagas).forEach((saga: keyof typeof sagas) => {
-        sagaMiddleware.run(sagas[saga]);
-    });
+    const sagasTasks: Task[] = Object.keys(sagas).reduce(
+        (a, saga) => [...a, sagaMiddleware.run(sagas[saga])],
+        []
+    );
 
     return {
         store,
-        history
+        history,
+        sagasTasks
     };
 };
 
@@ -163,17 +179,22 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
 
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
+    logActions: boolean;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
-    mockUserFetcher: true
+    mockUserFetcher: true,
+    logActions: false
 };
 
 export const setupStore = (
     initialHistoryEntries?: string[],
     options: ISetupStoreOptions = DEFAULT_SETUP_STORE_OPTIONS
 ) => {
-    const { store, history } = setupStoreInternal(initialHistoryEntries);
+    const { store, history, sagasTasks } = setupStoreInternal(
+        initialHistoryEntries,
+        options.logActions
+    );
 
     if (options.mockUserFetcher) {
         const mockUserFetcher = {
@@ -209,7 +230,11 @@ export const setupStore = (
             const entity = createCertificate(properties);
             store.dispatch(certificateCreatedOrUpdated(entity));
         },
-        history
+        history,
+        sagasTasks,
+        cleanupStore: () => {
+            sagasTasks.map(task => task.cancel());
+        }
     };
 };
 
@@ -244,7 +269,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
 
     return {
         assertPagination: (firstIndex: number, lastIndex: number, total: number) => {
-            expect(rendered.find('span.MuiTablePagination-caption').text()).toBe(
+            expect(rendered.find('p.MuiTablePagination-caption').text()).toBe(
                 `${firstIndex}-${lastIndex} of ${total}`
             );
         },
@@ -253,12 +278,26 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
         },
         refresh,
         fillInputField: (name: string, value: string) => {
-            const input = rendered.find(`${dataTestSelector(name)} input`);
+            const input = rendered.find(`${dataTestSelector(name)} input`).hostNodes();
             const inputField = input.getDOMNode();
 
-            expect(inputField.getAttribute('name')).toBe(name);
+            const inputFieldName = inputField.getAttribute('name');
 
-            input.simulate('change', { target: { value, name } });
+            input.simulate('change', { target: { value, name: inputFieldName } });
+        },
+        click: (dataTest: string) => {
+            return rendered
+                .find(`${dataTestSelector(dataTest)}`)
+                .hostNodes()
+                .simulate('click', {
+                    button: 0
+                });
+        },
+        submitForm: (dataTest: string) => {
+            rendered
+                .find(dataTestSelector(dataTest))
+                .hostNodes()
+                .simulate('submit');
         },
         fillDate: async (name: string, dayOfMonth: number) => {
             const now = moment();

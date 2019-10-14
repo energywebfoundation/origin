@@ -13,8 +13,10 @@ import { ICertificatesState } from '../features/certificates/reducer';
 import { IUsersState } from '../features/users/reducer';
 import { IProducingAssetsState } from '../features/producingAssets/reducer';
 import { RouterState } from 'connected-react-router';
+import { IAuthenticationState } from '../features/authentication/reducer';
 
 export interface IStoreState {
+    authentication: IAuthenticationState;
     configuration: Configuration.Entity<
         MarketLogic,
         AssetProducingRegistryLogic,

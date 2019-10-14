@@ -42,7 +42,8 @@ module.exports = {
         "no-restricted-syntax": "off",
         "import/order": "off",
         "prefer-destructuring": "off",
-        "prefer-template": "off"
+        "prefer-template": "off",
+        "react/prop-types": "off"
     },
     "settings": {
         "import/resolver": {

@@ -11,22 +11,22 @@ module.exports = merge(baseConfig, {
 
     plugins: [
         new Dotenv({
-          path: '.env.dev'
+            path: '../../.env'
         }),
         new ForkTsCheckerWebpackPlugin()
     ],
 
     module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          loader: 'ts-loader',
-          options: {
-              configFile: '../tsconfig.build.json',
-              projectReferences: true,
-              transpileOnly: true
-          }
-        }
-      ]
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                options: {
+                    configFile: '../tsconfig.build.json',
+                    projectReferences: true,
+                    transpileOnly: true
+                }
+            }
+        ]
     }
 });

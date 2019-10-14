@@ -18,30 +18,54 @@ import {
     AssetConsumingRegistryLogic
 } from '@energyweb/asset-registry';
 
-export const deployDemo = async () => {
-    const connectionConfig = {
-        web3: 'http://localhost:8545',
-        deployKey: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
-    };
+const connectionConfig = {
+    web3: 'http://localhost:8545',
+    deployKey: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
+};
 
-    const adminPK = connectionConfig.deployKey;
-    const web3 = new Web3(connectionConfig.web3);
+const adminPK = connectionConfig.deployKey;
+const web3 = new Web3(connectionConfig.web3);
 
-    const ACCOUNTS = {
-        ADMIN: {
-            address: web3.eth.accounts.privateKeyToAccount(adminPK).address,
-            privateKey: adminPK
+export const ACCOUNTS = {
+    ADMIN: {
+        address: web3.eth.accounts.privateKeyToAccount(adminPK).address,
+        privateKey: adminPK
+    },
+    ASSET_MANAGER: {
+        address: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
+        privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac'
+    },
+    SMART_METER: {
+        address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
+        privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
+    },
+    TRADER: {
+        address: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+        privateKey: '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7',
+        onChain: {
+            id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+            propertiesDocumentHash: null,
+            url: null,
+            active: true,
+            roles: buildRights([Role.Trader]),
+            organization: 'Trader organization'
         },
-        ASSET_MANAGER: {
-            address: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
-            privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac'
-        },
-        SMART_METER: {
-            address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
-            privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
+        offChain: {
+            firstName: 'Trader',
+            surname: '',
+            email: 'trader@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: '',
+            notifications: false
         }
-    };
+    }
+};
 
+export const deployDemo = async () => {
     const logger = Winston.createLogger({
         level: 'debug',
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
@@ -167,6 +191,8 @@ export const deployDemo = async () => {
     };
     await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
 
+    await User.createUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
+
     const assetProducingProps: ProducingAsset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.ASSET_MANAGER.address },
@@ -179,7 +205,7 @@ export const deployDemo = async () => {
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
-        assetType: 'Wind',
+        assetType: 'Wind;Onshore',
         complianceRegistry: Compliance.IREC,
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
