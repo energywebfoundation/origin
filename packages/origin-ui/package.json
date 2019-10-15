@@ -13,11 +13,11 @@
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
     "start": "node --max-old-space-size=8192 ./node_modules/.bin/webpack-dev-server --config webpack/dev.config.js --watch",
     "start-all": "yarn start",
-    "test": "rm -rf db.json && jest",
+    "test": "rm -rf db.sqlite && jest",
     "test:watch": "jest -u --watchAll",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "clean": "rm -rf db.json dist"
+    "clean": "rm -rf db.sqlite dist"
   },
   "dependencies": {
     "@date-io/moment": "1.3.11",

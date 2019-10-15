@@ -3,4 +3,4 @@ node_modules
 dist
 build
 schemas
-db.json
+db.sqlite
