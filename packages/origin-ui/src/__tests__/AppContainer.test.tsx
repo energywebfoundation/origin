@@ -195,7 +195,7 @@ describe('Application[E2E]', () => {
             ]);
         }
 
-        await wait(8000);
+        await wait(10000);
 
         rendered.update();
 

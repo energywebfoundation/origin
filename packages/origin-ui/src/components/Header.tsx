@@ -125,18 +125,22 @@ export function Header() {
 
     let activeAccount = useSelector(getActiveAccount);
 
-    if (selectorAccounts.length === 0) {
-        selectorAccounts.push({
-            id: '0x0',
-            isLocked: false,
-            isPrivateKey: false,
-            label: 'Guest',
-            value: '0x0'
-        });
+    const GUEST_ACCOUNT = {
+        id: '0x0',
+        isLocked: false,
+        isPrivateKey: false,
+        label: 'Guest',
+        value: '0x0'
+    };
 
-        activeAccount = {
-            address: '0x0'
-        };
+    if (accounts.length === 0 || encryptedAccounts.length === 0) {
+        selectorAccounts.push(GUEST_ACCOUNT);
+
+        if (selectorAccounts.length === 1) {
+            activeAccount = {
+                address: '0x0'
+            };
+        }
     }
 
     return (
@@ -161,7 +165,9 @@ export function Header() {
 
                 <div className="ViewProfile">
                     <Select
-                        input={<FilledInput value={activeAccount ? activeAccount.address : ''} />}
+                        input={
+                            <FilledInput value={activeAccount ? activeAccount.address : '0x0'} />
+                        }
                         renderValue={(selected: string) => {
                             const selectedAccount = selectorAccounts.find(
                                 a => a.value === selected
@@ -170,7 +176,7 @@ export function Header() {
                             return (
                                 <>
                                     <AccountCircle className="ViewProfile_icon" color="primary" />
-                                    {selectedAccount.label}
+                                    {selectedAccount && selectedAccount.label}
                                     {isUsingPK && privateKeyIndicator}
                                 </>
                             );
