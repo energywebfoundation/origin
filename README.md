@@ -64,15 +64,13 @@ yarn test
 Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
 Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
-After you have the `.env` file created, runt he following command:
+After you have the `.env` file created, run the following command:
 
 ```shell
 yarn run:origin
 ```
 
-Find line like `@energyweb/utils-demo: [backend] PUT - MarketContractLookup 0x665B25e0eDc2D9B5DEe75c5f652f92F5B58BE12B` where the contracts address is used to visit the UI at
-
-`http://localhost:3000/0x665B25e0eDc2D9B5DEe75c5f652f92F5B58BE12B`
+Visit the UI at: http://localhost:3000.
 
 ## Energy Attribute Certificates
 Energy Attribute Certificates, or EACs, is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles. 

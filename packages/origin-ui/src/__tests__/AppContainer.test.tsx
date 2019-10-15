@@ -54,7 +54,7 @@ describe('Application[E2E]', () => {
 
             submitForm('account-import-form');
 
-            await wait(1000);
+            await wait(2000);
             await refresh();
 
             expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe(
