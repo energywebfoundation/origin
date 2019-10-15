@@ -1,13 +1,13 @@
-import { Agreement, Demand } from '@energyweb/market';
+import { Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
+import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
 import * as Winston from 'winston';
-// eslint-disable-next-line import/no-unresolved
-import { TransactionReceipt } from 'web3/types';
 
 import { IEntityStore } from './EntityStore';
 
+// eslint-disable-next-line import/no-unresolved
 @injectable()
 export class CertificateService {
     constructor(
@@ -15,27 +15,6 @@ export class CertificateService {
         @inject('entityStore') private entityStore: IEntityStore,
         @inject('logger') private logger: Winston.Logger
     ) {}
-
-    public async matchAgreement(
-        certificate: Certificate.ICertificate,
-        agreement: Agreement.IAgreement
-    ) {
-        const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-        if (
-            (await this.isAlreadyTransferred(certificate, demand.demandOwner)) ||
-            demand.status !== Demand.DemandStatus.ACTIVE
-        ) {
-            return false;
-        }
-
-        this.logger.debug(
-            `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
-        );
-
-        const fillTx: TransactionReceipt = await demand.fill(certificate.id);
-
-        return fillTx.status;
-    }
 
     public async splitCertificate(
         certificate: Certificate.ICertificate,

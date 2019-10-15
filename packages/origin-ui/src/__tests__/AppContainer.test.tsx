@@ -107,7 +107,7 @@ describe('Application[E2E]', () => {
             expect(submitButton.getDOMNode().hasAttribute('disabled')).toBe(false);
 
             expect(rendered.find(dataTestSelector('totalDemand')).text()).toEqual(
-                expect.stringMatching(/9 MWh|10 Mwh/gm)
+                expect.stringMatching(/9 MWh|10 MWh/gm)
             );
 
             submitForm('demandForm');

@@ -15,8 +15,6 @@ import { IStrategy } from './strategy/IStrategy';
 
 @injectable()
 export class Matcher {
-    private matcherAddress: string;
-
     private matchingQueue = new Subject();
 
     constructor(
@@ -25,9 +23,7 @@ export class Matcher {
         @inject('certificateService') private certificateService: CertificateService,
         @inject('strategy') private strategy: IStrategy,
         @inject('logger') private logger: Winston.Logger
-    ) {
-        this.matcherAddress = config.blockchainProperties.activeUser.address;
-    }
+    ) {}
 
     public async init() {
         this.matchingQueue.pipe(concatMap(this.match.bind(this))).subscribe();
@@ -107,28 +103,30 @@ export class Matcher {
     }
 
     private async matchWithAgreements(certificate: Certificate.ICertificate) {
+        this.logger.info(
+            `Checking if certificate ${certificate.id} matches any of existing agreements...`
+        );
+
         const matchingAgreements = await this.findMatchingAgreements(certificate);
 
-        for (const matchingAgreement of matchingAgreements) {
-            const { agreement } = matchingAgreement;
-            const demand = this.entityStore.getDemandById(agreement.demandId.toString());
-            const missingEnergyForPeriod = await demand.missingEnergyInCurrentPeriod();
-
-            this.logger.debug(
-                `Certificate's available energy ${certificate.energy}, missingEnergyForPeriod ${missingEnergyForPeriod}`
+        if (!matchingAgreements.length) {
+            this.logger.info(
+                `Couldn't find any matching agreements for certificate #${certificate.id}.`
             );
 
-            if (certificate.energy === missingEnergyForPeriod.value) {
-                return this.certificateService.matchAgreement(certificate, agreement);
-            }
-            if (
-                missingEnergyForPeriod.value > 0 &&
-                certificate.energy > missingEnergyForPeriod.value
-            ) {
-                return this.certificateService.splitCertificate(
-                    certificate,
-                    missingEnergyForPeriod.value
-                );
+            return false;
+        }
+
+        const demands = await Promise.all(
+            matchingAgreements.map(async ({ agreement }) =>
+                this.entityStore.getDemandById(agreement.demandId.toString())
+            )
+        );
+
+        for (const demand of demands) {
+            const res = await this.executeMatching(certificate, demand);
+            if (res) {
+                return true;
             }
         }
 
@@ -136,12 +134,14 @@ export class Matcher {
     }
 
     private async matchWithDemands(certificate: Certificate.ICertificate) {
+        this.logger.info(
+            `Checking if certificate ${certificate.id} matches any of existing demands...`
+        );
+
         if (!this.isOnSale(certificate)) {
             this.logger.verbose(`This certificate is not on sale #${certificate.id}`);
             return false;
         }
-
-        this.logger.info(`Checking if certificate ${certificate.id} matches any demands...`);
 
         const matchingDemands = await this.findMatchingDemands(certificate);
 
@@ -149,12 +149,13 @@ export class Matcher {
             this.logger.info(
                 `Couldn't find any matching demands for certificate #${certificate.id}.`
             );
+
+            return false;
         }
 
-        for (const matchingDemand of matchingDemands) {
-            const { demand } = matchingDemand;
-            const matchingResult = await this.executeMatching(certificate, demand);
-            if (matchingResult) {
+        for (const { demand } of matchingDemands) {
+            const res = await this.executeMatching(certificate, demand);
+            if (res) {
                 return true;
             }
         }
