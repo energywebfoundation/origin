@@ -267,9 +267,10 @@ describe('API tests', async () => {
 
             assert.equal(putResult.status, STATUS_CODES.SUCCESS);
             assert.equal(putResult.data.message, 'Resource Entity with ID 0 updated')
-            console.log({
-                data: putResult.data
-            })
+
+            const getResult: AxiosResponse = await axios.get(`${BASE_URL}/Entity/${marketContractLookup}/0`);
+
+            assert.equal(getResult.data.entityOwner, 'someOtherEntityOwner');
         });
     });
 

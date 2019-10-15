@@ -128,7 +128,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             }
         );
 
-        await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
         return new Entity(this.id, this.configuration).sync();
     }
@@ -234,7 +234,7 @@ export const createDemand = async (
         .hexToNumber(tx.logs[0].topics[1])
         .toString();
 
-    await demand.putToOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demand.id} created`);

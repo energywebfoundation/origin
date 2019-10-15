@@ -40,7 +40,7 @@ export const createAsset = async (
         .hexToNumber(tx.logs[0].topics[1])
         .toString();
 
-    await consumingAsset.putToOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
+    await consumingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 
     if (configuration.logger) {
         configuration.logger.info(`Consuming asset ${consumingAsset.id} created`);

@@ -141,7 +141,7 @@ export const createAgreement = async (
         .hexToNumber(tx.logs[0].topics[1])
         .toString();
 
-    await agreement.putToOffChainStorage(
+    await agreement.syncOffChainStorage(
         agreementPropertiesOffChain,
         agreementOffChainStorageProperties
     );

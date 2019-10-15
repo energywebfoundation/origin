@@ -112,7 +112,7 @@ export const createSupply = async (
         .hexToNumber(tx.logs[0].topics[1])
         .toString();
 
-    await supply.putToOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
+    await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
 
     if (configuration.logger) {
         configuration.logger.info(`Supply ${supply.id} created`);

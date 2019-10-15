@@ -204,6 +204,8 @@ export async function startAPI(port?: number) {
 
         existingEntity.value = JSON.stringify(req.body);
 
+        await anyEntityRepository.save(existingEntity);
+
         res.status(STATUS_CODES.SUCCESS).send({
             message: `Resource ${type} with ID ${identifier} updated`
         });
