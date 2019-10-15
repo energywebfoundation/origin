@@ -1,5 +1,4 @@
 {
-    "topAdminPrivateKey": "d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5",
     "flow": [
         {
             "type": "CREATE_ACCOUNT",
@@ -114,14 +113,6 @@
         {
             "type": "SLEEP",
             "data": 2000
-        },
-        {
-            "type": "SET_MARKET_CONTRACT",
-            "data": {
-                "assetId": 0,
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
-            }
         },
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",

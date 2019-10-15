@@ -4,7 +4,7 @@ import Web3 from 'web3';
 
 import CONFIG from '../config/config.json';
 
-const web3 = new Web3(CONFIG.config.WEB3_URL);
+const web3 = new Web3(process.env.WEB3);
 
 program.option('-f, --fundingAccount <string>', 'funding account private key');
 program.option('-v, --value <ewt>', 'value of the funding tx (default: 1EWT)', '1');

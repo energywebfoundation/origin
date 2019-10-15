@@ -4,7 +4,7 @@ import { STATUS_CODES } from '../enums/StatusCodes';
 export class MemoryAdapter extends Adapter {
     _storage: any = {};
 
-    get(key: string): string {
+    get(key: string): any {
         return this._storage[key];
     }
 

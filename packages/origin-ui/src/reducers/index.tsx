@@ -6,12 +6,14 @@ import configuration from './Configuration';
 import general from '../features/general/reducer';
 import contracts from '../features/contracts/reducer';
 import users from '../features/users/reducer';
+import authentication from '../features/authentication/reducer';
 import { combineReducers } from 'redux';
 import { IStoreState } from '../types';
 import { connectRouter } from 'connected-react-router';
 
 export const createRootReducer = history =>
     combineReducers<IStoreState>({
+        authentication,
         certificates,
         producingAssets,
         consumingAssets,

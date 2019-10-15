@@ -6,21 +6,6 @@ This repository/package is not designed for productive usage. Instead it should 
 
 ## How to use
 
-### Configuration
-
-Create a `.env.dev` file in the root of the package with the following contents:
-
-**.env.dev**
-```
-MODE="development"
-UI_BASE_URL="http://localhost:3000"
-API_BASE_URL="http://localhost:3035"
-WEB3="http://localhost:8550"
-MANDRILL_API_KEY="REPLACE_WITH_YOUR_API_KEY"
-EMAIL_FROM="origin-no-reply@energyweb.org"
-EMAIL_REPLY_TO="reply-to@energyweb.org"
-```
-
 ### Run
 
 From the root of the monorepo, run the following commands in two separate terminals:

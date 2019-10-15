@@ -101,10 +101,6 @@ export class IRECAssetService implements IAssetService {
     }
 
     includesAssetType(checkedType: string, types: string[]): boolean {
-        if (types.some(t => t === checkedType)) {
-            return true;
-        }
-
         const highestSpecificityTypes = this.filterForHighestSpecificity(types).map(type => [
             ...this.decode([type])[0]
         ]);

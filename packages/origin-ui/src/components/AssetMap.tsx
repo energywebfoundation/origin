@@ -162,6 +162,6 @@ class AssetMapClass extends React.Component<Props, IState> {
 
 export const AssetMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
     assets: ownProps.assets || getProducingAssets(state),
-    baseURL: getBaseURL(state),
+    baseURL: getBaseURL(),
     configuration: getConfiguration(state)
 }))(AssetMapClass);

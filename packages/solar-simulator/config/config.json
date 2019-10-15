@@ -38,14 +38,8 @@
     }
   ],
   "config": {
-    "ASSET_CONTRACT_LOOKUP_ADDRESS": "0x24B207fFf1a1097d3c3D69fcE461544f83c6E774",
-    "WEB3_URL": "http://localhost:8545",
-    "ENERGY_API_BASE_URL": "http://localhost:3031",
     "SOLAR_ASSET_GENERATION_TIMEZONE": "Europe/Berlin",
     "ENERGY_READ_CHECK_INTERVAL": 29000,
-    "SIMULATION": {
-      "PORT": 3031
-    },
     "ACCOUNT_GENERATION": {
       "mnemonic": "chalk park staff buzz chair purchase wise oak receive avoid avoid home",
       "startIndex": 20

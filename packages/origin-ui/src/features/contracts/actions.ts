@@ -1,19 +1,25 @@
 export enum ContractsActions {
-    setOriginContractLookupAddress = 'CONTRACTS_SET_ORIGIN_CONTRACT_LOOKUP_ADDRESS'
+    setMarketContractLookupAddress = 'CONTRACTS_SET_MARKET_CONTRACT_LOOKUP_ADDRESS'
 }
 
-export interface ISetOriginContractLookupAddressAction {
-    type: ContractsActions.setOriginContractLookupAddress;
-    payload: string;
+export interface ISetMarketContractLookupAddressAction {
+    type: ContractsActions.setMarketContractLookupAddress;
+    payload: {
+        address: string;
+        userDefined?: boolean;
+    };
 }
 
-export const setOriginContractLookupAddress = (
-    payload: ISetOriginContractLookupAddressAction['payload']
+export const setMarketContractLookupAddress = (
+    payload: ISetMarketContractLookupAddressAction['payload']
 ) => ({
-    type: ContractsActions.setOriginContractLookupAddress,
+    type: ContractsActions.setMarketContractLookupAddress,
     payload
 });
 
-export type TSetOriginContractLookupAddress = typeof setOriginContractLookupAddress;
+export type TSetMarketContractLookupAddress = typeof setMarketContractLookupAddress;
 
-export type IContractsAction = ISetOriginContractLookupAddressAction;
+export const MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY =
+    'CONTRACTS_MARKET_CONTRACT_LOOKUP_ADDRESS';
+
+export type IContractsAction = ISetMarketContractLookupAddressAction;

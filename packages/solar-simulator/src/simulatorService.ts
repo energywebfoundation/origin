@@ -4,10 +4,13 @@ import parse from 'csv-parse/lib/sync';
 import express from 'express';
 import fs from 'fs-extra';
 import moment from 'moment';
+import dotenv from 'dotenv';
+
 import CONFIG from '../config/config.json';
 
-const PORT = CONFIG.config.SIMULATION.PORT || 3031;
-const DEFAULT_ENERGY_ROWS_LIMIT = 5;
+dotenv.config({
+    path: '../../.env'
+});
 
 type TableRowType = string[3];
 
@@ -37,6 +40,17 @@ const ENERGY_UNIT_TO_RATIO_MAPPING = {
     [ENERGY_UNIT.megawattHour]: 1e-6,
     [ENERGY_UNIT.gigawattHour]: 1e-9
 };
+
+function extractPort(url: string): number {
+    if (url) {
+        const backendUrlSplit: string[] = url.split(':');
+        const extractedPort: number = parseInt(backendUrlSplit[backendUrlSplit.length - 1], 10);
+
+        return extractedPort;
+    }
+
+    return null;
+}
 
 function processRows(
     rows: TableRowType[],
@@ -121,6 +135,9 @@ async function getData() {
 
     return DATA;
 }
+
+const PORT: number = extractPort(process.env.ENERGY_API_BASE_URL) || 3031;
+const DEFAULT_ENERGY_ROWS_LIMIT = 5;
 
 export async function startAPI() {
     const app = express();

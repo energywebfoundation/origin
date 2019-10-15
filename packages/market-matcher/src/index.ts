@@ -1,10 +1,10 @@
 import 'reflect-metadata';
+import * as Winston from 'winston';
+import Web3 from 'web3';
+import { container } from 'tsyringe';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-import Web3 from 'web3';
-import { container } from 'tsyringe';
-import * as Winston from 'winston';
 
 import { logger } from './Logger';
 import { Matcher } from './Matcher';
@@ -16,7 +16,6 @@ import { CertificateService } from './CertificateService';
 export interface IMatcherConfig {
     web3Url: string;
     marketContractLookupAddress: string;
-    originContractLookupAddress: string;
     matcherAccount: Configuration.EthAccount;
     offChainDataSourceUrl: string;
 }

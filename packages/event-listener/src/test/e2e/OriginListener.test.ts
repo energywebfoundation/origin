@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
+import dotenv from 'dotenv';
 
 import { Unit } from '@energyweb/utils-general';
 
@@ -42,10 +43,9 @@ function notificationSent(emailService: any, notification: EmailTypes) {
 }
 
 describe('Origin Listener Tests', async () => {
-    process.env.UI_BASE_URL = 'http://localhost:3000';
-    process.env.API_BASE_URL = 'http://localhost:3035';
-    process.env.WEB3 = 'http://localhost:8550';
-    const deployKey = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
+    dotenv.config({
+        path: '.env.test'
+    });
 
     let demo: any;
     let listener: IOriginEventListener;
@@ -55,7 +55,7 @@ describe('Origin Listener Tests', async () => {
     let currentSmRead = 0;
 
     before(async () => {
-        demo = new Demo(process.env.WEB3, deployKey);
+        demo = new Demo(process.env.WEB3, process.env.DEPLOY_KEY);
         await demo.deploy();
     });
 
@@ -65,7 +65,7 @@ describe('Origin Listener Tests', async () => {
         store = new OriginEventsStore();
 
         listener = new OriginEventListener(
-            demo.originContractLookup,
+            demo.marketContractLookup,
             web3,
             emailService,
             store,

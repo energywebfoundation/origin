@@ -7,21 +7,21 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import moment from 'moment';
 import Web3 from 'web3';
+import dotenv from 'dotenv';
 
 import { AssetProducingRegistryLogic, ProducingAsset } from '..';
 import { logger } from '../Logger';
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 
 describe('AssetProducing Facade', () => {
-    const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
-    );
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const web3 = new Web3(configFile.develop.web3);
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
-        ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
@@ -103,7 +103,7 @@ describe('AssetProducing Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3030'
+                baseUrl: process.env.BACKEND_URL
             },
             logger
         };
@@ -154,7 +154,7 @@ describe('AssetProducing Facade', () => {
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
                 maxOwnerChanges: '3',
-                url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
             } as any,
             asset
         );
@@ -222,7 +222,7 @@ describe('AssetProducing Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `http://localhost:3030/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
+            url: `${process.env.BACKEND_URL}/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
             maxOwnerChanges: '3',
             offChainProperties: {
                 operationalSince: 0,

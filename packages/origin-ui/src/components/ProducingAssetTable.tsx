@@ -149,10 +149,6 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
             return;
         }
 
-        asset.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
-        };
-
         this.setState({
             requestIRECsModalAsset: asset,
             showRequestIRECsModal: true
@@ -268,7 +264,6 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
                 />
 
                 <RequestIRECsModal
-                    conf={this.props.configuration}
                     producingAsset={requestIRECsModalAsset}
                     showModal={showRequestIRECsModal}
                     callback={this.hideRequestIRECsModal}
@@ -285,6 +280,6 @@ export const ProducingAssetTable = connect(
         producingAssets: getProducingAssets(state),
         users: getUsers(state),
         currentUser: getCurrentUser(state),
-        baseURL: getBaseURL(state)
+        baseURL: getBaseURL()
     })
 )(ProducingAssetTableClass);

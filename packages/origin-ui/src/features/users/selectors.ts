@@ -11,5 +11,12 @@ export const getCurrentUser = (state: IStoreState) => {
     }
 };
 
-export const getUserById = (users: IUsersState['users'], id: string) =>
-    users.find(u => u.id.toLowerCase() === id.toLowerCase());
+export const getUserById = (users: IUsersState['users'], id: string) => {
+    if (typeof id === 'undefined') {
+        return;
+    }
+
+    return users.find(u => u.id.toLowerCase() === id.toLowerCase());
+};
+
+export const getUserFetcher = (state: IStoreState) => state.users.fetcher;

@@ -1,18 +1,18 @@
-import * as fs from 'fs';
+import dotenv from 'dotenv';
+import Web3 from 'web3';
 import { assert } from 'chai';
+
 import { deployERC20TestToken, deployERC721TestReceiver } from '..';
 
-import Web3 from 'web3';
-
 describe('deployTests', () => {
-    const configFile = JSON.parse(
-        fs.readFileSync(`${process.cwd()}/connection-config.json`, 'utf8')
-    );
-    const web3: Web3 = new Web3(configFile.develop.web3);
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
-        ? configFile.develop.deployKey
-        : `0x${configFile.develop.deployKey}`;
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
+
+    const privateKeyDeployment = `${deployKey.startsWith('0x') ? '' : '0x'}${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     it('should deploy the ERC20 Test-Token', async () => {

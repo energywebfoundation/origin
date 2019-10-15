@@ -1,21 +1,21 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
 import { marketDemo } from './market';
 import { deployEmptyContracts } from './deployEmpty';
-import { CONFIG } from './config';
 
 async function main() {
+    dotenv.config({
+        path: '.env.test'
+    });
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo();
 
-    if (contractConfig && contractConfig.originContractLookup) {
+    if (contractConfig && contractConfig.marketContractLookup) {
         await axios.put(
-            `${
-                CONFIG.API_BASE_URL
-            }/OriginContractLookupMarketLookupMapping/${contractConfig.originContractLookup.toLowerCase()}`,
-            {
-                marketContractLookup: contractConfig.marketContractLookup.toLowerCase()
-            }
+            `${process.env.BACKEND_URL}/MarketContractLookup`,
+            { address: contractConfig.marketContractLookup.toLowerCase() }
         );
     }
 }

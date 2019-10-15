@@ -1,5 +1,4 @@
 {
-    "topAdminPrivateKey": "d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5",
     "flow": [
         {
             "type": "CREATE_ACCOUNT",
@@ -142,7 +141,7 @@
                 "address": "95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140",
                 "gpsLatitude": "14.059500",
                 "gpsLongitude": "99.977800",
-                "assetType": "Wind",
+                "assetType": "Wind;Onshore",
                 "certificatesCreatedForWh": 0,
                 "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "none",
@@ -171,7 +170,7 @@
                 "houseNumber": "9",
                 "gpsLatitude": "15.1739",
                 "gpsLongitude": "101.4928",
-                "assetType": "Solar",
+                "assetType": "Solar;Photovoltaic;Roof mounted",
                 "certificatesCreatedForWh": 0,
                 "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "IREC",
@@ -229,30 +228,6 @@
         {
             "type": "SLEEP",
             "data": 2000
-        },
-        {
-            "type": "SET_MARKET_CONTRACT",
-            "data": {
-                "assetId": "0",
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
-            }
-        },
-        {
-            "type": "SET_MARKET_CONTRACT",
-            "data": {
-                "assetId": "1",
-                "assetOwner": "0xfd863c662307fcf0c15f0b9f74f1d06544f19908",
-                "assetOwnerPK": "0x60a0dae29ff80793b6cc1602f60fbe548b6787d0f9d4eb7c0967dac8ff11591a"
-            }
-        },
-        {
-            "type": "SET_MARKET_CONTRACT",
-            "data": {
-                "assetId": "2",
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
-            }
         },
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",

@@ -1,3 +1,8 @@
+import { assert } from 'chai';
+import Web3 from 'web3';
+import moment from 'moment';
+import dotenv from 'dotenv';
+
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
@@ -7,16 +12,9 @@ import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame, Unit } from '@energyweb/utils-general';
-import { assert } from 'chai';
-import Web3 from 'web3';
 
-import moment from 'moment';
 import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
-
-const PROVIDER_URL = 'http://localhost:8549';
-const BACKEND_URL = 'http://localhost:3034';
-const deployKey = 'd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -42,8 +40,13 @@ async function waitForConditionAndAssert(
     await assertFunction();
 }
 
-describe.only('Test StrategyBasedMatcher', async () => {
-    const web3 = new Web3(PROVIDER_URL);
+describe('Test StrategyBasedMatcher', async () => {
+    dotenv.config({
+        path: '.env.test'
+    });
+
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
@@ -76,10 +79,9 @@ describe.only('Test StrategyBasedMatcher', async () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     const matcherConfig: IMatcherConfig = {
-        web3Url: PROVIDER_URL,
-        offChainDataSourceUrl: BACKEND_URL,
+        web3Url: process.env.WEB3,
+        offChainDataSourceUrl: process.env.BACKEND_URL,
         marketContractLookupAddress: '',
-        originContractLookupAddress: '',
         matcherAccount: {
             address: accountDeployment,
             privateKey: privateKeyDeployment
@@ -146,7 +148,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
             await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
                 privateKey: privateKeyDeployment
             });
-        }).timeout(5000);
+        });
 
         it('should deploy asset-registry contracts', async () => {
             const deployedContracts = await migrateAssetRegistryContracts(
@@ -216,7 +218,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                     web3
                 },
                 offChainDataSource: {
-                    baseUrl: BACKEND_URL
+                    baseUrl: process.env.BACKEND_URL
                 },
                 logger
             };
@@ -313,24 +315,6 @@ describe.only('Test StrategyBasedMatcher', async () => {
         it('starts the matcher', async () => {
             await startMatcher(matcherConfig);
         });
-
-        it('sets the market lookup contract', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
-            };
-
-            try {
-                await conf.blockchainProperties.producingAssetLogicInstance.setMarketLookupContract(
-                    asset.id,
-                    originContractLookupAddr,
-                    { privateKey: assetOwnerPK }
-                );
-                conf.logger.info(`Certificates for Asset #${asset.id} initialized`);
-            } catch (e) {
-                conf.logger.error(`Could not initialize certificates\n${e}`);
-            }
-        });
     });
 
     describe('Certificate -> Demand matching tests', () => {
@@ -352,7 +336,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
             await certificateLogic.approveCertificationRequest(0, {
                 privateKey: issuerPK
             });
-        }).timeout(10000);
+        });
 
         it('certificate has been created', async () => {
             assert.equal(await Certificate.getCertificateListLength(conf), 1);
@@ -395,7 +379,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 1000,
                 20000
             );
-        }).timeout(21000);
+        });
     });
 
     describe('Agreement -> Certificate matching tests', () => {
@@ -432,7 +416,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
 
             const agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
             await agreement.approveAgreementSupply();
-        }).timeout(6000);
+        });
 
         it('creates a smart meter reading', async () => {
             conf.blockchainProperties.activeUser = {
@@ -455,7 +439,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
             await certificateLogic.approveCertificationRequest(1, {
                 privateKey: issuerPK
             });
-        }).timeout(10000);
+        });
 
         it('certificate has been created', async () => {
             conf.blockchainProperties.activeUser = {
@@ -475,7 +459,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
             await sleep(10000);
 
             assert.equal(await Certificate.getCertificateListLength(conf), 4);
-        }).timeout(11000);
+        });
 
         it('asset owner is still the owner of the original certificate', async () => {
             const certificate = await new Certificate.Entity('1', conf).sync();
@@ -542,7 +526,7 @@ describe.only('Test StrategyBasedMatcher', async () => {
             await certificate.publishForSale(1, Currency.USD);
 
             assert.equal(certificate.energy, energy);
-        }).timeout(10000);
+        });
 
         it('should create a demand', async () => {
             conf.blockchainProperties.activeUser = {
@@ -588,6 +572,6 @@ describe.only('Test StrategyBasedMatcher', async () => {
                 1000,
                 20000
             );
-        }).timeout(30000);
+        });
     });
 });

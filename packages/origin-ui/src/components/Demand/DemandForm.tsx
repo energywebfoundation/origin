@@ -252,15 +252,9 @@ class DemandFormClass extends React.Component<Props, IState> {
 
         const { selectedAssetType, vintage } = this.state;
 
-        const { baseURL, currentUser, configuration, edit, demand, history } = this.props;
+        const { baseURL, configuration, edit, demand, history } = this.props;
 
         formikActions.setSubmitting(true);
-
-        if (configuration) {
-            configuration.blockchainProperties.activeUser = {
-                address: currentUser.id
-            };
-        }
 
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
@@ -667,7 +661,7 @@ class DemandFormClass extends React.Component<Props, IState> {
 export const DemandForm = withRouter(
     connect(
         (state: IStoreState): IStateProps => ({
-            baseURL: getBaseURL(state),
+            baseURL: getBaseURL(),
             currentUser: getCurrentUser(state),
             configuration: getConfiguration(state)
         })

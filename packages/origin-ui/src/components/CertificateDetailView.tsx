@@ -318,7 +318,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
 
 export const CertificateDetailView = connect(
     (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(state),
+        baseURL: getBaseURL(),
         certificates: getCertificates(state),
         configuration: getConfiguration(state),
         producingAssets: getProducingAssets(state)

@@ -31,7 +31,7 @@
     "prepare": "scripts/build.js",
     "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "test": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts",
+    "test": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --exit",
     "test:watch": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --watch --watch-extensions ts",
     "clean": "rm -rf build dist"
   },
@@ -48,7 +48,7 @@
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
-    "ganache-cli": "6.6.0"
+    "ganache-cli": "6.7.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

@@ -1,12 +1,17 @@
 import React, { HTMLAttributes } from 'react';
 import clsx from 'clsx';
 import Select from 'react-select';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import TextField, { BaseTextFieldProps } from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
+import { BaseTextFieldProps } from '@material-ui/core/TextField';
+import {
+    useTheme,
+    makeStyles,
+    Typography,
+    TextField,
+    Paper,
+    Chip,
+    MenuItem
+} from '@material-ui/core';
+
 import CancelIcon from '@material-ui/icons/Cancel';
 import { ValueContainerProps } from 'react-select/src/components/containers';
 import { ControlProps } from 'react-select/src/components/Control';
@@ -160,42 +165,35 @@ interface IOwnProps {
     disabled?: boolean;
 }
 
-class MultiSelectClass extends React.Component<IOwnProps> {
-    constructor(props: IOwnProps) {
-        super(props);
-
-        this.handleMultiSelectChange = this.handleMultiSelectChange.bind(this);
+export function MultiSelectAutocomplete(props: IOwnProps) {
+    function handleMultiSelectChange(value: ValueType<IAutocompleteMultiSelectOptionType>) {
+        props.onChange(value);
     }
 
-    handleMultiSelectChange(value: ValueType<IAutocompleteMultiSelectOptionType>) {
-        this.props.onChange(value);
-    }
+    const useStyles = makeStyles(createInputAutocompleteStyle);
 
-    render() {
-        const { classes, label, placeholder, options, selectedValues, disabled } = this.props;
+    const classes = useStyles(useTheme());
+    const { label, placeholder, options, selectedValues, disabled } = props;
 
-        return (
-            <div className={classes.root}>
-                <Select
-                    classes={classes}
-                    styles={INPUT_AUTOCOMPLETE_SELECT_STYLE}
-                    TextFieldProps={{
-                        label,
-                        InputLabelProps: {
-                            shrink: true
-                        }
-                    }}
-                    placeholder={placeholder}
-                    options={options}
-                    components={components}
-                    value={selectedValues}
-                    onChange={this.handleMultiSelectChange}
-                    isDisabled={disabled}
-                    isMulti
-                />
-            </div>
-        );
-    }
+    return (
+        <div className={classes.root}>
+            <Select
+                classes={classes}
+                styles={INPUT_AUTOCOMPLETE_SELECT_STYLE}
+                TextFieldProps={{
+                    label,
+                    InputLabelProps: {
+                        shrink: true
+                    }
+                }}
+                placeholder={placeholder}
+                options={options}
+                components={components}
+                value={selectedValues}
+                onChange={handleMultiSelectChange}
+                isDisabled={disabled}
+                isMulti
+            />
+        </div>
+    );
 }
-
-export const MultiSelectAutocomplete = withStyles(createInputAutocompleteStyle)(MultiSelectClass);

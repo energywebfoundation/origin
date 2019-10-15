@@ -84,16 +84,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         }
     }
 
-	/// @notice Set the MarketLookup contract contract
-	/// @param _assetId the id belonging ti an entry in the asset registry
-	/// @param _marketContractLookup the MarketLookup-contract
-    function setMarketLookupContract(uint _assetId, address _marketContractLookup)
-        external
-    {
-        require(msg.sender == db.getAssetOwner(_assetId),"sender is not the assetOwner");
-        db.setMarketLookupContract(_assetId, _marketContractLookup);
-    }
-
 	/// @notice Updates the logic contract
 	/// @param _newLogic address of the new logic contract
     function update(address _newLogic)
@@ -114,17 +104,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         return db.getAssetListLength();
     }
 
-	/// @notice gets the MarketLookup-contract
-	/// @param _assetId the id of an asset
-	/// @return contract address of the MarketLookup-contract
-    function getMarketLookupContract(uint _assetId)
-        external
-        view
-        returns (address)
-    {
-        return db.getMarketLookupContract(_assetId);
-    }
-
 	/// @notice checks whether an AssetGeneral-struct already exists
 	/// @param _assetGeneral the AssetGeneral-struct
 	/// @return whether that struct exists
@@ -137,7 +116,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
             && bytes(_assetGeneral.lastSmartMeterReadFileHash).length == 0
             && bytes(_assetGeneral.propertiesDocumentHash).length == 0
             && bytes(_assetGeneral.url).length == 0
-            && address(_assetGeneral.marketLookupContract) == address(0x0)
         );
     }
 
@@ -184,7 +162,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         string memory lastSmartMeterReadFileHash,
         string memory propertiesDocumentHash,
         string memory url,
-        address marketLookupContract,
         bool bundled
     )
     {
@@ -197,7 +174,6 @@ contract AssetLogic is RoleManagement, Updatable, AssetGeneralInterface, AssetGe
         lastSmartMeterReadFileHash = a.lastSmartMeterReadFileHash;
         propertiesDocumentHash = a.propertiesDocumentHash;
         url = a.url;
-        marketLookupContract = a.marketLookupContract;
         bundled = a.bundled;
     }
 

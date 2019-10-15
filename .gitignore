@@ -6,3 +6,4 @@ db.json
 .vscode
 *.log
 package-lock.json
+.env

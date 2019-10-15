@@ -1,9 +1,4 @@
 import { IStoreState } from '../types';
-import { getOriginContractLookupAddress } from './contracts/selectors';
-
-export const constructBaseURL = (originContractLookupAddress: string) => {
-    return `/${originContractLookupAddress}`;
-};
 
 export const getConfiguration = (state: IStoreState) => state.configuration;
 
@@ -13,6 +8,6 @@ export const getProducingAssets = (state: IStoreState) => state.producingAssets.
 
 export const getConsumingAssets = (state: IStoreState) => state.consumingAssets;
 
-export const getBaseURL = (state: IStoreState) => {
-    return constructBaseURL(getOriginContractLookupAddress(state));
+export const getBaseURL = () => {
+    return '';
 };

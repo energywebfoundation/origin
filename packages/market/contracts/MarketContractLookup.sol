@@ -37,7 +37,7 @@ contract MarketContractLookup is Owned, MarketContractLookupInterface {
 	/// @notice function to initialize the contracts, setting the needed contract-addresses
 	/// @param _assetRegistry the asset Registry
 	/// @param _marketLogicRegistry the market Logic Registry
-	/// @param _marketDB the market D B
+	/// @param _marketDB the market DB
     function init(
         AssetContractLookupInterface _assetRegistry,
         OriginContractLookupInterface _originRegistry,

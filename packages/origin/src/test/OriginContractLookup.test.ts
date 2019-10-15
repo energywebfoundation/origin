@@ -15,9 +15,9 @@
 // @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
 
 import { assert } from 'chai';
-import * as fs from 'fs';
 import 'mocha';
 import Web3 from 'web3';
+import dotenv from 'dotenv';
 
 import { UserLogic } from '@energyweb/user-registry';
 import {
@@ -33,15 +33,14 @@ import { CertificateLogic } from '../wrappedContracts/CertificateLogic';
 import { OriginContractLookupJSON, CertificateLogicJSON, CertificateDBJSON } from '../../contracts';
 
 describe('OriginContractLookup', () => {
-    const configFile = JSON.parse(
-        fs.readFileSync(process.cwd() + '/connection-config.json', 'utf8')
-    );
+    dotenv.config({
+        path: '.env.test'
+    });
 
-    const web3: Web3 = new Web3(configFile.develop.web3);
+    const web3: Web3 = new Web3(process.env.WEB3);
+    const deployKey: string = process.env.DEPLOY_KEY;
 
-    const privateKeyDeployment = configFile.develop.deployKey.startsWith('0x')
-        ? configFile.develop.deployKey
-        : '0x' + configFile.develop.deployKey;
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 

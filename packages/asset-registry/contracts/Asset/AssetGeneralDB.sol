@@ -85,13 +85,6 @@ contract AssetGeneralDB is Owned, AssetGeneralStructContract, AssetDbInterface {
         getAssetGeneralInternal(_assetId).lastSmartMeterReadWh = _lastSmartMeterReadWh;
     }
 
-    /// @notice set the markup-lookup-contract
-    /// @param _assetId the id of an asset
-    /// @param _marketLookupContract the new market-lookup-contract
-    function setMarketLookupContract(uint _assetId, address _marketLookupContract) external onlyOwner {
-        getAssetGeneralInternal(_assetId).marketLookupContract = _marketLookupContract;
-    }
-
     /// @notice set the meterreading and the filehash at the same time
     /// @dev can be used to save gas-costs when setting a meterreading in the logic contract
     /// @param _assetId the id of an asset
@@ -160,13 +153,6 @@ contract AssetGeneralDB is Owned, AssetGeneralStructContract, AssetDbInterface {
         AssetGeneral memory general = getAssetGeneralInternal(_assetId);
         _lastSmartMeterReadWh = general.lastSmartMeterReadWh;
         _lastSmartMeterReadFileHash = general.lastSmartMeterReadFileHash;
-    }
-
-    /// @notice gets the market-lookup-contract
-    /// @param _assetId the id of an asset
-    /// @return the market-lookup-contractaddress
-    function getMarketLookupContract(uint _assetId) external onlyOwner view returns (address){
-        return getAssetGeneralInternal(_assetId).marketLookupContract;
     }
 
     /// @notice gets the smartmeter of an asset

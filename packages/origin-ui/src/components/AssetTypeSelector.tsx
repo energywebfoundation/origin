@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { IRECAssetService, EncodedAssetType, DecodedAssetType } from '@energyweb/utils-general';
+import { IRECAssetService, EncodedAssetType } from '@energyweb/utils-general';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
+import { dataTest } from '../utils/Helper';
 
 interface IOwnProps {
     selectedType: EncodedAssetType;
@@ -12,28 +13,20 @@ interface IOwnProps {
     readOnly?: boolean;
 }
 
-type Props = IOwnProps;
-
 type Level = 1 | 2 | 3;
 
-export class AssetTypeSelector extends React.Component<Props> {
-    irecAssetService = new IRECAssetService();
+export function AssetTypeSelector(props: IOwnProps) {
+    const irecAssetService = new IRECAssetService();
+    const allTypes = irecAssetService.AssetTypes;
+    const selectedTypeDecoded = irecAssetService.decode(props.selectedType);
 
-    get allTypes() {
-        return this.irecAssetService.AssetTypes;
-    }
-
-    get selectedTypeDecoded(): DecodedAssetType {
-        return this.irecAssetService.decode(this.props.selectedType);
-    }
-
-    allTypesByLevel(level: Level): EncodedAssetType {
-        return this.allTypes
+    function allTypesByLevel(level: Level): EncodedAssetType {
+        return allTypes
             .filter(t => t.length === level)
-            .map(t => this.irecAssetService.encode([t]).pop());
+            .map(t => irecAssetService.encode([t]).pop());
     }
 
-    filterSelected(
+    function filterSelected(
         currentType: string,
         types: string[],
         selected: IAutocompleteMultiSelectOptionType[]
@@ -47,37 +40,35 @@ export class AssetTypeSelector extends React.Component<Props> {
         return types.filter(t => t.startsWith(currentType));
     }
 
-    assetTypesToSelectionOptions(types: EncodedAssetType) {
+    function assetTypesToSelectionOptions(types: EncodedAssetType) {
         return types.map(t => ({
             value: t,
-            label: this.irecAssetService.getDisplayText(t)
+            label: irecAssetService.getDisplayText(t)
         }));
     }
 
-    selectedOptionsByLevel(level: Level): IAutocompleteMultiSelectOptionType[] {
+    function selectedOptionsByLevel(level: Level): IAutocompleteMultiSelectOptionType[] {
         return (
-            this.selectedTypeDecoded &&
-            this.assetTypesToSelectionOptions(
-                this.irecAssetService.encode(
-                    this.selectedTypeDecoded.filter(t => t.length === level)
-                )
+            selectedTypeDecoded &&
+            assetTypesToSelectionOptions(
+                irecAssetService.encode(selectedTypeDecoded.filter(t => t.length === level))
             )
         );
     }
 
-    get assetTypesOptions() {
-        const selectedTypesLevelOne = this.selectedOptionsByLevel(1);
-        const selectedTypesLevelTwo = this.selectedOptionsByLevel(2);
+    function getAssetTypesOptions() {
+        const selectedTypesLevelOne = selectedOptionsByLevel(1);
+        const selectedTypesLevelTwo = selectedOptionsByLevel(2);
 
         const levelTwoTypes: string[] = [];
         const levelThreeTypes: string[] = [];
 
-        const availableL1Types = this.allTypesByLevel(1);
-        const availableL2Types = this.allTypesByLevel(2);
-        const availableL3Types = this.allTypesByLevel(3);
+        const availableL1Types = allTypesByLevel(1);
+        const availableL2Types = allTypesByLevel(2);
+        const availableL3Types = allTypesByLevel(3);
 
         for (const currentType of availableL1Types) {
-            const level2Types = this.filterSelected(
+            const level2Types = filterSelected(
                 currentType,
                 availableL2Types,
                 selectedTypesLevelOne
@@ -90,7 +81,7 @@ export class AssetTypeSelector extends React.Component<Props> {
             levelTwoTypes.push(...level2Types);
 
             for (const currentLevel2Type of level2Types) {
-                const level3Types = this.filterSelected(
+                const level3Types = filterSelected(
                     currentLevel2Type,
                     availableL3Types,
                     selectedTypesLevelTwo
@@ -103,7 +94,7 @@ export class AssetTypeSelector extends React.Component<Props> {
         }
 
         for (const selectedLevelTwoOption of selectedTypesLevelTwo) {
-            const level3Types = this.filterSelected(
+            const level3Types = filterSelected(
                 selectedLevelTwoOption.value,
                 availableL3Types,
                 selectedTypesLevelTwo
@@ -115,31 +106,31 @@ export class AssetTypeSelector extends React.Component<Props> {
         }
 
         return {
-            levelTwoTypes: this.assetTypesToSelectionOptions(levelTwoTypes),
-            levelThreeTypes: this.assetTypesToSelectionOptions([...new Set(levelThreeTypes)])
+            levelTwoTypes: assetTypesToSelectionOptions(levelTwoTypes),
+            levelThreeTypes: assetTypesToSelectionOptions([...new Set(levelThreeTypes)])
         };
     }
 
-    getDerivedTypesFromType(type: string): string[] {
+    function getDerivedTypesFromType(type: string): string[] {
         const derivedTypes: string[] = [];
 
-        const availableL2Types = this.allTypesByLevel(2);
-        const availableL3Types = this.allTypesByLevel(3);
+        const availableL2Types = allTypesByLevel(2);
+        const availableL3Types = allTypesByLevel(3);
 
-        const optionLevel2Types = this.filterSelected(
+        const optionLevel2Types = filterSelected(
             type,
             availableL2Types,
-            this.assetTypesToSelectionOptions([type])
+            assetTypesToSelectionOptions([type])
         );
 
         derivedTypes.push(...optionLevel2Types);
 
         optionLevel2Types.map(t => {
             derivedTypes.push(
-                ...this.filterSelected(
+                ...filterSelected(
                     t,
                     availableL3Types,
-                    this.assetTypesToSelectionOptions(optionLevel2Types)
+                    assetTypesToSelectionOptions(optionLevel2Types)
                 )
             );
         });
@@ -147,27 +138,28 @@ export class AssetTypeSelector extends React.Component<Props> {
         return derivedTypes;
     }
 
-    setTypeByLevel(newSelectedOptions: IAutocompleteMultiSelectOptionType[] | null, level: Level) {
+    function setTypeByLevel(
+        newSelectedOptions: IAutocompleteMultiSelectOptionType[] | null,
+        level: Level
+    ) {
         const newSelectedOptionsArray = newSelectedOptions || [];
 
         let newEncodedType: EncodedAssetType;
 
         if (newSelectedOptionsArray.length === 0 && level !== 3) {
-            newEncodedType = this.irecAssetService.encode([
-                ...this.selectedTypeDecoded.filter(
-                    t => t.length !== level && t.length !== level + 1
-                ),
+            newEncodedType = irecAssetService.encode([
+                ...selectedTypeDecoded.filter(t => t.length !== level && t.length !== level + 1),
                 ...newSelectedOptionsArray.map(o => [o.value])
             ]);
         } else {
-            newEncodedType = this.irecAssetService.encode([
-                ...this.selectedTypeDecoded.filter(t => t.length !== level),
+            newEncodedType = irecAssetService.encode([
+                ...selectedTypeDecoded.filter(t => t.length !== level),
                 ...newSelectedOptionsArray.map(o => [o.value])
             ]);
         }
 
         if (level === 1 && newSelectedOptionsArray.length > 0) {
-            const alreadySelectedLevelOneOptions = this.selectedOptionsByLevel(1);
+            const alreadySelectedLevelOneOptions = selectedOptionsByLevel(1);
 
             const newOptions = newSelectedOptionsArray.filter(o =>
                 alreadySelectedLevelOneOptions.every(
@@ -176,63 +168,62 @@ export class AssetTypeSelector extends React.Component<Props> {
             );
 
             const selectedToAdd = newOptions.reduce(
-                (a, b) => [...a, ...this.getDerivedTypesFromType(b.value)],
+                (a, b) => [...a, ...getDerivedTypesFromType(b.value)],
                 []
             );
 
             newEncodedType = [...new Set([...newEncodedType, ...selectedToAdd])];
         }
 
-        this.props.onChange(newEncodedType);
+        props.onChange(newEncodedType);
     }
 
-    render() {
-        const { disabled, readOnly } = this.props;
+    const { disabled, readOnly } = props;
 
-        const allTypesLevelOne = this.assetTypesToSelectionOptions(this.allTypesByLevel(1));
+    const allTypesLevelOne = assetTypesToSelectionOptions(allTypesByLevel(1));
 
-        const {
-            assetTypesOptions: { levelTwoTypes, levelThreeTypes }
-        } = this;
+    const { levelTwoTypes, levelThreeTypes } = getAssetTypesOptions();
 
-        const selectedTypesLevelOne = this.selectedOptionsByLevel(1);
-        const selectedTypesLevelTwo = this.selectedOptionsByLevel(2);
-        const selectedTypesLevelThree = this.selectedOptionsByLevel(3);
+    const selectedTypesLevelOne = selectedOptionsByLevel(1);
+    const selectedTypesLevelTwo = selectedOptionsByLevel(2);
+    const selectedTypesLevelThree = selectedOptionsByLevel(3);
 
-        return (
-            <>
+    return (
+        <>
+            <MultiSelectAutocomplete
+                label="Asset type"
+                placeholder={readOnly ? '' : 'Select asset type'}
+                options={allTypesLevelOne}
+                onChange={value => setTypeByLevel(value, 1)}
+                selectedValues={selectedTypesLevelOne}
+                classes={{ root: 'mt-3' }}
+                disabled={disabled}
+                {...dataTest('asset-type-selector-level-1')}
+            />
+            {levelTwoTypes.length > 0 && (
                 <MultiSelectAutocomplete
                     label="Asset type"
                     placeholder={readOnly ? '' : 'Select asset type'}
-                    options={allTypesLevelOne}
-                    onChange={value => this.setTypeByLevel(value, 1)}
-                    selectedValues={selectedTypesLevelOne}
+                    options={levelTwoTypes}
+                    onChange={value => setTypeByLevel(value, 2)}
+                    selectedValues={selectedTypesLevelTwo}
                     classes={{ root: 'mt-3' }}
                     disabled={disabled}
+                    {...dataTest('asset-type-selector-level-2')}
                 />
-                {levelTwoTypes.length > 0 && (
-                    <MultiSelectAutocomplete
-                        label="Asset type"
-                        placeholder={readOnly ? '' : 'Select asset type'}
-                        options={levelTwoTypes}
-                        onChange={value => this.setTypeByLevel(value, 2)}
-                        selectedValues={selectedTypesLevelTwo}
-                        classes={{ root: 'mt-3' }}
-                        disabled={disabled}
-                    />
-                )}
-                {levelThreeTypes.length > 0 && (
-                    <MultiSelectAutocomplete
-                        label="Asset type"
-                        placeholder={readOnly ? '' : 'Select asset type'}
-                        options={levelThreeTypes}
-                        onChange={value => this.setTypeByLevel(value, 3)}
-                        selectedValues={selectedTypesLevelThree}
-                        classes={{ root: 'mt-3' }}
-                        disabled={disabled}
-                    />
-                )}
-            </>
-        );
-    }
+            )}
+            {levelThreeTypes.length > 0 && (
+                <MultiSelectAutocomplete
+                    label="Asset type"
+                    placeholder={readOnly ? '' : 'Select asset type'}
+                    options={levelThreeTypes}
+                    onChange={value => setTypeByLevel(value, 3)}
+                    selectedValues={selectedTypesLevelThree}
+                    classes={{ root: 'mt-3' }}
+                    disabled={disabled}
+                    {...dataTest('asset-type-selector-level-3')}
+                />
+            )}
+        </>
+    );
 }

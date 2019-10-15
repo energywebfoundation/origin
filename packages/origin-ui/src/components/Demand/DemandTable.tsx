@@ -159,10 +159,6 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         try {
             const demand = this.state.paginatedData[rowIndex].demand;
 
-            this.props.configuration.blockchainProperties.activeUser = {
-                address: this.props.currentUser.id
-            };
-
             await Demand.deleteDemand(demand.id, this.props.configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
@@ -330,7 +326,7 @@ export const DemandTable = withRouter(
             configuration: getConfiguration(state),
             demands: getDemands(state),
             currentUser: getCurrentUser(state),
-            baseURL: getBaseURL(state)
+            baseURL: getBaseURL()
         })
     )(DemandTableClass)
 );

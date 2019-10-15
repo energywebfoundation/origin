@@ -1,6 +1,6 @@
 import { Demand } from '@energyweb/market';
 import { ConsumingAsset } from '@energyweb/asset-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { IStoreState } from '../types';
 
 export enum Actions {
     demandCreated = 'DEMAND_CREATED',
@@ -31,7 +31,14 @@ export const consumingAssetCreatedOrUpdated = (consumingAsset: ConsumingAsset.En
     consumingAsset
 });
 
-export const configurationUpdated = (conf: Configuration.Entity) => ({
+export interface IConfigurationUpdatedAction {
+    type: Actions.configurationUpdated;
+    conf: IStoreState['configuration'];
+}
+
+export const configurationUpdated = (conf: IConfigurationUpdatedAction['conf']) => ({
     type: Actions.configurationUpdated,
     conf
 });
+
+export type TConfigurationUpdatedAction = typeof configurationUpdated;
