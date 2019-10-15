@@ -78,11 +78,12 @@ export abstract class Entity {
         if (this.configuration.offChainDataSource) {
             const storageUrl = url || this.getUrl();
 
-            await axios.put(`${storageUrl}/${String(this.id).toLowerCase()}`, {
+            await axios.post(`${storageUrl}/${String(this.id).toLowerCase()}`, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema
             });
+
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
                     `Put off chain properties to ${storageUrl}/${this.id}`

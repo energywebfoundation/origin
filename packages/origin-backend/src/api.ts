@@ -4,21 +4,38 @@ import * as http from "http";
 import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { createConnection, Connection, ConnectionOptions, AdvancedConsoleLogger } from 'typeorm';
+import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 
 import ormConfig from '../ormconfig.json';
 
 import { StorageErrors } from './enums/StorageErrors';
 import { STATUS_CODES } from './enums/StatusCodes';
 import { AnyEntity } from "./entity/AnyEntity";
-import { Contract } from "./entity/Contract";
+import { MarketContractLookup } from "./entity/MarketContractLookup";
 import { EntityType } from './entity/EntityType';
 
 export async function startAPI(port?: number) {
     const app: Express = express();
 
-    const connectionOptions: ConnectionOptions = ormConfig as ConnectionOptions;
+    let connectionOptions: ConnectionOptions = Object.assign(
+        ormConfig as ConnectionOptions,
+        { entities: [AnyEntity, MarketContractLookup, EntityType] }
+    );
     const connection: Connection = await createConnection(connectionOptions);
+
+    const getOrCreateEntityType = async(name: string): Promise<EntityType> => {
+        const entityTypeRepository = await connection.getRepository(EntityType);
+        let entityType: EntityType = await entityTypeRepository.findOne(name);
+    
+        if (!entityType) {
+            entityType = new EntityType();
+            entityType.name = name;
+    
+            await entityTypeRepository.save(entityType);
+        }
+    
+        return entityType;
+    }
 
     app.use(cors());
     app.set('case sensitive routing', false);
@@ -27,23 +44,27 @@ export async function startAPI(port?: number) {
 
     app.options('*', cors());
 
-    app.get(`/contract`, async (req: Request, res: Response): Promise<void> => {
-        console.log(`GET - contractAddresses`);
-        const contractAddresses: Contract[] = await Contract.find();
+    app.get(`/MarketContractLookup`, async (req: Request, res: Response): Promise<void> => {
+        console.log(`GET - MarketContractLookup`);
+        const marketContractLookupRepository = connection.getRepository(MarketContractLookup);
+
+        const contracts: MarketContractLookup[] = await marketContractLookupRepository.find();
 
         res.send(
-            contractAddresses.map(contract => contract.address)
+            contracts.map(contract => contract.address)
         );
     });
 
-    app.post(`/contract/:address`, async (req: Request, res: Response): Promise<void> => {
+    app.post(`/MarketContractLookup/:address`, async (req: Request, res: Response): Promise<void> => {
         let { address } = req.params;
         address = address.toLowerCase();
 
-        console.log(`POST - Contract Address: ${address}`);
-        const contractAddresses: string[] = (await Contract.find()).map(contract => contract.address);
+        console.log(`POST - MarketContractLookup: ${address}`);
 
-        if (contractAddresses.includes(address)) {
+        const marketContractLookupRepository = connection.getRepository(MarketContractLookup);
+        const marketAddresses: string[] = (await marketContractLookupRepository.find()).map(contract => contract.address);
+
+        if (marketAddresses.includes(address)) {
             res.status(STATUS_CODES.CONFLICT).send({
                 error: StorageErrors.ALREADY_EXISTS
             });
@@ -51,54 +72,53 @@ export async function startAPI(port?: number) {
             return;
         }
 
-        const contract = new Contract();
-        contract.address = address.toLowerCase();
+        const newMarketContractLookup = new MarketContractLookup();
+        newMarketContractLookup.address = address.toLowerCase();
 
-        await contract.save();
+        await marketContractLookupRepository.save(newMarketContractLookup);
 
         res.status(STATUS_CODES.CREATED).send({
-            message: `Contract Address ${address} created`
+            message: `MarketContractLookup ${address} created`
         });
     });
 
-    app.delete(`/contract/:address`, async (req: Request, res: Response): Promise<void> => {
+    app.delete(`/MarketContractLookup/:address`, async (req: Request, res: Response): Promise<void> => {
         const { address } = req.params;
 
-        console.log(`DELETE - Contract Address ${address}`);
+        console.log(`DELETE - MarketContractLookup ${address}`);
 
-        try {
-            const contractAddress: Contract = await Contract.findOne(
-                address.toLowerCase()
-            );
-            await contractAddress.remove();
-        } catch (e) {
-            if (Object.values(StorageErrors).includes(e.message)) {
-                res.status(STATUS_CODES.GONE).send({
-                    error: e.message
-                });
-    
-                return;
-            }
+        const marketContractLookupRepository = connection.getRepository(MarketContractLookup);
+        const marketContractLookup: MarketContractLookup = await marketContractLookupRepository.findOne(
+            address.toLowerCase()
+        );
 
-            throw e;
+        if (!marketContractLookup) {
+            res.status(STATUS_CODES.NOT_FOUND).send({
+                error: StorageErrors.NON_EXISTENT_ENTITY
+            });
+
+            return;
         }
 
+        await marketContractLookupRepository.remove(marketContractLookup);
+
         res.status(STATUS_CODES.NO_CONTENT).send({
-            message: `Contract address ${address} successfully deleted`
+            message: `MarketContractLookup with address ${address} successfully deleted`
         });
     });
 
-    app.get(`/:contractAddress/:type/:identifier?`, async (req: Request, res: Response): Promise<void> => {
-        const { contractAddress, type, identifier } = req.params;
+    app.get(`/:type/:contractAddress/:identifier?`, async (req: Request, res: Response): Promise<void> => {
+        let { contractAddress, type, identifier } = req.params;
+        contractAddress = contractAddress.toLowerCase();
 
         console.log(`<${contractAddress}> GET - ${type} ${identifier}`);
 
-        const contract: Contract = await getOrCreateContractAddress(contractAddress.toLowerCase());
         const entityType: EntityType = await getOrCreateEntityType(type);
+        const anyEntityRepository = connection.getRepository(AnyEntity);
 
         if (identifier === undefined || identifier === null) {
-            const entities: AnyEntity[] = await AnyEntity.find({
-                contract,
+            const entities: AnyEntity[] = await anyEntityRepository.find({
+                contractAddress,
                 type: entityType
             });
 
@@ -107,8 +127,8 @@ export async function startAPI(port?: number) {
             return;
         }
         
-        const existingEntity: AnyEntity = await AnyEntity.findOne({
-            contract,
+        const existingEntity: AnyEntity = await anyEntityRepository.findOne({
+            contractAddress,
             type: entityType,
             identifier
         });
@@ -124,23 +144,24 @@ export async function startAPI(port?: number) {
         res.send(JSON.parse(existingEntity.value));
     });
 
-    app.post(`/:contractAddress/:type/:identifier`, async (req: Request, res: Response): Promise<void> => {
-        const { contractAddress, type, identifier } = req.params;
+    app.post(`/:type/:contractAddress/:identifier`, async (req: Request, res: Response): Promise<void> => {
+        let { contractAddress, type, identifier } = req.params;
+        contractAddress = contractAddress.toLowerCase();
 
         console.log(`<${contractAddress}> POST - ${type} ${identifier}`);
 
-        const contract: Contract = await getOrCreateContractAddress(contractAddress.toLowerCase());
         const entityType: EntityType = await getOrCreateEntityType(type);
+        const anyEntityRepository = connection.getRepository(AnyEntity);
 
         try {
             const newEntity: AnyEntity = new AnyEntity();
 
-            newEntity.contract = contract;
+            newEntity.contractAddress = contractAddress;
             newEntity.identifier = identifier;
             newEntity.type = entityType;
             newEntity.value = JSON.stringify(req.body);
 
-            await newEntity.save();
+            await anyEntityRepository.save(newEntity);
         } catch (e) {
             if (e.message.includes('UNIQUE constraint failed')) {
                 res.status(STATUS_CODES.CONFLICT).send({
@@ -158,18 +179,17 @@ export async function startAPI(port?: number) {
         });
     });
 
-    app.delete(`/:contractAddress/:type/:identifier`, async (req: Request, res: Response): Promise<void> => {
-        const { contractAddress, type, identifier } = req.params;
+    app.put(`/:type/:contractAddress/:identifier`, async (req: Request, res: Response): Promise<void> => {
+        let { contractAddress, type, identifier } = req.params;
+        contractAddress = contractAddress.toLowerCase();
 
-        console.log(`<${contractAddress}> DELETE - ${type} ${identifier}`);
+        console.log(`<${contractAddress}> POST - ${type} ${identifier}`);
 
-        const contract: Contract = await getOrCreateContractAddress(contractAddress.toLowerCase());
         const entityType: EntityType = await getOrCreateEntityType(type);
+        const anyEntityRepository = connection.getRepository(AnyEntity);
 
-        let existingEntity: AnyEntity;
-        
-        existingEntity = await AnyEntity.findOne({
-            contract: contract,
+        const existingEntity: AnyEntity = await anyEntityRepository.findOne({
+            contractAddress,
             type: entityType,
             identifier
         });
@@ -182,7 +202,39 @@ export async function startAPI(port?: number) {
             return;
         }
 
-        await existingEntity.remove();
+        existingEntity.value = JSON.stringify(req.body);
+
+        res.status(STATUS_CODES.SUCCESS).send({
+            message: `Resource ${type} with ID ${identifier} updated`
+        });
+    });
+
+    app.delete(`/:type/:contractAddress/:identifier`, async (req: Request, res: Response): Promise<void> => {
+        let { contractAddress, type, identifier } = req.params;
+        contractAddress = contractAddress.toLowerCase();
+
+        console.log(`<${contractAddress}> DELETE - ${type} ${identifier}`);
+
+        const entityType: EntityType = await getOrCreateEntityType(type);
+        const anyEntityRepository = connection.getRepository(AnyEntity);
+
+        let existingEntity: AnyEntity;
+        
+        existingEntity = await anyEntityRepository.findOne({
+            contractAddress,
+            type: entityType,
+            identifier
+        });
+
+        if (!existingEntity) {
+            res.status(STATUS_CODES.NOT_FOUND).send({
+                error: StorageErrors.NON_EXISTENT_ENTITY
+            });
+
+            return;
+        }
+
+        await anyEntityRepository.remove(existingEntity);
 
         res.status(STATUS_CODES.NO_CONTENT).send({
             message: `${type} with ID ${identifier} successfully deleted`
@@ -200,30 +252,4 @@ export async function startAPI(port?: number) {
     });
 
     return server;
-}
-
-async function getOrCreateContractAddress(address: string): Promise<Contract> {
-    let contract: Contract = await Contract.findOne(address);
-
-    if (!contract) {
-        contract = new Contract();
-        contract.address = address;
-
-        await contract.save();
-    }
-
-    return contract;
-}
-
-async function getOrCreateEntityType(name: string): Promise<EntityType> {
-    let entityType: EntityType = await EntityType.findOne(name);
-
-    if (!entityType) {
-        entityType = new EntityType();
-        entityType.name = name;
-
-        await entityType.save();
-    }
-
-    return entityType;
 }

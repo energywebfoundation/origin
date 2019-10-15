@@ -38,7 +38,10 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     }
 
     getUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/Supply`;
+        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
+            .web3Contract.options.address;
+
+        return `${this.configuration.offChainDataSource.baseUrl}/Supply/${marketLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {

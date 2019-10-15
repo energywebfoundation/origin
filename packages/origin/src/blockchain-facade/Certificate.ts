@@ -128,7 +128,9 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
     ownerChangerCounter: number;
 
     getUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/Certificate`;
+        const certificateLogicAddress = this.configuration.blockchainProperties.certificateLogicInstance.web3Contract.options.address;
+
+        return `${this.configuration.offChainDataSource.baseUrl}/Certificate/${certificateLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {

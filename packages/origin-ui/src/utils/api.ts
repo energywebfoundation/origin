@@ -4,7 +4,7 @@ export const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3030';
 
 export async function getMarketContractLookupAddressFromAPI(): Promise<string> {
     try {
-        const response = await axios.get(`${BACKEND_URL}/contract`);
+        const response = await axios.get(`${BACKEND_URL}/MarketLookupContract`);
 
         if (!response.data) {
             return null;

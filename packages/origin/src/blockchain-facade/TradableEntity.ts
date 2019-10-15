@@ -281,7 +281,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             throw Error('No off chain data source set in the configuration');
         }
 
-        await axios.put(`${this.offChainURL}/${this.id}`, options);
+        await axios.post(`${this.offChainURL}/${this.id}`, options);
     }
 
     async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {

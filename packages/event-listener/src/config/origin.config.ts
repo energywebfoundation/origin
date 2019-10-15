@@ -14,9 +14,9 @@ export const initOriginConfig = async (
         marketContractLookup
     );
 
-    await axios.put(`${process.env.BACKEND_URL}/MarketContractLookup`, {
-        address: marketContractLookup.toLowerCase()
-    });
+    await axios.post(
+        `${process.env.BACKEND_URL}/MarketContractLookup/${marketContractLookup.toLowerCase()}`
+    );
 
     return {
         blockchainProperties,

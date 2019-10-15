@@ -1,9 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne } from 'typeorm';
-import { Contract } from './Contract';
 import { EntityType } from './EntityType';
 
 @Entity()
-@Unique(['identifier', 'type', 'contract'])
+@Unique(['identifier', 'type', 'contractAddress'])
 export class AnyEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,8 +10,8 @@ export class AnyEntity extends BaseEntity {
     @ManyToOne(type => EntityType, entityType => entityType.entities)
     type: EntityType;
 
-    @ManyToOne(type => Contract, contract => contract.entities)
-    contract: Contract;
+    @Column()
+    contractAddress: string;
 
     @Column()
     identifier: string;
