@@ -3,6 +3,7 @@ import program from 'commander';
 import parse from 'csv-parse/lib/sync';
 import hdkey from 'ethereumjs-wallet/hdkey';
 import fs from 'fs';
+import geoTz from 'geo-tz';
 
 import CONFIG from '../config/config.json';
 
@@ -61,6 +62,9 @@ const processAssets = async (parsedContent: any) => {
         const longitude = parseFloat(asset.Longitude);
         const assetType = asset.Technology.split(':')[1].trim();
 
+        geoTz.preCache();
+        const timezone = geoTz(latitude, longitude)[0];
+
         const account = generateNextAccount();
 
         console.log(`Generated smart meter address ${account.address}`);
@@ -75,6 +79,7 @@ const processAssets = async (parsedContent: any) => {
             serial_number: '',
             latitude,
             longitude,
+            timezone,
             energy_unit: 'wattHour'
         });
 
@@ -94,6 +99,7 @@ const processAssets = async (parsedContent: any) => {
                 address,
                 gpsLatitude: latitude.toString(),
                 gpsLongitude: longitude.toString(),
+                timezone,
                 assetType,
                 certificatesCreatedForWh: 0,
                 lastSmartMeterCO2OffsetRead: 0,

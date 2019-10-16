@@ -249,6 +249,7 @@ describe('CertificateLogic-Facade', () => {
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '14.059500',
             gpsLongitude: '99.977800',
+            timezone: 'Asia/Bangkok',
             assetType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',

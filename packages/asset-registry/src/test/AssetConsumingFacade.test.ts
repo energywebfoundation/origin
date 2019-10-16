@@ -130,6 +130,7 @@ describe('AssetConsumingLogic Facade', () => {
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
+            timezone: 'Asia/Bangkok',
             facilityName: 'Wuthering Heights Windfarm'
         };
 
@@ -177,6 +178,7 @@ describe('AssetConsumingLogic Facade', () => {
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
+            timezone: 'Asia/Bangkok',
             facilityName: 'Wuthering Heights Windfarm'
         };
 
@@ -224,6 +226,7 @@ describe('AssetConsumingLogic Facade', () => {
                     '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
+                timezone: 'Asia/Bangkok',
                 facilityName: 'Wuthering Heights Windfarm'
             }
         });

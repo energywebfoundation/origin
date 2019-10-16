@@ -163,7 +163,9 @@ export class SmartMeterReadingsChart extends React.Component<
             let totalEnergy = 0;
 
             for (const reading of readings) {
-                const readingDate = moment.unix(reading.timestamp);
+                const readingDate = moment
+                    .unix(reading.timestamp)
+                    .tz(this.props.producingAsset.offChainProperties.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
                     totalEnergy += reading.energy;
