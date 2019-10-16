@@ -27,8 +27,6 @@ export class EntityStore implements IEntityStore {
 
     private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
 
-    private matcherAddress: string;
-
     private certificateListeners: Listener<Certificate.Entity>[] = [];
 
     private demandListeners: Listener<Demand.Entity>[] = [];
@@ -36,9 +34,7 @@ export class EntityStore implements IEntityStore {
     constructor(
         @inject('config') private config: Configuration.Entity,
         @inject('logger') private logger: Winston.Logger
-    ) {
-        this.matcherAddress = config.blockchainProperties.activeUser.address.toLowerCase();
-    }
+    ) {}
 
     public registerCertificateListener(listener: Listener<Certificate.Entity>) {
         this.certificateListeners.push(listener);

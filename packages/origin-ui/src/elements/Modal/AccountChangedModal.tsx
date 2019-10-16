@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
     Button,
     Dialog,
@@ -7,67 +7,35 @@ import {
     DialogTitle,
     DialogContentText
 } from '@material-ui/core';
-import { connect } from 'react-redux';
-import { IStoreState } from '../../types';
-import { bindActionCreators } from 'redux';
-import {
-    disableAccountChangedModal,
-    TDisableAccountChangedModal
-} from '../../features/general/actions';
+import { useSelector, useDispatch } from 'react-redux';
+import { disableAccountChangedModal } from '../../features/general/actions';
 import { getAccountChangedModalVisible } from '../../features/general/selectors';
 
-interface IAccountChangedModalProps {
-    show: boolean;
-    disableAccountChangedModal: TDisableAccountChangedModal;
-}
+export function AccountChangedModal() {
+    const show = useSelector(getAccountChangedModalVisible);
+    const dispatch = useDispatch();
 
-class AccountChangedModalClass extends React.Component<IAccountChangedModalProps> {
-    constructor(props: IAccountChangedModalProps) {
-        super(props);
-
-        this.handleClose = this.handleClose.bind(this);
-    }
-
-    handleClose() {
-        this.props.disableAccountChangedModal();
-    }
-
-    refreshPage() {
+    const handleClose = () => dispatch(disableAccountChangedModal());
+    const refreshPage = () => {
         window.location.reload();
-    }
+    };
 
-    render() {
-        return (
-            <Dialog open={this.props.show} onClose={this.handleClose}>
-                <DialogTitle>Account changed</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Account changed, please refresh the page in order to switch to a new
-                        account.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleClose} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={this.refreshPage} color="primary">
-                        Refresh page
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+    return (
+        <Dialog open={show} onClose={handleClose}>
+            <DialogTitle>Account changed</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Account changed, please refresh the page in order to switch to a new account.
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="secondary">
+                    Cancel
+                </Button>
+                <Button onClick={refreshPage} color="primary">
+                    Refresh page
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
-
-export const AccountChangedModal = connect(
-    (state: IStoreState) => ({
-        show: getAccountChangedModalVisible(state)
-    }),
-    dispatch =>
-        bindActionCreators(
-            {
-                disableAccountChangedModal
-            },
-            dispatch
-        )
-)(AccountChangedModalClass);

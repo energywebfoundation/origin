@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Configuration } from '@energyweb/utils-general';
-import { CertificateLogic } from '@energyweb/origin';
+import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { User, Role } from '@energyweb/user-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
@@ -163,15 +163,11 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
     async approve(rowIndex: number) {
         const certificationRequestId = this.state.paginatedData[rowIndex].certificationRequestId;
 
-        const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
-            .certificateLogicInstance;
-
         try {
-            this.props.configuration.blockchainProperties.activeUser = {
-                address: this.props.currentUser.id
-            };
-
-            await certificateLogic.approveCertificationRequest(certificationRequestId);
+            await Certificate.approveCertificationRequest(
+                certificationRequestId,
+                this.props.configuration
+            );
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 

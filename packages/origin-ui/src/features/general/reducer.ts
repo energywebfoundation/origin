@@ -5,13 +5,17 @@ export interface IGeneralState {
     accountChangedModalEnabled: boolean;
     loading: boolean;
     error: string;
+    requestPasswordModalVisible: boolean;
+    requestPasswordModalCallback: (password: string) => void;
 }
 
 const defaultState: IGeneralState = {
     accountChangedModalVisible: false,
     accountChangedModalEnabled: true,
     loading: true,
-    error: null
+    error: null,
+    requestPasswordModalVisible: false,
+    requestPasswordModalCallback: null
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -39,6 +43,20 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
             return {
                 ...state,
                 error: action.payload
+            };
+
+        case GeneralActions.showRequestPasswordModal:
+            return {
+                ...state,
+                requestPasswordModalVisible: true,
+                requestPasswordModalCallback: action.payload
+            };
+
+        case GeneralActions.hideRequestPasswordModal:
+            return {
+                ...state,
+                requestPasswordModalVisible: false,
+                requestPasswordModalCallback: null
             };
 
         default:

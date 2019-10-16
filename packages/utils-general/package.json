@@ -48,7 +48,7 @@
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
-    "ganache-cli": "6.6.0"
+    "ganache-cli": "6.7.0"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
