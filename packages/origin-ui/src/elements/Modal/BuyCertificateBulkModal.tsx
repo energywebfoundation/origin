@@ -45,7 +45,10 @@ export class BuyCertificateBulkModal extends React.Component<
     }
 
     async buyCertificateBulk() {
-        const from = (await this.props.conf.blockchainProperties.web3.eth.getAccounts())[0];
+        const account = {
+            from: this.props.conf.blockchainProperties.activeUser.address,
+            privateKey: this.props.conf.blockchainProperties.activeUser.privateKey
+        };
 
         for (const cert of this.props.certificates) {
             const acceptedToken = (cert.acceptedToken as any) as string;
@@ -56,20 +59,19 @@ export class BuyCertificateBulkModal extends React.Component<
                     acceptedToken
                 );
 
-                const currentAllowance = Number(await erc20TestToken.allowance(from, cert.owner));
+                const currentAllowance = Number(
+                    await erc20TestToken.allowance(account.from, cert.owner)
+                );
                 const price = Number(cert.onChainDirectPurchasePrice);
 
-                await erc20TestToken.approve(cert.owner, currentAllowance + price, {
-                    from,
-                    privateKey: ''
-                });
+                await erc20TestToken.approve(cert.owner, currentAllowance + price, account);
             }
         }
 
         const certificateIds: number[] = this.props.certificates.map(cert => parseInt(cert.id, 10));
         await this.props.conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(
             certificateIds,
-            { from, privateKey: '' }
+            account
         );
 
         showNotification(`Certificates have been bought.`, NotificationType.Success);

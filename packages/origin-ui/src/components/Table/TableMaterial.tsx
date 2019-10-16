@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
 import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
 import {
@@ -10,9 +10,9 @@ import {
     TableHead,
     TablePagination,
     TableRow,
-    withStyles,
-    WithStyles,
+    makeStyles,
     createStyles,
+    useTheme,
     Checkbox,
     TableSortLabel
 } from '@material-ui/core';
@@ -25,17 +25,6 @@ import {
 } from './ColumnBatchActions';
 
 type TableOnSelectFunction = (index: number, selected: boolean) => void;
-
-const styles = () =>
-    createStyles({
-        root: {
-            width: '100%'
-        },
-        tableWrapper: {},
-        tableCellWrappingActions: {
-            position: 'relative'
-        }
-    });
 
 export interface ITableColumn {
     id: string;
@@ -53,7 +42,7 @@ type TTableRow<T extends string> = {
     [key in T]: string;
 };
 
-interface IProps<T extends readonly ITableColumn[]> extends WithStyles<typeof styles> {
+interface IProps<T extends readonly ITableColumn[]> {
     columns: T;
     rows: TTableRow<GetReadonlyArrayItemType<T>['id']>[];
 
@@ -76,264 +65,215 @@ interface IState {
     selectedIndexes: number[];
 }
 
-class TableMaterialClass<T extends readonly ITableColumn[]> extends React.Component<
-    IProps<T>,
-    IState
-> {
-    isMountedIndicator = false;
+export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedIndexes, setSelectedIndexes] = useState([]);
 
-    constructor(props: IProps<T>) {
-        super(props);
+    async function loadPage(page: number, filters?: ICustomFilter[]) {
+        await props.loadPage(page, filters);
 
-        this.state = {
-            currentPage: 1,
-            selectedIndexes: []
-        };
-
-        this.loadPage = this.loadPage.bind(this);
-        this.filtersChanged = this.filtersChanged.bind(this);
+        setCurrentPage(page);
     }
 
-    componentDidMount() {
-        this.isMountedIndicator = true;
+    function filtersChanged(filters: ICustomFilter[]) {
+        loadPage(1, filters);
     }
 
-    componentWillUnmount() {
-        this.isMountedIndicator = false;
-    }
-
-    filtersChanged(filters: ICustomFilter[]) {
-        this.loadPage(1, filters);
-    }
-
-    async loadPage(page: number, filters?: ICustomFilter[]) {
-        await this.props.loadPage(page, filters);
-
-        if (!this.isMountedIndicator) {
-            return;
-        }
-
-        this.setState({
-            currentPage: page
-        });
-    }
-
-    itemSelectionChanged(index: number, selected: boolean) {
-        let selectedIndexes = this.state.selectedIndexes;
+    function itemSelectionChanged(index: number, selected: boolean) {
+        let newSelectedIndexes = selectedIndexes;
 
         if (selected) {
-            if (!selectedIndexes.includes(index)) {
-                selectedIndexes = [...selectedIndexes, index];
+            if (!newSelectedIndexes.includes(index)) {
+                newSelectedIndexes = [...selectedIndexes, index];
             }
-        } else if (selectedIndexes.includes(index)) {
-            selectedIndexes = selectedIndexes.filter(selectedIndex => selectedIndex !== index);
+        } else if (newSelectedIndexes.includes(index)) {
+            newSelectedIndexes = newSelectedIndexes.filter(
+                selectedIndex => selectedIndex !== index
+            );
         }
 
-        this.setState({
-            selectedIndexes
-        });
+        setSelectedIndexes(newSelectedIndexes);
     }
 
-    resetSelection() {
-        this.setState({
-            selectedIndexes: []
-        });
+    function resetSelection() {
+        setSelectedIndexes([]);
     }
 
-    setAllItemsSelectedProperty(checked: boolean) {
+    function setAllItemsSelectedProperty(checked: boolean) {
         if (checked) {
-            this.setState({
-                selectedIndexes: this.props.rows.map((row, index) => index)
-            });
+            setSelectedIndexes(props.rows.map((row, index) => index));
         } else {
-            this.resetSelection();
+            resetSelection();
         }
     }
 
-    componentDidUpdate(prevProps: IProps<T>) {
-        if (JSON.stringify(prevProps.rows) !== JSON.stringify(this.props.rows)) {
-            this.resetSelection();
-        }
+    const {
+        columns,
+        pageSize,
+        rows,
+        total,
+        filters,
+        actions,
+        currentSort,
+        sortAscending,
+        handleRowClick,
+        batchableActions,
+        customSelectCounterGenerator,
+        toggleSort
+    } = props;
+
+    if (selectedIndexes.length > rows.length) {
+        setSelectedIndexes([]);
     }
 
-    render() {
-        const {
-            classes,
-            columns,
-            pageSize,
-            rows,
-            total,
-            filters,
-            actions,
-            currentSort,
-            sortAscending,
-            handleRowClick,
-            batchableActions,
-            customSelectCounterGenerator,
-            toggleSort
-        } = this.props;
-        const { currentPage, selectedIndexes } = this.state;
+    const zeroIndexBasedPage = currentPage - 1;
 
-        const zeroIndexBasedPage = currentPage - 1;
+    const order = sortAscending ? 'asc' : 'desc';
 
-        const order = sortAscending ? 'asc' : 'desc';
+    const showBatchableActions = batchableActions && batchableActions.length > 0;
 
-        const showBatchableActions = batchableActions && batchableActions.length > 0;
+    const useStyles = makeStyles(() =>
+        createStyles({
+            root: {
+                width: '100%'
+            },
+            tableWrapper: {},
+            tableCellWrappingActions: {
+                position: 'relative'
+            }
+        })
+    );
 
-        return (
-            <>
-                <FiltersHeader filters={filters} filtersChanged={this.filtersChanged} />
+    const classes = useStyles(useTheme());
 
-                <ColumnBatchActions
-                    batchableActions={batchableActions}
-                    selectedIndexes={selectedIndexes}
-                    customCounterGenerator={customSelectCounterGenerator}
-                />
+    return (
+        <>
+            <FiltersHeader filters={filters} filtersChanged={filtersChanged} />
 
-                <Paper className={classes.root}>
-                    <div className={classes.tableWrapper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    {showBatchableActions && (
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                indeterminate={
-                                                    selectedIndexes.length > 0 &&
-                                                    selectedIndexes.length < rows.length
-                                                }
-                                                checked={
-                                                    selectedIndexes.length !== 0 &&
-                                                    selectedIndexes.length === rows.length
-                                                }
-                                                onChange={e =>
-                                                    this.setAllItemsSelectedProperty(
-                                                        e.target.checked
-                                                    )
-                                                }
-                                                color="primary"
-                                            />
-                                        </TableCell>
-                                    )}
-                                    {columns.map(column => {
-                                        const isSortable =
-                                            column.sortProperties &&
-                                            column.sortProperties.length > 0;
-                                        const sortedByThisColumn =
-                                            isSortable &&
-                                            deepEqual(column.sortProperties, currentSort);
+            <ColumnBatchActions
+                batchableActions={batchableActions}
+                selectedIndexes={selectedIndexes}
+                customCounterGenerator={customSelectCounterGenerator}
+            />
 
-                                        return (
-                                            <TableCell
-                                                key={column.id}
-                                                align={column.align}
-                                                style={{ minWidth: column.minWidth }}
-                                                sortDirection={
-                                                    sortedByThisColumn ? order : undefined
-                                                }
-                                            >
-                                                <TableSortLabel
-                                                    active={sortedByThisColumn}
-                                                    direction={order}
-                                                    onClick={() =>
-                                                        toggleSort(column.sortProperties)
-                                                    }
-                                                    hideSortIcon={!isSortable}
-                                                    disabled={!isSortable}
-                                                >
-                                                    {column.label}
-                                                </TableSortLabel>
-                                            </TableCell>
-                                        );
-                                    })}
-                                    {actions && actions.length > 0 && <TableCell></TableCell>}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {rows.map((row, rowIndex) => {
-                                    const isItemSelected = this.state.selectedIndexes.includes(
-                                        rowIndex
-                                    );
+            <Paper className={classes.root}>
+                <div className={classes.tableWrapper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                {showBatchableActions && (
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            indeterminate={
+                                                selectedIndexes.length > 0 &&
+                                                selectedIndexes.length < rows.length
+                                            }
+                                            checked={
+                                                selectedIndexes.length !== 0 &&
+                                                selectedIndexes.length === rows.length
+                                            }
+                                            onChange={e =>
+                                                setAllItemsSelectedProperty(e.target.checked)
+                                            }
+                                            color="primary"
+                                        />
+                                    </TableCell>
+                                )}
+                                {columns.map(column => {
+                                    const isSortable =
+                                        column.sortProperties && column.sortProperties.length > 0;
+                                    const sortedByThisColumn =
+                                        isSortable && deepEqual(column.sortProperties, currentSort);
 
                                     return (
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            tabIndex={-1}
-                                            key={rowIndex}
+                                        <TableCell
+                                            key={column.id}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth }}
+                                            sortDirection={sortedByThisColumn ? order : undefined}
                                         >
-                                            {showBatchableActions && (
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        onChange={e =>
-                                                            this.itemSelectionChanged(
-                                                                rowIndex,
-                                                                e.target.checked
-                                                            )
-                                                        }
-                                                        color="primary"
-                                                    />
-                                                </TableCell>
-                                            )}
-                                            {columns.map(column => {
-                                                const value = row[column.id];
-                                                return (
-                                                    <TableCell
-                                                        onClick={
-                                                            handleRowClick &&
-                                                            (() => handleRowClick(rowIndex))
-                                                        }
-                                                        className={
-                                                            this.props.handleRowClick
-                                                                ? 'cursor-pointer'
-                                                                : ''
-                                                        }
-                                                        key={column.id}
-                                                        align={column.align}
-                                                    >
-                                                        {value}
-                                                    </TableCell>
-                                                );
-                                            })}
-                                            {actions && actions.length > 0 && (
-                                                <TableCell
-                                                    key={rowIndex}
-                                                    className={classes.tableCellWrappingActions}
-                                                >
-                                                    <Actions actions={actions} id={rowIndex} />
-                                                </TableCell>
-                                            )}
-                                        </TableRow>
+                                            <TableSortLabel
+                                                active={sortedByThisColumn}
+                                                direction={order}
+                                                onClick={() => toggleSort(column.sortProperties)}
+                                                hideSortIcon={!isSortable}
+                                                disabled={!isSortable}
+                                            >
+                                                {column.label}
+                                            </TableSortLabel>
+                                        </TableCell>
                                     );
                                 })}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TablePagination
-                                        count={total}
-                                        rowsPerPage={pageSize}
-                                        page={zeroIndexBasedPage}
-                                        onChangePage={(event, zeroIndexBasedNewPage) => {
-                                            this.loadPage(zeroIndexBasedNewPage + 1);
-                                        }}
-                                        align="left"
-                                        rowsPerPageOptions={[]}
-                                    />
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </div>
-                </Paper>
-            </>
-        );
-    }
+                                {actions && actions.length > 0 && <TableCell></TableCell>}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, rowIndex) => {
+                                const isItemSelected = selectedIndexes.includes(rowIndex);
+
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
+                                        {showBatchableActions && (
+                                            <TableCell padding="checkbox">
+                                                <Checkbox
+                                                    checked={isItemSelected}
+                                                    onChange={e =>
+                                                        itemSelectionChanged(
+                                                            rowIndex,
+                                                            e.target.checked
+                                                        )
+                                                    }
+                                                    color="primary"
+                                                />
+                                            </TableCell>
+                                        )}
+                                        {columns.map(column => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell
+                                                    onClick={
+                                                        handleRowClick &&
+                                                        (() => handleRowClick(rowIndex))
+                                                    }
+                                                    className={
+                                                        handleRowClick ? 'cursor-pointer' : ''
+                                                    }
+                                                    key={column.id}
+                                                    align={column.align}
+                                                >
+                                                    {value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                        {actions && actions.length > 0 && (
+                                            <TableCell
+                                                key={rowIndex}
+                                                className={classes.tableCellWrappingActions}
+                                            >
+                                                <Actions actions={actions} id={rowIndex} />
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TablePagination
+                                    count={total}
+                                    rowsPerPage={pageSize}
+                                    page={zeroIndexBasedPage}
+                                    onChangePage={(event, zeroIndexBasedNewPage) => {
+                                        loadPage(zeroIndexBasedNewPage + 1);
+                                    }}
+                                    align="left"
+                                    rowsPerPageOptions={[]}
+                                />
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </div>
+            </Paper>
+        </>
+    );
 }
-
-type ExternalProps<T extends readonly ITableColumn[]> = Omit<IProps<T>, 'classes'>;
-
-export const TableMaterial = withStyles(styles)(TableMaterialClass) as <
-    T extends readonly ITableColumn[]
->(
-    props: ExternalProps<T>
-) => React.ReactElement<TableMaterialClass<T>>;

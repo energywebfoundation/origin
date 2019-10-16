@@ -280,14 +280,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             (a: ProducingAsset.Entity) => a.id === certificate.assetId.toString()
         );
 
-        asset.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
-        };
-
-        certificate.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
-        };
-
         this.setState({
             buyModalForCertificate: certificate,
             buyModalForProducingAsset: asset,
@@ -363,7 +355,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const certificateId = this.state.paginatedData[rowIndex].certificate.id;
 
         const certificate: Certificate.Entity = this.props.certificates.find(
-            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+            cert => cert.id === certificateId.toString()
         );
 
         if (certificate.forSale) {
@@ -374,10 +366,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
             return;
         }
-
-        certificate.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
-        };
 
         this.setState({
             sellModalForCertificate: certificate,
@@ -395,8 +383,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     async returnToInbox(rowIndex: number) {
         const certificateId = this.state.paginatedData[rowIndex].certificate.id;
 
-        const certificate: Certificate.Entity = this.props.certificates.find(
-            (cert: Certificate.Entity) => cert.id === certificateId.toString()
+        const certificate = this.props.certificates.find(
+            cert => cert.id === certificateId.toString()
         );
 
         if (
@@ -419,10 +407,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return;
         }
 
-        certificate.configuration.blockchainProperties.activeUser = {
-            address: this.props.currentUser.id
-        };
-
         await certificate.unpublishForSale();
         showNotification(
             `Certificate ${certificate.id} has been returned to Inbox.`,
@@ -442,10 +426,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             this.props.currentUser &&
             this.props.currentUser.id.toLowerCase() === certificate.owner.toLowerCase()
         ) {
-            certificate.configuration.blockchainProperties.activeUser = {
-                address: this.props.currentUser.id
-            };
-
             await certificate.retireCertificate();
             showNotification(
                 `Certificate ${certificate.id} has been claimed.`,

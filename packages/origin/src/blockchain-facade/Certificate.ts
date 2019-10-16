@@ -27,14 +27,17 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
     transferFrom(_to: string): Promise<TransactionReceipt>;
 }
 
-export const getCertificateListLength = async (
-    configuration: Configuration
-): Promise<number> => {
+export const getCertificateListLength = async (configuration: Configuration): Promise<number> => {
     return parseInt(
         await configuration.blockchainProperties.certificateLogicInstance.getCertificateListLength(),
         10
     );
 };
+
+const getAccountFromConfiguration = (configuration: Configuration) => ({
+    from: configuration.blockchainProperties.activeUser.address,
+    privateKey: configuration.blockchainProperties.activeUser.privateKey
+});
 
 export const getAllCertificates = async (configuration: Configuration) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
@@ -54,10 +57,7 @@ export const getActiveCertificates = async (configuration: Configuration) => {
     return certs.filter((cert: Entity) => Number(cert.status) === Status.Active);
 };
 
-export const isRetired = async (
-    certId: number,
-    configuration: Configuration
-): Promise<boolean> => {
+export const isRetired = async (certId: number, configuration: Configuration): Promise<boolean> => {
     return configuration.blockchainProperties.certificateLogicInstance.isRetired(certId);
 };
 
@@ -84,7 +84,7 @@ export const getAllCertificateEvents = async (
     for (const fullEvent of allEvents) {
         // we have to remove some false positives due to ERC721 interface
         if (fullEvent.event === 'Transfer') {
-            if (fullEvent.returnValues._tokenId === '' + certId) {
+            if (fullEvent.returnValues._tokenId === `${certId}`) {
                 returnEvents.push(fullEvent);
             }
         } else {
@@ -120,11 +120,17 @@ export const getAllCertificateEvents = async (
 
 export class Entity extends TradableEntity.Entity implements ICertificate {
     status: number;
+
     dataLog: string;
+
     creationTime: number;
+
     parentId: number;
+
     children: string[];
+
     maxOwnerChanges: number;
+
     ownerChangerCounter: number;
 
     getUrl(): string {
@@ -169,7 +175,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
     async buyCertificate(wh?: number): Promise<TransactionReceipt> {
         const logic: CertificateLogic = this.configuration.blockchainProperties
             .certificateLogicInstance;
-        const id: number = Number(this.id);
+        const id = Number(this.id);
 
         if (wh) {
             let splitAndBuyCertificateCall;
@@ -204,12 +210,11 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
             return logic.buyCertificate(id, {
                 privateKey: this.configuration.blockchainProperties.activeUser.privateKey
             });
-        } else {
-            return logic.buyCertificate(id, {
-                from: this.configuration.blockchainProperties.activeUser.address,
-                privateKey: ''
-            });
         }
+        return logic.buyCertificate(id, {
+            from: this.configuration.blockchainProperties.activeUser.address,
+            privateKey: ''
+        });
     }
 
     async retireCertificate(): Promise<TransactionReceipt> {
@@ -218,12 +223,11 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
                 this.id,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
-                this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
         }
+        return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+            this.id,
+            { from: this.configuration.blockchainProperties.activeUser.address }
+        );
     }
 
     async splitCertificate(energy: number): Promise<TransactionReceipt> {
@@ -233,13 +237,12 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
                 energy,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.splitCertificate(
-                this.id,
-                energy,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
         }
+        return this.configuration.blockchainProperties.certificateLogicInstance.splitCertificate(
+            this.id,
+            energy,
+            { from: this.configuration.blockchainProperties.activeUser.address }
+        );
     }
 
     async publishForSale(
@@ -303,15 +306,17 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
 
         await certificate.setOffChainSettlementOptions({
             price: saleParams.offChainPrice,
-            currency: (saleParams.offChainCurrency as Currency)
+            currency: saleParams.offChainCurrency as Currency
         });
     }
 
     pricePerUnit(unit: Unit) {
         const isOffChainSettlement = Number(this.acceptedToken) === 0x0;
-        const price = isOffChainSettlement ? this.offChainSettlementOptions.price : this.onChainDirectPurchasePrice;
+        const price = isOffChainSettlement
+            ? this.offChainSettlementOptions.price
+            : this.onChainDirectPurchasePrice;
 
-        return price / this.energy * unit;
+        return (price / this.energy) * unit;
     }
 
     async getCertificateOwner(): Promise<string> {
@@ -355,7 +360,7 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         for (const fullEvent of allEvents) {
             // we have to remove some false positives due to ERC721 interface
             if (fullEvent.event === 'Transfer') {
-                if (fullEvent.returnValues._tokenId === '' + this.id) {
+                if (fullEvent.returnValues._tokenId === `${this.id}`) {
                     returnEvents.push(fullEvent);
                 }
             } else {
@@ -389,16 +394,33 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
     }
 }
 
-export async function claimCertificates(
-    certificateIds: string[],
-    configuration: Configuration
-) {
+export async function claimCertificates(certificateIds: string[], configuration: Configuration) {
     const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
 
-    const accountProperties = {
-        from: configuration.blockchainProperties.activeUser.address,
-        privateKey: configuration.blockchainProperties.activeUser.privateKey
-    };
+    return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(
+        certificateIdsAsNumber,
+        getAccountFromConfiguration(configuration)
+    );
+}
 
-    return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(certificateIdsAsNumber, accountProperties);
-};
+export async function requestCertificates(
+    assetId: string,
+    limitingSmartMeterReadIndex: number,
+    configuration: Configuration
+) {
+    return configuration.blockchainProperties.certificateLogicInstance.requestCertificates(
+        parseInt(assetId, 10),
+        limitingSmartMeterReadIndex,
+        getAccountFromConfiguration(configuration)
+    );
+}
+
+export async function approveCertificationRequest(
+    certicationRequestIndex: number,
+    configuration: Configuration
+) {
+    return configuration.blockchainProperties.certificateLogicInstance.approveCertificationRequest(
+        certicationRequestIndex,
+        getAccountFromConfiguration(configuration)
+    );
+}

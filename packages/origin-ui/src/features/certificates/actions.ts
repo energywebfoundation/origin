@@ -1,7 +1,8 @@
 import { Certificate } from '@energyweb/origin';
 
 export enum CertificatesActions {
-    certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED'
+    certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
+    requestCertificates = 'REQUEST_CERTIFICATES'
 }
 
 export interface ICertificateCreatedOrUpdatedAction {
@@ -16,4 +17,20 @@ export const certificateCreatedOrUpdated = (certificate: Certificate.Entity) => 
 
 export type TCertificateCreatedOrUpdatedAction = typeof certificateCreatedOrUpdated;
 
-export type ICertificatesAction = ICertificateCreatedOrUpdatedAction;
+export interface IRequestCertificatesAction {
+    type: CertificatesActions.requestCertificates;
+    payload: {
+        assetId: string;
+        lastReadIndex: number;
+        energy: number;
+    };
+}
+
+export const requestCertificates = (payload: IRequestCertificatesAction['payload']) => ({
+    type: CertificatesActions.requestCertificates,
+    payload
+});
+
+export type TRequestCertificatesAction = typeof requestCertificates;
+
+export type ICertificatesAction = ICertificateCreatedOrUpdatedAction | IRequestCertificatesAction;

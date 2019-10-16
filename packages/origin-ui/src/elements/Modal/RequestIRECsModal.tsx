@@ -3,7 +3,6 @@ import moment, { Moment } from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
     Dialog,
@@ -13,13 +12,30 @@ import {
     TextField
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
+import { bindActionCreators } from 'redux';
+import {
+    TRequestCertificatesAction,
+    requestCertificates
+} from '../../features/certificates/actions';
+import { IStoreState } from '../../types';
+import { connect } from 'react-redux';
+import { getConfiguration } from '../../features/selectors';
 
-interface IRequestIRECsModalProps {
-    conf: Configuration.Entity;
+interface IOwnProps {
     producingAsset: ProducingAsset.Entity;
     showModal: boolean;
     callback: () => void;
 }
+
+interface IStateProps {
+    configuration: Configuration.Entity;
+}
+
+interface IDispatchProps {
+    requestCertificates: TRequestCertificatesAction;
+}
+
+type Props = IOwnProps & IStateProps & IDispatchProps;
 
 interface IRequestIRECsModalState {
     show: boolean;
@@ -28,10 +44,7 @@ interface IRequestIRECsModalState {
     reads: any[];
 }
 
-export class RequestIRECsModal extends React.Component<
-    IRequestIRECsModalProps,
-    IRequestIRECsModalState
-> {
+class RequestIRECsModalClass extends React.Component<Props, IRequestIRECsModalState> {
     constructor(props, context) {
         super(props, context);
 
@@ -48,17 +61,17 @@ export class RequestIRECsModal extends React.Component<
         };
     }
 
-    UNSAFE_componentWillReceiveProps(newProps: IRequestIRECsModalProps) {
+    UNSAFE_componentWillReceiveProps(newProps: Props) {
         this.setState({
             show: newProps.showModal
         });
     }
 
-    async componentDidUpdate(prevProps: IRequestIRECsModalProps) {
+    async componentDidUpdate(prevProps: Props) {
         if (this.props.producingAsset && this.props.producingAsset !== prevProps.producingAsset) {
             const reads = await this.props.producingAsset.getSmartMeterReads();
 
-            const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
+            const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
                 .certificateLogicInstance;
 
             const requestedSMReadsLength = Number(
@@ -77,20 +90,16 @@ export class RequestIRECsModal extends React.Component<
     }
 
     async requestIRECs() {
-        const certificateLogic: CertificateLogic = this.props.conf.blockchainProperties
-            .certificateLogicInstance;
-
         const readsInRange = this.getReadsInTimeRange(this.state.fromDate, this.state.toDate);
         const lastReadIndex = this.state.reads.indexOf(readsInRange[readsInRange.length - 1]);
 
-        await certificateLogic.requestCertificates(
-            Number(this.props.producingAsset.id),
-            lastReadIndex
-        );
+        const energy = this.getEnergy(this.state.fromDate, this.state.toDate);
 
-        const energy = this.getEnergy(this.state.fromDate, this.state.toDate) / 1000;
-
-        showNotification(`Certificates for ${energy} kWh requested.`, NotificationType.Success);
+        this.props.requestCertificates({
+            assetId: this.props.producingAsset.id,
+            lastReadIndex,
+            energy
+        });
 
         this.handleClose();
     }
@@ -190,3 +199,16 @@ export class RequestIRECsModal extends React.Component<
         );
     }
 }
+
+export const RequestIRECsModal = connect(
+    (state: IStoreState): IStateProps => ({
+        configuration: getConfiguration(state)
+    }),
+    dispatch =>
+        bindActionCreators(
+            {
+                requestCertificates
+            },
+            dispatch
+        )
+)(RequestIRECsModalClass);

@@ -3,7 +3,9 @@ export enum GeneralActions {
     hideAccountChangedModal = 'HIDE_ACCOUNT_CHANGED_MODAL',
     disableAccountChangedModal = 'DISABLE_ACCOUNT_CHANGED_MODAL',
     setLoading = 'GENERAL_SET_LOADING',
-    setError = 'GENERAL_SET_ERROR'
+    setError = 'GENERAL_SET_ERROR',
+    showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
+    hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL'
 }
 
 export interface IShowAccountChangedModalAction {
@@ -60,9 +62,33 @@ export const setError = (payload: ISetErrorAction['payload']) => ({
 
 export type TSetError = typeof setError;
 
+export interface IRequestPasswordModalAction {
+    type: GeneralActions.showRequestPasswordModal;
+    payload: (password: string) => void;
+}
+
+export const showRequestPasswordModal = (payload: IRequestPasswordModalAction['payload']) => ({
+    type: GeneralActions.showRequestPasswordModal,
+    payload
+});
+
+export type TShowRequestPasswordModal = typeof showRequestPasswordModal;
+
+export interface IHideRequestPasswordModalAction {
+    type: GeneralActions.hideRequestPasswordModal;
+}
+
+export const hideRequestPasswordModal = () => ({
+    type: GeneralActions.hideRequestPasswordModal
+});
+
+export type THideRequestPasswordModal = typeof hideRequestPasswordModal;
+
 export type IGeneralAction =
     | IShowAccountChangedModalAction
     | IHideAccountChangedModalAction
     | IDisableAccountChangedModalAction
     | ISetLoadingAction
-    | ISetErrorAction;
+    | ISetErrorAction
+    | IRequestPasswordModalAction
+    | IHideRequestPasswordModalAction;
