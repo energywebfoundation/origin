@@ -59,7 +59,10 @@ export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> 
         };
     }
 
-    columns = [{ id: 'time', label: 'Time' }, { id: 'value', label: 'Smart Meter Value' }] as const;
+    columns = [
+        { id: 'time', label: `Time (${this.props.producingAsset.offChainProperties.timezone})` },
+        { id: 'value', label: 'Smart Meter Value' }
+    ] as const;
 
     get rows() {
         return this.state.paginatedData.map(data => ({
