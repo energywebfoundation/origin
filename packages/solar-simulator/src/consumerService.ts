@@ -25,8 +25,6 @@ dotenv.config({
 
 const CHECK_INTERVAL: number = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
 
-const SOLAR_ASSET_GENERATION_TIMEZONE: string =
-    CONFIG.config.SOLAR_ASSET_GENERATION_TIMEZONE || 'Europe/Berlin';
 const WEB3 = process.env.WEB3 || 'http://localhost:8545';
 const { ASSET_CONTRACT_LOOKUP_ADDRESS } = process.env;
 const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
@@ -55,16 +53,12 @@ async function getAssetConf() {
     return conf;
 }
 
-function parseTime(timeString: string) {
-    return moment(timeString).tz(SOLAR_ASSET_GENERATION_TIMEZONE);
-}
-
 interface IEnergyMeasurement {
     energy: number;
     measurementTime: string;
 }
 
-async function getProducingAssetSmartMeterRead(assetId: string) {
+async function getProducingAssetSmartMeterRead(assetId: string): Promise<number> {
     const conf = await getAssetConf();
 
     const asset = await new ProducingAsset.Entity(assetId, conf).sync();
@@ -129,17 +123,21 @@ async function getEnergyMeasurements(
         const now = moment();
 
         for (const asset of CONFIG.assets) {
-            const energyMeasurements = await getEnergyMeasurements(asset.id, previousTime, now);
+            const energyMeasurements: IEnergyMeasurement[] = await getEnergyMeasurements(
+                asset.id,
+                previousTime,
+                now
+            );
 
             for (const energyMeasurement of energyMeasurements) {
                 if (!energyMeasurement.energy || energyMeasurement.energy < 0) {
                     continue;
                 }
 
-                const roundedEnergy = Math.round(energyMeasurement.energy);
+                const roundedEnergy: number = Math.round(energyMeasurement.energy);
 
-                const previousRead = await getProducingAssetSmartMeterRead(asset.id);
-                const time = parseTime(energyMeasurement.measurementTime);
+                const previousRead: number = await getProducingAssetSmartMeterRead(asset.id);
+                const time = moment(energyMeasurement.measurementTime);
 
                 await saveProducingAssetSmartMeterRead(
                     previousRead + roundedEnergy,

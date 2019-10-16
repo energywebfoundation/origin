@@ -74,6 +74,7 @@ export const onboardDemo = async (
                 address: action.data.address,
                 gpsLatitude: action.data.gpsLatitude,
                 gpsLongitude: action.data.gpsLongitude,
+                timezone: action.data.timezone,
                 assetType: assetTypeConfig,
                 complianceRegistry: assetCompliance,
                 otherGreenAttributes: action.data.otherGreenAttributes,
@@ -114,6 +115,7 @@ export const onboardDemo = async (
                 address: action.data.address,
                 gpsLatitude: action.data.gpsLatitude,
                 gpsLongitude: action.data.gpsLongitude,
+                timezone: action.data.timezone,
                 operationalSince: action.data.operationalSince,
                 facilityName: action.data.facilityName
             };

@@ -4,7 +4,8 @@
         "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
-        "types": ["node"]
+        "types": ["node"],
+        "noImplicitAny": false
     },
     "include": ["./src/**/*", "./config/*.json"],
     "references": [
