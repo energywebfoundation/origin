@@ -147,9 +147,7 @@ async function getEnergyMeasurements(
                 );
 
                 console.log(
-                    `[Asset ID: ${
-                        asset.id
-                    }]::Save Energy Read of: ${roundedEnergy}Wh - [${time.format()}]`
+                    `[Asset ID: ${asset.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`
                 );
             }
         }
