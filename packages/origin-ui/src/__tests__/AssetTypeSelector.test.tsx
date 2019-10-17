@@ -71,7 +71,8 @@ describe('AssetTypeSelector', () => {
         assertTypesLevel(2, ['Solar - Photovoltaic', 'Solar - Concentration']);
         assertTypesLevel(3, [
             'Solar - Photovoltaic - Roof mounted',
-            'Solar - Photovoltaic - Ground mounted'
+            'Solar - Photovoltaic - Ground mounted',
+            'Solar - Photovoltaic - Classic silicon'
         ]);
 
         changeTypesLevel(1, []);
@@ -111,7 +112,8 @@ describe('AssetTypeSelector', () => {
         ]);
         assertTypesLevel(3, [
             'Solar - Photovoltaic - Roof mounted',
-            'Solar - Photovoltaic - Ground mounted'
+            'Solar - Photovoltaic - Ground mounted',
+            'Solar - Photovoltaic - Classic silicon'
         ]);
 
         cleanupStore();

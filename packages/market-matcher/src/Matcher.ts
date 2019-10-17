@@ -166,25 +166,27 @@ export class Matcher {
     private async findMatchingAgreements(
         certificate: Certificate.ICertificate
     ): Promise<MatchableAgreement[]> {
-        const matchingAgreements = this.entityStore
+        const agreements = this.entityStore
             .getAgreements()
-            .map(agreement => new MatchableAgreement(agreement))
-            .filter(async matchableAgreement => {
-                const supply = await new Supply.Entity(
-                    matchableAgreement.agreement.supplyId.toString(),
-                    this.config
-                ).sync();
-                const demand = await new Demand.Entity(
-                    matchableAgreement.agreement.demandId.toString(),
-                    this.config
-                ).sync();
-                const { result } = await matchableAgreement.matchesCertificate(
-                    certificate,
-                    supply,
-                    demand
-                );
-                return result;
-            });
+            .map(agreement => new MatchableAgreement(agreement));
+
+        const matchingAgreements: MatchableAgreement[] = [];
+
+        for (const agreement of agreements) {
+            const supply = await new Supply.Entity(
+                agreement.agreement.supplyId.toString(),
+                this.config
+            ).sync();
+            const demand = await new Demand.Entity(
+                agreement.agreement.demandId.toString(),
+                this.config
+            ).sync();
+            const { result } = await agreement.matchesCertificate(certificate, supply, demand);
+
+            if (result) {
+                matchingAgreements.push(agreement);
+            }
+        }
 
         if (matchingAgreements.length === 0) {
             this.logger.info(`Found no matching agreement for certificate #${certificate.id}`);
@@ -203,16 +205,18 @@ export class Matcher {
             this.config
         ).sync();
 
-        return this.entityStore
-            .getDemands()
-            .map(demand => new MatchableDemand(demand))
-            .filter(async matchableDemand => {
-                const { result } = await matchableDemand.matchesCertificate(
-                    certificate,
-                    producingAsset
-                );
-                return result;
-            });
+        const demands = this.entityStore.getDemands().map(demand => new MatchableDemand(demand));
+
+        const matchingDemands: MatchableDemand[] = [];
+
+        for (const demand of demands) {
+            const { result } = await demand.matchesCertificate(certificate, producingAsset);
+            if (result) {
+                matchingDemands.push(demand);
+            }
+        }
+
+        return matchingDemands;
     }
 
     private async findMatchingCertificates(demand: Demand.Entity) {
@@ -232,12 +236,18 @@ export class Matcher {
                 })
         );
 
-        const matchedCertificates = certificates
-            .filter(({ certificate, producingAsset }) =>
-                matchableDemand.matchesCertificate(certificate, producingAsset)
-            )
-            .map(({ certificate }) => certificate);
+        const matchingCertificates: Certificate.ICertificate[] = [];
 
-        return this.strategy.executeForCertificates(matchedCertificates);
+        for (const { certificate, producingAsset } of certificates) {
+            const { result } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
+            if (result) {
+                matchingCertificates.push(certificate);
+            }
+        }
+
+        return this.strategy.executeForCertificates(matchingCertificates);
     }
 }

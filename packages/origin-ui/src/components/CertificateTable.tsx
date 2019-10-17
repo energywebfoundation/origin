@@ -233,7 +233,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     async initMatchingCertificates(demand: Demand.Entity) {
         const matchableDemand = new MatchableDemand(demand);
-        const matchedCertificates = this.props.certificates.filter(async certificate => {
+        const find = async certificate => {
             const producingAsset = await new ProducingAsset.Entity(
                 certificate.assetId.toString(),
                 this.props.configuration
@@ -242,8 +242,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificate,
                 producingAsset
             );
-            return result;
-        });
+            return { result, certificate };
+        };
+
+        const matchedCertificates = (await Promise.all(this.props.certificates.map(find)))
+            .filter(({ result }) => result)
+            .map(({ certificate }) => certificate);
 
         this.setState({ matchedCertificates });
     }

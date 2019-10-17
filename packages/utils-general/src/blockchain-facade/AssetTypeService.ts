@@ -16,6 +16,7 @@ export class IRECAssetService implements IAssetService {
             ['Solar', 'Photovoltaic'],
             ['Solar', 'Photovoltaic', 'Roof mounted'],
             ['Solar', 'Photovoltaic', 'Ground mounted'],
+            ['Solar', 'Photovoltaic', 'Classic silicon'],
             ['Solar', 'Concentration'],
             ['Wind'],
             ['Wind', 'Onshore'],
@@ -63,7 +64,13 @@ export class IRECAssetService implements IAssetService {
             ['Gaseous', 'Agricultural gas', 'Energy crops'],
             ['Gaseous', 'Gas from organic waste digestion'],
             ['Gaseous', 'Process gas'],
-            ['Gaseous', 'Process gas', 'Biogenic']
+            ['Gaseous', 'Process gas', 'Biogenic'],
+            ['Thermal'],
+            ['Thermal', 'Internal combustion engine'],
+            ['Thermal', 'Internal combustion engine', 'Non CHP'],
+            ['Thermal', 'Internal combustion engine', 'CHP'],
+            ['Thermal', 'Steam turbine with condensation turbine'],
+            ['Thermal', 'Steam turbine with condensation turbine', 'Non CHP']
         ];
     }
 

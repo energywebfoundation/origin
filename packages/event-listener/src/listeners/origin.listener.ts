@@ -89,13 +89,17 @@ export class OriginEventListener implements IOriginEventListener {
                 this.conf
             ).sync();
 
-            const demandsMatchCertificate: Demand.Entity[] = demands.filter(async demand => {
+            const demandsMatchCertificate: Demand.Entity[] = [];
+
+            for (const demand of demands) {
                 const { result } = await new MatchableDemand(demand).matchesCertificate(
                     publishedCertificate,
                     producingAsset
                 );
-                return result;
-            });
+                if (result) {
+                    demandsMatchCertificate.push(demand);
+                }
+            }
 
             for (const demand of demandsMatchCertificate) {
                 this.originEventsStore.registerMatchingCertificate(demand, publishedCertificate.id);
