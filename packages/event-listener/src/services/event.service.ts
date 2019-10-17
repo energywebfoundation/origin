@@ -8,7 +8,7 @@ import { IOriginEventListener, OriginEventListener } from '../listeners/origin.l
 import { OriginEventsStore, IOriginEventsStore } from '../stores/OriginEventsStore';
 
 export interface IEventServiceProvider {
-    apiUrl: string;
+    backendUrl: string;
     web3: Web3;
     listeners: IOriginEventListener[];
 }
@@ -20,7 +20,7 @@ export class EventServiceProvider implements IEventServiceProvider {
 
     private originEventsStore: IOriginEventsStore;
 
-    constructor(public apiUrl: string, public web3: Web3) {
+    constructor(public backendUrl: string, public web3: Web3) {
         this.listeners = [];
 
         const emailAdapter: IEmailAdapter = new MandrillEmailAdapter(process.env.MANDRILL_API_KEY);
@@ -34,7 +34,7 @@ export class EventServiceProvider implements IEventServiceProvider {
     }
 
     public async refreshListenerList() {
-        const result = await axios.get(`${this.apiUrl}/MarketContractLookup`);
+        const result = await axios.get(`${this.backendUrl}/api/MarketContractLookup`);
 
         const latestMarketContracts = result.data;
         const currentlyListeningContracts = this.listeners.map(
