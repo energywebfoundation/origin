@@ -5,7 +5,7 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import * as http from 'http';
 
-import { startAPI } from '../../api';
+import { startAPI } from '../..';
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors }  from '../../enums/StorageErrors';
 
