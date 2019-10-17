@@ -93,17 +93,10 @@ export function AccountSettings() {
             return;
         }
 
-        if (emailChanged) {
+        if (emailChanged || notificationChanged) {
             const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
-            newProperties.email = userEmailCandidate;
-
-            await currentUser.update(newProperties);
-        }
-
-        if (notificationChanged) {
-            const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
+            newProperties.email = emailChanged ? userEmailCandidate : newProperties.email;
             newProperties.notifications = notificationsEnabled;
-
             await currentUser.update(newProperties);
         }
 
