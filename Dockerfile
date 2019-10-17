@@ -16,4 +16,4 @@ WORKDIR /dockerBuildDirectory
 COPY . /dockerBuildDirectory
 
 RUN yarn
-RUN yarn build
+RUN yarn build:full
