@@ -124,7 +124,7 @@ export class Demo {
         await axios.post(
             `${
                 process.env.BACKEND_URL
-            }/MarketContractLookup/${this.marketContractLookup.toLowerCase()}`
+            }/api/MarketContractLookup/${this.marketContractLookup.toLowerCase()}`
         );
 
         const userLogic = new UserLogic(this.web3, deployResult.userLogic);
@@ -153,7 +153,7 @@ export class Demo {
                 web3: this.web3
             },
             offChainDataSource: {
-                baseUrl: process.env.BACKEND_URL
+                baseUrl: `${process.env.BACKEND_URL}/api`
             },
             logger: this.logger
         };

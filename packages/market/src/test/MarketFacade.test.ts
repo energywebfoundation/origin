@@ -187,7 +187,7 @@ describe('Market-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: 'http://localhost:3031'
+                baseUrl: `${process.env.BACKEND_URL}/api`
             },
             logger
         };
@@ -266,7 +266,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Demand/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -285,7 +285,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Demand/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Market.Demand.Entity>);
@@ -412,7 +412,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(supply, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Supply/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
                 assetId: '0',
                 offChainProperties: {
                     availableWh: 10,
@@ -433,7 +433,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(supply, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Supply/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
                 assetId: '0',
                 offChainProperties: {
                     availableWh: 10,
@@ -492,7 +492,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: false,
@@ -521,7 +521,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: false,
@@ -558,7 +558,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '0',
                 initialized: true,
-                url: `http://localhost:3031/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
@@ -613,7 +613,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '1',
                 initialized: true,
-                url: `http://localhost:3031/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
@@ -650,7 +650,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(agreement, {
                 id: '1',
                 initialized: true,
-                url: `http://localhost:3031/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,

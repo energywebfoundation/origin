@@ -1,21 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne } from 'typeorm';
-import { EntityType } from './EntityType';
+import { Entity, Column, BaseEntity, Unique, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-@Unique(['identifier', 'type', 'contractAddress'])
+@Unique(['type', 'contractAddress', 'identifier'])
 export class AnyEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => EntityType, entityType => entityType.entities)
-    type: EntityType;
+    @Column('varchar')
+    type: string;
 
-    @Column()
+    @Column('varchar', { length: 42 })
     contractAddress: string;
 
-    @Column()
+    @Column('varchar')
     identifier: string;
 
-    @Column()
+    @Column('varchar')
     value: string;
 }

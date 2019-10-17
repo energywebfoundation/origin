@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
 import { getRepository, Repository } from "typeorm";
 
-import { EntityType } from "../../entity/EntityType";
 import { AnyEntity } from "../../entity/AnyEntity";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
-import { getOrCreateEntityType } from '../utils';
 
 export async function anyEntityGetAction(req: Request, res: Response) {
     let { contractAddress, type, identifier } = req.params;
@@ -13,13 +11,12 @@ export async function anyEntityGetAction(req: Request, res: Response) {
 
     console.log(`<${contractAddress}> GET - ${type} ${identifier}`);
 
-    const entityType: EntityType = await getOrCreateEntityType(type);
     const anyEntityRepository: Repository<AnyEntity> = getRepository(AnyEntity);
 
     if (identifier === undefined || identifier === null) {
         const entities: AnyEntity[] = await anyEntityRepository.find({
             contractAddress,
-            type: entityType
+            type
         });
 
         res.send(entities);
@@ -29,7 +26,7 @@ export async function anyEntityGetAction(req: Request, res: Response) {
     
     const existingEntity: AnyEntity = await anyEntityRepository.findOne({
         contractAddress,
-        type: entityType,
+        type,
         identifier
     });
 

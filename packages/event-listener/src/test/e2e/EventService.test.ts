@@ -20,7 +20,7 @@ describe('Event Service Tests', async () => {
     });
 
     it('gets an instance of marketContractLookup', async () => {
-        const response = await axios.get(`${process.env.BACKEND_URL}/MarketContractLookup`);
+        const response = await axios.get(`${process.env.BACKEND_URL}/api/MarketContractLookup`);
         assert.equal(response.data.length, 1);
         assert.equal(typeof response.data[0], 'string');
     });

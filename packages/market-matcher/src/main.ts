@@ -17,7 +17,7 @@ const config = {
         address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
         privateKey
     },
-    offChainDataSourceUrl: process.env.BACKEND_URL
+    offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`
 };
 
 startMatcher(config);

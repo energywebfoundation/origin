@@ -1,8 +1,7 @@
-import { Entity, PrimaryColumn, Unique, BaseEntity } from 'typeorm';
+import { Entity, PrimaryColumn, BaseEntity } from 'typeorm';
 
 @Entity()
-@Unique(['address'])
 export class MarketContractLookup extends BaseEntity {
-    @PrimaryColumn()
+    @PrimaryColumn('varchar', { length: 42 })
     address: string;
 }

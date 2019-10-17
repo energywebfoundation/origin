@@ -65,9 +65,8 @@ async function initConf(
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: BACKEND_URL
+            baseUrl: `${BACKEND_URL}/api`
         },
-
         logger: Winston.createLogger({
             level: 'debug',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),

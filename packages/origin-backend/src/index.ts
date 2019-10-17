@@ -8,7 +8,6 @@ import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 
 import ormConfig from '../ormconfig.json';
 
-import { EntityType } from './entity/EntityType';
 import { AnyEntity } from './entity/AnyEntity';
 import { MarketContractLookup } from './entity/MarketContractLookup';
 import api from './api';
@@ -24,12 +23,6 @@ function extractPort(url: string): number {
     return null;
 }
 
-dotenv.config({
-    path: '../../.env'
-});
-
-const PORT: number = extractPort(process.env.BACKEND_URL);
-
 const app: Express = express();
 
 app.use(bodyParser.json());
@@ -37,16 +30,19 @@ app.use(cors());
 app.set('case sensitive routing', false);
 app.options('*', cors());
 
+app.use('/api', api);
 app.use('/api/v1', api);
 
 export async function startAPI(): Promise<http.Server> {
+    const PORT: number = parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
+
     let connectionOptions: ConnectionOptions = Object.assign(
         ormConfig as ConnectionOptions,
-        { entities: [AnyEntity, MarketContractLookup, EntityType] }
+        { entities: [AnyEntity, MarketContractLookup] }
     );
 
     const connection: Connection = await createConnection(connectionOptions);
-    const server: http.Server = api.listen(PORT, () => {
+    const server: http.Server = app.listen(PORT, () => {
         console.log(`Running the test backend on port: ${PORT}`);
 
         server.on('close', () => {
@@ -59,5 +55,9 @@ export async function startAPI(): Promise<http.Server> {
 }
 
 if (require.main === module) {
+    dotenv.config({
+        path: '../../.env'
+    });
+
     startAPI();
 }

@@ -80,7 +80,7 @@ describe('Test StrategyBasedMatcher', async () => {
 
     const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,
-        offChainDataSourceUrl: process.env.BACKEND_URL,
+        offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
         marketContractLookupAddress: '',
         matcherAccount: {
             address: accountDeployment,
@@ -218,7 +218,7 @@ describe('Test StrategyBasedMatcher', async () => {
                     web3
                 },
                 offChainDataSource: {
-                    baseUrl: process.env.BACKEND_URL
+                    baseUrl: `${process.env.BACKEND_URL}/api`
                 },
                 logger
             };

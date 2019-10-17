@@ -113,7 +113,7 @@ export const deployDemo = async () => {
     deployResult.marketLogic = marketContracts.MarketLogic;
 
     await axios.post(
-        `${BACKEND_URL}/MarketContractLookup/${deployResult.marketContractLookup.toLowerCase()}`
+        `${BACKEND_URL}/api/MarketContractLookup/${deployResult.marketContractLookup.toLowerCase()}`
     );
 
     const userLogic = new UserLogic(web3, deployResult.userLogic);
@@ -142,7 +142,7 @@ export const deployDemo = async () => {
             web3
         },
         offChainDataSource: {
-            baseUrl: BACKEND_URL
+            baseUrl: `${BACKEND_URL}/api`
         },
         logger
     };
