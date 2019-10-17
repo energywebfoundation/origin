@@ -1,7 +1,7 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, Unit } from '@energyweb/utils-general';
+import { Currency } from '@energyweb/utils-general';
 import { Substitute, Arg } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 
@@ -22,7 +22,7 @@ describe('MatchableDemand tests', () => {
     describe('Certificates', () => {
         const missingDemand = 1000;
         const certificateEnergy = 1000;
-        const energyPrice = 100 * 1e6;
+        const energyPrice = 2;
         const currency = Currency.USD;
         const assetType = 'Solar';
         const location = ['Thailand;Central;Nakhon Pathom'];
@@ -54,7 +54,7 @@ describe('MatchableDemand tests', () => {
                 currency: options.currency || currency
             });
             certificate.energy.returns(options.energy || certificateEnergy);
-            certificate.pricePerUnit(Unit.MWh).returns(options.price || energyPrice);
+            certificate.price().returns(options.price || energyPrice);
 
             const producingAssetOffChainProperties = Substitute.for<
                 ProducingAsset.IOffChainProperties
