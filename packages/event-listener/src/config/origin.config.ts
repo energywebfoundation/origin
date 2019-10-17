@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
@@ -12,10 +11,6 @@ export const initOriginConfig = async (
     const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
         web3,
         marketContractLookup
-    );
-
-    await axios.post(
-        `${process.env.BACKEND_URL}/MarketContractLookup/${marketContractLookup.toLowerCase()}`
     );
 
     return {
