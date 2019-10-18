@@ -31,6 +31,8 @@ export class EntityStore implements IEntityStore {
 
     private demandListeners: Listener<Demand.Entity>[] = [];
 
+    private sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
     constructor(
         @inject('config') private config: Configuration.Entity,
         @inject('logger') private logger: Winston.Logger
@@ -123,6 +125,9 @@ export class EntityStore implements IEntityStore {
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
             const { _entityId } = event.returnValues;
             this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
+
+            await this.sleep(5000);
+
             const newCertificate = await new Certificate.Entity(_entityId, this.config).sync();
 
             await this.triggerCertificateListeners(newCertificate);
@@ -132,6 +137,9 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(
                 `Event: LogCreatedCertificate certificate #${event.returnValues._certificateId}`
             );
+
+            await this.sleep(5000);
+
             const newCertificate = await new Certificate.Entity(
                 event.returnValues._certificateId,
                 this.config
@@ -146,6 +154,9 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(
                 `Event: LogCertificateSplit certificate #${_certificateId} children=[${_childOne}, ${_childTwo}]`
             );
+
+            await this.sleep(5000);
+
             const firstChild = await new Certificate.Entity(_childOne, this.config).sync();
             const secondChild = await new Certificate.Entity(_childTwo, this.config).sync();
 
@@ -160,6 +171,9 @@ export class EntityStore implements IEntityStore {
 
         marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
             this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
+
+            await this.sleep(5000);
+
             const newDemand = await new Demand.Entity(
                 event.returnValues._demandId,
                 this.config
@@ -171,6 +185,9 @@ export class EntityStore implements IEntityStore {
 
         marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
             this.logger.verbose(`Event: createdNewSupply supply: ${event.returnValues._supplyId}`);
+
+            await this.sleep(5000);
+
             const newSupply = await new Supply.Entity(
                 event.returnValues._supplyId,
                 this.config
@@ -183,6 +200,9 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(
                 `Event: DemandStatusChanged demand: ${event.returnValues._demandId}`
             );
+
+            await this.sleep(5000);
+
             const newDemand = await new Demand.Entity(
                 event.returnValues._demandId,
                 this.config
@@ -195,6 +215,8 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(
                 `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
             );
+
+            await this.sleep(5000);
 
             const newAgreement = await new Agreement.Entity(
                 event.returnValues._agreementId,

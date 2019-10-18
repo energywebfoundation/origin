@@ -378,7 +378,7 @@ describe('Test StrategyBasedMatcher', async () => {
                     assert.equal(certificate.owner, accountTrader);
                 },
                 1000,
-                20000
+                30000
             );
         });
     });
@@ -457,7 +457,7 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('a certificate has been split', async () => {
-            await sleep(10000);
+            await sleep(20000);
 
             assert.equal(await Certificate.getCertificateListLength(conf), 4);
         });
@@ -571,7 +571,7 @@ describe('Test StrategyBasedMatcher', async () => {
                     assert.equal(certificate.owner, demand.demandOwner);
                 },
                 1000,
-                20000
+                30000
             );
         });
     });

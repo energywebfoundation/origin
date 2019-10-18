@@ -9,3 +9,7 @@ export enum MatchingErrorReason {
     NON_MATCHING_LOCATION,
     PERIOD_ALREADY_FILLED
 }
+
+export function reasonsToString(reasons: MatchingErrorReason[]) {
+    return reasons.map(reason => MatchingErrorReason[reason]).join(', ');
+}
