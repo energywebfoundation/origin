@@ -56,36 +56,47 @@ export function AccountSettings() {
 
     const marketLookupAddress = useSelector(getMarketContractLookupAddress);
 
+    const userEmail = currentUser ? currentUser.offChainProperties.email : null;
+
+    const [userEmailCandidate, setUserEmail] = useState(userEmail);
+
     const userNotificationsEnabled = currentUser
         ? currentUser.offChainProperties.notifications
         : false;
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
-    if (notificationsEnabled === null && currentUser) {
-        setNotificationsEnabled(userNotificationsEnabled);
+    if (currentUser) {
+        if (notificationsEnabled === null) {
+            setNotificationsEnabled(userNotificationsEnabled);
+        }
+
+        if (userEmailCandidate === null) {
+            setUserEmail(userEmail);
+        }
     }
 
     const [marketLookupAddressCandidate, setMarketLookupAddressCandidate] = useState(
         marketLookupAddress
     );
 
+    const emailChanged = userEmailCandidate !== userEmail;
     const notificationChanged = notificationsEnabled !== userNotificationsEnabled;
     const contractChanged = marketLookupAddressCandidate !== marketLookupAddress;
 
-    const propertiesChanged = notificationChanged || contractChanged;
+    const propertiesChanged = notificationChanged || contractChanged || emailChanged;
 
     async function saveChanges() {
-        if (!notificationChanged && !contractChanged) {
+        if (!propertiesChanged) {
             showNotification(`No changes have been made.`, NotificationType.Error);
 
             return;
         }
 
-        if (notificationChanged) {
+        if (emailChanged || notificationChanged) {
             const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
+            newProperties.email = emailChanged ? userEmailCandidate : newProperties.email;
             newProperties.notifications = notificationsEnabled;
-
             await currentUser.update(newProperties);
         }
 
@@ -101,42 +112,36 @@ export function AccountSettings() {
         showNotification(`User settings have been updated.`, NotificationType.Success);
     }
 
-    function UserSettings() {
-        if (!currentUser) {
-            return null;
-        }
-
-        return (
-            <>
-                {currentUser.organization}
-
-                <TextField
-                    label="E-mail"
-                    value={currentUser ? currentUser.offChainProperties.email : 'Unknown'}
-                    fullWidth
-                    disabled
-                    className="my-3"
-                />
-                <FormGroup>
-                    <FormControlLabel
-                        control={
-                            <PurpleSwitch
-                                checked={notificationsEnabled}
-                                onChange={(e, checked) => setNotificationsEnabled(checked)}
-                            />
-                        }
-                        label="Notifications"
-                    />
-                </FormGroup>
-            </>
-        );
-    }
-
     return (
         <Paper>
             <Grid container spacing={3} className={classes.container}>
                 <Grid item xs={12}>
-                    <UserSettings />
+                    {currentUser && (
+                        <>
+                            {currentUser.organization}
+
+                            <TextField
+                                label="E-mail"
+                                value={userEmailCandidate}
+                                onChange={e => setUserEmail(e.target.value)}
+                                fullWidth
+                                className="my-3"
+                            />
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <PurpleSwitch
+                                            checked={notificationsEnabled}
+                                            onChange={(e, checked) =>
+                                                setNotificationsEnabled(checked)
+                                            }
+                                        />
+                                    }
+                                    label="Notifications"
+                                />
+                            </FormGroup>
+                        </>
+                    )}
                     <TextField
                         label="Market Lookup Address"
                         value={marketLookupAddressCandidate}
