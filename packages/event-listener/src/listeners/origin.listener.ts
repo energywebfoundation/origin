@@ -163,7 +163,7 @@ export class OriginEventListener implements IOriginEventListener {
             const fulfilledDemands: number[] = this.originEventsStore.getFulfilledDemands(user.id);
 
             if (issuedCertificates > 0) {
-                const url = `${process.env.UI_BASE_URL}/${this.marketLookupAddress}/certificates/inbox`;
+                const url = `${process.env.UI_BASE_URL}/certificates/inbox`;
 
                 await this.sendNotificationEmail(
                     EmailTypes.CERTS_APPROVED,
@@ -175,8 +175,7 @@ export class OriginEventListener implements IOriginEventListener {
 
             if (matchingCertificates.length > 0) {
                 let urls = matchingCertificates.map(
-                    match =>
-                        `${process.env.UI_BASE_URL}/${this.marketLookupAddress}/certificates/for_demand/${match.demandId}`
+                    match => `${process.env.UI_BASE_URL}/certificates/for_demand/${match.demandId}`
                 );
                 urls = urls.filter((url, index) => urls.indexOf(url) === index); // Remove duplicate urls
 

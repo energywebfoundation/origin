@@ -37,12 +37,13 @@ export class EventServiceProvider implements IEventServiceProvider {
         const result = await axios.get(`${this.apiUrl}/MarketContractLookup`);
 
         const latestMarketContracts = result.data;
-        const currentlyListeningContracts = this.listeners.map(
-            listener => listener.marketLookupAddress
-        );
 
         // Add any listener from backend if missing
         for (const contract of latestMarketContracts) {
+            const currentlyListeningContracts = this.listeners.map(
+                listener => listener.marketLookupAddress
+            );
+
             if (contract && !currentlyListeningContracts.includes(contract)) {
                 const listener: IOriginEventListener = new OriginEventListener(
                     contract,
