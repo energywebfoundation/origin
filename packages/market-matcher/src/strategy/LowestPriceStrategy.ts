@@ -1,5 +1,4 @@
 import { Certificate } from '@energyweb/origin';
-import { Unit } from '@energyweb/utils-general';
 
 import { MatchableAgreement } from '../MatchableAgreement';
 import { IStrategy } from './IStrategy';
@@ -11,8 +10,7 @@ export class LowestPriceStrategy implements IStrategy {
     ];
 
     private certificatePriorities = [
-        (a: Certificate.ICertificate, b: Certificate.ICertificate) =>
-            a.pricePerUnit(Unit.MWh) - b.pricePerUnit(Unit.MWh)
+        (a: Certificate.ICertificate, b: Certificate.ICertificate) => a.price() - b.price()
     ];
 
     public executeForAgreements(agreements: MatchableAgreement[]): Promise<MatchableAgreement[]> {

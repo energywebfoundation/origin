@@ -1,7 +1,7 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, IRECAssetService, Unit, LocationService } from '@energyweb/utils-general';
+import { Currency, IRECAssetService, LocationService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
@@ -38,7 +38,7 @@ export class MatchableDemand {
                 MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
             .validate(
-                certificate.pricePerUnit(Unit.MWh) <= offChainProperties.maxPricePerMwh,
+                certificate.price() <= offChainProperties.maxPricePerMwh,
                 MatchingErrorReason.TOO_EXPENSIVE
             )
             .validate(

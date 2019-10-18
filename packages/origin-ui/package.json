@@ -8,7 +8,7 @@
   "scripts": {
     "build": "node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
-    "build-full": "webpack --config webpack/prod.config.js",
+    "build:full": "webpack --config webpack/prod.config.js",
     "lint": "eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
     "start": "node --max-old-space-size=8192 ./node_modules/.bin/webpack-dev-server --config webpack/dev.config.js --watch",
@@ -45,6 +45,7 @@
     "formik-material-ui": "0.0.22",
     "history": "4.10.1",
     "moment": "2.24.0",
+    "moment-timezone": "0.5.27",
     "query-string": "6.8.3",
     "react": "16.10.2",
     "react-chartjs-2": "2.8.0",

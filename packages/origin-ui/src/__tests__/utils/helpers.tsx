@@ -126,6 +126,7 @@ export const createProducingAsset = (
         country: properties.country || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.country,
         gpsLatitude: '',
         gpsLongitude: '',
+        timezone: 'Asia/Bangkok',
         otherGreenAttributes: '',
         typeOfPublicSupport: ''
     };

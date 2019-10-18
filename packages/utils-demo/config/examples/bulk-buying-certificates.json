@@ -100,6 +100,7 @@
                 "address": "95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140",
                 "gpsLatitude": "14.059500",
                 "gpsLongitude": "99.977800",
+                "timezone": "America/Los_Angeles",
                 "assetType": "Wind",
                 "certificatesCreatedForWh": 0,
                 "lastSmartMeterCO2OffsetRead": 0,

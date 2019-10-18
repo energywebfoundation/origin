@@ -3,7 +3,7 @@ import cors from 'cors';
 import parse from 'csv-parse/lib/sync';
 import express from 'express';
 import fs from 'fs-extra';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import dotenv from 'dotenv';
 
 import CONFIG from '../config/config.json';
@@ -55,6 +55,7 @@ function extractPort(url: string): number {
 function processRows(
     rows: TableRowType[],
     maxCapacity: number,
+    assetTimezone: string,
     timeStart: moment.Moment,
     timeEnd: moment.Moment,
     accumulated: boolean,
@@ -83,8 +84,10 @@ function processRows(
         return include;
     }
 
-    function parseRowTime(row: TableRowType) {
-        return moment(row[0], 'DD.MM.YYYY HH:mm').year(currentYear);
+    function parseRowTime(row: TableRowType): moment.Moment {
+        return moment(row[0], 'DD.MM.YYYY HH:mm')
+            .year(currentYear)
+            .tz(assetTimezone);
     }
 
     if (accumulated) {
@@ -173,6 +176,7 @@ export async function startAPI() {
         let filteredReads = processRows(
             rows,
             asset.maxCapacity,
+            asset.timezone,
             timeStart,
             timeEnd,
             accumulated,

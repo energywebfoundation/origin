@@ -32,6 +32,7 @@ export interface IOffChainProperties {
     address: string;
     gpsLatitude: string;
     gpsLongitude: string;
+    timezone: string;
     facilityName: string;
 }
 

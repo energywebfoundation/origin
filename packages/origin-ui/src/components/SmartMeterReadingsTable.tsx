@@ -1,5 +1,6 @@
 import * as React from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
+
 import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import {
@@ -35,6 +36,7 @@ export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> 
         offset
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
         const readings = await this.props.producingAsset.getSmartMeterReads();
+        const assetTimezone = this.props.producingAsset.offChainProperties.timezone;
 
         const data = [];
         let currentSmartMeterState = 0;
@@ -43,7 +45,10 @@ export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> 
             currentSmartMeterState += readings[i].energy;
 
             data.push([
-                moment.unix(readings[i].timestamp).format('DD MMM YY, HH:mm'),
+                moment
+                    .unix(readings[i].timestamp)
+                    .tz(assetTimezone)
+                    .format('DD MMM YY, HH:mm'),
                 currentSmartMeterState
             ]);
         }
@@ -54,7 +59,10 @@ export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> 
         };
     }
 
-    columns = [{ id: 'time', label: 'Time' }, { id: 'value', label: 'Smart Meter Value' }] as const;
+    columns = [
+        { id: 'time', label: `Time (${this.props.producingAsset.offChainProperties.timezone})` },
+        { id: 'value', label: 'Smart Meter Value' }
+    ] as const;
 
     get rows() {
         return this.state.paginatedData.map(data => ({

@@ -21,7 +21,7 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
     maxOwnerChanges: number;
     ownerChangerCounter: number;
 
-    pricePerUnit(unit: Unit): number;
+    price(): number;
     sync(): Promise<ICertificate>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
@@ -310,13 +310,13 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         });
     }
 
-    pricePerUnit(unit: Unit) {
+    price() {
         const isOffChainSettlement = Number(this.acceptedToken) === 0x0;
         const price = isOffChainSettlement
             ? this.offChainSettlementOptions.price
             : this.onChainDirectPurchasePrice;
 
-        return (price / this.energy) * unit;
+        return price;
     }
 
     async getCertificateOwner(): Promise<string> {

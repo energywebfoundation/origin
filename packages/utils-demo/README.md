@@ -159,6 +159,7 @@ usage: command to onboard a new consuming asset
 * <code>houseNumber</code>: the housenumber of the asset as string
 * <code>gpsLatitude</code>: the latitude of the asset as string
 * <code>gpsLongitude</code>: the longitude of the asset as string
+* <code>timezone</code>: the timezone of the asset as string
 * <code>maxCapacitySet</code>: flag if the maximal capacity is set
 * <code>certificatesUsedForWh</code>: amount of certificates already used by the consuming asset, will be 0 in most cases
 
@@ -188,6 +189,7 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "houseNumber": "11",
         "gpsLatitude": "0",
         "gpsLongitude": "0",
+        "timezone": "America/Los_Angeles",
         "maxCapacitySet": true,
         "certificatesUsedForWh": 0
     }
@@ -213,6 +215,7 @@ usage: command to onboard a new producing asset
 * <code>houseNumber</code>: housenumber where the asset is located as string
 * <code>gpsLatitude</code>: latitude of the asset as string
 * <code>gpsLongitude</code>: longitude of the asset as string
+* <code>timezone</code>: timezone of the asset as string
 * <code>assetType</code>: Type of asset as string (Wind,
     Solar,
     RunRiverHydro,
@@ -254,6 +257,7 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "houseNumber": "10",
         "gpsLatitude": "0",
         "gpsLongitude": "0",
+        "timezone": "America/Los_Angeles",
         "assetType": "Biomass from agriculture",
         "certificatesCreatedForWh": 0,
         "lastSmartMeterCO2OffsetRead": 0,
