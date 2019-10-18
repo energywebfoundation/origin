@@ -12,6 +12,7 @@ import { IEntityStore } from './EntityStore';
 import { MatchableAgreement } from './MatchableAgreement';
 import { MatchableDemand } from './MatchableDemand';
 import { IStrategy } from './strategy/IStrategy';
+import { reasonsToString } from './MatchingErrorReason';
 
 @injectable()
 export class Matcher {
@@ -170,6 +171,10 @@ export class Matcher {
             .getAgreements()
             .map(agreement => new MatchableAgreement(agreement));
 
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Found ${(agreements || []).length} agreements`
+        );
+
         const matchingAgreements: MatchableAgreement[] = [];
 
         for (const agreement of agreements) {
@@ -181,18 +186,28 @@ export class Matcher {
                 agreement.agreement.demandId.toString(),
                 this.config
             ).sync();
-            const { result } = await agreement.matchesCertificate(certificate, supply, demand);
+            const { result, reason } = await agreement.matchesCertificate(
+                certificate,
+                supply,
+                demand
+            );
+
+            this.logger.verbose(
+                `[Certificate #${certificate.id}] Result of matching with agreement for Demand #${
+                    agreement.agreement.demandId
+                } and Supply #${
+                    agreement.agreement.supplyId
+                } is ${result} with reason ${reasonsToString(reason)}`
+            );
 
             if (result) {
                 matchingAgreements.push(agreement);
             }
         }
 
-        if (matchingAgreements.length === 0) {
-            this.logger.info(`Found no matching agreement for certificate #${certificate.id}`);
-
-            return [];
-        }
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Found ${matchingAgreements.length} matching agreements`
+        );
 
         return this.strategy.executeForAgreements(matchingAgreements);
     }
@@ -207,14 +222,27 @@ export class Matcher {
 
         const demands = this.entityStore.getDemands().map(demand => new MatchableDemand(demand));
 
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Found ${(demands || []).length} demands`
+        );
+
         const matchingDemands: MatchableDemand[] = [];
 
         for (const demand of demands) {
-            const { result } = await demand.matchesCertificate(certificate, producingAsset);
+            const { result, reason } = await demand.matchesCertificate(certificate, producingAsset);
+            this.logger.verbose(
+                `[Certificate #${certificate.id}] Result of matching with demand ${
+                    demand.demand.id
+                } is ${result} with reason ${reasonsToString(reason)}`
+            );
             if (result) {
                 matchingDemands.push(demand);
             }
         }
+
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Found ${matchingDemands.length} matching demands`
+        );
 
         return matchingDemands;
     }
@@ -236,17 +264,30 @@ export class Matcher {
                 })
         );
 
+        this.logger.verbose(
+            `[Demand #${demand.id}] Found ${(certificates || []).length} certificates on-sale`
+        );
+
         const matchingCertificates: Certificate.ICertificate[] = [];
 
         for (const { certificate, producingAsset } of certificates) {
-            const { result } = await matchableDemand.matchesCertificate(
+            const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingAsset
+            );
+            this.logger.verbose(
+                `[Demand #${demand.id}] Result of matching with certificate ${
+                    certificate.id
+                } is ${result} with reason ${reasonsToString(reason)}`
             );
             if (result) {
                 matchingCertificates.push(certificate);
             }
         }
+
+        this.logger.verbose(
+            `[Demand #${demand.id}] Found ${matchingCertificates.length} matching certificates`
+        );
 
         return this.strategy.executeForCertificates(matchingCertificates);
     }
