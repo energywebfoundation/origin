@@ -159,7 +159,10 @@ export class SmartMeterReadingsChart extends React.Component<
         let currentIndex = 0;
 
         while (currentIndex < amount) {
-            const currentDate = chartEndDate.clone().subtract(currentIndex, measurementUnit);
+            const currentDate = chartEndDate
+                .clone()
+                .subtract(currentIndex, measurementUnit)
+                .tz(this.props.producingAsset.offChainProperties.timezone);
             let totalEnergy = 0;
 
             for (const reading of readings) {
