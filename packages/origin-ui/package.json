@@ -62,7 +62,7 @@
     "ts-loader": "6.2.0",
     "url-loader": "2.2.0",
     "web3": "1.2.1",
-    "webpack": "4.41.1",
+    "webpack": "4.41.2",
     "winston": "3.2.1",
     "yup": "0.27.0"
   },
@@ -84,7 +84,7 @@
     "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.15.1",
     "eslint-plugin-react": "7.16.0",
-    "fork-ts-checker-webpack-plugin": "1.5.0",
+    "fork-ts-checker-webpack-plugin": "1.5.1",
     "ganache-cli": "6.7.0",
     "html-webpack-plugin": "3.2.0",
     "jest": "24.9.0",
