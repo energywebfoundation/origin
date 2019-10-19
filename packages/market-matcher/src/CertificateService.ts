@@ -35,9 +35,15 @@ export class CertificateService {
             `[Certificate #${certificate.id}] Transferring to demand #${demand.id} owned by ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
 
-        const fillTx = await demand.fill(certificate.id);
+        try {
+            const fillTx = await demand.fill(certificate.id);
 
-        return fillTx.status;
+            return fillTx.status;
+        } catch (e) {
+            this.logger.error(`[Certificate #${certificate.id}] Transferring failed with ${e}`);
+        }
+
+        return false;
     }
 
     private async isAlreadyTransferred(certificate: Certificate.ICertificate, owner: string) {
