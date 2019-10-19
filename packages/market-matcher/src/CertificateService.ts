@@ -2,17 +2,13 @@ import { Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
-import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
 import * as Winston from 'winston';
-
-import { IEntityStore } from './EntityStore';
 
 // eslint-disable-next-line import/no-unresolved
 @injectable()
 export class CertificateService {
     constructor(
         @inject('config') private config: Configuration.Entity,
-        @inject('entityStore') private entityStore: IEntityStore,
         @inject('logger') private logger: Winston.Logger
     ) {}
 
@@ -20,7 +16,7 @@ export class CertificateService {
         certificate: Certificate.ICertificate,
         requiredEnergy: number
     ): Promise<boolean> {
-        this.logger.info(`Splitting certificate ${certificate.id} at ${requiredEnergy}`);
+        this.logger.info(`[Certificate #${certificate.id}] Splitting at ${requiredEnergy}`);
 
         const splitTx = await certificate.splitCertificate(requiredEnergy);
 
@@ -36,10 +32,10 @@ export class CertificateService {
         }
 
         this.logger.debug(
-            `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
+            `[Certificate #${certificate.id}] Transferring to demand #${demand.id} owned by ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
 
-        const fillTx: TransactionReceipt = await demand.fill(certificate.id);
+        const fillTx = await demand.fill(certificate.id);
 
         return fillTx.status;
     }
@@ -47,13 +43,9 @@ export class CertificateService {
     private async isAlreadyTransferred(certificate: Certificate.ICertificate, owner: string) {
         const syncedCertificate = await certificate.sync();
 
-        this.logger.verbose(
-            `isAlreadyTransferred: #${syncedCertificate.id} owned by ${syncedCertificate.owner}`
-        );
-
         if (certificate.owner.toLowerCase() === owner.toLowerCase()) {
             this.logger.info(
-                `Certificate #${syncedCertificate.id} was already transferred to ${owner}`
+                `[Certificate #${syncedCertificate.id}] Already transferred to request demand owner ${owner}`
             );
             return true;
         }

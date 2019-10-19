@@ -1,7 +1,7 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, Unit } from '@energyweb/utils-general';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { inject, injectable } from 'tsyringe';
@@ -46,39 +46,51 @@ export class Matcher {
 
     private async matchDemand(demand: Demand.Entity) {
         try {
-            this.logger.verbose(`Started processing demand #${demand.id}`);
+            this.logger.verbose(`[Demand #${demand.id}] Started matching with certificates`);
 
-            const matchingCertificates = await this.findMatchingCertificates(demand);
+            const certificates = await this.findMatchingCertificates(demand);
             let matched = false;
 
-            for (const matchingCertificate of matchingCertificates) {
-                const matchingResult = await this.executeMatching(matchingCertificate, demand);
+            for (const certificate of certificates) {
+                const matchingResult = await this.executeMatching(certificate, demand);
                 if (matchingResult) {
                     matched = true;
                     break;
                 }
             }
-            this.logger.verbose(`Completed processing demand #${demand.id} with result ${matched}`);
+            this.logger.verbose(
+                `[Demand #${demand.id}] Completed processing with result ${matched}`
+            );
 
             return matched;
         } catch (e) {
-            this.logger.error(`Processing demand #${demand.id} failed with ${e.message}`);
+            this.logger.error(`[Demand #${demand.id}] Processing failed with ${e.message}`);
         }
 
         return true;
     }
 
     private async executeMatching(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Executing matching with demand #${demand.id}`
+        );
+
         const { value: requiredEnergy } = await demand.missingEnergyInCurrentPeriod();
 
-        if (certificate.energy === requiredEnergy) {
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Missing energy from demand #${
+                demand.id
+            } is ${requiredEnergy / Unit.kWh}KWh`
+        );
+
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Available energy: ${certificate.energy / Unit.kWh}KWh`
+        );
+
+        if (certificate.energy <= requiredEnergy) {
             return this.certificateService.matchDemand(certificate, demand);
         }
-        if (requiredEnergy > 0 && certificate.energy > requiredEnergy) {
-            return this.certificateService.splitCertificate(certificate, requiredEnergy);
-        }
-
-        return false;
+        return this.certificateService.splitCertificate(certificate, requiredEnergy);
     }
 
     private async matchCertificate(certificate: Certificate.Entity) {
@@ -88,12 +100,14 @@ export class Matcher {
                 (await this.matchWithDemands(certificate));
 
             this.logger.verbose(
-                `Completed processing certificate #${certificate.id} with result ${matchingResult}`
+                `[Certificate #${certificate.id}] Completed processing with result ${matchingResult}`
             );
 
             return matchingResult;
         } catch (e) {
-            this.logger.error(`Processing certificate #${certificate.id} failed with ${e.message}`);
+            this.logger.error(
+                `[Certificate #${certificate.id}] Processing certificate failed with ${e.message}`
+            );
         }
 
         return false;
@@ -104,17 +118,11 @@ export class Matcher {
     }
 
     private async matchWithAgreements(certificate: Certificate.ICertificate) {
-        this.logger.info(
-            `Checking if certificate ${certificate.id} matches any of existing agreements...`
-        );
+        this.logger.info(`[Certificate #${certificate.id}] Started matching with agreements`);
 
         const matchingAgreements = await this.findMatchingAgreements(certificate);
 
         if (!matchingAgreements.length) {
-            this.logger.info(
-                `Couldn't find any matching agreements for certificate #${certificate.id}.`
-            );
-
             return false;
         }
 
@@ -135,22 +143,16 @@ export class Matcher {
     }
 
     private async matchWithDemands(certificate: Certificate.ICertificate) {
-        this.logger.info(
-            `Checking if certificate ${certificate.id} matches any of existing demands...`
-        );
+        this.logger.info(`[Certificate #${certificate.id}] Started matching with demands`);
 
         if (!this.isOnSale(certificate)) {
-            this.logger.verbose(`This certificate is not on sale #${certificate.id}`);
+            this.logger.verbose(`[Certificate #${certificate.id}] Not on sale. Skipping.`);
             return false;
         }
 
         const matchingDemands = await this.findMatchingDemands(certificate);
 
         if (!matchingDemands.length) {
-            this.logger.info(
-                `Couldn't find any matching demands for certificate #${certificate.id}.`
-            );
-
             return false;
         }
 
