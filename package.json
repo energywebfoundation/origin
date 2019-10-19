@@ -2,7 +2,7 @@
     "name": "root",
     "private": true,
     "dependencies": {
-        "dotenv": "8.1.0"
+        "dotenv": "8.2.0"
     },
     "devDependencies": {
         "@types/chai": "4.2.3",
