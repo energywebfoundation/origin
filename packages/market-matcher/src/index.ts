@@ -12,6 +12,8 @@ import { EntityStore, IEntityStore } from './EntityStore';
 import { IStrategy } from './strategy/IStrategy';
 import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
 import { CertificateService } from './CertificateService';
+import { DemandMatcher } from './DemandMatcher';
+import { CertificateMatcher } from './CertificateMatcher';
 
 export interface IMatcherConfig {
     web3Url: string;
@@ -59,6 +61,12 @@ export async function startMatcher(config: IMatcherConfig) {
                 useClass: CertificateService
             });
             container.register<Winston.Logger>('logger', { useValue: logger });
+            container.register<CertificateMatcher>('certificateMatcher', {
+                useClass: CertificateMatcher
+            });
+            container.register<DemandMatcher>('demandMatcher', {
+                useClass: DemandMatcher
+            });
 
             const matcher = container.resolve<Matcher>(Matcher);
             await matcher.init();

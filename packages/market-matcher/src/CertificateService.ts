@@ -1,11 +1,10 @@
 import { Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, Unit } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
 import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
 
-// eslint-disable-next-line import/no-unresolved
 @injectable()
 export class CertificateService {
     constructor(
@@ -13,7 +12,36 @@ export class CertificateService {
         @inject('logger') private logger: Winston.Logger
     ) {}
 
-    public async splitCertificate(
+    public async executeMatching(
+        certificate: Certificate.ICertificate,
+        demand: Demand.IDemand,
+        fromAgreement: boolean
+    ) {
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Executing matching with demand #${demand.id}`
+        );
+
+        const { value: requiredEnergy } = await demand.missingEnergyInCurrentPeriod();
+
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Missing energy from demand #${
+                demand.id
+            } is ${requiredEnergy / Unit.kWh}KWh`
+        );
+
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Available energy: ${certificate.energy / Unit.kWh}KWh`
+        );
+
+        if (certificate.energy <= requiredEnergy) {
+            return fromAgreement
+                ? this.matchDemandFromAgreement(certificate, demand)
+                : this.matchDemand(certificate, demand);
+        }
+        return this.splitCertificate(certificate, requiredEnergy);
+    }
+
+    private async splitCertificate(
         certificate: Certificate.ICertificate,
         requiredEnergy: number
     ): Promise<boolean> {
@@ -24,11 +52,11 @@ export class CertificateService {
         return splitTx.status;
     }
 
-    public async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
+    private async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
         return this.match(certificate, demand, demand.fill.bind(demand));
     }
 
-    public async matchDemandFromAgreement(
+    private async matchDemandFromAgreement(
         certificate: Certificate.ICertificate,
         demand: Demand.IDemand
     ) {
