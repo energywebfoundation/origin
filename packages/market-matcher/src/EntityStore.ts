@@ -64,6 +64,19 @@ export class EntityStore implements IEntityStore {
     public async init() {
         await this.syncExistingEvents();
         await this.subscribeToEvents();
+        await this.triggerExistingEvents();
+    }
+
+    private async triggerExistingEvents() {
+        const certificates = this.getCertificates();
+        for (const certificate of certificates) {
+            await this.triggerCertificateListeners(certificate);
+        }
+
+        const demands = this.getDemands();
+        for (const demand of demands) {
+            await this.triggerDemandListeners(demand);
+        }
     }
 
     private async triggerCertificateListeners(certificate: Certificate.Entity) {
@@ -71,7 +84,7 @@ export class EntityStore implements IEntityStore {
             try {
                 await listener(certificate);
             } catch (e) {
-                this.logger.debug(`Certificate listener failed to execute: ${e}`);
+                this.logger.error(`Certificate listener failed to execute: ${e}`);
             }
         }
     }
@@ -81,7 +94,7 @@ export class EntityStore implements IEntityStore {
             try {
                 await listener(demand);
             } catch (e) {
-                this.logger.debug(`Demand listener failed to execute: ${e}`);
+                this.logger.error(`Demand listener failed to execute: ${e}`);
             }
         }
     }
@@ -108,12 +121,10 @@ export class EntityStore implements IEntityStore {
         this.logger.verbose('* Getting all certificates');
         const certificateListLength = await Certificate.getCertificateListLength(this.config);
         for (let i = 0; i < certificateListLength; i++) {
-            const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
-
-            this.registerCertificate(newCertificate);
+            this.registerCertificate(
+                await new Certificate.Entity(i.toString(), this.config).sync()
+            );
         }
-
-        // TODO: trigger existing certificates and demands
     }
 
     private async subscribeToEvents() {
@@ -238,12 +249,12 @@ export class EntityStore implements IEntityStore {
 
     private registerDemand(demand: Demand.Entity) {
         if (this.demands.has(demand.id)) {
-            this.logger.error(`Demand with ID ${demand.id} has already been registered.`);
+            this.logger.error(`[Demand ${demand.id}] Already registered`);
             return;
         }
 
         this.demands.set(demand.id, demand);
-        this.logger.verbose(`Registered new demand #${demand.id}`);
+        this.logger.verbose(`[Demand ${demand.id}] Registered`);
     }
 
     private updateDemand(demand: Demand.Entity) {
@@ -268,21 +279,21 @@ export class EntityStore implements IEntityStore {
 
     private registerAgreement(agreement: Agreement.Entity) {
         if (this.agreements.has(agreement.id)) {
-            this.logger.error(`Agreement with ID ${agreement.id} has already been registered.`);
+            this.logger.error(`[Agreement ${agreement.id}] Already registered`);
             return;
         }
 
         this.agreements.set(agreement.id, agreement);
-        this.logger.verbose(`Registered new agreement #${agreement.id}`);
+        this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
     }
 
     private registerCertificate(certificate: Certificate.Entity) {
         if (this.certificates.has(certificate.id)) {
-            this.logger.error(`Certificate with ID ${certificate.id} has already been registered.`);
+            this.logger.error(`[Certificate ${certificate.id}] Already registered`);
             return;
         }
 
         this.certificates.set(certificate.id, certificate);
-        this.logger.verbose(`Registered new certificate #${certificate.id}`);
+        this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
     }
 }
