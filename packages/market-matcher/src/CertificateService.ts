@@ -3,6 +3,7 @@ import { Certificate } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
+import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
 
 // eslint-disable-next-line import/no-unresolved
 @injectable()
@@ -24,6 +25,21 @@ export class CertificateService {
     }
 
     public async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
+        return this.match(certificate, demand, demand.fill.bind(demand));
+    }
+
+    public async matchDemandFromAgreement(
+        certificate: Certificate.ICertificate,
+        demand: Demand.IDemand
+    ) {
+        return this.match(certificate, demand, demand.fillAgreement.bind(demand));
+    }
+
+    private async match(
+        certificate: Certificate.ICertificate,
+        demand: Demand.IDemand,
+        match: (entityId: string) => Promise<TransactionReceipt>
+    ) {
         if (
             (await this.isAlreadyTransferred(certificate, demand.demandOwner)) ||
             demand.status !== Demand.DemandStatus.ACTIVE
@@ -36,7 +52,7 @@ export class CertificateService {
         );
 
         try {
-            const fillTx = await demand.fill(certificate.id);
+            const fillTx = await match(certificate.id);
 
             return fillTx.status;
         } catch (e) {

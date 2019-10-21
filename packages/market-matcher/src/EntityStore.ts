@@ -249,7 +249,7 @@ export class EntityStore implements IEntityStore {
 
     private registerDemand(demand: Demand.Entity) {
         if (this.demands.has(demand.id)) {
-            this.logger.error(`[Demand ${demand.id}] Already registered`);
+            this.logger.verbose(`[Demand ${demand.id}] Already registered`);
             return;
         }
 
@@ -269,7 +269,7 @@ export class EntityStore implements IEntityStore {
 
     private registerSupply(supply: Supply.Entity) {
         if (this.supplies.has(supply.id)) {
-            this.logger.error(`Supply with ID ${supply.id} has already been registered.`);
+            this.logger.verbose(`Supply with ID ${supply.id} has already been registered.`);
             return;
         }
 
@@ -279,7 +279,7 @@ export class EntityStore implements IEntityStore {
 
     private registerAgreement(agreement: Agreement.Entity) {
         if (this.agreements.has(agreement.id)) {
-            this.logger.error(`[Agreement ${agreement.id}] Already registered`);
+            this.logger.verbose(`[Agreement ${agreement.id}] Already registered`);
             return;
         }
 
@@ -289,7 +289,7 @@ export class EntityStore implements IEntityStore {
 
     private registerCertificate(certificate: Certificate.Entity) {
         if (this.certificates.has(certificate.id)) {
-            this.logger.error(`[Certificate ${certificate.id}] Already registered`);
+            this.logger.verbose(`[Certificate ${certificate.id}] Already registered`);
             return;
         }
 
