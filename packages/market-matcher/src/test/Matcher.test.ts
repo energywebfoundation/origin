@@ -7,7 +7,11 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-registry';
+import {
+    AssetProducingRegistryLogic,
+    ProducingAsset,
+    AssetConsumingRegistryLogic
+} from '@energyweb/asset-registry';
 import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
@@ -60,18 +64,7 @@ describe('Test StrategyBasedMatcher', async () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     console.log(`acc-deployment: ${accountDeployment}`);
-    let conf: Configuration.Entity;
-    let userLogic: UserLogic;
-    let assetProducingRegistry: AssetProducingRegistryLogic;
-    let marketLogic: MarketLogic;
-    let certificateLogic: CertificateLogic;
 
-    let userContractLookupAddr: string;
-    let assetContractLookupAddr: string;
-    let originContractLookupAddr: string;
-    let marketContractLookupAddr: string;
-
-    let asset: ProducingAsset.Entity;
     let smartMeterRead = 0;
 
     const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
@@ -96,162 +89,216 @@ describe('Test StrategyBasedMatcher', async () => {
         }
     };
 
+    const deployUserRegistry = async () => {
+        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        const userContractLookupAddress = (userContracts as any).UserContractLookup;
+
+        const userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountDeployment,
+            'admin',
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.setRoles(
+            accountDeployment,
+            buildRights([
+                Role.UserAdmin,
+                Role.AssetAdmin,
+                Role.AssetManager,
+                Role.Trader,
+                Role.Matcher
+            ]),
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            accountTrader,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
+            privateKey: privateKeyDeployment
+        });
+
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            assetOwnerAddress,
+            'assetOwner',
+            { privateKey: privateKeyDeployment }
+        );
+        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
+            privateKey: privateKeyDeployment
+        });
+
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            issuerAccount,
+            'issuer',
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
+            privateKey: privateKeyDeployment
+        });
+
+        return { userLogic, userContractLookupAddress };
+    };
+
+    const deployAssetRegistry = async (userContractLookupAddress: string) => {
+        const assetRegistryContracts = await migrateAssetRegistryContracts(
+            web3,
+            userContractLookupAddress,
+            privateKeyDeployment
+        );
+        const assetProducingRegistry = new AssetProducingRegistryLogic(
+            web3 as any,
+            (assetRegistryContracts as any).AssetProducingRegistryLogic
+        );
+        const assetContractLookupAddress = (assetRegistryContracts as any).AssetContractLookup;
+
+        return { assetProducingRegistry, assetContractLookupAddress };
+    };
+
+    const deployCertificateRegistry = async (assetContractLookupAddress: string) => {
+        const certificateRegistryContracts = await migrateCertificateRegistryContracts(
+            web3,
+            assetContractLookupAddress,
+            privateKeyDeployment
+        );
+        const certificateLogic = new CertificateLogic(
+            web3 as any,
+            (certificateRegistryContracts as any).CertificateLogic
+        );
+
+        const originContractLookupAddress = (certificateRegistryContracts as any)
+            .OriginContractLookup;
+
+        return { certificateLogic, originContractLookupAddress };
+    };
+
+    const deployMarket = async (
+        assetContractLookupAddress: string,
+        originContractLookupAddress: string,
+        userLogic: UserLogic
+    ) => {
+        const deployedContracts = await migrateMarketRegistryContracts(
+            web3 as any,
+            assetContractLookupAddress,
+            originContractLookupAddress,
+            privateKeyDeployment
+        );
+
+        const marketLogicAddress: string = (deployedContracts as any).MarketLogic;
+
+        const marketLogic = new MarketLogic(web3, marketLogicAddress);
+        const marketContractLookupAddress = (deployedContracts as any).MarketContractLookup;
+
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            marketLogicAddress,
+            'matcher',
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.setRoles(marketLogicAddress, buildRights([Role.Matcher]), {
+            privateKey: privateKeyDeployment
+        });
+
+        return { marketLogic, marketContractLookupAddress };
+    };
+
+    const deploy = async () => {
+        const { userLogic, userContractLookupAddress } = await deployUserRegistry();
+        const { assetProducingRegistry, assetContractLookupAddress } = await deployAssetRegistry(
+            userContractLookupAddress
+        );
+        const { certificateLogic, originContractLookupAddress } = await deployCertificateRegistry(
+            assetContractLookupAddress
+        );
+
+        const { marketLogic } = await deployMarket(
+            assetContractLookupAddress,
+            originContractLookupAddress,
+            userLogic
+        );
+
+        return {
+            blockchainProperties: {
+                activeUser: {
+                    address: accountTrader,
+                    privateKey: traderPK
+                },
+                userLogicInstance: userLogic,
+                producingAssetLogicInstance: assetProducingRegistry,
+                marketLogicInstance: marketLogic,
+                certificateLogicInstance: certificateLogic,
+                web3
+            },
+            offChainDataSource: {
+                baseUrl: process.env.BACKEND_URL
+            },
+            logger
+        } as Configuration.Entity<
+            MarketLogic,
+            AssetProducingRegistryLogic,
+            AssetConsumingRegistryLogic,
+            CertificateLogic,
+            UserLogic
+        >;
+    };
+
+    const deployDemand = async (config: Configuration.Entity) => {
+        const traderConfig = changeUser(config, {
+            address: accountTrader,
+            privateKey: traderPK
+        });
+
+        const demandOffChainProps: Demand.IDemandOffChainProperties = {
+            timeFrame: TimeFrame.hourly,
+            maxPricePerMwh: 150,
+            currency: Currency.USD,
+            location: ['Thailand;Central;Nakhon Pathom'],
+            assetType: ['Solar'],
+            minCO2Offset: 10,
+            otherGreenAttributes: 'string',
+            typeOfPublicSupport: 'string',
+            energyPerTimeFrame: 1 * Unit.MWh,
+            registryCompliance: Compliance.EEC,
+            startTime: moment().unix(),
+            endTime: moment()
+                .add(1, 'hour')
+                .unix()
+        };
+
+        await Demand.createDemand(demandOffChainProps, traderConfig);
+
+        return Demand.getDemandListLength(traderConfig);
+    };
+
+    const deployAsset = (config: Configuration.Entity) => {
+        
+    }
+
+    const changeUser = (
+        config: Configuration.Entity,
+        activeUser: { address: string; privateKey: string }
+    ) =>
+        ({
+            ...config,
+            blockchainProperties: { ...config.blockchainProperties, activeUser }
+        } as Configuration.Entity);
+
     describe('Setup', () => {
-        it('should deploy user-registry contracts', async () => {
-            const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-            userContractLookupAddr = (userContracts as any).UserContractLookup;
-
-            userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
-            await userLogic.createUser(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                accountDeployment,
-                'admin',
-                { privateKey: privateKeyDeployment }
-            );
-
-            await userLogic.setRoles(
-                accountDeployment,
-                buildRights([
-                    Role.UserAdmin,
-                    Role.AssetAdmin,
-                    Role.AssetManager,
-                    Role.Trader,
-                    Role.Matcher
-                ]),
-                { privateKey: privateKeyDeployment }
-            );
-
-            await userLogic.createUser(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                accountTrader,
-                'trader',
-                { privateKey: privateKeyDeployment }
-            );
-
-            await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
-                privateKey: privateKeyDeployment
-            });
-
-            await userLogic.createUser(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                assetOwnerAddress,
-                'assetOwner',
-                { privateKey: privateKeyDeployment }
-            );
-            await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
-                privateKey: privateKeyDeployment
-            });
-
-            await userLogic.createUser(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                issuerAccount,
-                'issuer',
-                { privateKey: privateKeyDeployment }
-            );
-
-            await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
-                privateKey: privateKeyDeployment
-            });
-        });
-
-        it('should deploy asset-registry contracts', async () => {
-            const deployedContracts = await migrateAssetRegistryContracts(
-                web3 as any,
-                userContractLookupAddr,
-                privateKeyDeployment
-            );
-            assetProducingRegistry = new AssetProducingRegistryLogic(
-                web3 as any,
-                (deployedContracts as any).AssetProducingRegistryLogic
-            );
-            assetContractLookupAddr = (deployedContracts as any).AssetContractLookup;
-        });
-
-        it('should deploy origin (issuer) contracts', async () => {
-            const deployedContracts = await migrateCertificateRegistryContracts(
-                web3 as any,
-                assetContractLookupAddr,
-                privateKeyDeployment
-            );
-            certificateLogic = new CertificateLogic(
-                web3 as any,
-                (deployedContracts as any).CertificateLogic
-            );
-            originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
-        });
-
-        it('should deploy market-registry contracts', async () => {
-            const deployedContracts = await migrateMarketRegistryContracts(
-                web3 as any,
-                assetContractLookupAddr,
-                originContractLookupAddr,
-                privateKeyDeployment
-            );
-
-            const marketLogicAddress: string = (deployedContracts as any).MarketLogic;
-
-            marketLogic = new MarketLogic(web3, marketLogicAddress);
-            marketContractLookupAddr = (deployedContracts as any).MarketContractLookup;
-
-            await userLogic.createUser(
-                'propertiesDocumentHash',
-                'documentDBURL',
-                marketLogicAddress,
-                'matcher',
-                { privateKey: privateKeyDeployment }
-            );
-
-            await userLogic.setRoles(marketLogicAddress, buildRights([Role.Matcher]), {
-                privateKey: privateKeyDeployment
-            });
-
-            matcherConfig.marketContractLookupAddress = marketContractLookupAddr;
-        });
-
-        it('should create a demand', async () => {
-            conf = {
-                blockchainProperties: {
-                    activeUser: {
-                        address: accountTrader,
-                        privateKey: traderPK
-                    },
-                    userLogicInstance: userLogic,
-                    producingAssetLogicInstance: assetProducingRegistry,
-                    marketLogicInstance: marketLogic,
-                    certificateLogicInstance: certificateLogic,
-                    web3
-                },
-                offChainDataSource: {
-                    baseUrl: process.env.BACKEND_URL
-                },
-                logger
-            };
-
-            const demandOffChainProps: Demand.IDemandOffChainProperties = {
-                timeFrame: TimeFrame.hourly,
-                maxPricePerMwh: 150,
-                currency: Currency.USD,
-                location: ['Thailand;Central;Nakhon Pathom'],
-                assetType: ['Solar'],
-                minCO2Offset: 10,
-                otherGreenAttributes: 'string',
-                typeOfPublicSupport: 'string',
-                energyPerTimeFrame: 1 * Unit.MWh,
-                registryCompliance: Compliance.EEC,
-                startTime: moment().unix(),
-                endTime: moment()
-                    .add(1, 'hour')
-                    .unix()
-            };
-
-            await Demand.createDemand(demandOffChainProps, conf);
-            assert.equal(await Demand.getDemandListLength(conf), 1);
-        });
-
+        
         it('should onboard an asset', async () => {
             conf.blockchainProperties.activeUser = {
                 address: accountDeployment,
@@ -327,6 +374,21 @@ describe('Test StrategyBasedMatcher', async () => {
     });
 
     describe('Certificate -> Demand matching tests', () => {
+        let config: Configuration.Entity<
+            MarketLogic,
+            AssetProducingRegistryLogic,
+            AssetConsumingRegistryLogic,
+            CertificateLogic,
+            UserLogic
+        >;
+        let demandId: string;
+
+        before(async () => {
+            config = await deploy();
+            demandId = (await deployDemand(config)).toString();
+            assetId = 
+        });
+
         it('creates a smart meter reading', async () => {
             conf.blockchainProperties.activeUser = {
                 address: assetSmartMeter,
