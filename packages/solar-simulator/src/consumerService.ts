@@ -125,8 +125,8 @@ async function getEnergyMeasurements(
         for (const asset of CONFIG.assets) {
             const energyMeasurements: IEnergyMeasurement[] = await getEnergyMeasurements(
                 asset.id,
-                previousTime,
-                now
+                previousTime.tz(asset.timezone),
+                now.tz(asset.timezone)
             );
 
             for (const energyMeasurement of energyMeasurements) {
@@ -137,7 +137,7 @@ async function getEnergyMeasurements(
                 const roundedEnergy: number = Math.round(energyMeasurement.energy);
 
                 const previousRead: number = await getProducingAssetSmartMeterRead(asset.id);
-                const time = moment(energyMeasurement.measurementTime);
+                const time = moment(energyMeasurement.measurementTime).tz(asset.timezone);
 
                 await saveProducingAssetSmartMeterRead(
                     previousRead + roundedEnergy,

@@ -36,6 +36,13 @@ export class MandrillEmailAdapter implements IEmailAdapter {
 
         const result: any = await this.sendMandrill(message);
 
+        if (result === null) {
+            return {
+                success: true,
+                error: null
+            };
+        }
+
         return {
             success: result[0].status === 'sent',
             error: result[0].reject_reason ? `Mandrill Error: ${JSON.stringify(result[0])}` : null
