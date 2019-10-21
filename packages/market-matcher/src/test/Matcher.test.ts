@@ -11,7 +11,15 @@ import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-re
 import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { Compliance, Configuration, Currency, TimeFrame, Unit } from '@energyweb/utils-general';
+import {
+    Compliance,
+    Configuration,
+    Currency,
+    TimeFrame,
+    Unit,
+    ContractEventHandler,
+    EventHandlerManager
+} from '@energyweb/utils-general';
 
 import { startMatcher, IMatcherConfig } from '..';
 import { logger } from '../Logger';
@@ -530,6 +538,8 @@ describe('Test StrategyBasedMatcher', async () => {
         });
 
         it('should create a demand', async () => {
+            await sleep(5000); // wait for matcher to try to match published certificate
+
             conf.blockchainProperties.activeUser = {
                 address: accountTrader,
                 privateKey: traderPK
@@ -556,23 +566,21 @@ describe('Test StrategyBasedMatcher', async () => {
             assert.equal(await Demand.getDemandListLength(conf), 2);
         });
 
-        it('demand should be matched with existing certificate', async () => {
-            const demand = await new Demand.Entity('1', conf).sync();
+        it('demand should be matched with existing certificate', done => {
+            const marketContractEventHandler = new ContractEventHandler(marketLogic, 0);
 
-            await waitForConditionAndAssert(
-                async () => {
-                    const certificate = await new Certificate.Entity(certificateId, conf).sync();
+            marketContractEventHandler.onEvent('DemandPartiallyFilled', async (event: any) => {
+                const { _demandId, _entityId, _amount } = event.returnValues;
+                if (_demandId === '1') {
+                    assert.equal(_entityId, certificateId);
+                    assert.equal(_amount, 1000 * Unit.kWh);
+                    done();
+                }
+            });
 
-                    return certificate.owner === demand.demandOwner;
-                },
-                async () => {
-                    const certificate = await new Certificate.Entity(certificateId, conf).sync();
-
-                    assert.equal(certificate.owner, demand.demandOwner);
-                },
-                1000,
-                30000
-            );
-        });
+            const eventHandlerManager = new EventHandlerManager(1000, conf);
+            eventHandlerManager.registerEventHandler(marketContractEventHandler);
+            eventHandlerManager.start();
+        }).timeout(10000);
     });
 });

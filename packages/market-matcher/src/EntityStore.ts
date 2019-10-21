@@ -110,8 +110,10 @@ export class EntityStore implements IEntityStore {
         for (let i = 0; i < certificateListLength; i++) {
             const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
 
-            await this.triggerCertificateListeners(newCertificate);
+            this.registerCertificate(newCertificate);
         }
+
+        // TODO: trigger existing certificates and demands
     }
 
     private async subscribeToEvents() {
@@ -129,6 +131,7 @@ export class EntityStore implements IEntityStore {
                 .waitAndRetry(10)
                 .executeForPromise(() => new Certificate.Entity(_entityId, this.config).sync());
 
+            this.registerCertificate(newCertificate);
             await this.triggerCertificateListeners(newCertificate);
         });
 
@@ -143,6 +146,7 @@ export class EntityStore implements IEntityStore {
                     new Certificate.Entity(event.returnValues._certificateId, this.config).sync()
                 );
 
+            this.registerCertificate(newCertificate);
             await this.triggerCertificateListeners(newCertificate);
         });
 
@@ -160,6 +164,9 @@ export class EntityStore implements IEntityStore {
             const secondChild = await polly()
                 .waitAndRetry(10)
                 .executeForPromise(() => new Certificate.Entity(_childTwo, this.config).sync());
+
+            this.registerCertificate(firstChild);
+            this.registerCertificate(secondChild);
 
             await this.triggerCertificateListeners(firstChild);
             await this.triggerCertificateListeners(secondChild);
@@ -241,9 +248,7 @@ export class EntityStore implements IEntityStore {
 
     private updateDemand(demand: Demand.Entity) {
         if (!this.demands.has(demand.id)) {
-            this.logger.error(
-                `Unable to update demand ${demand.id} because it hasn't been registered.`
-            );
+            this.registerDemand(demand);
             return;
         }
 
@@ -269,5 +274,15 @@ export class EntityStore implements IEntityStore {
 
         this.agreements.set(agreement.id, agreement);
         this.logger.verbose(`Registered new agreement #${agreement.id}`);
+    }
+
+    private registerCertificate(certificate: Certificate.Entity) {
+        if (this.certificates.has(certificate.id)) {
+            this.logger.error(`Certificate with ID ${certificate.id} has already been registered.`);
+            return;
+        }
+
+        this.certificates.set(certificate.id, certificate);
+        this.logger.verbose(`Registered new certificate #${certificate.id}`);
     }
 }
