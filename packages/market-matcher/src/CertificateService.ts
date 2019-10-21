@@ -31,7 +31,7 @@ export class CertificateService {
             return false;
         }
 
-        this.logger.debug(
+        this.logger.verbose(
             `[Certificate #${certificate.id}] Transferring to demand #${demand.id} owned by ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
 
@@ -50,7 +50,7 @@ export class CertificateService {
         const syncedCertificate = await certificate.sync();
 
         if (certificate.owner.toLowerCase() === owner.toLowerCase()) {
-            this.logger.info(
+            this.logger.verbose(
                 `[Certificate #${syncedCertificate.id}] Already transferred to request demand owner ${owner}`
             );
             return true;

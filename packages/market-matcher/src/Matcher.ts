@@ -58,9 +58,7 @@ export class Matcher {
                     break;
                 }
             }
-            this.logger.verbose(
-                `[Demand #${demand.id}] Completed processing with result ${matched}`
-            );
+            this.logger.info(`[Demand #${demand.id}] Completed processing with result ${matched}`);
 
             return matched;
         } catch (e) {
@@ -99,7 +97,7 @@ export class Matcher {
                 (await this.matchWithAgreements(certificate)) ||
                 (await this.matchWithDemands(certificate));
 
-            this.logger.verbose(
+            this.logger.info(
                 `[Certificate #${certificate.id}] Completed processing with result ${matchingResult}`
             );
 

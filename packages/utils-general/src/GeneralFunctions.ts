@@ -104,9 +104,10 @@ export class GeneralFunctions {
                 (e: any, r: any) => {
                     if (e) {
                         reject(e);
+                    } else if (r.error) {
+                        reject(r.error);
                     } else {
                         const outputResult = r.result.output;
-
                         const shorterAsciiCode = `0x${outputResult.substr(10)}`;
 
                         if (r.result.output === '0x') {
@@ -142,16 +143,20 @@ export class GeneralFunctions {
             });
         } catch (ex) {
             if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                throw new Error(ex);
+                throw ex;
             }
 
-            const errorResult = await this.getErrorMessage(this.web3, {
-                from: parameters.from,
-                to: this.web3Contract.options.address,
-                data: parameters ? parameters.data : '',
-                gas: this.web3.utils.toHex(7000000)
-            });
-            throw new Error(errorResult);
+            try {
+                const errorResult = await this.getErrorMessage(this.web3, {
+                    from: parameters.from,
+                    to: this.web3Contract.options.address,
+                    data: parameters ? parameters.data : '',
+                    gas: this.web3.utils.toHex(7000000)
+                });
+                throw new Error(errorResult);
+            } catch (e) {
+                throw ex;
+            }
         }
 
         return {
