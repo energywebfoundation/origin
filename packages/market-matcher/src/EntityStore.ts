@@ -1,6 +1,11 @@
 import { Agreement, Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
+import {
+    Configuration,
+    ContractEventHandler,
+    EventHandlerManager,
+    Currency
+} from '@energyweb/utils-general';
 import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
 import polly from 'polly-js';
@@ -134,13 +139,28 @@ export class EntityStore implements IEntityStore {
             currentBlockNumber
         );
 
+        const fetchCertificate = async (certificateId: string) => {
+            const certificate = await new Certificate.Entity(certificateId, this.config).sync();
+            const { offChainSettlementOptions } = certificate;
+
+            if (
+                certificate.forSale &&
+                offChainSettlementOptions.currency === Currency.NONE &&
+                offChainSettlementOptions.price === 0
+            ) {
+                throw new Error(`[Certificate #${certificateId}] Missing settlement options`);
+            }
+
+            return certificate;
+        };
+
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
             const { _entityId } = event.returnValues;
             this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
 
             const newCertificate = await polly()
                 .waitAndRetry(10)
-                .executeForPromise(() => new Certificate.Entity(_entityId, this.config).sync());
+                .executeForPromise(() => fetchCertificate(_entityId));
 
             this.registerCertificate(newCertificate);
             await this.triggerCertificateListeners(newCertificate);
@@ -153,9 +173,7 @@ export class EntityStore implements IEntityStore {
 
             const newCertificate = await polly()
                 .waitAndRetry(10)
-                .executeForPromise(() =>
-                    new Certificate.Entity(event.returnValues._certificateId, this.config).sync()
-                );
+                .executeForPromise(() => fetchCertificate(event.returnValues._certificateId));
 
             this.registerCertificate(newCertificate);
             await this.triggerCertificateListeners(newCertificate);
@@ -170,11 +188,11 @@ export class EntityStore implements IEntityStore {
 
             const firstChild = await polly()
                 .waitAndRetry(10)
-                .executeForPromise(() => new Certificate.Entity(_childOne, this.config).sync());
+                .executeForPromise(() => fetchCertificate(_childOne));
 
             const secondChild = await polly()
                 .waitAndRetry(10)
-                .executeForPromise(() => new Certificate.Entity(_childTwo, this.config).sync());
+                .executeForPromise(() => fetchCertificate(_childTwo));
 
             this.registerCertificate(firstChild);
             this.registerCertificate(secondChild);
