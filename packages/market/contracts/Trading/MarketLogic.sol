@@ -96,9 +96,7 @@ contract MarketLogic is AgreementLogic {
         address originLogicRegistry = originContractLookup.originLogicRegistry();
 
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(originLogicRegistry).getTradableEntity(_entityId);
-        CertificateLogic(originLogicRegistry).transferFrom(
-            te.owner, demand.demandOwner, _entityId
-        );
+        CertificateLogic(originLogicRegistry).buyCertificateFor(_entityId, demand.demandOwner);
 
         emit DemandPartiallyFilled(_demandId, _entityId, te.energy);
     }

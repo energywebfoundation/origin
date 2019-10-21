@@ -12,7 +12,7 @@ describe('Event Service Tests', async () => {
         path: '.env.test'
     });
 
-    let demo: any;
+    let demo: Demo;
 
     before(async () => {
         demo = new Demo(process.env.WEB3, process.env.DEPLOY_KEY);
