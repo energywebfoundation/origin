@@ -3,6 +3,7 @@ import { Certificate } from '@energyweb/origin';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
+import polly from 'polly-js';
 
 export interface IEntityStore {
     init(): Promise<void>;
@@ -30,8 +31,6 @@ export class EntityStore implements IEntityStore {
     private certificateListeners: Listener<Certificate.Entity>[] = [];
 
     private demandListeners: Listener<Demand.Entity>[] = [];
-
-    private sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     constructor(
         @inject('config') private config: Configuration.Entity,
@@ -65,6 +64,19 @@ export class EntityStore implements IEntityStore {
     public async init() {
         await this.syncExistingEvents();
         await this.subscribeToEvents();
+        await this.triggerExistingEvents();
+    }
+
+    private async triggerExistingEvents() {
+        const certificates = this.getCertificates();
+        for (const certificate of certificates) {
+            await this.triggerCertificateListeners(certificate);
+        }
+
+        const demands = this.getDemands();
+        for (const demand of demands) {
+            await this.triggerDemandListeners(demand);
+        }
     }
 
     private async triggerCertificateListeners(certificate: Certificate.Entity) {
@@ -72,7 +84,7 @@ export class EntityStore implements IEntityStore {
             try {
                 await listener(certificate);
             } catch (e) {
-                this.logger.debug(`Certificate listener failed to execute: ${e}`);
+                this.logger.error(`Certificate listener failed to execute: ${e}`);
             }
         }
     }
@@ -82,7 +94,7 @@ export class EntityStore implements IEntityStore {
             try {
                 await listener(demand);
             } catch (e) {
-                this.logger.debug(`Demand listener failed to execute: ${e}`);
+                this.logger.error(`Demand listener failed to execute: ${e}`);
             }
         }
     }
@@ -109,9 +121,9 @@ export class EntityStore implements IEntityStore {
         this.logger.verbose('* Getting all certificates');
         const certificateListLength = await Certificate.getCertificateListLength(this.config);
         for (let i = 0; i < certificateListLength; i++) {
-            const newCertificate = await new Certificate.Entity(i.toString(), this.config).sync();
-
-            await this.triggerCertificateListeners(newCertificate);
+            this.registerCertificate(
+                await new Certificate.Entity(i.toString(), this.config).sync()
+            );
         }
     }
 
@@ -126,10 +138,11 @@ export class EntityStore implements IEntityStore {
             const { _entityId } = event.returnValues;
             this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
 
-            await this.sleep(5000);
+            const newCertificate = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() => new Certificate.Entity(_entityId, this.config).sync());
 
-            const newCertificate = await new Certificate.Entity(_entityId, this.config).sync();
-
+            this.registerCertificate(newCertificate);
             await this.triggerCertificateListeners(newCertificate);
         });
 
@@ -138,13 +151,13 @@ export class EntityStore implements IEntityStore {
                 `Event: LogCreatedCertificate certificate #${event.returnValues._certificateId}`
             );
 
-            await this.sleep(5000);
+            const newCertificate = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() =>
+                    new Certificate.Entity(event.returnValues._certificateId, this.config).sync()
+                );
 
-            const newCertificate = await new Certificate.Entity(
-                event.returnValues._certificateId,
-                this.config
-            ).sync();
-
+            this.registerCertificate(newCertificate);
             await this.triggerCertificateListeners(newCertificate);
         });
 
@@ -155,10 +168,16 @@ export class EntityStore implements IEntityStore {
                 `Event: LogCertificateSplit certificate #${_certificateId} children=[${_childOne}, ${_childTwo}]`
             );
 
-            await this.sleep(5000);
+            const firstChild = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() => new Certificate.Entity(_childOne, this.config).sync());
 
-            const firstChild = await new Certificate.Entity(_childOne, this.config).sync();
-            const secondChild = await new Certificate.Entity(_childTwo, this.config).sync();
+            const secondChild = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() => new Certificate.Entity(_childTwo, this.config).sync());
+
+            this.registerCertificate(firstChild);
+            this.registerCertificate(secondChild);
 
             await this.triggerCertificateListeners(firstChild);
             await this.triggerCertificateListeners(secondChild);
@@ -172,12 +191,11 @@ export class EntityStore implements IEntityStore {
         marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
             this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
 
-            await this.sleep(5000);
-
-            const newDemand = await new Demand.Entity(
-                event.returnValues._demandId,
-                this.config
-            ).sync();
+            const newDemand = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() =>
+                    new Demand.Entity(event.returnValues._demandId, this.config).sync()
+                );
 
             this.registerDemand(newDemand);
             await this.triggerDemandListeners(newDemand);
@@ -186,12 +204,11 @@ export class EntityStore implements IEntityStore {
         marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
             this.logger.verbose(`Event: createdNewSupply supply: ${event.returnValues._supplyId}`);
 
-            await this.sleep(5000);
-
-            const newSupply = await new Supply.Entity(
-                event.returnValues._supplyId,
-                this.config
-            ).sync();
+            const newSupply = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() =>
+                    new Supply.Entity(event.returnValues._supplyId, this.config).sync()
+                );
 
             this.registerSupply(newSupply);
         });
@@ -201,12 +218,11 @@ export class EntityStore implements IEntityStore {
                 `Event: DemandStatusChanged demand: ${event.returnValues._demandId}`
             );
 
-            await this.sleep(5000);
-
-            const newDemand = await new Demand.Entity(
-                event.returnValues._demandId,
-                this.config
-            ).sync();
+            const newDemand = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() =>
+                    new Demand.Entity(event.returnValues._demandId, this.config).sync()
+                );
 
             this.updateDemand(newDemand);
         });
@@ -216,12 +232,11 @@ export class EntityStore implements IEntityStore {
                 `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
             );
 
-            await this.sleep(5000);
-
-            const newAgreement = await new Agreement.Entity(
-                event.returnValues._agreementId,
-                this.config
-            ).sync();
+            const newAgreement = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() =>
+                    new Agreement.Entity(event.returnValues._agreementId, this.config).sync()
+                );
 
             this.registerAgreement(newAgreement);
         });
@@ -234,19 +249,17 @@ export class EntityStore implements IEntityStore {
 
     private registerDemand(demand: Demand.Entity) {
         if (this.demands.has(demand.id)) {
-            this.logger.error(`Demand with ID ${demand.id} has already been registered.`);
+            this.logger.error(`[Demand ${demand.id}] Already registered`);
             return;
         }
 
         this.demands.set(demand.id, demand);
-        this.logger.verbose(`Registered new demand #${demand.id}`);
+        this.logger.verbose(`[Demand ${demand.id}] Registered`);
     }
 
     private updateDemand(demand: Demand.Entity) {
         if (!this.demands.has(demand.id)) {
-            this.logger.error(
-                `Unable to update demand ${demand.id} because it hasn't been registered.`
-            );
+            this.registerDemand(demand);
             return;
         }
 
@@ -266,11 +279,21 @@ export class EntityStore implements IEntityStore {
 
     private registerAgreement(agreement: Agreement.Entity) {
         if (this.agreements.has(agreement.id)) {
-            this.logger.error(`Agreement with ID ${agreement.id} has already been registered.`);
+            this.logger.error(`[Agreement ${agreement.id}] Already registered`);
             return;
         }
 
         this.agreements.set(agreement.id, agreement);
-        this.logger.verbose(`Registered new agreement #${agreement.id}`);
+        this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
+    }
+
+    private registerCertificate(certificate: Certificate.Entity) {
+        if (this.certificates.has(certificate.id)) {
+            this.logger.error(`[Certificate ${certificate.id}] Already registered`);
+            return;
+        }
+
+        this.certificates.set(certificate.id, certificate);
+        this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
     }
 }
