@@ -106,8 +106,8 @@ async function getEnergyMeasurements(
     endTime: Moment
 ): Promise<IEnergyMeasurement[]> {
     const url = `${ENERGY_API_BASE_URL}/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
-        startTime.format()
-    )}&timeEnd=${encodeURIComponent(endTime.format())}`;
+        startTime.unix()
+    )}&timeEnd=${encodeURIComponent(endTime.unix())}`;
 
     console.log(`GET ${url}`);
 
@@ -125,8 +125,8 @@ async function getEnergyMeasurements(
         for (const asset of CONFIG.assets) {
             const energyMeasurements: IEnergyMeasurement[] = await getEnergyMeasurements(
                 asset.id,
-                previousTime.tz(asset.timezone),
-                now.tz(asset.timezone)
+                previousTime,
+                now
             );
 
             for (const energyMeasurement of energyMeasurements) {
@@ -137,7 +137,7 @@ async function getEnergyMeasurements(
                 const roundedEnergy: number = Math.round(energyMeasurement.energy);
 
                 const previousRead: number = await getProducingAssetSmartMeterRead(asset.id);
-                const time = moment(energyMeasurement.measurementTime).tz(asset.timezone);
+                const time = moment(energyMeasurement.measurementTime);
 
                 await saveProducingAssetSmartMeterRead(
                     previousRead + roundedEnergy,

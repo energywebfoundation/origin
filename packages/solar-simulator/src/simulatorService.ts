@@ -74,20 +74,18 @@ function processRows(
         let include = true;
 
         if (timeStart) {
-            include = time >= timeStart;
+            include = time.unix() >= timeStart.unix();
         }
 
         if (timeEnd && include) {
-            include = time <= timeEnd;
+            include = time.unix() <= timeEnd.unix();
         }
 
         return include;
     }
 
     function parseRowTime(row: TableRowType): moment.Moment {
-        return moment(row[0], 'DD.MM.YYYY HH:mm')
-            .year(currentYear)
-            .tz(assetTimezone);
+        return moment.tz(row[0], 'DD.MM.YYYY HH:mm', assetTimezone).year(currentYear);
     }
 
     if (accumulated) {
@@ -167,8 +165,8 @@ export async function startAPI() {
 
         const LIMIT = req.query.limit ? parseInt(req.query.limit, 10) : DEFAULT_ENERGY_ROWS_LIMIT;
 
-        const timeStart = req.query.timeStart ? moment(req.query.timeStart) : null;
-        const timeEnd = req.query.timeEnd ? moment(req.query.timeEnd) : null;
+        const timeStart = req.query.timeStart ? moment.unix(req.query.timeStart) : null;
+        const timeEnd = req.query.timeEnd ? moment.unix(req.query.timeEnd) : null;
         const accumulated = req.query.accumulated === 'true';
 
         const rows = await getData();
