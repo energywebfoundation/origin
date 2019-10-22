@@ -143,7 +143,7 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     function buyCertificate(uint _certificateId)
         external
         onlyRole(RoleManagement.Role.Trader)
-     {
+    {
         buyCertificateInternal(_certificateId, msg.sender);
     }
 
@@ -154,9 +154,9 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
         public
         onlyRole(RoleManagement.Role.Matcher)
         userHasRole(RoleManagement.Role.Trader, _newOwner)
-        {
-            buyCertificateInternal(_certificateId, _newOwner);
-        }
+    {
+        buyCertificateInternal(_certificateId, _newOwner);
+    }
 
     /// @notice buys a set of certificates
     /// @param _idArray the ids of the certificates to be bought
