@@ -143,8 +143,19 @@ contract CertificateLogic is CertificateInterface, CertificateSpecificContract, 
     function buyCertificate(uint _certificateId)
         external
         onlyRole(RoleManagement.Role.Trader)
-     {
+    {
         buyCertificateInternal(_certificateId, msg.sender);
+    }
+
+    /// @notice buys a certificate for owner
+    /// @param _certificateId the id of the certificate
+    /// @param _newOwner the address of the new owner
+    function buyCertificateFor(uint _certificateId, address _newOwner)
+        public
+        onlyRole(RoleManagement.Role.Matcher)
+        userHasRole(RoleManagement.Role.Trader, _newOwner)
+    {
+        buyCertificateInternal(_certificateId, _newOwner);
     }
 
     /// @notice buys a set of certificates

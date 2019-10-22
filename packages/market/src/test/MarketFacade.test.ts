@@ -334,7 +334,7 @@ describe('Market-Facade', () => {
             assert.notDeepEqual(updated.offChainProperties, demand.offChainProperties);
         });
 
-        it('should trigger DemandPartiallyFilled event after demand filled', async () => {
+        it('should trigger DemandPartiallyFilled event after agreement demand filled', async () => {
             const producingAsset = await new ProducingAsset.Entity('0', conf).sync();
 
             conf.blockchainProperties.activeUser = {
@@ -359,7 +359,7 @@ describe('Market-Facade', () => {
 
             const demand = await new Market.Demand.Entity('0', conf).sync();
             let certificate = await new Certificate.Entity('0', conf).sync();
-            const fillTx = await demand.fill(certificate.id);
+            const fillTx = await demand.fillAgreement(certificate.id);
 
             const demandPartiallyFilledEvents = await marketLogic.getEvents(
                 'DemandPartiallyFilled',
@@ -373,6 +373,55 @@ describe('Market-Facade', () => {
 
             certificate = await certificate.sync();
             assert.equal(await certificate.getOwner(), demand.demandOwner);
+        });
+
+        it('should trigger DemandPartiallyFilled event after demand filled', async () => {
+            const producingAsset = await new ProducingAsset.Entity('0', conf).sync();
+
+            conf.blockchainProperties.activeUser = {
+                address: assetSmartMeter,
+                privateKey: assetSmartMeterPK
+            };
+
+            await producingAsset.saveSmartMeterRead(2e6, 'newMeterRead');
+
+            await certificateLogic.requestCertificates(0, 1, {
+                privateKey: assetOwnerPK
+            });
+
+            await certificateLogic.approveCertificationRequest(1, {
+                privateKey: issuerPK
+            });
+
+            conf.blockchainProperties.activeUser = {
+                address: assetOwnerAddress,
+                privateKey: assetOwnerPK
+            };
+
+            const certificate = await new Certificate.Entity('1', conf).sync();
+
+            await certificate.publishForSale(1000, Currency.USD);
+
+            conf.blockchainProperties.activeUser = {
+                address: matcherAccount,
+                privateKey: matcherPK
+            };
+
+            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const fillTx = await demand.fill(certificate.id);
+
+            const demandPartiallyFilledEvents = await marketLogic.getEvents(
+                'DemandPartiallyFilled',
+                {
+                    fromBlock: fillTx.blockNumber,
+                    toBlock: fillTx.blockNumber
+                }
+            );
+
+            assert.equal(demandPartiallyFilledEvents.length, 1);
+
+            const filledCertificate = await certificate.sync();
+            assert.equal(await filledCertificate.getOwner(), demand.demandOwner);
         });
     });
 

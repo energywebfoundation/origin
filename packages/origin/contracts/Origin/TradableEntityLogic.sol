@@ -52,7 +52,8 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     event LogUnpublishForSale(uint indexed _entityId);
 
     modifier onlyEntityOwner(uint _entityId) {
-        require(db.getTradableEntityOwner(_entityId) == msg.sender, "not the entity-owner");
+        address owner = db.getTradableEntityOwner(_entityId);
+        require(owner == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender), "not the entity-owner or market matcher");
         _;
     }
 

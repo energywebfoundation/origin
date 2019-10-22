@@ -47,10 +47,10 @@ describe('Origin Listener Tests', async () => {
         path: '.env.test'
     });
 
-    let demo: any;
+    let demo: Demo;
     let listener: IOriginEventListener;
-    let emailService: any;
-    let store: any;
+    let emailService: EmailServiceProvider;
+    let store: OriginEventsStore;
 
     let currentSmRead = 0;
 
