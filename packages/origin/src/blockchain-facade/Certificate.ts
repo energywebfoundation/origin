@@ -1,5 +1,5 @@
 import { TransactionReceipt, EventLog } from 'web3/types';
-import { Currency, Unit } from '@energyweb/utils-general';
+import { Currency } from '@energyweb/utils-general';
 import { Configuration } from '../utils/types';
 
 import * as TradableEntity from './TradableEntity';
@@ -21,8 +21,9 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
     maxOwnerChanges: number;
     ownerChangerCounter: number;
     isOffChainSettlement: boolean;
+    price: number;
+    currency: Currency | string;
 
-    price(): number;
     sync(): Promise<ICertificate>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
@@ -313,12 +314,16 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         return Number(this.acceptedToken) === 0x0;
     }
 
-    price() {
-        const price = this.isOffChainSettlement
+    get price() {
+        return this.isOffChainSettlement
             ? this.offChainSettlementOptions.price
             : this.onChainDirectPurchasePrice;
+    }
 
-        return price;
+    get currency() {
+        return this.isOffChainSettlement
+            ? this.offChainSettlementOptions.currency
+            : this.acceptedToken;
     }
 
     async getCertificateOwner(): Promise<string> {

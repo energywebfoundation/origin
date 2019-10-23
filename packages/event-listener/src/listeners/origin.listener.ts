@@ -80,13 +80,12 @@ export class OriginEventListener implements IOriginEventListener {
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
             const fetchCertificate = async (certificateId: string) => {
                 const certificate = await new Certificate.Entity(certificateId, this.conf).sync();
-                const { offChainSettlementOptions } = certificate;
 
                 if (
                     certificate.forSale &&
                     certificate.isOffChainSettlement &&
-                    offChainSettlementOptions.currency === Currency.NONE &&
-                    offChainSettlementOptions.price === 0
+                    certificate.currency === Currency.NONE &&
+                    certificate.price === 0
                 ) {
                     throw new Error(`[Certificate #${certificateId}] Missing settlement options`);
                 }
@@ -99,9 +98,7 @@ export class OriginEventListener implements IOriginEventListener {
                 .executeForPromise(() => fetchCertificate(event.returnValues._entityId));
 
             this.conf.logger.info(
-                `Event: LogPublishForSale certificate #${
-                    publishedCertificate.id
-                } at ${JSON.stringify(publishedCertificate.offChainSettlementOptions)}`
+                `Event: LogPublishForSale certificate #${publishedCertificate.id} at ${publishedCertificate.price} ${publishedCertificate.currency}`
             );
 
             const demands = await Demand.getAllDemands(this.conf);

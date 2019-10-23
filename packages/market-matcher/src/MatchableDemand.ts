@@ -1,7 +1,7 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, IRECAssetService, LocationService } from '@energyweb/utils-general';
+import { IRECAssetService, LocationService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
@@ -17,10 +17,6 @@ export class MatchableDemand {
         certificate: Certificate.ICertificate,
         producingAsset: ProducingAsset.IProducingAsset
     ) {
-        const certCurrency: Currency = certificate.isOffChainSettlement
-            ? certificate.offChainSettlementOptions.currency
-            : certificate.acceptedToken;
-
         const { offChainProperties } = this.demand;
 
         const missingEnergyInCurrentPeriod = await this.demand.missingEnergyInPeriod(
@@ -35,11 +31,11 @@ export class MatchableDemand {
                 MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
             .validate(
-                certificate.price() <= offChainProperties.maxPricePerMwh,
+                certificate.price <= offChainProperties.maxPricePerMwh,
                 MatchingErrorReason.TOO_EXPENSIVE
             )
             .validate(
-                certCurrency === offChainProperties.currency,
+                certificate.currency === offChainProperties.currency,
                 MatchingErrorReason.NON_MATCHING_CURRENCY
             )
             .validate(

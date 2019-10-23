@@ -141,12 +141,12 @@ export class EntityStore implements IEntityStore {
 
         const fetchCertificate = async (certificateId: string) => {
             const certificate = await new Certificate.Entity(certificateId, this.config).sync();
-            const { offChainSettlementOptions } = certificate;
 
             if (
                 certificate.forSale &&
-                offChainSettlementOptions.currency === Currency.NONE &&
-                offChainSettlementOptions.price === 0
+                certificate.isOffChainSettlement &&
+                certificate.currency === Currency.NONE &&
+                certificate.price === 0
             ) {
                 throw new Error(`[Certificate #${certificateId}] Missing settlement options`);
             }
