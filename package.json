@@ -58,7 +58,8 @@
         "test:matcher": "lerna run test:concurrent --scope @energyweb/market-matcher --stream",
         "test:user-registry": "lerna run test:concurrent --scope @energyweb/user-registry --stream",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
-        "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream"
+        "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
+        "publish:canary": "lerna publish --canary --yes --npm-client yarn && git push --follow-tags"
     },
     "workspaces": [
         "packages/*"
