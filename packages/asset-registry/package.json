@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
@@ -42,30 +42,30 @@
     "start-test-backend": "PORT=3036 node ../../node_modules/@energyweb/utils-testbackend/dist/js/src/index.js",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "test:concurrent": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-test-backend\" \"wait-on tcp:8551 && yarn test\"",
-    "test:contracts" : "yarn test:concurrent",
+    "test:contracts": "yarn test:concurrent",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "clean": "rm -rf build dist dist-shakeable schemas db.json"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/user-registry": "1.1.0",
-    "@energyweb/utils-general": "1.1.0",
+    "@energyweb/user-registry": "^1.2.0",
+    "@energyweb/utils-general": "^1.2.0",
     "moment": "2.24.0",
     "web3": "1.2.1",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/utils-testbackend": "1.1.0",
+    "@energyweb/utils-testbackend": "^1.2.0",
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
+    "fs-extra": "8.1.0",
     "ganache-cli": "6.4.5",
-    "truffle": "5.0.41",
-    "fs-extra": "8.1.0"
+    "truffle": "5.0.41"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
-  "publishConfig" : {
-    "access" : "public",
+  "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   }
 }

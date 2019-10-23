@@ -5,13 +5,13 @@
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/erc-test-contracts#readme",
   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/energywebfoundation/origin.git"
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
   },
   "bugs": {
-      "url": "https://github.com/energywebfoundation/origin/issues"
+    "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "dist/js/src/index.js",
   "scripts": {
     "build": "yarn build:ts",
@@ -29,7 +29,7 @@
     "clean": "rm -rf build dist"
   },
   "dependencies": {
-    "@energyweb/utils-general": "1.1.0",
+    "@energyweb/utils-general": "^1.2.0",
     "typedarray-to-buffer": "3.1.5",
     "web3": "1.2.1",
     "winston": "3.2.1",
