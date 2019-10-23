@@ -17,10 +17,7 @@ export class MatchableDemand {
         certificate: Certificate.ICertificate,
         producingAsset: ProducingAsset.IProducingAsset
     ) {
-        const isOffChainSettlement = Number(certificate.acceptedToken) === 0x0;
-
-        // TODO: move to certificate entity code
-        const certCurrency: Currency = isOffChainSettlement
+        const certCurrency: Currency = certificate.isOffChainSettlement
             ? certificate.offChainSettlementOptions.currency
             : certificate.acceptedToken;
 

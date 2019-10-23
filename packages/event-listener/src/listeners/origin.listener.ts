@@ -1,10 +1,17 @@
+import Web3 from 'web3';
+import polly from 'polly-js';
+
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import Web3 from 'web3';
+import {
+    Configuration,
+    ContractEventHandler,
+    EventHandlerManager,
+    Currency
+} from '@energyweb/utils-general';
 
 import { SCAN_INTERVAL } from '..';
 import { initOriginConfig } from '../config/origin.config';
@@ -71,10 +78,25 @@ export class OriginEventListener implements IOriginEventListener {
         });
 
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const publishedCertificate = await new Certificate.Entity(
-                event.returnValues._entityId,
-                this.conf
-            ).sync();
+            const fetchCertificate = async (certificateId: string) => {
+                const certificate = await new Certificate.Entity(certificateId, this.conf).sync();
+                const { offChainSettlementOptions } = certificate;
+
+                if (
+                    certificate.forSale &&
+                    certificate.isOffChainSettlement &&
+                    offChainSettlementOptions.currency === Currency.NONE &&
+                    offChainSettlementOptions.price === 0
+                ) {
+                    throw new Error(`[Certificate #${certificateId}] Missing settlement options`);
+                }
+
+                return certificate;
+            };
+
+            const publishedCertificate = await polly()
+                .waitAndRetry(10)
+                .executeForPromise(() => fetchCertificate(event.returnValues._entityId));
 
             this.conf.logger.info(
                 `Event: LogPublishForSale certificate #${

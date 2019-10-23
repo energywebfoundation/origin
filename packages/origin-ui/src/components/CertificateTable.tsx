@@ -193,10 +193,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
         for (const certificate of certificates) {
             let acceptedCurrency = await this.getTokenSymbol(certificate);
-            const isOffChainSettlement = certificate.forSale && acceptedCurrency === null;
             let offChainSettlementOptions;
 
-            if (isOffChainSettlement) {
+            if (certificate.forSale && certificate.isOffChainSettlement) {
                 try {
                     offChainSettlementOptions = await certificate.getOffChainSettlementOptions();
                     acceptedCurrency = Currency[offChainSettlementOptions.currency];
@@ -224,7 +223,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificateOwner: getUserById(this.props.users, certificate.owner),
                 offChainSettlementOptions,
                 acceptedCurrency,
-                isOffChainSettlement
+                isOffChainSettlement: certificate.isOffChainSettlement
             });
         }
 

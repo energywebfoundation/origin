@@ -20,6 +20,7 @@ export interface ICertificate extends TradableEntity.IOnChainProperties {
     children: string[];
     maxOwnerChanges: number;
     ownerChangerCounter: number;
+    isOffChainSettlement: boolean;
 
     price(): number;
     sync(): Promise<ICertificate>;
@@ -308,9 +309,12 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         });
     }
 
+    get isOffChainSettlement(): boolean {
+        return Number(this.acceptedToken) === 0x0;
+    }
+
     price() {
-        const isOffChainSettlement = Number(this.acceptedToken) === 0x0;
-        const price = isOffChainSettlement
+        const price = this.isOffChainSettlement
             ? this.offChainSettlementOptions.price
             : this.onChainDirectPurchasePrice;
 
