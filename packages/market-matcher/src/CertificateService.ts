@@ -1,33 +1,73 @@
 import { Demand } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, Unit } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
-import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
 import * as Winston from 'winston';
+import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
 
-import { IEntityStore } from './EntityStore';
-
-// eslint-disable-next-line import/no-unresolved
 @injectable()
 export class CertificateService {
     constructor(
         @inject('config') private config: Configuration.Entity,
-        @inject('entityStore') private entityStore: IEntityStore,
         @inject('logger') private logger: Winston.Logger
     ) {}
 
-    public async splitCertificate(
+    public async executeMatching(
+        certificate: Certificate.ICertificate,
+        demand: Demand.IDemand,
+        fromAgreement: boolean
+    ) {
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Executing matching with demand #${demand.id}`
+        );
+
+        const { value: requiredEnergy } = await demand.missingEnergyInCurrentPeriod();
+
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Missing energy from demand #${
+                demand.id
+            } is ${requiredEnergy / Unit.kWh}KWh`
+        );
+
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Available energy: ${certificate.energy / Unit.kWh}KWh`
+        );
+
+        if (certificate.energy <= requiredEnergy) {
+            return fromAgreement
+                ? this.matchDemandFromAgreement(certificate, demand)
+                : this.matchDemand(certificate, demand);
+        }
+        return this.splitCertificate(certificate, requiredEnergy);
+    }
+
+    private async splitCertificate(
         certificate: Certificate.ICertificate,
         requiredEnergy: number
     ): Promise<boolean> {
-        this.logger.info(`Splitting certificate ${certificate.id} at ${requiredEnergy}`);
+        this.logger.info(`[Certificate #${certificate.id}] Splitting at ${requiredEnergy}`);
 
         const splitTx = await certificate.splitCertificate(requiredEnergy);
 
         return splitTx.status;
     }
 
-    public async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
+    private async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
+        return this.match(certificate, demand, demand.fill.bind(demand));
+    }
+
+    private async matchDemandFromAgreement(
+        certificate: Certificate.ICertificate,
+        demand: Demand.IDemand
+    ) {
+        return this.match(certificate, demand, demand.fillAgreement.bind(demand));
+    }
+
+    private async match(
+        certificate: Certificate.ICertificate,
+        demand: Demand.IDemand,
+        match: (entityId: string) => Promise<TransactionReceipt>
+    ) {
         if (
             (await this.isAlreadyTransferred(certificate, demand.demandOwner)) ||
             demand.status !== Demand.DemandStatus.ACTIVE
@@ -35,25 +75,27 @@ export class CertificateService {
             return false;
         }
 
-        this.logger.debug(
-            `Transferring certificate to ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Transferring to demand #${demand.id} owned by ${demand.demandOwner} with account ${this.config.blockchainProperties.activeUser.address}`
         );
 
-        const fillTx: TransactionReceipt = await demand.fill(certificate.id);
+        try {
+            const fillTx = await match(certificate.id);
 
-        return fillTx.status;
+            return fillTx.status;
+        } catch (e) {
+            this.logger.error(`[Certificate #${certificate.id}] Transferring failed with ${e}`);
+        }
+
+        return false;
     }
 
     private async isAlreadyTransferred(certificate: Certificate.ICertificate, owner: string) {
         const syncedCertificate = await certificate.sync();
 
-        this.logger.verbose(
-            `isAlreadyTransferred: #${syncedCertificate.id} owned by ${syncedCertificate.owner}`
-        );
-
         if (certificate.owner.toLowerCase() === owner.toLowerCase()) {
-            this.logger.info(
-                `Certificate #${syncedCertificate.id} was already transferred to ${owner}`
+            this.logger.verbose(
+                `[Certificate #${syncedCertificate.id}] Already transferred to request demand owner ${owner}`
             );
             return true;
         }

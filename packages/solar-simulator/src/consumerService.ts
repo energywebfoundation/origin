@@ -106,8 +106,8 @@ async function getEnergyMeasurements(
     endTime: Moment
 ): Promise<IEnergyMeasurement[]> {
     const url = `${ENERGY_API_BASE_URL}/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
-        startTime.format()
-    )}&timeEnd=${encodeURIComponent(endTime.format())}`;
+        startTime.unix()
+    )}&timeEnd=${encodeURIComponent(endTime.unix())}`;
 
     console.log(`GET ${url}`);
 

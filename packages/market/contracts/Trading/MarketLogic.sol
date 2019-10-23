@@ -96,6 +96,28 @@ contract MarketLogic is AgreementLogic {
         address originLogicRegistry = originContractLookup.originLogicRegistry();
 
         TradableEntityContract.TradableEntity memory te = TradableEntityDB(originLogicRegistry).getTradableEntity(_entityId);
+        CertificateLogic(originLogicRegistry).buyCertificateFor(_entityId, demand.demandOwner);
+
+        emit DemandPartiallyFilled(_demandId, _entityId, te.energy);
+    }
+
+    /// @notice Matches a tradable entity to a demand from the agreement
+	/// @dev will return an event with the event-Id
+	/// @param _demandId index of the demand in the allDemands-array
+    /// @param _entityId ID of the tradable entity
+    function fillAgreement(
+        uint _demandId,
+        uint _entityId
+    )
+        external
+        onlyRole(RoleManagement.Role.Matcher)
+    {
+        MarketDB.Demand memory demand = db.getDemand(_demandId);
+        require(demand.status == MarketDB.DemandStatus.ACTIVE, "demand should be in ACTIVE state");
+
+        address originLogicRegistry = originContractLookup.originLogicRegistry();
+
+        TradableEntityContract.TradableEntity memory te = TradableEntityDB(originLogicRegistry).getTradableEntity(_entityId);
         CertificateLogic(originLogicRegistry).transferFrom(
             te.owner, demand.demandOwner, _entityId
         );

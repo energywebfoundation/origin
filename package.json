@@ -2,15 +2,15 @@
     "name": "root",
     "private": true,
     "dependencies": {
-        "dotenv": "8.1.0"
+        "dotenv": "8.2.0"
     },
     "devDependencies": {
         "@types/chai": "4.2.3",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "5.2.7",
         "@types/node": "10.14.18",
-        "@typescript-eslint/eslint-plugin": "2.3.3",
-        "@typescript-eslint/parser": "2.3.3",
+        "@typescript-eslint/eslint-plugin": "2.4.0",
+        "@typescript-eslint/parser": "2.4.0",
         "chai": "4.2.0",
         "eslint": "6.5.1",
         "eslint-config-airbnb-base": "14.0.0",
@@ -19,11 +19,11 @@
         "eslint-plugin-prettier": "3.1.1",
         "ganache-cli": "6.7.0",
         "husky": "3.0.9",
-        "lerna": "3.17.0",
+        "lerna": "3.18.1",
         "lint-staged": "9.4.2",
-        "mocha": "6.2.1",
+        "mocha": "6.2.2",
         "prettier": "1.18.2",
-        "truffle": "5.0.40",
+        "truffle": "5.0.41",
         "ts-node": "8.4.1",
         "typescript": "3.6.4",
         "typescript-json-schema": "0.40.0",

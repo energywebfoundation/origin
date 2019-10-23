@@ -98,6 +98,30 @@ export const marketDemo = async (demoFile?: string) => {
 
     await User.createUser(userPropsOnChain, userPropsOffChain, conf);
 
+    const marketLogicMatcherRole: User.IUserOnChainProperties = {
+        propertiesDocumentHash: null,
+        url: null,
+        id: contractConfig.marketLogic,
+        active: true,
+        roles: buildRights([Role.Matcher]),
+        organization: 'admin'
+    };
+
+    const marketLogicMatcherRoleOffChain: User.IUserOffChainProperties = {
+        firstName: 'MarketMatcher',
+        surname: 'User',
+        email: 'admin@example.com',
+        street: '',
+        number: '',
+        zip: '',
+        city: '',
+        country: '',
+        state: '',
+        notifications: true
+    };
+
+    await User.createUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);
+
     const actionsArray = demoConfig.flow;
 
     const erc20TestAddress = (await deployERC20TestToken(

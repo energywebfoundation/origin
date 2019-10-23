@@ -64,6 +64,10 @@ export class Demo {
             MATCHER: {
                 address: '0x3409c66069b3C4933C654beEAA136cc5ce6D7BD0'.toLowerCase(),
                 privateKey: '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed'
+            },
+            TRADER: {
+                address: '0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651',
+                privateKey: '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e'
             }
         };
 
@@ -246,6 +250,28 @@ export class Demo {
         };
         await User.createUser(marketLogicPropsOnChain, marketLogicPropsOffChain, this.conf);
 
+        const traderOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: this.ACCOUNTS.TRADER.address,
+            active: true,
+            roles: buildRights([Role.Trader]),
+            organization: 'Trader'
+        };
+        const traderOffChain: User.IUserOffChainProperties = {
+            firstName: 'Trader',
+            surname: 'Trader',
+            email: 'marketlogicmatcher@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: '',
+            notifications: true
+        };
+        await User.createUser(traderOnChain, traderOffChain, this.conf);
+
         const assetProducingProps: ProducingAsset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.ASSET_MANAGER.address },
@@ -287,6 +313,8 @@ export class Demo {
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
+
         await this.assetProducingRegistryLogic.saveSmartMeterRead(
             0,
             smRead,
@@ -307,6 +335,8 @@ export class Demo {
     }
 
     async publishForSale(certificateId: number) {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
+
         const deployedCertificate = await new Certificate.Entity(
             certificateId.toString(),
             this.conf
@@ -316,7 +346,7 @@ export class Demo {
     }
 
     async deployDemand() {
-        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.TRADER;
 
         const demandOffChainProps: Demand.IDemandOffChainProperties = {
             timeFrame: TimeFrame.hourly,
