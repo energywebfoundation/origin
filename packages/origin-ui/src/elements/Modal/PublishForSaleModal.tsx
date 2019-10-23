@@ -41,7 +41,6 @@ interface IPublishForSaleModalState {
     currency: string;
     erc20TokenAddress: string;
     validation: IValidation;
-    certCreationDate: string;
 }
 
 const ERC20CURRENCY = 'ERC20 Token';
@@ -70,8 +69,7 @@ class PublishForSaleModal extends React.Component<
                 kwh: true,
                 price: true,
                 erc20TokenAddress: false
-            },
-            certCreationDate: 'Loading...'
+            }
         };
     }
 
@@ -82,19 +80,17 @@ class PublishForSaleModal extends React.Component<
     }
 
     async componentDidUpdate(prevProps) {
-        if (this.props.certificate && this.props.certificate !== prevProps.certificate) {
-            const logs = await this.props.certificate.getAllCertificateEvents();
-            const initialTransfer = logs.find((log: any) => log.event === 'Transfer');
+        const { certificate } = this.props;
 
-            const timestamp = (await this.props.conf.blockchainProperties.web3.eth.getBlock(
-                initialTransfer.blockNumber
-            )).timestamp;
-
-            this.setState({
-                kwh: this.props.certificate.energy / 1000,
-                certCreationDate: moment.unix(timestamp).toString()
-            });
+        if (!certificate || certificate === prevProps.certificate) {
+            return;
         }
+
+        const newState = {
+            kwh: certificate.energy / 1000
+        };
+
+        this.setState(newState);
     }
 
     async publishForSale() {
@@ -221,10 +217,17 @@ class PublishForSaleModal extends React.Component<
     }
 
     render() {
-        const certificateId = this.props.certificate ? this.props.certificate.id : '';
-        const facilityName = this.props.producingAsset
-            ? this.props.producingAsset.offChainProperties.facilityName
-            : '';
+        const { certificate, producingAsset } = this.props;
+        const certificateId = certificate ? certificate.id : '';
+        const facilityName = producingAsset ? producingAsset.offChainProperties.facilityName : '';
+
+        let creationTime: string;
+
+        try {
+            creationTime = certificate && moment.unix(certificate.creationTime).toString();
+        } catch (error) {
+            console.error('Error in PublishForSaleModal', error);
+        }
 
         return (
             <Dialog open={this.state.show} onClose={this.handleClose}>
@@ -232,13 +235,17 @@ class PublishForSaleModal extends React.Component<
                 <DialogContent>
                     <TextField label="Facility" value={facilityName} fullWidth disabled />
 
-                    <TextField
-                        label="Date"
-                        value={this.state.certCreationDate}
-                        fullWidth
-                        disabled
-                        className="mt-4"
-                    />
+                    {creationTime && (
+                        <>
+                            <TextField
+                                label="Date"
+                                value={creationTime}
+                                fullWidth
+                                disabled
+                                className="mt-4"
+                            />
+                        </>
+                    )}
 
                     <TextField
                         label="kWh"
