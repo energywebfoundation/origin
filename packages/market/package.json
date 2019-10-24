@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
@@ -40,23 +40,23 @@
     "test": "mocha -r ts-node/register src/test/MarketFacade.test.ts --timeout 60000 --exit",
     "test:unit": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit",
     "test:concurrent": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"rm -rf db.sqlite && yarn start-backend\" \"wait-on tcp:8546 && yarn test\"",
-    "test:contract" : "yarn test:concurrent",
+    "test:contract": "yarn test:concurrent",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "clean": "rm -rf build dist dist-shakeable schemas db.sqlite",
     "precommit": "lint-staged"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/asset-registry": "1.1.0",
-    "@energyweb/origin": "1.1.0",
-    "@energyweb/user-registry": "1.1.0",
-    "@energyweb/utils-general": "1.1.0",
+    "@energyweb/asset-registry": "^1.2.0",
+    "@energyweb/origin": "^1.2.0",
+    "@energyweb/user-registry": "^1.2.0",
+    "@energyweb/utils-general": "^1.2.0",
     "moment": "^2.24.0",
     "web3": "1.2.1",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/origin-backend": "1.1.0",
+    "@energyweb/origin-backend": "^1.2.0",
     "@fluffy-spoon/substitute": "1.89.0",
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",

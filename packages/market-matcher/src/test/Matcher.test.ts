@@ -125,7 +125,7 @@ describe('Market-matcher e2e tests', async () => {
 
         it('demand should be matched with existing certificate', done => {
             assertMatched(config, demand, certificate, requiredEnergy, done);
-        }).timeout(20000);
+        }).timeout(60000);
     });
 
     describe('Agreement -> Certificate matching tests', () => {
@@ -163,6 +163,6 @@ describe('Market-matcher e2e tests', async () => {
 
         it('demand should be matched with existing certificate', done => {
             assertMatched(config, demand, certificate, requiredEnergy, done);
-        }).timeout(20000);
+        }).timeout(60000);
     });
 });

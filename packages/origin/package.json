@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/ew-origin-lib"
   },
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "dist/js/src/index.js",
   "files": [
     "contracts",
@@ -36,20 +36,20 @@
     "start-backend": "PORT=3032 node ../../node_modules/@energyweb/origin-backend/dist/js/src/index.js",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "test:concurrent": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"rm -rf db.sqlite && yarn start-backend\" \"wait-on tcp:8547 && yarn test\"",
-    "test:contracts" : "yarn test:concurrent",
+    "test:contracts": "yarn test:concurrent",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/asset-registry": "1.1.0",
-    "@energyweb/user-registry": "1.1.0",
-    "@energyweb/utils-general": "1.1.0",
+    "@energyweb/asset-registry": "^1.2.0",
+    "@energyweb/user-registry": "^1.2.0",
+    "@energyweb/utils-general": "^1.2.0",
     "web3": "1.2.1",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/erc-test-contracts": "1.1.0",
-    "@energyweb/origin-backend": "1.1.0",
+    "@energyweb/erc-test-contracts": "^1.2.0",
+    "@energyweb/origin-backend": "^1.2.0",
     "@types/web3": "1.0.20",
     "axios": "0.19.0",
     "ethlint": "1.2.5",

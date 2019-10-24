@@ -10,7 +10,6 @@ export interface IOnChainProperties {
     forSale: boolean;
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
-    offChainSettlementOptions: IOffChainSettlementOptions;
     approvedAddress: string;
 }
 
@@ -95,10 +94,11 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     forSale: boolean;
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
-    offChainSettlementOptions: IOffChainSettlementOptions;
     approvedAddress: string;
-
+    
     initialized: boolean;
+    
+    offChainSettlementOptions: IOffChainSettlementOptions;
 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
