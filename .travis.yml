@@ -29,7 +29,7 @@ cache:
 before_install:
     - sh scripts/restore-original-timestamps.sh
     - git fetch origin master
-    - git branch master
+    - git branch master -f
 
 before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
