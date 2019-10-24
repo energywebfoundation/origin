@@ -41,32 +41,14 @@ install:
 script:
   - yarn lint
   - yarn test:ci:contracts
+  - yarn test:ci:apps
+  - yarn test:ci:ui
 
-# jobs:
-#   include:
-#     - stage: "Install & build"
-#       script: skip
-#     - stage: "Lint"
-#       install: skip
-#       script: yarn lint
-    # - stage: "Tests"	
-    #   name: "Contracts"	
-    #   script: yarn test:ci:contracts
-    # - stage: "Tests"
-    #   name: "UI"
-    #   script: yarn test:ci:ui
-    # - stage: "Tests"
-    #   name: "Apps"
-    #   script: yarn test:ci:apps
-    # - stage: "Deploy canary"
-    #   script: skip
-    #   deploy:
-    #     provider: script
-    #     script: "yarn publish:canary"
-    #     skip_cleanup: true
-    #     on:
-    #       node: "10"
-    #       branch: master
-
-    
+deploy:
+  provider: script
+  script: "yarn publish:canary"
+  skip_cleanup: true
+  on:
+    node: "10"
+    branch: master
 

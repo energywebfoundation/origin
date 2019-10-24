@@ -33,7 +33,7 @@
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
-        "lint": "lerna run lint --parallel --stream",
+        "lint": "lerna run lint --parallel --stream --since",
         "lint-fix": "lerna run lint-fix --parallel --stream",
         "clean": "lerna run clean --parallel",
         "build:user-asset-registry-origin": "lerna run build --scope @energyweb/user-registry build --scope @energyweb/asset-registry build --scope @energyweb/origin --parallel",
@@ -60,8 +60,8 @@
         "test:user-registry": "lerna run test:concurrent --scope @energyweb/user-registry --stream",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
-        "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts --stream test:concurrent --since --parallel",
-        "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/market --scope @energyweb/utils-testbackend --scope @energyweb/utils-demo --stream test:concurrent --since",
+        "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts test:concurrent --since --parallel --stream",
+        "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/market --scope @energyweb/utils-testbackend --scope @energyweb/utils-demo test:concurrent --since --parallel --stream",
         "test:ci:ui": "yarn test:ui",
         "publish:canary": "lerna publish --canary --yes && git push --follow-tags"
     },
