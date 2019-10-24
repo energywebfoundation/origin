@@ -38,3 +38,18 @@ jobs:
       script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general
     - name: "Linting + Market & UI & Matcher & Event Listener Tests & Deploy Demo"    	
       script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:demo
+    
+before_deploy:
+  - git config --global user.email ${GITHUB_EMAIL}
+  - git config --global user.name ${GITHUB_USER}
+  - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
+  - git checkout master
+  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+
+deploy:
+  provider: script
+  script: "yarn publish:canary"
+  skip_cleanup: true
+  on:
+    node: "10"
+    branch: master

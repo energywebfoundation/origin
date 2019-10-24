@@ -23,6 +23,7 @@
         "lint-staged": "9.4.2",
         "mocha": "6.2.2",
         "prettier": "1.18.2",
+        "solc": "0.5.12",
         "truffle": "5.0.41",
         "ts-node": "8.4.1",
         "typescript": "3.6.4",
@@ -58,7 +59,8 @@
         "test:matcher": "lerna run test:concurrent --scope @energyweb/market-matcher --stream",
         "test:user-registry": "lerna run test:concurrent --scope @energyweb/user-registry --stream",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
-        "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream"
+        "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
+        "publish:canary": "lerna publish --canary --yes --npm-client yarn && git push --follow-tags"
     },
     "workspaces": [
         "packages/*"
