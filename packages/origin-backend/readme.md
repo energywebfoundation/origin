@@ -1,4 +1,4 @@
-# Energy Web Foundation: origin-release C: origin-backend 
+# Energy Web Foundation: origin-backend 
 
 ## Warning
 
