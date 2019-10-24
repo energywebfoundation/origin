@@ -27,18 +27,6 @@ cache:
 before_install:
     - sh scripts/restore-original-timestamps.sh
 
-install:
-    - yarn
-    - yarn build
-
-jobs:
-  include:	
-    - stage: "Tests"	
-      name: "User & Asset Registry & Origin Tests & Utils General"	
-      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general
-    - name: "Linting + Market & UI & Matcher & Event Listener Tests & Deploy Demo"    	
-      script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:demo
-    
 before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
   - git config --global user.name ${GITHUB_USER}
@@ -46,10 +34,27 @@ before_deploy:
   - git checkout master
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
 
-deploy:
-  provider: script
-  script: "yarn publish:canary"
-  skip_cleanup: true
-  on:
-    node: "10"
-    branch: master
+jobs:
+  include:
+    - stage: "Install dependencies"
+      script: yarn
+    - stage: "Build"
+      script: yarn build
+    - stage: "Tests"	
+      name: "User & Asset Registry & Origin Tests & Utils General"	
+      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general
+    - stage: "Tests"
+      name: "Linting + Market & UI & Matcher & Event Listener Tests & Deploy Demo"    	
+      script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:demo
+    - stage: "Deploy canary"
+      script: skip
+      deploy:
+        provider: script
+        script: "yarn publish:canary"
+        skip_cleanup: true
+        on:
+          node: "10"
+          branch: master
+
+    
+
