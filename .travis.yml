@@ -23,6 +23,8 @@ cache:
         - packages/market/dist
         - packages/market-matcher/schemas
         - packages/market-matcher/dist
+        - packages/erc-test-contracts/build
+        - packages/erc-test-contracts/dist
 
 before_install:
     - sh scripts/restore-original-timestamps.sh
