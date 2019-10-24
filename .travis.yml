@@ -40,12 +40,17 @@ jobs:
       script: yarn
     - stage: "Build"
       script: yarn build
+    - stage: "Lint"
+      script: yarn lint
     - stage: "Tests"	
-      name: "User & Asset Registry & Origin Tests & Utils General"	
-      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general
+      name: "Contracts"	
+      script: yarn test:ci:contracts
     - stage: "Tests"
-      name: "Linting + Market & UI & Matcher & Event Listener Tests & Deploy Demo"    	
-      script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:demo
+      name: "UI"
+      script: yarn test:ci:ui
+    - stage: "Tests"
+      name: "Apps"
+      script: yarn test:ci:apps
     - stage: "Deploy canary"
       script: skip
       deploy:

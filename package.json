@@ -48,9 +48,9 @@
         "run:simulator:consumer": "lerna run start-consuming-api --scope @energyweb/solar-simulator --stream",
         "run:matcher": "lerna run start --scope @energyweb/market-matcher --stream",
         "run:event-listener": "lerna run start --scope @energyweb/event-listener --stream",
-        "test": "yarn test:ui && lerna run test:concurrent --stream --parallel",
+        "test": "yarn test:ui && lerna run test:concurrent --stream --parallel --since",
         "test:serial": "yarn test:ui && lerna run test:concurrent --stream",
-        "test:ui": "lerna run test --scope @energyweb/origin-ui --stream",
+        "test:ui": "lerna run test --scope @energyweb/origin-ui --stream --since",
         "test:contracts": "lerna run test:contracts --scope @energyweb/asset-registry --scope @energyweb/market --scope @energyweb/origin --scope @energyweb/user-registry --stream --parallel",
         "test:demo": "lerna run test:all --scope @energyweb/utils-demo --stream",
         "test:asset-registry": "lerna run --scope @energyweb/asset-registry --stream test:concurrent",
@@ -60,6 +60,9 @@
         "test:user-registry": "lerna run test:concurrent --scope @energyweb/user-registry --stream",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
+        "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts --stream test:concurrent --since",
+        "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/market --scope @energyweb/utils-testbackend --scope @energyweb/utils-demo --stream test:concurrent --since",
+        "test:ci:ui": "yarn test:ui",
         "publish:canary": "lerna publish --canary --yes && git push --follow-tags"
     },
     "workspaces": [
