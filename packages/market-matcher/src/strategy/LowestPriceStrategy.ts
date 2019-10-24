@@ -10,7 +10,7 @@ export class LowestPriceStrategy implements IStrategy {
     ];
 
     private certificatePriorities = [
-        (a: Certificate.ICertificate, b: Certificate.ICertificate) => a.price() - b.price()
+        (a: Certificate.ICertificate, b: Certificate.ICertificate) => a.price - b.price
     ];
 
     public executeForAgreements(agreements: MatchableAgreement[]): Promise<MatchableAgreement[]> {
