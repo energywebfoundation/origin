@@ -40,26 +40,29 @@ install:
 
 jobs:
   include:
-    - stage: "Lint"
-      script: yarn lint
-    - stage: "Tests"	
-      name: "Contracts"	
-      script: yarn test:ci:contracts
-    - stage: "Tests"
-      name: "UI"
-      script: yarn test:ci:ui
-    - stage: "Tests"
-      name: "Apps"
-      script: yarn test:ci:apps
-    - stage: "Deploy canary"
+    - stage: "Install & build"
       script: skip
-      deploy:
-        provider: script
-        script: "yarn publish:canary"
-        skip_cleanup: true
-        on:
-          node: "10"
-          branch: master
+    - stage: "Lint"
+      install: skip
+      script: yarn lint
+    # - stage: "Tests"	
+    #   name: "Contracts"	
+    #   script: yarn test:ci:contracts
+    # - stage: "Tests"
+    #   name: "UI"
+    #   script: yarn test:ci:ui
+    # - stage: "Tests"
+    #   name: "Apps"
+    #   script: yarn test:ci:apps
+    # - stage: "Deploy canary"
+    #   script: skip
+    #   deploy:
+    #     provider: script
+    #     script: "yarn publish:canary"
+    #     skip_cleanup: true
+    #     on:
+    #       node: "10"
+    #       branch: master
 
     
 
