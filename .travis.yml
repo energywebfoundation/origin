@@ -38,13 +38,17 @@ install:
   - yarn
   - yarn build
 
-jobs:
-  include:
-    - stage: "Install & build"
-      script: skip
-    - stage: "Lint"
-      install: skip
-      script: yarn lint
+script:
+  - yarn lint
+  - yarn test:ci:contracts
+
+# jobs:
+#   include:
+#     - stage: "Install & build"
+#       script: skip
+#     - stage: "Lint"
+#       install: skip
+#       script: yarn lint
     # - stage: "Tests"	
     #   name: "Contracts"	
     #   script: yarn test:ci:contracts

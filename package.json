@@ -60,7 +60,7 @@
         "test:user-registry": "lerna run test:concurrent --scope @energyweb/user-registry --stream",
         "test:event-listener": "lerna run test:concurrent --scope @energyweb/event-listener --stream",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
-        "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts --stream test:concurrent --since",
+        "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts --stream test:concurrent --since --parallel",
         "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/market --scope @energyweb/utils-testbackend --scope @energyweb/utils-demo --stream test:concurrent --since",
         "test:ci:ui": "yarn test:ui",
         "publish:canary": "lerna publish --canary --yes && git push --follow-tags"
