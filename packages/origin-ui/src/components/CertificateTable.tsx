@@ -2,7 +2,7 @@ import { ProducingAsset } from '@energyweb/asset-registry';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Demand } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
-import { Certificate, TradableEntity } from '@energyweb/origin';
+import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
@@ -58,8 +58,8 @@ interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
     certificateOwner: User.Entity;
     producingAsset: ProducingAsset.Entity;
-    acceptedCurrency: string;
-    offChainSettlementOptions: TradableEntity.IOffChainSettlementOptions;
+    currency: string;
+    price: string;
     isOffChainSettlement: boolean;
     assetTypeLabel: string;
 }
@@ -192,19 +192,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const enrichedData = [];
 
         for (const certificate of certificates) {
-            let acceptedCurrency = await this.getTokenSymbol(certificate);
-            const isOffChainSettlement = certificate.forSale && acceptedCurrency === null;
-            let offChainSettlementOptions;
-
-            if (isOffChainSettlement) {
-                try {
-                    offChainSettlementOptions = await certificate.getOffChainSettlementOptions();
-                    acceptedCurrency = Currency[offChainSettlementOptions.currency];
-                } catch (error) {
-                    console.error('No off-chain settlement data for certificate.', error);
-                }
-            }
-
             const producingAsset =
                 typeof certificate.assetId !== 'undefined' &&
                 this.props.producingAssets.find(
@@ -222,9 +209,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 producingAsset,
                 assetTypeLabel,
                 certificateOwner: getUserById(this.props.users, certificate.owner),
-                offChainSettlementOptions,
-                acceptedCurrency,
-                isOffChainSettlement
+                price: certificate.isOffChainSettlement
+                    ? formatCurrency(certificate.price / 100)
+                    : certificate.price,
+                currency: certificate.isOffChainSettlement
+                    ? Currency[certificate.currency]
+                    : await this.getTokenSymbol(certificate.currency),
+                isOffChainSettlement: certificate.isOffChainSettlement
             });
         }
 
@@ -252,14 +243,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         this.setState({ matchedCertificates });
     }
 
-    async getTokenSymbol(certificate) {
+    async getTokenSymbol(tokenAddress: string | Currency) {
         if (
-            certificate.acceptedToken &&
-            certificate.acceptedToken !== '0x0000000000000000000000000000000000000000'
+            typeof tokenAddress === 'string' &&
+            tokenAddress !== '0x0000000000000000000000000000000000000000'
         ) {
             const token = new Erc20TestToken(
                 this.props.configuration.blockchainProperties.web3,
-                certificate.acceptedToken
+                tokenAddress
             );
 
             return token.web3Contract.methods.symbol().call();
@@ -695,7 +686,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             let commissioningDate = '';
             let townCountry = '';
             let compliance = '';
-            let price = '';
 
             if (enrichedData.producingAsset && enrichedData.producingAsset.offChainProperties) {
                 assetType = this.assetTypeService.getDisplayText(
@@ -713,15 +703,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry];
             }
 
-            if (
-                enrichedData.isOffChainSettlement &&
-                typeof enrichedData.offChainSettlementOptions.price === 'number'
-            ) {
-                price = formatCurrency(enrichedData.offChainSettlementOptions.price / 100);
-            } else if (enrichedData.certificate.onChainDirectPurchasePrice) {
-                price = enrichedData.certificate.onChainDirectPurchasePrice.toLocaleString();
-            }
-
             return {
                 assetType,
                 commissioningDate,
@@ -731,8 +712,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificationDate: new Date(
                     enrichedData.certificate.creationTime * 1000
                 ).toDateString(),
-                price,
-                currency: enrichedData.acceptedCurrency,
+                price: enrichedData.price,
+                currency: enrichedData.currency,
                 energy: (enrichedData.certificate.energy / 1000).toLocaleString()
             };
         });
