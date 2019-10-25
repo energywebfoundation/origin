@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@1.2.0...@energyweb/event-listener@1.3.0) (2019-10-25)
+
+
+### Features
+
+* **backend:** Replace testbackend with the new origin-backend ([#137](https://github.com/energywebfoundation/origin/issues/137)) ([c428e7d](https://github.com/energywebfoundation/origin/commit/c428e7d44300ae306a9e759fc8897135e9d0e1be))
+
+
+
+
+
 # 1.2.0 (2019-10-23)
 
 

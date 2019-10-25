@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/asset-registry@1.2.0...@energyweb/asset-registry@1.3.0) (2019-10-25)
+
+
+### Bug Fixes
+
+* rm old prepare scripts ([a9aec09](https://github.com/energywebfoundation/origin/commit/a9aec098c36e3ed0763855bb8ab29789e6fbf118))
+* use npm solc instead of downloading it every time ([#170](https://github.com/energywebfoundation/origin/issues/170)) ([e5ef574](https://github.com/energywebfoundation/origin/commit/e5ef574f6d297107606a1d035a56da01806a07d1))
+
+
+### Features
+
+* **backend:** Replace testbackend with the new origin-backend ([#137](https://github.com/energywebfoundation/origin/issues/137)) ([c428e7d](https://github.com/energywebfoundation/origin/commit/c428e7d44300ae306a9e759fc8897135e9d0e1be))
+
+
+
+
+
 # 1.2.0 (2019-10-23)
 
 
