@@ -27,9 +27,9 @@
 | [`@energyweb/market-matcher`](/packages/market-matcher) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher.svg)](https://www.npmjs.com/package/@energyweb/market-matcher) | Off-chain services for demand and supply matching |
 | [`@energyweb/market`](/packages/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market.svg)](https://www.npmjs.com/package/@energyweb/market) | Contacts and client for Origin Market |
 | [`@energyweb/origin`](/packages/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/origin.svg)](https://www.npmjs.com/package/@energyweb/origin) | Contracts and client Origin ceritifacts |
+| [`@energyweb/origin-backend`](/packages/origin-backend) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend) | Example backend for storing off-chain meta-data |
 | [`@energyweb/user-registry`](/packages/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry.svg)](https://www.npmjs.com/package/@energyweb/user-registry) | Contracts and client User Registry |
 | [`@energyweb/utils-general`](/packages/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general) | Utilities |
-| [`@energyweb/utils-testbackend`](/packages/utils-testbackend) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-testbackend.svg)](https://www.npmjs.com/package/@energyweb/utils-testbackend) | Example backend for storing off-chain meta-data |
 
 ### UI and demo
 
@@ -37,6 +37,7 @@
 | --- | --- |
 | [`@energyweb/origin-ui`](/packages/origin-ui) | UI for Origin |
 | [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
+| [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events and sends notifications |
 | [`@energyweb/utils-demo`](/packages/utils-demo) | Demo deployment and configuration utilities |
 
 ## Installation
@@ -85,7 +86,7 @@ Overview of architecture
 This section lists key entry points to start your journey with Origin. 
 
 1. [utils-demo](https://github.com/energywebfoundation/origin/tree/master/packages/utils-demo) - demo repository with build scripts that enable easy deployment of smart contracts to Tobalaba or local blockchain. Often used to demo and get to know features and capabilities of Origin. 
-2. [utils-testbackend](https://github.com/energywebfoundation/origin/tree/master/packages/utils-testbackend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `utils-demo` (store data), and `origin-ui` to display stored data. 
+2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `utils-demo` (store data), and `origin-ui` to display stored data. 
 3. [origin-ui](https://github.com/energywebfoundation/origin/tree/master/packages/origin-ui) - frontend of the system needed to view data stored in smart contracts (on-chain) and in the backend (off-chain). To interact Origin frontend you'll need [MetaMask](https://metamask.io).
 
 ### Other components
