@@ -64,7 +64,7 @@
         "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts test:concurrent --since master --parallel --stream",
         "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/origin-backend --scope @energyweb/utils-demo test:concurrent --since master --parallel --stream",
         "test:ci:ui": "yarn test:ui",
-        "publish:canary": "lerna publish --canary --force-publish=\"*\" --exact --yes && git push --follow-tags"
+        "publish:canary": "lerna publish --canary --exact --yes"
     },
     "workspaces": [
         "packages/*"
