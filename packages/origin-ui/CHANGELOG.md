@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.1.0...@energyweb/origin-ui@0.2.0) (2019-10-25)
+
+
+### Bug Fixes
+
+* **origin-ui:** fix publish for sale modal energy ([#165](https://github.com/energywebfoundation/origin/issues/165)) ([d9db9b8](https://github.com/energywebfoundation/origin/commit/d9db9b84959270cc24a91a0e4e51d8219ea1f285))
+
+
+### Features
+
+* **backend:** Replace testbackend with the new origin-backend ([#137](https://github.com/energywebfoundation/origin/issues/137)) ([c428e7d](https://github.com/energywebfoundation/origin/commit/c428e7d44300ae306a9e759fc8897135e9d0e1be))
+* **origin-ui:** add missing irec types icons ([#171](https://github.com/energywebfoundation/origin/issues/171)) ([4c7b7e7](https://github.com/energywebfoundation/origin/commit/4c7b7e7b38ba1766714e187d85fb51f359a1da93))
+
+
+
+
+
 # 0.1.0 (2019-10-23)
 
 
