@@ -4,6 +4,11 @@ import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
 import hydro from '../../assets/icon_hydro.svg';
+import iconThermal from '../../assets/icon_thermal.svg';
+import iconSolid from '../../assets/icon_solid.svg';
+import iconLiquid from '../../assets/icon_liquid.svg';
+import iconGaseous from '../../assets/icon_gaseous.svg';
+import iconMarine from '../../assets/icon_marine.svg';
 import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -22,6 +27,7 @@ import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
 import { User } from '@energyweb/user-registry';
+import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 
 interface IProps {
     id: number;
@@ -38,6 +44,17 @@ export function ProducingAssetDetailView(props: IProps) {
     const users = useSelector(getUsers);
 
     const [newId, setNewId] = useState(null);
+
+    const useStyles = makeStyles(() =>
+        createStyles({
+            attributionText: {
+                fontSize: '10px',
+                color: '#555555'
+            }
+        })
+    );
+
+    const classes = useStyles(useTheme());
 
     let owner: User.Entity = null;
     let selectedAsset: ProducingAsset.Entity = null;
@@ -58,14 +75,31 @@ export function ProducingAssetDetailView(props: IProps) {
     }
 
     let data;
+    let tooltip = '';
 
     if (selectedAsset) {
+        const selectedAssetType = selectedAsset.offChainProperties.assetType;
         let image = solar;
 
-        if (selectedAsset.offChainProperties.assetType.includes('Wind')) {
+        if (selectedAssetType.startsWith('Wind')) {
             image = wind;
-        } else if (selectedAsset.offChainProperties.assetType.includes('Hydro-electric Head')) {
+        } else if (selectedAssetType.startsWith('Hydro-electric Head')) {
             image = hydro;
+        } else if (selectedAssetType.startsWith('Thermal')) {
+            image = iconThermal;
+            tooltip = 'Created by Adam Terpening from the Noun Project';
+        } else if (selectedAssetType.startsWith('Solid')) {
+            image = iconSolid;
+            tooltip = 'Created by ahmad from the Noun Project';
+        } else if (selectedAssetType.startsWith('Liquid')) {
+            image = iconLiquid;
+            tooltip = 'Created by BomSymbols from the Noun Project';
+        } else if (selectedAssetType.startsWith('Gaseous')) {
+            image = iconGaseous;
+            tooltip = 'Created by Deadtype from the Noun Project';
+        } else if (selectedAssetType.startsWith('Marine')) {
+            image = iconMarine;
+            tooltip = 'Created by Vectors Point from the Noun Project';
         }
 
         data = [
@@ -157,7 +191,7 @@ export function ProducingAssetDetailView(props: IProps) {
             ) : (
                 <table>
                     <tbody>
-                        {data.map((row: any) => (
+                        {data.map(row => (
                             <tr key={row.key}>
                                 {row.map(col => {
                                     if (col.isAdditionalInformation && !props.addSearchField) {
@@ -177,12 +211,22 @@ export function ProducingAssetDetailView(props: IProps) {
                                             {col.image &&
                                                 (col.type !== 'map' ? (
                                                     <div className={`Image`}>
-                                                        <img src={col.image} />
+                                                        <img
+                                                            src={col.image}
+                                                            style={{
+                                                                maxWidth: '200px',
+                                                                maxHeight: '250px'
+                                                            }}
+                                                        />
+                                                        {tooltip && (
+                                                            <div
+                                                                className={classes.attributionText}
+                                                            >
+                                                                {tooltip}
+                                                            </div>
+                                                        )}
                                                         {col.type === 'map' && (
-                                                            <img
-                                                                src={marker as any}
-                                                                className="Marker"
-                                                            />
+                                                            <img src={marker} className="Marker" />
                                                         )}
                                                     </div>
                                                 ) : (

@@ -41,5 +41,9 @@
     "ganache-cli": "6.4.5",
     "solium": "1.2.5"
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts"
+  "postinstall": "rm -f node_modules/web3/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }

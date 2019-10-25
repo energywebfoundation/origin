@@ -23,28 +23,30 @@ cache:
         - packages/market/dist
         - packages/market-matcher/schemas
         - packages/market-matcher/dist
+        - packages/erc-test-contracts/build
+        - packages/erc-test-contracts/dist
 
 before_install:
     - sh scripts/restore-original-timestamps.sh
+    - git fetch origin master
+    - git branch master -f
 
-install:
-    - yarn
-    - yarn build
-
-jobs:
-  include:	
-    - stage: "Tests"	
-      name: "User, Asset Registry, Origin, Utils General & Backend"	
-      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general && yarn test:backend
-    - name: "Linting + Market & UI & Matcher & Event Listener Tests & Deploy Demo"    	
-      script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:demo
-    
 before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
   - git config --global user.name ${GITHUB_USER}
   - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
   - git checkout master
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
+
+install:
+  - yarn
+  - yarn build
+
+script:
+  - yarn lint
+  - yarn test:ci:contracts
+  - yarn test:ci:apps
+  - yarn test:ci:ui
 
 deploy:
   provider: script
@@ -53,3 +55,4 @@ deploy:
   on:
     node: "10"
     branch: master
+
