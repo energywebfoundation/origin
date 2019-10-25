@@ -103,7 +103,7 @@ describe('AssetProducing Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: process.env.BACKEND_URL
+                baseUrl: `${process.env.BACKEND_URL}/api`
             },
             logger
         };
@@ -155,7 +155,7 @@ describe('AssetProducing Facade', () => {
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
                 maxOwnerChanges: '3',
-                url: `${process.env.BACKEND_URL}/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
             } as any,
             asset
         );
@@ -224,7 +224,7 @@ describe('AssetProducing Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `${process.env.BACKEND_URL}/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
+            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
             maxOwnerChanges: '3',
             offChainProperties: {
                 operationalSince: 0,

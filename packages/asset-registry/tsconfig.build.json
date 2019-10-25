@@ -14,7 +14,7 @@
             "path": "../utils-general/tsconfig.build.json"
         },
         {
-            "path": "../utils-testbackend/tsconfig.build.json"
+            "path": "../origin-backend/tsconfig.build.json"
         }
     ]
 }

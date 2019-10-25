@@ -85,7 +85,7 @@ describe('UserLogic Facade', () => {
                 }
             },
             offChainDataSource: {
-                baseUrl: process.env.BACKEND_URL
+                baseUrl: `${process.env.BACKEND_URL}/api`
             },
             logger
         };

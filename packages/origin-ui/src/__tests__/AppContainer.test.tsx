@@ -4,7 +4,7 @@ import { AppContainer } from '../components/AppContainer';
 import { Route } from 'react-router-dom';
 import { WrapperComponent, setupStore, wait, createRenderedHelpers } from './utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
-import { startAPI } from '@energyweb/utils-testbackend/dist/js/src/api';
+import { startAPI } from '@energyweb/origin-backend';
 import { dataTestSelector } from '../utils/Helper';
 import { TimeFrame } from '@energyweb/utils-general';
 

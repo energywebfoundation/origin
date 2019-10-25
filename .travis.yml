@@ -12,7 +12,7 @@ cache:
         - packages/user-registry/schemas
         - packages/user-registry/build
         - packages/user-registry/dist
-        - packages/utils-testbackend/dist
+        - packages/origin-backend/dist
         - packages/asset-registry/schemas
         - packages/asset-registry/build
         - packages/asset-registry/dist

@@ -3,4 +3,4 @@ node_modules
 dist
 .vscode
 build
-db.json
+db.sqlite

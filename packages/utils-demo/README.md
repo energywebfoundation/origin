@@ -7,7 +7,7 @@ This repository is used to deploy all the contracts for the Origin project of th
 
 Method 1
 - `npm run start-ganache` - Starts a local blockchain instance
-- (new terminal window) `npm run start-test-backend` - Starts a local backend instance
+- (new terminal window) `npm run origin-backend` - Starts a local backend instance
 - (new terminal window) `npm start` - Deploys the contracts and the configuration in [config/demo-config.json](config/demo-config.json)
 
 Method 2
@@ -39,7 +39,7 @@ When the command is finished you have to start a blockchain:
 This demo is using raw-transactions, so you don't have to unlock your accounts in the blockchain-client. Because this demo was developed with Tobalaba in mind the current gasPrice is set to 0 thus enabling sending transaction from accounts without any balance.<br>
 Currently the demo is configured to use the port <code>8545</code>. In case you're using your own client please make sure that the client is listening to that port. <br>
 
-Apart from starting a blockchain you must also start a test backend server using the command <code>npm run start-test-backend</code>. This is because, with release B some of the non-vital data is stored off chain on a server. Hence the deployment of test backend is necessary for demo purposes.<br>
+Apart from starting a blockchain you must also start a test backend server using the command <code>npm run origin-backend</code>. This is because, with release B some of the non-vital data is stored off chain on a server. Hence the deployment of test backend is necessary for demo purposes.<br>
 
 We strongly recommend to change the keys included in this repo when running on a public chain (see configuration)
 

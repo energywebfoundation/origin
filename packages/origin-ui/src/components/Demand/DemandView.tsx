@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { getDemands } from '../../features/selectors';
 
 interface IMatchParams {
-    key: string;
+    key?: string;
     id?: string;
 }
 

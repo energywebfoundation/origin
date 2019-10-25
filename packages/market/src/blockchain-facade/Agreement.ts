@@ -46,7 +46,10 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     }
 
     getUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/Agreement`;
+        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
+            .web3Contract.options.address;
+
+        return `${this.configuration.offChainDataSource.baseUrl}/Agreement/${marketLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
@@ -138,7 +141,7 @@ export const createAgreement = async (
         .hexToNumber(tx.logs[0].topics[1])
         .toString();
 
-    await agreement.putToOffChainStorage(
+    await agreement.syncOffChainStorage(
         agreementPropertiesOffChain,
         agreementOffChainStorageProperties
     );

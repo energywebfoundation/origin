@@ -69,7 +69,7 @@ export const marketDemo = async (demoFile?: string) => {
             web3
         },
         offChainDataSource: {
-            baseUrl: process.env.BACKEND_URL
+            baseUrl: `${process.env.BACKEND_URL}/api`
         },
         logger
     };

@@ -125,9 +125,11 @@ export class Demo {
         deployResult.certificateLogic = originContracts.CertificateLogic;
         deployResult.marketLogic = marketContracts.MarketLogic;
 
-        await axios.put(`${process.env.BACKEND_URL}/MarketContractLookup`, {
-            address: this.marketContractLookup.toLowerCase()
-        });
+        await axios.post(
+            `${
+                process.env.BACKEND_URL
+            }/api/MarketContractLookup/${this.marketContractLookup.toLowerCase()}`
+        );
 
         const userLogic = new UserLogic(this.web3, deployResult.userLogic);
         this.assetProducingRegistryLogic = new AssetProducingRegistryLogic(
@@ -155,7 +157,7 @@ export class Demo {
                 web3: this.web3
             },
             offChainDataSource: {
-                baseUrl: process.env.BACKEND_URL
+                baseUrl: `${process.env.BACKEND_URL}/api`
             },
             logger: this.logger
         };

@@ -1,19 +1,3 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { Role } from '../../wrappedContracts/RoleManagement';
 import UserOffChainPropertiesSchema from '../../../schemas/UserOffChainProperties.schema.json';
@@ -132,7 +116,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
             }
         );
 
-        await this.putToOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
         return new Entity(this.id, this.configuration).sync();
     }
@@ -177,7 +161,7 @@ export const createUser = async (
 
     user.id = userPropertiesOnChain.id;
 
-    await user.putToOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+    await user.syncOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
 
     if (configuration.logger) {
         configuration.logger.info(`User ${user.id} created`);

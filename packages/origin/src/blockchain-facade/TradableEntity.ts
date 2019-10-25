@@ -1,20 +1,4 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it;
-
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import { Configuration, BlockchainDataModelEntity, Currency } from '@energyweb/utils-general';
 import { TransactionReceipt } from 'web3/types';
@@ -273,7 +257,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         const certificateLogicAddress = this.configuration.blockchainProperties
             .certificateLogicInstance.web3Contract.options.address;
 
-        return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}`;
+        return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}/${this.id}`;
     }
 
     async setOffChainSettlementOptions(options: IOffChainSettlementOptions): Promise<void> {
@@ -281,7 +265,21 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             throw Error('No off chain data source set in the configuration');
         }
 
-        await axios.put(`${this.offChainURL}/${this.id}`, options);
+        let postOrPut;
+        
+        try {
+            await axios.get(this.offChainURL);
+
+            postOrPut = axios.put;
+        } catch (error) {
+            if (error.response.status !== 404) {
+                throw error;
+            }
+
+            postOrPut = axios.post;
+        }
+
+        await postOrPut(this.offChainURL, options);
     }
 
     async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
@@ -289,17 +287,23 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             throw Error('No off chain data source set in the configuration');
         }
 
-        const result = await axios.get(`${this.offChainURL}/${this.id}`, {
-            validateStatus: status => [200, 404].includes(status)
-        });
+        const defaultValues: IOffChainSettlementOptions = {
+            price: 0,
+            currency: Currency.NONE
+        };
 
-        if (result.status === 404 || !result.data) {
-            await this.setOffChainSettlementOptions({
-                price: 0,
-                currency: Currency.NONE
-            });
+        let result: AxiosResponse;
 
-            return await this.getOffChainSettlementOptions();
+        try {
+            result = await axios.get(this.offChainURL);
+        } catch (error) {
+            if (error.response.status !== 404) {
+                throw error;
+            }
+
+            await this.setOffChainSettlementOptions(defaultValues);
+
+            return defaultValues;
         }
 
         return result.data;

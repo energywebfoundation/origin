@@ -38,7 +38,10 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     }
 
     getUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/Supply`;
+        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
+            .web3Contract.options.address;
+
+        return `${this.configuration.offChainDataSource.baseUrl}/Supply/${marketLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
@@ -109,7 +112,7 @@ export const createSupply = async (
         .hexToNumber(tx.logs[0].topics[1])
         .toString();
 
-    await supply.putToOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
+    await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
 
     if (configuration.logger) {
         configuration.logger.info(`Supply ${supply.id} created`);

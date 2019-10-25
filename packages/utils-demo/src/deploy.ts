@@ -14,10 +14,7 @@ async function main() {
     await marketDemo();
 
     if (contractConfig && contractConfig.marketContractLookup) {
-        await axios.put(
-            `${process.env.BACKEND_URL}/MarketContractLookup`,
-            { address: contractConfig.marketContractLookup.toLowerCase() }
-        );
+        await axios.post(`${process.env.BACKEND_URL}/api/MarketContractLookup/${contractConfig.marketContractLookup.toLowerCase()}`);
     }
 }
 

@@ -106,7 +106,7 @@ describe('AssetConsumingLogic Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: process.env.BACKEND_URL
+                baseUrl: `${process.env.BACKEND_URL}/api`
             },
             logger
         };
@@ -151,7 +151,7 @@ describe('AssetConsumingLogic Facade', () => {
                 active: true,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
-                url: `${process.env.BACKEND_URL}/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`
             } as any,
             asset
         );
@@ -217,7 +217,7 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `${process.env.BACKEND_URL}/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`,
+            url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`,
             offChainProperties: {
                 operationalSince: 10,
                 capacityWh: 10,
