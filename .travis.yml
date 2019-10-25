@@ -48,10 +48,16 @@ script:
   - yarn test:ci:ui
 
 deploy:
-  provider: script
-  script: "yarn publish:canary"
-  skip_cleanup: true
-  on:
-    node: "10"
-    branch: master
+  - provider: script
+    script: "yarn publish:canary"
+    skip_cleanup: true
+    on:
+      node: "10"
+      branch: master
+  - provider: script
+    script: "yarn publish:release"
+    skip_cleanup: true
+    on:
+      node: "10"
+      branch: release
 
