@@ -2,7 +2,7 @@ import { Entity, Column, BaseEntity, Unique, PrimaryGeneratedColumn } from 'type
 
 @Entity()
 @Unique(['type', 'contractAddress', 'identifier'])
-export class AnyEntity extends BaseEntity {
+export class JsonEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 

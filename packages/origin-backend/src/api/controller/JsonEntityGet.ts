@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
-import { getRepository, Repository } from "typeorm";
+import { getRepository } from "typeorm";
 
-import { AnyEntity } from "../../entity/AnyEntity";
+import { JsonEntity } from "../../entity/JsonEntity";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export async function anyEntityGetAction(req: Request, res: Response) {
+export async function jsonEntityGetAction(req: Request, res: Response) {
     let { contractAddress, type, identifier } = req.params;
     contractAddress = contractAddress.toLowerCase();
 
     console.log(`<${contractAddress}> GET - ${type} ${identifier}`);
 
-    const anyEntityRepository: Repository<AnyEntity> = getRepository(AnyEntity);
+    const jsonEntityRepository = getRepository(JsonEntity);
 
     if (identifier === undefined || identifier === null) {
-        const entities: AnyEntity[] = await anyEntityRepository.find({
+        const entities = await jsonEntityRepository.find({
             contractAddress,
             type
         });
@@ -24,7 +24,7 @@ export async function anyEntityGetAction(req: Request, res: Response) {
         return;
     }
     
-    const existingEntity: AnyEntity = await anyEntityRepository.findOne({
+    const existingEntity = await jsonEntityRepository.findOne({
         contractAddress,
         type,
         identifier

@@ -10,6 +10,7 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test:e2e": "rm -rf db.sqlite && mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
     "test": "yarn test:e2e",
+    "test:concurrent": "yarn test",
     "clean": "rm -rf dist"
   },
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend#readme",

@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
-import { getRepository, Repository } from "typeorm";
+import { getRepository } from "typeorm";
 
-import { AnyEntity } from "../../entity/AnyEntity";
+import { JsonEntity } from "../../entity/JsonEntity";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export async function anyEntityPutAction(req: Request, res: Response) {let { contractAddress, type, identifier } = req.params;
+export async function jsonEntityPutAction(req: Request, res: Response) {let { contractAddress, type, identifier } = req.params;
     contractAddress = contractAddress.toLowerCase();
 
     console.log(`<${contractAddress}> PUT - ${type} ${identifier}`);
 
-    const anyEntityRepository: Repository<AnyEntity> = getRepository(AnyEntity);
+    const jsonEntityRepository = getRepository(JsonEntity);
 
-    const existingEntity: AnyEntity = await anyEntityRepository.findOne({
+    const existingEntity = await jsonEntityRepository.findOne({
         contractAddress,
         type,
         identifier
@@ -28,7 +28,7 @@ export async function anyEntityPutAction(req: Request, res: Response) {let { con
 
     existingEntity.value = JSON.stringify(req.body);
 
-    await anyEntityRepository.save(existingEntity);
+    await jsonEntityRepository.save(existingEntity);
 
     res.status(STATUS_CODES.SUCCESS).send({
         message: `Resource ${type} with ID ${identifier} updated`

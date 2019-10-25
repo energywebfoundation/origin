@@ -1,27 +1,27 @@
 import { Request, Response } from "express";
-import { getRepository, Repository } from "typeorm";
+import { getRepository } from "typeorm";
 
-import { AnyEntity } from "../../entity/AnyEntity";
+import { JsonEntity } from "../../entity/JsonEntity";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export async function anyEntityPostAction(req: Request, res: Response) {
+export async function jsonEntityPostAction(req: Request, res: Response) {
     let { contractAddress, type, identifier } = req.params;
     contractAddress = contractAddress.toLowerCase();
 
     console.log(`<${contractAddress}> POST - ${type} ${identifier}`);
 
-    const anyEntityRepository: Repository<AnyEntity> = getRepository(AnyEntity);
+    const jsonEntityRepository = getRepository(JsonEntity);
 
     try {
-        const newEntity: AnyEntity = new AnyEntity();
+        const newEntity = new JsonEntity();
 
         newEntity.contractAddress = contractAddress;
         newEntity.identifier = identifier;
         newEntity.type = type;
         newEntity.value = JSON.stringify(req.body);
 
-        await anyEntityRepository.save(newEntity);
+        await jsonEntityRepository.save(newEntity);
     } catch (e) {
         if (e.message.includes('UNIQUE constraint failed')) {
             res.status(STATUS_CODES.CONFLICT).send({

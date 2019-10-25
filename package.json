@@ -53,6 +53,7 @@
         "test:ui": "lerna run test --scope @energyweb/origin-ui --stream",
         "test:contracts": "lerna run test:contracts --scope @energyweb/asset-registry --scope @energyweb/market --scope @energyweb/origin --scope @energyweb/user-registry --stream --parallel",
         "test:demo": "lerna run test:all --scope @energyweb/utils-demo --stream",
+        "test:backend": "lerna run --scope @energyweb/origin-backend --stream test",
         "test:asset-registry": "lerna run --scope @energyweb/asset-registry --stream test:concurrent",
         "test:market": "lerna run --scope @energyweb/market --stream test:concurrent",
         "test:origin": "lerna run --scope @energyweb/origin --stream test:concurrent",

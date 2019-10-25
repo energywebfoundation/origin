@@ -3,10 +3,10 @@ import { Request, Response } from "express";
 import { marketContractLookupGetAction } from './controller/MarketContractLookupGet';
 import { marketContractLookupPostAction } from './controller/MarketContractLookupPost';
 import { marketContractLookupDeleteAction } from './controller/MarketContractLookupDelete';
-import { anyEntityGetAction } from './controller/AnyEntityGet';
-import { anyEntityPostAction } from './controller/AnyEntityPost';
-import { anyEntityPutAction } from './controller/AnyEntityPut';
-import { anyEntityDeleteAction } from './controller/AnyEntityDelete';
+import { jsonEntityGetAction } from './controller/JsonEntityGet';
+import { jsonEntityPostAction } from './controller/JsonEntityPost';
+import { jsonEntityPutAction } from './controller/JsonEntityPut';
+import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
 
 export interface IRoute {
     path: string,
@@ -36,21 +36,21 @@ export const AppRoutes: IRoute[] = [
     {
         path: '/:type/:contractAddress/:identifier?',
         method: 'get',
-        action: anyEntityGetAction
+        action: jsonEntityGetAction
     },
     {
         path: '/:type/:contractAddress/:identifier',
         method: 'post',
-        action: anyEntityPostAction
+        action: jsonEntityPostAction
     },
     {
         path: '/:type/:contractAddress/:identifier',
         method: 'put',
-        action: anyEntityPutAction
+        action: jsonEntityPutAction
     },
     {
         path: '/:type/:contractAddress/:identifier',
         method: 'delete',
-        action: anyEntityDeleteAction
+        action: jsonEntityDeleteAction
     }
 ];

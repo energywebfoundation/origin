@@ -34,8 +34,8 @@ install:
 jobs:
   include:	
     - stage: "Tests"	
-      name: "User & Asset Registry & Origin Tests & Utils General"	
-      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general
+      name: "User, Asset Registry, Origin, Utils General & Backend"	
+      script: yarn test:user-registry && yarn test:asset-registry	&& yarn test:origin && yarn test:event-listener && yarn test:utils-general && yarn test:backend
     - name: "Linting + Market & UI & Matcher & Event Listener Tests & Deploy Demo"    	
       script: yarn lint && yarn test:market && yarn test:ui && yarn test:matcher && yarn test:demo
     
