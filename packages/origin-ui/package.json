@@ -59,7 +59,7 @@
     "redux-saga": "1.1.1",
     "simple-crypto-js": "2.2.0",
     "toastr": "2.1.4",
-    "ts-loader": "6.2.0",
+    "ts-loader": "6.2.1",
     "url-loader": "2.2.0",
     "web3": "1.2.1",
     "webpack": "4.41.2",
