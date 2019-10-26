@@ -13,7 +13,7 @@ const startEventListener = async () => {
     const web3 = new Web3(process.env.WEB3 || 'http://localhost:8550');
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
 
-    const result: AxiosResponse = await axios.get(`${backendUrl}/MarketContractLookup`);
+    const result: AxiosResponse = await axios.get(`${backendUrl}/api/MarketContractLookup`);
 
     const latestMarketContract: string = process.env.MARKET_CONTRACT_ADDRESS || result.data.pop();
 

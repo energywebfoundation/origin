@@ -1,14 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 
-import {
-    createBlockchainProperties as assetCreateBlockchainProperties,
-    ProducingAsset
-} from '@energyweb/asset-registry';
+import { ProducingAsset } from '@energyweb/asset-registry';
+import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 
 import CONFIG from '../config/config.json';
@@ -26,10 +24,10 @@ dotenv.config({
 const CHECK_INTERVAL: number = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
 
 const WEB3 = process.env.WEB3 || 'http://localhost:8545';
-const { ASSET_CONTRACT_LOOKUP_ADDRESS } = process.env;
+
 const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
 
-async function getAssetConf() {
+async function createBlockchainConfiguration() {
     const web3 = new Web3(WEB3);
 
     const logger = Winston.createLogger({
@@ -45,9 +43,16 @@ async function getAssetConf() {
         logger
     };
 
-    conf.blockchainProperties = await assetCreateBlockchainProperties(
+    const result: AxiosResponse = await axios.get(
+        `${process.env.BACKEND_URL}/api/MarketContractLookup`
+    );
+
+    const latestMarketContractLookupAddress: string =
+        process.env.MARKET_CONTRACT_ADDRESS || result.data.pop();
+
+    conf.blockchainProperties = await createBlockchainProperties(
         conf.blockchainProperties.web3,
-        ASSET_CONTRACT_LOOKUP_ADDRESS
+        latestMarketContractLookupAddress
     );
 
     return conf;
@@ -58,63 +63,61 @@ interface IEnergyMeasurement {
     measurementTime: string;
 }
 
-async function getProducingAssetSmartMeterRead(assetId: string): Promise<number> {
-    const conf = await getAssetConf();
+async function startConsumerService() {
+    const conf = await createBlockchainConfiguration();
 
-    const asset = await new ProducingAsset.Entity(assetId, conf).sync();
+    async function getProducingAssetSmartMeterRead(assetId: string): Promise<number> {
+        const asset = await new ProducingAsset.Entity(assetId, conf).sync();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return parseInt((asset.lastSmartMeterReadWh as any) as string, 10);
-}
-
-async function saveProducingAssetSmartMeterRead(
-    meterReading: number,
-    assetId: string,
-    timestamp: number,
-    smartMeterPrivateKey: string
-) {
-    console.log('-----------------------------------------------------------');
-
-    const conf = await getAssetConf();
-
-    const smartMeterAddress: string = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
-        smartMeterPrivateKey
-    ).address;
-
-    conf.blockchainProperties.activeUser = {
-        address: smartMeterAddress,
-        privateKey: smartMeterPrivateKey
-    };
-
-    try {
-        let asset = await new ProducingAsset.Entity(assetId, conf).sync();
-        await asset.saveSmartMeterRead(meterReading, '', timestamp);
-        asset = await asset.sync();
-        conf.logger.verbose(
-            `Producing asset ${assetId} smart meter reading saved: ${meterReading}`
-        );
-    } catch (e) {
-        conf.logger.error(`Could not save smart meter reading for producing asset\n${e}`);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return parseInt((asset.lastSmartMeterReadWh as any) as string, 10);
     }
 
-    console.log('-----------------------------------------------------------\n');
-}
+    async function saveProducingAssetSmartMeterRead(
+        meterReading: number,
+        assetId: string,
+        timestamp: number,
+        smartMeterPrivateKey: string
+    ) {
+        console.log('-----------------------------------------------------------');
 
-async function getEnergyMeasurements(
-    assetId: string,
-    startTime: Moment,
-    endTime: Moment
-): Promise<IEnergyMeasurement[]> {
-    const url = `${ENERGY_API_BASE_URL}/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
-        startTime.unix()
-    )}&timeEnd=${encodeURIComponent(endTime.unix())}`;
+        const smartMeterAddress: string = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
+            smartMeterPrivateKey
+        ).address;
 
-    console.log(`GET ${url}`);
+        conf.blockchainProperties.activeUser = {
+            address: smartMeterAddress,
+            privateKey: smartMeterPrivateKey
+        };
 
-    return (await axios.get(url)).data;
-}
+        try {
+            let asset = await new ProducingAsset.Entity(assetId, conf).sync();
+            await asset.saveSmartMeterRead(meterReading, '', timestamp);
+            asset = await asset.sync();
+            conf.logger.verbose(
+                `Producing asset ${assetId} smart meter reading saved: ${meterReading}`
+            );
+        } catch (e) {
+            conf.logger.error(`Could not save smart meter reading for producing asset\n${e}`);
+        }
 
-(async () => {
+        console.log('-----------------------------------------------------------\n');
+    }
+
+    async function getEnergyMeasurements(
+        assetId: string,
+        startTime: Moment,
+        endTime: Moment
+    ): Promise<IEnergyMeasurement[]> {
+        const url = `${ENERGY_API_BASE_URL}/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
+            startTime.unix()
+        )}&timeEnd=${encodeURIComponent(endTime.unix())}`;
+
+        console.log(`GET ${url}`);
+
+        return (await axios.get(url)).data;
+    }
+
     console.log('Starting reading of energy generation');
 
     let previousTime = moment();
@@ -156,4 +159,6 @@ async function getEnergyMeasurements(
 
         await wait(CHECK_INTERVAL);
     }
-})();
+}
+
+startConsumerService();
