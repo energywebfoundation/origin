@@ -2,11 +2,22 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import { MoreHoriz } from '@material-ui/icons';
-import React from 'react';
-import { withStyles, createStyles, WithStyles } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useTheme, createStyles, makeStyles } from '@material-ui/core';
 import { STYLE_CONFIG } from '../../styles/styleConfig';
 
-const styles = () =>
+export interface ITableAction {
+    name: string;
+    icon: React.ReactNode;
+    onClick: (rowIndex: number) => void;
+}
+
+interface IProps {
+    actions: ITableAction[];
+    id: number;
+}
+
+const useStyles = makeStyles(() =>
     createStyles({
         speedDial: {
             position: 'absolute',
@@ -34,86 +45,53 @@ const styles = () =>
             backgroundColor: STYLE_CONFIG.PRIMARY_COLOR,
             whiteSpace: 'nowrap'
         }
-    });
+    })
+);
 
-export interface ITableAction {
-    name: string;
-    icon: React.ReactNode;
-    onClick: (rowIndex: number) => void;
-}
+export function Actions(props: IProps) {
+    const { actions, id } = props;
+    const [open, setOpen] = useState(false);
 
-interface IProps extends WithStyles<typeof styles> {
-    actions: ITableAction[];
-    id: number;
-}
+    const classes = useStyles(useTheme());
 
-interface IState {
-    open: boolean;
-}
-
-class ActionsClass extends React.Component<IProps, IState> {
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {
-            open: false
-        };
-    }
-
-    render() {
-        const { actions, id, classes } = this.props;
-        const { open } = this.state;
-
-        const openMenu = () => {
-            this.setState({
-                open: true
-            });
-        };
-
-        const closeMenu = () => {
-            this.setState({
-                open: false
-            });
-        };
-
-        return (
-            <SpeedDial
-                FabProps={{
-                    className: classes.speedDialButton
-                }}
-                ariaLabel={`speed-dial-${id}`}
-                icon={
-                    <SpeedDialIcon
-                        icon={<MoreHoriz />}
-                        classes={{
-                            icon: classes.speedDialIcon
-                        }}
-                    />
+    return (
+        <SpeedDial
+            FabProps={{
+                className: classes.speedDialButton
+            }}
+            ariaLabel={`speed-dial-${id}`}
+            icon={
+                <SpeedDialIcon
+                    icon={<MoreHoriz />}
+                    classes={{
+                        icon: classes.speedDialIcon
+                    }}
+                />
+            }
+            onClose={() => setOpen(false)}
+            onOpen={(event, reason) => {
+                if (reason === 'focus') {
+                    return;
                 }
-                onBlur={closeMenu}
-                onClose={closeMenu}
-                onFocus={openMenu}
-                onMouseEnter={openMenu}
-                onMouseLeave={closeMenu}
-                open={open}
-                className={classes.speedDial}
-            >
-                {actions.map(action => (
-                    <SpeedDialAction
-                        key={action.name}
-                        icon={action.icon}
-                        tooltipTitle={action.name}
-                        tooltipOpen
-                        onClick={() => action.onClick(id)}
-                        classes={{
-                            fab: classes.speedDialActionButton,
-                            staticTooltipLabel: classes.speedDialActionTooltip
-                        }}
-                    />
-                ))}
-            </SpeedDial>
-        );
-    }
-}
 
-export const Actions = withStyles(styles)(ActionsClass);
+                setOpen(true);
+            }}
+            open={open}
+            className={classes.speedDial}
+        >
+            {actions.map(action => (
+                <SpeedDialAction
+                    key={action.name}
+                    icon={action.icon}
+                    tooltipTitle={action.name}
+                    tooltipOpen
+                    onClick={() => action.onClick(id)}
+                    classes={{
+                        fab: classes.speedDialActionButton,
+                        staticTooltipLabel: classes.speedDialActionTooltip
+                    }}
+                />
+            ))}
+        </SpeedDial>
+    );
+}
