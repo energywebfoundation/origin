@@ -190,9 +190,10 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                     <span className="timestamp text-muted">
                         {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
                         <a
-                            href={'https://tobalaba.etherscan.com/tx/' + event.txHash}
+                            href={'https://volta-explorer.energyweb.org/tx/' + event.txHash}
                             className="text-muted"
                             target="_blank"
+                            rel="noopener"
                         >
                             {event.txHash}
                         </a>
