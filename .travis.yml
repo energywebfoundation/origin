@@ -48,7 +48,7 @@ script:
 
 deploy:
   - provider: script
-    script: "git checkout master && yarn publish:canary"
+    script: "git checkout master && yarn publish:canary && yarn build:containers"
     skip_cleanup: true
     on:
       node: "12"
