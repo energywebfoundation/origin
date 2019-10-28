@@ -66,7 +66,8 @@
         "test:ci:ui": "yarn test:ui",
         "publish:canary": "lerna publish --canary --exact --yes",
         "publish:release": "lerna version --conventional-commits --exact --yes && lerna changed && lerna publish from-git --yes",
-        "build:containers": "lerna run build:container --stream --since master"
+        "build:containers:canary": "lerna run build:container:canary --stream --since master",
+        "build:containers:release": "lerna run build:container:latest --stream --since master"
     },
     "workspaces": [
         "packages/*"
@@ -76,7 +77,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lerna run --concurrency 1 --stream precommit"
+            "pre-commit": "lerna run --concurrency 1 --stream precommit --since master"
         }
     }
 }

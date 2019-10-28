@@ -1,11 +1,16 @@
-NAME   = energyweb/market-matcher
-TAG    = $(shell yarn info @energyweb/market-matcher@canary --json dist-tags.canary | jq -r .data) 
-IMG    = ${NAME}:${TAG}
-LATEST = ${NAME}:latest
+NAME   				= energyweb/market-matcher
+TAG_CANARY    = $(shell yarn info @energyweb/market-matcher@canary --json dist-tags.canary | jq -r .data) 
+TAG_LATEST    = $(shell yarn info @energyweb/market-matcher --json dist-tags.latest | jq -r .data) 
+LATEST 				= ${NAME}:latest
+CANARY 				= ${NAME}:canary
  
-build-image:
-	@docker build -t ${IMG} .
-	@docker tag ${IMG} ${LATEST}
+build-canary:
+	@docker build --no-cache -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY}.
+	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
+
+build-latest:
+	@docker build --no-cache -t ${NAME}:${TAG_LATEST} .
+	@docker tag ${NAME}:${TAG_LATEST} ${LATEST}
 
 push:
 	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
