@@ -2,7 +2,7 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - '10'
+    - '12'
 
 cache:
     yarn: true
@@ -51,12 +51,12 @@ deploy:
     script: "git checkout master && yarn publish:canary"
     skip_cleanup: true
     on:
-      node: "10"
+      node: "12"
       branch: master
   - provider: script
     script: "git checkout release && yarn publish:release"
     skip_cleanup: true
     on:
-      node: "10"
+      node: "12"
       branch: release
 

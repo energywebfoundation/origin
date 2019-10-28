@@ -1,7 +1,6 @@
-import * as bip39 from 'bip39';
 import program from 'commander';
 import parse from 'csv-parse/lib/sync';
-import hdkey from 'ethereumjs-wallet/hdkey';
+import { HDNode } from 'ethers/utils';
 import fs from 'fs';
 import geoTz from 'geo-tz';
 
@@ -11,19 +10,14 @@ const configLocation = 'config/config.json';
 
 let generatedAccountIndex = CONFIG.config.ACCOUNT_GENERATION.startIndex;
 function generateNextAccount() {
-    const key = hdkey.fromMasterSeed(
-        bip39.mnemonicToSeedSync(CONFIG.config.ACCOUNT_GENERATION.mnemonic)
-    );
-
-    const derived = key.derivePath(`m/44'/60'/0'/0/${generatedAccountIndex}`);
+    const node = HDNode.fromMnemonic(CONFIG.config.ACCOUNT_GENERATION.mnemonic);
+    const wallet = node.derivePath(`m/44'/60'/0'/0/${generatedAccountIndex}`);
 
     generatedAccountIndex++;
 
-    const wallet = derived.getWallet();
-
     return {
-        address: wallet.getChecksumAddressString(),
-        privateKey: `0x${wallet.getPrivateKey().toString('hex')}`
+        address: wallet.publicKey,
+        privateKey: wallet.privateKey
     };
 }
 
