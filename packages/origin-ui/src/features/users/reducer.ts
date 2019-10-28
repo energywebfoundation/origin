@@ -1,16 +1,16 @@
 import { UsersActions, IUsersAction, IUserFetcher } from './actions';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
 
 export interface IUsersState {
-    users: User.Entity[];
+    users: MarketUser.Entity[];
     currentUserId: string;
     fetcher: IUserFetcher;
 }
 
 const fetcher: IUserFetcher = {
     fetch: async (id: string, configuration: IStoreState['configuration']) =>
-        new User.Entity(id, configuration).sync()
+        new MarketUser.Entity(id, configuration).sync()
 };
 
 const defaultState: IUsersState = {

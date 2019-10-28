@@ -12,7 +12,6 @@ export interface IUserOffChainProperties {
     city?: string;
     country?: string;
     state?: string;
-    notifications?: boolean;
 }
 
 export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {

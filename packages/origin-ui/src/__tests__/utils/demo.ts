@@ -6,7 +6,7 @@ import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contrac
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { BACKEND_URL } from '../../utils/api';
-import { MarketLogic } from '@energyweb/market';
+import { MarketLogic, MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
 import axios from 'axios';
 import { User, UserLogic, buildRights, Role } from '@energyweb/user-registry';
@@ -155,7 +155,7 @@ export const deployDemo = async () => {
         roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
         organization: 'admin'
     };
-    const adminPropsOffChain: User.IUserOffChainProperties = {
+    const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Admin',
         surname: 'User',
         email: 'admin@example.com',
@@ -167,7 +167,7 @@ export const deployDemo = async () => {
         state: '',
         notifications: false
     };
-    await User.createUser(adminPropsOnChain, adminPropsOffChain, conf);
+    await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, conf);
 
     const assetManagerPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -177,7 +177,7 @@ export const deployDemo = async () => {
         roles: buildRights([Role.AssetManager]),
         organization: 'Asset Manager organization'
     };
-    const assetManagerPropsOffChain: User.IUserOffChainProperties = {
+    const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Asset',
         surname: 'Manager',
         email: 'assetmanager@example.com',
@@ -189,9 +189,9 @@ export const deployDemo = async () => {
         state: '',
         notifications: false
     };
-    await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
+    await MarketUser.createMarketUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
 
-    await User.createUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
+    await MarketUser.createMarketUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
 
     const assetProducingProps: ProducingAsset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
