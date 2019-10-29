@@ -6,8 +6,14 @@ services:
       - "80:80"
     networks:
       - app-network
+  
   market_matcher:
     image: "energyweb/market-matcher:${TAG}"
+  
+  origin_backend:
+    image: "energyweb/origin-backend:${TAG}"
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
 
 networks:
   app-network:

@@ -1,4 +1,4 @@
-PROJECT				= market-matcher
+PROJECT				= origin-backend
 
 NAME   				= energyweb/${PROJECT}
 TAG_CANARY    = $(shell yarn info @energyweb/${PROJECT}@canary --json dist-tags.canary | jq -r .data) 
