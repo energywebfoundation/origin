@@ -126,7 +126,7 @@ describe('Application[E2E]', () => {
 
             expect(store.getState().router.location.pathname).toBe('/demands/list');
 
-            await wait(2000);
+            await wait(3000);
             await refresh();
 
             expect(
