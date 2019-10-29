@@ -16,7 +16,6 @@ import {
 } from './actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
-import SimpleCrypto from 'simple-crypto-js';
 import { showNotification, NotificationType } from '../../utils/notifications';
 
 function privateKeyToAddress(
@@ -27,24 +26,6 @@ function privateKeyToAddress(
         .address;
 }
 
-function encryptString(plainText: string, password: string): string {
-    const simpleCrypto = new SimpleCrypto(password);
-
-    return simpleCrypto.encrypt(plainText);
-}
-
-function decryptString(encryptedText: string, password: string): string {
-    const simpleCrypto = new SimpleCrypto(password);
-
-    const decryptedText = simpleCrypto.decrypt(encryptedText);
-
-    if (typeof decryptedText === 'string') {
-        return decryptedText;
-    }
-
-    return null;
-}
-
 const ENCRYPTED_ACCOUNTS_STORAGE_KEY = 'AUTHENTICATION_ACCOUNTS';
 
 function loadEncryptedAccountsFromStorage(): IEncryptedAccount[] {
@@ -53,25 +34,46 @@ function loadEncryptedAccountsFromStorage(): IEncryptedAccount[] {
     return stored ? JSON.parse(stored) : [];
 }
 
-function encryptAndStoreAccount(account: IAccount, password: string) {
+function isKeystore(privateKey: string): boolean {
+    try {
+        const parsed = JSON.parse(privateKey);
+
+        return Boolean(parsed && parsed.address);
+    } catch (error) {
+        return false;
+    }
+}
+
+function storeAccount(account: IEncryptedAccount) {
+    const storedAccounts = loadEncryptedAccountsFromStorage();
+
+    if (storedAccounts.some(a => a.address.toLowerCase() === account.address.toLowerCase())) {
+        throw new Error(`Account ${account.address} already imported`);
+    }
+
+    storedAccounts.push(account);
+
+    localStorage.setItem(ENCRYPTED_ACCOUNTS_STORAGE_KEY, JSON.stringify(storedAccounts));
+}
+
+function encryptAndStoreAccount(
+    account: IAccount,
+    password: string,
+    configuration: IStoreState['configuration']
+) {
     if (!account.privateKey) {
         throw new Error(`Can't import account without private key`);
     }
 
-    const storedAccounts = loadEncryptedAccountsFromStorage();
-
-    if (storedAccounts.some(a => a.address.toLowerCase() === account.address)) {
-        throw new Error(`Account ${account.address} already imported`);
-    }
-
     const encryptedAccount: IEncryptedAccount = {
         address: account.address,
-        encryptedPrivateKey: encryptString(account.privateKey, password)
+        encryptedPrivateKey: configuration.blockchainProperties.web3.eth.accounts.encrypt(
+            account.privateKey,
+            password
+        )
     };
 
-    storedAccounts.push(encryptedAccount);
-
-    localStorage.setItem(ENCRYPTED_ACCOUNTS_STORAGE_KEY, JSON.stringify(storedAccounts));
+    storeAccount(encryptedAccount);
 
     return encryptedAccount;
 }
@@ -138,24 +140,62 @@ function* importAccountSaga(): SagaIterator {
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
         try {
-            const address = privateKeyToAddress(action.payload.privateKey, configuration);
-
             const encryptedAccounts: IEncryptedAccount[] = yield select(getEncryptedAccounts);
 
-            if (encryptedAccounts.some(a => a.address.toLowerCase() === address)) {
-                throw new Error(`Account ${address} already imported.`);
+            const privateKey = action.payload.privateKey;
+            let address: string;
+
+            if (isKeystore(privateKey)) {
+                const keystore = JSON.parse(privateKey);
+                address = keystore.address.startsWith('0x')
+                    ? keystore.address
+                    : `0x${keystore.address}`;
+
+                const unlockedKeystore = configuration.blockchainProperties.web3.eth.accounts.decrypt(
+                    keystore,
+                    action.payload.password
+                );
+
+                const account: IAccount = {
+                    address,
+                    privateKey: unlockedKeystore.privateKey
+                };
+
+                yield put(addAccount(account));
+
+                const encryptedAccount: IEncryptedAccount = {
+                    address,
+                    encryptedPrivateKey: keystore
+                };
+
+                storeAccount(encryptedAccount);
+
+                yield put(addEncryptedAccount(encryptedAccount));
+            } else {
+                address = privateKeyToAddress(privateKey, configuration);
+
+                const account: IAccount = {
+                    address,
+                    privateKey: action.payload.privateKey
+                };
+
+                yield put(addAccount(account));
+
+                const encryptedAccount = encryptAndStoreAccount(
+                    account,
+                    action.payload.password,
+                    configuration
+                );
+
+                yield put(addEncryptedAccount(encryptedAccount));
             }
 
-            const account: IAccount = {
-                address,
-                privateKey: action.payload.privateKey
-            };
-
-            yield put(addAccount(account));
-
-            const encryptedAccount = encryptAndStoreAccount(account, action.payload.password);
-
-            yield put(addEncryptedAccount(encryptedAccount));
+            if (
+                address &&
+                encryptedAccounts.some(a => a.address.toLowerCase() === address.toLowerCase())
+            ) {
+                throw new Error(`Account ${address} already imported.`);
+            }
 
             showNotification('Successfully imported account', NotificationType.Success);
         } catch (error) {
@@ -186,12 +226,19 @@ function* unlockAccountSaga(): SagaIterator {
             throw new Error(`Account ${action.payload.address} not found in storage`);
         }
 
-        const privateKey = decryptString(account.encryptedPrivateKey, action.payload.password);
+        const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
         try {
+            const decryptedAccount = configuration.blockchainProperties.web3.eth.accounts.decrypt(
+                account.encryptedPrivateKey,
+                action.payload.password
+            );
+
             const unlockedAccount: IAccount = {
-                address: action.payload.address,
-                privateKey
+                address: action.payload.address.startsWith('0x')
+                    ? action.payload.address
+                    : `0x${action.payload.address}`,
+                privateKey: decryptedAccount.privateKey
             };
 
             yield put(addAccount(unlockedAccount));

@@ -1,3 +1,5 @@
+import { PrivateKey } from 'web3/eth/accounts'; // eslint-disable-line import/no-unresolved
+
 export enum AuthenticationActions {
     addAccount = 'ADD_ACCOUNT',
     setActiveAccount = 'SET_ACTIVE_ACCOUNT',
@@ -14,7 +16,7 @@ export interface IAccount {
 
 export interface IEncryptedAccount {
     address: string;
-    encryptedPrivateKey: string;
+    encryptedPrivateKey: PrivateKey;
 }
 
 export interface IAddAccountAction {

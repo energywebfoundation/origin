@@ -4004,11 +4004,6 @@ crypto-browserify@3.12.0, crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-crypto-js@^3.1.9-1:
-  version "3.1.9-1"
-  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
-  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
-
 css-loader@3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-3.2.0.tgz#bb570d89c194f763627fcf1f80059c6832d009b2"
@@ -12031,13 +12026,6 @@ simple-concat@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.0.tgz#7344cbb8b6e26fb27d66b2fc86f9f6d5997521c6"
   integrity sha1-c0TLuLbib7J9ZrL8hvn21Zl1IcY=
-
-simple-crypto-js@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/simple-crypto-js/-/simple-crypto-js-2.2.0.tgz#ef6413b08a889509cef4ec74bd7ecb413aa9d0a6"
-  integrity sha512-noEQl72TKmQCc46mKO1dg5jB0/M5caFckDreku68Wv6MXb/aue0I/P7RfNLWYqN/aHQjTolZB1w5AM84dIlkMw==
-  dependencies:
-    crypto-js "^3.1.9-1"
 
 simple-get@^2.7.0:
   version "2.8.1"
