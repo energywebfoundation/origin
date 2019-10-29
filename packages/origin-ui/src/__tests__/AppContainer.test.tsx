@@ -50,9 +50,14 @@ describe('Application[E2E]', () => {
             click('account-link-import');
 
             fillInputField('account-import-privateKey', ACCOUNTS.TRADER.privateKey);
-            fillInputField('account-import-password', 'a');
 
             submitForm('account-import-form');
+
+            await refresh();
+
+            fillInputField('request-password-modal-password', 'a');
+
+            submitForm('request-password-modal-form');
 
             await wait(2000);
             await refresh();

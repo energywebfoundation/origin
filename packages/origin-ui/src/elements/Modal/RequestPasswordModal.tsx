@@ -15,6 +15,7 @@ import {
     getRequestPasswordModalCallback,
     getRequestPasswordModalTitle
 } from '../../features/general/selectors';
+import { dataTest } from '../../utils/Helper';
 
 export function RequestPasswordModal() {
     const show = useSelector(getRequestPasswordModalVisible);
@@ -38,6 +39,7 @@ export function RequestPasswordModal() {
                     e.preventDefault();
                     submit();
                 }}
+                {...dataTest('request-password-modal-form')}
             >
                 <DialogTitle>{title || 'Password requested'}</DialogTitle>
                 <DialogContent>
@@ -50,6 +52,7 @@ export function RequestPasswordModal() {
                         className="my-3"
                         autoFocus
                         type="password"
+                        {...dataTest('request-password-modal-password')}
                     />
                 </DialogContent>
                 <DialogActions>
