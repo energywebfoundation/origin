@@ -5,7 +5,7 @@ LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
  
 build-canary:
-	@docker build --no-cache -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY}.
+	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY}.
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
 build-latest:
@@ -13,5 +13,7 @@ build-latest:
 	@docker tag ${NAME}:${TAG_LATEST} ${LATEST}
 
 push:
+ifdef DOCKER_USER
 	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
 	@docker push ${NAME}
+endif
