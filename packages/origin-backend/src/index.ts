@@ -35,6 +35,13 @@ app.use('/api/v1', api);
 export async function startAPI(): Promise<http.Server> {
     const PORT: number = parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
 
+    if (process.env.ORM_TYPE) {
+        ormConfig.type = process.env.ORM_TYPE;
+    }
+    if (process.env.ORM_DATABASE) {
+        ormConfig.database = process.env.ORM_DATABASE;
+    }
+
     let connectionOptions: ConnectionOptions = Object.assign(
         ormConfig as ConnectionOptions,
         { entities: [JsonEntity, MarketContractLookup] }
