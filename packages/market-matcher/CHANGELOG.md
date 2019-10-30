@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.1...@energyweb/market-matcher@1.3.2) (2019-10-30)
+
+
+### Bug Fixes
+
+* fix event-listener and simulator configuration ([#191](https://github.com/energywebfoundation/origin/issues/191)) ([337215e](https://github.com/energywebfoundation/origin/commit/337215ee420d1f852ef29c97e7267ea4c3eb84c3))
+* makefiles escaped variables ([052810c](https://github.com/energywebfoundation/origin/commit/052810c7ecf6343f044ed4e9922fd57107ab61e7))
+* whitespaces ([3380deb](https://github.com/energywebfoundation/origin/commit/3380deb25954f8d82726f748c0f944bebed97ac0))
+
+
+
+
+
 ## [1.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.0...@energyweb/market-matcher@1.3.1) (2019-10-30)
 
 **Note:** Version bump only for package @energyweb/market-matcher
