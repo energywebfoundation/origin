@@ -360,7 +360,8 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
                         64,
                         '0'
                     )
-                ]
+                ],
+                fromBlock: 0
             }
         );
 
@@ -390,7 +391,8 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
                             64,
                             '0'
                         )
-                    ]
+                    ],
+                    fromBlock: 0
                 }
             );
 

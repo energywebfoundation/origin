@@ -2,7 +2,7 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - '10'
+    - '12'
 
 cache:
     yarn: true
@@ -34,6 +34,7 @@ before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
   - git config --global user.name ${GITHUB_USER}
   - git remote set-url origin "https://${GITHUB_TOKEN}@github.com/energywebfoundation/origin.git" > /dev/null 2>&1
+  - git reset --hard
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
 
 install:
@@ -48,15 +49,15 @@ script:
 
 deploy:
   - provider: script
-    script: "git checkout master && yarn publish:canary"
+    script: "git checkout master && yarn publish:canary && yarn build:containers:canary"
     skip_cleanup: true
     on:
-      node: "10"
+      node: "12"
       branch: master
   - provider: script
-    script: "git checkout release && yarn publish:release"
+    script: "git checkout release && yarn publish:release && yarn build:containers:release"
     skip_cleanup: true
     on:
-      node: "10"
+      node: "12"
       branch: release
 
