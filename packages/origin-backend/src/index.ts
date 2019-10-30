@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import * as http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -52,12 +51,4 @@ export async function startAPI(): Promise<http.Server> {
 
     console.log(`Express application is up and running on port ${PORT}`);
     return server;
-}
-
-if (require.main === module) {
-    dotenv.config({
-        path: '../../.env'
-    });
-
-    startAPI();
 }
