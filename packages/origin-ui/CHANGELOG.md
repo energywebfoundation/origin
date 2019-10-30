@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.2.1...@energyweb/origin-ui@0.3.0) (2019-10-30)
+
+
+### Bug Fixes
+
+* makefiles escaped variables ([052810c](https://github.com/energywebfoundation/origin/commit/052810c7ecf6343f044ed4e9922fd57107ab61e7))
+* **deps:** update dependency chart.js to v2.9.0 ([#184](https://github.com/energywebfoundation/origin/issues/184)) ([85cc2f4](https://github.com/energywebfoundation/origin/commit/85cc2f4ec9c554431cfc9fe41a081e0b9a96ec87))
+* **deps:** update dependency chart.js to v2.9.1 ([#194](https://github.com/energywebfoundation/origin/issues/194)) ([7fd3b2f](https://github.com/energywebfoundation/origin/commit/7fd3b2f7ca4cdaa6fb80f6475adcfadd1b4f42c1))
+* **deps:** update dependency ts-loader to v6.2.1 ([#186](https://github.com/energywebfoundation/origin/issues/186)) ([cbac99e](https://github.com/energywebfoundation/origin/commit/cbac99ecd3004759d4f4d539c8eaaaeb33bd35a3))
+* **deps:** update mui monorepo ([#149](https://github.com/energywebfoundation/origin/issues/149)) ([7e67d0e](https://github.com/energywebfoundation/origin/commit/7e67d0e735967f4a2376c8f8a522280b50987f74))
+* **origin:** fix getting all certificates events ([#193](https://github.com/energywebfoundation/origin/issues/193)) ([35f295a](https://github.com/energywebfoundation/origin/commit/35f295a238b8f51a95a206b890d812a65c5e1870))
+* **origin-ui:** fix actions panel showing after closing modal ([#190](https://github.com/energywebfoundation/origin/issues/190)) ([2e7719d](https://github.com/energywebfoundation/origin/commit/2e7719d57a4e41c2fbbc2acded61b567177dc669))
+
+
+### Features
+
+* **origin-ui:** [IN-BROWSER PK] Keystore wallet import ([#197](https://github.com/energywebfoundation/origin/issues/197)) ([82d2d64](https://github.com/energywebfoundation/origin/commit/82d2d6445f2e04aa68c69188350264dcafe84c95))
+
+
+
+
+
+## [0.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.2.0...@energyweb/origin-ui@0.2.1) (2019-10-30)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
 # [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.1.0...@energyweb/origin-ui@0.2.0) (2019-10-25)
 
 
