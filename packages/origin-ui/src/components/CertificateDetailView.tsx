@@ -111,23 +111,19 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
 
                 switch (event.event) {
                     case 'LogNewMeterRead':
-                        label = 'Initial Logging';
+                        label = 'Initial logging';
                         description = 'Logging by Asset #' + event.returnValues._assetId;
                         break;
                     case 'LogCreatedCertificate':
-                        label = 'Certificate Created';
-                        description = 'Certificate created by asset ' + selectedCertificate.assetId;
-                        break;
-                    case 'LogRetireRequest':
-                        label = 'Certificate Claimed';
-                        description = 'Initiated by ' + this.state.owner.organization;
+                        label = 'Certified';
+                        description = 'Local issuer approved the certification request';
                         break;
                     case 'Transfer':
                         if (
                             (event as any).returnValues._from ===
                             '0x0000000000000000000000000000000000000000'
                         ) {
-                            label = 'Set Initial Owner';
+                            label = 'Initial owner';
                             description = (await new User.Entity(
                                 (event as any).returnValues._to,
                                 props.configuration as any
@@ -141,8 +137,8 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                                 (event as any).returnValues._from,
                                 props.configuration as any
                             ).sync()).organization;
-                            label = 'Certificate Owner Change';
-                            description = 'Ownership changed from ' + oldOwner + ' to ' + newOwner;
+                            label = 'Changed ownership';
+                            description = `Transferred from ${oldOwner} to ${newOwner}`;
                         }
                         break;
                     case 'LogPublishForSale':
@@ -150,6 +146,11 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                         break;
                     case 'LogUnpublishForSale':
                         label = 'Certificate unpublished from sale';
+                        break;
+
+                    case 'LogCertificateRetired':
+                        label = 'Certificate claimed';
+                        description = `Initiated by ${this.state.owner.organization}`;
                         break;
 
                     default:
@@ -167,10 +168,23 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
             }
         );
 
-        Promise.all(jointEvents).then(events => {
-            this.setState({
-                events: events as any
+        const resolvedEvents = await Promise.all(jointEvents);
+
+        const certificationRequestEvents = await selectedCertificate.getCertificationRequestEvents();
+
+        if (certificationRequestEvents) {
+            resolvedEvents.push({
+                txHash: certificationRequestEvents.certificationRequestCreatedEvent.transactionHash,
+                label: 'Requested certification',
+                description: 'Asset owner requested certification based on meter reads',
+                timestamp: (await props.configuration.blockchainProperties.web3.eth.getBlock(
+                    certificationRequestEvents.certificationRequestCreatedEvent.blockNumber
+                )).timestamp
             });
+        }
+
+        this.setState({
+            events: resolvedEvents.sort((a, b) => a.timestamp - b.timestamp) as any
         });
     }
 
@@ -199,13 +213,14 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                         </a>
                     </span>
                     <br />
-                    {event.label} - {event.description}
+                    {event.label}
+                    {event.description ? ` - ${event.description}` : ''}
                     <br />
                 </p>
             ));
 
             const asset = this.props.producingAssets.find(
-                (p: ProducingAsset.Entity) => p.id === selectedCertificate.assetId.toString()
+                p => p.id === selectedCertificate.assetId.toString()
             );
 
             data = [

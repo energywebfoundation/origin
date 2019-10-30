@@ -19,6 +19,9 @@ contract CertificateSpecificContract is TradableEntityLogic {
     )
     TradableEntityLogic(_assetContractLookup, _originContractLookup) public { }
 
+    event CertificationRequestCreated(uint assetId, uint readsStartIndex, uint readsEndIndex);
+    event CertificationRequestApproved(uint assetId, uint readsStartIndex, uint readsEndIndex);
+
     enum CertificationRequestStatus {
         Pending,
         Approved
@@ -102,6 +105,8 @@ contract CertificateSpecificContract is TradableEntityLogic {
         ));
 
         setAssetRequestedCertsForSMReadsLength(_assetId, lastRequestedSMReadIndex + 1);
+
+        emit CertificationRequestCreated(_assetId, start, lastRequestedSMReadIndex);
     }
 
     function approveCertificationRequest(uint _certicationRequestIndex)
@@ -125,5 +130,7 @@ contract CertificateSpecificContract is TradableEntityLogic {
         createTradableEntity(request.assetId, energy);
 
         request.status = CertificationRequestStatus.Approved;
+
+        emit CertificationRequestApproved(request.assetId, request.readsStartIndex, request.readsEndIndex);
     }
 }
