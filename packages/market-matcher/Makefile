@@ -16,6 +16,6 @@ build-latest:
 
 push:
 ifdef DOCKER_USER
-	@docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+	@docker login -u ${DOCKER_USER} -p $(shell echo '$$DOCKER_PASS')
 	@docker push ${NAME}
 endif
