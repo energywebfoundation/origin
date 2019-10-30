@@ -96,12 +96,6 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-
-        return await this.send(method, txParams);
-    }
-
     async getOwnerToOperators(_company: string, _escrow: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
             .getOwnerToOperators(_company, _escrow)
@@ -169,12 +163,6 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async removeTokenAndPrice(_entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.removeTokenAndPrice(_entityId);
-
-        return await this.send(method, txParams);
-    }
-
     async addChildren(_certificateId: number, _childId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.addChildren(_certificateId, _childId);
 
@@ -207,49 +195,16 @@ export class EnergyCertificateBundleDB extends GeneralFunctions {
             .call(txParams);
     }
 
-    async publishForSale(
-        _entityId: number,
-        _price: number,
-        _tokenAddress: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.publishForSale(_entityId, _price, _tokenAddress);
-
-        return await this.send(method, txParams);
-    }
-
-    async unpublishForSale(_entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.unpublishForSale(_entityId);
-
-        return await this.send(method, txParams);
-    }
-
     async setTradableEntity(_entityId: number, _entity: any, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setTradableEntity(_entityId, _entity);
 
         return await this.send(method, txParams);
     }
 
-    async setTradableToken(_entityId: number, _token: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setTradableToken(_entityId, _token);
-
-        return await this.send(method, txParams);
-    }
-
-    async getOnChainDirectPurchasePrice(_entityId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods
-            .getOnChainDirectPurchasePrice(_entityId)
-            .call(txParams);
-    }
-
     async getDataLog(_certificateId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.getDataLog(_certificateId);
 
         return await this.send(method, txParams);
-    }
-
-    async getTradableToken(_entityId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getTradableToken(_entityId).call(txParams);
     }
 
     async createEnergyCertificateBundle(

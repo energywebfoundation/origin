@@ -46,11 +46,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     /// @notice Logs when an ApprovedForAll gets triggered
     event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
 
-    /// @notice Logs when an entity is published for sale
-    event LogPublishForSale(uint indexed _entityId, uint _price, address _token);
-    /// @notice Logs when an entity is published for sale
-    event LogUnpublishForSale(uint indexed _entityId);
-
     modifier onlyEntityOwner(uint _entityId) {
         address owner = db.getTradableEntityOwner(_entityId);
         require(owner == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender), "not the entity-owner or market matcher");
@@ -138,25 +133,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         emit Approval(msg.sender, _approved, _entityId);
     }
 
-    /// @notice makes the tradable entity available for sale
-    /// @param _entityId The id of the certificate
-    /// @param _price the purchase price
-    /// @param _tokenAddress the address of the ERC20 token address
-    function publishForSale(uint _entityId, uint _price, address _tokenAddress) external onlyEntityOwner(_entityId) {
-        db.setOnChainDirectPurchasePrice(_entityId, _price);
-        db.setTradableToken(_entityId, _tokenAddress);
-        db.setForSale(_entityId, true);
-
-        emit LogPublishForSale(_entityId, _price, _tokenAddress);
-    }
-
-    /// @notice makes the tradable entity not available for sale
-    /// @param _entityId The id of the certificate
-    function unpublishForSale(uint _entityId) public onlyEntityOwner(_entityId) {
-        db.setForSale(_entityId, false);
-        emit LogUnpublishForSale(_entityId);
-    }
-
     /// @notice sets approve
     /// @param _escrow the address to be approved for all entities of an owner
     /// @param _approved the approved flag
@@ -190,33 +166,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         db = TradableEntityDBInterface(_database);
     }
 
-    /// @notice sets the direct purchase price for onchain
-    /// @param _entityId the id of the entity
-    /// @param _price the on chain direct purchase price
-    function setOnChainDirectPurchasePrice(
-        uint _entityId,
-        uint _price
-    )
-        onlyEntityOwner(_entityId)
-        external
-    {
-        db.setOnChainDirectPurchasePrice(_entityId, _price);
-    }
-
-    /// @notice sets the tradable token (ERC20 contract)
-    /// @param _entityId the id of the entity
-    /// @param _tokenContract the ERC20 tokenContract
-    function setTradableToken(
-        uint _entityId,
-        address _tokenContract
-    )
-        onlyEntityOwner(_entityId)
-        external
-    {
-        db.setTradableToken(_entityId, _tokenContract);
-    }
-
-
     /// @notice Updates the logic contract
     /// @param _newLogic Address of the new logic contract
     function update(address _newLogic)
@@ -225,15 +174,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
     {
         Owned(address(db)).changeOwner(_newLogic);
     }
-
-
-    /// @notice gets the onchain direct purchase price
-    /// @param _entityId the id of the entity
-    /// @return the number of ERC20 required to buy the entity
-    function getOnChainDirectPurchasePrice(uint _entityId) external view returns (uint) {
-        return db.getOnChainDirectPurchasePrice(_entityId);
-    }
-
 
     /// @notice gets the tradableEntity
     /// @param _entityId the id of the entity
@@ -246,13 +186,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
         )
     {
         return TradableEntityDB(address(db)).getTradableEntity(_entityId);
-    }
-
-    /// @notice gets the tradable token
-    /// @param _entityId the id of an entity
-    /// @return the tradable token (ERC20 contract)
-    function getTradableToken(uint _entityId) external view returns (address) {
-        return db.getTradableToken(_entityId);
     }
 
     /// @notice functions that checks whether this contract supports a certain interfaceId
@@ -297,7 +230,6 @@ contract TradableEntityLogic is Updatable, RoleManagement, ERC721, ERC165, Trada
             || isRole(RoleManagement.Role.Matcher, msg.sender), "simpleTransfer, missing rights"
         );
         db.setTradableEntityOwnerAndAddApproval(_entityId, _to, address(0x0));
-        db.removeTokenAndPrice(_entityId);
         emit Transfer(_from, _to, _entityId);
     }
 

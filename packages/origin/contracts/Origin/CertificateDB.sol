@@ -86,9 +86,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             assetId: _assetId,
             owner: _assetOwner,
             energy: _energy,
-            forSale: false,
-            acceptedToken: address(0x0),
-            onChainDirectPurchasePrice: 0,
             approvedAddress: address(0x0)
         });
 
@@ -127,9 +124,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             assetId: parent.tradableEntity.assetId,
             owner: parent.tradableEntity.owner,
             energy: _energy,
-            forSale: parent.tradableEntity.forSale,
-            acceptedToken: address(0x0),
-            onChainDirectPurchasePrice: 0,
             approvedAddress: parent.tradableEntity.approvedAddress
         });
 
@@ -152,9 +146,6 @@ contract CertificateDB is TradableEntityDB, CertificateSpecificDB {
             assetId: parent.tradableEntity.assetId,
             owner: parent.tradableEntity.owner,
             energy: parent.tradableEntity.energy - _energy,
-            forSale: parent.tradableEntity.forSale,
-            acceptedToken: address(0x0),
-            onChainDirectPurchasePrice: 0,
             approvedAddress: parent.tradableEntity.approvedAddress
         });
 

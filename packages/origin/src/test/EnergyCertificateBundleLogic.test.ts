@@ -21,8 +21,6 @@ import {
 } from '@energyweb/asset-registry/contracts';
 import { deploy } from '@energyweb/utils-general';
 import {
-    Erc20TestToken,
-    Erc20TestTokenJSON,
     Erc721TestReceiverJSON,
     TestReceiver
 } from '@energyweb/erc-test-contracts';
@@ -49,7 +47,6 @@ describe('EnergyCertificateBundleLogic', () => {
     let assetRegistry: AssetProducingRegistryLogic;
     let userLogic: UserLogic;
     let testreceiver: TestReceiver;
-    let erc20Test: Erc20TestToken;
     let erc721testReceiverAddress;
 
     dotenv.config({
@@ -190,18 +187,7 @@ describe('EnergyCertificateBundleLogic', () => {
                 }
             )).contractAddress;
 
-            const erc20testContractAddress = (await deploy(
-                web3,
-                Erc20TestTokenJSON.bytecode +
-                    web3.eth.abi.encodeParameter('address', accountTrader).substr(2),
-                {
-                    privateKey: privateKeyDeployment
-                }
-            )).contractAddress;
-
             testreceiver = new TestReceiver(web3, erc721testReceiverAddress);
-
-            erc20Test = new Erc20TestToken(web3, erc20testContractAddress);
         });
 
         it('should have the right owner', async () => {
@@ -453,11 +439,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -602,11 +583,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountTrader);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -722,11 +698,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -855,11 +826,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1123,11 +1089,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1511,11 +1472,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -1688,11 +1644,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -1822,11 +1773,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -1913,11 +1859,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2007,11 +1948,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2116,11 +2052,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -2210,11 +2141,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -2298,11 +2224,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2404,11 +2325,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2568,11 +2484,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -2660,11 +2571,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -2821,11 +2727,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -2904,11 +2805,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -2935,11 +2831,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(tradableEntity.approvedAddress, approvedAccount);
             });
 
@@ -3015,11 +2906,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3099,11 +2985,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -3130,11 +3011,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(tradableEntity.approvedAddress, approvedAccount);
             });
 
@@ -3227,11 +3103,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -3310,11 +3181,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -3341,11 +3207,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(tradableEntity.approvedAddress, approvedAccount);
             });
 
@@ -3438,11 +3299,6 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -3521,268 +3377,11 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
             });
 
-            it('should throw when trying to call setTradableToken as admin', async () => {
-                let failed = false;
-                try {
-                    await energyCertificateBundleLogic.setTradableToken(
-                        13,
-                        '0x1000000000000000000000000000000000000006',
-                        { privateKey: privateKeyDeployment }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to call setTradableToken as trader', async () => {
-                let failed = false;
-                try {
-                    await energyCertificateBundleLogic.setTradableToken(
-                        13,
-                        '0x1000000000000000000000000000000000000006',
-                        { privateKey: traderPK }
-                    );
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should call setTradableToken as owner', async () => {
-                await energyCertificateBundleLogic.setTradableToken(
-                    13,
-                    '0x1000000000000000000000000000000000000006',
-                    { privateKey: assetOwnerPK }
-                );
-
-                const cert = await energyCertificateBundleLogic.getBundle(13);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 13);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x1000000000000000000000000000000000000006'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should throw when trying to call setOnChainDirectPurchasePrice as admin', async () => {
-                let failed = false;
-                try {
-                    await energyCertificateBundleLogic.setOnChainDirectPurchasePrice(13, 1000, {
-                        privateKey: privateKeyDeployment
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should throw when trying to call setOnChainDirectPurchasePrice as trader', async () => {
-                let failed = false;
-                try {
-                    await energyCertificateBundleLogic.setOnChainDirectPurchasePrice(13, 1000, {
-                        privateKey: traderPK
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should call setOnChainDirectPurchasePrice as owner', async () => {
-                await energyCertificateBundleLogic.setOnChainDirectPurchasePrice(13, 1000, {
-                    privateKey: assetOwnerPK
-                });
-
-                const cert = await energyCertificateBundleLogic.getBundle(13);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 13);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x1000000000000000000000000000000000000006'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 1000);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should reset onChainPrice and token when transfering(transferFrom) a bundle', async () => {
-                const tx = await energyCertificateBundleLogic.transferFrom(
-                    accountAssetOwner,
-                    accountTrader,
-                    13,
-                    { privateKey: assetOwnerPK }
-                );
-
-                if (isGanache) {
-                    const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
-                    );
-
-                    assert.equal(allTransferEvents.length, 1);
-
-                    assert.equal(allTransferEvents.length, 1);
-                    assert.equal(allTransferEvents[0].event, 'Transfer');
-                    assert.deepEqual(allTransferEvents[0].returnValues, {
-                        0: accountAssetOwner,
-                        1: accountTrader,
-                        2: '13',
-                        _from: accountAssetOwner,
-                        _to: accountTrader,
-                        _tokenId: '13'
-                    });
-                }
-
-                const cert = await energyCertificateBundleLogic.getBundle(13);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 13);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-
-                assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 14);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 1);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
-                assert.equal(
-                    await energyCertificateBundleLogic.balanceOf(
-                        testreceiver.web3Contract.options.address
-                    ),
-                    8
-                );
-            });
-
-            it('should be able to transfer bundle again + auto retire', async () => {
-                const tx = await energyCertificateBundleLogic.transferFrom(
-                    accountTrader,
-                    accountTrader,
-                    13,
-                    { privateKey: traderPK }
-                );
-                if (isGanache) {
-                    const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
-                    );
-
-                    assert.equal(allTransferEvents.length, 1);
-
-                    assert.equal(allTransferEvents.length, 1);
-                    assert.equal(allTransferEvents[0].event, 'Transfer');
-                    assert.deepEqual(allTransferEvents[0].returnValues, {
-                        0: accountTrader,
-                        1: accountTrader,
-                        2: '13',
-                        _from: accountTrader,
-                        _to: accountTrader,
-                        _tokenId: '13'
-                    });
-                }
-
-                const cert = await energyCertificateBundleLogic.getBundle(13);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 13);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 2);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-
-                assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 14);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 1);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
-                assert.equal(
-                    await energyCertificateBundleLogic.balanceOf(
-                        testreceiver.web3Contract.options.address
-                    ),
-                    8
-                );
-            });
             it('should when trying to call transferFrom on retired bundle', async () => {
                 let failed = false;
                 try {
@@ -3854,8 +3453,8 @@ describe('EnergyCertificateBundleLogic', () => {
                 }
 
                 assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 15);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 2);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
+                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 3);
+                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 4);
                 assert.equal(
                     await energyCertificateBundleLogic.balanceOf(
                         testreceiver.web3Contract.options.address
@@ -3882,194 +3481,8 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should set acceptedToken and onChainDirectPurchasePrice', async () => {
-                await energyCertificateBundleLogic.setTradableToken(
-                    14,
-                    '0x1000000000000000000000000000000000000006',
-                    { privateKey: assetOwnerPK }
-                );
-
-                await energyCertificateBundleLogic.setOnChainDirectPurchasePrice(14, 1000, {
-                    privateKey: assetOwnerPK
-                });
-                const cert = await energyCertificateBundleLogic.getBundle(14);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 14);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x1000000000000000000000000000000000000006'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 1000);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should reset onChainPrice and token when transfering(safeTransferFrom without data) a bundle', async () => {
-                const tx = await energyCertificateBundleLogic.safeTransferFrom(
-                    accountAssetOwner,
-                    testreceiver.web3Contract.options.address,
-                    '14',
-                    null,
-                    { privateKey: assetOwnerPK }
-                );
-
-                if (isGanache) {
-                    const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
-                    );
-
-                    assert.equal(allTransferEvents.length, 1);
-
-                    assert.equal(allTransferEvents.length, 1);
-                    assert.equal(allTransferEvents[0].event, 'Transfer');
-                    assert.deepEqual(allTransferEvents[0].returnValues, {
-                        0: accountAssetOwner,
-                        1: testreceiver.web3Contract.options.address,
-                        2: '14',
-                        _from: accountAssetOwner,
-                        _to: testreceiver.web3Contract.options.address,
-                        _tokenId: '14'
-                    });
-                }
-
-                const cert = await energyCertificateBundleLogic.getBundle(14);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 14);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-
-                assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 15);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 1);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
-                assert.equal(
-                    await energyCertificateBundleLogic.balanceOf(
-                        testreceiver.web3Contract.options.address
-                    ),
-                    9
-                );
-            });
-
-            it('should be able to transfer bundle again + auto retire #2', async () => {
-                await userLogic.createUser(
-                    'propertiesDocumentHash',
-                    'documentDBURL',
-                    testreceiver.web3Contract.options.address,
-                    'TestReceiver',
-                    { privateKey: privateKeyDeployment }
-                );
-
-                await userLogic.setRoles(
-                    testreceiver.web3Contract.options.address,
-                    buildRights([Role.Trader]),
-                    {
-                        privateKey: privateKeyDeployment
-                    }
-                );
-                const tx = await testreceiver.safeTransferFrom(
-                    testreceiver.web3Contract.options.address,
-                    testreceiver.web3Contract.options.address,
-                    '14',
-                    null,
-                    { privateKey: privateKeyDeployment }
-                );
-                if (isGanache) {
-                    const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
-                    );
-
-                    assert.equal(allTransferEvents.length, 1);
-
-                    assert.equal(allTransferEvents.length, 1);
-                    assert.equal(allTransferEvents[0].event, 'Transfer');
-                    assert.deepEqual(allTransferEvents[0].returnValues, {
-                        0: testreceiver.web3Contract.options.address,
-                        1: testreceiver.web3Contract.options.address,
-                        2: '14',
-                        _from: testreceiver.web3Contract.options.address,
-                        _to: testreceiver.web3Contract.options.address,
-                        _tokenId: '14'
-                    });
-                }
-
-                const cert = await energyCertificateBundleLogic.getBundle(14);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 14);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 2);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-
-                assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 15);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 1);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
-                assert.equal(
-                    await energyCertificateBundleLogic.balanceOf(
-                        testreceiver.web3Contract.options.address
-                    ),
-                    9
                 );
             });
 
@@ -4135,13 +3548,13 @@ describe('EnergyCertificateBundleLogic', () => {
                 }
 
                 assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 16);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 2);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
+                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 4);
+                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 4);
                 assert.equal(
                     await energyCertificateBundleLogic.balanceOf(
                         testreceiver.web3Contract.options.address
                     ),
-                    9
+                    8
                 );
             });
 
@@ -4163,179 +3576,8 @@ describe('EnergyCertificateBundleLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should set acceptedToken and onChainDirectPurchasePrice', async () => {
-                await energyCertificateBundleLogic.setTradableToken(
-                    15,
-                    '0x1000000000000000000000000000000000000006',
-                    { privateKey: assetOwnerPK }
-                );
-
-                await energyCertificateBundleLogic.setOnChainDirectPurchasePrice(15, 1000, {
-                    privateKey: assetOwnerPK
-                });
-                const cert = await energyCertificateBundleLogic.getBundle(15);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 15);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountAssetOwner);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x1000000000000000000000000000000000000006'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 1000);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should reset onChainPrice and token when transfering(safeTransferFrom with data) a bundle', async () => {
-                const tx = await energyCertificateBundleLogic.safeTransferFrom(
-                    accountAssetOwner,
-                    testreceiver.web3Contract.options.address,
-                    '15',
-                    '0x01',
-                    { privateKey: assetOwnerPK }
-                );
-
-                if (isGanache) {
-                    const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
-                    );
-
-                    assert.equal(allTransferEvents.length, 1);
-
-                    assert.equal(allTransferEvents.length, 1);
-                    assert.equal(allTransferEvents[0].event, 'Transfer');
-                    assert.deepEqual(allTransferEvents[0].returnValues, {
-                        0: accountAssetOwner,
-                        1: testreceiver.web3Contract.options.address,
-                        2: '15',
-                        _from: accountAssetOwner,
-                        _to: testreceiver.web3Contract.options.address,
-                        _tokenId: '15'
-                    });
-                }
-
-                const cert = await energyCertificateBundleLogic.getBundle(15);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 15);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 1);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-
-                assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 16);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 1);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
-                assert.equal(
-                    await energyCertificateBundleLogic.balanceOf(
-                        testreceiver.web3Contract.options.address
-                    ),
-                    10
-                );
-            });
-
-            it('should be able to transfer bundle again + auto retire #3', async () => {
-                const tx = await testreceiver.safeTransferFrom(
-                    testreceiver.web3Contract.options.address,
-                    testreceiver.web3Contract.options.address,
-                    '15',
-                    '0x01',
-                    { privateKey: privateKeyDeployment }
-                );
-                if (isGanache) {
-                    const allTransferEvents = await energyCertificateBundleLogic.getAllTransferEvents(
-                        { fromBlock: tx.blockNumber, toBlock: tx.blockNumber }
-                    );
-
-                    assert.equal(allTransferEvents.length, 1);
-
-                    assert.equal(allTransferEvents.length, 1);
-                    assert.equal(allTransferEvents[0].event, 'Transfer');
-                    assert.deepEqual(allTransferEvents[0].returnValues, {
-                        0: testreceiver.web3Contract.options.address,
-                        1: testreceiver.web3Contract.options.address,
-                        2: '15',
-                        _from: testreceiver.web3Contract.options.address,
-                        _to: testreceiver.web3Contract.options.address,
-                        _tokenId: '15'
-                    });
-                }
-
-                const cert = await energyCertificateBundleLogic.getBundle(15);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Retired);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 15);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 2);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-
-                assert.equal(await energyCertificateBundleLogic.getBundleListLength(), 16);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountAssetOwner), 1);
-                assert.equal(await energyCertificateBundleLogic.balanceOf(accountTrader), 5);
-                assert.equal(
-                    await energyCertificateBundleLogic.balanceOf(
-                        testreceiver.web3Contract.options.address
-                    ),
-                    10
                 );
             });
 

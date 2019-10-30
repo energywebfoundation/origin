@@ -44,16 +44,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         external functions
      */
 
-    /// @notice makes the tradable entity available for sale
-    /// @param _entityId the id of the tradableEntity
-    /// @param _isForSale true/false
-    function setForSale(uint _entityId, bool _isForSale) external onlyOwner {
-        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
-        require(te.forSale != _isForSale, "forSale flag is already set to the required value.");
-
-        te.forSale = _isForSale;
-    }
-
     /// @notice adds approval for an entity (external call)
     /// @param _entityId the id of the entity
     /// @param _approve the address to be approved
@@ -65,23 +55,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         onlyOwner
     {
         addApproval(_entityId, _approve);
-    }
-
-    /// @notice removes accepted token and the price for an entity
-    /// @dev should be called after the transfer of an entity
-    /// @param _entityId the id of the entity
-    function removeTokenAndPrice(uint _entityId) external onlyOwner {
-        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
-        te.onChainDirectPurchasePrice = 0;
-        te.acceptedToken = address(0);
-    }
-
-    /// @notice sets the price (as ERC20 token) for direct onchain purchasement
-    /// @param _entityId the id of the entity
-    /// @param _price the new price (as ERC20 tokens)
-    function setOnChainDirectPurchasePrice(uint _entityId, uint _price) external onlyOwner {
-        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
-        te.onChainDirectPurchasePrice = _price;
     }
 
     /// @notice set the flag whether an escrow is allowed to transfer entites of a company
@@ -112,20 +85,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         setTradableEntityOwner(_entityId, _owner);
     }
 
-    /// @notice sets the tradable token (ERC20 contracts) of an entity
-    /// @param _entityId the entity-id
-    /// @param _token the ERC20-tokenaddress
-    function setTradableToken(
-        uint _entityId,
-        address _token
-    )
-        external
-        onlyOwner
-    {
-        TradableEntityContract.TradableEntity storage te = getTradableEntityInternally(_entityId);
-        te.acceptedToken = _token;
-    }
-
     /// @notice gets the approved address for an entity
     /// @param _entityId the id of an entity
     /// @return the approved address of an entity
@@ -145,19 +104,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         return tokenAmountMapping[_owner];
     }
 
-    /// @notice gets the price for a direct purchase onchain
-    /// @param _entityId the entity-id
-    function getOnChainDirectPurchasePrice(
-        uint _entityId
-    )
-        external
-        onlyOwner
-        view
-        returns (uint)
-    {
-        return getTradableEntity(_entityId).onChainDirectPurchasePrice;
-    }
-
     /// @notice returns whether the provided address is allowed to transfer certificates for a company
     /// @param _company address owning tokens
     /// @param _escrow the escrow / matcher
@@ -172,20 +118,6 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         returns (bool)
     {
         return ownerToOperators[_company][_escrow];
-    }
-
-    /// @notice gets the ERC20-token address for an entity
-    /// @param _entityId the entity-id
-    /// @return the ERC20-token address
-    function getTradableToken(
-        uint _entityId
-    )
-        external
-        onlyOwner
-        view
-        returns (address)
-    {
-        return getTradableEntity(_entityId).acceptedToken;
     }
 
     /// @notice gets the owner of a tradableEntity
@@ -240,6 +172,5 @@ contract TradableEntityDB is Owned,TradableEntityDBInterface {
         address oldOwner = te.owner;
         te.owner = _owner;
         changeCertOwner(oldOwner,_owner);
-
     }
 }

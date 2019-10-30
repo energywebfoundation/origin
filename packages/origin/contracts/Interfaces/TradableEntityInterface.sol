@@ -20,26 +20,6 @@ pragma experimental ABIEncoderV2;
 interface TradableEntityInterface {
 
     function requestCertificates(uint _assetId, uint lastRequestedSMReadIndex) external;
-    
-    /// @notice sets the tradable token (ERC20 contract) for an entity
-    /// @param _entityId the id of the entity
-    /// @param _tokenContract the ERC20 token contract
-    function setTradableToken(uint _entityId, address _tokenContract) external;
-
-    /// @notice sets the onchain direct purchase price for an entity
-    /// @param _entityId the id of the entity
-    /// @param _price the price of the entity
-    function setOnChainDirectPurchasePrice(uint _entityId, uint _price) external;
-
-    /// @notice gets the tradable token (ERC20 contract) for an entity
-    /// @param _entityId the id of the entity
-    /// @return the address of the ERC20 token contract
-    function getTradableToken(uint _entityId) external view returns (address);
-
-    /// @notice gets the onchain direct purchase price for an entity
-    /// @param _entityId the id of the entity
-    /// @return the onchain direct purchase price for an entity
-    function getOnChainDirectPurchasePrice(uint _entityId) external view returns (uint);
 
     /// @notice returns whether the contracts supports the provided interface-id
     /// @param _interfaceID the interface id

@@ -59,29 +59,22 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
     /// @param _assetId the asset-id that produced the energy
     /// @param _owner the asset-owner (= the new entity-owner)
     /// @param _energy the amount of energy produced
-    /// @param _acceptedToken the accepted ERC20-Token
-    /// @param _onChainDirectPurchasePrice the price set onchain for direct purchase (using an ERC20 contract)
     function createTradableEntityEntry(
         uint _assetId,
         address _owner,
-        uint _energy,
-        address _acceptedToken,
-        uint _onChainDirectPurchasePrice
+        uint _energy
     )
         external
         onlyOwner
         returns (uint _entityId)
     {
-
         TradableEntity memory te = TradableEntity({
             assetId: _assetId,
             owner: _owner,
             energy: _energy,
-            forSale: false,
-            acceptedToken: _acceptedToken,
-            onChainDirectPurchasePrice: _onChainDirectPurchasePrice,
             approvedAddress: address(0x0)
         });
+
         energyList.push(Energy({tradableEntity: te}));
         _entityId = energyList.length>0?energyList.length-1:0;
         tokenAmountMapping[_owner]++;
@@ -103,32 +96,6 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
         addApproval(_entityId, _approve);
     }
 
-    /// @notice sets the tradable ERC20-token
-    /// @param _entityId the id of the entity
-    /// @param _token address of the erc20-token
-    function setTradableToken(
-        uint _entityId,
-        address _token
-    )
-        external
-        onlyOwner
-    {
-        energyList[_entityId].tradableEntity.acceptedToken = _token;
-    }
-
-    /// @notice sets the onchain price (as erc20 token) for direct purchasement
-    /// @param _entityId the id of the entity
-    /// @param _price the price for a direct onchain purchasement
-    function setOnChainDirectPurchasePrice(
-        uint _entityId,
-        uint _price
-    )
-        external
-        onlyOwner
-    {
-        energyList[_entityId].tradableEntity.onChainDirectPurchasePrice = _price;
-    }
-
     /// @notice gets the approved-address of an entity
     /// @param _entityId the id of the entity
     /// @return approved address of an entity
@@ -141,20 +108,6 @@ contract EnergyDB is TradableEntityDB, TradableEntityContract {
     /// @return the amount of bundles the provided address owns
     function getBalanceOf(address _owner) external onlyOwner view returns (uint){
         return tokenAmountMapping[_owner];
-    }
-
-    /// @notice gets thes tradable (accepted) token for an entity
-    /// @param _entityId the id of the entity
-    /// @return ERC20-token address
-    function getTradableToken(uint _entityId) external onlyOwner view returns (address){
-        return energyList[_entityId].tradableEntity.acceptedToken;
-    }
-
-    /// @notice gets the ERC20 price for an entity
-    /// @param _entityId the id of the entity
-    /// @return the ERC20 price for an entity
-    function getOnChainDirectPurchasePrice(uint _entityId) external onlyOwner view returns (uint){
-        return energyList[_entityId].tradableEntity.onChainDirectPurchasePrice;
     }
 
     /// @notice gets the owner of a tradableEntity

@@ -55,12 +55,6 @@ export class EnergyDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-
-        return await this.send(method, txParams);
-    }
-
     async getOwnerToOperators(_company: string, _escrow: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
             .getOwnerToOperators(_company, _escrow)
@@ -77,16 +71,12 @@ export class EnergyDB extends GeneralFunctions {
         _assetId: number,
         _owner: string,
         _energy: number,
-        _acceptedToken: string,
-        _onChainDirectPurchasePrice: number,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createTradableEntityEntry(
             _assetId,
             _owner,
-            _energy,
-            _acceptedToken,
-            _onChainDirectPurchasePrice
+            _energy
         );
 
         return await this.send(method, txParams);
@@ -110,12 +100,6 @@ export class EnergyDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async removeTokenAndPrice(_entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.removeTokenAndPrice(_entityId);
-
-        return await this.send(method, txParams);
-    }
-
     async setOwnerToOperators(
         _company: string,
         _escrow: string,
@@ -127,37 +111,9 @@ export class EnergyDB extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async publishForSale(_entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.publishForSale(_entityId);
-
-        return await this.send(method, txParams);
-    }
-
-    async unpublishForSale(_entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.unpublishForSale(_entityId);
-
-        return await this.send(method, txParams);
-    }
-
     async setTradableEntity(_entityId: number, _entity: any, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setTradableEntity(_entityId, _entity);
 
         return await this.send(method, txParams);
-    }
-
-    async setTradableToken(_entityId: number, _token: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setTradableToken(_entityId, _token);
-
-        return await this.send(method, txParams);
-    }
-
-    async getOnChainDirectPurchasePrice(_entityId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods
-            .getOnChainDirectPurchasePrice(_entityId)
-            .call(txParams);
-    }
-
-    async getTradableToken(_entityId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getTradableToken(_entityId).call(txParams);
     }
 }

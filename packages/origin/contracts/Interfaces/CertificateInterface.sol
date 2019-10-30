@@ -22,25 +22,10 @@ import "../../contracts/Origin/CertificateDB.sol";
 
 interface CertificateInterface {
 
-    /// @notice buys a certificate
-    /// @param _certificateId the id of the certificate to be bought
-    function buyCertificate(uint _certificateId) external;
-
-    /// @notice buys a set of certificates
-    /// @param _idArray the ids of the certificates to be bought
-    function buyCertificateBulk(uint[] calldata _idArray) external;
-
     /// @notice splits a certificate
     /// @param _certificateId the id of the certificate to be splitted
     /// @param _energy the energy to be splitted from the parent certificate
     function splitCertificate(uint _certificateId, uint _energy) external;
-
-    /// @notice Splits a certificate and publishes the first split certificate for sale
-    /// @param _certificateId The id of the certificate
-    /// @param _energy The amount of energy in Wh for the 1st certificate
-    /// @param _price the purchase price
-    /// @param _tokenAddress the address of the ERC20 token address
-    function splitAndPublishForSale(uint _certificateId, uint _energy, uint _price, address _tokenAddress) external;
 
     /// @notice gets the certificate
     /// @param _certificateId the id of the certificate

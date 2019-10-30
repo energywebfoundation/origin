@@ -18,6 +18,8 @@ export async function migrateCertificateRegistryContracts(
     return new Promise<any>(async (resolve, reject) => {
         const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
 
+        console.log("Deploying OriginContractLookup...")
+
         const originContractLookupAddress = (await deploy(web3, OriginContractLookupJSON.bytecode, {
             privateKey: privateKeyDeployment
         })).contractAddress;
@@ -28,6 +30,8 @@ export async function migrateCertificateRegistryContracts(
                 [assetContractLookupAddress, originContractLookupAddress]
             )
             .substr(2);
+
+        console.log("Deploying CertificateLogic...")
 
         const certificateLogicAddress = (await deploy(
             web3,
@@ -41,6 +45,8 @@ export async function migrateCertificateRegistryContracts(
             { privateKey: privateKeyDeployment }
         )).contractAddress;
 
+        console.log("Deploying CertificateDB...")
+
         const certificateDBAddress = (await deploy(
             web3,
             CertificateDBJSON.bytecode +
@@ -52,6 +58,8 @@ export async function migrateCertificateRegistryContracts(
             web3,
             originContractLookupAddress
         );
+
+        console.log("Initializing OriginContractLookup...")
 
         await originContractLookup.init(
             assetContractLookupAddress,

@@ -7,15 +7,7 @@ export interface IOnChainProperties {
     assetId: number;
     owner: string;
     energy: number;
-    forSale: boolean;
-    acceptedToken?: number;
-    onChainDirectPurchasePrice: number;
     approvedAddress: string;
-}
-
-export interface IOffChainSettlementOptions {
-    price: number;
-    currency: Currency;
 }
 
 export const getBalance = async (
@@ -37,22 +29,6 @@ export const getApproved = async (
     configuration: Configuration.Entity
 ): Promise<string> => {
     return configuration.blockchainProperties.certificateLogicInstance.getApproved(certId);
-};
-
-export const getTradableToken = async (
-    certId: number,
-    configuration: Configuration.Entity
-): Promise<string> => {
-    return configuration.blockchainProperties.certificateLogicInstance.getTradableToken(certId);
-};
-
-export const getOnchainDirectPurchasePrice = async (
-    certId: number,
-    configuration: Configuration.Entity
-): Promise<number> => {
-    return configuration.blockchainProperties.certificateLogicInstance.getOnchainDirectPurchasePrice(
-        certId
-    );
 };
 
 export const isApprovedForAll = async (
@@ -91,14 +67,9 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     assetId: number;
     owner: string;
     energy: number;
-    forSale: boolean;
-    acceptedToken?: number;
-    onChainDirectPurchasePrice: number;
     approvedAddress: string;
     
     initialized: boolean;
-    
-    offChainSettlementOptions: IOffChainSettlementOptions;
 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
@@ -173,139 +144,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         );
     }
 
-    async setTradableToken(token: string): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.setTradableToken(
-                this.id,
-                token,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.setTradableToken(
-                this.id,
-                token,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
-    async setOnChainDirectPurchasePrice(price: number): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.setOnChainDirectPurchasePrice(
-                this.id,
-                price,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.setOnChainDirectPurchasePrice(
-                this.id,
-                price,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
-    async getTradableToken(): Promise<string> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getTradableToken(
-            this.id
-        );
-    }
-
-    async getOnChainDirectPurchasePrice(): Promise<number> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getOnChainDirectPurchasePrice(
-            this.id
-        );
-    }
-
-    async publishForSale(price: number, tokenAddress: any): Promise<any> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
-                this.id,
-                price,
-                tokenAddress,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
-                this.id,
-                price,
-                tokenAddress,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
-    async unpublishForSale(): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.unpublishForSale(
-                this.id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.unpublishForSale(
-                this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
     async getOwner(): Promise<string> {
         return this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
-    }
-
-    get offChainURL() {
-        const certificateLogicAddress = this.configuration.blockchainProperties
-            .certificateLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}/${this.id}`;
-    }
-
-    async setOffChainSettlementOptions(options: IOffChainSettlementOptions): Promise<void> {
-        if (!this.configuration.offChainDataSource) {
-            throw Error('No off chain data source set in the configuration');
-        }
-
-        let postOrPut;
-        
-        try {
-            await axios.get(this.offChainURL);
-
-            postOrPut = axios.put;
-        } catch (error) {
-            if (error.response.status !== 404) {
-                throw error;
-            }
-
-            postOrPut = axios.post;
-        }
-
-        await postOrPut(this.offChainURL, options);
-    }
-
-    async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
-        if (!this.configuration.offChainDataSource) {
-            throw Error('No off chain data source set in the configuration');
-        }
-
-        const defaultValues: IOffChainSettlementOptions = {
-            price: 0,
-            currency: Currency.NONE
-        };
-
-        let result: AxiosResponse;
-
-        try {
-            result = await axios.get(this.offChainURL);
-        } catch (error) {
-            if (error.response.status !== 404) {
-                throw error;
-            }
-
-            await this.setOffChainSettlementOptions(defaultValues);
-
-            return defaultValues;
-        }
-
-        return result.data;
     }
 }

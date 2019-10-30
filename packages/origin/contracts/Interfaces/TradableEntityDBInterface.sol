@@ -19,11 +19,6 @@ pragma experimental ABIEncoderV2;
 
 interface TradableEntityDBInterface {
 
-    /// @notice sets the forSale flag
-    /// @param _entityId the id of the tradableEntity
-    /// @param _isForSale true/false
-    function setForSale(uint _entityId, bool _isForSale) external;
-
     /// @notice adds an approved address to an entity
     /// @param _entityId the id of the entity
     /// @param _approve the approved address
@@ -33,20 +28,6 @@ interface TradableEntityDBInterface {
     /// @param _entityId the id of the entity
     /// @param _owner the new owner
     function setTradableEntityOwnerExternal(uint _entityId, address _owner) external;
-
-    /// @notice sets a tradable token for an entity
-    /// @param _entityId the entityId
-    /// @param _token the address of the ERC20 token address
-    function setTradableToken(uint _entityId, address _token) external;
-
-    /// @notice sets the onchain direct purchase price
-    /// @param _entityId the id of the entity
-    /// @param _price the price
-    function setOnChainDirectPurchasePrice(uint _entityId, uint _price) external;
-
-    /// @notice removes accepted token and onchain direct purchase price for an entity
-    /// @param _entityId the id of the entity
-    function removeTokenAndPrice(uint _entityId) external;
 
     /// @notice sets the flags whether an escrow can transfer the certificates of a company
     /// @param _company the owner of certificates
@@ -70,20 +51,10 @@ interface TradableEntityDBInterface {
     /// @return the balance of the account
     function getBalanceOf(address _owner) external view returns (uint);
 
-    /// @notice gets the tradable-token (ERC20) for an entity
-    /// @param _entityId the id of the entity
-    /// @return the address of a ERC20 token
-    function getTradableToken(uint _entityId) external view returns (address);
-
     /// @notice gets the owner of a tradable entity
     /// @param _entityId the id of the entity
     /// @return the owner of a tradable entity
     function getTradableEntityOwner(uint _entityId) external view returns (address);
-
-    /// @notice gets the onchain direct purchase price for an entity
-    /// @param _entityId the id of the entity
-    /// @return the onchain direct purchase price for an entity
-    function getOnChainDirectPurchasePrice(uint _entityId) external view returns (uint);
 
     /// @notice gets whether the provided address is an operator/escrow for the company
     /// @param _company the company owning tokens

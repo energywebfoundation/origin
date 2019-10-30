@@ -23,8 +23,6 @@ import {
 import { deploy } from '@energyweb/utils-general';
 import {
     TestReceiver,
-    Erc20TestToken,
-    Erc20TestTokenJSON,
     Erc721TestReceiverJSON
 } from '@energyweb/erc-test-contracts';
 
@@ -45,7 +43,6 @@ describe('CertificateLogic', () => {
     let assetRegistry: AssetProducingRegistryLogic;
     let userLogic: UserLogic;
     let testreceiver: TestReceiver;
-    let erc20Test: Erc20TestToken;
 
     let erc721testReceiverAddress;
 
@@ -169,18 +166,7 @@ describe('CertificateLogic', () => {
                 }
             )).contractAddress;
 
-            const erc20testContractAddress = (await deploy(
-                web3,
-                Erc20TestTokenJSON.bytecode +
-                    web3.eth.abi.encodeParameter('address', accountTrader).substr(2),
-                {
-                    privateKey: privateKeyDeployment
-                }
-            )).contractAddress;
-
             testreceiver = new TestReceiver(web3, erc721testReceiverAddress);
-
-            erc20Test = new Erc20TestToken(web3, erc20testContractAddress);
         });
 
         it('should have the right owner', async () => {
@@ -438,11 +424,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -496,11 +477,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntityParent.owner, accountAssetOwner);
                 assert.equal(tradableEntityParent.energy, 100);
                 assert.equal(
-                    tradableEntityParent.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntityParent.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntityParent.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -520,11 +496,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntityChildOne.owner, accountAssetOwner);
                 assert.equal(tradableEntityChildOne.energy, 40);
                 assert.equal(
-                    tradableEntityChildOne.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntityChildOne.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntityChildOne.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -543,11 +514,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntityChildTwo.assetId, 0);
                 assert.equal(tradableEntityChildTwo.owner, accountAssetOwner);
                 assert.equal(tradableEntityChildTwo.energy, 60);
-                assert.equal(
-                    tradableEntityChildTwo.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntityChildTwo.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntityChildTwo.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -733,11 +699,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.owner, accountTrader);
                 assert.equal(tradableEntity.energy, 40);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -808,11 +769,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountTrader);
                 assert.equal(tradableEntity.energy, 40);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -951,11 +907,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1147,11 +1098,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -1216,11 +1162,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1309,11 +1250,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1460,11 +1396,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
                 assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
                 );
@@ -1528,11 +1459,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, testreceiver.web3Contract.options.address);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -1781,11 +1707,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3017,12 +2938,6 @@ describe('CertificateLogic', () => {
         });
 
         describe('ERC20', () => {
-            it('should have correct balanes', async () => {
-                assert.equal(await erc20Test.balanceOf(accountTrader), 1000000);
-                assert.equal(await erc20Test.balanceOf(accountDeployment), 99999999999999000000);
-                assert.equal(await erc20Test.balanceOf(accountAssetOwner), 0);
-            });
-
             it('should log energy again (certificate #15)', async () => {
                 const TIMESTAMP = moment().unix();
                 const tx = await assetRegistry.saveSmartMeterRead(
@@ -3087,130 +3002,6 @@ describe('CertificateLogic', () => {
                 );
             });
 
-            it('should not have an acceptedToken after creation', async () => {
-                assert.equal(
-                    await certificateLogic.getTradableToken(15),
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should not have a tokenprice', async () => {
-                assert.equal(await certificateLogic.getOnChainDirectPurchasePrice(15), 0);
-            });
-
-            it('should fail when trying to set tradableToken as admin', async () => {
-                let failed = false;
-
-                try {
-                    await certificateLogic.setTradableToken(15, erc20Test.web3Contract.options.address, {
-                        privateKey: privateKeyDeployment
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should fail when trying to set tradableToken as trader', async () => {
-                let failed = false;
-
-                try {
-                    await certificateLogic.setTradableToken(15, erc20Test.web3Contract.options.address, {
-                        privateKey: traderPK
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should set tradableToken as owner', async () => {
-                await certificateLogic.setTradableToken(15, erc20Test.web3Contract.options.address, {
-                    privateKey: assetOwnerPK
-                });
-
-                assert.equal(
-                    await certificateLogic.getTradableToken(15),
-                    erc20Test.web3Contract.options.address
-                );
-            });
-
-            it('should fail when trying to buy a certificate that is not for sale', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.buyCertificate(15, { privateKey: traderPK });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'Unable to buy a certificate that is not for sale');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should set certificate for sale', async () => {
-                await certificateLogic.publishForSale(15, 0, erc20Test.web3Contract.options.address, {
-                    privateKey: assetOwnerPK
-                });
-                const cert = await certificateLogic.getCertificate(15);
-
-                assert.isTrue(cert.tradableEntity.forSale);
-            });
-
-            it('should fail when trying to buy a token with a price of 0', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.buyCertificate(15, { privateKey: traderPK });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'erc20 transfer failed');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should fail when trying to set the onchainPrice as admin', async () => {
-                let failed = false;
-
-                try {
-                    await certificateLogic.setOnChainDirectPurchasePrice(15, 1000, {
-                        privateKey: privateKeyDeployment
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should fail when trying to set the onchainPrice as trader', async () => {
-                let failed = false;
-
-                try {
-                    await certificateLogic.setOnChainDirectPurchasePrice(15, 1000, {
-                        privateKey: traderPK
-                    });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'not the entity-owner');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should set the onchainPrice as certOwner', async () => {
-                assert.equal(await certificateLogic.getOnChainDirectPurchasePrice(15), 0);
-
-                await certificateLogic.setOnChainDirectPurchasePrice(15, 100, {
-                    privateKey: assetOwnerPK
-                });
-                assert.equal(await certificateLogic.getOnChainDirectPurchasePrice(15), 100);
-            });
-
             it('should return the certificate #15', async () => {
                 const cert = await certificateLogic.getCertificate(15);
 
@@ -3228,8 +3019,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract.options.address);
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 100);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3241,112 +3030,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(tradableEntity.acceptedToken, erc20Test.web3Contract.options.address);
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 100);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should fail when trying to buy a token when the tokens are not approved', async () => {
-                let failed = false;
-                try {
-                    await certificateLogic.buyCertificate(15, { privateKey: traderPK });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'erc20 transfer failed');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should fail when trying to buy a token when not enough tokens are not approved', async () => {
-                await erc20Test.approve(accountAssetOwner, 99, { privateKey: traderPK });
-
-                let failed = false;
-                try {
-                    await certificateLogic.buyCertificate(15, { privateKey: traderPK });
-                } catch (ex) {
-                    failed = true;
-                    assert.include(ex.message, 'erc20 transfer failed');
-                }
-
-                assert.isTrue(failed);
-            });
-
-            it('should be able to buy a certficate', async () => {
-                await erc20Test.approve(accountAssetOwner, 100, { privateKey: traderPK });
-
-                const tx = await certificateLogic.buyCertificate(15, { privateKey: traderPK });
-
-                //  if (isGanache) {
-                const allTransferEvents = await certificateLogic.getAllTransferEvents({
-                    fromBlock: tx.blockNumber,
-                    toBlock: tx.blockNumber
-                });
-
-                assert.equal(allTransferEvents.length, 1);
-
-                assert.equal(allTransferEvents.length, 1);
-                assert.equal(allTransferEvents[0].event, 'Transfer');
-                assert.deepEqual(allTransferEvents[0].returnValues, {
-                    0: accountAssetOwner,
-                    1: accountTrader,
-                    2: '15',
-                    _from: accountAssetOwner,
-                    _to: accountTrader,
-                    _tokenId: '15'
-                });
-                //  }
-                assert.equal(await certificateLogic.getCertificateListLength(), 16);
-                assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 3);
-                assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
-                assert.equal(
-                    await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
-                    8
-                );
-            });
-
-            it('should return the correct tradableEntity (Cert#15)', async () => {
-                const tradableEntity = await certificateLogic.getTradableEntity(15);
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
-                assert.equal(
-                    tradableEntity.approvedAddress,
-                    '0x0000000000000000000000000000000000000000'
-                );
-            });
-
-            it('should return the certificate #15', async () => {
-                const cert = await certificateLogic.getCertificate(15);
-
-                const certificateSpecific = cert.certificateSpecific;
-
-                assert.equal(certificateSpecific.status, Certificate.Status.Active);
-                assert.equal(certificateSpecific.dataLog, 'lastSmartMeterReadFileHash');
-                assert.equal(certificateSpecific.parentId, 15);
-                assert.equal(certificateSpecific.children.length, 0);
-                assert.equal(certificateSpecific.maxOwnerChanges, 2);
-                assert.equal(certificateSpecific.ownerChangeCounter, 0);
-
-                const tradableEntity = cert.tradableEntity;
-
-                assert.equal(tradableEntity.assetId, 0);
-                assert.equal(tradableEntity.owner, accountTrader);
-                assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3409,8 +3092,8 @@ describe('CertificateLogic', () => {
                 });
                 //    }
                 assert.equal(await certificateLogic.getCertificateListLength(), 17);
-                assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 4);
-                assert.equal(await certificateLogic.balanceOf(accountTrader), 4);
+                assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 5);
+                assert.equal(await certificateLogic.balanceOf(accountTrader), 3);
                 assert.equal(
                     await certificateLogic.balanceOf(testreceiver.web3Contract.options.address),
                     8
@@ -3423,11 +3106,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'
@@ -3451,11 +3129,6 @@ describe('CertificateLogic', () => {
                 assert.equal(tradableEntity.assetId, 0);
                 assert.equal(tradableEntity.owner, accountAssetOwner);
                 assert.equal(tradableEntity.energy, 100);
-                assert.equal(
-                    tradableEntity.acceptedToken,
-                    '0x0000000000000000000000000000000000000000'
-                );
-                assert.equal(tradableEntity.onChainDirectPurchasePrice, 0);
                 assert.equal(
                     tradableEntity.approvedAddress,
                     '0x0000000000000000000000000000000000000000'

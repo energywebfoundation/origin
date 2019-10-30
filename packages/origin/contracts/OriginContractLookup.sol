@@ -25,7 +25,7 @@ import "../contracts/Interfaces/OriginContractLookupInterface.sol";
 
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract OriginContractLookup is Owned, OriginContractLookupInterface {
-    
+
     Updatable private originLogicRegistryContract;
     AssetContractLookupInterface private assetContractLookupContract;
 
@@ -69,7 +69,7 @@ contract OriginContractLookup is Owned, OriginContractLookupInterface {
         external
         onlyOwner
     {
-        require(address(_originRegistry)!= address(0), "update: cannot set to 0");
+        require(address(_originRegistry) != address(0), "update: cannot set to 0");
         originLogicRegistryContract.update(address(_originRegistry));
         originLogicRegistryContract = _originRegistry;
     }

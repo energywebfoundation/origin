@@ -23,9 +23,6 @@ contract TradableEntityContract {
         uint assetId;
         address owner;
         uint energy;
-        bool forSale;
-        address acceptedToken;
-        uint onChainDirectPurchasePrice;
         address approvedAddress;
     }
 }

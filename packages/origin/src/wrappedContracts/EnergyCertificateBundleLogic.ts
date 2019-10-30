@@ -114,12 +114,6 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.web3Contract.methods.db().call(txParams);
     }
 
-    async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-
-        return await this.send(method, txParams);
-    }
-
     async ownerOf(_entityId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.ownerOf(_entityId).call(txParams);
     }
@@ -166,32 +160,8 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
     }
 
-    async publishForSale(_certificateId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.publishForSale(_certificateId);
-
-        return await this.send(method, txParams);
-    }
-
-    async unpublishForSale(_certificateId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.unpublishForSale(_certificateId);
-
-        return await this.send(method, txParams);
-    }
-
     async isRetired(_bundleId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.isRetired(_bundleId).call(txParams);
-    }
-
-    async setTradableToken(_entityId: number, _tokenContract: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setTradableToken(_entityId, _tokenContract);
-
-        return await this.send(method, txParams);
-    }
-
-    async getOnChainDirectPurchasePrice(_entityId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods
-            .getOnChainDirectPurchasePrice(_entityId)
-            .call(txParams);
     }
 
     async isApprovedForAll(_owner: string, _operator: string, txParams?: ISpecialTx) {
@@ -202,9 +172,5 @@ export class EnergyCertificateBundleLogic extends CertificateSpecificContract {
         const method = this.web3Contract.methods.init(_database, _admin);
 
         return await this.send(method, txParams);
-    }
-
-    async getTradableToken(_entityId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getTradableToken(_entityId).call(txParams);
     }
 }
