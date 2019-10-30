@@ -24,3 +24,5 @@ services:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     env_file:
       - ./.env
+    volumes:
+      - "db.sqlite:${ORM_DATABASE}"
