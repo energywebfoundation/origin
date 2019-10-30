@@ -12,12 +12,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { hideRequestPasswordModal } from '../../features/general/actions';
 import {
     getRequestPasswordModalVisible,
-    getRequestPasswordModalCallback
+    getRequestPasswordModalCallback,
+    getRequestPasswordModalTitle
 } from '../../features/general/selectors';
+import { dataTest } from '../../utils/Helper';
 
 export function RequestPasswordModal() {
     const show = useSelector(getRequestPasswordModalVisible);
     const callback = useSelector(getRequestPasswordModalCallback);
+    const title = useSelector(getRequestPasswordModalTitle);
     const dispatch = useDispatch();
 
     const handleClose = () => dispatch(hideRequestPasswordModal());
@@ -36,8 +39,9 @@ export function RequestPasswordModal() {
                     e.preventDefault();
                     submit();
                 }}
+                {...dataTest('request-password-modal-form')}
             >
-                <DialogTitle>Password requested</DialogTitle>
+                <DialogTitle>{title || 'Password requested'}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>Please provide a password</DialogContentText>
                     <TextField
@@ -48,6 +52,7 @@ export function RequestPasswordModal() {
                         className="my-3"
                         autoFocus
                         type="password"
+                        {...dataTest('request-password-modal-password')}
                     />
                 </DialogContent>
                 <DialogActions>

@@ -101,13 +101,15 @@ export function Header() {
 
         if (selectedAccount.isLocked) {
             dispatch(
-                showRequestPasswordModal((password: string) => {
-                    dispatch(
-                        unlockAccount({
-                            address,
-                            password
-                        })
-                    );
+                showRequestPasswordModal({
+                    callback: (password: string) => {
+                        dispatch(
+                            unlockAccount({
+                                address,
+                                password
+                            })
+                        );
+                    }
                 })
             );
         } else {
