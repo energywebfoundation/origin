@@ -1,4 +1,4 @@
-import { GeneralFunctions, ISpecialTx, getClientVersion } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import CertificateSpecificContractJSON from '../../build/contracts/lightweight/CertificateSpecificContract.json';
 
@@ -11,13 +11,19 @@ export class CertificateSpecificContract extends GeneralFunctions {
             address
                 ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                    buildFile.abi,
-                    buildFile.networks.length > 0
-                        ? buildFile.networks[0]
-                        : null
-                )
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
+                  )
         );
         this.web3 = web3;
+    }
+
+    async getAllCertificationApprovedEvents(eventFilter?: ISearchLog) {
+        return this.web3Contract.getPastEvents('CertificationRequestApproved', eventFilter);
+    }
+
+    async getAllCertificationCreatedEvents(eventFilter?: ISearchLog) {
+        return this.web3Contract.getPastEvents('CertificationRequestCreated', eventFilter);
     }
 
     async getAssetRequestedCertsForSMReadsLength(_assetId: number, txParams?: ISpecialTx) {
