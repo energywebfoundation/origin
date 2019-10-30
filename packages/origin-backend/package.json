@@ -15,9 +15,7 @@
     "test:concurrent": "yarn test",
     "clean": "rm -rf dist"
   },
-  "bin": {
-    "origin-backend": "./bin/origin-backend"
-  },
+  "bin" : { "origin-backend" : "./bin/origin-backend" },
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend#readme",
   "repository": {
     "type": "git",

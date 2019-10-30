@@ -41,13 +41,15 @@ async function initConf(
     let web3: Web3 = null;
     const params: any = queryString.parse(routerSearch);
 
+    const ethereumProvider = (window as any).ethereum;
+
     if (params.rpc) {
         web3 = new Web3(params.rpc);
-    } else if ((window as any).ethereum) {
-        web3 = new Web3((window as any).ethereum);
+    } else if (ethereumProvider) {
+        web3 = new Web3(ethereumProvider);
         try {
             // Request account access if needed
-            await (window as any).ethereum.enable();
+            await ethereumProvider.enable();
         } catch (error) {
             // User denied account access...
         }

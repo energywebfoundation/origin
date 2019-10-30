@@ -64,7 +64,10 @@ export type TSetError = typeof setError;
 
 export interface IRequestPasswordModalAction {
     type: GeneralActions.showRequestPasswordModal;
-    payload: (password: string) => void;
+    payload: {
+        title?: string;
+        callback: (password: string) => void;
+    };
 }
 
 export const showRequestPasswordModal = (payload: IRequestPasswordModalAction['payload']) => ({
