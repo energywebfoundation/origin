@@ -1,26 +1,12 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Martin Kuechler, martin.kuchler@slock.it; Heiko Burkhardt, heiko.burkhardt@slock.it
-
 pragma solidity ^0.5.0;
-import "../../contracts/Interfaces/UserContractLookupInterface.sol";
-import "../../contracts/Interfaces/RolesInterface.sol";
-import "@energyweb/utils-general/contracts/Msc/Owned.sol";
+
+import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
+
+import "./Interfaces/RolesInterface.sol";
 
 /// @notice contract for managing the rights and roles
-contract RoleManagement is Owned {
+contract RoleManagement is Initializable, Ownable {
 
     /// @notice all possible available roles
     /*
@@ -42,7 +28,7 @@ contract RoleManagement is Owned {
     }
 
     ///@param contract-lookup for users
-    UserContractLookupInterface public userContractLookup;
+    address public userLogicLookup;
 
     /// @notice modifier for checking if an user is allowed to execute the intended action
     /// @param _role one of the roles of the enum Role
@@ -61,7 +47,7 @@ contract RoleManagement is Owned {
     /// @notice modifier that checks, whether an user exists
     /// @param _user the user that has to be checked for existence
     modifier userExists(address _user){
-        require(RolesInterface(userContractLookup.userRegistry()).doesUserExist(_user), "User does not exist");
+        require(RolesInterface(userLogicLookup).doesUserExist(_user), "User does not exist");
         _;
     }
 
@@ -74,10 +60,10 @@ contract RoleManagement is Owned {
     }
 
     /// @notice constructor
-    /// @param _userContractLookup contract-lookup instance
-    /// @param _owner the owner of the contract
-    constructor(UserContractLookupInterface _userContractLookup, address _owner) Owned(_owner) public {
-        userContractLookup = _userContractLookup;
+    /// @param _userLogicLookup contract-lookup instance
+    function initialize(address _userLogicLookup) public initializer {
+        Ownable.initialize(_userLogicLookup);
+        userLogicLookup = _userLogicLookup;
     }
 
     /// @notice function for comparing the role and the needed rights of an user
@@ -86,7 +72,7 @@ contract RoleManagement is Owned {
     /// @return whether the user has the corresponding rights for the intended action
     function isRole(RoleManagement.Role _role, address _caller) public view returns (bool) {
         /// @dev reading the rights for the user from the userDB-contract
-        uint rights = RolesInterface(userContractLookup.userRegistry()).getRolesRights(_caller);
+        uint rights = RolesInterface(userLogicLookup).getRolesRights(_caller);
         /// @dev converting the used enum to the corresponding bitmask
         uint role = uint(2) ** uint(_role);
         /// @dev comparing rights and roles, if the result is not 0 the user has the right (bitwise comparison)

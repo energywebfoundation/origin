@@ -1,5 +1,5 @@
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { Role } from '../../wrappedContracts/RoleManagement';
+import { Role } from '../RoleManagement';
 import UserOffChainPropertiesSchema from '../../../schemas/UserOffChainProperties.schema.json';
 
 export interface IUserOffChainProperties {
