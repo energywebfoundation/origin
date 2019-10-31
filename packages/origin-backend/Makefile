@@ -5,9 +5,12 @@ TAG_CANARY    = $(shell yarn info @energyweb/${PROJECT}@canary --json dist-tags.
 TAG_LATEST    = $(shell yarn info @energyweb/${PROJECT} --json dist-tags.latest | jq -r .data) 
 LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
- 
+
+build-local:
+	@docker build -t ${NAME}:local -f Dockerfile.local ../../
+
 build-canary:
-	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY}.
+	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} .
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
 build-latest:
