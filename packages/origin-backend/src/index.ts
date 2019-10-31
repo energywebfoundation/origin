@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import * as http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -36,6 +35,13 @@ app.use('/api/v1', api);
 export async function startAPI(): Promise<http.Server> {
     const PORT: number = parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
 
+    if (process.env.ORM_TYPE) {
+        ormConfig.type = process.env.ORM_TYPE;
+    }
+    if (process.env.ORM_DATABASE) {
+        ormConfig.database = process.env.ORM_DATABASE;
+    }
+
     let connectionOptions: ConnectionOptions = Object.assign(
         ormConfig as ConnectionOptions,
         { entities: [JsonEntity, MarketContractLookup] }
@@ -52,12 +58,4 @@ export async function startAPI(): Promise<http.Server> {
 
     console.log(`Express application is up and running on port ${PORT}`);
     return server;
-}
-
-if (require.main === module) {
-    dotenv.config({
-        path: '../../.env'
-    });
-
-    startAPI();
 }
