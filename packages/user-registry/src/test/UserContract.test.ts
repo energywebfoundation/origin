@@ -4,11 +4,8 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
-import { UserContractLookup } from '../wrappedContracts/UserContractLookup';
 import { UserLogic } from '../wrappedContracts/UserLogic';
-import { UserDB } from '../wrappedContracts/UserDB';
-import { UserContractLookupJSON, UserLogicJSON, UserDBJSON } from '../../contracts';
-import { Role, buildRights } from '../wrappedContracts/RoleManagement';
+import { Role, buildRights } from '../blockchain-facade/RoleManagement';
 
 describe('UserLogic', () => {
     dotenv.config({
@@ -20,66 +17,19 @@ describe('UserLogic', () => {
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    let userContractLookup: UserContractLookup;
     let userLogic: UserLogic;
-    let userDB: UserDB;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     it('should deploy the contracts', async () => {
         const contracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
-        let numberContracts = 0;
+        userLogic = new UserLogic(web3, contracts.userLogic);
 
-        for (const key of Object.keys(contracts)) {
-            numberContracts += 1;
-
-            let tempBytecode;
-
-            if (key.includes('UserContractLookup')) {
-                userContractLookup = new UserContractLookup(web3 as any, contracts[key]);
-                tempBytecode = (UserContractLookupJSON as any).deployedBytecode;
-            } else if (key.includes('UserLogic')) {
-                userLogic = new UserLogic(web3 as any, contracts[key]);
-                tempBytecode = (UserLogicJSON as any).deployedBytecode;
-            } else if (key.includes('UserDB')) {
-                userDB = new UserDB(web3 as any, contracts[key]);
-                tempBytecode = (UserDBJSON as any).deployedBytecode;
-            }
-
-            const deployedBytecode = await web3.eth.getCode(contracts[key]);
-            assert.isTrue(deployedBytecode.length > 0);
-
-            assert.equal(deployedBytecode, tempBytecode);
-        }
-
-        assert.equal(numberContracts, 3);
+        assert.exists(userLogic);
     });
 
-    it('should have the right owner', async () => {
-        assert.equal(await userLogic.owner(), userContractLookup.web3Contract.options.address);
-    });
-
-    it('should have the right db', async () => {
-        assert.equal(await userLogic.db(), userDB.web3Contract.options.address);
-    });
-
-    it('should throw an error when calling init again', async () => {
-        let failed = false;
-
-        try {
-            await userLogic.init(userLogic.web3Contract.options.address, userLogic.web3Contract.options.address, {
-                privateKey: privateKeyDeployment
-            });
-        } catch (ex) {
-            assert.include(ex.message, 'msg.sender is not owner');
-            failed = true;
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should gave the UserAdmin rights to the deployer account', async () => {
+    it('should give the UserAdmin rights to the deployer account', async () => {
         assert.equal(await userLogic.getRolesRights(accountDeployment), 1);
 
         assert.equal(await userLogic.isRole(Role.UserAdmin, accountDeployment), true);

@@ -57,8 +57,12 @@ export class GeneralFunctions {
 
     web3: Web3;
 
-    constructor(web3Contract: any) {
+    constructor(web3Contract: any, web3?: Web3) {
         this.web3Contract = web3Contract;
+
+        if (web3) {
+            this.web3 = web3;
+        }
     }
 
     async sendRaw(web3: Web3, privateKey: string, txParams: Tx): Promise<TransactionReceipt> {

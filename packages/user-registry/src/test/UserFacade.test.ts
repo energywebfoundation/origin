@@ -5,16 +5,13 @@ import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
 
-import {
-    UserLogic,
-    UserContractLookup
-} from '..';
+import { UserLogic } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { User } from '..';
 import { logger } from '../blockchain-facade/Logger';
-import { buildRights, Role } from '../wrappedContracts/RoleManagement';
+import { buildRights, Role } from '../blockchain-facade/RoleManagement';
 
-describe('UserLogic Facade', () => {
+describe('User Facade', () => {
     dotenv.config({
         path: '.env.test'
     });
@@ -24,8 +21,7 @@ describe('UserLogic Facade', () => {
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    let userContractLookup: UserContractLookup;
-    let userRegistry: UserLogic;
+    let userLogic: UserLogic;
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
@@ -39,17 +35,9 @@ describe('UserLogic Facade', () => {
     const RIGHTS = buildRights([Role.Trader, Role.AssetManager]);
 
     it('should deploy the contracts', async () => {
-        const contracts = (await migrateUserRegistryContracts(
-            web3 as any,
-            privateKeyDeployment
-        )) as any;
+        const contracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
-        userContractLookup = new UserContractLookup(web3 as any, contracts.UserContractLookup);
-        userRegistry = new UserLogic(web3 as any, await userContractLookup.userRegistry());
-
-        // const bytecodeUserContractLookup = await web3.eth.getCode(contracts.UserContractLookup);
-        // assert.isTrue(bytecodeUserContractLookup.length > 0);
-        // assert.equal(bytecodeUserContractLookup, '0x' + UserContractLookupJSON.bytecode);
+        userLogic = new UserLogic(web3, contracts.userLogic);
     });
 
     it('should create a user', async () => {
@@ -77,7 +65,7 @@ describe('UserLogic Facade', () => {
         conf = {
             blockchainProperties: {
                 web3,
-                userLogicInstance: userRegistry,
+                userLogicInstance: userLogic,
                 activeUser: {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
