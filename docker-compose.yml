@@ -22,7 +22,13 @@ services:
     image: "energyweb/origin-backend:${TAG}"
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
+    networks:
+      - app-network
     env_file:
       - ./.env
     volumes:
-      - "db.sqlite:${ORM_DATABASE}"
+      - "./db.sqlite:/var/db/db.sqlite"
+
+networks:
+  app-network:
+    driver: bridge
