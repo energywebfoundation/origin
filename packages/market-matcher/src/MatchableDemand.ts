@@ -39,10 +39,12 @@ export class MatchableDemand {
                 MatchingErrorReason.NON_MATCHING_CURRENCY
             )
             .validate(
-                this.assetService.includesAssetType(
-                    producingAsset.offChainProperties.assetType,
-                    offChainProperties.assetType
-                ),
+                offChainProperties.assetType
+                    ? this.assetService.includesAssetType(
+                          producingAsset.offChainProperties.assetType,
+                          offChainProperties.assetType
+                      )
+                    : true,
                 MatchingErrorReason.NON_MATCHING_ASSET_TYPE
             )
             .validate(
