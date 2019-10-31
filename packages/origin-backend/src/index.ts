@@ -39,7 +39,7 @@ export async function startAPI(): Promise<http.Server> {
     if (process.env.ORM_TYPE) {
         ormConfig.type = process.env.ORM_TYPE;
     }
-    if (process.env.ORM_DATABASE_DOCKER) {
+    if (process.env.ORM_DATABASE_DOCKER === 'TRUE') {
         ormConfig.database = '/var/db/db.sqlite';
     }
 
