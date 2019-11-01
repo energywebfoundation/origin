@@ -5,14 +5,12 @@ import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
 
-import {
-    UserLogic,
-    UserContractLookup
-} from '..';
+import { UserLogic, UserContractLookup } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { User } from '..';
 import { logger } from '../blockchain-facade/Logger';
 import { buildRights, Role } from '../wrappedContracts/RoleManagement';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 describe('UserLogic Facade', () => {
     dotenv.config({
@@ -85,7 +83,8 @@ describe('UserLogic Facade', () => {
                 }
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: new OffChainDataClientMock()
             },
             logger
         };

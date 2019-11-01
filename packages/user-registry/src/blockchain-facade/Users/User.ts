@@ -102,8 +102,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
     async update(offChainProperties: IUserOffChainProperties) {
         const updatedOffChainStorageProperties = this.prepareEntityCreation(
             offChainProperties,
-            UserOffChainPropertiesSchema,
-            this.getUrl()
+            UserOffChainPropertiesSchema
         );
 
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
@@ -131,8 +130,7 @@ export const createUser = async (
 
     const offChainStorageProperties = user.prepareEntityCreation(
         userPropertiesOffChain,
-        UserOffChainPropertiesSchema,
-        user.getUrl()
+        UserOffChainPropertiesSchema
     );
 
     if (configuration.offChainDataSource) {
