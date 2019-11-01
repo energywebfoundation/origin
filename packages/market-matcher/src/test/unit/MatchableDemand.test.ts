@@ -16,6 +16,7 @@ interface IMockOptions {
     producingAssetAssetType?: string;
     address?: string;
     isFilledDemand?: boolean;
+    location?: string[];
 }
 
 describe('MatchableDemand tests', () => {
@@ -36,7 +37,7 @@ describe('MatchableDemand tests', () => {
             demandOffChainProperties.maxPricePerMwh.returns(energyPrice);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
-            demandOffChainProperties.location.returns(location);
+            demandOffChainProperties.location.returns(options.location || location);
 
             const demand = Substitute.for<Demand.IDemand>();
             demand
@@ -162,6 +163,35 @@ describe('MatchableDemand tests', () => {
         it('should not match demand with from different location', async () => {
             const { demand, certificate, producingAsset } = createMatchingMocks({
                 address: 'Warsaw, Poland'
+            });
+
+            const matchableDemand = new MatchableDemand(demand);
+            const { result, reason } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
+
+            assert.isFalse(result);
+            assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_LOCATION);
+        });
+
+        it('should match demand with certificate when province is in passed region', async () => {
+            const { demand, certificate, producingAsset } = createMatchingMocks({
+                location: ['Thailand;Central']
+            });
+
+            const matchableDemand = new MatchableDemand(demand);
+            const { result } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
+
+            assert.isTrue(result);
+        });
+
+        it('should not match demand with certificate when province is not included in location', async () => {
+            const { demand, certificate, producingAsset } = createMatchingMocks({
+                location: ['Thailand;Central', 'Thailand;Central;Nonthaburi']
             });
 
             const matchableDemand = new MatchableDemand(demand);
