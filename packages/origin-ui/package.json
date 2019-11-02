@@ -13,7 +13,7 @@
     "build:container:latest": "make build-latest push",
     "lint": "eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
-    "start": "node --max-old-space-size=8192 ./node_modules/.bin/webpack-dev-server --config webpack/dev.config.js --watch",
+    "start": "npx cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" webpack-dev-server --config webpack/dev.config.js --watch",
     "start-all": "yarn start",
     "test": "rm -rf db.sqlite && jest",
     "test:watch": "jest -u --watchAll",
