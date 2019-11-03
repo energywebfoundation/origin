@@ -1357,24 +1357,24 @@
   dependencies:
     "@types/node" "^12.11.1"
 
-"@react-google-maps/api@1.7.7":
-  version "1.7.7"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.7.7.tgz#9b26fabeb8e0fad7835b72b35f5b2336d564942a"
-  integrity sha512-4AiYpvwldlNI3LIXxHUdL029XvtwV5WPRuDrS+XIoXA2miWeSewOoRwDkMerO91mJE781zt4N3vlvoi4Fd6sfA==
+"@react-google-maps/api@1.7.8":
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.7.8.tgz#3f4977679b5d23819e51f7223af39fd462a7e2f7"
+  integrity sha512-3nWHqCu5c7Ek+uJqsBymxu7X+Y5tkj6o8vATvI472rgyjs/580vUCdphTfQOF6ulJkZ0soCbzS3AePGHg0VLqA==
   dependencies:
-    "@react-google-maps/infobox" "1.7.0"
-    "@react-google-maps/marker-clusterer" "1.7.0"
+    "@react-google-maps/infobox" "1.7.8"
+    "@react-google-maps/marker-clusterer" "1.7.8"
     invariant "2.2.4"
 
-"@react-google-maps/infobox@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.7.0.tgz#b904737fe48670accfa456502e11c0729c6abf25"
-  integrity sha512-cfrRpSS5/fb0ZNtqbYBc/BL6cJoCpuHOdvsrusROl+sDTQ/0NyiDxB44U/hQlWqbpfS6nA4q9yoPCi2ICEJl4g==
+"@react-google-maps/infobox@1.7.8":
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.7.8.tgz#7ec2dc3fc933f091f40cf74cd1ac9c32e378da52"
+  integrity sha512-HeSb6R4ne1h+r3kMi1/jp49mI4W9wkXwQaC7PTuXyfRi27i9Pyh5Z18xl4mpgE2yUUOapvl2r6dB3K1YpKzs4w==
 
-"@react-google-maps/marker-clusterer@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.7.0.tgz#eb47d118ea1b1a96617418c07400ae7435bbe57b"
-  integrity sha512-g8lp2pFlDgVyHEUH4QyNv+VFqY7uARMnuyA+Sn7QG4MT8ehdRK/kVfhmZkbyXDOt6yfzW4GtQFezOQRESQAxlA==
+"@react-google-maps/marker-clusterer@1.7.8":
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.7.8.tgz#e09a28824d3c7c32bb86e45dd30f5fd7238e63df"
+  integrity sha512-i3GVDMusP/BErRP9WuEka1mYEWQdBcpPNo9LyAaP0GGOmKxPczJrdzMFBqSSGJk+lefywZXGoTi52D2O7KWeyw==
 
 "@redux-saga/core@^1.1.1":
   version "1.1.1"
