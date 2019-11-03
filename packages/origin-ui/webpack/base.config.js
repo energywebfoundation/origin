@@ -1,11 +1,12 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
     entry: './src/index.tsx',
     output: {
         filename: 'bundle.js',
-        path: __dirname + '/../dist'
+        path: path.join(__dirname, '/../dist')
     },
 
     resolve: {
@@ -59,7 +60,7 @@ module.exports = {
                         }
                     }
                 ]
-            },     
+            },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: 'pre', test: /\.js\.map$/, loader: 'source-map-loader' }
