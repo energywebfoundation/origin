@@ -1,12 +1,12 @@
 pragma solidity ^0.5.0;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
-import "./Interfaces/RolesInterface.sol";
+import "./Interfaces/IRoles.sol";
+import "./Interfaces/IUserLogic.sol";
 
 /// @notice contract for managing the rights and roles
-contract RoleManagement is Initializable, Ownable {
+contract RoleManagement is Initializable {
 
     /// @notice all possible available roles
     /*
@@ -28,11 +28,11 @@ contract RoleManagement is Initializable, Ownable {
     }
 
     ///@param contract-lookup for users
-    address public userLogicLookup;
+    IUserLogic public userLogicContract;
 
     /// @notice modifier for checking if an user is allowed to execute the intended action
     /// @param _role one of the roles of the enum Role
-    modifier onlyRole (RoleManagement.Role _role) {
+    modifier onlyRole(RoleManagement.Role _role) {
         require(isRole(_role, msg.sender), "user does not have the required role");
         _;
     }
@@ -47,7 +47,7 @@ contract RoleManagement is Initializable, Ownable {
     /// @notice modifier that checks, whether an user exists
     /// @param _user the user that has to be checked for existence
     modifier userExists(address _user){
-        require(RolesInterface(userLogicLookup).doesUserExist(_user), "User does not exist");
+        require(IRoles(address(userLogicContract)).doesUserExist(_user), "User does not exist");
         _;
     }
 
@@ -60,10 +60,9 @@ contract RoleManagement is Initializable, Ownable {
     }
 
     /// @notice constructor
-    /// @param _userLogicLookup contract-lookup instance
-    function initialize(address _userLogicLookup) public initializer {
-        Ownable.initialize(_userLogicLookup);
-        userLogicLookup = _userLogicLookup;
+    /// @param _userLogicContract contract-lookup instance
+    function initialize(IUserLogic _userLogicContract) public initializer {
+        userLogicContract = _userLogicContract;
     }
 
     /// @notice function for comparing the role and the needed rights of an user
@@ -72,7 +71,7 @@ contract RoleManagement is Initializable, Ownable {
     /// @return whether the user has the corresponding rights for the intended action
     function isRole(RoleManagement.Role _role, address _caller) public view returns (bool) {
         /// @dev reading the rights for the user from the userDB-contract
-        uint rights = RolesInterface(userLogicLookup).getRolesRights(_caller);
+        uint rights = IRoles(address(userLogicContract)).getRolesRights(_caller);
         /// @dev converting the used enum to the corresponding bitmask
         uint role = uint(2) ** uint(_role);
         /// @dev comparing rights and roles, if the result is not 0 the user has the right (bitwise comparison)

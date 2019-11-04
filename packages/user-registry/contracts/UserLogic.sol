@@ -3,10 +3,11 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 
-import "./Interfaces/RolesInterface.sol";
+import "./Interfaces/IRoles.sol";
+import "./Interfaces/IUserLogic.sol";
 import "./RoleManagement.sol";
 
-contract UserLogic is Initializable, RoleManagement, RolesInterface {
+contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {
 
     struct User {
         string propertiesDocumentHash;
@@ -24,7 +25,7 @@ contract UserLogic is Initializable, RoleManagement, RolesInterface {
     /// @notice constructor
     /// @dev it will also call the RoleManagement-constructor
     function initialize() public initializer {
-        RoleManagement.initialize(address(this));
+        RoleManagement.initialize(this);
 
         // Set sender as User Admin
         User storage u = userList[msg.sender];

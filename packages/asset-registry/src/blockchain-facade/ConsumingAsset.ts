@@ -83,13 +83,13 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
         );
 
         if (this.id != null) {
-            this.smartMeter = { address: asset.assetGeneral.smartMeter };
-            this.owner = { address: asset.assetGeneral.owner };
-            this.lastSmartMeterReadWh = Number(asset.assetGeneral.lastSmartMeterReadWh);
-            this.active = asset.assetGeneral.active;
-            this.lastSmartMeterReadFileHash = asset.assetGeneral.lastSmartMeterReadFileHash;
-            this.propertiesDocumentHash = asset.assetGeneral.propertiesDocumentHash;
-            this.url = asset.assetGeneral.url;
+            this.smartMeter = { address: asset.smartMeter };
+            this.owner = { address: asset.owner };
+            this.lastSmartMeterReadWh = Number(asset.lastSmartMeterReadWh);
+            this.active = asset.active;
+            this.lastSmartMeterReadFileHash = asset.lastSmartMeterReadFileHash;
+            this.propertiesDocumentHash = asset.propertiesDocumentHash;
+            this.url = asset.url;
             this.initialized = true;
 
             this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);

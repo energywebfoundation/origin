@@ -22,9 +22,7 @@ describe('UserLogic', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     it('should deploy the contracts', async () => {
-        const contracts: any = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-
-        userLogic = new UserLogic(web3, contracts.userLogic);
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         assert.exists(userLogic);
     });
@@ -177,6 +175,11 @@ describe('UserLogic', () => {
         const TEST_ACCOUNT = '0x1000000000000000000000000000000000000006';
 
         const rights = buildRights([Role.AssetManager, Role.Trader]);
+
+        console.log({
+            keyword: 'INITIALIZE1',
+            userLogicAddress: userLogic.web3Contract.options.address
+        });
 
         await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', TEST_ACCOUNT, 'TestOrganization', {
             privateKey: privateKeyDeployment

@@ -1,20 +1,19 @@
 import 'mocha';
-
-import { buildRights, Role, UserContractLookup, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { Configuration, Compliance } from '@energyweb/utils-general';
 import { assert } from 'chai';
-import * as fs from 'fs';
 import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { AssetProducingRegistryLogic, ProducingAsset } from '..';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { Configuration, Compliance } from '@energyweb/utils-general';
+
+import { AssetLogic, ProducingAsset, Asset } from '..';
 import { logger } from '../Logger';
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
-describe('AssetProducing Facade', () => {
+describe('Asset Facade', () => {
     dotenv.config({
         path: '.env.test'
     });
@@ -27,9 +26,7 @@ describe('AssetProducing Facade', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
 
-    let userContractLookup: UserContractLookup;
-    let userContractLookupAddr: string;
-    let assetProducingLogic: AssetProducingRegistryLogic;
+    let assetLogic: AssetLogic;
     let userLogic: UserLogic;
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
@@ -44,9 +41,7 @@ describe('AssetProducing Facade', () => {
     const SM_READ_TIMESTAMP = moment().unix();
 
     it('should deploy user-registry contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-        userContractLookupAddr = (userContracts as any).UserContractLookup;
-        userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -61,20 +56,17 @@ describe('AssetProducing Facade', () => {
             buildRights([Role.UserAdmin, Role.AssetAdmin]),
             { privateKey: privateKeyDeployment }
         );
-
-        userContractLookup = new UserContractLookup(web3, userContractLookupAddr);
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts(
+        assetLogic = await migrateAssetRegistryContracts(
             web3,
-            userContractLookupAddr,
+            userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-        assetProducingLogic = new AssetProducingRegistryLogic(
-            web3,
-            (deployedContracts as any).AssetProducingRegistryLogic
-        );
+
+        console.log("INITIAL2")
+        console.log({assetLogicAddress: assetLogic.web3Contract.options.address})
     });
 
     it('should onboard tests-users', async () => {
@@ -99,7 +91,7 @@ describe('AssetProducing Facade', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                producingAssetLogicInstance: assetProducingLogic,
+                producingAssetLogicInstance: assetLogic,
                 userLogicInstance: userLogic,
                 web3
             },
@@ -112,15 +104,14 @@ describe('AssetProducing Facade', () => {
 
         const FACILITY_NAME = 'Wuthering Heights Windfarm';
 
-        const assetProps: ProducingAsset.IOnChainProperties = {
+        const assetProps: Asset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
-            url: null,
-            maxOwnerChanges: 3
+            url: null
         };
 
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -148,27 +139,25 @@ describe('AssetProducing Facade', () => {
             initialized: true,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
-            lastSmartMeterReadWh: 0,
+            lastSmartMeterReadWh: '0',
             active: true,
             lastSmartMeterReadFileHash: '',
             offChainProperties: assetPropsOffChain,
-            maxOwnerChanges: 3,
-            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
+            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`
         } as Partial<ProducingAsset.Entity>);
 
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
     it('should fail when trying to onboard the same asset again', async () => {
-        const assetProps: ProducingAsset.IOnChainProperties = {
+        const assetProps: Asset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
-            url: null,
-            maxOwnerChanges: 3
+            url: null
         };
 
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -216,8 +205,7 @@ describe('AssetProducing Facade', () => {
             lastSmartMeterReadWh: 100,
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
-            maxOwnerChanges: 3,
+            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`,
             offChainProperties: {
                 operationalSince: 0,
                 capacityWh: 10,

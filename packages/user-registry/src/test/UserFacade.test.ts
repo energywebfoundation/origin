@@ -37,6 +37,8 @@ describe('User Facade', () => {
 
     it('should deploy the contracts', async () => {
         userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+
+        assert.exists(userLogic);
     });
 
     it('should create a user', async () => {
