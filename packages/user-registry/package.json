@@ -26,7 +26,7 @@
     "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build:ts && yarn deploy-contracts",
-    "build-schemas": "./scripts/buildSchemas.js",
+    "build-schemas": "node ./scripts/buildSchemas.js",
     "build-schema:UserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Users/User.ts IUserOffChainProperties",
     "clean": "rm -rf build schemas db.sqlite dist dist-shakeable",
     "compile": "truffle compile",

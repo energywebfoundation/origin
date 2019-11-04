@@ -28,7 +28,7 @@
     "build-and-deploy": "yarn build && yarn deploy-contracts",
     "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts IOffChainProperties",
     "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties",
-    "build-schemas": "./scripts/buildSchemas.js",
+    "build-schemas": "node ./scripts/buildSchemas.js",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",
@@ -57,7 +57,7 @@
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.4.5",
-    "truffle": "5.0.42"
+    "truffle": "5.0.43"
   },
   "postinstall": "rm -f node_modules/web3/index.d.ts",
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
