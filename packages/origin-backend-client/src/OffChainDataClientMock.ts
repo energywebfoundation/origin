@@ -8,7 +8,7 @@ export class OffChainDataClientMock implements IOffChainDataSourceClient {
     }
 
     public async get<T>(url: string): Promise<IOffChainData<T>> {
-        const result = this.storage.get(url);
+        const result = this.storage.get(url.toLocaleLowerCase());
 
         if (!result) {
             throw new Error('Entity does not exist');
@@ -18,11 +18,11 @@ export class OffChainDataClientMock implements IOffChainDataSourceClient {
     }
 
     public async delete(url: string): Promise<boolean> {
-        return this.storage.delete(url);
+        return this.storage.delete(url.toLocaleLowerCase());
     }
 
     public async insertOrUpdate<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
-        this.storage.set(url, this.clone(offChainData));
+        this.storage.set(url.toLocaleLowerCase(), this.clone(offChainData));
 
         return true;
     }

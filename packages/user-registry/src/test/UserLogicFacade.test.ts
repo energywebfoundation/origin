@@ -93,22 +93,15 @@ describe('UserLogic Facade', () => {
 
         const user = await new User.Entity(user1, conf).sync();
 
-        delete user.configuration;
-        delete user.proofs;
-        delete user.propertiesDocumentHash;
-        delete user.url;
+        assert.ownInclude(user, {
+            id: user1.toLowerCase(),
+            organization: 'Testorganization',
+            roles: RIGHTS,
+            active: true,
+            initialized: true
+        } as Partial<User.Entity>);
 
-        assert.deepEqual(
-            {
-                id: user1.toLowerCase(),
-                organization: 'Testorganization',
-                roles: RIGHTS,
-                active: true,
-                initialized: true,
-                offChainProperties: userPropsOffChain
-            } as any,
-            user
-        );
+        assert.ownInclude(user.offChainProperties, userPropsOffChain);
     });
 
     it('isRole should work correctly', async () => {
