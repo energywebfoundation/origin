@@ -6,13 +6,13 @@ export interface IOffChainData<T> {
     schema: string[];
 }
 
-export interface IOffChainDataSourceClient {
+export interface IOffChainDataClient {
     get<T>(path: string): Promise<IOffChainData<T>>;
     delete(path: string): Promise<boolean>;
     insertOrUpdate<T>(path: string, entity: IOffChainData<T>): Promise<boolean>;
 }
 
-export class OffChainDataClient implements IOffChainDataSourceClient {
+export class OffChainDataClient implements IOffChainDataClient {
     public async get<T>(url: string): Promise<IOffChainData<T>> {
         const result = await axios.get(url);
 

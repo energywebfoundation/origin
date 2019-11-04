@@ -12,6 +12,7 @@ import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
 
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import * as Market from '..';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
@@ -187,7 +188,8 @@ describe('Market-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: new OffChainDataClientMock()
             },
             logger
         };

@@ -1,5 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
-
 import { Configuration, BlockchainDataModelEntity, Currency } from '@energyweb/utils-general';
 import { TransactionReceipt } from 'web3/types';
 
@@ -95,9 +93,9 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     acceptedToken?: number;
     onChainDirectPurchasePrice: number;
     approvedAddress: string;
-    
+
     initialized: boolean;
-    
+
     offChainSettlementOptions: IOffChainSettlementOptions;
 
     constructor(id: string, configuration: Configuration.Entity) {
@@ -265,21 +263,11 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             throw Error('No off chain data source set in the configuration');
         }
 
-        let postOrPut;
-        
-        try {
-            await axios.get(this.offChainURL);
-
-            postOrPut = axios.put;
-        } catch (error) {
-            if (error.response.status !== 404) {
-                throw error;
-            }
-
-            postOrPut = axios.post;
-        }
-
-        await postOrPut(this.offChainURL, options);
+        await this.offChainDataClient.insertOrUpdate(this.offChainURL, {
+            properties: options,
+            salts: [],
+            schema: []
+        }); //TODO: anchor those options on the smart contract
     }
 
     async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
@@ -292,10 +280,10 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             currency: Currency.NONE
         };
 
-        let result: AxiosResponse;
-
         try {
-            result = await axios.get(this.offChainURL);
+            const { properties } = await this.offChainDataClient.get<IOffChainSettlementOptions>(this.offChainURL);
+            
+            return properties;
         } catch (error) {
             if (error.response.status !== 404) {
                 throw error;
@@ -305,7 +293,5 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
 
             return defaultValues;
         }
-
-        return result.data;
     }
 }

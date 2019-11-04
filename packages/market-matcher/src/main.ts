@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import Web3 from 'web3';
 import axios, { AxiosResponse } from 'axios';
 
+import { OffChainDataClient } from '@energyweb/origin-backend-client';
 import { startMatcher } from '.';
 
 dotenv.config({
@@ -26,7 +27,8 @@ dotenv.config({
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
         },
-        offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`
+        offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
+        offChainDataSourceClient: new OffChainDataClient()
     };
 
     startMatcher(config);

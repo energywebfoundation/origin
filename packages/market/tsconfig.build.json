@@ -17,7 +17,7 @@
             "path": "../asset-registry/tsconfig.build.json"
         },
         {
-            "path": "../origin-backend/tsconfig.build.json"
+            "path": "../origin-backend-client/tsconfig.build.json"
         },
         {
             "path": "../origin/tsconfig.build.json"

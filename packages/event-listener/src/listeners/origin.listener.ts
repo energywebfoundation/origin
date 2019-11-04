@@ -13,6 +13,7 @@ import {
     Currency
 } from '@energyweb/utils-general';
 
+import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 import { SCAN_INTERVAL } from '..';
 import { initOriginConfig } from '../config/origin.config';
 import EmailTypes from '../email/EmailTypes';
@@ -43,6 +44,7 @@ export class OriginEventListener implements IOriginEventListener {
         public web3: Web3,
         public emailService: IEmailServiceProvider,
         private originEventsStore: IOriginEventsStore,
+        private offChainDataClient: IOffChainDataClient,
         public notificationInterval?: number
     ) {
         this.notificationInterval = notificationInterval || 60000; // Default to 1 min intervals
@@ -52,7 +54,11 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     public async start(): Promise<void> {
-        this.conf = await initOriginConfig(this.marketLookupAddress, this.web3);
+        this.conf = await initOriginConfig(
+            this.marketLookupAddress,
+            this.web3,
+            this.offChainDataClient
+        );
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(

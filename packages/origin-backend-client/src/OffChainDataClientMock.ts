@@ -1,6 +1,10 @@
-import { IOffChainDataSourceClient, IOffChainData } from './OffChainDataClient';
+import { IOffChainDataClient, IOffChainData } from './OffChainDataClient';
 
-export class OffChainDataClientMock implements IOffChainDataSourceClient {
+class MissingEntity extends Error {
+    public response = { status: 404 };
+}
+
+export class OffChainDataClientMock implements IOffChainDataClient {
     private storage = new Map<string, any>();
 
     private clone(input: any): any {
@@ -11,7 +15,7 @@ export class OffChainDataClientMock implements IOffChainDataSourceClient {
         const result = this.storage.get(url.toLocaleLowerCase());
 
         if (!result) {
-            throw new Error('Entity does not exist');
+            throw new MissingEntity('Entity does not exist');
         }
 
         return this.clone(result) as IOffChainData<T>;

@@ -24,6 +24,7 @@ import { migrateCertificateRegistryContracts } from '../../contracts';
 import * as Certificate from '../blockchain-facade/Certificate';
 import * as TradableEntity from '../blockchain-facade/TradableEntity';
 import { logger } from '../blockchain-facade/Logger';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 describe('CertificateLogic-Facade', () => {
     let userLogic: UserLogic;
@@ -179,7 +180,8 @@ describe('CertificateLogic-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: new OffChainDataClientMock()
             },
             logger
         };

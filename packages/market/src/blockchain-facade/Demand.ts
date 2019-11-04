@@ -115,8 +115,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     async update(offChainProperties: IDemandOffChainProperties) {
         const updatedOffChainStorageProperties = this.prepareEntityCreation(
             offChainProperties,
-            DemandOffChainPropertiesSchema,
-            this.getUrl()
+            DemandOffChainPropertiesSchema
         );
 
         await this.marketLogicInstance.updateDemand(
@@ -225,8 +224,7 @@ export const createDemand = async (
 
     const offChainStorageProperties = demand.prepareEntityCreation(
         demandPropertiesOffChain,
-        DemandOffChainPropertiesSchema,
-        demand.getUrl()
+        DemandOffChainPropertiesSchema
     );
 
     const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(

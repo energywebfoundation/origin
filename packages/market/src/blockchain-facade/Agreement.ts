@@ -112,8 +112,7 @@ export const createAgreement = async (
 
     const agreementOffChainStorageProperties = agreement.prepareEntityCreation(
         agreementPropertiesOffChain,
-        AgreementOffChainPropertiesSchema,
-        agreement.getUrl()
+        AgreementOffChainPropertiesSchema
     );
 
     let { url, propertiesDocumentHash } = agreementPropertiesOnChain;
