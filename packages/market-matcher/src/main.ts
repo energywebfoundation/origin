@@ -1,8 +1,7 @@
 import dotenv from 'dotenv';
 import Web3 from 'web3';
-import axios, { AxiosResponse } from 'axios';
 
-import { OffChainDataClient } from '@energyweb/origin-backend-client';
+import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
 import { startMatcher } from '.';
 
 dotenv.config({
@@ -14,11 +13,15 @@ dotenv.config({
     const web3 = new Web3(process.env.WEB3);
 
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
+    const baseUrl = `${backendUrl}/api`;
 
-    const result: AxiosResponse = await axios.get(`${backendUrl}/api/MarketContractLookup`);
+    const storedMarketContractAddress = (await new ConfigurationClient().get(
+        baseUrl,
+        'MarketContractLookup'
+    )).pop();
 
     const marketContractLookupAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || result.data.pop();
+        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 
     const config = {
         web3Url: process.env.WEB3,
