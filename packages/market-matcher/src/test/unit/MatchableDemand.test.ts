@@ -49,7 +49,6 @@ describe('MatchableDemand tests', () => {
             demand.offChainProperties.returns(demandOffChainProperties);
 
             const certificate = Substitute.for<Certificate.ICertificate>();
-            certificate.acceptedToken.returns(0x0);
             certificate.price.returns(options.price || energyPrice);
             certificate.currency.returns(options.currency || currency);
             certificate.energy.returns(options.energy || certificateEnergy);

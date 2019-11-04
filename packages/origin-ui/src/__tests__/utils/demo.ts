@@ -17,6 +17,7 @@ import {
     AssetProducingRegistryLogic,
     AssetConsumingRegistryLogic
 } from '@energyweb/asset-registry';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -142,7 +143,8 @@ export const deployDemo = async () => {
             web3
         },
         offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`
+            baseUrl: `${BACKEND_URL}/api`,
+            client: new OffChainDataClientMock()
         },
         logger
     };

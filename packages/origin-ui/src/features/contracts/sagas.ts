@@ -11,6 +11,7 @@ import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate } from '@energyweb/origin';
+import { OffChainDataClient } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import {
@@ -67,7 +68,8 @@ async function initConf(
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`
+            baseUrl: `${BACKEND_URL}/api`,
+            client: new OffChainDataClient()
         },
         logger: Winston.createLogger({
             level: 'debug',
