@@ -11,7 +11,7 @@ export interface Entity<TMarketLogic = any, TProducingAssetLogic = any, TConsumi
 
 export interface OffChainDataSource {
     baseUrl: string;
-    client?: IOffChainDataSourceClient; //TODO: remove ? when implemented
+    client: IOffChainDataSourceClient; //TODO: remove ? when implemented
 }
 export interface BlockchainProperties<TMarketLogic = any, TProducingAssetLogic = any, TConsumingAssetLogic = any, TCertificateLogic = any, TUserLogic = any> {
     web3: Web3;
