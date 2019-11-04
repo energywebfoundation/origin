@@ -1,13 +1,13 @@
 import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
 import Web3 from 'web3';
-import AssetProducingRegistryLogicJSON from '../../build/contracts/lightweight/AssetProducingRegistryLogic.json';
+import AssetLogicJSON from '../../build/contracts/lightweight/AssetLogic.json';
 import moment from 'moment';
 
-export class AssetProducingRegistryLogic extends GeneralFunctions {
+export class AssetLogic extends GeneralFunctions {
     web3: Web3;
 
     constructor(web3: Web3, address?: string) {
-        const buildFile: any = AssetProducingRegistryLogicJSON;
+        const buildFile: any = AssetLogicJSON;
         super(
             address
                 ? new web3.eth.Contract(buildFile.abi, address)
@@ -19,6 +19,12 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
                   )
         );
         this.web3 = web3;
+    }
+
+    async initialize(userContractAddress: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(userContractAddress);
+
+        return this.send(method, txParams);
     }
 
     async getAllLogNewMeterReadEvents(eventFilter?: ISearchLog) {
@@ -53,12 +59,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         return await this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async update(_newLogic: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.update(_newLogic);
-
-        return await this.send(method, txParams);
-    }
-
     async getLastMeterReadingAndHash(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getLastMeterReadingAndHash(_assetId).call(txParams);
     }
@@ -67,16 +67,8 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         return await this.web3Contract.methods.getAssetBySmartMeter(_smartMeter).call(txParams);
     }
 
-    async userContractLookup(txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.userContractLookup().call(txParams);
-    }
-
     async checkAssetExist(_smartMeter: string, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.checkAssetExist(_smartMeter).call(txParams);
-    }
-
-    async db(txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.db().call(txParams);
     }
 
     async createAsset(
@@ -85,7 +77,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         _active: boolean,
         _propertiesDocumentHash: string,
         _url: string,
-        _numOwnerChanges: number,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createAsset(
@@ -93,8 +84,7 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
             _owner,
             _active,
             _propertiesDocumentHash,
-            _url,
-            _numOwnerChanges
+            _url
         );
 
         return await this.send(method, txParams);
@@ -102,26 +92,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async getAssetOwner(_assetId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetOwner(_assetId).call(txParams);
-    }
-
-    async owner(txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.owner().call(txParams);
-    }
-
-    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.changeOwner(_newOwner);
-
-        return await this.send(method, txParams);
-    }
-
-    async checkAssetExistExternal(_smartMeter: string, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.checkAssetExistExternal(_smartMeter).call(txParams);
-    }
-
-    async setBundleActive(_assetId: number, _active: boolean, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setBundleActive(_assetId, _active);
-
-        return await this.send(method, txParams);
     }
 
     async saveSmartMeterRead(
@@ -141,10 +111,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
         return await this.send(method, txParams);
     }
 
-    async getAssetGeneral(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getAssetGeneral(_assetId).call(txParams);
-    }
-
     async getAssetListLength(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetListLength().call(txParams);
     }
@@ -159,12 +125,6 @@ export class AssetProducingRegistryLogic extends GeneralFunctions {
 
     async setActive(_assetId: number, _active: boolean, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setActive(_assetId, _active);
-
-        return await this.send(method, txParams);
-    }
-
-    async init(_dbAddress: string, param1: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.init(_dbAddress, param1);
 
         return await this.send(method, txParams);
     }

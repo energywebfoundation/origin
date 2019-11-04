@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 /// @title this interface defines functions for defining functions of the user-logic in order to call them in different contracts
-interface RolesInterface {
+interface IRoles {
 
     /// @notice function to retrieve the rights of an user
     /// @dev if the user does not exist in the mapping it will return 0x0 thus preventing them from accidently getting any rights

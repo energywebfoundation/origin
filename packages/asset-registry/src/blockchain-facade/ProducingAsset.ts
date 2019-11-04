@@ -1,31 +1,10 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 import { Compliance, Configuration } from '@energyweb/utils-general';
 import moment from 'moment';
 import { TransactionReceipt } from 'web3/types';
 
 import { ProducingAssetPropertiesOffchainSchema } from '..';
-import { AssetProducingRegistryLogic } from '../wrappedContracts/AssetProducingRegistryLogic';
+import { AssetLogic } from '../wrappedContracts/AssetLogic';
 import * as Asset from './Asset';
-
-
-
-export interface IOnChainProperties extends Asset.IOnChainProperties {
-    maxOwnerChanges?: number;
-}
 
 export interface IOffChainProperties extends Asset.IOffChainProperties {
     assetType: string;
@@ -56,7 +35,7 @@ export const getAllAssetsOwnedBy = async (owner: string, configuration: Configur
 };
 
 export const createAsset = async (
-    assetPropertiesOnChain: IOnChainProperties,
+    assetPropertiesOnChain: Asset.IOnChainProperties,
     assetPropertiesOffChain: IOffChainProperties,
     configuration: Configuration.Entity
 ): Promise<Entity> => {
@@ -77,7 +56,6 @@ export const createAsset = async (
         assetPropertiesOnChain.active,
         assetPropertiesOnChain.propertiesDocumentHash,
         assetPropertiesOnChain.url,
-        assetPropertiesOnChain.maxOwnerChanges,
         {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey
@@ -102,14 +80,13 @@ export interface ISmartMeterRead {
     timestamp: number;
 }
 
-export interface IProducingAsset extends IOnChainProperties {
+export interface IProducingAsset extends Asset.IOnChainProperties {
     offChainProperties: IOffChainProperties
 }
 
 export class Entity extends Asset.Entity implements IProducingAsset {
     certificatesCreatedForWh: number;
     lastSmartMeterCO2OffsetRead: number;
-    maxOwnerChanges: number;
     offChainProperties: IOffChainProperties;
 
     getUrl(): string {
@@ -125,15 +102,14 @@ export class Entity extends Asset.Entity implements IProducingAsset {
                 this.id
             );
 
-            this.smartMeter = { address: asset.assetGeneral.smartMeter };
-            this.owner = { address: asset.assetGeneral.owner };
-            this.lastSmartMeterReadWh = asset.assetGeneral.lastSmartMeterReadWh;
-            this.active = asset.assetGeneral.active;
-            this.lastSmartMeterReadFileHash = asset.assetGeneral.lastSmartMeterReadFileHash;
-            this.propertiesDocumentHash = asset.assetGeneral.propertiesDocumentHash;
-            this.url = asset.assetGeneral.url;
+            this.smartMeter = { address: asset.smartMeter };
+            this.owner = { address: asset.owner };
+            this.lastSmartMeterReadWh = asset.lastSmartMeterReadWh;
+            this.active = asset.active;
+            this.lastSmartMeterReadFileHash = asset.lastSmartMeterReadFileHash;
+            this.propertiesDocumentHash = asset.propertiesDocumentHash;
+            this.url = asset.url;
             this.initialized = true;
-            this.maxOwnerChanges = asset.maxOwnerChanges;
 
             this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
             if (this.configuration.logger) {
@@ -169,7 +145,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        const logic: AssetProducingRegistryLogic = this.configuration.blockchainProperties
+        const logic: AssetLogic = this.configuration.blockchainProperties
             .producingAssetLogicInstance;
 
         return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({

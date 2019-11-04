@@ -35,9 +35,9 @@ describe('User Facade', () => {
     const RIGHTS = buildRights([Role.Trader, Role.AssetManager]);
 
     it('should deploy the contracts', async () => {
-        const contracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
-        userLogic = new UserLogic(web3, contracts.userLogic);
+        assert.exists(userLogic);
     });
 
     it('should create a user', async () => {

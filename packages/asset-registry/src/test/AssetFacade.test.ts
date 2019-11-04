@@ -1,17 +1,18 @@
-import { assert } from 'chai';
-import Web3 from 'web3';
 import 'mocha';
+import { assert } from 'chai';
+import moment from 'moment';
+import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { Configuration } from '@energyweb/utils-general';
-import { UserContractLookup, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 
+import { AssetLogic, ProducingAsset, Asset } from '..';
 import { logger } from '../Logger';
-import { migrateAssetRegistryContracts } from '../../contracts';
-import { Asset, ConsumingAsset, AssetConsumingRegistryLogic } from '..';
+import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 
-describe('AssetConsumingLogic Facade', () => {
+describe('Asset Facade', () => {
     dotenv.config({
         path: '.env.test'
     });
@@ -24,17 +25,8 @@ describe('AssetConsumingLogic Facade', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
 
-    let userContractLookup: UserContractLookup;
-    let userContractLookupAddr: string;
-    let assetConsumingLogic: AssetConsumingRegistryLogic;
+    let assetLogic: AssetLogic;
     let userLogic: UserLogic;
-
-    /*
-    let assetContractLookup: AssetContractLookup;
-    let assetProducingLogic: AssetProducingRegistryLogic;
-    let assetProducingDB: AssetProducingDB;
-    let assetConsumingDB: AssetConsumingDB;
-    */
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -45,10 +37,10 @@ describe('AssetConsumingLogic Facade', () => {
     const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
+    const SM_READ_TIMESTAMP = moment().unix();
+
     it('should deploy user-registry contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-        userContractLookupAddr = (userContracts as any).UserContractLookup;
-        userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -63,20 +55,17 @@ describe('AssetConsumingLogic Facade', () => {
             buildRights([Role.UserAdmin, Role.AssetAdmin]),
             { privateKey: privateKeyDeployment }
         );
-
-        userContractLookup = new UserContractLookup(web3 as any, userContractLookupAddr);
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts(
+        assetLogic = await migrateAssetRegistryContracts(
             web3,
-            userContractLookupAddr,
+            userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-        assetConsumingLogic = new AssetConsumingRegistryLogic(
-            web3,
-            (deployedContracts as any).AssetConsumingRegistryLogic
-        );
+
+        console.log("INITIAL2")
+        console.log({assetLogicAddress: assetLogic.web3Contract.options.address})
     });
 
     it('should onboard tests-users', async () => {
@@ -101,7 +90,7 @@ describe('AssetConsumingLogic Facade', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                consumingAssetLogicInstance: assetConsumingLogic,
+                producingAssetLogicInstance: assetLogic,
                 userLogicInstance: userLogic,
                 web3
             },
@@ -111,8 +100,9 @@ describe('AssetConsumingLogic Facade', () => {
             logger
         };
 
-        const assetProps: ConsumingAsset.IOnChainProperties = {
-            certificatesUsedForWh: 0,
+        const FACILITY_NAME = 'Wuthering Heights Windfarm';
+
+        const assetProps: Asset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
@@ -122,8 +112,8 @@ describe('AssetConsumingLogic Facade', () => {
             url: null
         };
 
-        const assetPropsOffChain: Asset.IOffChainProperties = {
-            operationalSince: 10,
+        const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+            operationalSince: 0,
             capacityWh: 10,
             country: 'Thailand',
             address:
@@ -131,12 +121,16 @@ describe('AssetConsumingLogic Facade', () => {
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             timezone: 'Asia/Bangkok',
-            facilityName: 'Wuthering Heights Windfarm'
+            assetType: 'Wind',
+            complianceRegistry: Compliance.EEC,
+            otherGreenAttributes: '',
+            typeOfPublicSupport: '',
+            facilityName: FACILITY_NAME
         };
 
-        assert.equal(await ConsumingAsset.getAssetListLength(conf), 0);
+        assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
 
-        const asset = await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
         delete asset.configuration;
         delete asset.proofs;
         delete asset.propertiesDocumentHash;
@@ -151,16 +145,15 @@ describe('AssetConsumingLogic Facade', () => {
                 active: true,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`
             } as any,
             asset
         );
-        assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
+        assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
-    it('should fail when onboarding the same asset again', async () => {
-        const assetProps: ConsumingAsset.IOnChainProperties = {
-            certificatesUsedForWh: 0,
+    it('should fail when trying to onboard the same asset again', async () => {
+        const assetProps: Asset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
@@ -170,8 +163,8 @@ describe('AssetConsumingLogic Facade', () => {
             url: null
         };
 
-        const assetPropsOffChain: Asset.IOffChainProperties = {
-            operationalSince: 10,
+        const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+            operationalSince: 0,
             capacityWh: 10,
             country: 'Thailand',
             address:
@@ -179,30 +172,37 @@ describe('AssetConsumingLogic Facade', () => {
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             timezone: 'Asia/Bangkok',
+            assetType: 'Wind',
+            complianceRegistry: Compliance.EEC,
+            otherGreenAttributes: '',
+            typeOfPublicSupport: '',
             facilityName: 'Wuthering Heights Windfarm'
         };
 
-        assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
+        assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
 
         try {
-            await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
-        } catch (e) {
-            assert.include(e.message, 'smartmeter does already exist');
+            await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        } catch (ex) {
+            assert.include(ex.message, 'smartmeter does already exist');
         }
-        assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
+        assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
-    it('should log a new meterreading', async () => {
+    it('should log a new meter reading', async () => {
         conf.blockchainProperties.activeUser = {
             address: assetSmartmeter,
             privateKey: assetSmartmeterPK
         };
+        let asset = await new ProducingAsset.Entity('0', conf).sync();
 
-        let asset = await new ConsumingAsset.Entity('0', conf).sync();
-
-        await asset.saveSmartMeterRead(100, 'newFileHash');
+        await asset.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
 
         asset = await asset.sync();
+
+        console.log({
+            logEvent: (await assetLogic.getAllEvents())[0].returnValues
+        });
 
         delete asset.proofs;
         delete asset.configuration;
@@ -217,9 +217,9 @@ describe('AssetConsumingLogic Facade', () => {
             lastSmartMeterReadWh: '100',
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
-            url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${conf.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address}`,
+            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`,
             offChainProperties: {
-                operationalSince: 10,
+                operationalSince: 0,
                 capacityWh: 10,
                 country: 'Thailand',
                 address:
@@ -227,8 +227,26 @@ describe('AssetConsumingLogic Facade', () => {
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
+                assetType: 'Wind',
+                complianceRegistry: Compliance.EEC,
+                otherGreenAttributes: '',
+                typeOfPublicSupport: '',
                 facilityName: 'Wuthering Heights Windfarm'
             }
+        });
+    });
+
+    describe('getSmartMeterReads', () => {
+        it('should correctly return reads', async () => {
+            const asset = await new ProducingAsset.Entity('0', conf).sync();
+            const reads = await asset.getSmartMeterReads();
+
+            assert.deepEqual(reads, [
+                {
+                    energy: 100,
+                    timestamp: SM_READ_TIMESTAMP
+                }
+            ]);
         });
     });
 });
