@@ -6,7 +6,7 @@ export interface IOnChainProperties {
     owner: string;
     energy: number;
     forSale: boolean;
-    acceptedToken?: number;
+    acceptedToken?: string;
     onChainDirectPurchasePrice: number;
     approvedAddress: string;
 }
@@ -90,7 +90,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     owner: string;
     energy: number;
     forSale: boolean;
-    acceptedToken?: number;
+    acceptedToken?: string;
     onChainDirectPurchasePrice: number;
     approvedAddress: string;
 

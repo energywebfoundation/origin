@@ -31,7 +31,7 @@
     "flatten-contracts": "truffle-flattener contracts/Origin/* > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
     "lint": "solium -d contracts",
     "lint-fix": "solium -d contracts --fix",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8547",
+    "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8547",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"wait-on tcp:8547 && yarn test\"",
     "test:contracts": "yarn test:concurrent",
