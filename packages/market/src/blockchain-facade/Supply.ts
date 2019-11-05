@@ -87,8 +87,7 @@ export const createSupply = async (
 
     const offChainStorageProperties = supply.prepareEntityCreation(
         supplyPropertiesOffChain,
-        supplyOffChainPropertiesSchema,
-        supply.getUrl()
+        supplyOffChainPropertiesSchema
     );
 
     let { url, propertiesDocumentHash } = supplyPropertiesOnChain;
