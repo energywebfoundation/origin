@@ -32,7 +32,7 @@ async function createBlockchainConfiguration() {
 
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-        level: 'debug',
+        level: 'verbose',
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 

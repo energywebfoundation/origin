@@ -109,7 +109,7 @@ export interface ISetConfigurationClientAction {
 }
 
 export const setConfigurationClient = (payload: ISetConfigurationClientAction['payload']) => ({
-    type: GeneralActions.setOffChainDataClient,
+    type: GeneralActions.setConfigurationClient,
     payload
 });
 

@@ -12,7 +12,6 @@ import moment from 'moment';
 jest.setTimeout(80000);
 
 let ganacheServer;
-let apiServer;
 
 describe('Application[E2E]', () => {
     beforeAll(async () => {
@@ -212,7 +211,5 @@ describe('Application[E2E]', () => {
         rendered.unmount();
 
         await ganacheServer.close();
-
-        apiServer.close();
     });
 });

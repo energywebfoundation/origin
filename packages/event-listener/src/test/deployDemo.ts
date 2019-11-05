@@ -72,7 +72,7 @@ export class Demo {
         };
 
         this.logger = Winston.createLogger({
-            level: 'debug',
+            level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         });

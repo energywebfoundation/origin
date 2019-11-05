@@ -37,7 +37,6 @@
     "@material-ui/pickers": "3.2.7",
     "@material-ui/types": "4.1.1",
     "@react-google-maps/api": "1.7.8",
-    "axios": "0.19.0",
     "bootstrap": "4.3.1",
     "chart.js": "2.9.2",
     "clsx": "1.0.4",

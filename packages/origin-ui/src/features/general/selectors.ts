@@ -20,3 +20,5 @@ export const getRequestPasswordModalTitle = (state: IStoreState) =>
     state.general.requestPasswordModalTitle;
 
 export const getOffChainDataClient = (state: IStoreState) => state.general.offChainDataClient;
+
+export const getConfigurationClient = (state: IStoreState) => state.general.configurationClient;

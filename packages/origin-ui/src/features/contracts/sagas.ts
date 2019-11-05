@@ -11,7 +11,7 @@ import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate } from '@energyweb/origin';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import {
@@ -25,12 +25,12 @@ import {
     demandCreated
 } from '../actions';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { BACKEND_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
+import { BACKEND_URL } from '../../utils/api';
 import { setError, setLoading } from '../general/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
 import { IStoreState } from '../../types';
-import { getOffChainDataClient } from '../general/selectors';
+import { getOffChainDataClient, getConfigurationClient } from '../general/selectors';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -216,6 +216,24 @@ function* initEventHandler() {
         }
     } catch (error) {
         console.error('initEventHandler() error', error);
+    }
+}
+
+function* getMarketContractLookupAddressFromAPI() {
+    try {
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+        const response = yield apply(configurationClient, configurationClient.get, [
+            `${BACKEND_URL}/api`,
+            'MarketContractLookup'
+        ]);
+
+        const marketContracts = response;
+
+        if (marketContracts.length > 0) {
+            yield marketContracts[marketContracts.length - 1];
+        }
+    } catch (error) {
+        yield null;
     }
 }
 
