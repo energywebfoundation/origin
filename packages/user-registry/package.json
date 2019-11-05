@@ -28,7 +28,7 @@
     "build-and-deploy": "yarn build:ts && yarn deploy-contracts",
     "build-schemas": "node ./scripts/buildSchemas.js",
     "build-schema:UserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Users/User.ts IUserOffChainProperties",
-    "clean": "rm -rf build schemas db.sqlite dist dist-shakeable",
+    "clean": "shx rm -rf build schemas db.sqlite dist dist-shakeable",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "extractABI": "node ./scripts/extractABI.js",
