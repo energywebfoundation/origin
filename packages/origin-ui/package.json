@@ -19,7 +19,7 @@
     "test:watch": "jest -u --watchAll",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "clean": "rm -rf db.sqlite dist"
+    "clean": "shx rm -rf db.sqlite dist"
   },
   "dependencies": {
     "@date-io/moment": "1.3.11",

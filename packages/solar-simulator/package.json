@@ -5,6 +5,7 @@
   "scripts": {
     "build": "yarn build:ts",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "start": "concurrently --restart-tries 3 --restart-after 1500 -n simulator,consumer \"yarn start-simulation\" \"yarn start-consuming-api\"",
     "start-simulation": "ts-node src/simulatorService.ts",
     "start-consuming-api": "ts-node src/consumerService.ts",
     "import-irec-assets": "ts-node src/importIRECAssets.ts -i irec-example/irec-thailand.csv",
@@ -12,7 +13,7 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
-    "clean": "rm -rf dist",
+    "clean": "shx rm -rf dist",
     "precommit": "lint-staged"
   },
   "author": "",

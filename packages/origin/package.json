@@ -24,7 +24,7 @@
     "build": "yarn build:ts",
     "build:static": "yarn compile && yarn extractABI",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
-    "clean": "rm -rf dist dist-shakeable build db.sqlite",
+    "clean": "shx rm -rf dist dist-shakeable build db.sqlite",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",
     "extractABI": "node ./scripts/extractABI.js",
