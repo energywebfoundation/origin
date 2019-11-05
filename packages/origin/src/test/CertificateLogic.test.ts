@@ -24,6 +24,7 @@ import { migrateCertificateRegistryContracts } from '../../contracts';
 import * as Certificate from '../blockchain-facade/Certificate';
 import * as TradableEntity from '../blockchain-facade/TradableEntity';
 import { logger } from '../blockchain-facade/Logger';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 describe('CertificateLogic-Facade', () => {
     let userLogic: UserLogic;
@@ -64,7 +65,7 @@ describe('CertificateLogic-Facade', () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     let conf: Configuration.Entity;
-    let blockCreationTime: string;
+    let blockCreationTime: number;
 
     function setActiveUser(privateKey: string) {
         conf.blockchainProperties.activeUser = {
@@ -179,7 +180,8 @@ describe('CertificateLogic-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: new OffChainDataClientMock()
             },
             logger
         };
@@ -287,32 +289,30 @@ describe('CertificateLogic-Facade', () => {
         const certificate = await new Certificate.Entity('0', conf).sync();
         assert.equal(await certificate.getOwner(), accountAssetOwner);
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
-        assert.deepEqual(certificate as any, {
+        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        
+        assert.deepOwnInclude(certificate, {
             id: '0',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '0',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 0,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should fail unpublish certificate from sale if not on sale', async () => {
@@ -405,31 +405,29 @@ describe('CertificateLogic-Facade', () => {
         assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 0);
         assert.equal(await TradableEntity.getBalance(accountTrader, conf), 1);
         assert.equal(await certificate.getOwner(), accountTrader);
-        delete certificate.configuration;
-        delete certificate.proofs;
 
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '0',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountTrader,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '0',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 0,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('create a new certificate (#1)', async () => {
@@ -450,32 +448,29 @@ describe('CertificateLogic-Facade', () => {
 
         const certificate = await new Certificate.Entity('1', conf).sync();
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
-        assert.deepEqual(certificate as any, {
+        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        assert.deepOwnInclude(certificate, {
             id: '1',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '1',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 1,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should approve', async () => {
@@ -487,30 +482,29 @@ describe('CertificateLogic-Facade', () => {
         assert.equal(await certificate.getApproved(), '0x0000000000000000000000000000000000000001');
 
         certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
-        assert.deepEqual(certificate as any, {
+
+        assert.deepOwnInclude(certificate, {
             id: '1',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000001',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '1',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 1,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should set erc20-token and price for a certificate', async () => {
@@ -529,31 +523,29 @@ describe('CertificateLogic-Facade', () => {
         certificate = await certificate.sync();
 
         assert.equal(await certificate.getTradableToken(), erc20TestTokenAddress);
-        delete certificate.configuration;
-        delete certificate.proofs;
 
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '1',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: erc20TestTokenAddress,
-            onChainDirectPurchasePrice: '100',
+            onChainDirectPurchasePrice: 100,
             approvedAddress: '0x0000000000000000000000000000000000000001',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '1',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 1,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should fail buying a certificate when not for sale', async () => {
@@ -613,31 +605,28 @@ describe('CertificateLogic-Facade', () => {
         await certificate.buyCertificate();
         certificate = await certificate.sync();
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '1',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountTrader,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '1',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 1,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should create a new certificate (#2)', async () => {
@@ -654,33 +643,30 @@ describe('CertificateLogic-Facade', () => {
         });
 
         const certificate = await new Certificate.Entity('2', conf).sync();
+        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '2',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 2,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should split a certificate', async () => {
@@ -694,85 +680,78 @@ describe('CertificateLogic-Facade', () => {
         await certificate.splitCertificate(60);
 
         certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        assert.deepEqual(certificate as any, {
+        
+        assert.deepOwnInclude(certificate, {
             id: '2',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: ['3', '4'],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Split.toString(),
+            status: Certificate.Status.Split,
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 2,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
 
         const c1 = await new Certificate.Entity('3', conf).sync();
-        delete c1.configuration;
-        delete c1.proofs;
-
         const c2 = await new Certificate.Entity('4', conf).sync();
-        delete c2.configuration;
-        delete c2.proofs;
 
-        assert.deepEqual(c1 as any, {
+        assert.deepOwnInclude(c1, {
             id: '3',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 60,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 2,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
 
-        assert.deepEqual(c2 as any, {
+        assert.deepOwnInclude(c2, {
             id: '4',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 40,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 2,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
 
         const activeCerts = await Certificate.getActiveCertificates(conf);
         const activeIndices = activeCerts.map(cert => cert.id);
@@ -792,31 +771,28 @@ describe('CertificateLogic-Facade', () => {
         assert.isTrue(await certificate.isRetired());
         assert.equal(await certificate.getCertificateOwner(), accountAssetOwner);
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '3',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 60,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Retired.toString(),
+            status: Certificate.Status.Retired,
             dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 2,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should create a new certificate (#5)', async () => {
@@ -834,32 +810,29 @@ describe('CertificateLogic-Facade', () => {
 
         const certificate = await new Certificate.Entity('5', conf).sync();
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
-        assert.deepEqual(certificate as any, {
+        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        assert.deepOwnInclude(certificate, {
             id: '5',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockCreationTime,
-            parentId: '5',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 5,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should fail using safeTransferFrom without calldata to an address', async () => {
@@ -902,31 +875,29 @@ describe('CertificateLogic-Facade', () => {
         await certificate.safeTransferFrom(testReceiverAddress);
 
         certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
 
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '5',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: testReceiverAddress,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockCreationTime,
-            parentId: '5',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 5,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should create a new certificate (#6)', async () => {
@@ -944,32 +915,29 @@ describe('CertificateLogic-Facade', () => {
 
         const certificate = await new Certificate.Entity('6', conf).sync();
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
-        assert.deepEqual(certificate as any, {
+        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        assert.deepOwnInclude(certificate, {
             id: '6',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockCreationTime,
-            parentId: '6',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 6,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should fail using safeTransferFrom calldata to an address', async () => {
@@ -1012,31 +980,29 @@ describe('CertificateLogic-Facade', () => {
         await certificate.safeTransferFrom(testReceiverAddress, '0x001');
 
         certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
 
-        assert.deepEqual(certificate as any, {
+        assert.deepOwnInclude(certificate, {
             id: '6',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: testReceiverAddress,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockCreationTime,
-            parentId: '6',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 6,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('asset owner can create multiple certification requests', async () => {
@@ -1246,32 +1212,29 @@ describe('CertificateLogic-Facade', () => {
             conf
         ).sync();
 
-        delete certificate.configuration;
-        delete certificate.proofs;
-
-        blockCreationTime = '' + (await web3.eth.getBlock('latest')).timestamp;
-        assert.deepEqual(certificate as any, {
+        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        assert.deepOwnInclude(certificate, {
             id: STARTING_CERTIFICATE_LENGTH.toString(),
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 100,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#10',
             creationTime: blockCreationTime,
-            parentId: STARTING_CERTIFICATE_LENGTH.toString(),
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: STARTING_CERTIFICATE_LENGTH,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should make certificate #10 available for sale', async () => {
@@ -1286,59 +1249,51 @@ describe('CertificateLogic-Facade', () => {
 
         const childCert1 = await new Certificate.Entity('11', conf).sync();
 
-        delete childCert1.configuration;
-        delete childCert1.proofs;
-        delete childCert1.creationTime;
-
-        assert.deepEqual(childCert1 as any, {
+        assert.deepOwnInclude(childCert1, {
             id: '11',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 30,
             forSale: true,
             acceptedToken: '0x1230000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '10',
+            onChainDirectPurchasePrice: 10,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#10',
-            parentId: '10',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 10,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
 
         const childCert2 = await new Certificate.Entity('12', conf).sync();
 
-        delete childCert2.configuration;
-        delete childCert2.proofs;
-        delete childCert2.creationTime;
-
-        assert.deepEqual(childCert2 as any, {
+        assert.deepOwnInclude(childCert2, {
             id: '12',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 70,
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#10',
-            parentId: '10',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 10,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should make certificate #12 available for sale with fiat', async () => {
@@ -1349,31 +1304,28 @@ describe('CertificateLogic-Facade', () => {
         await certificate.publishForSale(price, Currency.EUR);
 
         certificate = await certificate.sync();
-        delete certificate.configuration;
-        delete certificate.proofs;
-        delete certificate.creationTime;
-
-        assert.deepEqual(certificate as any, {
+ 
+        assert.deepOwnInclude(certificate, {
             id: '12',
             initialized: true,
-            assetId: '0',
+            assetId: 0,
             children: [],
             owner: accountAssetOwner,
             energy: 70,
             forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            onChainDirectPurchasePrice: '0',
+            onChainDirectPurchasePrice: 0,
             approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Active.toString(),
+            status: Certificate.Status.Active,
             dataLog: 'lastSmartMeterReadFileHash#10',
-            parentId: '10',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0',
+            parentId: 10,
+            maxOwnerChanges: 3,
+            ownerChangerCounter: 0,
             offChainSettlementOptions: {
                 price: price * 100,
                 currency: Currency.EUR
             }
-        });
+        } as Partial<Certificate.Entity>);
     });
 
     it('should split certificate when trying to buy just a part of it', async () => {

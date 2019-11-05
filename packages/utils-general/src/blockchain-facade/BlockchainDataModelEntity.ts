@@ -1,7 +1,7 @@
 import * as Configuration from './Configuration';
 import { PreciseProofs } from 'ew-utils-general-precise-proofs';
 import { validateJson } from '../off-chain-data/json-validator';
-import { IOffChainDataSourceClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 
 export interface IOffChainProperties {
     rootHash: string;
@@ -18,7 +18,7 @@ export abstract class Entity {
     id: string;
     configuration: Configuration.Entity;
     proofs: PreciseProofs.Proof[];
-    offChainDataClient: IOffChainDataSourceClient;
+    offChainDataClient: IOffChainDataClient;
 
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {

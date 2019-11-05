@@ -1,6 +1,10 @@
-import { IOffChainDataSourceClient, IOffChainData } from './OffChainDataClient';
+import { IOffChainDataClient, IOffChainData } from './OffChainDataClient';
 
-export class OffChainDataClientMock implements IOffChainDataSourceClient {
+class MissingEntity extends Error {
+    public response = { status: 404 };
+}
+
+export class OffChainDataClientMock implements IOffChainDataClient {
     private storage = new Map<string, any>();
 
     private clone(input: any): any {
@@ -8,21 +12,21 @@ export class OffChainDataClientMock implements IOffChainDataSourceClient {
     }
 
     public async get<T>(url: string): Promise<IOffChainData<T>> {
-        const result = this.storage.get(url);
+        const result = this.storage.get(url.toLocaleLowerCase());
 
         if (!result) {
-            throw new Error('Entity does not exist');
+            throw new MissingEntity('Entity does not exist');
         }
 
         return this.clone(result) as IOffChainData<T>;
     }
 
     public async delete(url: string): Promise<boolean> {
-        return this.storage.delete(url);
+        return this.storage.delete(url.toLocaleLowerCase());
     }
 
     public async insertOrUpdate<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
-        this.storage.set(url, this.clone(offChainData));
+        this.storage.set(url.toLocaleLowerCase(), this.clone(offChainData));
 
         return true;
     }

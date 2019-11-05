@@ -30,6 +30,7 @@
     "@energyweb/origin": "1.3.2",
     "@energyweb/user-registry": "1.3.2",
     "@energyweb/utils-general": "1.3.0",
+    "@energyweb/origin-backend-client": "1.0.0",
     "@material-ui/core": "4.5.1",
     "@material-ui/icons": "4.5.1",
     "@material-ui/lab": "4.0.0-alpha.29",
@@ -68,7 +69,6 @@
     "yup": "0.27.0"
   },
   "devDependencies": {
-    "@energyweb/origin-backend": "1.3.2",
     "@testing-library/react": "9.3.1",
     "@types/enzyme": "3.10.3",
     "@types/jest": "24.0.21",

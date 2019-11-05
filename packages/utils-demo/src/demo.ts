@@ -12,6 +12,7 @@ import { CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { deployERC20TestToken } from '@energyweb/erc-test-contracts';
+import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
@@ -70,7 +71,8 @@ export const marketDemo = async (demoFile?: string) => {
             web3
         },
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`
+            baseUrl: `${process.env.BACKEND_URL}/api`,
+            client: new OffChainDataClient()
         },
         logger
     };

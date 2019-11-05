@@ -54,7 +54,7 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/origin-backend": "1.3.2",
+    "@energyweb/origin-backend-client": "1.0.0",
     "@fluffy-spoon/substitute": "1.89.0",
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
