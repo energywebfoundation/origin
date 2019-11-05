@@ -18,3 +18,5 @@ export const getRequestPasswordModalCallback = (state: IStoreState) =>
 
 export const getRequestPasswordModalTitle = (state: IStoreState) =>
     state.general.requestPasswordModalTitle;
+
+export const getOffChainDataClient = (state: IStoreState) => state.general.offChainDataClient;

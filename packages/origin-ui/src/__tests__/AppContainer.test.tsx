@@ -4,7 +4,6 @@ import { AppContainer } from '../components/AppContainer';
 import { Route } from 'react-router-dom';
 import { WrapperComponent, setupStore, wait, createRenderedHelpers } from './utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
-import { startAPI } from '@energyweb/origin-backend';
 import { dataTestSelector } from '../utils/Helper';
 import { TimeFrame } from '@energyweb/utils-general';
 
@@ -17,15 +16,17 @@ let apiServer;
 
 describe('Application[E2E]', () => {
     beforeAll(async () => {
-        apiServer = await startAPI();
         ganacheServer = await startGanache();
-        await deployDemo();
     });
 
     it('correctly navigates to producing asset details', async () => {
+        const { configurationClient, offChainDataClient } = await deployDemo();
+
         const { store, history } = setupStore([`/assets/?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
-            logActions: false
+            logActions: false,
+            configurationClient,
+            offChainDataClient
         });
 
         const rendered = mount(

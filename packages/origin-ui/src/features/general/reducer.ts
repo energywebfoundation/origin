@@ -1,4 +1,10 @@
 import { GeneralActions, IGeneralAction } from './actions';
+import {
+    IOffChainDataClient,
+    OffChainDataClient,
+    ConfigurationClient,
+    IConfigurationClient
+} from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
@@ -8,6 +14,8 @@ export interface IGeneralState {
     requestPasswordModalVisible: boolean;
     requestPasswordModalTitle: string;
     requestPasswordModalCallback: (password: string) => void;
+    offChainDataClient: IOffChainDataClient;
+    configurationClient: IConfigurationClient;
 }
 
 const defaultState: IGeneralState = {
@@ -17,7 +25,9 @@ const defaultState: IGeneralState = {
     error: null,
     requestPasswordModalVisible: false,
     requestPasswordModalCallback: null,
-    requestPasswordModalTitle: null
+    requestPasswordModalTitle: null,
+    offChainDataClient: new OffChainDataClient(),
+    configurationClient: new ConfigurationClient()
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -61,6 +71,18 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
                 requestPasswordModalVisible: false,
                 requestPasswordModalCallback: null,
                 requestPasswordModalTitle: null
+            };
+
+        case GeneralActions.setOffChainDataClient:
+            return {
+                ...state,
+                offChainDataClient: action.payload
+            };
+
+        case GeneralActions.setConfigurationClient:
+            return {
+                ...state,
+                configurationClient: action.payload
             };
 
         default:

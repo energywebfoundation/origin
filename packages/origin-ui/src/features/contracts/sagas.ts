@@ -11,7 +11,7 @@ import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate } from '@energyweb/origin';
-import { OffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import {
@@ -30,6 +30,7 @@ import { setError, setLoading } from '../general/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
 import { IStoreState } from '../../types';
+import { getOffChainDataClient } from '../general/selectors';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -37,15 +38,16 @@ enum ERROR {
 
 async function initConf(
     marketContractLookupAddress: string,
-    routerSearch: string
+    routerSearch: string,
+    offChainDataClient: IOffChainDataClient
 ): Promise<Configuration.Entity> {
     let web3: Web3 = null;
-    const params: any = queryString.parse(routerSearch);
+    const params = queryString.parse(routerSearch);
 
     const ethereumProvider = (window as any).ethereum;
 
     if (params.rpc) {
-        web3 = new Web3(params.rpc);
+        web3 = new Web3(params.rpc as string);
     } else if (ethereumProvider) {
         web3 = new Web3(ethereumProvider);
         try {
@@ -69,10 +71,10 @@ async function initConf(
         blockchainProperties,
         offChainDataSource: {
             baseUrl: `${BACKEND_URL}/api`,
-            client: new OffChainDataClient()
+            client: offChainDataClient
         },
         logger: Winston.createLogger({
-            level: 'debug',
+            level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         })
@@ -242,7 +244,14 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
     let configuration: IStoreState['configuration'];
     try {
-        configuration = yield call(initConf, marketContractLookupAddress, routerSearch);
+        const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
+
+        configuration = yield call(
+            initConf,
+            marketContractLookupAddress,
+            routerSearch,
+            offChainDataClient
+        );
 
         yield put(configurationUpdated(configuration));
 

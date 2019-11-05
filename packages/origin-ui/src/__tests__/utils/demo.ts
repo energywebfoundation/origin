@@ -8,7 +8,6 @@ import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { BACKEND_URL } from '../../utils/api';
 import { MarketLogic } from '@energyweb/market';
 import { IStoreState } from '../../types';
-import axios from 'axios';
 import { User, UserLogic, buildRights, Role } from '@energyweb/user-registry';
 import { Compliance } from '@energyweb/utils-general';
 import { CertificateLogic } from '@energyweb/origin';
@@ -17,7 +16,7 @@ import {
     AssetProducingRegistryLogic,
     AssetConsumingRegistryLogic
 } from '@energyweb/asset-registry';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -66,9 +65,9 @@ export const ACCOUNTS = {
     }
 };
 
-export const deployDemo = async () => {
+export async function deployDemo() {
     const logger = Winston.createLogger({
-        level: 'debug',
+        level: 'verbose',
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
@@ -113,8 +112,13 @@ export const deployDemo = async () => {
     deployResult.certificateLogic = originContracts.CertificateLogic;
     deployResult.marketLogic = marketContracts.MarketLogic;
 
-    await axios.post(
-        `${BACKEND_URL}/api/MarketContractLookup/${deployResult.marketContractLookup.toLowerCase()}`
+    const configurationClient = new ConfigurationClientMock();
+    const offChainDataClient = new OffChainDataClientMock();
+
+    await configurationClient.add(
+        BACKEND_URL,
+        'MarketContractLookup',
+        deployResult.marketContractLookup.toLowerCase()
     );
 
     const userLogic = new UserLogic(web3, deployResult.userLogic);
@@ -144,7 +148,7 @@ export const deployDemo = async () => {
         },
         offChainDataSource: {
             baseUrl: `${BACKEND_URL}/api`,
-            client: new OffChainDataClientMock()
+            client: offChainDataClient
         },
         logger
     };
@@ -227,8 +231,8 @@ export const deployDemo = async () => {
         throw new Error(error);
     }
 
-    return { conf, deployResult };
-};
+    return { conf, deployResult, configurationClient, offChainDataClient };
+}
 
 export const startGanache = async () => {
     return new Promise(resolve => {
