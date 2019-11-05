@@ -68,7 +68,6 @@ Currently the following action types are supported:
 * SEND_ERC20_TOKENS_TO
 * TRANSFER_CERTIFICATE
 * SPLIT_CERTIFICATE
-* SET_ERC20_CERTIFICATE
 * PUBLISH_CERTIFICATE_FOR_SALE
 * PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
 * REQUEST_CERTIFICATES
@@ -385,30 +384,6 @@ We want to split the certificate with id <code>1</code>. The transaction to do s
 }
 </code>
 
-### SET_ERC20_CERTIFICATE
-usage: command to deploy a test ERC20 token and the enable the certificate to use ERC20 tokens as a payment
-<br>params:
-* <code>certId</code>: id of the certificate to be transferred
-* <code>assetOwner</code>: address of the current owner of the certificate(must have trading rights)
-* <code>assetOwnerPK</code>: private key of the current owner of the certificate
-* <code>price</code>: price of the certificate in unit of the ERC20 test token
-* <code>testAccount</code>: an account address that gets intial ERC20 funds
-
-#### example
-We want to enable ERC20 trading in certificate with id <code>4</code>. The transaction to do so must be signed by the assetOwner proving the current ownership of the certificate. Therefore the asset owner's address and private key are required. The price of the certificate would be <code>1000</code> ERC20 test tokens. The initial funds of ERC20 test tokens will go to the account with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code>(for demo: it is set equal to the trader's address who will buy the certificate)
-
-<code>
-{
-    "type": "SET_ERC20_CERTIFICATE",
-    "data": {
-        "certId":4,
-        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-        "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
-        "price": 1000,
-        "testAccount": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
-    }
-}
-</code>
 
 ### PUBLISH_CERTIFICATE_FOR_SALE
 usage: command to publish a certificate for sale using ERC-20 tokens

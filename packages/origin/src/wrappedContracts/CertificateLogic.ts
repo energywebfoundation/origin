@@ -1,23 +1,29 @@
-import { ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
 import Web3 from 'web3';
-import CertificateLogicJSON from '../../build/contracts/lightweight/CertificateLogic.json';
-import { CertificateSpecificContract } from './CertificateSpecificContract';
+import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 
-export class CertificateLogic extends CertificateSpecificContract {
+export class CertificateLogic extends GeneralFunctions {
     web3: Web3;
 
     constructor(web3: Web3, address?: string) {
-        super(web3, address);
-
         const buildFile: any = CertificateLogicJSON;
-        this.web3Contract = address
-            ? new web3.eth.Contract(buildFile.abi, address)
-            : new web3.eth.Contract(
-                buildFile.abi,
-                buildFile.networks.length > 0
-                    ? buildFile.networks[0]
-                    : null
-            );
+        super(
+            address
+                ? new web3.eth.Contract(buildFile.abi, address)
+                : new web3.eth.Contract(
+                    buildFile.abi,
+                    buildFile.networks.length > 0
+                        ? buildFile.networks[0]
+                        : null
+                  )
+        );
+        this.web3 = web3;
+    }
+
+    async initialize(userContractAddress: string, assetContractAddress: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(userContractAddress, assetContractAddress);
+
+        return this.send(method, txParams);
     }
 
     async getAllLogCreatedCertificateEvents(eventFilter?: ISearchLog) {
@@ -52,22 +58,12 @@ export class CertificateLogic extends CertificateSpecificContract {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async supportsInterface(_interfaceID: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.supportsInterface(_interfaceID).call(txParams);
-    }
-
     async getApproved(_tokenId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getApproved(_tokenId).call(txParams);
     }
 
     async approve(_approved: string, _entityId: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.approve(_approved, _entityId);
-
-        return this.send(method, txParams);
-    }
-
-    async update(_newLogic: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.update(_newLogic);
 
         return this.send(method, txParams);
     }
@@ -113,46 +109,20 @@ export class CertificateLogic extends CertificateSpecificContract {
         }
     }
 
-    async userContractLookup(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.userContractLookup().call(txParams);
-    }
-
-    async db(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.db().call(txParams);
-    }
-
     async getCertificate(_certificateId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getCertificate(_certificateId).call(txParams);
-    }
-
-    async setOnChainDirectPurchasePrice(_entityId: number, _price: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setOnChainDirectPurchasePrice(_entityId, _price);
-
-        return this.send(method, txParams);
     }
 
     async ownerOf(_entityId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.ownerOf(_entityId).call(txParams);
     }
 
-    async assetContractLookup(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.assetContractLookup().call(txParams);
-    }
-
     async balanceOf(_owner: string, txParams?: ISpecialTx) {
         return this.web3Contract.methods.balanceOf(_owner).call(txParams);
     }
 
-    async getTradableEntity(_entityId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getTradableEntity(_entityId).call(txParams);
-    }
-
     async getCertificateOwner(_certificateId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getCertificateOwner(_certificateId).call(txParams);
-    }
-
-    async owner(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.owner().call(txParams);
     }
 
     async splitAndBuyCertificate(_certificateId: number, _energy: number, txParams?: ISpecialTx) {
@@ -179,14 +149,8 @@ export class CertificateLogic extends CertificateSpecificContract {
         return this.send(method, txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.changeOwner(_newOwner);
-
-        return this.send(method, txParams);
-    }
-
     async getCertificateListLength(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificateListLength().call(txParams);
+        return this.web3Contract.methods.totalSupply().call(txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
@@ -214,24 +178,18 @@ export class CertificateLogic extends CertificateSpecificContract {
         return this.send(method, txParams);
     }
 
-    async isRetired(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.isRetired(_certificateId).call(txParams);
+    async isClaimed(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.isClaimed(_certificateId).call(txParams);
     }
 
-    async retireCertificate(_certificateId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.retireCertificate(_certificateId);
+    async claimCertificate(_certificateId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.claimCertificate(_certificateId);
 
         return this.send(method, txParams);
     }
 
     async claimCertificateBulk(_idArray: number[], txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.claimCertificateBulk(_idArray);
-
-        return this.send(method, txParams);
-    }
-
-    async setTradableToken(_entityId: number, _tokenContract: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setTradableToken(_entityId, _tokenContract);
 
         return this.send(method, txParams);
     }
@@ -246,8 +204,31 @@ export class CertificateLogic extends CertificateSpecificContract {
         return this.web3Contract.methods.isApprovedForAll(_owner, _operator).call(txParams);
     }
 
-    async init(_database: string, _admin: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.init(_database, _admin);
+    async getCertificationRequests(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificationRequests().call(txParams);
+    }
+
+    async getCertificationRequestsLength(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getCertificationRequestsLength().call(txParams);
+    }
+
+    async requestCertificates(
+        _assetId: number,
+        limitingSmartMeterReadIndex: number,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.requestCertificates(
+            _assetId,
+            limitingSmartMeterReadIndex
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async approveCertificationRequest(_certicationRequestIndex: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.approveCertificationRequest(
+            _certicationRequestIndex
+        );
 
         return this.send(method, txParams);
     }

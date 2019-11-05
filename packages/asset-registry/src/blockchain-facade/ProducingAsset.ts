@@ -2,7 +2,7 @@ import { Compliance, Configuration } from '@energyweb/utils-general';
 import moment from 'moment';
 import { TransactionReceipt } from 'web3/types';
 
-import { ProducingAssetPropertiesOffchainSchema } from '..';
+import { ProducingAssetPropertiesOffChainSchema } from '..';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
 import * as Asset from './Asset';
 
@@ -42,7 +42,7 @@ export const createAsset = async (
     const producingAsset = new Entity(null, configuration);
     const offChainStorageProperties = producingAsset.prepareEntityCreation(
         assetPropertiesOffChain,
-        ProducingAssetPropertiesOffchainSchema
+        ProducingAssetPropertiesOffChainSchema
     );
 
     if (configuration.offChainDataSource) {

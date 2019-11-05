@@ -139,7 +139,7 @@ describe('Asset Facade', () => {
             initialized: true,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
-            lastSmartMeterReadWh: '0',
+            lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: '',
             offChainProperties: assetPropsOffChain,

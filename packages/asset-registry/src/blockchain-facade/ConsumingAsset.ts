@@ -1,6 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import * as Asset from './Asset';
-import { AssetPropertiesOffchainSchema } from '..';
+import { AssetPropertiesOffChainSchema } from '..';
 import { TransactionReceipt } from 'web3/types';
 import moment from 'moment';
 
@@ -16,7 +16,7 @@ export const createAsset = async (
     const consumingAsset = new Entity(null, configuration);
     const offChainStorageProperties = consumingAsset.prepareEntityCreation(
         assetPropertiesOffChain,
-        AssetPropertiesOffchainSchema
+        AssetPropertiesOffChainSchema
     );
 
     if (configuration.offChainDataSource) {

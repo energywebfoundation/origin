@@ -156,31 +156,6 @@ export const certificateDemo = async (
 
             console.log('-----------------------------------------------------------\n');
             break;
-
-        case 'SET_ERC20_CERTIFICATE':
-            console.log('-----------------------------------------------------------');
-
-            conf.blockchainProperties.activeUser = {
-                address: action.data.assetOwner,
-                privateKey: action.data.assetOwnerPK
-            };
-
-            try {
-                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
-
-                await certificate.setOnChainDirectPurchasePrice(action.data.price);
-                certificate = await certificate.sync();
-
-                await certificate.setTradableToken(erc20TestAddress);
-                certificate = await certificate.sync();
-                conf.logger.info('Demo ERC token created: ' + erc20TestAddress);
-            } catch (e) {
-                conf.logger.error('Could not set ERC20 tokens for certificate trading\n', e);
-            }
-
-            console.log('-----------------------------------------------------------\n');
-
-            break;
         case 'PUBLISH_CERTIFICATE_FOR_SALE':
             console.log('-----------------------------------------------------------');
 
