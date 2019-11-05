@@ -1,44 +1,41 @@
 import { TransactionReceipt, EventLog } from 'web3/types';
-import { Currency } from '@energyweb/utils-general';
-import { Configuration } from '../utils/types';
 
-import * as TradableEntity from './TradableEntity';
-import { CertificateLogic } from '..';
+import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 
 export enum Status {
     Active,
-    Retired,
+    Claimed,
     Split
 }
 
-export interface ICertificate extends TradableEntity.IOnChainProperties {
+export interface ICertificate {
     id: string;
-    status: number;
-    dataLog: string;
+
+    assetId: number;
+    owner: string;
+    energy: number;
+    status: Status;
     creationTime: number;
     parentId: number;
     children: string[];
-    maxOwnerChanges: number;
-    ownerChangerCounter: number;
 
-    sync(): Promise<ICertificate>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
 }
 
-export const getCertificateListLength = async (configuration: Configuration): Promise<number> => {
+export const getCertificateListLength = async (configuration: Configuration.Entity): Promise<number> => {
     return parseInt(
         await configuration.blockchainProperties.certificateLogicInstance.getCertificateListLength(),
         10
     );
 };
 
-const getAccountFromConfiguration = (configuration: Configuration) => ({
+const getAccountFromConfiguration = (configuration: Configuration.Entity) => ({
     from: configuration.blockchainProperties.activeUser.address,
     privateKey: configuration.blockchainProperties.activeUser.privateKey
 });
 
-export const getAllCertificates = async (configuration: Configuration) => {
+export const getAllCertificates = async (configuration: Configuration.Entity) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -46,7 +43,7 @@ export const getAllCertificates = async (configuration: Configuration) => {
     return Promise.all(certificatePromises);
 };
 
-export const getActiveCertificates = async (configuration: Configuration) => {
+export const getActiveCertificates = async (configuration: Configuration.Entity) => {
     const certificatePromises = Array(await getCertificateListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -56,13 +53,9 @@ export const getActiveCertificates = async (configuration: Configuration) => {
     return certs.filter((cert: Entity) => Number(cert.status) === Status.Active);
 };
 
-export const isRetired = async (certId: number, configuration: Configuration): Promise<boolean> => {
-    return configuration.blockchainProperties.certificateLogicInstance.isRetired(certId);
-};
-
 export const getAllCertificateEvents = async (
     certId: number,
-    configuration: Configuration
+    configuration: Configuration.Entity
 ): Promise<EventLog[]> => {
     const allEvents = await configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
         {
@@ -117,20 +110,22 @@ export const getAllCertificateEvents = async (
     return returnEvents;
 };
 
-export class Entity extends TradableEntity.Entity implements ICertificate {
-    status: number;
+export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
+    public assetId: number;
+    public owner: string;
+    public energy: number;
+    public status: Status;
+    public creationTime: number;
+    public parentId: number;
+    public children: string[];
 
-    dataLog: string;
+    public initialized: boolean;
 
-    creationTime: number;
+    constructor(id: string, configuration: Configuration.Entity) {
+        super(id, configuration);
 
-    parentId: number;
-
-    children: string[];
-
-    maxOwnerChanges: number;
-
-    ownerChangerCounter: number;
+        this.initialized = false;
+    }
 
     getUrl(): string {
         const certificateLogicAddress = this.configuration.blockchainProperties.certificateLogicInstance.web3Contract.options.address;
@@ -144,18 +139,13 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
                 this.id
             );
 
-            this.assetId = cert.tradableEntity.assetId;
-            this.owner = cert.tradableEntity.owner;
-            this.energy = Number(cert.tradableEntity.energy);
-            this.approvedAddress = cert.tradableEntity.approvedAddress;
-
-            this.children = cert.certificateSpecific.children;
-            this.status = cert.certificateSpecific.status;
-            this.dataLog = cert.certificateSpecific.dataLog;
-            this.creationTime = cert.certificateSpecific.creationTime;
-            this.parentId = cert.certificateSpecific.parentId;
-            this.maxOwnerChanges = cert.certificateSpecific.maxOwnerChanges;
-            this.ownerChangerCounter = cert.certificateSpecific.ownerChangeCounter;
+            this.assetId = cert.assetId;
+            this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
+            this.energy = Number(cert.energy);
+            this.children = cert.children;
+            this.status = cert.status;
+            this.creationTime = cert.creationTime;
+            this.parentId = cert.parentId;
 
             this.initialized = true;
 
@@ -165,19 +155,6 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         }
 
         return this;
-    }
-
-    async retireCertificate(): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
-                this.id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        }
-        return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
-            this.id,
-            { from: this.configuration.blockchainProperties.activeUser.address }
-        );
     }
 
     async splitCertificate(energy: number): Promise<TransactionReceipt> {
@@ -195,14 +172,8 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
         );
     }
 
-    async getCertificateOwner(): Promise<string> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getCertificateOwner(
-            this.id
-        );
-    }
-
-    async isRetired(): Promise<boolean> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.isRetired(this.id);
+    async isClaimed(): Promise<boolean> {
+        return Number(this.status) === Status.Claimed;
     }
 
     async claim() {
@@ -211,10 +182,30 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
             privateKey: this.configuration.blockchainProperties.activeUser.privateKey
         };
 
-        return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+        return this.configuration.blockchainProperties.certificateLogicInstance.claimCertificate(
             parseInt(this.id, 10),
             accountProperties
         );
+    }
+
+    async approve(_approved: string): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.certificateLogicInstance.approve(
+                _approved,
+                this.id,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+            );
+        } else {
+            return this.configuration.blockchainProperties.certificateLogicInstance.approve(
+                _approved,
+                this.id,
+                { from: this.configuration.blockchainProperties.activeUser.address }
+            );
+        }
+    }
+
+    async getApproved(): Promise<string> {
+        return this.configuration.blockchainProperties.certificateLogicInstance.getApproved(this.id);
     }
 
     async getAllCertificateEvents(): Promise<EventLog[]> {
@@ -270,9 +261,47 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
 
         return returnEvents;
     }
+
+    async safeTransferFrom(_to: string, _calldata?: string): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.certificateLogicInstance.safeTransferFrom(
+                this.owner,
+                _to,
+                this.id,
+                _calldata ? _calldata : null,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+            );
+        } else {
+            return this.configuration.blockchainProperties.certificateLogicInstance.safeTransferFrom(
+                this.owner,
+                _to,
+                this.id,
+                _calldata ? _calldata : null,
+                { from: this.configuration.blockchainProperties.activeUser.address }
+            );
+        }
+    }
+
+    async transferFrom(_to: string): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.certificateLogicInstance.transferFrom(
+                this.owner,
+                _to,
+                this.id,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+            );
+        } else {
+            return this.configuration.blockchainProperties.certificateLogicInstance.transferFrom(
+                this.owner,
+                _to,
+                this.id,
+                { from: this.configuration.blockchainProperties.activeUser.address }
+            );
+        }
+    }
 }
 
-export async function claimCertificates(certificateIds: string[], configuration: Configuration) {
+export async function claimCertificates(certificateIds: string[], configuration: Configuration.Entity) {
     const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
 
     return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(
@@ -284,7 +313,7 @@ export async function claimCertificates(certificateIds: string[], configuration:
 export async function requestCertificates(
     assetId: string,
     limitingSmartMeterReadIndex: number,
-    configuration: Configuration
+    configuration: Configuration.Entity
 ) {
     return configuration.blockchainProperties.certificateLogicInstance.requestCertificates(
         parseInt(assetId, 10),
@@ -295,7 +324,7 @@ export async function requestCertificates(
 
 export async function approveCertificationRequest(
     certicationRequestIndex: number,
-    configuration: Configuration
+    configuration: Configuration.Entity
 ) {
     return configuration.blockchainProperties.certificateLogicInstance.approveCertificationRequest(
         certicationRequestIndex,

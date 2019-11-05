@@ -1,4 +1,4 @@
-import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import AssetLogicJSON from '../../build/contracts/lightweight/AssetLogic.json';
 import moment from 'moment';
@@ -113,6 +113,10 @@ export class AssetLogic extends GeneralFunctions {
 
     async getAssetListLength(txParams?: ISpecialTx) {
         return await this.web3Contract.methods.getAssetListLength().call(txParams);
+    }
+
+    async getAsset(_assetId: number, txParams?: ISpecialTx) {
+        return await this.web3Contract.methods.getAsset(_assetId).call(txParams);
     }
 
     async getAssetById(_assetId: number, txParams?: ISpecialTx) {

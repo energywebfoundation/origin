@@ -5,24 +5,15 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
+import "@energyweb/user-registry/contracts/Interfaces/IUserLogic.sol";
+
+import "./AssetStructs.sol";
+import "./IAssetLogic.sol";
 
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
-contract AssetLogic is Initializable, RoleManagement {
+contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 
-    struct Asset {
-        address smartMeter;
-        address owner;
-        uint lastSmartMeterReadWh;
-        bool active;
-        string lastSmartMeterReadFileHash;
-        string propertiesDocumentHash;
-        string url;
-    }
-
-    struct SmartMeterRead {
-        uint energy;
-        uint timestamp;
-    }
+    IUserLogic private userLogic;
 
     event LogAssetCreated(address _sender, uint indexed _assetId);
     event LogAssetFullyInitialized(uint indexed _assetId);
@@ -36,8 +27,8 @@ contract AssetLogic is Initializable, RoleManagement {
     );
 
     /// @dev mapping for smartMeter-address => Asset
-    mapping(address => Asset) internal assetMapping;
-    mapping(address => SmartMeterRead[]) internal assetSmartMeterReadsMapping;
+    mapping(address => AssetStructs.Asset) internal assetMapping;
+    mapping(address => AssetStructs.SmartMeterRead[]) internal assetSmartMeterReadsMapping;
 
     /// @dev list of all the smartMeters already used
     address[] internal smartMeterAddresses;
@@ -45,6 +36,8 @@ contract AssetLogic is Initializable, RoleManagement {
     /// @notice constructor
     function initialize(IUserLogic _userLogicContract) public initializer {
         RoleManagement.initialize(_userLogicContract);
+
+        userLogic = _userLogicContract;
     }
 
     /**
@@ -54,7 +47,7 @@ contract AssetLogic is Initializable, RoleManagement {
     /// @notice gets the Asset-struct as memory
     /// @param _assetId the id of an asset
     /// @return the Asset-struct as memory
-    function getAsset(uint _assetId) external view returns (Asset memory general) {
+    function getAsset(uint _assetId) external view returns (AssetStructs.Asset memory asset) {
         return getAssetById(_assetId);
     }
 
@@ -98,7 +91,7 @@ contract AssetLogic is Initializable, RoleManagement {
         uint createdEnergy = setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
 
         assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]].push(
-            SmartMeterRead({ energy: createdEnergy, timestamp: timestamp })
+            AssetStructs.SmartMeterRead({ energy: createdEnergy, timestamp: timestamp })
         );
     }
 
@@ -118,7 +111,7 @@ contract AssetLogic is Initializable, RoleManagement {
     ) external returns (uint _assetId) {
         checkBeforeCreation(_owner, _smartMeter);
 
-        Asset memory _asset = Asset({
+        AssetStructs.Asset memory _asset = AssetStructs.Asset({
             smartMeter: _smartMeter,
             owner: _owner,
             lastSmartMeterReadWh: 0,
@@ -139,7 +132,7 @@ contract AssetLogic is Initializable, RoleManagement {
     }
 
     function getSmartMeterReadsForAsset(uint _assetId) external view
-        returns (SmartMeterRead[] memory reads)
+        returns (AssetStructs.SmartMeterRead[] memory reads)
     {
         return assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]];
     }
@@ -147,14 +140,14 @@ contract AssetLogic is Initializable, RoleManagement {
     /// @notice Gets an asset
 	/// @param _assetId The id belonging to an entry in the asset registry
 	/// @return Full informations of an asset
-    function getAssetById(uint _assetId) public view returns (Asset memory) {
+    function getAssetById(uint _assetId) public view returns (AssetStructs.Asset memory) {
         return assetMapping[smartMeterAddresses[_assetId]];
     }
 
     /// @notice gets an asset by its smartmeter
 	/// @param _smartMeter smartmeter used for by the asset
 	/// @return Asset-Struct
-    function getAssetBySmartMeter(address _smartMeter) public view returns (Asset memory) {
+    function getAssetBySmartMeter(address _smartMeter) public view returns (AssetStructs.Asset memory) {
         return assetMapping[_smartMeter];
     }
 
@@ -179,15 +172,21 @@ contract AssetLogic is Initializable, RoleManagement {
         external view
         returns (uint _lastSmartMeterReadWh, string memory _lastSmartMeterReadFileHash)
     {
-        Asset memory general = getAssetById(_assetId);
-        _lastSmartMeterReadWh = general.lastSmartMeterReadWh;
-        _lastSmartMeterReadFileHash = general.lastSmartMeterReadFileHash;
+        AssetStructs.Asset memory asset = getAssetById(_assetId);
+        _lastSmartMeterReadWh = asset.lastSmartMeterReadWh;
+        _lastSmartMeterReadFileHash = asset.lastSmartMeterReadFileHash;
     }
 
     /// @notice function to get the amount of already onboarded assets
     /// @return the amount of assets already deployed
     function getAssetListLength() external view returns (uint) {
         return smartMeterAddresses.length;
+    }
+
+    /// @notice gets the corresponding UserLogic contract
+    /// @return address of the UserLogic contract
+    function getUserLogicContract() external view returns (address) {
+        return address(userLogic);
     }
 
 
@@ -198,7 +197,7 @@ contract AssetLogic is Initializable, RoleManagement {
 	/// @notice checks whether an Asset-struct already exists
 	/// @param _Asset the Asset-struct
 	/// @return whether that struct exists
-    function checkAssetExistingStatus(Asset memory _Asset) internal pure returns (bool) {
+    function checkAssetExistingStatus(AssetStructs.Asset memory _Asset) internal pure returns (bool) {
         return !(
             address(_Asset.smartMeter) == address(0x0)
             && address(_Asset.owner) == address(0x0)
@@ -220,7 +219,7 @@ contract AssetLogic is Initializable, RoleManagement {
         string memory _smartMeterReadFileHash,
         uint _timestamp
     ) internal returns (uint) {
-        Asset storage asset = assetMapping[smartMeterAddresses[_assetId]];
+        AssetStructs.Asset storage asset = assetMapping[smartMeterAddresses[_assetId]];
         require(asset.smartMeter == msg.sender, "saveSmartMeterRead: wrong sender");
         require(asset.active, "saveSmartMeterRead: asset not active");
 

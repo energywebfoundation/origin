@@ -3,28 +3,27 @@ import Web3 from 'web3';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
 
-import { CertificateLogic, OriginContractLookup } from '..';
+import { CertificateLogic } from '..';
 
 export const createBlockchainProperties = async (
     web3: Web3,
-    originContractLookupAddress: string
+    userLogicAddress: string,
+    assetLogicAddress: string,
+    certificateLogicAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
-    const originLookupContractInstance: OriginContractLookup = new OriginContractLookup(
+    const certificateLogicInstance = new CertificateLogic(
         web3,
-        originContractLookupAddress
+        certificateLogicAddress
     );
 
-    const assetBlockchainProperties: Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
+    const assetBlockchainProperties = await assetCreateBlockchainProperties(
         web3,
-        await originLookupContractInstance.assetContractLookup()
+        userLogicAddress,
+        assetLogicAddress
     );
 
     return {
-        certificateLogicInstance: new CertificateLogic(
-            web3,
-            await originLookupContractInstance.originLogicRegistry()
-        ),
-        consumingAssetLogicInstance: assetBlockchainProperties.consumingAssetLogicInstance,
+        certificateLogicInstance,
         producingAssetLogicInstance: assetBlockchainProperties.producingAssetLogicInstance,
         userLogicInstance: assetBlockchainProperties.userLogicInstance,
         web3

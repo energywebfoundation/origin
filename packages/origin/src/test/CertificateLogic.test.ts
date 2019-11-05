@@ -3,33 +3,22 @@ import 'mocha';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { UserLogic, UserContractLookup, Role, buildRights } from '@energyweb/user-registry';
+import { UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import {
-    AssetContractLookup,
-    AssetProducingRegistryLogic,
-    ProducingAsset
-} from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { Configuration, Currency, Compliance } from '@energyweb/utils-general';
+import { Asset, ProducingAsset, AssetLogic, migrateAssetRegistryContracts } from '@energyweb/asset-registry';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import {
     TestReceiver,
     deployERC721TestReceiver
 } from '@energyweb/erc-test-contracts';
 
-import { OriginContractLookup, CertificateLogic } from '..';
-import { migrateCertificateRegistryContracts } from '../../contracts';
-import * as Certificate from '../blockchain-facade/Certificate';
-import * as TradableEntity from '../blockchain-facade/TradableEntity';
+import { CertificateLogic, migrateCertificateRegistryContracts, Certificate } from '..';
 import { logger } from '../blockchain-facade/Logger';
 
 describe('CertificateLogic-Facade', () => {
     let userLogic: UserLogic;
+    let assetLogic: AssetLogic;
     let certificateLogic: CertificateLogic;
-    let assetRegistry: AssetProducingRegistryLogic;
-    let assetRegistryContract: AssetContractLookup;
-    let originRegistryContract: OriginContractLookup;
-    let userRegistryContract: UserContractLookup;
 
     let testReceiver: TestReceiver;
 
@@ -70,16 +59,17 @@ describe('CertificateLogic-Facade', () => {
     }
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
         const LAST_SMART_METER_READ = Number(
-            (await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh
+            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
-            .length;
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
+            privateKey: issuerPK
+        }));
 
         setActiveUser(assetOwnerPK);
         
-        await assetRegistry.saveSmartMeterRead(
+        await assetLogic.saveSmartMeterRead(
             0,
             LAST_SMART_METER_READ + energy,
             '',
@@ -102,8 +92,7 @@ describe('CertificateLogic-Facade', () => {
     }
 
     it('should deploy the contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3 as any, privateKeyDeployment);
-        userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -119,39 +108,18 @@ describe('CertificateLogic-Facade', () => {
             { privateKey: privateKeyDeployment }
         );
 
-        const userContractLookupAddr = (userContracts as any).UserContractLookup;
-
-        userRegistryContract = new UserContractLookup(web3 as any, userContractLookupAddr);
-        const assetContracts = await migrateAssetRegistryContracts(
-            web3 as any,
-            userContractLookupAddr,
+        assetLogic = await migrateAssetRegistryContracts(
+            web3,
+            userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
-        const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
-
-        const assetProducingAddr = (assetContracts as any).AssetProducingRegistryLogic;
-        const originContracts: any = await migrateCertificateRegistryContracts(
-            web3 as any,
-            assetRegistryLookupAddr,
+        certificateLogic = await migrateCertificateRegistryContracts(
+            web3,
+            userLogic.web3Contract.options.address,
+            assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-
-        assetRegistryContract = new AssetContractLookup(web3 as any, assetRegistryLookupAddr);
-        assetRegistry = new AssetProducingRegistryLogic(web3 as any, assetProducingAddr);
-
-        for (const key of Object.keys(originContracts)) {
-            if (key.includes('OriginContractLookup')) {
-                originRegistryContract = new OriginContractLookup(
-                    web3 as any,
-                    originContracts[key]
-                );
-            }
-
-            if (key.includes('CertificateLogic')) {
-                certificateLogic = new CertificateLogic(web3 as any, originContracts[key]);
-            }
-        }
 
         conf = {
             blockchainProperties: {
@@ -159,7 +127,7 @@ describe('CertificateLogic-Facade', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                producingAssetLogicInstance: assetRegistry,
+                producingAssetLogicInstance: assetLogic,
                 userLogicInstance: userLogic,
                 certificateLogicInstance: certificateLogic,
                 web3
@@ -173,8 +141,8 @@ describe('CertificateLogic-Facade', () => {
 
     it('should return correct balances', async () => {
         assert.equal(await Certificate.getCertificateListLength(conf), 0);
-        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 0);
-        assert.equal(await TradableEntity.getBalance(accountTrader, conf), 0);
+        assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 0);
+        assert.equal(await certificateLogic.balanceOf(accountTrader), 0);
     });
 
     it('should onboard tests-users', async () => {
@@ -215,15 +183,14 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should onboard a new asset', async () => {
-        const assetProps: ProducingAsset.IOnChainProperties = {
+        const assetProps: Asset.IOnChainProperties = {
             smartMeter: { address: assetSmartmeter },
             owner: { address: accountAssetOwner },
             lastSmartMeterReadWh: 0,
             active: true,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
-            url: null,
-            maxOwnerChanges: 3
+            url: null
         };
 
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -248,7 +215,7 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should log a new meterreading ', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', 0, {
+        await assetLogic.saveSmartMeterRead(0, 100, 'lastSmartMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
     });
@@ -265,13 +232,13 @@ describe('CertificateLogic-Facade', () => {
         });
 
         assert.equal(await Certificate.getCertificateListLength(conf), 1);
-        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 1);
-        assert.equal(await TradableEntity.getBalance(accountTrader, conf), 0);
+        assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 1);
+        assert.equal(await certificateLogic.balanceOf(accountTrader), 0);
     });
 
     it('should return certificate', async () => {
         const certificate = await new Certificate.Entity('0', conf).sync();
-        assert.equal(await certificate.getOwner(), accountAssetOwner);
+        assert.equal(certificate.owner, accountAssetOwner);
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -284,13 +251,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '0',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '0'
         });
     });
 
@@ -303,12 +266,12 @@ describe('CertificateLogic-Facade', () => {
 
         await certificate.transferFrom(accountTrader);
 
-        certificate = await new Certificate.Entity('0', conf).sync();
+        certificate = await certificate.sync();
 
         assert.equal(await Certificate.getCertificateListLength(conf), 1);
-        assert.equal(await TradableEntity.getBalance(accountAssetOwner, conf), 0);
-        assert.equal(await TradableEntity.getBalance(accountTrader, conf), 1);
-        assert.equal(await certificate.getOwner(), accountTrader);
+        assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 0);
+        assert.equal(await certificateLogic.balanceOf(accountTrader), 1);
+        assert.equal(certificate.owner, accountTrader);
         delete certificate.configuration;
         delete certificate.proofs;
 
@@ -319,13 +282,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountTrader,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '0',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '0'
         });
     });
 
@@ -334,7 +293,7 @@ describe('CertificateLogic-Facade', () => {
             address: accountAssetOwner,
             privateKey: assetOwnerPK
         };
-        await assetRegistry.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', 0, {
+        await assetLogic.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', 0, {
             privateKey: assetSmartmeterPK
         });
         await certificateLogic.requestCertificates(0, 1, {
@@ -358,13 +317,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '1',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '1'
         });
     });
 
@@ -386,18 +341,14 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000001',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash',
             creationTime: blockCreationTime,
-            parentId: '1',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '1'
         });
     });
 
     it('should create a new certificate (#2)', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', 0, {
+        await assetLogic.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash#3', 0, {
             privateKey: assetSmartmeterPK
         });
 
@@ -422,13 +373,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '2'
         });
     });
 
@@ -453,13 +400,9 @@ describe('CertificateLogic-Facade', () => {
             children: ['3', '4'],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Split.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '2'
         });
 
         const c1 = await new Certificate.Entity('3', conf).sync();
@@ -477,13 +420,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 60,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '2'
         });
 
         assert.deepEqual(c2 as any, {
@@ -493,13 +432,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 40,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '2'
         });
 
         const activeCerts = await Certificate.getActiveCertificates(conf);
@@ -513,12 +448,12 @@ describe('CertificateLogic-Facade', () => {
     it('should retire a certificate', async () => {
         let certificate = await new Certificate.Entity('3', conf).sync();
 
-        await certificate.retireCertificate();
+        await certificate.claim();
 
         certificate = await certificate.sync();
 
-        assert.isTrue(await certificate.isRetired());
-        assert.equal(await certificate.getCertificateOwner(), accountAssetOwner);
+        assert.isTrue(await certificate.isClaimed());
+        assert.equal(certificate.owner, accountAssetOwner);
 
         delete certificate.configuration;
         delete certificate.proofs;
@@ -530,18 +465,14 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 60,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
-            status: Certificate.Status.Retired.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#3',
+            status: Certificate.Status.Claimed.toString(),
             creationTime: blockCreationTime,
-            parentId: '2',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '2'
         });
     });
 
     it('should create a new certificate (#5)', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', 0, {
+        await assetLogic.saveSmartMeterRead(0, 400, 'lastSmartMeterReadFileHash#4', 0, {
             privateKey: assetSmartmeterPK
         });
 
@@ -566,29 +497,10 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockCreationTime,
-            parentId: '5',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '5'
         });
-    });
-
-    it('should fail using safeTransferFrom without calldata to an address', async () => {
-        const certificate = await new Certificate.Entity('5', conf).sync();
-
-        let failed = false;
-
-        try {
-            await certificate.safeTransferFrom(accountTrader);
-        } catch (ex) {
-            assert.include(ex.message, '_to is not a contract');
-            failed = true;
-        }
-
-        assert.isTrue(failed);
     });
 
     it('should be able to use safeTransferFrom without calldata', async () => {
@@ -626,18 +538,14 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: testReceiverAddress,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#4',
             creationTime: blockCreationTime,
-            parentId: '5',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '5'
         });
     });
 
     it('should create a new certificate (#6)', async () => {
-        await assetRegistry.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', 0, {
+        await assetLogic.saveSmartMeterRead(0, 500, 'lastSmartMeterReadFileHash#5', 0, {
             privateKey: assetSmartmeterPK
         });
 
@@ -662,29 +570,10 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockCreationTime,
-            parentId: '6',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '6'
         });
-    });
-
-    it('should fail using safeTransferFrom calldata to an address', async () => {
-        const certificate = await new Certificate.Entity('6', conf).sync();
-
-        let failed = false;
-
-        try {
-            await certificate.safeTransferFrom(accountTrader, '0x001');
-        } catch (ex) {
-            assert.include(ex.message, '_to is not a contract');
-            failed = true;
-        }
-
-        assert.isTrue(failed);
     });
 
     it('should be able to use safeTransferFrom', async () => {
@@ -722,13 +611,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: testReceiverAddress,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#5',
             creationTime: blockCreationTime,
-            parentId: '6',
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: '6'
         });
     });
 
@@ -737,37 +622,38 @@ describe('CertificateLogic-Facade', () => {
             await Certificate.getCertificateListLength(conf)
         );
         const STARTING_ASSET_OWNER_BALANCE = Number(
-            await TradableEntity.getBalance(accountAssetOwner, conf)
+            await certificateLogic.balanceOf(accountAssetOwner)
         );
-        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
         const LAST_SMART_METER_READ = Number(
-            (await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh
+            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
-            .length;
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
+            privateKey: issuerPK
+        }));
 
-        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
             privateKey: assetSmartmeterPK
         });
 
-        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 200, '', 0, {
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 200, '', 0, {
             privateKey: assetSmartmeterPK
         });
 
         assert.equal(
-            (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1,
+            (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1,
             LAST_SM_READ_INDEX + 2
         );
 
-        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 301, '', 0, {
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 301, '', 0, {
             privateKey: assetSmartmeterPK
         });
 
-        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 425, '', 0, {
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 425, '', 0, {
             privateKey: assetSmartmeterPK
         });
 
-        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 582, '', 0, {
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 582, '', 0, {
             privateKey: assetSmartmeterPK
         });
 
@@ -780,12 +666,14 @@ describe('CertificateLogic-Facade', () => {
         });
 
         assert.equal(
-            (await certificateLogic.getCertificationRequests()).length,
+            await certificateLogic.getCertificationRequestsLength({
+                privateKey: issuerPK
+            }),
             INITIAL_CERTIFICATION_REQUESTS_LENGTH + 2
         );
         assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
         assert.equal(
-            await TradableEntity.getBalance(accountAssetOwner, conf),
+            await certificateLogic.balanceOf(accountAssetOwner),
             STARTING_ASSET_OWNER_BALANCE
         );
 
@@ -798,7 +686,7 @@ describe('CertificateLogic-Facade', () => {
             STARTING_CERTIFICATE_LENGTH + 1
         );
         assert.equal(
-            await TradableEntity.getBalance(accountAssetOwner, conf),
+            await certificateLogic.balanceOf(accountAssetOwner),
             STARTING_ASSET_OWNER_BALANCE + 1
         );
 
@@ -810,7 +698,9 @@ describe('CertificateLogic-Facade', () => {
         );
 
         assert.equal(
-            (await certificateLogic.getCertificationRequests()).length,
+            await certificateLogic.getCertificationRequestsLength({
+                privateKey: issuerPK
+            }),
             INITIAL_CERTIFICATION_REQUESTS_LENGTH + 2
         );
 
@@ -819,7 +709,7 @@ describe('CertificateLogic-Facade', () => {
             STARTING_CERTIFICATE_LENGTH + 2
         );
         assert.equal(
-            await TradableEntity.getBalance(accountAssetOwner, conf),
+            await certificateLogic.balanceOf(accountAssetOwner),
             STARTING_ASSET_OWNER_BALANCE + 2
         );
 
@@ -843,22 +733,23 @@ describe('CertificateLogic-Facade', () => {
             await Certificate.getCertificateListLength(conf)
         );
         const STARTING_ASSET_OWNER_BALANCE = Number(
-            await TradableEntity.getBalance(accountAssetOwner, conf)
+            await certificateLogic.balanceOf(accountAssetOwner)
         );
-        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
         const LAST_SMART_METER_READ = Number(
-            (await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh
+            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
-            .length;
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
+            privateKey: issuerPK
+        }));
 
-        await assetRegistry.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
             privateKey: assetSmartmeterPK
         });
 
         assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
         assert.equal(
-            await TradableEntity.getBalance(accountAssetOwner, conf),
+            await certificateLogic.balanceOf(accountAssetOwner),
             STARTING_ASSET_OWNER_BALANCE
         );
 
@@ -875,7 +766,7 @@ describe('CertificateLogic-Facade', () => {
             STARTING_CERTIFICATE_LENGTH + 1
         );
         assert.equal(
-            await TradableEntity.getBalance(accountAssetOwner, conf),
+            await certificateLogic.balanceOf(accountAssetOwner),
             STARTING_ASSET_OWNER_BALANCE + 1
         );
 
@@ -887,7 +778,7 @@ describe('CertificateLogic-Facade', () => {
                 }
             );
         } catch (e) {
-            assert.include(e.message, 'certification request has to be in pending state');
+            assert.include(e.message, 'approveCertificationRequest: request has to be in pending state');
         }
 
         assert.equal(
@@ -895,7 +786,7 @@ describe('CertificateLogic-Facade', () => {
             STARTING_CERTIFICATE_LENGTH + 1
         );
         assert.equal(
-            await TradableEntity.getBalance(accountAssetOwner, conf),
+            await certificateLogic.balanceOf(accountAssetOwner),
             STARTING_ASSET_OWNER_BALANCE + 1
         );
     });
@@ -904,19 +795,20 @@ describe('CertificateLogic-Facade', () => {
         const STARTING_CERTIFICATE_LENGTH = Number(
             await Certificate.getCertificateListLength(conf)
         );
-        const LAST_SM_READ_INDEX = (await assetRegistry.getSmartMeterReadsForAsset(0)).length - 1;
+        const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
         const LAST_SMART_METER_READ = Number(
-            (await assetRegistry.getAssetGeneral(0)).lastSmartMeterReadWh
+            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = (await certificateLogic.getCertificationRequests())
-            .length;
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
+            privateKey: issuerPK
+        }));
 
         conf.blockchainProperties.activeUser = {
             address: accountAssetOwner,
             privateKey: assetOwnerPK
         };
 
-        await assetRegistry.saveSmartMeterRead(
+        await assetLogic.saveSmartMeterRead(
             0,
             LAST_SMART_METER_READ + 100,
             'lastSmartMeterReadFileHash#10',
@@ -950,13 +842,9 @@ describe('CertificateLogic-Facade', () => {
             children: [],
             owner: accountAssetOwner,
             energy: 100,
-            approvedAddress: '0x0000000000000000000000000000000000000000',
             status: Certificate.Status.Active.toString(),
-            dataLog: 'lastSmartMeterReadFileHash#10',
             creationTime: blockCreationTime,
-            parentId: STARTING_CERTIFICATE_LENGTH.toString(),
-            maxOwnerChanges: '3',
-            ownerChangerCounter: '0'
+            parentId: STARTING_CERTIFICATE_LENGTH.toString()
         });
     });
 
@@ -987,7 +875,7 @@ describe('CertificateLogic-Facade', () => {
                 conf
             ).sync();
 
-            assert.equal(certificate.status, Certificate.Status.Retired);
+            assert.equal(certificate.status, Certificate.Status.Claimed);
         }
     });
 });
