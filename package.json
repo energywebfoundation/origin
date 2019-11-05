@@ -5,6 +5,9 @@
         "dotenv": "8.2.0"
     },
     "devDependencies": {
+        "@openzeppelin/cli": "2.5.3",
+        "@openzeppelin/contracts-ethereum-package": "2.3.0",
+        "@openzeppelin/upgrades": "2.5.3",
         "@types/chai": "4.2.4",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "5.2.7",

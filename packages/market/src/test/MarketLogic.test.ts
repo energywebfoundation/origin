@@ -3,17 +3,17 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { AssetContractLookup, AssetProducingRegistryLogic } from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import { AssetLogic, migrateAssetRegistryContracts } from '@energyweb/asset-registry';
+import {
+    buildRights,
+    Role,
+    UserLogic,
+    migrateUserRegistryContracts
+} from '@energyweb/user-registry';
+import { migrateCertificateRegistryContracts, CertificateLogic } from '@energyweb/origin';
 
-import { MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON } from '../../contracts';
 import { DemandStatus } from '../blockchain-facade/Demand';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
-import { MarketContractLookup } from '../wrappedContracts/MarketContractLookup';
-import { MarketDB } from '../wrappedContracts/MarketDB';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
 describe('MarketLogic', () => {
@@ -28,14 +28,12 @@ describe('MarketLogic', () => {
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    let assetRegistryContract: AssetContractLookup;
-    let marketRegistryContract: MarketContractLookup;
-    let marketDB: MarketDB;
-    let marketLogic: MarketLogic;
-    let isGanache: boolean;
-    let userContractLookupAddr: string;
     let userLogic: UserLogic;
-    let assetRegistry: AssetProducingRegistryLogic;
+    let assetLogic: AssetLogic;
+    let certificateLogic: CertificateLogic;
+    let marketLogic: MarketLogic;
+
+    let isGanache: boolean;
 
     const assetOwnerPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
     const accountAssetOwner = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -71,9 +69,8 @@ describe('MarketLogic', () => {
 
     it('should deploy the contracts', async () => {
         isGanache = true;
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
-        userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
         await userLogic.createUser(
             'propertiesDocumentHash',
             'documentDBURL',
@@ -84,106 +81,26 @@ describe('MarketLogic', () => {
 
         await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
 
-        userContractLookupAddr = (userContracts as any).UserContractLookup;
-
-        const assetContracts = await migrateAssetRegistryContracts(
+        assetLogic = await migrateAssetRegistryContracts(
             web3,
-            userContractLookupAddr,
+            userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
-        const assetRegistryLookupAddr = (assetContracts as any).AssetContractLookup;
-
-        const originContracts = await migrateCertificateRegistryContracts(
+        certificateLogic = await migrateCertificateRegistryContracts(
             web3,
-            assetRegistryLookupAddr,
+            userLogic.web3Contract.options.address,
+            assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
-        const originLookupAddr = (originContracts as any).OriginContractLookup;
-
-        const marketContracts: any = await migrateMarketRegistryContracts(
+        marketLogic = await migrateMarketRegistryContracts(
             web3,
-            assetRegistryLookupAddr,
-            originLookupAddr,
+            userLogic.web3Contract.options.address,
+            assetLogic.web3Contract.options.address,
+            certificateLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-
-        assetRegistryContract = new AssetContractLookup(web3 as any, assetRegistryLookupAddr);
-        assetRegistry = new AssetProducingRegistryLogic(
-            web3,
-            (assetContracts as any).AssetProducingRegistryLogic
-        );
-        for (const key of Object.keys(marketContracts)) {
-            let tempBytecode;
-            if (key.includes('MarketContractLookup')) {
-                marketRegistryContract = new MarketContractLookup(web3, marketContracts[key]);
-                tempBytecode = MarketContractLookupJSON.deployedBytecode;
-            }
-
-            if (key.includes('MarketLogic')) {
-                marketLogic = new MarketLogic(web3, marketContracts[key]);
-                tempBytecode = MarketLogicJSON.deployedBytecode;
-            }
-
-            if (key.includes('MarketDB')) {
-                marketDB = new MarketDB(web3, marketContracts[key]);
-                tempBytecode = MarketDBJSON.deployedBytecode;
-            }
-            const deployedBytecode = await web3.eth.getCode(marketContracts[key]);
-            assert.isTrue(deployedBytecode.length > 0);
-
-            assert.equal(deployedBytecode, tempBytecode);
-        }
-    });
-
-    it('should have the right owner', async () => {
-        assert.equal(
-            await marketLogic.owner(),
-            marketRegistryContract.web3Contract.options.address
-        );
-    });
-
-    it('should have the lookup-contracts', async () => {
-        assert.equal(
-            await marketLogic.assetContractLookup(),
-            assetRegistryContract.web3Contract.options.address
-        );
-        assert.equal(await marketLogic.userContractLookup(), userContractLookupAddr);
-    });
-
-    it('should have the right db', async () => {
-        assert.equal(await marketLogic.db(), marketDB.web3Contract.options.address);
-    });
-
-    it('should fail when trying to call init', async () => {
-        let failed = false;
-
-        try {
-            await marketLogic.init(
-                '0x1000000000000000000000000000000000000005',
-                '0x1000000000000000000000000000000000000005',
-                { privateKey: privateKeyDeployment }
-            );
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'msg.sender is not owner');
-        }
-        assert.isTrue(failed);
-    });
-
-    it('should fail when trying to call update', async () => {
-        let failed = false;
-
-        try {
-            await marketLogic.update('0x1000000000000000000000000000000000000005', {
-                privateKey: privateKeyDeployment
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'msg.sender is not owner');
-        }
-        assert.isTrue(failed);
     });
 
     it('should have 0 elements in allDemands', async () => {
@@ -362,13 +279,12 @@ describe('MarketLogic', () => {
     });
 
     it('should onboard an asset', async () => {
-        await assetRegistry.createAsset(
+        await assetLogic.createAsset(
             '0x1000000000000000000000000000000000000005',
             accountAssetOwner,
             true,
             'propertiesDocumentHash',
             'url',
-            10,
             {
                 privateKey: privateKeyDeployment
             }
@@ -556,7 +472,7 @@ describe('MarketLogic', () => {
             });
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'createDemand: wrong owner when creating');
+            assert.include(ex.message, 'wrong owner when creating');
         }
 
         assert.isTrue(failed);

@@ -5,5 +5,5 @@ import * as MarketUser from './blockchain-facade/MarketUser';
 
 export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 export { MarketLogic } from './wrappedContracts/MarketLogic';
-export { MarketContractLookup } from './wrappedContracts/MarketContractLookup';
+
 export { MarketUser, Demand, Supply, Agreement };

@@ -3,8 +3,8 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 
-import "./Interfaces/IRoles.sol";
-import "./Interfaces/IUserLogic.sol";
+import "./IRoles.sol";
+import "./IUserLogic.sol";
 import "./RoleManagement.sol";
 
 contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {

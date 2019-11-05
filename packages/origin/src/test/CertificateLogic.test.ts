@@ -3,8 +3,7 @@ import 'mocha';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { UserLogic, Role, buildRights, migrateUserRegistryContracts } from '@energyweb/user-registry';
 import { Asset, ProducingAsset, AssetLogic, migrateAssetRegistryContracts } from '@energyweb/asset-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import {

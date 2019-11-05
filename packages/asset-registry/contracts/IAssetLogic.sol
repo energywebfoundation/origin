@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "./AssetStructs.sol";
+import "./AssetDefinitions.sol";
 
 contract IAssetLogic {
 
@@ -19,7 +19,7 @@ contract IAssetLogic {
     /// @notice gets the Asset-struct as memory
     /// @param _assetId the id of an asset
     /// @return the Asset-struct as memory
-    function getAsset(uint _assetId) external view returns (AssetStructs.Asset memory);
+    function getAsset(uint _assetId) external view returns (AssetDefinitions.Asset memory);
 
 	/// @notice Sets active to false
 	/// @param _assetId The id belonging to an entry in the asset registry
@@ -52,17 +52,17 @@ contract IAssetLogic {
         string calldata _url
     ) external returns (uint _assetId);
 
-    function getSmartMeterReadsForAsset(uint _assetId) external view returns (AssetStructs.SmartMeterRead[] memory);
+    function getSmartMeterReadsForAsset(uint _assetId) external view returns (AssetDefinitions.SmartMeterRead[] memory);
 
     /// @notice Gets an asset
 	/// @param _assetId The id belonging to an entry in the asset registry
 	/// @return Full informations of an asset
-    function getAssetById(uint _assetId) public view returns (AssetStructs.Asset memory);
+    function getAssetById(uint _assetId) public view returns (AssetDefinitions.Asset memory);
 
     /// @notice gets an asset by its smartmeter
 	/// @param _smartMeter smartmeter used for by the asset
 	/// @return Asset-Struct
-    function getAssetBySmartMeter(address _smartMeter) public view returns (AssetStructs.Asset memory);
+    function getAssetBySmartMeter(address _smartMeter) public view returns (AssetDefinitions.Asset memory);
 
     /// @notice checks whether an assets with the provided smartmeter already exists
 	/// @param _smartMeter smart meter address of an asset

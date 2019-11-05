@@ -5,9 +5,9 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/user-registry/contracts/Interfaces/IUserLogic.sol";
+import "@energyweb/user-registry/contracts/IUserLogic.sol";
 
-import "./AssetStructs.sol";
+import "./AssetDefinitions.sol";
 import "./IAssetLogic.sol";
 
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
@@ -27,8 +27,8 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     );
 
     /// @dev mapping for smartMeter-address => Asset
-    mapping(address => AssetStructs.Asset) internal assetMapping;
-    mapping(address => AssetStructs.SmartMeterRead[]) internal assetSmartMeterReadsMapping;
+    mapping(address => AssetDefinitions.Asset) internal assetMapping;
+    mapping(address => AssetDefinitions.SmartMeterRead[]) internal assetSmartMeterReadsMapping;
 
     /// @dev list of all the smartMeters already used
     address[] internal smartMeterAddresses;
@@ -47,7 +47,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     /// @notice gets the Asset-struct as memory
     /// @param _assetId the id of an asset
     /// @return the Asset-struct as memory
-    function getAsset(uint _assetId) external view returns (AssetStructs.Asset memory asset) {
+    function getAsset(uint _assetId) external view returns (AssetDefinitions.Asset memory asset) {
         return getAssetById(_assetId);
     }
 
@@ -91,7 +91,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         uint createdEnergy = setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
 
         assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]].push(
-            AssetStructs.SmartMeterRead({ energy: createdEnergy, timestamp: timestamp })
+            AssetDefinitions.SmartMeterRead({ energy: createdEnergy, timestamp: timestamp })
         );
     }
 
@@ -111,7 +111,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     ) external returns (uint _assetId) {
         checkBeforeCreation(_owner, _smartMeter);
 
-        AssetStructs.Asset memory _asset = AssetStructs.Asset({
+        AssetDefinitions.Asset memory _asset = AssetDefinitions.Asset({
             smartMeter: _smartMeter,
             owner: _owner,
             lastSmartMeterReadWh: 0,
@@ -132,7 +132,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     }
 
     function getSmartMeterReadsForAsset(uint _assetId) external view
-        returns (AssetStructs.SmartMeterRead[] memory reads)
+        returns (AssetDefinitions.SmartMeterRead[] memory reads)
     {
         return assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]];
     }
@@ -140,14 +140,14 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     /// @notice Gets an asset
 	/// @param _assetId The id belonging to an entry in the asset registry
 	/// @return Full informations of an asset
-    function getAssetById(uint _assetId) public view returns (AssetStructs.Asset memory) {
+    function getAssetById(uint _assetId) public view returns (AssetDefinitions.Asset memory) {
         return assetMapping[smartMeterAddresses[_assetId]];
     }
 
     /// @notice gets an asset by its smartmeter
 	/// @param _smartMeter smartmeter used for by the asset
 	/// @return Asset-Struct
-    function getAssetBySmartMeter(address _smartMeter) public view returns (AssetStructs.Asset memory) {
+    function getAssetBySmartMeter(address _smartMeter) public view returns (AssetDefinitions.Asset memory) {
         return assetMapping[_smartMeter];
     }
 
@@ -172,7 +172,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         external view
         returns (uint _lastSmartMeterReadWh, string memory _lastSmartMeterReadFileHash)
     {
-        AssetStructs.Asset memory asset = getAssetById(_assetId);
+        AssetDefinitions.Asset memory asset = getAssetById(_assetId);
         _lastSmartMeterReadWh = asset.lastSmartMeterReadWh;
         _lastSmartMeterReadFileHash = asset.lastSmartMeterReadFileHash;
     }
@@ -197,7 +197,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 	/// @notice checks whether an Asset-struct already exists
 	/// @param _Asset the Asset-struct
 	/// @return whether that struct exists
-    function checkAssetExistingStatus(AssetStructs.Asset memory _Asset) internal pure returns (bool) {
+    function checkAssetExistingStatus(AssetDefinitions.Asset memory _Asset) internal pure returns (bool) {
         return !(
             address(_Asset.smartMeter) == address(0x0)
             && address(_Asset.owner) == address(0x0)
@@ -219,7 +219,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         string memory _smartMeterReadFileHash,
         uint _timestamp
     ) internal returns (uint) {
-        AssetStructs.Asset storage asset = assetMapping[smartMeterAddresses[_assetId]];
+        AssetDefinitions.Asset storage asset = assetMapping[smartMeterAddresses[_assetId]];
         require(asset.smartMeter == msg.sender, "saveSmartMeterRead: wrong sender");
         require(asset.active, "saveSmartMeterRead: asset not active");
 

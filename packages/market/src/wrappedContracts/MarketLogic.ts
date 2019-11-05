@@ -45,6 +45,21 @@ export class MarketLogic extends GeneralFunctions {
         return this.getEvents('allEvents', eventFilter);
     }
 
+    async initialize(
+        userContractAddress: string,
+        assetContractAddress: string,
+        certificateContractAddress: string,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.initialize(
+            userContractAddress,
+            assetContractAddress,
+            certificateContractAddress
+        );
+
+        return this.send(method, txParams);
+    }
+
     async createAgreement(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
@@ -93,20 +108,14 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async fillDemand(_demandId: string, _entityId: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.fillDemand(_demandId, _entityId);
+    async fillDemand(_demandId: string, _certificateId: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.fillDemand(_demandId, _certificateId);
 
         return this.send(method, txParams);
     }
 
-    async fillAgreement(_demandId: string, _entityId: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.fillAgreement(_demandId, _entityId);
-
-        return this.send(method, txParams);
-    }
-
-    async update(_newLogic: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.update(_newLogic);
+    async fillAgreement(_demandId: string, _certificateId: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.fillAgreement(_demandId, _certificateId);
 
         return this.send(method, txParams);
     }
@@ -136,28 +145,12 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async userContractLookup(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.userContractLookup().call(txParams);
-    }
-
-    async db(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.db().call(txParams);
-    }
-
     async getAgreement(_agreementId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
     }
 
     async getAllSupplyListLength(txParams?: ISpecialTx) {
         return this.web3Contract.methods.getAllSupplyListLength().call(txParams);
-    }
-
-    async assetContractLookup(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.assetContractLookup().call(txParams);
-    }
-
-    async owner(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.owner().call(txParams);
     }
 
     async createDemand(
@@ -173,24 +166,12 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.changeOwner(_newOwner);
-
-        return this.send(method, txParams);
-    }
-
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
         return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
     }
 
     async getAgreementStruct(_agreementId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getAgreementStruct(_agreementId).call(txParams);
-    }
-
-    async init(_database: string, _admin: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.init(_database, _admin);
-
-        return this.send(method, txParams);
     }
 
     async getSupply(_supplyId: number, txParams?: ISpecialTx) {
