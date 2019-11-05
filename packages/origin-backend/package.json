@@ -13,7 +13,7 @@
     "test:e2e": "rm -rf db.sqlite && mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
     "test": "yarn test:e2e",
     "test:concurrent": "yarn test",
-    "clean": "rm -rf dist"
+    "clean": "shx rm -rf dist db.sqlite"
   },
   "bin": {
     "origin-backend": "./bin/origin-backend"
@@ -40,9 +40,9 @@
   "devDependencies": {
     "@types/body-parser": "1.17.1",
     "@types/cors": "2.8.6",
-    "@types/express": "4.17.1",
+    "@types/express": "4.17.2",
     "@types/fs-extra": "8.0.1",
-    "@types/node": "12.11.7",
+    "@types/node": "12.12.5",
     "axios": "0.19.0"
   },
   "files": [

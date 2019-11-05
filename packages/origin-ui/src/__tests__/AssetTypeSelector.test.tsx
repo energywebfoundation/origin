@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { mount } from 'enzyme';
-import { EncodedAssetType } from '@energyweb/utils-general';
+import { EncodedAssetType, IRECAssetService } from '@energyweb/utils-general';
 import { setupStore, WrapperComponent } from './utils/helpers';
-import { AssetTypeSelector } from '../components/AssetTypeSelector';
 import { dataTestSelector } from '../utils/Helper';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from '../components/MultiSelectAutocomplete';
 import { act } from '@testing-library/react';
+import { HierarchicalMultiSelect } from '../components/HierarchicalMultiSelect';
 
 describe('AssetTypeSelector', () => {
     it('correctly renders', async () => {
@@ -19,11 +19,27 @@ describe('AssetTypeSelector', () => {
 
         function TestWrapper() {
             const [selectedAssetType, setSelectedAssetType] = useState<EncodedAssetType>([]);
+            const irecAssetService = new IRECAssetService();
 
             return (
-                <AssetTypeSelector
-                    selectedType={selectedAssetType}
+                <HierarchicalMultiSelect
+                    selectedValue={selectedAssetType}
                     onChange={setSelectedAssetType}
+                    allValues={irecAssetService.AssetTypes}
+                    selectOptions={[
+                        {
+                            label: 'Asset type',
+                            placeholder: 'Select asset type'
+                        },
+                        {
+                            label: 'Asset type',
+                            placeholder: 'Select asset type'
+                        },
+                        {
+                            label: 'Asset type',
+                            placeholder: 'Select asset type'
+                        }
+                    ]}
                 />
             );
         }
@@ -38,7 +54,9 @@ describe('AssetTypeSelector', () => {
             expect(
                 rendered
                     .find(
-                        `${dataTestSelector(`asset-type-selector-level-${level}`)} .MuiChip-label`
+                        `${dataTestSelector(
+                            `hierarchical-multi-select-level-${level}`
+                        )} .MuiChip-label`
                     )
                     .map(e => e.text())
             ).toStrictEqual(expectedTypes);
@@ -47,7 +65,7 @@ describe('AssetTypeSelector', () => {
         function changeTypesLevel(level: number, types: IAutocompleteMultiSelectOptionType[]) {
             act(() => {
                 rendered
-                    .find(dataTestSelector(`asset-type-selector-level-${level}`))
+                    .find(dataTestSelector(`hierarchical-multi-select-level-${level}`))
                     .find(MultiSelectAutocomplete)
                     .props()
                     .onChange(types);

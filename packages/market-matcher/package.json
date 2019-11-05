@@ -29,8 +29,9 @@
         "test": "yarn test:e2e && yarn test:unit",
         "test:e2e": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
         "test:unit": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit",
+        "test:unit:watch": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit --watch --watch-extensions ts",
         "test:concurrent": "rm -rf db.sqlite && concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache\" \"yarn start-backend\" \"wait-on tcp:8549 && yarn test\"",
-        "clean": "rm -rf build dist db.sqlite",
+        "clean": "shx rm -rf build dist db.sqlite",
         "lint": "eslint 'src/**/*{.ts,.tsx}'",
         "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
         "precommit": "lint-staged"

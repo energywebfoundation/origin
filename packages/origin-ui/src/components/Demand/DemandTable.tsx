@@ -113,7 +113,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         if (location) {
             text = location
                 .map(l => l.split(';')[1])
-                .filter(r => r)
+                .filter((value, index, self) => value && self.indexOf(value) === index)
                 .join(', ');
         }
 

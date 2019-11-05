@@ -26,7 +26,7 @@
     "lint": "solium -d contracts && eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && eslint --fix 'src/**/*{.ts,.tsx}'",
     "precommit": "lint-staged",
-    "clean": "rm -rf build dist"
+    "clean": "shx rm -rf build dist"
   },
   "dependencies": {
     "@energyweb/utils-general": "1.3.0",

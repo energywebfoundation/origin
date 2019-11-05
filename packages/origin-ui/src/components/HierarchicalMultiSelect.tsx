@@ -1,29 +1,62 @@
 import * as React from 'react';
-import { IRECAssetService, EncodedAssetType } from '@energyweb/utils-general';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
 import { dataTest } from '../utils/Helper';
 
-interface IOwnProps {
-    selectedType: EncodedAssetType;
-    onChange: (value: EncodedAssetType) => void;
+type Level = 1 | 2 | 3;
+
+type EncodedValueType = string[];
+type DecodedValueType = string[][];
+
+interface ISelectOptions {
+    label: string;
+    placeholder: string;
+}
+
+interface IOwnProps<T> {
+    selectedValue: string[];
+    onChange: (value: EncodedValueType) => void;
+    selectOptions: ISelectOptions[];
+
+    options?: T;
+    allValues?: string[][];
     disabled?: boolean;
     readOnly?: boolean;
 }
 
-type Level = 1 | 2 | 3;
+function decode(encodedValue: EncodedValueType) {
+    return encodedValue.map(item => item.split(';'));
+}
 
-export function AssetTypeSelector(props: IOwnProps) {
-    const irecAssetService = new IRECAssetService();
-    const allTypes = irecAssetService.AssetTypes;
-    const selectedTypeDecoded = irecAssetService.decode(props.selectedType);
+function encode(decodedType: DecodedValueType) {
+    return decodedType.map(group => group.join(';'));
+}
 
-    function allTypesByLevel(level: Level): EncodedAssetType {
-        return allTypes
-            .filter(t => t.length === level)
-            .map(t => irecAssetService.encode([t]).pop());
+function getDisplayText(value: string) {
+    return decode([value])[0].join(' - ');
+}
+
+export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
+    const selectedValueDecoded = decode(props.selectedValue);
+
+    const allValues = [];
+
+    if (props.allValues) {
+        allValues.push(...props.allValues);
+    } else {
+        Object.keys(props.options).map(key => {
+            allValues.push([key]);
+
+            props.options[key].map(item => {
+                allValues.push([key, item]);
+            });
+        });
+    }
+
+    function allValuesByLevel(level: Level): EncodedValueType {
+        return allValues.filter(t => t.length === level).map(t => encode([t]).pop());
     }
 
     function filterSelected(
@@ -40,32 +73,30 @@ export function AssetTypeSelector(props: IOwnProps) {
         return types.filter(t => t.startsWith(currentType));
     }
 
-    function assetTypesToSelectionOptions(types: EncodedAssetType) {
+    function valuesToSelectionOptions(types: EncodedValueType) {
         return types.map(t => ({
             value: t,
-            label: irecAssetService.getDisplayText(t)
+            label: getDisplayText(t)
         }));
     }
 
     function selectedOptionsByLevel(level: Level): IAutocompleteMultiSelectOptionType[] {
         return (
-            selectedTypeDecoded &&
-            assetTypesToSelectionOptions(
-                irecAssetService.encode(selectedTypeDecoded.filter(t => t.length === level))
-            )
+            selectedValueDecoded &&
+            valuesToSelectionOptions(encode(selectedValueDecoded.filter(t => t.length === level)))
         );
     }
 
-    function getAssetTypesOptions() {
+    function getOptions() {
         const selectedTypesLevelOne = selectedOptionsByLevel(1);
         const selectedTypesLevelTwo = selectedOptionsByLevel(2);
 
         const levelTwoTypes: string[] = [];
         const levelThreeTypes: string[] = [];
 
-        const availableL1Types = allTypesByLevel(1);
-        const availableL2Types = allTypesByLevel(2);
-        const availableL3Types = allTypesByLevel(3);
+        const availableL1Types = allValuesByLevel(1);
+        const availableL2Types = allValuesByLevel(2);
+        const availableL3Types = allValuesByLevel(3);
 
         for (const currentType of availableL1Types) {
             const level2Types = filterSelected(
@@ -106,54 +137,50 @@ export function AssetTypeSelector(props: IOwnProps) {
         }
 
         return {
-            levelTwoTypes: assetTypesToSelectionOptions(levelTwoTypes),
-            levelThreeTypes: assetTypesToSelectionOptions([...new Set(levelThreeTypes)])
+            levelTwoValues: valuesToSelectionOptions(levelTwoTypes),
+            levelThreeValues: valuesToSelectionOptions([...new Set(levelThreeTypes)])
         };
     }
 
     function getDerivedTypesFromType(type: string): string[] {
         const derivedTypes: string[] = [];
 
-        const availableL2Types = allTypesByLevel(2);
-        const availableL3Types = allTypesByLevel(3);
+        const availableL2Types = allValuesByLevel(2);
+        const availableL3Types = allValuesByLevel(3);
 
         const optionLevel2Types = filterSelected(
             type,
             availableL2Types,
-            assetTypesToSelectionOptions([type])
+            valuesToSelectionOptions([type])
         );
 
         derivedTypes.push(...optionLevel2Types);
 
         optionLevel2Types.map(t => {
             derivedTypes.push(
-                ...filterSelected(
-                    t,
-                    availableL3Types,
-                    assetTypesToSelectionOptions(optionLevel2Types)
-                )
+                ...filterSelected(t, availableL3Types, valuesToSelectionOptions(optionLevel2Types))
             );
         });
 
         return derivedTypes;
     }
 
-    function setTypeByLevel(
+    function setValueByLevel(
         newSelectedOptions: IAutocompleteMultiSelectOptionType[] | null,
         level: Level
     ) {
         const newSelectedOptionsArray = newSelectedOptions || [];
 
-        let newEncodedType: EncodedAssetType;
+        let newEncodedType: EncodedValueType;
 
         if (newSelectedOptionsArray.length === 0 && level !== 3) {
-            newEncodedType = irecAssetService.encode([
-                ...selectedTypeDecoded.filter(t => t.length !== level && t.length !== level + 1),
+            newEncodedType = encode([
+                ...selectedValueDecoded.filter(t => t.length !== level && t.length !== level + 1),
                 ...newSelectedOptionsArray.map(o => [o.value])
             ]);
         } else {
-            newEncodedType = irecAssetService.encode([
-                ...selectedTypeDecoded.filter(t => t.length !== level),
+            newEncodedType = encode([
+                ...selectedValueDecoded.filter(t => t.length !== level),
                 ...newSelectedOptionsArray.map(o => [o.value])
             ]);
         }
@@ -180,48 +207,48 @@ export function AssetTypeSelector(props: IOwnProps) {
 
     const { disabled, readOnly } = props;
 
-    const allTypesLevelOne = assetTypesToSelectionOptions(allTypesByLevel(1));
+    const allValuesLevelOne = valuesToSelectionOptions(allValuesByLevel(1));
 
-    const { levelTwoTypes, levelThreeTypes } = getAssetTypesOptions();
+    const { levelTwoValues, levelThreeValues } = getOptions();
 
-    const selectedTypesLevelOne = selectedOptionsByLevel(1);
-    const selectedTypesLevelTwo = selectedOptionsByLevel(2);
-    const selectedTypesLevelThree = selectedOptionsByLevel(3);
+    const selectedValuesLevelOne = selectedOptionsByLevel(1);
+    const selectedValuesLevelTwo = selectedOptionsByLevel(2);
+    const selectedValuesLevelThree = selectedOptionsByLevel(3);
 
     return (
         <>
             <MultiSelectAutocomplete
-                label="Asset type"
-                placeholder={readOnly ? '' : 'Select asset type'}
-                options={allTypesLevelOne}
-                onChange={value => setTypeByLevel(value, 1)}
-                selectedValues={selectedTypesLevelOne}
+                label={props.selectOptions[0].label}
+                placeholder={readOnly ? '' : props.selectOptions[0].placeholder}
+                options={allValuesLevelOne}
+                onChange={value => setValueByLevel(value, 1)}
+                selectedValues={selectedValuesLevelOne}
                 classes={{ root: 'mt-3' }}
                 disabled={disabled}
-                {...dataTest('asset-type-selector-level-1')}
+                {...dataTest('hierarchical-multi-select-level-1')}
             />
-            {levelTwoTypes.length > 0 && (
+            {levelTwoValues.length > 0 && (
                 <MultiSelectAutocomplete
-                    label="Asset type"
-                    placeholder={readOnly ? '' : 'Select asset type'}
-                    options={levelTwoTypes}
-                    onChange={value => setTypeByLevel(value, 2)}
-                    selectedValues={selectedTypesLevelTwo}
+                    label={props.selectOptions[1].label}
+                    placeholder={readOnly ? '' : props.selectOptions[1].placeholder}
+                    options={levelTwoValues}
+                    onChange={value => setValueByLevel(value, 2)}
+                    selectedValues={selectedValuesLevelTwo}
                     classes={{ root: 'mt-3' }}
                     disabled={disabled}
-                    {...dataTest('asset-type-selector-level-2')}
+                    {...dataTest('hierarchical-multi-select-level-2')}
                 />
             )}
-            {levelThreeTypes.length > 0 && (
+            {levelThreeValues.length > 0 && (
                 <MultiSelectAutocomplete
-                    label="Asset type"
-                    placeholder={readOnly ? '' : 'Select asset type'}
-                    options={levelThreeTypes}
-                    onChange={value => setTypeByLevel(value, 3)}
-                    selectedValues={selectedTypesLevelThree}
+                    label={props.selectOptions[2].label}
+                    placeholder={readOnly ? '' : props.selectOptions[2].placeholder}
+                    options={levelThreeValues}
+                    onChange={value => setValueByLevel(value, 3)}
+                    selectedValues={selectedValuesLevelThree}
                     classes={{ root: 'mt-3' }}
                     disabled={disabled}
-                    {...dataTest('asset-type-selector-level-3')}
+                    {...dataTest('hierarchical-multi-select-level-3')}
                 />
             )}
         </>

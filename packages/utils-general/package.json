@@ -32,7 +32,7 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --exit",
     "test:watch": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --watch --watch-extensions ts",
-    "clean": "rm -rf build dist"
+    "clean": "shx rm -rf build dist"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
