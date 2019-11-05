@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-contract AssetStructs {
+contract AssetDefinitions {
 
     struct Asset {
         address smartMeter;

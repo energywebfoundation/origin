@@ -1,12 +1,17 @@
-import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
+
+import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
 import { createBlockchainProperties as issuerCreateBlockchainProperties } from '@energyweb/origin';
-import { MarketContractLookup, MarketLogic } from '..';
+
+import { MarketLogic } from '..';
 
 export const createBlockchainProperties = async (
     web3: Web3,
-    marketContractLookupAddress: string
+    userLogicAddress: string,
+    assetLogicAddress: string,
+    certificateLogicAddress: string,
+    marketLogicAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
     if (!web3) {
         return {
@@ -19,27 +24,22 @@ export const createBlockchainProperties = async (
         };
     }
 
-    const marketLookupContractInstance: MarketContractLookup = new MarketContractLookup(
-        web3,
-        marketContractLookupAddress
-    );
-
     const assetBlockchainProperties: Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
         web3,
-        await marketLookupContractInstance.assetContractLookup()
+        userLogicAddress,
+        assetLogicAddress
     );
 
     const originBlockchainProperties: Configuration.BlockchainProperties = await issuerCreateBlockchainProperties(
         web3,
-        await marketLookupContractInstance.originContractLookup()
+        userLogicAddress,
+        assetLogicAddress,
+        certificateLogicAddress
     );
 
     return {
         consumingAssetLogicInstance: assetBlockchainProperties.consumingAssetLogicInstance,
-        marketLogicInstance: new MarketLogic(
-            web3,
-            await marketLookupContractInstance.marketLogicRegistry()
-        ),
+        marketLogicInstance: new MarketLogic(web3, marketLogicAddress),
         producingAssetLogicInstance: assetBlockchainProperties.producingAssetLogicInstance,
         userLogicInstance: assetBlockchainProperties.userLogicInstance,
         certificateLogicInstance: originBlockchainProperties.certificateLogicInstance,

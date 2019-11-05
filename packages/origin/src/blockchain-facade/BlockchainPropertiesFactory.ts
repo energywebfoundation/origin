@@ -27,11 +27,6 @@ export const createBlockchainProperties = async (
     assetLogicAddress: string,
     certificateLogicAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
-    const certificateLogicInstance = new CertificateLogic(
-        web3,
-        certificateLogicAddress
-    );
-
     const assetBlockchainProperties = await assetCreateBlockchainProperties(
         web3,
         userLogicAddress,
@@ -39,7 +34,7 @@ export const createBlockchainProperties = async (
     );
 
     return {
-        certificateLogicInstance,
+        certificateLogicInstance: new CertificateLogic(web3, certificateLogicAddress),
         producingAssetLogicInstance: assetBlockchainProperties.producingAssetLogicInstance,
         userLogicInstance: assetBlockchainProperties.userLogicInstance,
         web3

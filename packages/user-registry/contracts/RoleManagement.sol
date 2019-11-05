@@ -2,8 +2,8 @@ pragma solidity ^0.5.0;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
-import "./Interfaces/IRoles.sol";
-import "./Interfaces/IUserLogic.sol";
+import "./IRoles.sol";
+import "./IUserLogic.sol";
 
 /// @notice contract for managing the rights and roles
 contract RoleManagement is Initializable {

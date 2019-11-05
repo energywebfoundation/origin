@@ -5,8 +5,7 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { buildRights, Role, UserLogic, migrateUserRegistryContracts } from '@energyweb/user-registry';
 
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';

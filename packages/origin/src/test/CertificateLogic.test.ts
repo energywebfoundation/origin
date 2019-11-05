@@ -3,8 +3,7 @@ import 'mocha';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { UserLogic, Role, buildRights, migrateUserRegistryContracts } from '@energyweb/user-registry';
 import { Asset, ProducingAsset, AssetLogic, migrateAssetRegistryContracts } from '@energyweb/asset-registry';
 import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
 import {
@@ -505,7 +504,7 @@ describe('CertificateLogic-Facade', () => {
             await certificate.buyCertificate();
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'erc20 transfer failed');
+            assert.include(ex.message, 'the buyer should have enough allowance to buy');
         }
 
         assert.isTrue(failed);

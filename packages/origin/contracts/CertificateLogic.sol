@@ -7,11 +7,14 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721En
 
 import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC20Interface.sol";
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/user-registry/contracts/Interfaces/IUserLogic.sol";
+import "@energyweb/user-registry/contracts/IUserLogic.sol";
 import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
-import "@energyweb/asset-registry/contracts/AssetStructs.sol";
+import "@energyweb/asset-registry/contracts/AssetDefinitions.sol";
 
-contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManagement {
+import "./CertificateDefinitions.sol";
+import "./ICertificateLogic.sol";
+
+contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManagement, ICertificateLogic {
 
     IUserLogic private userLogic;
     IAssetLogic private assetLogic;
@@ -23,42 +26,12 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     event LogPublishForSale(uint indexed _entityId, uint _price, address _token);
     event LogUnpublishForSale(uint indexed _entityId);
 
-    enum CertificationRequestStatus {
-        Pending,
-        Approved
-    }
-
-    enum Status {
-        Active,
-        Claimed,
-        Split
-    }
-
-    struct CertificationRequest {
-        uint assetId;
-        uint readsStartIndex;
-        uint readsEndIndex;
-        CertificationRequestStatus status;
-    }
-
-    struct Certificate {
-        uint assetId;
-        uint energy;
-        uint status;
-        uint creationTime;
-        uint parentId;
-        uint[] children;
-        bool forSale;
-        address acceptedToken;
-        uint onChainDirectPurchasePrice;
-    }
-
     mapping(uint => uint) internal assetRequestedCertsForSMReadsLength;
 
-    CertificationRequest[] private certificationRequests;
+    CertificateDefinitions.CertificationRequest[] private certificationRequests;
 
     // Mapping of tokenId to Certificate
-    mapping(uint256 => Certificate) private certificates;
+    mapping(uint256 => CertificateDefinitions.Certificate) private certificates;
 
     modifier onlyCertificateOwner(uint _certificateId) {
         address owner = ownerOf(_certificateId);
@@ -110,7 +83,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
      * @param certificateId uint256 representing the index to be accessed of the tokens list
      * @return uint256 token ID at the given index of the tokens list
      */
-    function getCertificate(uint256 certificateId) public view returns (Certificate memory) {
+    function getCertificate(uint256 certificateId) public view returns (CertificateDefinitions.Certificate memory) {
         require(certificateId < totalSupply(), "ERC721Enumerable: global index out of bounds");
         return certificates[certificateId];
     }
@@ -157,19 +130,17 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @param _certificateId The id of the requested certificate
     /// @return flag whether the certificate is claimed
     function isClaimed(uint _certificateId) public view returns (bool) {
-        return getCertificate(_certificateId).status == uint(Status.Claimed);
+        return getCertificate(_certificateId).status == uint(CertificateDefinitions.Status.Claimed);
     }
 
-     /// @notice makes the certificate available for sale
+    /// @notice makes the certificate available for sale
     /// @param _certificateId The id of the certificate
     /// @param _price the purchase price
     /// @param _tokenAddress the address of the ERC20 token address
     function publishForSale(uint _certificateId, uint _price, address _tokenAddress) public onlyCertificateOwner(_certificateId) {
-        Certificate storage cert = certificates[_certificateId];
-
-        cert.onChainDirectPurchasePrice = _price;
-        cert.acceptedToken = _tokenAddress;
-        cert.forSale = true;
+        _setOnChainDirectPurchasePrice(_certificateId, _price);
+        _setTradableToken(_certificateId, _tokenAddress);
+        certificates[_certificateId].forSale = true;
 
         emit LogPublishForSale(_certificateId, _price, _tokenAddress);
     }
@@ -177,7 +148,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @notice makes the certificate not available for sale
     /// @param _certificateId The id of the certificate
     function unpublishForSale(uint _certificateId) public onlyCertificateOwner(_certificateId) {
-        Certificate storage cert = certificates[_certificateId];
+        CertificateDefinitions.Certificate storage cert = certificates[_certificateId];
 
         cert.forSale = false;
         emit LogUnpublishForSale(_certificateId);
@@ -216,7 +187,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     }
 
     function splitAndBuyCertificate(uint _certificateId, uint _energy) public onlyRole(RoleManagement.Role.Trader) {
-        Certificate memory cert = getCertificate(_certificateId);
+        CertificateDefinitions.Certificate memory cert = getCertificate(_certificateId);
 
         require(_energy > 0 && _energy <= cert.energy, "Energy has to be higher than 0 and lower or equal than certificate energy");
 
@@ -264,7 +235,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         return getCertificate(_certificateId).onChainDirectPurchasePrice;
     }
 
-    function getCertificationRequests() public view returns (CertificationRequest[] memory) {
+    function getCertificationRequests() public view returns (CertificateDefinitions.CertificationRequest[] memory) {
         return certificationRequests;
     }
 
@@ -277,11 +248,11 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     }
 
     function requestCertificates(uint _assetId, uint lastRequestedSMReadIndex) public {
-        AssetStructs.Asset memory asset = assetLogic.getAssetById(_assetId);
+        AssetDefinitions.Asset memory asset = assetLogic.getAssetById(_assetId);
 
         require(asset.owner == msg.sender, "msg.sender must be asset owner");
 
-        AssetStructs.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(_assetId);
+        AssetDefinitions.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(_assetId);
 
         require(lastRequestedSMReadIndex < reads.length, "requestCertificates: index should be lower than smart meter reads length");
 
@@ -294,33 +265,36 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
 
         require(lastRequestedSMReadIndex >= start, "requestCertificates: index has to be higher or equal to start index");
 
-        certificationRequests.push(CertificationRequest(
+        certificationRequests.push(CertificateDefinitions.CertificationRequest(
             _assetId,
             start,
             lastRequestedSMReadIndex,
-            CertificationRequestStatus.Pending
+            CertificateDefinitions.CertificationRequestStatus.Pending
         ));
 
         _setAssetRequestedCertsForSMReadsLength(_assetId, lastRequestedSMReadIndex + 1);
     }
 
     function approveCertificationRequest(uint _certicationRequestIndex) public onlyRole(RoleManagement.Role.Issuer) {
-        CertificationRequest storage request = certificationRequests[_certicationRequestIndex];
+        CertificateDefinitions.CertificationRequest storage request = certificationRequests[_certicationRequestIndex];
 
-        require(request.status == CertificationRequestStatus.Pending, "approveCertificationRequest: request has to be in pending state");
+        require(
+            request.status == CertificateDefinitions.CertificationRequestStatus.Pending,
+            "approveCertificationRequest: request has to be in pending state"
+        );
 
-        AssetStructs.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(request.assetId);
+        AssetDefinitions.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(request.assetId);
 
         uint certifyEnergy = 0;
         for (uint i = request.readsStartIndex; i <= request.readsEndIndex; i++) {
             certifyEnergy += reads[i].energy;
         }
 
-        AssetStructs.Asset memory asset = assetLogic.getAssetById(request.assetId);
+        AssetDefinitions.Asset memory asset = assetLogic.getAssetById(request.assetId);
 
         _createNewCertificate(request.assetId, certifyEnergy, asset.owner);
 
-        request.status = CertificationRequestStatus.Approved;
+        request.status = CertificateDefinitions.CertificationRequestStatus.Approved;
     }
 
     /**
@@ -330,10 +304,10 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     function _createNewCertificate(uint assetId, uint energy, address owner) internal {
         uint newCertificateId = totalSupply();
 
-        certificates[newCertificateId] = Certificate({
+        certificates[newCertificateId] = CertificateDefinitions.Certificate({
             assetId: assetId,
             energy: energy,
-            status: uint(Status.Active),
+            status: uint(CertificateDefinitions.Status.Active),
             creationTime: block.timestamp,
             parentId: newCertificateId,
             children: new uint256[](0),
@@ -348,21 +322,21 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     }
 
     function _claimCertificate(uint certificateId) internal {
-        Certificate memory cert = getCertificate(certificateId);
+        CertificateDefinitions.Certificate memory cert = getCertificate(certificateId);
 
         require(msg.sender == ownerOf(certificateId), "_claimCertificate: You have to be the owner of the certificate.");
         require(cert.children.length == 0, "_claimCertificate: Unable to claim certificates split certificates.");
-        require(cert.status != uint(Status.Claimed), "_claimCertificate: cannot claim a certificate that has already been claimed");
+        require(cert.status != uint(CertificateDefinitions.Status.Claimed), "_claimCertificate: cannot claim a certificate that has already been claimed");
 
-        _setStatus(certificateId, Status.Claimed);
+        _setStatus(certificateId, CertificateDefinitions.Status.Claimed);
         emit LogCertificateClaimed(certificateId);
     }
 
     /// @notice sets the status for a certificate
     /// @param certificateId the id of the certificate
     /// @param status enum Status
-    function _setStatus(uint certificateId, Status status) internal {
-        Certificate storage certificate = certificates[certificateId];
+    function _setStatus(uint certificateId, CertificateDefinitions.Status status) internal {
+        CertificateDefinitions.Certificate storage certificate = certificates[certificateId];
 
         if (certificate.status != uint(status)) {
             certificate.status = uint(status);
@@ -372,7 +346,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @notice sets the status for a certificate
     /// @param childrenIds id's of the children
     function _setChildren(uint certificateId, uint[2] memory childrenIds) internal {
-        Certificate storage certificate = certificates[certificateId];
+        CertificateDefinitions.Certificate storage certificate = certificates[certificateId];
         certificate.children = childrenIds;
     }
 
@@ -380,10 +354,10 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @param certificateId The id of the certificate
     /// @param energy The amount of energy in W for the 1st certificate
     function _splitCertificate(uint certificateId, uint energy) internal returns (uint childOneId, uint childTwoId) {
-        Certificate memory parent = getCertificate(certificateId);
+        CertificateDefinitions.Certificate memory parent = getCertificate(certificateId);
 
         require(parent.energy > energy, "_splitCertificate: The certificate doesn't have enough energy to be split.");
-        require(parent.status == uint(Status.Active), "_splitCertificate: You can only split Active certificates.");
+        require(parent.status == uint(CertificateDefinitions.Status.Active), "_splitCertificate: You can only split Active certificates.");
         require(parent.children.length == 0, "_splitCertificate: This certificate has already been split.");
 
         (uint childIdOne, uint childIdTwo) = _createChildCertificates(certificateId, energy);
@@ -391,7 +365,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         emit Transfer(address(0), ownerOf(childIdTwo), childIdTwo);
 
         _setChildren(certificateId, [childIdOne, childIdTwo]);
-        _setStatus(certificateId, Status.Split);
+        _setStatus(certificateId, CertificateDefinitions.Status.Split);
         emit LogCertificateSplit(certificateId, childIdOne, childIdTwo);
 
         return (childIdOne, childIdTwo);
@@ -402,13 +376,13 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @param energy the energy that should be splitted
     /// @return The ids of the certificate
     function _createChildCertificates(uint parentId, uint energy) internal returns (uint childOneId, uint childTwoId) {
-        Certificate memory parent = certificates[parentId];
+        CertificateDefinitions.Certificate memory parent = certificates[parentId];
 
         uint childIdOne = totalSupply();
-        certificates[childIdOne] = Certificate({
+        certificates[childIdOne] = CertificateDefinitions.Certificate({
             assetId: parent.assetId,
             energy: energy,
-            status: uint(Status.Active),
+            status: uint(CertificateDefinitions.Status.Active),
             creationTime: parent.creationTime,
             parentId: parentId,
             children: new uint256[](0),
@@ -419,10 +393,10 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         _mint(ownerOf(parentId), childIdOne);
 
         uint childIdTwo = totalSupply();
-        certificates[childIdTwo] = Certificate({
+        certificates[childIdTwo] = CertificateDefinitions.Certificate({
             assetId: parent.assetId,
             energy: parent.energy - energy,
-            status: uint(Status.Active),
+            status: uint(CertificateDefinitions.Status.Active),
             creationTime: parent.creationTime,
             parentId: parentId,
             children: new uint256[](0),
@@ -436,21 +410,25 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     }
 
     function _buyCertificate(uint _certificateId, address buyer) internal {
-        Certificate memory cert = getCertificate(_certificateId);
+        CertificateDefinitions.Certificate memory cert = getCertificate(_certificateId);
 
         require(buyer != ownerOf(_certificateId), "Can't buy your own certificates.");
         require(cert.forSale == true, "Unable to buy a certificate that is not for sale.");
-        require(cert.status == uint(Status.Active), "You can only buy Active certificates.");
+        require(cert.status == uint(CertificateDefinitions.Status.Active), "You can only buy Active certificates.");
 
         bool isOnChainSettlement = cert.acceptedToken != address(0x0);
 
         if (isOnChainSettlement) {
+            ERC20Interface erc20 = ERC20Interface(cert.acceptedToken);
             require(
-                ERC20Interface(cert.acceptedToken).transferFrom(
-                    buyer, ownerOf(_certificateId), cert.onChainDirectPurchasePrice
-                ),
-                "erc20 transfer failed"
+                erc20.balanceOf(buyer) >= cert.onChainDirectPurchasePrice,
+                "_buyCertificate: the buyer should have enough tokens to buy"
             );
+            require(
+                erc20.allowance(buyer, ownerOf(_certificateId)) >= cert.onChainDirectPurchasePrice,
+                "_buyCertificate: the buyer should have enough allowance to buy"
+            );
+            erc20.transferFrom(buyer, ownerOf(_certificateId), cert.onChainDirectPurchasePrice);
         } else {
             //  TO-DO: Implement off-chain settlement checks
             //  For now automatically transfer the certificate
@@ -467,7 +445,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @param _certificateId the id of the certificate
     /// @param _price the new price (as ERC20 tokens)
     function _setOnChainDirectPurchasePrice(uint _certificateId, uint _price) internal {
-        Certificate storage cert = certificates[_certificateId];
+        CertificateDefinitions.Certificate storage cert = certificates[_certificateId];
         cert.onChainDirectPurchasePrice = _price;
     }
 
@@ -475,7 +453,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @param _certificateId the certificate ID
     /// @param _token the ERC20-tokenaddress
     function _setTradableToken(uint _certificateId, address _token) internal {
-        Certificate storage cert = certificates[_certificateId];
+        CertificateDefinitions.Certificate storage cert = certificates[_certificateId];
         cert.acceptedToken = _token;
     }
 

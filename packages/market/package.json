@@ -54,6 +54,7 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
+    "@energyweb/erc-test-contracts": "1.2.1",
     "@energyweb/origin-backend-client": "1.0.0",
     "@fluffy-spoon/substitute": "1.89.0",
     "@types/web3": "1.0.20",
