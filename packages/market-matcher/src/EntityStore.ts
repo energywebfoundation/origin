@@ -108,156 +108,46 @@ export class EntityStore implements IEntityStore {
         this.logger.verbose('* Getting all active agreements');
         const agreementListLength = await Agreement.getAgreementListLength(this.config);
         for (let i = 0; i < agreementListLength; i++) {
-            this.registerAgreement(await new Agreement.Entity(i.toString(), this.config).sync());
+            await this.registerAgreement(i.toString());
         }
 
         this.logger.verbose('* Getting all active demands');
         const demandListLength = await Demand.getDemandListLength(this.config);
         for (let i = 0; i < demandListLength; i++) {
-            this.registerDemand(await new Demand.Entity(i.toString(), this.config).sync());
+            await this.handleDemand(i.toString(), false);
         }
 
         this.logger.verbose('* Getting all active supplies');
         const supplyListLength = await Supply.getSupplyListLength(this.config);
         for (let i = 0; i < supplyListLength; i++) {
-            this.registerSupply(await new Supply.Entity(i.toString(), this.config).sync());
+            await this.registerSupply(i.toString());
         }
 
         this.logger.verbose('* Getting all certificates');
         const certificateListLength = await Certificate.getCertificateListLength(this.config);
         for (let i = 0; i < certificateListLength; i++) {
-            this.registerCertificate(
-                await new Certificate.Entity(i.toString(), this.config).sync()
-            );
+            await this.handleCertificate(i.toString(), false);
         }
     }
 
     private async subscribeToEvents() {
         const currentBlockNumber = await this.config.blockchainProperties.web3.eth.getBlockNumber();
+
         const certificateContractEventHandler = new ContractEventHandler(
             this.config.blockchainProperties.certificateLogicInstance,
             currentBlockNumber
         );
 
-        const fetchCertificate = async (certificateId: string) => {
-            const certificate = await new Certificate.Entity(certificateId, this.config).sync();
-
-            if (
-                certificate.forSale &&
-                certificate.isOffChainSettlement &&
-                certificate.currency === Currency.NONE &&
-                certificate.price === 0
-            ) {
-                throw new Error(`[Certificate #${certificateId}] Missing settlement options`);
-            }
-
-            return certificate;
-        };
-
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const { _entityId } = event.returnValues;
-            this.logger.verbose(`Event: LogPublishForSale certificate #${_entityId}`);
-
-            const newCertificate = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() => fetchCertificate(_entityId));
-
-            this.registerCertificate(newCertificate);
-            await this.triggerCertificateListeners(newCertificate);
-        });
-
-        certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
-            this.logger.verbose(
-                `Event: LogCreatedCertificate certificate #${event.returnValues._certificateId}`
-            );
-
-            const newCertificate = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() => fetchCertificate(event.returnValues._certificateId));
-
-            this.registerCertificate(newCertificate);
-            await this.triggerCertificateListeners(newCertificate);
-        });
-
-        certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) => {
-            const { _certificateId, _childOne, _childTwo } = event.returnValues;
-
-            this.logger.verbose(
-                `Event: LogCertificateSplit certificate #${_certificateId} children=[${_childOne}, ${_childTwo}]`
-            );
-
-            const firstChild = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() => fetchCertificate(_childOne));
-
-            const secondChild = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() => fetchCertificate(_childTwo));
-
-            this.registerCertificate(firstChild);
-            this.registerCertificate(secondChild);
-
-            await this.triggerCertificateListeners(firstChild);
-            await this.triggerCertificateListeners(secondChild);
-        });
+        this.registerToCertificateEvents(certificateContractEventHandler);
 
         const marketContractEventHandler = new ContractEventHandler(
             this.config.blockchainProperties.marketLogicInstance,
             currentBlockNumber
         );
 
-        marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-            this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
-
-            const newDemand = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() =>
-                    new Demand.Entity(event.returnValues._demandId, this.config).sync()
-                );
-
-            this.registerDemand(newDemand);
-            await this.triggerDemandListeners(newDemand);
-        });
-
-        marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
-            this.logger.verbose(`Event: createdNewSupply supply: ${event.returnValues._supplyId}`);
-
-            const newSupply = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() =>
-                    new Supply.Entity(event.returnValues._supplyId, this.config).sync()
-                );
-
-            this.registerSupply(newSupply);
-        });
-
-        marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-            this.logger.verbose(
-                `Event: DemandStatusChanged demand: ${event.returnValues._demandId}`
-            );
-
-            const newDemand = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() =>
-                    new Demand.Entity(event.returnValues._demandId, this.config).sync()
-                );
-
-            this.updateDemand(newDemand);
-        });
-
-        marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
-            this.logger.verbose(
-                `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${event.returnValues._agreementId}, ${event.returnValues._demandId}, ${event.returnValues._supplyId})`
-            );
-
-            const newAgreement = await polly()
-                .waitAndRetry(10)
-                .executeForPromise(() =>
-                    new Agreement.Entity(event.returnValues._agreementId, this.config).sync()
-                );
-
-            this.registerAgreement(newAgreement);
-        });
+        this.registerToDemandEvents(marketContractEventHandler);
+        this.registerToSupplyEvents(marketContractEventHandler);
+        this.registerToAgreementEvents(marketContractEventHandler);
 
         const eventHandlerManager = new EventHandlerManager(4000, this.config);
         eventHandlerManager.registerEventHandler(marketContractEventHandler);
@@ -265,53 +155,143 @@ export class EntityStore implements IEntityStore {
         eventHandlerManager.start();
     }
 
-    private registerDemand(demand: Demand.Entity) {
-        if (this.demands.has(demand.id)) {
-            this.logger.verbose(`[Demand ${demand.id}] Already registered`);
+    private registerToCertificateEvents(certificateContractEventHandler: ContractEventHandler) {
+        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const { _entityId: id } = event.returnValues;
+            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
+
+            await this.handleCertificate(id);
+        });
+
+        certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
+            const { _certificateId: id } = event.returnValues;
+            this.logger.verbose(`Event: LogCreatedCertificate certificate #${id}`);
+
+            await this.handleCertificate(id);
+        });
+
+        certificateContractEventHandler.onEvent('LogCertificateSplit', async (event: any) => {
+            const { _certificateId: id, _childOne, _childTwo } = event.returnValues;
+
+            this.logger.verbose(
+                `Event: LogCertificateSplit certificate #${id} children=[${_childOne}, ${_childTwo}]`
+            );
+
+            await this.handleCertificate(_childOne);
+            await this.handleCertificate(_childTwo);
+
+            // TODO: handle original certificate
+        });
+    }
+
+    private registerToAgreementEvents(marketContractEventHandler: ContractEventHandler) {
+        marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
+            const { _agreementId: id, _demandId, _supplyId } = event.returnValues;
+
+            this.logger.verbose(
+                `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${id}, ${_demandId}, ${_supplyId})`
+            );
+
+            await this.registerAgreement(id);
+        }); // TODO: agreement should be signed before can be respected
+    }
+
+    private registerToSupplyEvents(marketContractEventHandler: ContractEventHandler) {
+        marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
+            const { _supplyId: id } = event.returnValues;
+
+            this.logger.verbose(`Event: createdNewSupply supply: ${id}`);
+
+            await this.registerSupply(id);
+        });
+    }
+
+    private registerToDemandEvents(marketContractEventHandler: ContractEventHandler) {
+        marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
+
+            await this.handleDemand(event.returnValues._demandId);
+        });
+
+        marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+            this.logger.verbose(
+                `Event: DemandStatusChanged demand: ${event.returnValues._demandId}`
+            );
+
+            await this.handleDemand(event.returnValues._demandId);
+        });
+    }
+
+    private async handleDemand(id: string, trigger = true) {
+        const demand = await polly()
+            .waitAndRetry(10)
+            .executeForPromise(() => new Demand.Entity(id, this.config).sync());
+
+        const isFulfilled = await demand.isFulfilled();
+        if (isFulfilled) {
+            this.logger.verbose(`[Demand ${demand.id}] is already filled.`);
+            if (this.demands.has(demand.id)) {
+                this.demands.delete(demand.id);
+                this.logger.verbose(`[Demand ${demand.id}] Removed from the store.`);
+            }
             return;
         }
 
         this.demands.set(demand.id, demand);
         this.logger.verbose(`[Demand ${demand.id}] Registered`);
+
+        if (trigger) {
+            await this.triggerDemandListeners(demand);
+        }
     }
 
-    private updateDemand(demand: Demand.Entity) {
-        if (!this.demands.has(demand.id)) {
-            this.registerDemand(demand);
-            return;
-        }
-
-        this.demands.set(demand.id, demand);
-        this.logger.verbose(`Updated demand #${demand.id}`);
-    }
-
-    private registerSupply(supply: Supply.Entity) {
-        if (this.supplies.has(supply.id)) {
-            this.logger.verbose(`Supply with ID ${supply.id} has already been registered.`);
-            return;
-        }
+    private async registerSupply(id: string) {
+        const supply = await polly()
+            .waitAndRetry(10)
+            .executeForPromise(() => new Supply.Entity(id, this.config).sync());
 
         this.supplies.set(supply.id, supply);
         this.logger.verbose(`Registered new supply #${supply.id}`);
     }
 
-    private registerAgreement(agreement: Agreement.Entity) {
-        if (this.agreements.has(agreement.id)) {
-            this.logger.verbose(`[Agreement ${agreement.id}] Already registered`);
-            return;
-        }
+    private async registerAgreement(id: string) {
+        const agreement = await polly()
+            .waitAndRetry(10)
+            .executeForPromise(() => new Agreement.Entity(id, this.config).sync());
 
         this.agreements.set(agreement.id, agreement);
         this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
     }
 
-    private registerCertificate(certificate: Certificate.Entity) {
-        if (this.certificates.has(certificate.id)) {
-            this.logger.verbose(`[Certificate ${certificate.id}] Already registered`);
-            return;
-        }
+    private async handleCertificate(id: string, trigger = true) {
+        const certificate = await this.pollCertificate(id);
 
         this.certificates.set(certificate.id, certificate);
         this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
+
+        if (trigger) {
+            await this.triggerCertificateListeners(certificate);
+        }
+    }
+
+    private async fetchCertificate(id: string) {
+        const certificate = await new Certificate.Entity(id, this.config).sync();
+
+        if (
+            certificate.forSale &&
+            certificate.isOffChainSettlement &&
+            certificate.currency === Currency.NONE &&
+            certificate.price === 0
+        ) {
+            throw new Error(`[Certificate #${id}] Missing settlement options`);
+        }
+
+        return certificate;
+    }
+
+    private pollCertificate(id: string) {
+        return polly()
+            .waitAndRetry(10)
+            .executeForPromise(() => this.fetchCertificate(id));
     }
 }
