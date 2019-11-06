@@ -1,8 +1,8 @@
 import { Certificate } from '@energyweb/origin';
-import { MatchableAgreement } from '../MatchableAgreement';
+import { Agreement } from '@energyweb/market';
 
 export interface IStrategy {
-    executeForAgreements(agreements: MatchableAgreement[]): Promise<MatchableAgreement[]>;
+    executeForAgreements(agreements: Agreement.IAgreement[]): Promise<Agreement.IAgreement[]>;
     executeForCertificates(
         demands: Certificate.ICertificate[]
     ): Promise<Certificate.ICertificate[]>;

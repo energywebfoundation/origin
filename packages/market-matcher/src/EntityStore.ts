@@ -15,7 +15,9 @@ export interface IEntityStore {
     registerCertificateListener(listener: Listener<Certificate.Entity>): void;
     registerDemandListener(listener: Listener<Demand.Entity>): void;
 
-    getDemandById(id: string): Demand.Entity;
+    getDemand(id: string): Promise<Demand.Entity>;
+    getSupply(id: string): Promise<Supply.Entity>;
+
     getAgreements(): Agreement.Entity[];
     getDemands(): Demand.Entity[];
     getCertificates(): Certificate.Entity[];
@@ -50,8 +52,24 @@ export class EntityStore implements IEntityStore {
         this.demandListeners.push(listener);
     }
 
-    public getDemandById(id: string): Demand.Entity {
+    public async getDemand(id: string): Promise<Demand.Entity> {
+        if (!this.demands.has(id)) {
+            const demand = await new Demand.Entity(id, this.config).sync();
+
+            this.demands.set(id, demand);
+        }
+
         return this.demands.get(id);
+    }
+
+    public async getSupply(id: string): Promise<Supply.Entity> {
+        if (!this.supplies.has(id)) {
+            const supply = await new Supply.Entity(id, this.config).sync();
+
+            this.supplies.set(id, supply);
+        }
+
+        return this.supplies.get(id);
     }
 
     public getAgreements() {

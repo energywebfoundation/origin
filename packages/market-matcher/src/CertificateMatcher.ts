@@ -3,7 +3,7 @@ import { inject, injectable } from 'tsyringe';
 import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand, Supply } from '@energyweb/market';
+import { Demand, Agreement } from '@energyweb/market';
 import { IEntityStore } from './EntityStore';
 import { IStrategy } from './strategy/IStrategy';
 import { CertificateService } from './CertificateService';
@@ -46,8 +46,8 @@ export class CertificateMatcher {
 
         const matchingAgreements = await this.findMatchingAgreements(certificate);
         const demands = await Promise.all(
-            matchingAgreements.map(async ({ agreement }) =>
-                this.entityStore.getDemandById(agreement.demandId.toString())
+            matchingAgreements.map(async agreement =>
+                this.entityStore.getDemand(agreement.demandId.toString())
             )
         );
 
@@ -93,7 +93,7 @@ export class CertificateMatcher {
 
     private async findMatchingAgreements(
         certificate: Certificate.ICertificate
-    ): Promise<MatchableAgreement[]> {
+    ): Promise<Agreement.IAgreement[]> {
         const agreements = this.entityStore
             .getAgreements()
             .map(agreement => new MatchableAgreement(agreement));
@@ -102,17 +102,14 @@ export class CertificateMatcher {
             `[Certificate #${certificate.id}] Found ${(agreements || []).length} agreements`
         );
 
-        const matchingAgreements: MatchableAgreement[] = [];
+        const matchingAgreements: Agreement.IAgreement[] = [];
 
         for (const agreement of agreements) {
-            const supply = await new Supply.Entity(
-                agreement.agreement.supplyId.toString(),
-                this.config
-            ).sync();
-            const demand = await new Demand.Entity(
-                agreement.agreement.demandId.toString(),
-                this.config
-            ).sync();
+            const { supplyId, demandId } = agreement.agreement;
+
+            const supply = await this.entityStore.getSupply(supplyId);
+            const demand = await this.entityStore.getDemand(demandId);
+
             const { result, reason } = await agreement.matchesCertificate(
                 certificate,
                 supply,
@@ -120,15 +117,15 @@ export class CertificateMatcher {
             );
 
             this.logger.verbose(
-                `[Certificate #${certificate.id}] Result of matching with agreement for Demand #${
-                    agreement.agreement.demandId
-                } and Supply #${
-                    agreement.agreement.supplyId
-                } is ${result} with reason ${reasonsToString(reason)}`
+                `[Certificate #${
+                    certificate.id
+                }] Result of matching with agreement for Demand #${demandId} and Supply #${supplyId} is ${result} with reason ${reasonsToString(
+                    reason
+                )}`
             );
 
             if (result) {
-                matchingAgreements.push(agreement);
+                matchingAgreements.push(agreement.agreement);
             }
         }
 
