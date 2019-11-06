@@ -1,8 +1,8 @@
-import axios from 'axios';
 import dotenv from 'dotenv';
 
 import { marketDemo } from './market';
 import { deployEmptyContracts } from './deployEmpty';
+import { ConfigurationClient } from '@energyweb/origin-backend-client';
 
 async function main() {
     dotenv.config({
@@ -14,7 +14,7 @@ async function main() {
     await marketDemo();
 
     if (contractConfig && contractConfig.marketContractLookup) {
-        await axios.post(`${process.env.BACKEND_URL}/api/MarketContractLookup/${contractConfig.marketContractLookup.toLowerCase()}`);
+        await new ConfigurationClient().add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketContractLookup.toLowerCase());
     }
 }
 
