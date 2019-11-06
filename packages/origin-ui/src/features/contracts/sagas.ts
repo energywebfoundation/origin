@@ -219,21 +219,20 @@ function* initEventHandler() {
     }
 }
 
-function* getMarketContractLookupAddressFromAPI() {
+async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
     try {
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-        const response = yield apply(configurationClient, configurationClient.get, [
+        const marketContracts: string[] = await configurationClient.get(
             `${BACKEND_URL}/api`,
             'MarketContractLookup'
-        ]);
-
-        const marketContracts = response;
+        );
 
         if (marketContracts.length > 0) {
-            yield marketContracts[marketContracts.length - 1];
+            return marketContracts[marketContracts.length - 1];
         }
-    } catch (error) {
-        yield null;
+
+        return null;
+    } catch {
+        return null;
     }
 }
 
@@ -242,7 +241,12 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
     let marketContractLookupAddress: string = savedAddress;
 
     if (!marketContractLookupAddress) {
-        marketContractLookupAddress = yield call(getMarketContractLookupAddressFromAPI);
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+        marketContractLookupAddress = yield call(
+            getMarketContractLookupAddressFromAPI,
+            configurationClient
+        );
     }
 
     if (marketContractLookupAddress) {

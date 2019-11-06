@@ -234,22 +234,20 @@ export async function deployDemo() {
     return { conf, deployResult, configurationClient, offChainDataClient };
 }
 
-export const startGanache = async () => {
-    return new Promise(resolve => {
-        const ganacheServer = ganache.server({
-            mnemonic: 'chalk park staff buzz chair purchase wise oak receive avoid avoid home',
-            gasLimit: 8000000,
-            default_balance_ether: 1000000,
-            total_accounts: 20
-        });
+interface IGanacheServer {
+    close(): Promise<void>;
+    listen(port: number, callback: () => void): void;
+}
 
-        ganacheServer.listen(8545, function(err, blockchain) {
-            resolve({
-                blockchain,
-                ganacheServer
-            });
-        });
+export async function startGanache(): Promise<IGanacheServer> {
+    const ganacheServer = ganache.server({
+        mnemonic: 'chalk park staff buzz chair purchase wise oak receive avoid avoid home',
+        gasLimit: 8000000,
+        default_balance_ether: 1000000,
+        total_accounts: 20
+    }) as IGanacheServer;
 
-        resolve(ganacheServer);
-    });
-};
+    ganacheServer.listen(8545, () => {});
+
+    return ganacheServer;
+}
