@@ -9,7 +9,7 @@ export interface IConfigurationClient {
 
 export class ConfigurationClient implements IConfigurationClient {
     public async get(baseUrl: string, item: ConfigurationItem) {
-        const url = `{baseUrl}/${item.toLowerCase()}`;
+        const url = `${baseUrl}/${item.toLowerCase()}`;
 
         const result = await axios.get(url);
 
@@ -17,9 +17,9 @@ export class ConfigurationClient implements IConfigurationClient {
     }
 
     public async add(baseUrl: string, item: ConfigurationItem, value: string) {
-      const url = `{baseUrl}/${item.toLowerCase()}`;
+      const url = `${baseUrl}/${item.toLowerCase()}`;
 
-      const result = await axios.post(url);
+      const result = await axios.post(url, value);
 
       return result.status === 200;
   }
