@@ -15,7 +15,7 @@ import { TimeFrame } from '@energyweb/utils-general';
 
 import moment from 'moment';
 
-jest.setTimeout(80000);
+jest.setTimeout(100000);
 
 describe('Application[E2E]', () => {
     it('correctly navigates to producing asset details', async () => {
