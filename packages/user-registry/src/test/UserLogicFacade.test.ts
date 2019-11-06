@@ -5,14 +5,12 @@ import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
 
-import {
-    UserLogic,
-    UserContractLookup
-} from '..';
+import { UserLogic, UserContractLookup } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { User } from '..';
 import { logger } from '../blockchain-facade/Logger';
 import { buildRights, Role } from '../wrappedContracts/RoleManagement';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 describe('UserLogic Facade', () => {
     dotenv.config({
@@ -85,7 +83,8 @@ describe('UserLogic Facade', () => {
                 }
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: new OffChainDataClientMock()
             },
             logger
         };
@@ -94,22 +93,15 @@ describe('UserLogic Facade', () => {
 
         const user = await new User.Entity(user1, conf).sync();
 
-        delete user.configuration;
-        delete user.proofs;
-        delete user.propertiesDocumentHash;
-        delete user.url;
+        assert.ownInclude(user, {
+            id: user1.toLowerCase(),
+            organization: 'Testorganization',
+            roles: RIGHTS,
+            active: true,
+            initialized: true
+        } as Partial<User.Entity>);
 
-        assert.deepEqual(
-            {
-                id: user1.toLowerCase(),
-                organization: 'Testorganization',
-                roles: RIGHTS,
-                active: true,
-                initialized: true,
-                offChainProperties: userPropsOffChain
-            } as any,
-            user
-        );
+        assert.ownInclude(user.offChainProperties, userPropsOffChain);
     });
 
     it('isRole should work correctly', async () => {

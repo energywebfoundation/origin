@@ -10,6 +10,7 @@ import {
 } from '@energyweb/asset-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
+import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
@@ -69,7 +70,8 @@ export const marketDemo = async (demoFile?: string) => {
             web3
         },
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`
+            baseUrl: `${process.env.BACKEND_URL}/api`,
+            client: new OffChainDataClient()
         },
         logger
     };

@@ -149,21 +149,21 @@ export class Entity extends TradableEntity.Entity implements ICertificate {
                 this.id
             );
 
-            this.assetId = cert.tradableEntity.assetId;
+            this.assetId = Number(cert.tradableEntity.assetId);
             this.owner = cert.tradableEntity.owner;
             this.energy = Number(cert.tradableEntity.energy);
             this.forSale = cert.tradableEntity.forSale;
             this.acceptedToken = cert.tradableEntity.acceptedToken;
-            this.onChainDirectPurchasePrice = cert.tradableEntity.onChainDirectPurchasePrice;
+            this.onChainDirectPurchasePrice = Number(cert.tradableEntity.onChainDirectPurchasePrice); //TODO: should be BN
             this.approvedAddress = cert.tradableEntity.approvedAddress;
 
             this.children = cert.certificateSpecific.children;
-            this.status = cert.certificateSpecific.status;
+            this.status = Number(cert.certificateSpecific.status);
             this.dataLog = cert.certificateSpecific.dataLog;
-            this.creationTime = cert.certificateSpecific.creationTime;
-            this.parentId = cert.certificateSpecific.parentId;
-            this.maxOwnerChanges = cert.certificateSpecific.maxOwnerChanges;
-            this.ownerChangerCounter = cert.certificateSpecific.ownerChangeCounter;
+            this.creationTime = Number(cert.certificateSpecific.creationTime);
+            this.parentId = Number(cert.certificateSpecific.parentId);
+            this.maxOwnerChanges = Number(cert.certificateSpecific.maxOwnerChanges);
+            this.ownerChangerCounter = Number(cert.certificateSpecific.ownerChangeCounter);
             this.offChainSettlementOptions = await this.getOffChainSettlementOptions();
 
             this.initialized = true;

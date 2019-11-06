@@ -1,7 +1,7 @@
 import * as Configuration from './Configuration';
 import { PreciseProofs } from 'ew-utils-general-precise-proofs';
-import axios from 'axios';
 import { validateJson } from '../off-chain-data/json-validator';
+import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 
 export interface IOffChainProperties {
     rootHash: string;
@@ -18,6 +18,7 @@ export abstract class Entity {
     id: string;
     configuration: Configuration.Entity;
     proofs: PreciseProofs.Proof[];
+    offChainDataClient: IOffChainDataClient;
 
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
@@ -27,6 +28,7 @@ export abstract class Entity {
             throw Error('An ID of an Entity should always be numeric string.');
         }
 
+        this.offChainDataClient = configuration.offChainDataSource.client;
         this.id = id;
         this.configuration = configuration;
         this.proofs = [];
@@ -38,46 +40,23 @@ export abstract class Entity {
 
     abstract getUrl(): string;
 
-    prepareEntityCreation(
-        offChainProperties: any,
-        schema: any,
-        url?: string,
-        debug?: boolean
-    ): IOffChainProperties {
+    get entityLocation() {
+        return `${this.getUrl()}/${this.id}`;
+    }
+
+    prepareEntityCreation(offChainProperties: any, schema: any): IOffChainProperties {
         if (!this.configuration.offChainDataSource) {
             return null;
         }
-        const storageUrl = url || this.getUrl();
 
-        validateJson(offChainProperties, schema, storageUrl, this.configuration.logger);
-        
-        return this.generateAndAddProofs(offChainProperties, debug);
+        validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
+
+        return this.generateAndAddProofs(offChainProperties);
     }
 
-    async syncOffChainStorage(
-        properties: any,
-        offChainStorageProperties: IOffChainProperties,
-        url?: string
-    ) {
+    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties) {
         if (this.configuration.offChainDataSource) {
-            const storageUrl = url || this.getUrl();
-            const entityUrl = `${storageUrl}/${String(this.id).toLowerCase()}`;
-
-            let postOrPut;
-
-            try {
-                await axios.get(entityUrl);
-    
-                postOrPut = axios.put;
-            } catch (error) {
-                if (error.response.status !== 404) {
-                    throw error;
-                }
-
-                postOrPut = axios.post;
-            }
-
-            await postOrPut(entityUrl, {
+            await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema
@@ -85,51 +64,50 @@ export abstract class Entity {
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
-                    `Put off chain properties to ${storageUrl}/${this.id}`
+                    `Put off chain properties to ${this.entityLocation}`
                 );
             }
         }
     }
 
-    async deleteFromOffChainStorage(url?: string) {
+    async deleteFromOffChainStorage() {
         if (this.configuration.offChainDataSource) {
-            const storageUrl = url || this.getUrl();
-
-            await axios.delete(`${storageUrl}/${this.id}`);
+            await this.offChainDataClient.delete(this.entityLocation);
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
-                    `Deleted off chain properties of ${storageUrl}/${this.id}`
+                    `Deleted off chain properties of ${this.entityLocation}`
                 );
             }
         }
     }
 
-    async getOffChainProperties(hash: string, url?: string, debug?: boolean): Promise<any> {
+    async getOffChainProperties<T>(hash: string): Promise<T> {
         if (this.configuration.offChainDataSource) {
-            const storageUrl = url || this.getUrl();
-            const data = (await axios.get(`${storageUrl}/${String(this.id).toLowerCase()}`)).data;
-            const offChainProperties = data.properties;
-            this.generateAndAddProofs(data.properties, debug, data.salts);
+            const { properties, salts, schema } = await this.offChainDataClient.get<T>(
+                this.entityLocation
+            );
 
-            this.verifyOffChainProperties(hash, offChainProperties, data.schema, debug);
+            this.generateAndAddProofs(properties, salts);
+            this.verifyOffChainProperties(hash, properties, schema);
+
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(
-                    `Got off chain properties from ${storageUrl}/${this.id}`
+                    `Got off chain properties from ${this.entityLocation}`
                 );
             }
 
-            return offChainProperties;
+            return properties;
         }
 
         return null;
     }
 
-    verifyOffChainProperties(rootHash: string, properties: any, schema: string[], debug: boolean) {
+    verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {
         Object.keys(properties).map(key => {
             const theProof = this.proofs.find((proof: PreciseProofs.Proof) => proof.key === key);
 
-            if (debug) {
+            if (this.configuration.logger.level == 'debug') {
                 console.log('\nDEBUG verifyOffChainProperties');
                 console.log('rootHash: ' + rootHash);
                 console.log('properties: ' + properties);
@@ -137,7 +115,9 @@ export abstract class Entity {
 
             if (theProof) {
                 if (!PreciseProofs.verifyProof(rootHash, theProof, schema)) {
-                    throw new Error(`Proof ${JSON.stringify(theProof)} for property ${key} is invalid.`);
+                    throw new Error(
+                        `Proof ${JSON.stringify(theProof)} for property ${key} is invalid.`
+                    );
                 }
             } else {
                 throw new Error(`Could not find proof for property ${key}`);
@@ -147,11 +127,7 @@ export abstract class Entity {
 
     abstract async sync(): Promise<Entity>;
 
-    protected generateAndAddProofs(
-        properties: any,
-        debug: boolean,
-        salts?: string[]
-    ): IOffChainProperties {
+    protected generateAndAddProofs(properties: any, salts?: string[]): IOffChainProperties {
         this.proofs = [];
         let leafs = salts
             ? PreciseProofs.createLeafs(properties, salts)
@@ -178,7 +154,7 @@ export abstract class Entity {
             schema
         };
 
-        if (debug) {
+        if (this.configuration.logger.level == 'debug') {
             console.log('\nDEBUG generateAndAddProofs');
             console.log(result);
             PreciseProofs.printTree(merkleTree, leafs, schema);

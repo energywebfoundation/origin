@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
@@ -17,6 +16,7 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 
 import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
+import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 
 export class Demo {
     public marketContractLookup: string;
@@ -72,7 +72,7 @@ export class Demo {
         };
 
         this.logger = Winston.createLogger({
-            level: 'debug',
+            level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         });
@@ -82,7 +82,7 @@ export class Demo {
         return this.nextDeployedSmReadIndex - 1;
     }
 
-    async deploy() {
+    async deploy(offChainDataClient: IOffChainDataClient) {
         const userContracts: any = await migrateUserRegistryContracts(this.web3, this.adminPK);
         const assetContracts: any = await migrateAssetRegistryContracts(
             this.web3,
@@ -125,12 +125,6 @@ export class Demo {
         deployResult.certificateLogic = originContracts.CertificateLogic;
         deployResult.marketLogic = marketContracts.MarketLogic;
 
-        await axios.post(
-            `${
-                process.env.BACKEND_URL
-            }/api/MarketContractLookup/${this.marketContractLookup.toLowerCase()}`
-        );
-
         const userLogic = new UserLogic(this.web3, deployResult.userLogic);
         this.assetProducingRegistryLogic = new AssetProducingRegistryLogic(
             this.web3,
@@ -157,7 +151,8 @@ export class Demo {
                 web3: this.web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: offChainDataClient
             },
             logger: this.logger
         };

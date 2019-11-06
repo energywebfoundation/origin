@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import { Unit } from '@energyweb/utils-general';
 
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
 import { OriginEventsStore } from '../../stores/OriginEventsStore';
@@ -52,11 +53,12 @@ describe('Origin Listener Tests', async () => {
     let emailService: EmailServiceProvider;
     let store: OriginEventsStore;
 
+    const offChainDataClient = new OffChainDataClientMock();
     let currentSmRead = 0;
 
     before(async () => {
         demo = new Demo(process.env.WEB3, process.env.DEPLOY_KEY);
-        await demo.deploy();
+        await demo.deploy(offChainDataClient);
     });
 
     beforeEach(async () => {
@@ -69,6 +71,7 @@ describe('Origin Listener Tests', async () => {
             web3,
             emailService,
             store,
+            offChainDataClient,
             SCAN_INTERVAL
         );
     });

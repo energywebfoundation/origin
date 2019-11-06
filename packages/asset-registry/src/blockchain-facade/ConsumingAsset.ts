@@ -85,7 +85,7 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
         if (this.id != null) {
             this.smartMeter = { address: asset.assetGeneral.smartMeter };
             this.owner = { address: asset.assetGeneral.owner };
-            this.lastSmartMeterReadWh = asset.assetGeneral.lastSmartMeterReadWh;
+            this.lastSmartMeterReadWh = Number(asset.assetGeneral.lastSmartMeterReadWh);
             this.active = asset.assetGeneral.active;
             this.lastSmartMeterReadFileHash = asset.assetGeneral.lastSmartMeterReadFileHash;
             this.propertiesDocumentHash = asset.assetGeneral.propertiesDocumentHash;

@@ -1,6 +1,6 @@
 import Web3 from 'web3';
-import axios, { AxiosResponse } from 'axios';
 
+import { ConfigurationClient, OffChainDataClient } from '@energyweb/origin-backend-client';
 import { EmailServiceProvider, IEmailServiceProvider } from './services/email.service';
 import { IEmailAdapter } from './email/IEmailAdapter';
 import { MandrillEmailAdapter } from './email/mandrill.adapter';
@@ -12,10 +12,14 @@ export const SCAN_INTERVAL = 3000;
 const startEventListener = async () => {
     const web3 = new Web3(process.env.WEB3 || 'http://localhost:8550');
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
+    const baseUrl = `${backendUrl}/api`;
 
-    const result: AxiosResponse = await axios.get(`${backendUrl}/api/MarketContractLookup`);
-
-    const latestMarketContract: string = process.env.MARKET_CONTRACT_ADDRESS || result.data.pop();
+    const storedMarketContractAddress = (await new ConfigurationClient().get(
+        baseUrl,
+        'MarketContractLookup'
+    )).pop();
+    const latestMarketContract: string =
+        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 
     const emailAdapter: IEmailAdapter = new MandrillEmailAdapter(process.env.MANDRILL_API_KEY);
     const emailService: IEmailServiceProvider = new EmailServiceProvider(
@@ -28,7 +32,8 @@ const startEventListener = async () => {
         latestMarketContract,
         web3,
         emailService,
-        originEventsStore
+        originEventsStore,
+        new OffChainDataClient()
     );
 
     await listener.start();

@@ -15,6 +15,7 @@ import dotenv from 'dotenv';
 import moment from 'moment';
 import Web3 from 'web3';
 
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -182,7 +183,13 @@ const deploy = async () => {
         userLogic
     );
 
-    const config = {
+    const config: Configuration.Entity<
+        MarketLogic,
+        AssetProducingRegistryLogic,
+        AssetConsumingRegistryLogic,
+        CertificateLogic,
+        UserLogic
+    > = {
         blockchainProperties: {
             activeUser: {
                 address: accountTrader,
@@ -195,26 +202,22 @@ const deploy = async () => {
             web3
         },
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`
+            baseUrl: `${process.env.BACKEND_URL}/api`,
+            client: new OffChainDataClientMock()
         },
         logger
-    } as Configuration.Entity<
-        MarketLogic,
-        AssetProducingRegistryLogic,
-        AssetConsumingRegistryLogic,
-        CertificateLogic,
-        UserLogic
-    >;
+    };
 
-    const matcherConfig = {
+    const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
+        offChainDataSourceClient: config.offChainDataSource.client,
         marketContractLookupAddress,
         matcherAccount: {
             address: accountDeployment,
             privateKey: privateKeyDeployment
         }
-    } as IMatcherConfig;
+    };
 
     return { config, matcherConfig };
 };

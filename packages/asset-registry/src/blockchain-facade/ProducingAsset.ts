@@ -127,13 +127,13 @@ export class Entity extends Asset.Entity implements IProducingAsset {
 
             this.smartMeter = { address: asset.assetGeneral.smartMeter };
             this.owner = { address: asset.assetGeneral.owner };
-            this.lastSmartMeterReadWh = asset.assetGeneral.lastSmartMeterReadWh;
+            this.lastSmartMeterReadWh = Number(asset.assetGeneral.lastSmartMeterReadWh);
             this.active = asset.assetGeneral.active;
             this.lastSmartMeterReadFileHash = asset.assetGeneral.lastSmartMeterReadFileHash;
             this.propertiesDocumentHash = asset.assetGeneral.propertiesDocumentHash;
             this.url = asset.assetGeneral.url;
             this.initialized = true;
-            this.maxOwnerChanges = asset.maxOwnerChanges;
+            this.maxOwnerChanges = Number(asset.maxOwnerChanges);
 
             this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
             if (this.configuration.logger) {

@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 import { AssetProducingRegistryLogic, ProducingAsset } from '..';
 import { logger } from '../Logger';
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 describe('AssetProducing Facade', () => {
     dotenv.config({
@@ -103,7 +104,8 @@ describe('AssetProducing Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: new OffChainDataClientMock()
             },
             logger
         };
@@ -140,25 +142,20 @@ describe('AssetProducing Facade', () => {
         assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
 
         const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
-        delete asset.configuration;
-        delete asset.proofs;
-        delete asset.propertiesDocumentHash;
 
-        assert.deepEqual(
-            {
-                id: '0',
-                initialized: true,
-                smartMeter: { address: assetSmartmeter },
-                owner: { address: assetOwnerAddress },
-                lastSmartMeterReadWh: '0',
-                active: true,
-                lastSmartMeterReadFileHash: '',
-                offChainProperties: assetPropsOffChain,
-                maxOwnerChanges: '3',
-                url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
-            } as any,
-            asset
-        );
+        assert.deepOwnInclude(asset, {
+            id: '0',
+            initialized: true,
+            smartMeter: { address: assetSmartmeter },
+            owner: { address: assetOwnerAddress },
+            lastSmartMeterReadWh: 0,
+            active: true,
+            lastSmartMeterReadFileHash: '',
+            offChainProperties: assetPropsOffChain,
+            maxOwnerChanges: 3,
+            url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`
+        } as Partial<ProducingAsset.Entity>);
+
         assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
     });
 
@@ -211,21 +208,16 @@ describe('AssetProducing Facade', () => {
 
         asset = await asset.sync();
 
-        delete asset.proofs;
-        delete asset.configuration;
-
-        delete asset.propertiesDocumentHash;
-
-        assert.deepEqual(asset as any, {
+        assert.deepOwnInclude(asset, {
             id: '0',
             initialized: true,
             smartMeter: { address: assetSmartmeter },
             owner: { address: assetOwnerAddress },
-            lastSmartMeterReadWh: '100',
+            lastSmartMeterReadWh: 100,
             active: true,
             lastSmartMeterReadFileHash: 'newFileHash',
             url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetProducingLogic.web3Contract.options.address}`,
-            maxOwnerChanges: '3',
+            maxOwnerChanges: 3,
             offChainProperties: {
                 operationalSince: 0,
                 capacityWh: 10,
@@ -241,7 +233,7 @@ describe('AssetProducing Facade', () => {
                 typeOfPublicSupport: '',
                 facilityName: 'Wuthering Heights Windfarm'
             }
-        });
+        } as Partial<ProducingAsset.Entity>);
     });
 
     describe('getSmartMeterReads', () => {
