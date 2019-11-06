@@ -358,7 +358,7 @@ describe('AssetProducingLogic', () => {
             1: '0',
             2: '100',
             3: TIMESTAMP.toString(),
-            _assetId: 0,
+            _assetId: '0',
             _oldMeterRead: '0',
             _newMeterRead: '100',
             _timestamp: TIMESTAMP.toString()
@@ -403,7 +403,7 @@ describe('AssetProducingLogic', () => {
             1: '100',
             2: '200',
             3: TIMESTAMP.toString(),
-            _assetId: 0,
+            _assetId: '0',
             _oldMeterRead: '100',
             _newMeterRead: '200',
             _timestamp: TIMESTAMP.toString()
