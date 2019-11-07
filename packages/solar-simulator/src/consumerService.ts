@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
@@ -9,6 +9,7 @@ import { ProducingAsset } from '@energyweb/asset-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 
+import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
 import CONFIG from '../config/config.json';
 
 export function wait(milliseconds: number) {
@@ -36,19 +37,26 @@ async function createBlockchainConfiguration() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
+    const baseUrl = `${process.env.BACKEND_URL}/api`;
+
     const conf: Configuration.Entity = {
         blockchainProperties: {
             web3
         },
-        logger
+        logger,
+        offChainDataSource: {
+            baseUrl,
+            client: new OffChainDataClient()
+        }
     };
 
-    const result: AxiosResponse = await axios.get(
-        `${process.env.BACKEND_URL}/api/MarketContractLookup`
-    );
+    const storedMarketContractAddress = (await new ConfigurationClient().get(
+        baseUrl,
+        'MarketContractLookup'
+    )).pop();
 
     const latestMarketContractLookupAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || result.data.pop();
+        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 
     conf.blockchainProperties = await createBlockchainProperties(
         conf.blockchainProperties.web3,

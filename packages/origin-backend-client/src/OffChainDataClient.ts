@@ -14,13 +14,13 @@ export interface IOffChainDataClient {
 
 export class OffChainDataClient implements IOffChainDataClient {
     public async get<T>(url: string): Promise<IOffChainData<T>> {
-        const result = await axios.get(url);
+        const result = await axios.get(this.normalizeURL(url));
 
         return result.data as IOffChainData<T>;
     }
 
     public async delete(url: string): Promise<boolean> {
-        const result = await axios.delete(url);
+        const result = await axios.delete(this.normalizeURL(url));
 
         return result.status === 200;
     }
@@ -28,8 +28,10 @@ export class OffChainDataClient implements IOffChainDataClient {
     public async insertOrUpdate<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
         let postOrPut;
 
+        const normalizedURL = this.normalizeURL(url);
+
         try {
-            await axios.get(url);
+            await axios.get(normalizedURL);
 
             postOrPut = axios.put;
         } catch (error) {
@@ -40,7 +42,12 @@ export class OffChainDataClient implements IOffChainDataClient {
             postOrPut = axios.post;
         }
 
-        const result = await postOrPut(url, offChainData);
+        const result = await postOrPut(normalizedURL, offChainData);
+
         return result.status === 200;
+    }
+
+    private normalizeURL(url: string): string {
+        return url.toLocaleLowerCase();
     }
 }
