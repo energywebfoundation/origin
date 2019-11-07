@@ -175,7 +175,7 @@ export class EntityStore implements IEntityStore {
 
     private registerToCertificateEvents(certificateContractEventHandler: ContractEventHandler) {
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const { _entityId: id } = event.returnValues;
+            const { _certificateId: id } = event.returnValues;
             this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
 
             await this.handleCertificate(id);

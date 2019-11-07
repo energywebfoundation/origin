@@ -35,10 +35,10 @@ describe('Market-matcher e2e tests', async () => {
         );
 
         marketContractEventHandler.onEvent('DemandPartiallyFilled', async (event: any) => {
-            const { _demandId, _entityId, _amount } = event.returnValues;
+            const { _demandId, _certificateId, _amount } = event.returnValues;
 
             if (_demandId === demand.id) {
-                assert.equal(_entityId, certificate.id);
+                assert.equal(_certificateId, certificate.id);
                 assert.equal(_amount, requiredEnergy);
 
                 const updatedCertificate = await certificate.sync();
@@ -135,6 +135,8 @@ describe('Market-matcher e2e tests', async () => {
             demand = await deployDemand(config, requiredEnergy, price, currency);
 
             await deployAgreement(config, demand.id, supply.id, price, currency);
+
+            await certificate.publishForSale(price / 100, currency);
 
             await startMatcher(matcherConfig);
         });

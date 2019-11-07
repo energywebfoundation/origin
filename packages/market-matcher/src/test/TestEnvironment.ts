@@ -282,12 +282,13 @@ const deployCertificate = async (
     assetId: string,
     requiredEnergy: number
 ) => {
-    const certificateLogic = config.blockchainProperties
-        .certificateLogicInstance as CertificateLogic;
+    const certificateLogic: CertificateLogic = config.blockchainProperties.certificateLogicInstance;
+
     const smartMeterConfig = changeUser(config, {
         address: assetSmartMeter,
         privateKey: assetSmartMeterPK
     });
+
     const producingAsset = await new ProducingAsset.Entity(assetId, smartMeterConfig).sync();
     await producingAsset.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
 

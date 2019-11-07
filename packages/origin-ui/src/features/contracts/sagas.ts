@@ -113,7 +113,7 @@ function* initEventHandler() {
                 event: any
             ) {
                 const certificate = await new Certificate.Entity(
-                    event.returnValues._entityId,
+                    event.returnValues._certificateId,
                     configuration
                 ).sync();
 
@@ -163,7 +163,7 @@ function* initEventHandler() {
                 event: any
             ) {
                 const certificate = await new Certificate.Entity(
-                    event.returnValues._entityId,
+                    event.returnValues._certificateId,
                     configuration
                 ).sync();
 

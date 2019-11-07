@@ -70,14 +70,14 @@ export class CertificateLogic extends GeneralFunctions {
         return this.web3Contract.methods.getApproved(_tokenId).call(txParams);
     }
 
-    async approve(_approved: string, _entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.approve(_approved, _entityId);
+    async approve(_approved: string, _certificateId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.approve(_approved, _certificateId);
 
         return this.send(method, txParams);
     }
 
-    async transferFrom(_from: string, _to: string, _entityId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.transferFrom(_from, _to, _entityId);
+    async transferFrom(_from: string, _to: string, _certificateId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.transferFrom(_from, _to, _certificateId);
 
         return this.send(method, txParams);
     }
@@ -105,13 +105,13 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from: string, _to: string, _entityId: string, _data?: any, txParams?: ISpecialTx) {
+    async safeTransferFrom(_from: string, _to: string, _certificateId: string, _data?: any, txParams?: ISpecialTx) {
         if (_data) {
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId, _data);
+            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId, _data);
 
             return this.send(method, txParams);
         } else {
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _entityId);
+            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId);
 
             return this.send(method, txParams);
         }
@@ -121,8 +121,8 @@ export class CertificateLogic extends GeneralFunctions {
         return this.web3Contract.methods.getCertificate(_certificateId).call(txParams);
     }
 
-    async ownerOf(_entityId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.ownerOf(_entityId).call(txParams);
+    async ownerOf(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.ownerOf(_certificateId).call(txParams);
     }
 
     async balanceOf(_owner: string, txParams?: ISpecialTx) {
@@ -202,9 +202,9 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getOnChainDirectPurchasePrice(_entityId: number, txParams?: ISpecialTx) {
+    async getOnChainDirectPurchasePrice(_certificateId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods
-            .getOnChainDirectPurchasePrice(_entityId)
+            .getOnChainDirectPurchasePrice(_certificateId)
             .call(txParams);
     }
 
@@ -247,8 +247,8 @@ export class CertificateLogic extends GeneralFunctions {
             .call(txParams);
     }
 
-    async getTradableToken(_entityId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getTradableToken(_entityId).call(txParams);
+    async getTradableToken(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getTradableToken(_certificateId).call(txParams);
     }
 
     async assetLogicAddress(txParams?: ISpecialTx) {
