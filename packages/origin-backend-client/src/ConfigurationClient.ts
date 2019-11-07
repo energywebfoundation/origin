@@ -17,10 +17,10 @@ export class ConfigurationClient implements IConfigurationClient {
     }
 
     public async add(baseUrl: string, item: ConfigurationItem, value: string) {
-      const url = `${baseUrl}/${item.toLowerCase()}`;
+        const url = `${baseUrl}/${item.toLowerCase()}/${value}`;
 
-      const result = await axios.post(url, value);
+        const result = await axios.post(url);
 
-      return result.status === 200;
-  }
+        return result.status === 200;
+    }
 }
