@@ -11,10 +11,8 @@ export const createBlockchainProperties = async (
 ): Promise<Configuration.BlockchainProperties> => {
     if (!web3) {
         return {
-            marketLogicInstance: null,
             assetLogicInstance: null,
             userLogicInstance: null,
-            certificateLogicInstance: null,
             web3: null
         };
     }
