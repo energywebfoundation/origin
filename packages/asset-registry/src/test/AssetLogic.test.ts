@@ -5,7 +5,8 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic, migrateUserRegistryContracts } from '@energyweb/user-registry';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
@@ -413,5 +414,11 @@ describe('AssetLogic', () => {
             }
             assert.isTrue(failed);
         });
+    });
+    
+    it('should return user registry address', async () => {
+        const userLogicAddress = await assetLogic.userLogicAddress();
+
+        assert.equal(userLogicAddress, userLogic.web3Contract.options.address);
     });
 });

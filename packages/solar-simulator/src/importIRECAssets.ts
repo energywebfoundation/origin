@@ -37,7 +37,7 @@ if (!fs.existsSync(program.input)) {
     process.exit(1);
 }
 
-const processAssets = async (parsedContent: any) => {
+const processAssets = async parsedContent => {
     const assets = [];
     const flow = [];
 
@@ -100,7 +100,6 @@ const processAssets = async (parsedContent: any) => {
                 complianceRegistry: 'IREC',
                 otherGreenAttributes: 'N.A.',
                 typeOfPublicSupport: 'N.A',
-                maxOwnerChanges: 1000,
                 facilityName: name
             }
         });

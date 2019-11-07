@@ -15,7 +15,7 @@ export interface IOffChainProperties extends Asset.IOffChainProperties {
 
 export const getAssetListLength = async (configuration: Configuration.Entity) => {
     return parseInt(
-        await configuration.blockchainProperties.producingAssetLogicInstance.getAssetListLength(),
+        await configuration.blockchainProperties.assetLogicInstance.getAssetListLength(),
         10
     );
 };
@@ -50,7 +50,7 @@ export const createAsset = async (
         assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
     }
 
-    const tx = await configuration.blockchainProperties.producingAssetLogicInstance.createAsset(
+    const tx = await configuration.blockchainProperties.assetLogicInstance.createAsset(
         assetPropertiesOnChain.smartMeter.address,
         assetPropertiesOnChain.owner.address,
         assetPropertiesOnChain.active,
@@ -91,14 +91,14 @@ export class Entity extends Asset.Entity implements IProducingAsset {
 
     getUrl(): string {
         const producingAssetLogicAddress = this.configuration.blockchainProperties
-            .producingAssetLogicInstance.web3Contract.options.address;
+            .assetLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/ProducingAsset/${producingAssetLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const asset = await this.configuration.blockchainProperties.producingAssetLogicInstance.getAssetById(
+            const asset = await this.configuration.blockchainProperties.assetLogicInstance.getAssetById(
                 this.id
             );
 
@@ -126,7 +126,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
         timestamp: number = moment().unix()
     ): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
+            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
@@ -134,7 +134,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
-            return this.configuration.blockchainProperties.producingAssetLogicInstance.saveSmartMeterRead(
+            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
@@ -146,7 +146,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
         const logic: AssetLogic = this.configuration.blockchainProperties
-            .producingAssetLogicInstance;
+            .assetLogicInstance;
 
         return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({
             energy: Number(read.energy),

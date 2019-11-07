@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.2;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
@@ -61,8 +61,8 @@ contract RoleManagement is Initializable {
 
     /// @notice constructor
     /// @param _userLogicContract contract-lookup instance
-    function initialize(IUserLogic _userLogicContract) public initializer {
-        userLogicContract = _userLogicContract;
+    function initialize(address _userLogicContract) public initializer {
+        userLogicContract = IUserLogic(_userLogicContract);
     }
 
     /// @notice function for comparing the role and the needed rights of an user

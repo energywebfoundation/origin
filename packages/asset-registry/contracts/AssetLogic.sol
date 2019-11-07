@@ -1,11 +1,10 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/user-registry/contracts/IUserLogic.sol";
 
 import "./AssetDefinitions.sol";
 import "./IAssetLogic.sol";
@@ -13,7 +12,7 @@ import "./IAssetLogic.sol";
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 
-    IUserLogic private userLogic;
+    address public userLogicAddress;
 
     event LogAssetCreated(address _sender, uint indexed _assetId);
     event LogAssetFullyInitialized(uint indexed _assetId);
@@ -34,14 +33,14 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     address[] internal smartMeterAddresses;
 
     /// @notice constructor
-    function initialize(IUserLogic _userLogicContract) public initializer {
-        RoleManagement.initialize(_userLogicContract);
+    function initialize(address _userLogicAddress) public initializer {
+        userLogicAddress = _userLogicAddress;
 
-        userLogic = _userLogicContract;
+        RoleManagement.initialize(_userLogicAddress);
     }
 
     /**
-        external functions
+        public functions
     */
 
     /// @notice gets the Asset-struct as memory
@@ -181,12 +180,6 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     /// @return the amount of assets already deployed
     function getAssetListLength() external view returns (uint) {
         return smartMeterAddresses.length;
-    }
-
-    /// @notice gets the corresponding UserLogic contract
-    /// @return address of the UserLogic contract
-    function getUserLogicContract() external view returns (address) {
-        return address(userLogic);
     }
 
 

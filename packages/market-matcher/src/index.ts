@@ -5,8 +5,8 @@ import { container } from 'tsyringe';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-
 import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+
 import { logger } from './Logger';
 import { Matcher } from './Matcher';
 import { EntityStore, IEntityStore } from './EntityStore';
@@ -18,7 +18,7 @@ import { CertificateMatcher } from './CertificateMatcher';
 
 export interface IMatcherConfig {
     web3Url: string;
-    marketContractLookupAddress: string;
+    marketLogicAddress: string;
     matcherAccount: Configuration.EthAccount;
     offChainDataSourceUrl: string;
     offChainDataSourceClient: IOffChainDataClient;
@@ -28,9 +28,10 @@ const createBlockchainConf = async (
     matcherConfig: IMatcherConfig
 ): Promise<Configuration.Entity> => {
     const web3 = new Web3(matcherConfig.web3Url);
+
     const marketConf = await marketCreateBlockchainProperties(
         web3,
-        matcherConfig.marketContractLookupAddress
+        matcherConfig.marketLogicAddress
     );
     marketConf.activeUser = matcherConfig.matcherAccount;
 

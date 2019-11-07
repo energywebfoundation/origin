@@ -6,7 +6,6 @@ import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 
 export async function migrateCertificateRegistryContracts(
     web3: Web3,
-    userLogicAddress: string,
     assetLogicAddress: string,
     deployKey: string
 ): Promise<CertificateLogic> {
@@ -17,7 +16,7 @@ export async function migrateCertificateRegistryContracts(
     })).contractAddress;
 
     const certificateLogic = new CertificateLogic(web3, certificateLogicAddress);
-    await certificateLogic.initialize(userLogicAddress, assetLogicAddress);
+    await certificateLogic.initialize(assetLogicAddress);
 
     return certificateLogic;
 }

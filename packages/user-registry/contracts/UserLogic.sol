@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.2;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
@@ -25,7 +25,7 @@ contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {
     /// @notice constructor
     /// @dev it will also call the RoleManagement-constructor
     function initialize() public initializer {
-        RoleManagement.initialize(this);
+        RoleManagement.initialize(address(this));
 
         // Set sender as User Admin
         User storage u = userList[msg.sender];

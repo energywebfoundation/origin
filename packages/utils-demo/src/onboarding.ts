@@ -53,15 +53,14 @@ export const onboardDemo = async (
         case 'CREATE_PRODUCING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetProducingProps: ProducingAsset.IOnChainProperties = {
+            const assetProducingProps: Asset.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
-                url: null,
-                maxOwnerChanges: action.data.maxOwnerChanges
+                url: null
             };
 
             const assetTypeConfig = action.data.assetType;

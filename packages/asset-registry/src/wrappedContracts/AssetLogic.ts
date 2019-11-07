@@ -28,47 +28,47 @@ export class AssetLogic extends GeneralFunctions {
     }
 
     async getAllLogNewMeterReadEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('LogNewMeterRead', eventFilter);
+        return this.web3Contract.getPastEvents('LogNewMeterRead', eventFilter);
     }
 
     async getAllLogAssetCreatedEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('LogAssetCreated', eventFilter);
+        return this.web3Contract.getPastEvents('LogAssetCreated', eventFilter);
     }
 
     async getAllLogAssetFullyInitializedEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('LogAssetFullyInitialized', eventFilter);
+        return this.web3Contract.getPastEvents('LogAssetFullyInitialized', eventFilter);
     }
 
     async getAllLogAssetSetActiveEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('LogAssetSetActive', eventFilter);
+        return this.web3Contract.getPastEvents('LogAssetSetActive', eventFilter);
     }
 
     async getAllLogAssetSetInactiveEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('LogAssetSetInactive', eventFilter);
+        return this.web3Contract.getPastEvents('LogAssetSetInactive', eventFilter);
     }
 
     async getSmartMeterReadsForAsset(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getSmartMeterReadsForAsset(_assetId).call(txParams);
+        return this.web3Contract.methods.getSmartMeterReadsForAsset(_assetId).call(txParams);
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
+        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
     async getAllEvents(eventFilter?: ISearchLog) {
-        return await this.web3Contract.getPastEvents('allEvents', eventFilter);
+        return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
     async getLastMeterReadingAndHash(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getLastMeterReadingAndHash(_assetId).call(txParams);
+        return this.web3Contract.methods.getLastMeterReadingAndHash(_assetId).call(txParams);
     }
 
     async getAssetBySmartMeter(_smartMeter: string, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getAssetBySmartMeter(_smartMeter).call(txParams);
+        return this.web3Contract.methods.getAssetBySmartMeter(_smartMeter).call(txParams);
     }
 
     async checkAssetExist(_smartMeter: string, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.checkAssetExist(_smartMeter).call(txParams);
+        return this.web3Contract.methods.checkAssetExist(_smartMeter).call(txParams);
     }
 
     async createAsset(
@@ -87,11 +87,11 @@ export class AssetLogic extends GeneralFunctions {
             _url
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
     async getAssetOwner(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getAssetOwner(_assetId).call(txParams);
+        return this.web3Contract.methods.getAssetOwner(_assetId).call(txParams);
     }
 
     async saveSmartMeterRead(
@@ -108,28 +108,32 @@ export class AssetLogic extends GeneralFunctions {
             _timestamp
         );
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
     }
 
     async getAssetListLength(txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getAssetListLength().call(txParams);
+        return this.web3Contract.methods.getAssetListLength().call(txParams);
     }
 
     async getAsset(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getAsset(_assetId).call(txParams);
+        return this.web3Contract.methods.getAsset(_assetId).call(txParams);
     }
 
     async getAssetById(_assetId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.getAssetById(_assetId).call(txParams);
+        return this.web3Contract.methods.getAssetById(_assetId).call(txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods.isRole(_role, _caller).call(txParams);
+        return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
     }
 
     async setActive(_assetId: number, _active: boolean, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setActive(_assetId, _active);
 
-        return await this.send(method, txParams);
+        return this.send(method, txParams);
+    }
+
+    async userLogicAddress(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.userLogicAddress().call(txParams);
     }
 }

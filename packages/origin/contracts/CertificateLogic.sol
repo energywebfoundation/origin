@@ -7,7 +7,6 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721En
 
 import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC20Interface.sol";
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/user-registry/contracts/IUserLogic.sol";
 import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
 import "@energyweb/asset-registry/contracts/AssetDefinitions.sol";
 
@@ -16,7 +15,7 @@ import "./ICertificateLogic.sol";
 
 contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManagement, ICertificateLogic {
 
-    IUserLogic private userLogic;
+    address public assetLogicAddress;
     IAssetLogic private assetLogic;
 
     event LogCreatedCertificate(uint indexed _certificateId, uint energy, address owner);
@@ -25,6 +24,9 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
 
     event LogPublishForSale(uint indexed _entityId, uint _price, address _token);
     event LogUnpublishForSale(uint indexed _entityId);
+
+    event CertificationRequestCreated(uint assetId, uint readsStartIndex, uint readsEndIndex);
+    event CertificationRequestApproved(uint assetId, uint readsStartIndex, uint readsEndIndex);
 
     mapping(uint => uint) internal assetRequestedCertsForSMReadsLength;
 
@@ -42,13 +44,13 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         _;
     }
 
-    function initialize(IUserLogic _userLogicContract, IAssetLogic _assetLogicContract) public initializer {
-        assetLogic = _assetLogicContract;
-        userLogic = _userLogicContract;
+    function initialize(address _assetLogicAddress) public initializer {
+        assetLogicAddress = _assetLogicAddress;
+        assetLogic = IAssetLogic(assetLogicAddress);
 
         ERC721.initialize();
         ERC721Enumerable.initialize();
-        RoleManagement.initialize(userLogic);
+        RoleManagement.initialize(assetLogic.userLogicAddress());
     }
 
     /*
@@ -273,6 +275,8 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         ));
 
         _setAssetRequestedCertsForSMReadsLength(_assetId, lastRequestedSMReadIndex + 1);
+
+        emit CertificationRequestCreated(_assetId, start, lastRequestedSMReadIndex);
     }
 
     function approveCertificationRequest(uint _certicationRequestIndex) public onlyRole(RoleManagement.Role.Issuer) {
@@ -295,6 +299,8 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         _createNewCertificate(request.assetId, certifyEnergy, asset.owner);
 
         request.status = CertificateDefinitions.CertificationRequestStatus.Approved;
+
+        emit CertificationRequestApproved(request.assetId, request.readsStartIndex, request.readsEndIndex);
     }
 
     /**
@@ -326,7 +332,10 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
 
         require(msg.sender == ownerOf(certificateId), "_claimCertificate: You have to be the owner of the certificate.");
         require(cert.children.length == 0, "_claimCertificate: Unable to claim certificates split certificates.");
-        require(cert.status != uint(CertificateDefinitions.Status.Claimed), "_claimCertificate: cannot claim a certificate that has already been claimed");
+        require(
+            cert.status != uint(CertificateDefinitions.Status.Claimed),
+            "_claimCertificate: cannot claim a certificate that has already been claimed"
+        );
 
         _setStatus(certificateId, CertificateDefinitions.Status.Claimed);
         emit LogCertificateClaimed(certificateId);

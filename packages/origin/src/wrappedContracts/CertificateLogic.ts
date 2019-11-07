@@ -20,18 +20,26 @@ export class CertificateLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(userContractAddress: string, assetContractAddress: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.initialize(userContractAddress, assetContractAddress);
+    async initialize(assetContractAddress: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(assetContractAddress);
 
         return this.send(method, txParams);
+    }
+
+    async getAllCertificationApprovedEvents(eventFilter?: ISearchLog) {
+        return this.web3Contract.getPastEvents('CertificationRequestApproved', eventFilter);
+    }
+
+    async getAllCertificationCreatedEvents(eventFilter?: ISearchLog) {
+        return this.web3Contract.getPastEvents('CertificationRequestCreated', eventFilter);
     }
 
     async getAllLogCreatedCertificateEvents(eventFilter?: ISearchLog) {
         return this.web3Contract.getPastEvents('LogCreatedCertificate', eventFilter);
     }
 
-    async getAllLogCertificateRetiredEvents(eventFilter?: ISearchLog) {
-        return this.web3Contract.getPastEvents('LogCertificateRetired', eventFilter);
+    async getAllLogCertificateClaimedEvents(eventFilter?: ISearchLog) {
+        return this.web3Contract.getPastEvents('LogCertificateClaimed', eventFilter);
     }
 
     async getAllLogCertificateSplitEvents(eventFilter?: ISearchLog) {
@@ -233,7 +241,17 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getAssetRequestedCertsForSMReadsLength(_assetId: number, txParams?: ISpecialTx) {
+        return await this.web3Contract.methods
+            .getAssetRequestedCertsForSMReadsLength(_assetId)
+            .call(txParams);
+    }
+
     async getTradableToken(_entityId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getTradableToken(_entityId).call(txParams);
+    }
+
+    async assetLogicAddress(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.assetLogicAddress().call(txParams);
     }
 }

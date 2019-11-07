@@ -135,7 +135,7 @@ function* initEventHandler() {
                 });
             });
 
-            certificateContractEventHandler.onEvent('LogCertificateRetired', async function(
+            certificateContractEventHandler.onEvent('LogCertificateClaimed', async function(
                 event: any
             ) {
                 const certificate = await new Certificate.Entity(

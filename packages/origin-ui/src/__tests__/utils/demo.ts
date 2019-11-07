@@ -1,22 +1,19 @@
 import Web3 from 'web3';
 import ganache from 'ganache-cli';
 import * as Winston from 'winston';
+
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { BACKEND_URL } from '../../utils/api';
-import { MarketLogic } from '@energyweb/market';
-import { IStoreState } from '../../types';
-import { User, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+
+import { User, buildRights, Role } from '@energyweb/user-registry';
 import { Compliance } from '@energyweb/utils-general';
-import { CertificateLogic } from '@energyweb/origin';
-import {
-    ProducingAsset,
-    AssetProducingRegistryLogic,
-    AssetConsumingRegistryLogic
-} from '@energyweb/asset-registry';
+import { Asset, ProducingAsset } from '@energyweb/asset-registry';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+
+import { BACKEND_URL } from '../../utils/api';
+import { IStoreState } from '../../types';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -72,45 +69,38 @@ export async function deployDemo() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
-    const userContracts: any = await migrateUserRegistryContracts(web3, adminPK);
-    const assetContracts: any = await migrateAssetRegistryContracts(
+    const userLogic = await migrateUserRegistryContracts(web3, adminPK);
+    const userLogicAddress = userLogic.web3Contract.options.address;
+
+    const assetLogic = await migrateAssetRegistryContracts(web3, userLogicAddress, adminPK);
+    const assetLogicAddress = assetLogic.web3Contract.options.address;
+
+    const certificateLogic = await migrateCertificateRegistryContracts(
         web3,
-        userContracts.UserContractLookup,
+        assetLogicAddress,
         adminPK
     );
-    const originContracts: any = await migrateCertificateRegistryContracts(
+    const certificateLogicAddress = certificateLogic.web3Contract.options.address;
+
+    const marketLogic = await migrateMarketRegistryContracts(
         web3,
-        assetContracts.AssetContractLookup,
-        adminPK
-    );
-    const marketContracts: any = await migrateMarketRegistryContracts(
-        web3,
-        assetContracts.AssetContractLookup,
-        originContracts.OriginContractLookup,
+        certificateLogicAddress,
         adminPK
     );
 
     const deployResult = {
-        userContractLookup: '',
-        assetContractLookup: '',
-        originContractLookup: '',
-        marketContractLookup: '',
         userLogic: '',
-        assetConsumingRegistryLogic: '',
-        assetProducingRegistryLogic: '',
+        assetLogic: '',
         certificateLogic: '',
         marketLogic: ''
     };
 
-    deployResult.userContractLookup = userContracts.UserContractLookup;
-    deployResult.assetContractLookup = assetContracts.AssetContractLookup;
-    deployResult.originContractLookup = originContracts.OriginContractLookup;
-    deployResult.marketContractLookup = marketContracts.MarketContractLookup;
-    deployResult.userLogic = userContracts.UserLogic;
-    deployResult.assetConsumingRegistryLogic = assetContracts.AssetConsumingRegistryLogic;
-    deployResult.assetProducingRegistryLogic = assetContracts.AssetProducingRegistryLogic;
-    deployResult.certificateLogic = originContracts.CertificateLogic;
-    deployResult.marketLogic = marketContracts.MarketLogic;
+    const marketContractLookup = this.marketLogic.web3Contract.options.address;
+
+    deployResult.userLogic = userLogicAddress;
+    deployResult.assetLogic = assetLogicAddress;
+    deployResult.certificateLogic = certificateLogicAddress;
+    deployResult.marketLogic = marketContractLookup;
 
     const configurationClient = new ConfigurationClientMock();
     const offChainDataClient = new OffChainDataClientMock();
@@ -118,20 +108,8 @@ export async function deployDemo() {
     await configurationClient.add(
         BACKEND_URL,
         'MarketContractLookup',
-        deployResult.marketContractLookup.toLowerCase()
+        marketContractLookup.toLowerCase()
     );
-
-    const userLogic = new UserLogic(web3, deployResult.userLogic);
-    const assetProducingRegistryLogic = new AssetProducingRegistryLogic(
-        web3,
-        deployResult.assetProducingRegistryLogic
-    );
-    const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(
-        web3,
-        deployResult.assetConsumingRegistryLogic
-    );
-    const certificateLogic = new CertificateLogic(web3, deployResult.certificateLogic);
-    const marketLogic = new MarketLogic(web3, deployResult.marketLogic);
 
     const conf: IStoreState['configuration'] = {
         blockchainProperties: {
@@ -139,8 +117,7 @@ export async function deployDemo() {
                 address: ACCOUNTS.ADMIN.address,
                 privateKey: adminPK
             },
-            producingAssetLogicInstance: assetProducingRegistryLogic,
-            consumingAssetLogicInstance: assetConsumingRegistryLogic,
+            assetLogicInstance: assetLogic,
             certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
             marketLogicInstance: marketLogic,
@@ -199,15 +176,14 @@ export async function deployDemo() {
 
     await User.createUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
 
-    const assetProducingProps: ProducingAsset.IOnChainProperties = {
+    const assetProducingProps: Asset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.ASSET_MANAGER.address },
         lastSmartMeterReadWh: 0,
         active: true,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
-        url: null,
-        maxOwnerChanges: 1000
+        url: null
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {

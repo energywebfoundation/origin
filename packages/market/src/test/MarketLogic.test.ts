@@ -3,14 +3,13 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { AssetLogic, migrateAssetRegistryContracts } from '@energyweb/asset-registry';
-import {
-    buildRights,
-    Role,
-    UserLogic,
-    migrateUserRegistryContracts
-} from '@energyweb/user-registry';
-import { migrateCertificateRegistryContracts, CertificateLogic } from '@energyweb/origin';
+import { AssetLogic } from '@energyweb/asset-registry';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { CertificateLogic } from '@energyweb/origin';
+
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 
 import { DemandStatus } from '../blockchain-facade/Demand';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
@@ -89,15 +88,12 @@ describe('MarketLogic', () => {
 
         certificateLogic = await migrateCertificateRegistryContracts(
             web3,
-            userLogic.web3Contract.options.address,
             assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
         marketLogic = await migrateMarketRegistryContracts(
             web3,
-            userLogic.web3Contract.options.address,
-            assetLogic.web3Contract.options.address,
             certificateLogic.web3Contract.options.address,
             privateKeyDeployment
         );
@@ -973,5 +969,11 @@ describe('MarketLogic', () => {
         assert.equal(_status, DemandStatus.ACTIVE);
         assert.equal(_propertiesDocumentHash, newHash);
         assert.equal(_documentDBURL, newUrl);
+    });
+
+    it('should return certificate registry address', async () => {
+        const certificateLogicAddress = await marketLogic.certificateLogicAddress();
+
+        assert.equal(certificateLogicAddress, certificateLogic.web3Contract.options.address);
     });
 });

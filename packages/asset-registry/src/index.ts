@@ -7,7 +7,6 @@ import ProducingAssetPropertiesOffChainSchema from '../schemas/ProducingAssetPro
 import { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 
 import { AssetLogic } from './wrappedContracts/AssetLogic';
-import { migrateAssetRegistryContracts } from './utils/migrateContracts';
 
 export {
     ProducingAsset,
@@ -16,6 +15,5 @@ export {
     AssetLogic,
     AssetPropertiesOffChainSchema,
     ProducingAssetPropertiesOffChainSchema,
-    createBlockchainProperties,
-    migrateAssetRegistryContracts
+    createBlockchainProperties
 };

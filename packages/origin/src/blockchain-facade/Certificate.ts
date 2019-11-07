@@ -1,6 +1,7 @@
 import { TransactionReceipt, EventLog } from 'web3/types';
 
 import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
+import { ProducingAsset } from '@energyweb/asset-registry';
 
 import { CertificateLogic } from '..';
 
@@ -28,6 +29,7 @@ export interface ICertificate {
     acceptedToken?: string;
     onChainDirectPurchasePrice: number;
 
+    sync(): Promise<ICertificate>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
 }
@@ -446,6 +448,85 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
             return defaultValues;
         }
+    }
+
+    async getCertificationRequestEvents() {
+        const {
+            certificateLogicInstance
+        }: {
+            certificateLogicInstance?: CertificateLogic;
+        } = this.configuration.blockchainProperties;
+
+        const logCreatedEvents = await certificateLogicInstance.getAllLogCreatedCertificateEvents({
+            filter: {
+                _certificateId: this.id
+            },
+            fromBlock: 0
+        });
+
+        const logCreatedEvent = logCreatedEvents[0];
+
+        if (!logCreatedEvent) {
+            return null;
+        }
+
+        const certificationRequestsApprovedEvents = await certificateLogicInstance.getAllCertificationApprovedEvents(
+            {
+                filter: {
+                    assetId: this.assetId
+                },
+                fromBlock: logCreatedEvent.blockNumber,
+                toBlock: logCreatedEvent.blockNumber
+            }
+        );
+
+        if (
+            !certificationRequestsApprovedEvents ||
+            certificationRequestsApprovedEvents.length === 0
+        ) {
+            return null;
+        }
+
+        const allReads = await (await new ProducingAsset.Entity(
+            this.assetId.toString(),
+            this.configuration
+        ).sync()).getSmartMeterReads();
+
+        const approvedCertificationRequestEvent = certificationRequestsApprovedEvents.filter(
+            request => {
+                return (
+                    allReads
+                        .slice(
+                            request.returnValues.readsStartIndex,
+                            parseInt(request.returnValues.readsEndIndex, 10) + 1
+                        )
+                        .reduce((a, b) => a + b.energy, 0) === this.energy
+                );
+            }
+        )[0];
+
+        const certificationRequestsCreatedEvents = await certificateLogicInstance.getAllCertificationCreatedEvents(
+            {
+                filter: {
+                    readsStartIndex: approvedCertificationRequestEvent.returnValues.readsStartIndex,
+                    readsEndIndex: approvedCertificationRequestEvent.returnValues.readsEndIndex,
+                    assetId: this.assetId
+                },
+                fromBlock: 0
+            }
+        );
+
+        if (
+            !certificationRequestsCreatedEvents ||
+            certificationRequestsCreatedEvents.length === 0
+        ) {
+            return null;
+        }
+
+        return {
+            approvedCertificationRequestEvent,
+            certificationRequestCreatedEvent: certificationRequestsCreatedEvents[0]
+        };
     }
 
     async getAllCertificateEvents(): Promise<EventLog[]> {

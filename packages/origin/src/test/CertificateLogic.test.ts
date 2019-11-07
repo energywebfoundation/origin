@@ -3,8 +3,10 @@ import 'mocha';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { UserLogic, Role, buildRights, migrateUserRegistryContracts } from '@energyweb/user-registry';
-import { Asset, ProducingAsset, AssetLogic, migrateAssetRegistryContracts } from '@energyweb/asset-registry';
+import { UserLogic, Role, buildRights } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
 import {
     deployERC20TestToken,
@@ -13,7 +15,8 @@ import {
     deployERC721TestReceiver
 } from '@energyweb/erc-test-contracts';
 
-import { CertificateLogic, migrateCertificateRegistryContracts, Certificate } from '..';
+import { CertificateLogic, Certificate } from '..';
+import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { logger } from '../blockchain-facade/Logger';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
@@ -130,7 +133,6 @@ describe('CertificateLogic-Facade', () => {
 
         certificateLogic = await migrateCertificateRegistryContracts(
             web3,
-            userLogic.web3Contract.options.address,
             assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
@@ -141,7 +143,7 @@ describe('CertificateLogic-Facade', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                producingAssetLogicInstance: assetLogic,
+                assetLogicInstance: assetLogic,
                 userLogicInstance: userLogic,
                 certificateLogicInstance: certificateLogic,
                 web3
@@ -1618,5 +1620,11 @@ describe('CertificateLogic-Facade', () => {
 
             assert.equal(certificate.status, Certificate.Status.Claimed);
         }
+    });
+
+    it('should return asset registry address', async () => {
+        const assetLogicAddress = await certificateLogic.assetLogicAddress();
+
+        assert.equal(assetLogicAddress, assetLogic.web3Contract.options.address);
     });
 });

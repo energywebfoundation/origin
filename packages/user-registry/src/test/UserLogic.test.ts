@@ -174,12 +174,7 @@ describe('UserLogic', () => {
     it('should correctly grant AssetManager and Trader roles when mixed together as rights', async () => {
         const TEST_ACCOUNT = '0x1000000000000000000000000000000000000006';
 
-        const rights = buildRights([Role.AssetManager, Role.Trader]);
-
-        console.log({
-            keyword: 'INITIALIZE1',
-            userLogicAddress: userLogic.web3Contract.options.address
-        });
+        const rights = buildRights([Role.AssetManager, Role.Trader])
 
         await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', TEST_ACCOUNT, 'TestOrganization', {
             privateKey: privateKeyDeployment

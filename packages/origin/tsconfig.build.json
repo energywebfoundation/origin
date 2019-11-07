@@ -5,7 +5,7 @@
         "rootDir": "./",
         "outDir": "./dist/js"
     },
-    "include": ["./src/**/*", "./dist/ts/**/*", "./build/**/*.json"],
+    "include": ["./contracts", "./src/**/*", "./dist/ts/**/*", "./build/**/*.json"],
     "references": [
         {
             "path": "../erc-test-contracts/tsconfig.build.json"

@@ -3,10 +3,7 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 import moment from 'moment';
 
-import {
-    AssetConsumingRegistryLogic,
-    AssetProducingRegistryLogic
-} from '@energyweb/asset-registry';
+import { AssetLogic } from '@energyweb/asset-registry';
 import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { CertificateLogic } from '@energyweb/origin';
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
@@ -39,14 +36,7 @@ export const marketDemo = async (demoFile?: string) => {
 
     // create logic instances
     const userLogic = new UserLogic(web3, contractConfig.userLogic);
-    const assetProducingRegistryLogic = new AssetProducingRegistryLogic(
-        web3,
-        contractConfig.assetProducingRegistryLogic
-    );
-    const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(
-        web3,
-        contractConfig.assetConsumingRegistryLogic
-    );
+    const assetLogic = new AssetLogic(web3, contractConfig.assetLogic);
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
@@ -63,8 +53,7 @@ export const marketDemo = async (demoFile?: string) => {
                 address: adminAccount.address,
                 privateKey: adminPK
             },
-            producingAssetLogicInstance: assetProducingRegistryLogic,
-            consumingAssetLogicInstance: assetConsumingRegistryLogic,
+            assetLogicInstance: assetLogic,
             certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
             marketLogicInstance: marketLogic,

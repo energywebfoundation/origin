@@ -45,17 +45,8 @@ export class MarketLogic extends GeneralFunctions {
         return this.getEvents('allEvents', eventFilter);
     }
 
-    async initialize(
-        userContractAddress: string,
-        assetContractAddress: string,
-        certificateContractAddress: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.initialize(
-            userContractAddress,
-            assetContractAddress,
-            certificateContractAddress
-        );
+    async initialize(certificateContractAddress: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(certificateContractAddress);
 
         return this.send(method, txParams);
     }
@@ -186,5 +177,9 @@ export class MarketLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.changeDemandStatus(_demandId, _status);
 
         return this.send(method, txParams);
+    }
+
+    async certificateLogicAddress(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.certificateLogicAddress().call(txParams);
     }
 }

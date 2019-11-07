@@ -15,51 +15,40 @@ export const deployEmptyContracts = async () => {
     console.log('-----------------------------------------------------------');
 
     // deploy user, asset and market contracts and store instances of lookup contracts
-    const userContracts = await migrateUserRegistryContracts(web3, adminPK);
-    const userContractLookup = (userContracts as any).UserContractLookup;
-    const userLogic = (userContracts as any).UserLogic;
-    logger.info('User Contract Deployed: ' + userContractLookup);
+    const userLogic = await migrateUserRegistryContracts(web3, adminPK);
+    const userLogicAddress = userLogic.web3Contract.options.address;
+    logger.info('UserLogic Contract Deployed: ' + userLogicAddress);
 
-    const assetContracts: any = await migrateAssetRegistryContracts(
+    const assetLogic = await migrateAssetRegistryContracts(
         web3,
-        userContractLookup,
+        userLogicAddress,
         adminPK
     );
-    const assetContractLookup = assetContracts.AssetContractLookup;
-    const assetProducingRegistryLogic = assetContracts.AssetProducingRegistryLogic;
-    const assetConsumingRegistryLogic = assetContracts.AssetConsumingRegistryLogic;
-    logger.info('Asset Contract Deployed: ' + assetContractLookup);
+    const assetLogicAddress = userLogic.web3Contract.options.address;
+    logger.info('AssetLogic Contract Deployed: ' + assetLogicAddress);
 
-    const originContracts: any = await migrateCertificateRegistryContracts(
+    const certificateLogic = await migrateCertificateRegistryContracts(
         web3,
-        assetContractLookup,
+        assetLogicAddress,
         adminPK
     );
-    const originContractLookup = originContracts.OriginContractLookup;
-    const certificateLogic = originContracts.CertificateLogic;
-    logger.info('Origin Contract Deployed: ' + originContractLookup);
+    const certificateLogicAddress = userLogic.web3Contract.options.address;
+    logger.info('certificateLogic Contract Deployed: ' + certificateLogicAddress);
 
-    const marketContracts: any = await migrateMarketRegistryContracts(
+    const marketLogic = await migrateMarketRegistryContracts(
         web3,
-        assetContractLookup,
-        originContractLookup,
+        certificateLogicAddress,
         adminPK
     );
-    const marketContractLookup = marketContracts.MarketContractLookup;
-    const marketLogic = marketContracts.MarketLogic;
-    logger.info('Market Contract Deployed: ' + marketContractLookup);
+    const marketLogicAddress = marketLogic.web3Contract.options.address;
+    logger.info('Market Contract Deployed: ' + marketLogicAddress);
 
     console.log('-----------------------------------------------------------\n');
 
     // save addresses ina config file
     const deployResult = {} as any;
-    deployResult.userContractLookup = userContractLookup;
-    deployResult.assetContractLookup = assetContractLookup;
-    deployResult.originContractLookup = originContractLookup;
-    deployResult.marketContractLookup = marketContractLookup;
     deployResult.userLogic = userLogic;
-    deployResult.assetConsumingRegistryLogic = assetConsumingRegistryLogic;
-    deployResult.assetProducingRegistryLogic = assetProducingRegistryLogic;
+    deployResult.assetLogic = assetLogic;
     deployResult.certificateLogic = certificateLogic;
     deployResult.marketLogic = marketLogic;
 

@@ -24,7 +24,7 @@ export const createAsset = async (
         assetProperties.propertiesDocumentHash = offChainStorageProperties.rootHash;
     }
 
-    const tx = await configuration.blockchainProperties.consumingAssetLogicInstance.createAsset(
+    const tx = await configuration.blockchainProperties.assetLogicInstance.createAsset(
         assetProperties.smartMeter.address,
         assetProperties.owner.address,
         assetProperties.active,
@@ -51,7 +51,7 @@ export const createAsset = async (
 
 export const getAssetListLength = async (configuration: Configuration.Entity) => {
     return parseInt(
-        await configuration.blockchainProperties.consumingAssetLogicInstance.getAssetListLength(),
+        await configuration.blockchainProperties.assetLogicInstance.getAssetListLength(),
         10
     );
 };
@@ -72,13 +72,13 @@ export const getAllAssetsOwnedBy = async (owner: string, configuration: Configur
 
 export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
     getUrl(): string {
-        const consumingAssetLogicAddress = this.configuration.blockchainProperties.consumingAssetLogicInstance.web3Contract.options.address;
+        const consumingAssetLogicAddress = this.configuration.blockchainProperties.assetLogicInstance.web3Contract.options.address;
 
         return `${this.configuration.offChainDataSource.baseUrl}/ConsumingAsset/${consumingAssetLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
-        const asset = await this.configuration.blockchainProperties.consumingAssetLogicInstance.getAssetById(
+        const asset = await this.configuration.blockchainProperties.assetLogicInstance.getAssetById(
             this.id
         );
 
@@ -107,7 +107,7 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
         timestamp: number = moment().unix()
     ): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.consumingAssetLogicInstance.saveSmartMeterRead(
+            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
                 this.id,
                 newMeterReading,
                 fileHash,
@@ -115,7 +115,7 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
-            return this.configuration.blockchainProperties.consumingAssetLogicInstance.saveSmartMeterRead(
+            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
                 this.id,
                 newMeterReading,
                 fileHash,

@@ -228,7 +228,6 @@ usage: command to onboard a new producing asset
     TIGR)
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
-* <code>maxOwnerChanges</code>: specifies the maximum number of hands the certificates can change
 
 #### example
 Onboard a new energy producing asset for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the AssetManager Organization)
@@ -263,8 +262,7 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "cO2UsedForCertificate": 0,
         "complianceRegistry": "TIGR",
         "otherGreenAttributes": "N.A.",
-        "typeOfPublicSupport": "N.A",
-        "maxOwnerChanges": 3
+        "typeOfPublicSupport": "N.A"
     }
 }
 </code>

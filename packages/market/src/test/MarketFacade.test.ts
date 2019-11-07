@@ -4,23 +4,12 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 import moment from 'moment';
 
-import {
-    AssetLogic,
-    Asset,
-    ProducingAsset,
-    migrateAssetRegistryContracts
-} from '@energyweb/asset-registry';
-import {
-    buildRights,
-    Role,
-    UserLogic,
-    migrateUserRegistryContracts
-} from '@energyweb/user-registry';
-import {
-    Certificate,
-    CertificateLogic,
-    migrateCertificateRegistryContracts
-} from '@energyweb/origin';
+import { AssetLogic, Asset, ProducingAsset } from '@energyweb/asset-registry';
+import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
 import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
@@ -159,7 +148,6 @@ describe('Market-Facade', () => {
     it('should deploy origin contracts', async () => {
         certificateLogic = await migrateCertificateRegistryContracts(
             web3,
-            userLogic.web3Contract.options.address,
             assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
@@ -170,8 +158,6 @@ describe('Market-Facade', () => {
     it('should deploy market-registry contracts', async () => {
         marketLogic = await migrateMarketRegistryContracts(
             web3 as any,
-            userLogic.web3Contract.options.address,
-            assetLogic.web3Contract.options.address,
             certificateLogic.web3Contract.options.address,
             privateKeyDeployment
         );
@@ -198,7 +184,7 @@ describe('Market-Facade', () => {
                     privateKey: traderPK
                 },
                 userLogicInstance: userLogic,
-                producingAssetLogicInstance: assetLogic,
+                assetLogicInstance: assetLogic,
                 marketLogicInstance: marketLogic,
                 certificateLogicInstance: certificateLogic,
                 web3

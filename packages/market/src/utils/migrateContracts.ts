@@ -7,8 +7,6 @@ import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
 export async function migrateMarketRegistryContracts(
     web3: Web3,
-    userLogicAddress: string,
-    assetLogicAddress: string,
     certificateLogicAddress: string,
     deployKey: string
 ): Promise<MarketLogic> {
@@ -19,7 +17,7 @@ export async function migrateMarketRegistryContracts(
     })).contractAddress;
 
     const marketLogic = new MarketLogic(web3, marketLogicAddress);
-    await marketLogic.initialize(userLogicAddress, assetLogicAddress, certificateLogicAddress);
+    await marketLogic.initialize(certificateLogicAddress);
 
     return marketLogic;
 }

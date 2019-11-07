@@ -148,7 +148,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                         label = 'Certificate unpublished from sale';
                         break;
 
-                    case 'LogCertificateRetired':
+                    case 'LogCertificateClaimed':
                         label = 'Certificate claimed';
                         description = `Initiated by ${this.state.owner.organization}`;
                         break;
@@ -236,7 +236,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                     {
                         label: 'Claimed',
                         data:
-                            selectedCertificate.status === Certificate.Status.Retired ? 'yes' : 'no'
+                            selectedCertificate.status === Certificate.Status.Claimed ? 'yes' : 'no'
                     },
                     {
                         label: 'Producing Asset Id',

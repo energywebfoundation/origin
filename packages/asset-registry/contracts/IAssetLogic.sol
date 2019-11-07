@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "./AssetDefinitions.sol";
@@ -16,10 +16,12 @@ contract IAssetLogic {
         uint _timestamp
     );
 
+    address public userLogicAddress;
+
     /// @notice gets the Asset-struct as memory
     /// @param _assetId the id of an asset
     /// @return the Asset-struct as memory
-    function getAsset(uint _assetId) external view returns (AssetDefinitions.Asset memory);
+    function getAsset(uint _assetId) external view returns (AssetDefinitions.Asset memory asset);
 
 	/// @notice Sets active to false
 	/// @param _assetId The id belonging to an entry in the asset registry
@@ -52,7 +54,8 @@ contract IAssetLogic {
         string calldata _url
     ) external returns (uint _assetId);
 
-    function getSmartMeterReadsForAsset(uint _assetId) external view returns (AssetDefinitions.SmartMeterRead[] memory);
+    function getSmartMeterReadsForAsset(uint _assetId) external view
+        returns (AssetDefinitions.SmartMeterRead[] memory reads);
 
     /// @notice Gets an asset
 	/// @param _assetId The id belonging to an entry in the asset registry
@@ -84,8 +87,4 @@ contract IAssetLogic {
     /// @notice function to get the amount of already onboarded assets
     /// @return the amount of assets already deployed
     function getAssetListLength() external view returns (uint);
-
-    /// @notice gets the corresponding UserLogic contract
-    /// @return address of the UserLogic contract
-    function getUserLogicContract() external view returns (address);
 }

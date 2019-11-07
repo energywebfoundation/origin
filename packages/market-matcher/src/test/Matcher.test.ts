@@ -1,8 +1,4 @@
-import {
-    AssetConsumingRegistryLogic,
-    AssetProducingRegistryLogic,
-    ProducingAsset
-} from '@energyweb/asset-registry';
+import { AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, MarketLogic, Supply } from '@energyweb/market';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { UserLogic } from '@energyweb/user-registry';
@@ -60,13 +56,7 @@ describe('Market-matcher e2e tests', async () => {
     describe('Certificate -> Demand matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
 
-        let config: Configuration.Entity<
-            MarketLogic,
-            AssetProducingRegistryLogic,
-            AssetConsumingRegistryLogic,
-            CertificateLogic,
-            UserLogic
-        >;
+        let config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
         let asset: ProducingAsset.Entity;
         let certificate: Certificate.Entity;
@@ -98,13 +88,7 @@ describe('Market-matcher e2e tests', async () => {
         const price = 150;
         const currency = Currency.USD;
 
-        let config: Configuration.Entity<
-            MarketLogic,
-            AssetProducingRegistryLogic,
-            AssetConsumingRegistryLogic,
-            CertificateLogic,
-            UserLogic
-        >;
+        let config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
         let asset: ProducingAsset.Entity;
         let certificate: Certificate.Entity;
@@ -133,13 +117,7 @@ describe('Market-matcher e2e tests', async () => {
         const price = 150;
         const currency = Currency.USD;
 
-        let config: Configuration.Entity<
-            MarketLogic,
-            AssetProducingRegistryLogic,
-            AssetConsumingRegistryLogic,
-            CertificateLogic,
-            UserLogic
-        >;
+        let config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
         let asset: ProducingAsset.Entity;
         let certificate: Certificate.Entity;

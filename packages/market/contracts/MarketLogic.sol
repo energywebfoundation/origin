@@ -4,13 +4,13 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/user-registry/contracts/IUserLogic.sol";
 import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
 import "@energyweb/origin/contracts/ICertificateLogic.sol";
 
 contract MarketLogic is Initializable, RoleManagement {
 
-    IUserLogic private userLogic;
+    address public certificateLogicAddress;
+
     IAssetLogic private assetLogic;
     ICertificateLogic private certificateLogic;
 
@@ -55,16 +55,13 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @notice list with all created agreements
     Agreement[] private allAgreements;
 
-    function initialize(
-        IUserLogic _userLogicContract,
-        IAssetLogic _assetLogicContract,
-        ICertificateLogic _certificateLogicContract
-    ) public initializer {
-        assetLogic = _assetLogicContract;
-        userLogic = _userLogicContract;
-        certificateLogic = _certificateLogicContract;
+    function initialize(address _certificateLogicContract) public initializer {
+        certificateLogicAddress = _certificateLogicContract;
+        certificateLogic = ICertificateLogic(certificateLogic);
 
-        RoleManagement.initialize(userLogic);
+        assetLogic = IAssetLogic(certificateLogic.assetLogicAddress());
+
+        RoleManagement.initialize(assetLogic.userLogicAddress());
     }
 
     /// @notice Returns the information of a demand

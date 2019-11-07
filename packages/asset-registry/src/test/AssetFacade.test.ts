@@ -4,7 +4,8 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic, migrateUserRegistryContracts } from '@energyweb/user-registry';
+import { buildRights, Role, UserLogic, } from '@energyweb/user-registry';
+import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 
 import { AssetLogic, ProducingAsset, Asset } from '..';
@@ -63,9 +64,6 @@ describe('Asset Facade', () => {
             userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-
-        console.log("INITIAL2")
-        console.log({assetLogicAddress: assetLogic.web3Contract.options.address})
     });
 
     it('should onboard tests-users', async () => {
@@ -90,7 +88,7 @@ describe('Asset Facade', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                producingAssetLogicInstance: assetLogic,
+                assetLogicInstance: assetLogic,
                 userLogicInstance: userLogic,
                 web3
             },
