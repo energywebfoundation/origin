@@ -70,7 +70,11 @@ export const getAllAssetsOwnedBy = async (owner: string, configuration: Configur
     );
 };
 
-export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
+export interface IConsumingAsset extends Asset.IOnChainProperties {
+    offChainProperties: Asset.IOffChainProperties
+}
+
+export class Entity extends Asset.Entity implements IConsumingAsset {
     getUrl(): string {
         const consumingAssetLogicAddress = this.configuration.blockchainProperties.assetLogicInstance.web3Contract.options.address;
 
@@ -99,29 +103,5 @@ export class Entity extends Asset.Entity implements Asset.IOnChainProperties {
         }
 
         return this;
-    }
-
-    async saveSmartMeterRead(
-        newMeterReading: number,
-        fileHash: string,
-        timestamp: number = moment().unix()
-    ): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
-                this.id,
-                newMeterReading,
-                fileHash,
-                timestamp,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
-                this.id,
-                newMeterReading,
-                fileHash,
-                timestamp,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
     }
 }

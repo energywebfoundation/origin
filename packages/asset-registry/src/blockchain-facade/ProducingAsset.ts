@@ -1,9 +1,6 @@
 import { Compliance, Configuration } from '@energyweb/utils-general';
-import moment from 'moment';
-import { TransactionReceipt } from 'web3/types';
 
 import { ProducingAssetPropertiesOffChainSchema } from '..';
-import { AssetLogic } from '../wrappedContracts/AssetLogic';
 import * as Asset from './Asset';
 
 export interface IOffChainProperties extends Asset.IOffChainProperties {
@@ -74,12 +71,6 @@ export const createAsset = async (
 
     return producingAsset.sync();
 };
-
-export interface ISmartMeterRead {
-    energy: number;
-    timestamp: number;
-}
-
 export interface IProducingAsset extends Asset.IOnChainProperties {
     offChainProperties: IOffChainProperties
 }
@@ -118,39 +109,5 @@ export class Entity extends Asset.Entity implements IProducingAsset {
         }
 
         return this;
-    }
-
-    async saveSmartMeterRead(
-        meterReading: number,
-        filehash: string,
-        timestamp: number = moment().unix()
-    ): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
-                this.id,
-                meterReading,
-                filehash,
-                timestamp,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
-                this.id,
-                meterReading,
-                filehash,
-                timestamp,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
-    async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        const logic: AssetLogic = this.configuration.blockchainProperties
-            .assetLogicInstance;
-
-        return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({
-            energy: Number(read.energy),
-            timestamp: Number(read.timestamp)
-        }));
     }
 }
