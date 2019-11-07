@@ -2,7 +2,6 @@ import { deploy } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
 import MarketLogicJSON from '../../build/contracts/MarketLogic.json';
-
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
 export async function migrateMarketRegistryContracts(
