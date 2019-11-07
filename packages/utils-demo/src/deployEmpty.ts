@@ -6,7 +6,7 @@ import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contrac
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 
-export const deployEmptyContracts = async () => {
+export async function deployEmptyContracts() {
     const web3: Web3 = new Web3(process.env.WEB3);
     const deployKey: string = process.env.DEPLOY_KEY;
 
@@ -46,11 +46,12 @@ export const deployEmptyContracts = async () => {
     console.log('-----------------------------------------------------------\n');
 
     // save addresses in a config file
-    const deployResult = {} as any;
-    deployResult.userLogic = userLogicAddress;
-    deployResult.assetLogic = assetLogicAddress;
-    deployResult.certificateLogic = certificateLogicAddress;
-    deployResult.marketLogic = marketLogicAddress;
+    const deployResult = {
+        userLogic: userLogicAddress,
+        assetLogic: assetLogicAddress,
+        certificateLogic: certificateLogicAddress,
+        marketLogic: marketLogicAddress
+    };
 
     const writeJsonFile = require('write-json-file');
     await writeJsonFile('./config/contractConfig.json', deployResult);
