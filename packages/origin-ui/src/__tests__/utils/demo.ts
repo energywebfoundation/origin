@@ -95,7 +95,7 @@ export async function deployDemo() {
         marketLogic: ''
     };
 
-    const marketContractLookup = this.marketLogic.web3Contract.options.address;
+    const marketContractLookup = marketLogic.web3Contract.options.address;
 
     deployResult.userLogic = userLogicAddress;
     deployResult.assetLogic = assetLogicAddress;
