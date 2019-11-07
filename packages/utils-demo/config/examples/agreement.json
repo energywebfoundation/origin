@@ -220,8 +220,6 @@
                 "gpsLatitude": "0",
                 "gpsLongitude": "0",
                 "timezone": "America/Los_Angeles",
-                "maxCapacitySet": true,
-                "certificatesUsedForWh": 0,
                 "facilityName": "Phone Factory"
             }
         },

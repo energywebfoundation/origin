@@ -246,15 +246,14 @@ describe('Asset Facade', () => {
 
             const FACILITY_NAME = 'Wuthering Heights Windfarm';
     
-            const assetProps: ConsumingAsset.IOnChainProperties = {
+            const assetProps: Asset.IOnChainProperties = {
                 smartMeter: { address: assetSmartMeter2 },
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
-                url: null,
-                certificatesUsedForWh: 0
+                url: null
             };
     
             const assetPropsOffChain: Asset.IOffChainProperties = {

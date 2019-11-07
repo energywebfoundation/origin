@@ -1,15 +1,9 @@
 import { Configuration } from '@energyweb/utils-general';
 import * as Asset from './Asset';
 import { AssetPropertiesOffChainSchema } from '..';
-import { TransactionReceipt } from 'web3/types';
-import moment from 'moment';
-
-export interface IOnChainProperties extends Asset.IOnChainProperties {
-    certificatesUsedForWh: number;
-}
 
 export const createAsset = async (
-    assetProperties: IOnChainProperties,
+    assetProperties: Asset.IOnChainProperties,
     assetPropertiesOffChain: Asset.IOffChainProperties,
     configuration: Configuration.Entity
 ): Promise<Asset.Entity> => {

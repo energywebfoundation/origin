@@ -5,7 +5,6 @@ import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-gener
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
 
 export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
-    // certificatesUsedForWh: number;
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
@@ -32,7 +31,6 @@ export interface ISmartMeterRead {
 export abstract class Entity extends BlockchainDataModelEntity.Entity
     implements IOnChainProperties {
     offChainProperties: IOffChainProperties;
-    certificatesUsedForWh: number;
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;

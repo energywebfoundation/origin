@@ -215,8 +215,6 @@
                 "gpsLatitude": "14.059500",
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
-                "maxCapacitySet": true,
-                "certificatesUsedForWh": 0,
                 "facilityName": "Phone Factory"
             }
         },
@@ -269,7 +267,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_CONSUMING",
             "data": {
-                "assetId": "0",
+                "assetId": "3",
                 "meterreading": 1000000,
                 "smartMeter": "0xf7f7c9186fa724c8392a55b9d83d0f3701c16176",
                 "smartMeterPK": "0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b",

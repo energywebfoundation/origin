@@ -159,8 +159,6 @@ usage: command to onboard a new consuming asset
 * <code>gpsLatitude</code>: the latitude of the asset as string
 * <code>gpsLongitude</code>: the longitude of the asset as string
 * <code>timezone</code>: the timezone of the asset as string
-* <code>maxCapacitySet</code>: flag if the maximal capacity is set
-* <code>certificatesUsedForWh</code>: amount of certificates already used by the consuming asset, will be 0 in most cases
 
 #### example
 Onboard a new consuming asset for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the AssetManager Organization)
@@ -188,9 +186,7 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "houseNumber": "11",
         "gpsLatitude": "0",
         "gpsLongitude": "0",
-        "timezone": "America/Los_Angeles",
-        "maxCapacitySet": true,
-        "certificatesUsedForWh": 0
+        "timezone": "America/Los_Angeles"
     }
 }
 </code>
