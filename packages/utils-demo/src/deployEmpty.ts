@@ -24,7 +24,7 @@ export const deployEmptyContracts = async () => {
         userLogicAddress,
         adminPK
     );
-    const assetLogicAddress = userLogic.web3Contract.options.address;
+    const assetLogicAddress = assetLogic.web3Contract.options.address;
     logger.info('AssetLogic Contract Deployed: ' + assetLogicAddress);
 
     const certificateLogic = await migrateCertificateRegistryContracts(
@@ -32,8 +32,8 @@ export const deployEmptyContracts = async () => {
         assetLogicAddress,
         adminPK
     );
-    const certificateLogicAddress = userLogic.web3Contract.options.address;
-    logger.info('certificateLogic Contract Deployed: ' + certificateLogicAddress);
+    const certificateLogicAddress = certificateLogic.web3Contract.options.address;
+    logger.info('CertificateLogic Contract Deployed: ' + certificateLogicAddress);
 
     const marketLogic = await migrateMarketRegistryContracts(
         web3,
@@ -41,16 +41,16 @@ export const deployEmptyContracts = async () => {
         adminPK
     );
     const marketLogicAddress = marketLogic.web3Contract.options.address;
-    logger.info('Market Contract Deployed: ' + marketLogicAddress);
+    logger.info('MarketLogic Deployed: ' + marketLogicAddress);
 
     console.log('-----------------------------------------------------------\n');
 
-    // save addresses ina config file
+    // save addresses in a config file
     const deployResult = {} as any;
-    deployResult.userLogic = userLogic;
-    deployResult.assetLogic = assetLogic;
-    deployResult.certificateLogic = certificateLogic;
-    deployResult.marketLogic = marketLogic;
+    deployResult.userLogic = userLogicAddress;
+    deployResult.assetLogic = assetLogicAddress;
+    deployResult.certificateLogic = certificateLogicAddress;
+    deployResult.marketLogic = marketLogicAddress;
 
     const writeJsonFile = require('write-json-file');
     await writeJsonFile('./config/contractConfig.json', deployResult);

@@ -16,7 +16,7 @@ contract IAssetLogic {
         uint _timestamp
     );
 
-    address public userLogicAddress;
+    function userLogicAddress() public view returns (address);
 
     /// @notice gets the Asset-struct as memory
     /// @param _assetId the id of an asset

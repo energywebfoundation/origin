@@ -8,8 +8,6 @@ import "./CertificateDefinitions.sol";
 
 contract ICertificateLogic is IERC721, IERC721Enumerable {
 
-    address public assetLogicAddress;
-
     event LogCreatedCertificate(uint indexed _certificateId, uint energy, address owner);
     event LogCertificateClaimed(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
@@ -23,6 +21,8 @@ contract ICertificateLogic is IERC721, IERC721Enumerable {
     /*
         Public functions
     */
+
+    function assetLogicAddress() public view returns (address);
 
     /**
      * @dev Gets the token ID at a given index of all the tokens in this contract

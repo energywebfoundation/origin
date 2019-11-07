@@ -15,7 +15,7 @@ import "./ICertificateLogic.sol";
 
 contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManagement, ICertificateLogic {
 
-    address public assetLogicAddress;
+    bool private _initialized;
     IAssetLogic private assetLogic;
 
     event LogCreatedCertificate(uint indexed _certificateId, uint energy, address owner);
@@ -45,12 +45,24 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     }
 
     function initialize(address _assetLogicAddress) public initializer {
-        assetLogicAddress = _assetLogicAddress;
-        assetLogic = IAssetLogic(assetLogicAddress);
+        require(_assetLogicAddress != address(0), "initialize: Cannot use address 0x0 as _assetLogicAddress.");
+
+        assetLogic = IAssetLogic(_assetLogicAddress);
+
+        require(assetLogic.userLogicAddress() != address(0), "initialize: assetLogic hasn't been initialized yet.");
 
         ERC721.initialize();
         ERC721Enumerable.initialize();
         RoleManagement.initialize(assetLogic.userLogicAddress());
+
+        _initialized = true;
+    }
+
+    function assetLogicAddress() public view returns (address) {
+        require(_initialized == true, "assetLogicAddress: The contract has not been initialized yet.");
+        require(address(assetLogic) != address(0), "assetLogicAddress: The asset logic address is set to 0x0 address.");
+
+        return address(assetLogic);
     }
 
     /*

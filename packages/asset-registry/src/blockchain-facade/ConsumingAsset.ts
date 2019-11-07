@@ -75,6 +75,8 @@ export interface IConsumingAsset extends Asset.IOnChainProperties {
 }
 
 export class Entity extends Asset.Entity implements IConsumingAsset {
+    offChainProperties: Asset.IOffChainProperties;
+
     getUrl(): string {
         const consumingAssetLogicAddress = this.configuration.blockchainProperties.assetLogicInstance.web3Contract.options.address;
 

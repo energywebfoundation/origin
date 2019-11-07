@@ -102,12 +102,9 @@
                 "gpsLongitude": "99.977800",
                 "timezone": "America/Los_Angeles",
                 "assetType": "Wind",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Wuthering Heights Windfarm"
             }
         },

@@ -12,7 +12,8 @@ import "./IAssetLogic.sol";
 /// @title Contract for storing the current logic-contracts-addresses for the certificate of origin
 contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 
-    address public userLogicAddress;
+    bool private _initialized;
+    address private _userLogic;
 
     event LogAssetCreated(address _sender, uint indexed _assetId);
     event LogAssetFullyInitialized(uint indexed _assetId);
@@ -33,10 +34,19 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     address[] internal smartMeterAddresses;
 
     /// @notice constructor
-    function initialize(address _userLogicAddress) public initializer {
-        userLogicAddress = _userLogicAddress;
+    function initialize(address userLogicAddress) public initializer {
+        require(userLogicAddress != address(0), "initialize: Cannot use address 0x0 as userLogicAddress.");
+        _userLogic = userLogicAddress;
 
-        RoleManagement.initialize(_userLogicAddress);
+        RoleManagement.initialize(userLogicAddress);
+        _initialized = true;
+    }
+
+    function userLogicAddress() public view returns (address) {
+        require(_initialized == true, "userLogicAddress: The contract has not been initialized yet.");
+        require(address(_userLogic) != address(0), "userLogicAddress: The asset logic address is set to 0x0 address.");
+
+        return address(_userLogic);
     }
 
     /**

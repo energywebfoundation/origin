@@ -143,12 +143,9 @@
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
                 "assetType": "Wind;Onshore",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Wuthering Heights Windfarm"
             }
         },
@@ -173,12 +170,9 @@
                 "gpsLongitude": "101.4928",
                 "timezone": "Asia/Bangkok",
                 "assetType": "Solar;Photovoltaic;Roof mounted",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "IREC",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Solar Facility A"
             }
         },
@@ -199,12 +193,9 @@
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
                 "assetType": "Solid;Biomass from agriculture;Agricultural products",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "TIGR",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Biomass Facility"
             }
         },

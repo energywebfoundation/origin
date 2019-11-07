@@ -98,7 +98,7 @@ export const onboardDemo = async (
             console.log('-----------------------------------------------------------');
 
             const assetConsumingProps: ConsumingAsset.IOnChainProperties = {
-                certificatesUsedForWh: action.data.certificatesCreatedForWh,
+                certificatesUsedForWh: action.data.certificatesUsedForWh,
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,

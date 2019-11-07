@@ -9,10 +9,9 @@ import "@energyweb/origin/contracts/ICertificateLogic.sol";
 
 contract MarketLogic is Initializable, RoleManagement {
 
-    address public certificateLogicAddress;
-
-    IAssetLogic private assetLogic;
-    ICertificateLogic private certificateLogic;
+    bool private _initialized;
+    IAssetLogic private _assetLogic;
+    ICertificateLogic private _certificateLogic;
 
     enum DemandStatus { ACTIVE, PAUSED, ARCHIVED }
 
@@ -55,13 +54,28 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @notice list with all created agreements
     Agreement[] private allAgreements;
 
-    function initialize(address _certificateLogicContract) public initializer {
-        certificateLogicAddress = _certificateLogicContract;
-        certificateLogic = ICertificateLogic(certificateLogic);
+    function initialize(address certificateLogicContract) public initializer {
+        require(certificateLogicContract != address(0), "initialize: Cannot use address 0x0 as certificateLogicContract.");
 
-        assetLogic = IAssetLogic(certificateLogic.assetLogicAddress());
+        _certificateLogic = ICertificateLogic(certificateLogicContract);
+        require(_certificateLogic.assetLogicAddress() != address(0), "initialize: certificateLogic hasn't been initialized yet.");
 
-        RoleManagement.initialize(assetLogic.userLogicAddress());
+        _assetLogic = IAssetLogic(_certificateLogic.assetLogicAddress());
+        require(_assetLogic.userLogicAddress() != address(0), "initialize: assetLogic hasn't been initialized yet.");
+
+        RoleManagement.initialize(_assetLogic.userLogicAddress());
+
+        _initialized = true;
+    }
+
+    function certificateLogicAddress() public view returns (address) {
+        require(_initialized == true, "certificateLogicAddress: The contract has not been initialized yet.");
+        require(
+            address(_certificateLogic) != address(0),
+            "certificateLogicAddress: The address is set to 0x0 address."
+        );
+
+        return address(_certificateLogic);
     }
 
     /// @notice Returns the information of a demand
@@ -137,8 +151,8 @@ contract MarketLogic is Initializable, RoleManagement {
         Demand memory demand = allDemands[_demandId];
         require(demand.status == DemandStatus.ACTIVE, "demand should be in ACTIVE state");
 
-        CertificateDefinitions.Certificate memory certificate = certificateLogic.getCertificate(_certificateId);
-        certificateLogic.buyCertificateFor(_certificateId, demand.demandOwner);
+        CertificateDefinitions.Certificate memory certificate = _certificateLogic.getCertificate(_certificateId);
+        _certificateLogic.buyCertificateFor(_certificateId, demand.demandOwner);
 
         emit DemandPartiallyFilled(_demandId, _certificateId, certificate.energy);
     }
@@ -198,10 +212,8 @@ contract MarketLogic is Initializable, RoleManagement {
         string calldata _propertiesDocumentHash,
         string calldata _documentDBURL,
         uint _assetId
-    )
-        external
-     {
-        require(assetLogic.getAssetOwner(_assetId) == msg.sender, "wrong msg.sender");
+    ) external {
+        require(_assetLogic.getAssetOwner(_assetId) == msg.sender, "wrong msg.sender");
 
         allSupply.push(Supply({
             propertiesDocumentHash: _propertiesDocumentHash,
@@ -231,13 +243,11 @@ contract MarketLogic is Initializable, RoleManagement {
         string calldata _documentDBURL,
         uint _demandId,
         uint _supplyId
-    )
-        external
-    {
+    ) external {
         Demand memory demand = allDemands[_demandId];
         Supply memory supply = allSupply[_supplyId];
 
-        address supplyOwner = assetLogic.getAssetOwner(supply.assetId);
+        address supplyOwner = _assetLogic.getAssetOwner(supply.assetId);
 
         require(
             msg.sender == demand.demandOwner || msg.sender == supplyOwner,
@@ -274,8 +284,8 @@ contract MarketLogic is Initializable, RoleManagement {
         Demand memory demand = allDemands[_demandId];
         require(demand.status == DemandStatus.ACTIVE, "demand should be in ACTIVE state");
 
-        CertificateDefinitions.Certificate memory certificate = certificateLogic.getCertificate(_certificateId);
-        certificateLogic.buyCertificateFor(_certificateId, demand.demandOwner);
+        CertificateDefinitions.Certificate memory certificate = _certificateLogic.getCertificate(_certificateId);
+        _certificateLogic.buyCertificateFor(_certificateId, demand.demandOwner);
 
         emit DemandPartiallyFilled(_demandId, _certificateId, certificate.energy);
     }
@@ -339,7 +349,7 @@ contract MarketLogic is Initializable, RoleManagement {
         Supply memory supply = allSupply[agreement.supplyId];
 
         require(
-            assetLogic.getAssetOwner(supply.assetId) == msg.sender,
+            _assetLogic.getAssetOwner(supply.assetId) == msg.sender,
             "approveAgreementSupply: wrong msg.sender"
         );
 

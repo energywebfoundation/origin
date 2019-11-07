@@ -76,8 +76,6 @@ export interface IProducingAsset extends Asset.IOnChainProperties {
 }
 
 export class Entity extends Asset.Entity implements IProducingAsset {
-    certificatesCreatedForWh: number;
-    lastSmartMeterCO2OffsetRead: number;
     offChainProperties: IOffChainProperties;
 
     getUrl(): string {

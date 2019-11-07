@@ -219,8 +219,6 @@ usage: command to onboard a new producing asset
     Solar,
     RunRiverHydro,
     BiomassGas)
-* <code>certificatesCreatedForWh</code>: amount of certificates created for wh
-* <code>lastSmartMeterCO2OffsetRead</code>: last CO2 offset read
 * <code>cO2UsedForCertificate</code>: amount of CO2 already used for certificates
 * <code>complianceRegistry</code>: complaince as string (none,
     IREC,
@@ -257,8 +255,6 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "gpsLongitude": "0",
         "timezone": "America/Los_Angeles",
         "assetType": "Biomass from agriculture",
-        "certificatesCreatedForWh": 0,
-        "lastSmartMeterCO2OffsetRead": 0,
         "cO2UsedForCertificate": 0,
         "complianceRegistry": "TIGR",
         "otherGreenAttributes": "N.A.",

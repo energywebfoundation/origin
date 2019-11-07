@@ -95,8 +95,6 @@ const processAssets = async parsedContent => {
                 gpsLongitude: longitude.toString(),
                 timezone,
                 assetType,
-                certificatesCreatedForWh: 0,
-                lastSmartMeterCO2OffsetRead: 0,
                 complianceRegistry: 'IREC',
                 otherGreenAttributes: 'N.A.',
                 typeOfPublicSupport: 'N.A',
