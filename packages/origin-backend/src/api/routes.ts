@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 import { marketContractLookupGetAction } from './controller/MarketContractLookupGet';
 import { marketContractLookupPostAction } from './controller/MarketContractLookupPost';
@@ -9,9 +9,9 @@ import { jsonEntityPutAction } from './controller/JsonEntityPut';
 import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
 
 export interface IRoute {
-    path: string,
-    method: string,
-    action: (req: Request, res: Response) => Promise<void>
+    path: string;
+    method: string;
+    action: (req: Request, res: Response) => Promise<void>;
 }
 
 /**
