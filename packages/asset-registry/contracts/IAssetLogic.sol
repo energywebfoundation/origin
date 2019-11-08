@@ -40,8 +40,7 @@ contract IAssetLogic {
         uint _assetId,
         uint _newMeterRead,
         string calldata _lastSmartMeterReadFileHash,
-        uint _timestamp
-    ) external;
+        uint _timestamp) external;
 
     /// @notice creates an asset with the provided parameters
 	/// @param _smartMeter smartmeter of the asset
@@ -57,8 +56,7 @@ contract IAssetLogic {
         bool _active,
         AssetDefinitions.UsageType _usageType,
         string calldata _propertiesDocumentHash,
-        string calldata _url
-    ) external returns (uint assetId);
+        string calldata _url) external returns (uint assetId);
 
     function getSmartMeterReadsForAsset(uint _assetId) external view
         returns (AssetDefinitions.SmartMeterRead[] memory reads);
