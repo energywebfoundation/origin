@@ -70,6 +70,7 @@ describe('AssetLogic', () => {
                 assetSmartmeter,
                 assetOwnerAddress,
                 true,
+                0,
                 'propertiesDocumentHash',
                 'url',
                 {
@@ -91,6 +92,7 @@ describe('AssetLogic', () => {
                 assetSmartmeter,
                 assetOwnerAddress,
                 true,
+                0,
                 'propertiesDocumentHash',
                 'url',
                 {
@@ -124,12 +126,13 @@ describe('AssetLogic', () => {
     it('should return empty asset when smart meter is not onboarded yet', async () => {
         const deployedAsset = await assetLogic.getAssetBySmartMeter(assetSmartmeter);
 
-        assert.equal(deployedAsset.length, 7);
+        assert.equal(deployedAsset.length, 8);
 
         assert.equal(deployedAsset.smartMeter, '0x0000000000000000000000000000000000000000');
         assert.equal(deployedAsset.owner, '0x0000000000000000000000000000000000000000');
         assert.equal(deployedAsset.lastSmartMeterReadWh, 0);
         assert.isFalse(deployedAsset.active);
+        assert.equal(deployedAsset.usageType, 0);
         assert.equal(deployedAsset.lastSmartMeterReadFileHash, '');
         assert.equal(deployedAsset.propertiesDocumentHash, '');
         assert.equal(deployedAsset.url, '');
@@ -140,6 +143,7 @@ describe('AssetLogic', () => {
             assetSmartmeter,
             assetOwnerAddress,
             true,
+            0,
             'propertiesDocumentHash',
             'url',
             { privateKey: privateKeyDeployment }
@@ -167,12 +171,13 @@ describe('AssetLogic', () => {
     it('should return the deployed asset correctly', async () => {
         const deployedAsset = await assetLogic.getAssetById(0);
 
-        assert.equal(deployedAsset.length, 7);
+        assert.equal(deployedAsset.length, 8);
 
         assert.equal(deployedAsset.smartMeter, assetSmartmeter);
         assert.equal(deployedAsset.owner, assetOwnerAddress);
         assert.equal(deployedAsset.lastSmartMeterReadWh, 0);
         assert.isTrue(deployedAsset.active);
+        assert.equal(deployedAsset.usageType, 0);
         assert.equal(deployedAsset.lastSmartMeterReadFileHash, '');
         assert.equal(deployedAsset.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(deployedAsset.url, 'url');
@@ -181,12 +186,13 @@ describe('AssetLogic', () => {
     it('should return asset by smart meter correctly', async () => {
         const deployedAsset = await assetLogic.getAssetBySmartMeter(assetSmartmeter);
 
-        assert.equal(deployedAsset.length, 7);
+        assert.equal(deployedAsset.length, 8);
 
         assert.equal(deployedAsset.smartMeter, assetSmartmeter);
         assert.equal(deployedAsset.owner, assetOwnerAddress);
         assert.equal(deployedAsset.lastSmartMeterReadWh, 0);
         assert.isTrue(deployedAsset.active);
+        assert.equal(deployedAsset.usageType, 0);
         assert.equal(deployedAsset.lastSmartMeterReadFileHash, '');
         assert.equal(deployedAsset.propertiesDocumentHash, 'propertiesDocumentHash');
         assert.equal(deployedAsset.url, 'url');

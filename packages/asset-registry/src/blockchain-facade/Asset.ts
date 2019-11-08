@@ -4,11 +4,17 @@ import { TransactionReceipt } from 'web3/types';
 import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
 
+export enum UsageType {
+    Producing,
+    Consuming
+}
+
 export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     active: boolean;
+    usageType: UsageType;
     lastSmartMeterReadFileHash: string;
 }
 
@@ -38,6 +44,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     propertiesDocumentHash: string;
     url: string;
     active: boolean;
+    usageType: UsageType;
 
     initialized: boolean;
 

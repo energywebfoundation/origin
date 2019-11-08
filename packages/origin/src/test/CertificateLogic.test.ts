@@ -205,6 +205,7 @@ describe('CertificateLogic-Facade', () => {
             owner: { address: accountAssetOwner },
             lastSmartMeterReadWh: 0,
             active: true,
+            usageType: Asset.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
             url: null

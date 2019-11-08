@@ -181,6 +181,7 @@ export async function deployDemo() {
         owner: { address: ACCOUNTS.ASSET_MANAGER.address },
         lastSmartMeterReadWh: 0,
         active: true,
+        usageType: Asset.UsageType.Producing,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
         url: null

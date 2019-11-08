@@ -2,6 +2,7 @@ import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-gener
 import Web3 from 'web3';
 import AssetLogicJSON from '../../build/contracts/lightweight/AssetLogic.json';
 import moment from 'moment';
+import { UsageType } from '../blockchain-facade/Asset';
 
 export class AssetLogic extends GeneralFunctions {
     web3: Web3;
@@ -75,6 +76,7 @@ export class AssetLogic extends GeneralFunctions {
         _smartMeter: string,
         _owner: string,
         _active: boolean,
+        _usageType: UsageType,
         _propertiesDocumentHash: string,
         _url: string,
         txParams?: ISpecialTx
@@ -83,6 +85,7 @@ export class AssetLogic extends GeneralFunctions {
             _smartMeter,
             _owner,
             _active,
+            _usageType,
             _propertiesDocumentHash,
             _url
         );

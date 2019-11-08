@@ -22,6 +22,7 @@ export const createAsset = async (
         assetProperties.smartMeter.address,
         assetProperties.owner.address,
         assetProperties.active,
+        Asset.UsageType.Consuming,
         assetProperties.propertiesDocumentHash,
         assetProperties.url,
         {
@@ -43,19 +44,28 @@ export const createAsset = async (
     return consumingAsset.sync();
 };
 
-export const getAssetListLength = async (configuration: Configuration.Entity) => {
-    return parseInt(
-        await configuration.blockchainProperties.assetLogicInstance.getAssetListLength(),
-        10
-    );
+export const getAllAssets = async (configuration: Configuration.Entity): Promise<Entity[]> => {
+    const assetLogicInstance = configuration.blockchainProperties.assetLogicInstance;
+    const assetListLength = parseInt(await assetLogicInstance.getAssetListLength(), 10);
+
+    const assetsPromises = Array(assetListLength).fill(null).map(async (item, index) => {
+        return {
+            id: index,
+            asset: await assetLogicInstance.getAsset(index)
+        };
+    });
+    
+    const allAssets = await Promise.all(assetsPromises);
+
+    const consumingAssets = allAssets.filter((asset, index) => Number(asset.asset.usageType) === Asset.UsageType.Consuming);
+    const consumingAssetsSynced = consumingAssets.map(asset => new Entity(asset.id.toString(), configuration).sync());
+    
+    return Promise.all(consumingAssetsSynced);
 };
 
-export const getAllAssets = async (configuration: Configuration.Entity) => {
-    const assetsPromises = Array(await getAssetListLength(configuration))
-        .fill(null)
-        .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-    return Promise.all(assetsPromises);
+export const getAssetListLength = async (configuration: Configuration.Entity) => {
+    const consumingAssets = await getAllAssets(configuration);
+    return consumingAssets.length;
 };
 
 export const getAllAssetsOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
@@ -87,6 +97,7 @@ export class Entity extends Asset.Entity implements IConsumingAsset {
             this.owner = { address: asset.owner };
             this.lastSmartMeterReadWh = Number(asset.lastSmartMeterReadWh);
             this.active = asset.active;
+            this.usageType = Number(asset.usageType);
             this.lastSmartMeterReadFileHash = asset.lastSmartMeterReadFileHash;
             this.propertiesDocumentHash = asset.propertiesDocumentHash;
             this.url = asset.url;

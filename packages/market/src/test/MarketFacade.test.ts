@@ -208,6 +208,7 @@ describe('Market-Facade', () => {
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
+            usageType: Asset.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
             url: null

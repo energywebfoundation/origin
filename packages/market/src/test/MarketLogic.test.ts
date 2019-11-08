@@ -279,6 +279,7 @@ describe('MarketLogic', () => {
             '0x1000000000000000000000000000000000000005',
             accountAssetOwner,
             true,
+            0,
             'propertiesDocumentHash',
             'url',
             {

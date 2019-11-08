@@ -2,7 +2,13 @@ pragma solidity ^0.5.2;
 
 contract AssetDefinitions {
 
+    enum UsageType {
+        Producing,
+        Consuming
+    }
+
     struct Asset {
+        UsageType usageType;
         address smartMeter;
         address owner;
         uint lastSmartMeterReadWh;

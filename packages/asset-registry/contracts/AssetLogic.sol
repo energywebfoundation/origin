@@ -27,11 +27,11 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
     );
 
     /// @dev mapping for smartMeter-address => Asset
-    mapping(address => AssetDefinitions.Asset) internal assetMapping;
-    mapping(address => AssetDefinitions.SmartMeterRead[]) internal assetSmartMeterReadsMapping;
+    mapping(address => AssetDefinitions.Asset) internal _assetMapping;
+    mapping(address => AssetDefinitions.SmartMeterRead[]) internal _assetSmartMeterReadsMapping;
 
     /// @dev list of all the smartMeters already used
-    address[] internal smartMeterAddresses;
+    address[] internal _smartMeterAddresses;
 
     /// @notice constructor
     function initialize(address userLogicAddress) public initializer {
@@ -67,7 +67,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         external
         onlyRole(RoleManagement.Role.AssetAdmin)
     {
-        assetMapping[smartMeterAddresses[_assetId]].active = _active;
+        _assetMapping[_smAddressForAssetId(_assetId)].active = _active;
 
         if (_active) {
             emit LogAssetSetActive(_assetId);
@@ -97,9 +97,9 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
             timestamp = block.timestamp;
         }
 
-        uint createdEnergy = setSmartMeterReadInternal(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
+        uint createdEnergy = _setSmartMeterRead(_assetId, _newMeterRead, _lastSmartMeterReadFileHash, timestamp);
 
-        assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]].push(
+        _assetSmartMeterReadsMapping[_smAddressForAssetId(_assetId)].push(
             AssetDefinitions.SmartMeterRead({ energy: createdEnergy, timestamp: timestamp })
         );
     }
@@ -108,6 +108,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 	/// @param _smartMeter smartmeter of the asset
 	/// @param _owner asset-owner
 	/// @param _active flag if the asset is already active
+	/// @param _usageType consuming or producing asset
 	/// @param _propertiesDocumentHash hash of the document with the properties of an asset
 	/// @param _url where to find the documentHash
 	/// @return generated asset-id
@@ -115,56 +116,58 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         address _smartMeter,
         address _owner,
         bool _active,
+        AssetDefinitions.UsageType _usageType,
         string calldata _propertiesDocumentHash,
         string calldata _url
-    ) external returns (uint _assetId) {
-        checkBeforeCreation(_owner, _smartMeter);
+    ) external returns (uint assetId) {
+        _checkBeforeCreation(_owner, _smartMeter);
 
         AssetDefinitions.Asset memory _asset = AssetDefinitions.Asset({
             smartMeter: _smartMeter,
             owner: _owner,
             lastSmartMeterReadWh: 0,
             active: _active,
+            usageType: _usageType,
             lastSmartMeterReadFileHash: "",
             propertiesDocumentHash: _propertiesDocumentHash,
             url: _url
         });
 
-        _assetId = smartMeterAddresses.length;
+        assetId = _smartMeterAddresses.length;
 
         address smartMeter = _asset.smartMeter;
 
-        assetMapping[smartMeter] = _asset;
-        smartMeterAddresses.push(smartMeter);
+        _assetMapping[smartMeter] = _asset;
 
-        emit LogAssetCreated(msg.sender, _assetId);
+        _smartMeterAddresses.push(smartMeter);
+        emit LogAssetCreated(msg.sender, assetId);
     }
 
     function getSmartMeterReadsForAsset(uint _assetId) external view
         returns (AssetDefinitions.SmartMeterRead[] memory reads)
     {
-        return assetSmartMeterReadsMapping[smartMeterAddresses[_assetId]];
+        return _assetSmartMeterReadsMapping[_smAddressForAssetId(_assetId)];
     }
 
     /// @notice Gets an asset
 	/// @param _assetId The id belonging to an entry in the asset registry
 	/// @return Full informations of an asset
     function getAssetById(uint _assetId) public view returns (AssetDefinitions.Asset memory) {
-        return assetMapping[smartMeterAddresses[_assetId]];
+        return _assetMapping[_smAddressForAssetId(_assetId)];
     }
 
     /// @notice gets an asset by its smartmeter
 	/// @param _smartMeter smartmeter used for by the asset
 	/// @return Asset-Struct
     function getAssetBySmartMeter(address _smartMeter) public view returns (AssetDefinitions.Asset memory) {
-        return assetMapping[_smartMeter];
+        return _assetMapping[_smartMeter];
     }
 
     /// @notice checks whether an assets with the provided smartmeter already exists
 	/// @param _smartMeter smart meter address of an asset
 	/// @return whether there is already an asset with that smartmeter
     function checkAssetExist(address _smartMeter) public view returns (bool) {
-        return checkAssetExistingStatus(getAssetBySmartMeter(_smartMeter));
+        return _checkAssetExistingStatus(getAssetBySmartMeter(_smartMeter));
     }
 
 	/// @notice gets the owner-address of an asset
@@ -188,8 +191,8 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 
     /// @notice function to get the amount of already onboarded assets
     /// @return the amount of assets already deployed
-    function getAssetListLength() external view returns (uint) {
-        return smartMeterAddresses.length;
+    function getAssetListLength() public view returns (uint) {
+        return _smartMeterAddresses.length;
     }
 
 
@@ -197,18 +200,24 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         Internal functions
     */
 
+    function _smAddressForAssetId(uint _assetId) internal view returns (address) {
+        require(_assetId < getAssetListLength(), "getAssetById: invalid asset ID");
+
+        return _smartMeterAddresses[_assetId];
+    }
+
 	/// @notice checks whether an Asset-struct already exists
-	/// @param _Asset the Asset-struct
+	/// @param _asset the Asset-struct
 	/// @return whether that struct exists
-    function checkAssetExistingStatus(AssetDefinitions.Asset memory _Asset) internal pure returns (bool) {
+    function _checkAssetExistingStatus(AssetDefinitions.Asset memory _asset) internal pure returns (bool) {
         return !(
-            address(_Asset.smartMeter) == address(0x0)
-            && address(_Asset.owner) == address(0x0)
-            && _Asset.lastSmartMeterReadWh == 0
-            && !_Asset.active
-            && bytes(_Asset.lastSmartMeterReadFileHash).length == 0
-            && bytes(_Asset.propertiesDocumentHash).length == 0
-            && bytes(_Asset.url).length == 0
+            address(_asset.smartMeter) == address(0x0)
+            && address(_asset.owner) == address(0x0)
+            && _asset.lastSmartMeterReadWh == 0
+            && !_asset.active
+            && bytes(_asset.lastSmartMeterReadFileHash).length == 0
+            && bytes(_asset.propertiesDocumentHash).length == 0
+            && bytes(_asset.url).length == 0
         );
     }
 
@@ -216,13 +225,13 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 	/// @param _assetId the id of an asset
 	/// @param _newMeterRead the new meterreading in Wh
 	/// @param _smartMeterReadFileHash the filehash for the meterreading
-    function setSmartMeterReadInternal(
+    function _setSmartMeterRead(
         uint _assetId,
         uint _newMeterRead,
         string memory _smartMeterReadFileHash,
         uint _timestamp
     ) internal returns (uint) {
-        AssetDefinitions.Asset storage asset = assetMapping[smartMeterAddresses[_assetId]];
+        AssetDefinitions.Asset storage asset = _assetMapping[_smAddressForAssetId(_assetId)];
         require(asset.smartMeter == msg.sender, "saveSmartMeterRead: wrong sender");
         require(asset.active, "saveSmartMeterRead: asset not active");
 
@@ -247,7 +256,7 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
 	/// @notice runs some checks before creating an asset
 	/// @param _owner the address of the asset-owner
 	/// @param _smartMeter the smartmeter used by that asset
-    function checkBeforeCreation(address _owner, address _smartMeter) internal view {
+    function _checkBeforeCreation(address _owner, address _smartMeter) internal view {
         require(isRole(RoleManagement.Role.AssetManager, _owner), "user does not have the required role");
         require(isRole(RoleManagement.Role.AssetAdmin, msg.sender), "user does not have the required role");
         require(!checkAssetExist(_smartMeter), "smartmeter does already exist");

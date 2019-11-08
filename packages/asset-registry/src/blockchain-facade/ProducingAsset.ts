@@ -10,19 +10,28 @@ export interface IOffChainProperties extends Asset.IOffChainProperties {
     typeOfPublicSupport: string;
 }
 
-export const getAssetListLength = async (configuration: Configuration.Entity) => {
-    return parseInt(
-        await configuration.blockchainProperties.assetLogicInstance.getAssetListLength(),
-        10
-    );
+export const getAllAssets = async (configuration: Configuration.Entity): Promise<Entity[]> => {
+    const assetLogicInstance = configuration.blockchainProperties.assetLogicInstance;
+    const assetListLength = parseInt(await assetLogicInstance.getAssetListLength(), 10);
+
+    const assetsPromises = Array(assetListLength).fill(null).map(async (item, index) => {
+        return {
+            id: index,
+            asset: await assetLogicInstance.getAsset(index)
+        };
+    });
+    
+    const allAssets = await Promise.all(assetsPromises);
+
+    const producingAssets = allAssets.filter((asset, index) => Number(asset.asset.usageType) === Asset.UsageType.Producing);
+    const producingAssetsSynced = producingAssets.map(asset => new Entity(asset.id.toString(), configuration).sync());
+    
+    return Promise.all(producingAssetsSynced);
 };
 
-export const getAllAssets = async (configuration: Configuration.Entity) => {
-    const assetsPromises = Array(await getAssetListLength(configuration))
-        .fill(null)
-        .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-    return Promise.all(assetsPromises);
+export const getAssetListLength = async (configuration: Configuration.Entity) => {
+    const producingAssets = await getAllAssets(configuration);
+    return producingAssets.length;
 };
 
 export const getAllAssetsOwnedBy = async (owner: string, configuration: Configuration.Entity) => {
@@ -51,6 +60,7 @@ export const createAsset = async (
         assetPropertiesOnChain.smartMeter.address,
         assetPropertiesOnChain.owner.address,
         assetPropertiesOnChain.active,
+        Asset.UsageType.Producing,
         assetPropertiesOnChain.propertiesDocumentHash,
         assetPropertiesOnChain.url,
         {
@@ -95,6 +105,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
             this.owner = { address: asset.owner };
             this.lastSmartMeterReadWh = Number(asset.lastSmartMeterReadWh);
             this.active = asset.active;
+            this.usageType = Number(asset.usageType);
             this.lastSmartMeterReadFileHash = asset.lastSmartMeterReadFileHash;
             this.propertiesDocumentHash = asset.propertiesDocumentHash;
             this.url = asset.url;

@@ -18,6 +18,10 @@ contract IAssetLogic {
 
     function userLogicAddress() public view returns (address);
 
+    /**
+        public functions
+    */
+
     /// @notice gets the Asset-struct as memory
     /// @param _assetId the id of an asset
     /// @return the Asset-struct as memory
@@ -43,6 +47,7 @@ contract IAssetLogic {
 	/// @param _smartMeter smartmeter of the asset
 	/// @param _owner asset-owner
 	/// @param _active flag if the asset is already active
+	/// @param _usageType consuming or producing asset
 	/// @param _propertiesDocumentHash hash of the document with the properties of an asset
 	/// @param _url where to find the documentHash
 	/// @return generated asset-id
@@ -50,9 +55,10 @@ contract IAssetLogic {
         address _smartMeter,
         address _owner,
         bool _active,
+        AssetDefinitions.UsageType _usageType,
         string calldata _propertiesDocumentHash,
         string calldata _url
-    ) external returns (uint _assetId);
+    ) external returns (uint assetId);
 
     function getSmartMeterReadsForAsset(uint _assetId) external view
         returns (AssetDefinitions.SmartMeterRead[] memory reads);
@@ -86,5 +92,5 @@ contract IAssetLogic {
 
     /// @notice function to get the amount of already onboarded assets
     /// @return the amount of assets already deployed
-    function getAssetListLength() external view returns (uint);
+    function getAssetListLength() public view returns (uint);
 }

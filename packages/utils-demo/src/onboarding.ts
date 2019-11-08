@@ -58,6 +58,7 @@ export const onboardDemo = async (
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
+                usageType: Asset.UsageType.Producing,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
                 url: null
@@ -102,6 +103,7 @@ export const onboardDemo = async (
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
+                usageType: Asset.UsageType.Consuming,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
                 url: null

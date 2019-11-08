@@ -107,6 +107,7 @@ describe('Asset Facade', () => {
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
+                usageType: Asset.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
                 url: null
@@ -139,6 +140,7 @@ describe('Asset Facade', () => {
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
+                usageType: Asset.UsageType.Producing,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
                 url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`
@@ -153,6 +155,7 @@ describe('Asset Facade', () => {
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
+                usageType: Asset.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
                 url: null
@@ -202,6 +205,7 @@ describe('Asset Facade', () => {
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 100,
                 active: true,
+                usageType: Asset.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'newFileHash',
                 url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`,
                 offChainProperties: {
@@ -251,6 +255,7 @@ describe('Asset Facade', () => {
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
+                usageType: Asset.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
                 url: null
@@ -268,23 +273,23 @@ describe('Asset Facade', () => {
                 facilityName: FACILITY_NAME
             };
     
-            assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
+            assert.equal(await ConsumingAsset.getAssetListLength(conf), 0);
     
             const asset = await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
     
             assert.deepOwnInclude(asset, {
-                id: '1',
                 initialized: true,
                 smartMeter: { address: assetSmartMeter2 },
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
+                usageType: Asset.UsageType.Consuming,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: assetPropsOffChain,
                 url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${assetLogic.web3Contract.options.address}`
-            } as Partial<ProducingAsset.Entity>);
+            } as Partial<ConsumingAsset.Entity>);
     
-            assert.equal(await ConsumingAsset.getAssetListLength(conf), 2);
+            assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
         });
     
         it('should log a new meter reading', async () => {
@@ -292,7 +297,8 @@ describe('Asset Facade', () => {
                 address: assetSmartMeter2,
                 privateKey: assetSmartmeter2PK
             };
-            let asset = await new ConsumingAsset.Entity('1', conf).sync();
+            let asset = (await ConsumingAsset.getAllAssets(conf))[0];
+            asset = await asset.sync();
     
             await asset.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
     
@@ -305,6 +311,7 @@ describe('Asset Facade', () => {
                 owner: { address: assetOwnerAddress },
                 lastSmartMeterReadWh: 100,
                 active: true,
+                usageType: Asset.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'newFileHash',
                 url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${assetLogic.web3Contract.options.address}`,
                 offChainProperties: {
@@ -318,12 +325,13 @@ describe('Asset Facade', () => {
                     timezone: 'Asia/Bangkok',
                     facilityName: 'Wuthering Heights Windfarm'
                 }
-            } as Partial<ProducingAsset.Entity>);
+            } as Partial<ConsumingAsset.Entity>);
         });
     
         describe('getSmartMeterReads ConsumingAsset', () => {
             it('should correctly return reads', async () => {
-                const asset = await new ConsumingAsset.Entity('1', conf).sync();
+                let asset = (await ConsumingAsset.getAllAssets(conf))[0];
+                asset = await asset.sync();
                 const reads = await asset.getSmartMeterReads();
     
                 assert.deepEqual(reads, [

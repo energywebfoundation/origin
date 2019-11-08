@@ -226,6 +226,7 @@ const deployAsset = (config: Configuration.Entity) => {
         owner: { address: assetOwnerAddress },
         lastSmartMeterReadWh: 0,
         active: true,
+        usageType: Asset.UsageType.Producing,
         lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
         propertiesDocumentHash: null,
         url: null
