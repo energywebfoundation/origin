@@ -4,5 +4,5 @@ import * as Agreement from './blockchain-facade/Agreement';
 
 export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 export { MarketLogic } from './wrappedContracts/MarketLogic';
-export { MarketContractLookup } from './wrappedContracts/MarketContractLookup';
+
 export { Demand, Supply, Agreement };

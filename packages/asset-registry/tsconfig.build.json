@@ -5,7 +5,7 @@
         "rootDir": "./",
         "outDir": "./dist/js",
     },
-    "include": ["./contracts.ts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"],
+    "include": ["./contracts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"],
     "references": [
         {
             "path": "../user-registry/tsconfig.build.json"

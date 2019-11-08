@@ -53,15 +53,15 @@ export const onboardDemo = async (
         case 'CREATE_PRODUCING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetProducingProps: ProducingAsset.IOnChainProperties = {
+            const assetProducingProps: Asset.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
+                usageType: Asset.UsageType.Producing,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
-                url: null,
-                maxOwnerChanges: action.data.maxOwnerChanges
+                url: null
             };
 
             const assetTypeConfig = action.data.assetType;
@@ -98,12 +98,12 @@ export const onboardDemo = async (
         case 'CREATE_CONSUMING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetConsumingProps: ConsumingAsset.IOnChainProperties = {
-                certificatesUsedForWh: action.data.certificatesCreatedForWh,
+            const assetConsumingProps: Asset.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
+                usageType: Asset.UsageType.Consuming,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
                 url: null

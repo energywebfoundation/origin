@@ -4,15 +4,16 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 import moment from 'moment';
 
-import { AssetProducingRegistryLogic, ProducingAsset } from '@energyweb/asset-registry';
+import { AssetLogic, Asset, ProducingAsset } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
-
+import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+
 import * as Market from '..';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
@@ -33,14 +34,14 @@ describe('Market-Facade', () => {
 
     console.log(`acc-deployment: ${accountDeployment}`);
     let conf: Configuration.Entity;
-    let userLogic: UserLogic;
-    let assetProducingRegistry: AssetProducingRegistryLogic;
-    let marketLogic: MarketLogic;
-    let certificateLogic: CertificateLogic;
 
-    let userContractLookupAddr: string;
-    let assetContractLookupAddr: string;
-    let originContractLookupAddr: string;
+    let userLogic: UserLogic;
+    let assetLogic: AssetLogic;
+    let certificateLogic: CertificateLogic;
+    let marketLogic: MarketLogic;
+
+    let erc20TestToken: Erc20TestToken;
+    let erc20TestTokenAddress: string;
 
     const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
@@ -57,11 +58,19 @@ describe('Market-Facade', () => {
     const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    it('should deploy user-registry contracts', async () => {
-        const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-        userContractLookupAddr = (userContracts as any).UserContractLookup;
+    it('should set ERC20 token', async () => {
+        erc20TestTokenAddress = (await deployERC20TestToken(
+            web3,
+            accountTrader,
+            privateKeyDeployment
+        )).contractAddress;
 
-        userLogic = new UserLogic(web3 as any, (userContracts as any).UserLogic);
+        erc20TestToken = new Erc20TestToken(web3, erc20TestTokenAddress);
+    });
+
+    it('should deploy user-registry contracts', async () => {
+        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+
         await userLogic.createUser(
             'propertiesDocumentHash',
             'documentDBURL',
@@ -127,40 +136,33 @@ describe('Market-Facade', () => {
     });
 
     it('should deploy asset-registry contracts', async () => {
-        const deployedContracts = await migrateAssetRegistryContracts(
-            web3 as any,
-            userContractLookupAddr,
+        assetLogic = await migrateAssetRegistryContracts(
+            web3,
+            userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-        assetProducingRegistry = new AssetProducingRegistryLogic(
-            web3 as any,
-            (deployedContracts as any).AssetProducingRegistryLogic
-        );
-        assetContractLookupAddr = (deployedContracts as any).AssetContractLookup;
+
+        assert.exists(assetLogic);
     });
 
     it('should deploy origin contracts', async () => {
-        const deployedContracts = await migrateCertificateRegistryContracts(
-            web3 as any,
-            assetContractLookupAddr,
+        certificateLogic = await migrateCertificateRegistryContracts(
+            web3,
+            assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-        originContractLookupAddr = (deployedContracts as any).OriginContractLookup;
-        certificateLogic = new CertificateLogic(
-            web3 as any,
-            (deployedContracts as any).CertificateLogic
-        );
+
+        assert.exists(certificateLogic);
     });
 
     it('should deploy market-registry contracts', async () => {
-        const deployedContracts = await migrateMarketRegistryContracts(
+        marketLogic = await migrateMarketRegistryContracts(
             web3 as any,
-            assetContractLookupAddr,
-            originContractLookupAddr,
+            certificateLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-        const marketLogicAddress = (deployedContracts as any).MarketLogic;
-        marketLogic = new MarketLogic(web3 as any, marketLogicAddress);
+
+        const marketLogicAddress = marketLogic.web3Contract.options.address;
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -182,7 +184,7 @@ describe('Market-Facade', () => {
                     privateKey: traderPK
                 },
                 userLogicInstance: userLogic,
-                producingAssetLogicInstance: assetProducingRegistry,
+                assetLogicInstance: assetLogic,
                 marketLogicInstance: marketLogic,
                 certificateLogicInstance: certificateLogic,
                 web3
@@ -201,15 +203,15 @@ describe('Market-Facade', () => {
             privateKey: privateKeyDeployment
         };
 
-        const assetProps: ProducingAsset.IOnChainProperties = {
+        const assetProps: Asset.IOnChainProperties = {
             smartMeter: { address: assetSmartMeter },
             owner: { address: assetOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
+            usageType: Asset.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
-            url: null,
-            maxOwnerChanges: 3
+            url: null
         };
 
         const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -293,7 +295,7 @@ describe('Market-Facade', () => {
                 status: 0
             } as Partial<Market.Demand.Entity>);
 
-            assert.deepEqual(demand.offChainProperties, {
+            assert.deepOwnInclude(demand.offChainProperties, {
                 assetType: ['Solar'],
                 currency: Currency.USD,
                 location: ['Thailand;Central;Nakhon Pathom'],
@@ -355,12 +357,20 @@ describe('Market-Facade', () => {
             });
 
             conf.blockchainProperties.activeUser = {
+                address: assetOwnerAddress,
+                privateKey: assetOwnerPK
+            };
+
+            let certificate = await new Certificate.Entity('0', conf).sync();
+
+            await erc20TestToken.approve(assetOwnerAddress, 2, { privateKey: traderPK });
+
+            conf.blockchainProperties.activeUser = {
                 address: matcherAccount,
                 privateKey: matcherPK
             };
-
             const demand = await new Market.Demand.Entity('0', conf).sync();
-            let certificate = await new Certificate.Entity('0', conf).sync();
+
             const fillTx = await demand.fillAgreement(certificate.id);
 
             const demandPartiallyFilledEvents = await marketLogic.getEvents(
@@ -374,7 +384,7 @@ describe('Market-Facade', () => {
             assert.equal(demandPartiallyFilledEvents.length, 1);
 
             certificate = await certificate.sync();
-            assert.equal(await certificate.getOwner(), demand.demandOwner);
+            assert.equal(certificate.owner, demand.demandOwner);
         });
 
         it('should trigger DemandPartiallyFilled event after demand filled', async () => {
@@ -423,7 +433,7 @@ describe('Market-Facade', () => {
             assert.equal(demandPartiallyFilledEvents.length, 1);
 
             const filledCertificate = await certificate.sync();
-            assert.equal(await filledCertificate.getOwner(), demand.demandOwner);
+            assert.equal(filledCertificate.owner, demand.demandOwner);
         });
     });
 
@@ -456,11 +466,8 @@ describe('Market-Facade', () => {
             );
 
             assert.equal(await Market.Supply.getSupplyListLength(conf), 1);
-            delete supply.proofs;
-            delete supply.configuration;
-            delete supply.propertiesDocumentHash;
 
-            assert.deepEqual(supply, {
+            assert.deepOwnInclude(supply, {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
@@ -477,11 +484,7 @@ describe('Market-Facade', () => {
         it('should return supply', async () => {
             const supply: Market.Supply.Entity = await new Market.Supply.Entity('0', conf).sync();
 
-            delete supply.proofs;
-            delete supply.configuration;
-            delete supply.propertiesDocumentHash;
-
-            assert.deepEqual(supply, {
+            assert.deepOwnInclude(supply, {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
@@ -540,7 +543,7 @@ describe('Market-Facade', () => {
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
 
-            assert.deepEqual(agreement, {
+            assert.deepOwnInclude(agreement, {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
@@ -569,7 +572,7 @@ describe('Market-Facade', () => {
             delete agreement.configuration;
             delete agreement.propertiesDocumentHash;
 
-            assert.deepEqual(agreement, {
+            assert.deepOwnInclude(agreement, {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
@@ -602,11 +605,8 @@ describe('Market-Facade', () => {
             await agreement.approveAgreementSupply();
 
             agreement = await agreement.sync();
-            delete agreement.proofs;
-            delete agreement.configuration;
-            delete agreement.propertiesDocumentHash;
 
-            assert.deepEqual(agreement, {
+            assert.deepOwnInclude(agreement, {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
@@ -657,11 +657,7 @@ describe('Market-Facade', () => {
 
             assert.equal(await Market.Agreement.getAgreementListLength(conf), 2);
 
-            delete agreement.proofs;
-            delete agreement.configuration;
-            delete agreement.propertiesDocumentHash;
-
-            assert.deepEqual(agreement, {
+            assert.deepOwnInclude(agreement, {
                 id: '1',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
@@ -694,11 +690,8 @@ describe('Market-Facade', () => {
             await agreement.approveAgreementDemand();
 
             agreement = await agreement.sync();
-            delete agreement.proofs;
-            delete agreement.configuration;
-            delete agreement.propertiesDocumentHash;
 
-            assert.deepEqual(agreement, {
+            assert.deepOwnInclude(agreement, {
                 id: '1',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,

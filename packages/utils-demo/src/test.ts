@@ -12,8 +12,8 @@ async function main() {
 
     await marketDemo();
 
-    if (contractConfig && contractConfig.marketContractLookup) {
-        await new ConfigurationClient().add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketContractLookup.toLowerCase());
+    if (contractConfig && contractConfig.marketLogic) {
+        await new ConfigurationClient().add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketLogic.toLowerCase());
     }
 }
 

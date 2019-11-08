@@ -1,8 +1,8 @@
-import {
-    AssetConsumingRegistryLogic,
-    AssetProducingRegistryLogic,
-    ProducingAsset
-} from '@energyweb/asset-registry';
+import dotenv from 'dotenv';
+import moment from 'moment';
+import Web3 from 'web3';
+
+import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
@@ -11,11 +11,8 @@ import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
-import dotenv from 'dotenv';
-import moment from 'moment';
-import Web3 from 'web3';
-
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -42,10 +39,8 @@ const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7
 const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
 const deployUserRegistry = async () => {
-    const userContracts = await migrateUserRegistryContracts(web3, privateKeyDeployment);
-    const userContractLookupAddress = (userContracts as any).UserContractLookup;
+    const userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
-    const userLogic = new UserLogic(web3, (userContracts as any).UserLogic);
     await userLogic.createUser(
         'propertiesDocumentHash',
         'documentDBURL',
@@ -93,56 +88,56 @@ const deployUserRegistry = async () => {
         privateKey: privateKeyDeployment
     });
 
-    return { userLogic, userContractLookupAddress };
+    return { userLogic };
 };
 
-const deployAssetRegistry = async (userContractLookupAddress: string) => {
-    const assetRegistryContracts = await migrateAssetRegistryContracts(
+const deployAssetRegistry = async (userLogicAddress: string) => {
+    const assetLogic = await migrateAssetRegistryContracts(
         web3,
-        userContractLookupAddress,
+        userLogicAddress,
         privateKeyDeployment
     );
-    const assetProducingRegistry = new AssetProducingRegistryLogic(
-        web3 as any,
-        (assetRegistryContracts as any).AssetProducingRegistryLogic
-    );
-    const assetContractLookupAddress = (assetRegistryContracts as any).AssetContractLookup;
 
-    return { assetProducingRegistry, assetContractLookupAddress };
+    return { assetLogic };
 };
 
-const deployCertificateRegistry = async (assetContractLookupAddress: string) => {
-    const certificateRegistryContracts = await migrateCertificateRegistryContracts(
+const deployCertificateRegistry = async (assetLogicAddress: string) => {
+    const certificateLogic = await migrateCertificateRegistryContracts(
         web3,
-        assetContractLookupAddress,
+        assetLogicAddress,
         privateKeyDeployment
     );
-    const certificateLogic = new CertificateLogic(
-        web3 as any,
-        (certificateRegistryContracts as any).CertificateLogic
-    );
-
-    const originContractLookupAddress = (certificateRegistryContracts as any).OriginContractLookup;
-
-    return { certificateLogic, originContractLookupAddress };
+    return { certificateLogic };
 };
 
-const deployMarket = async (
-    assetContractLookupAddress: string,
-    originContractLookupAddress: string,
-    userLogic: UserLogic
-) => {
-    const deployedContracts = await migrateMarketRegistryContracts(
-        web3 as any,
-        assetContractLookupAddress,
-        originContractLookupAddress,
+const deployMarket = async (originLogicAddress: string) => {
+    const marketLogic = await migrateMarketRegistryContracts(
+        web3,
+        originLogicAddress,
         privateKeyDeployment
     );
 
-    const marketLogicAddress: string = (deployedContracts as any).MarketLogic;
+    return { marketLogic };
+};
 
-    const marketLogic = new MarketLogic(web3, marketLogicAddress);
-    const marketContractLookupAddress = (deployedContracts as any).MarketContractLookup;
+const changeUser = (
+    config: Configuration.Entity,
+    activeUser: { address: string; privateKey: string }
+) =>
+    ({
+        ...config,
+        blockchainProperties: { ...config.blockchainProperties, activeUser }
+    } as Configuration.Entity);
+
+const deploy = async () => {
+    const { userLogic } = await deployUserRegistry();
+    const { assetLogic } = await deployAssetRegistry(userLogic.web3Contract.options.address);
+    const { certificateLogic } = await deployCertificateRegistry(
+        assetLogic.web3Contract.options.address
+    );
+    const { marketLogic } = await deployMarket(certificateLogic.web3Contract.options.address);
+
+    const marketLogicAddress = marketLogic.web3Contract.options.address;
 
     await userLogic.createUser(
         'propertiesDocumentHash',
@@ -156,47 +151,14 @@ const deployMarket = async (
         privateKey: privateKeyDeployment
     });
 
-    return { marketLogic, marketContractLookupAddress };
-};
-
-const changeUser = (
-    config: Configuration.Entity,
-    activeUser: { address: string; privateKey: string }
-) =>
-    ({
-        ...config,
-        blockchainProperties: { ...config.blockchainProperties, activeUser }
-    } as Configuration.Entity);
-
-const deploy = async () => {
-    const { userLogic, userContractLookupAddress } = await deployUserRegistry();
-    const { assetProducingRegistry, assetContractLookupAddress } = await deployAssetRegistry(
-        userContractLookupAddress
-    );
-    const { certificateLogic, originContractLookupAddress } = await deployCertificateRegistry(
-        assetContractLookupAddress
-    );
-
-    const { marketLogic, marketContractLookupAddress } = await deployMarket(
-        assetContractLookupAddress,
-        originContractLookupAddress,
-        userLogic
-    );
-
-    const config: Configuration.Entity<
-        MarketLogic,
-        AssetProducingRegistryLogic,
-        AssetConsumingRegistryLogic,
-        CertificateLogic,
-        UserLogic
-    > = {
+    const config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic> = {
         blockchainProperties: {
             activeUser: {
                 address: accountTrader,
                 privateKey: traderPK
             },
             userLogicInstance: userLogic,
-            producingAssetLogicInstance: assetProducingRegistry,
+            assetLogicInstance: assetLogic,
             marketLogicInstance: marketLogic,
             certificateLogicInstance: certificateLogic,
             web3
@@ -212,7 +174,7 @@ const deploy = async () => {
         web3Url: process.env.WEB3,
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
         offChainDataSourceClient: config.offChainDataSource.client,
-        marketContractLookupAddress,
+        marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,
             privateKey: privateKeyDeployment
@@ -259,15 +221,15 @@ const deployAsset = (config: Configuration.Entity) => {
         privateKey: privateKeyDeployment
     });
 
-    const assetProps: ProducingAsset.IOnChainProperties = {
+    const assetProps: Asset.IOnChainProperties = {
         smartMeter: { address: assetSmartMeter },
         owner: { address: assetOwnerAddress },
         lastSmartMeterReadWh: 0,
         active: true,
+        usageType: Asset.UsageType.Producing,
         lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
         propertiesDocumentHash: null,
-        url: null,
-        maxOwnerChanges: 3
+        url: null
     };
 
     const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -321,12 +283,13 @@ const deployCertificate = async (
     assetId: string,
     requiredEnergy: number
 ) => {
-    const certificateLogic = config.blockchainProperties
-        .certificateLogicInstance as CertificateLogic;
+    const certificateLogic: CertificateLogic = config.blockchainProperties.certificateLogicInstance;
+
     const smartMeterConfig = changeUser(config, {
         address: assetSmartMeter,
         privateKey: assetSmartMeterPK
     });
+
     const producingAsset = await new ProducingAsset.Entity(assetId, smartMeterConfig).sync();
     await producingAsset.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
 

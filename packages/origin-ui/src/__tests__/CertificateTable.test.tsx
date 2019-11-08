@@ -55,7 +55,7 @@ describe('CertificateTable', () => {
         addCertificate({
             id: '3',
             owner: '0x123',
-            status: Certificate.Status.Retired
+            status: Certificate.Status.Claimed
         });
 
         const rendered = mount(

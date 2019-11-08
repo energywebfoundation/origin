@@ -120,8 +120,8 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
     get rows() {
         return this.state.paginatedData.map(({ asset, organizationName }) => {
             const consumption =
-                typeof asset.certificatesUsedForWh === 'number'
-                    ? (asset.certificatesUsedForWh / 1000).toLocaleString()
+                typeof asset.lastSmartMeterReadWh === 'number'
+                    ? (asset.lastSmartMeterReadWh / 1000).toLocaleString()
                     : '-';
 
             return {

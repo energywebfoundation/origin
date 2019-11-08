@@ -15,17 +15,17 @@ dotenv.config({
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
     const baseUrl = `${backendUrl}/api`;
 
-    const storedMarketContractAddress = (await new ConfigurationClient().get(
+    const storedMarketLogicAddress = (await new ConfigurationClient().get(
         baseUrl,
         'MarketContractLookup'
     )).pop();
 
-    const marketContractLookupAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
+    const marketLogicAddress: string =
+        process.env.MARKET_CONTRACT_ADDRESS || storedMarketLogicAddress;
 
     const config = {
         web3Url: process.env.WEB3,
-        marketContractLookupAddress,
+        marketLogicAddress,
         matcherAccount: {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey

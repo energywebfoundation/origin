@@ -1,7 +1,7 @@
 import * as User from './blockchain-facade/Users/User';
 
-export { UserLogic } from './wrappedContracts/UserLogic';
-export { UserContractLookup } from './wrappedContracts/UserContractLookup';
-export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
-export * from './wrappedContracts/RoleManagement';
-export { User };
+import { UserLogic } from './wrappedContracts/UserLogic';
+import { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
+import { RoleManagement, buildRights, Role } from './wrappedContracts/RoleManagement';
+
+export { buildRights, Role, UserLogic, RoleManagement, createBlockchainProperties, User };

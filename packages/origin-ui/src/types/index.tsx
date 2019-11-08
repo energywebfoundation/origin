@@ -1,8 +1,4 @@
-import {
-    ConsumingAsset,
-    AssetConsumingRegistryLogic,
-    AssetProducingRegistryLogic
-} from '@energyweb/asset-registry';
+import { ConsumingAsset, AssetLogic } from '@energyweb/asset-registry';
 import { UserLogic } from '@energyweb/user-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
@@ -17,13 +13,7 @@ import { IAuthenticationState } from '../features/authentication/reducer';
 
 export interface IStoreState {
     authentication: IAuthenticationState;
-    configuration: Configuration.Entity<
-        MarketLogic,
-        AssetProducingRegistryLogic,
-        AssetConsumingRegistryLogic,
-        CertificateLogic,
-        UserLogic
-    >;
+    configuration: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
     producingAssets: IProducingAssetsState;
     consumingAssets: ConsumingAsset.Entity[];
     certificates: ICertificatesState;

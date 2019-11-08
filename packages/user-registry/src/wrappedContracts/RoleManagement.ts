@@ -61,18 +61,8 @@ export class RoleManagement extends GeneralFunctions {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async userContractLookup(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.userContractLookup().call(txParams);
-    }
-
     async owner(txParams?: ISpecialTx) {
         return this.web3Contract.methods.owner().call(txParams);
-    }
-
-    async changeOwner(_newOwner: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.changeOwner(_newOwner);
-
-        return this.send(method, txParams);
     }
 
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {

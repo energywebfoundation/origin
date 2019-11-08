@@ -4,7 +4,7 @@ import moment from 'moment';
 import 'moment/min/locales.min';
 
 import { Configuration } from '@energyweb/utils-general';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingAsset, Asset } from '@energyweb/asset-registry';
 
 import './SmartMeterReadingsChart.scss';
 import { STYLE_CONFIG } from '../styles/styleConfig';
@@ -30,7 +30,7 @@ export interface ISmartMeterReadingsChartProps {
 export interface ISmartMeterReadingsChartState {
     graphOptions: object;
     selectedTimeFrame: ISelectedTimeFrame;
-    readings: ProducingAsset.ISmartMeterRead[];
+    readings: Asset.ISmartMeterRead[];
 }
 
 export class SmartMeterReadingsChart extends React.Component<
@@ -77,7 +77,7 @@ export class SmartMeterReadingsChart extends React.Component<
     }
 
     async componentDidMount() {
-        const readings: ProducingAsset.ISmartMeterRead[] = await this.props.producingAsset.getSmartMeterReads();
+        const readings: Asset.ISmartMeterRead[] = await this.props.producingAsset.getSmartMeterReads();
 
         this.setState({ readings });
     }

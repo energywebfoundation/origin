@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import 'mocha';
-import { Role, buildRights } from '../wrappedContracts/RoleManagement';
+import { Role, buildRights } from '../blockchain-facade/RoleManagement';
 
 describe('buildRights', () => {
     it('correctly builds rights', async () => {

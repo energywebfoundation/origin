@@ -160,7 +160,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                         enrichedCertificateData.certificate.owner.toLowerCase();
                 const claimed =
                     Number(enrichedCertificateData.certificate.status) ===
-                    Certificate.Status.Retired;
+                    Certificate.Status.Claimed;
                 const forSale = enrichedCertificateData.certificate.forSale;
                 const forDemand =
                     matchedCertificates &&
