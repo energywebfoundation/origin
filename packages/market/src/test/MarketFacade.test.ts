@@ -365,8 +365,6 @@ describe('Market-Facade', () => {
 
             await erc20TestToken.approve(assetOwnerAddress, 2, { privateKey: traderPK });
 
-            await certificate.publishForSale(1, erc20TestTokenAddress);
-
             conf.blockchainProperties.activeUser = {
                 address: matcherAccount,
                 privateKey: matcherPK
@@ -389,54 +387,54 @@ describe('Market-Facade', () => {
             assert.equal(certificate.owner, demand.demandOwner);
         });
 
-        // it('should trigger DemandPartiallyFilled event after demand filled', async () => {
-        //     const producingAsset = await new ProducingAsset.Entity('0', conf).sync();
+        it('should trigger DemandPartiallyFilled event after demand filled', async () => {
+            const producingAsset = await new ProducingAsset.Entity('0', conf).sync();
 
-        //     conf.blockchainProperties.activeUser = {
-        //         address: assetSmartMeter,
-        //         privateKey: assetSmartMeterPK
-        //     };
+            conf.blockchainProperties.activeUser = {
+                address: assetSmartMeter,
+                privateKey: assetSmartMeterPK
+            };
 
-        //     await producingAsset.saveSmartMeterRead(2e6, 'newMeterRead');
+            await producingAsset.saveSmartMeterRead(2e6, 'newMeterRead');
 
-        //     await certificateLogic.requestCertificates(0, 1, {
-        //         privateKey: assetOwnerPK
-        //     });
+            await certificateLogic.requestCertificates(0, 1, {
+                privateKey: assetOwnerPK
+            });
 
-        //     await certificateLogic.approveCertificationRequest(1, {
-        //         privateKey: issuerPK
-        //     });
+            await certificateLogic.approveCertificationRequest(1, {
+                privateKey: issuerPK
+            });
 
-        //     conf.blockchainProperties.activeUser = {
-        //         address: assetOwnerAddress,
-        //         privateKey: assetOwnerPK
-        //     };
+            conf.blockchainProperties.activeUser = {
+                address: assetOwnerAddress,
+                privateKey: assetOwnerPK
+            };
 
-        //     const certificate = await new Certificate.Entity('1', conf).sync();
+            const certificate = await new Certificate.Entity('1', conf).sync();
 
-        //     await certificate.publishForSale(1000, Currency.USD);
+            await certificate.publishForSale(1000, Currency.USD);
 
-        //     conf.blockchainProperties.activeUser = {
-        //         address: matcherAccount,
-        //         privateKey: matcherPK
-        //     };
+            conf.blockchainProperties.activeUser = {
+                address: matcherAccount,
+                privateKey: matcherPK
+            };
 
-        //     const demand = await new Market.Demand.Entity('0', conf).sync();
-        //     const fillTx = await demand.fill(certificate.id);
+            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const fillTx = await demand.fill(certificate.id);
 
-        //     const demandPartiallyFilledEvents = await marketLogic.getEvents(
-        //         'DemandPartiallyFilled',
-        //         {
-        //             fromBlock: fillTx.blockNumber,
-        //             toBlock: fillTx.blockNumber
-        //         }
-        //     );
+            const demandPartiallyFilledEvents = await marketLogic.getEvents(
+                'DemandPartiallyFilled',
+                {
+                    fromBlock: fillTx.blockNumber,
+                    toBlock: fillTx.blockNumber
+                }
+            );
 
-        //     assert.equal(demandPartiallyFilledEvents.length, 1);
+            assert.equal(demandPartiallyFilledEvents.length, 1);
 
-        //     const filledCertificate = await certificate.sync();
-        //     assert.equal(await filledCertificate.getOwner(), demand.demandOwner);
-        // });
+            const filledCertificate = await certificate.sync();
+            assert.equal(filledCertificate.owner, demand.demandOwner);
+        });
     });
 
     describe('Supply-Facade', () => {

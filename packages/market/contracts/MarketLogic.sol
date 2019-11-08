@@ -285,7 +285,11 @@ contract MarketLogic is Initializable, RoleManagement {
         require(demand.status == DemandStatus.ACTIVE, "demand should be in ACTIVE state");
 
         CertificateDefinitions.Certificate memory certificate = _certificateLogic.getCertificate(_certificateId);
-        _certificateLogic.buyCertificateFor(_certificateId, demand.demandOwner);
+        _certificateLogic.transferFrom(
+            _certificateLogic.ownerOf(_certificateId),
+            demand.demandOwner,
+            _certificateId
+        );
 
         emit DemandPartiallyFilled(_demandId, _certificateId, certificate.energy);
     }

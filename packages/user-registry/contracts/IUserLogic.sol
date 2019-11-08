@@ -17,12 +17,7 @@ contract IUserLogic {
 	/// @param _documentDBURL url-address of the demand
     /// @param _user address of the user
     /// @param _organization organization the user is representing
-    function createUser(
-        string calldata _propertiesDocumentHash,
-        string calldata _documentDBURL,
-        address _user,
-        string calldata _organization
-    ) external;
+    function createUser(string calldata _propertiesDocumentHash, string calldata _documentDBURL, address _user, string calldata _organization) external;
 
     /// @notice function to set / edit the rights of an user / account, only executable for Top-Admins!
     /// @param _user user that rights will change
@@ -32,13 +27,7 @@ contract IUserLogic {
     /// @notice function to return all the data of an user
     /// @param _user user
     /// @return returns user
-    function getFullUser(address _user) public returns (
-        string memory _propertiesDocumentHash,
-        string memory _documentDBURL,
-        string memory _organization,
-        uint _roles,
-        bool _active
-    );
+    function getFullUser(address _user) public returns (string memory _propertiesDocumentHash, string memory _documentDBURL, string memory _organization, uint _roles, bool _active);
 
     /// @notice function that checks if there is an user for the provided ethereum-address
     /// @param _user ethereum-address of that user
@@ -56,9 +45,5 @@ contract IUserLogic {
 	/// @param _user user address
     /// @param _propertiesDocumentHash document-hash with all the properties of the user
 	/// @param _documentDBURL url-address of the user
-    function updateUser(
-        address _user,
-        string calldata _propertiesDocumentHash,
-        string calldata _documentDBURL
-    ) external;
+    function updateUser(address _user, string calldata _propertiesDocumentHash, string calldata _documentDBURL) external;
 }
