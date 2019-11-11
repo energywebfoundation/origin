@@ -72,7 +72,7 @@
         "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/origin-backend --scope @energyweb/utils-demo test:concurrent --since master --parallel --stream",
         "test:ci:ui": "yarn test:ui",
         "publish:canary": "lerna publish --canary --exact --yes",
-        "publish:release": "lerna version --conventional-commits --exact --yes && (lerna changed || exit 0) && lerna publish from-git --yes",
+        "publish:release": "lerna version --conventional-commits --exact --yes && (lerna changed && lerna publish from-git --yes) || echo \"Skipping release\"",
         "build:containers:canary": "lerna run build:container:canary --stream",
         "build:containers:release": "lerna run build:container:latest --stream"
     },
