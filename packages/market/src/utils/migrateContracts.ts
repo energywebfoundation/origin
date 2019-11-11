@@ -18,7 +18,9 @@ export async function migrateMarketRegistryContracts(
     ).contractAddress;
 
     const marketLogic = new MarketLogic(web3, marketLogicAddress);
-    await marketLogic.initialize(certificateLogicAddress);
+    await marketLogic.initialize(certificateLogicAddress, {
+        privateKey: privateKeyDeployment
+    });
 
     return marketLogic;
 }
