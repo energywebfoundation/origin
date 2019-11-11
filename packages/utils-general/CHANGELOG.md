@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@1.3.0...@energyweb/utils-general@1.3.1) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/origin/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/origin/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+* **origin-ui:** fix persisting demand location ([#205](https://github.com/energywebfoundation/origin/issues/205)) ([33eeb75](https://github.com/energywebfoundation/origin/commit/33eeb75a3866667fa2ecbb67b5eb5b4943e28693))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@1.2.0...@energyweb/utils-general@1.3.0) (2019-10-25)
 
 
