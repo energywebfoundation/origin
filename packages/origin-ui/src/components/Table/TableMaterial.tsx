@@ -60,11 +60,6 @@ interface IProps<T extends readonly ITableColumn[]> {
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
 }
 
-interface IState {
-    currentPage: number;
-    selectedIndexes: number[];
-}
-
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedIndexes, setSelectedIndexes] = useState([]);

@@ -1,4 +1,4 @@
-import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 
@@ -11,10 +11,8 @@ export class CertificateLogic extends GeneralFunctions {
             address
                 ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                    buildFile.abi,
-                    buildFile.networks.length > 0
-                        ? buildFile.networks[0]
-                        : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
@@ -110,11 +108,11 @@ export class CertificateLogic extends GeneralFunctions {
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId, _data);
 
             return this.send(method, txParams);
-        } else {
+        }
             const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId);
 
             return this.send(method, txParams);
-        }
+
     }
 
     async getCertificate(_certificateId: number, txParams?: ISpecialTx) {
