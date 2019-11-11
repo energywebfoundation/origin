@@ -11,6 +11,7 @@ import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
 import { Certificate } from '@energyweb/origin';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 import {
@@ -24,11 +25,12 @@ import {
     demandCreated
 } from '../actions';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { BACKEND_URL, getMarketContractLookupAddressFromAPI } from '../../utils/api';
+import { BACKEND_URL } from '../../utils/api';
 import { setError, setLoading } from '../general/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
 import { IStoreState } from '../../types';
+import { getOffChainDataClient, getConfigurationClient } from '../general/selectors';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -36,15 +38,16 @@ enum ERROR {
 
 async function initConf(
     marketContractLookupAddress: string,
-    routerSearch: string
+    routerSearch: string,
+    offChainDataClient: IOffChainDataClient
 ): Promise<Configuration.Entity> {
     let web3: Web3 = null;
-    const params: any = queryString.parse(routerSearch);
+    const params = queryString.parse(routerSearch);
 
     const ethereumProvider = (window as any).ethereum;
 
     if (params.rpc) {
-        web3 = new Web3(params.rpc);
+        web3 = new Web3(params.rpc as string);
     } else if (ethereumProvider) {
         web3 = new Web3(ethereumProvider);
         try {
@@ -67,10 +70,11 @@ async function initConf(
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`
+            baseUrl: `${BACKEND_URL}/api`,
+            client: offChainDataClient
         },
         logger: Winston.createLogger({
-            level: 'debug',
+            level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         })
@@ -109,7 +113,7 @@ function* initEventHandler() {
                 event: any
             ) {
                 const certificate = await new Certificate.Entity(
-                    event.returnValues._entityId,
+                    event.returnValues._certificateId,
                     configuration
                 ).sync();
 
@@ -131,7 +135,7 @@ function* initEventHandler() {
                 });
             });
 
-            certificateContractEventHandler.onEvent('LogCertificateRetired', async function(
+            certificateContractEventHandler.onEvent('LogCertificateClaimed', async function(
                 event: any
             ) {
                 const certificate = await new Certificate.Entity(
@@ -159,7 +163,7 @@ function* initEventHandler() {
                 event: any
             ) {
                 const certificate = await new Certificate.Entity(
-                    event.returnValues._entityId,
+                    event.returnValues._certificateId,
                     configuration
                 ).sync();
 
@@ -215,12 +219,34 @@ function* initEventHandler() {
     }
 }
 
+async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
+    try {
+        const marketContracts: string[] = await configurationClient.get(
+            `${BACKEND_URL}/api`,
+            'MarketContractLookup'
+        );
+
+        if (marketContracts.length > 0) {
+            return marketContracts[marketContracts.length - 1];
+        }
+
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
     const savedAddress = localStorage.getItem(MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY);
     let marketContractLookupAddress: string = savedAddress;
 
     if (!marketContractLookupAddress) {
-        marketContractLookupAddress = yield call(getMarketContractLookupAddressFromAPI);
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+        marketContractLookupAddress = yield call(
+            getMarketContractLookupAddressFromAPI,
+            configurationClient
+        );
     }
 
     if (marketContractLookupAddress) {
@@ -240,7 +266,14 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
     let configuration: IStoreState['configuration'];
     try {
-        configuration = yield call(initConf, marketContractLookupAddress, routerSearch);
+        const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
+
+        configuration = yield call(
+            initConf,
+            marketContractLookupAddress,
+            routerSearch,
+            offChainDataClient
+        );
 
         yield put(configurationUpdated(configuration));
 

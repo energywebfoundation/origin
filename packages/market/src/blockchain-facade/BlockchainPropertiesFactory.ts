@@ -1,48 +1,42 @@
-import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
-import { createBlockchainProperties as assetCreateBlockchainProperties } from '@energyweb/asset-registry';
-import { createBlockchainProperties as issuerCreateBlockchainProperties } from '@energyweb/origin';
-import { MarketContractLookup, MarketLogic } from '..';
+
+import { Configuration } from '@energyweb/utils-general';
+import { UserLogic } from '@energyweb/user-registry';
+import { AssetLogic } from '@energyweb/asset-registry';
+import { CertificateLogic } from '@energyweb/origin';
+
+import { MarketLogic } from '..';
 
 export const createBlockchainProperties = async (
     web3: Web3,
-    marketContractLookupAddress: string
+    marketLogicAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
     if (!web3) {
         return {
-            consumingAssetLogicInstance: null,
             marketLogicInstance: null,
-            producingAssetLogicInstance: null,
+            assetLogicInstance: null,
             userLogicInstance: null,
             certificateLogicInstance: null,
             web3: null
         };
     }
 
-    const marketLookupContractInstance: MarketContractLookup = new MarketContractLookup(
+    const marketLogicInstance = new MarketLogic(web3, marketLogicAddress);
+    const certificateLogicInstance = new CertificateLogic(
         web3,
-        marketContractLookupAddress
+        await marketLogicInstance.certificateLogicAddress()
     );
-
-    const assetBlockchainProperties: Configuration.BlockchainProperties = await assetCreateBlockchainProperties(
+    const assetLogicInstance = new AssetLogic(
         web3,
-        await marketLookupContractInstance.assetContractLookup()
+        await certificateLogicInstance.assetLogicAddress()
     );
-
-    const originBlockchainProperties: Configuration.BlockchainProperties = await issuerCreateBlockchainProperties(
-        web3,
-        await marketLookupContractInstance.originContractLookup()
-    );
+    const userLogicInstance = new UserLogic(web3, await assetLogicInstance.userLogicAddress());
 
     return {
-        consumingAssetLogicInstance: assetBlockchainProperties.consumingAssetLogicInstance,
-        marketLogicInstance: new MarketLogic(
-            web3,
-            await marketLookupContractInstance.marketLogicRegistry()
-        ),
-        producingAssetLogicInstance: assetBlockchainProperties.producingAssetLogicInstance,
-        userLogicInstance: assetBlockchainProperties.userLogicInstance,
-        certificateLogicInstance: originBlockchainProperties.certificateLogicInstance,
+        marketLogicInstance,
+        assetLogicInstance,
+        userLogicInstance,
+        certificateLogicInstance,
         web3
     };
 };

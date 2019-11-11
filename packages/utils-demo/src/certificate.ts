@@ -1,5 +1,5 @@
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
-import { Certificate, TradableEntity } from '@energyweb/origin';
+import { Certificate } from '@energyweb/origin';
 import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
 import { CertificateLogic } from '@energyweb/origin';
@@ -107,22 +107,22 @@ export const certificateDemo = async (
             try {
                 conf.logger.verbose(
                     'Asset Owner Balance(BEFORE): ' +
-                        (await TradableEntity.getBalance(action.data.assetOwner, conf))
+                        (await certificateLogic.balanceOf(action.data.assetOwner))
                 );
                 conf.logger.verbose(
                     'Asset Owner Balance(BEFORE): ' +
-                        (await TradableEntity.getBalance(action.data.addressTo, conf))
+                        (await certificateLogic.balanceOf(action.data.addressTo))
                 );
                 const certificate = await new Certificate.Entity(action.data.certId, conf).sync();
                 await certificate.transferFrom(action.data.addressTo);
                 conf.logger.info('Certificate Transferred');
                 conf.logger.verbose(
                     'Asset Owner Balance(AFTER): ' +
-                        (await TradableEntity.getBalance(action.data.assetOwner, conf))
+                        (await certificateLogic.balanceOf(action.data.assetOwner))
                 );
                 conf.logger.verbose(
                     'Asset Owner Balance(AFTER): ' +
-                        (await TradableEntity.getBalance(action.data.addressTo, conf))
+                        (await certificateLogic.balanceOf(action.data.addressTo))
                 );
             } catch (e) {
                 conf.logger.error('Could not transfer certificates\n' + e);
@@ -155,31 +155,6 @@ export const certificateDemo = async (
             }
 
             console.log('-----------------------------------------------------------\n');
-            break;
-
-        case 'SET_ERC20_CERTIFICATE':
-            console.log('-----------------------------------------------------------');
-
-            conf.blockchainProperties.activeUser = {
-                address: action.data.assetOwner,
-                privateKey: action.data.assetOwnerPK
-            };
-
-            try {
-                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
-
-                await certificate.setOnChainDirectPurchasePrice(action.data.price);
-                certificate = await certificate.sync();
-
-                await certificate.setTradableToken(erc20TestAddress);
-                certificate = await certificate.sync();
-                conf.logger.info('Demo ERC token created: ' + erc20TestAddress);
-            } catch (e) {
-                conf.logger.error('Could not set ERC20 tokens for certificate trading\n', e);
-            }
-
-            console.log('-----------------------------------------------------------\n');
-
             break;
         case 'PUBLISH_CERTIFICATE_FOR_SALE':
             console.log('-----------------------------------------------------------');
@@ -291,14 +266,14 @@ export const certificateDemo = async (
             try {
                 conf.logger.verbose(
                     'Buyer Balance(BEFORE): ' +
-                        (await TradableEntity.getBalance(action.data.buyer, conf))
+                        (await certificateLogic.balanceOf(action.data.buyer))
                 );
                 const certificate = await new Certificate.Entity(action.data.certId, conf).sync();
                 await certificate.buyCertificate();
                 conf.logger.info('Certificate Bought');
                 conf.logger.verbose(
                     'Buyer Balance(AFTER): ' +
-                        (await TradableEntity.getBalance(action.data.buyer, conf))
+                        (await certificateLogic.balanceOf(action.data.buyer))
                 );
             } catch (e) {
                 conf.logger.error('Could not buy Certificates\n' + e);

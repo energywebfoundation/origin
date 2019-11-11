@@ -1,7 +1,4 @@
-import MarketContractLookupJSON from './build/contracts/MarketContractLookup.json';
-import MarketDBJSON from './build/contracts/MarketDB.json';
 import MarketLogicJSON from './build/contracts/MarketLogic.json';
-import AgreementLogicJSON from './build/contracts/AgreementLogic.json';
+import { migrateMarketRegistryContracts } from './src/utils/migrateContracts';
 
-export { AgreementLogicJSON, MarketContractLookupJSON, MarketDBJSON, MarketLogicJSON };
-export { migrateMarketRegistryContracts } from './src/utils/migrateContracts';
+export { MarketLogicJSON, migrateMarketRegistryContracts };

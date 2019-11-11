@@ -9,6 +9,9 @@
     "references": [
         {
             "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../origin-backend-client/tsconfig.build.json"
         }
     ]
 }

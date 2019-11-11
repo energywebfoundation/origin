@@ -1,5 +1,5 @@
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { Role } from '../../wrappedContracts/RoleManagement';
+import { Role } from '../RoleManagement';
 import UserOffChainPropertiesSchema from '../../../schemas/UserOffChainProperties.schema.json';
 
 export interface IUserOffChainProperties {
@@ -102,8 +102,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
     async update(offChainProperties: IUserOffChainProperties) {
         const updatedOffChainStorageProperties = this.prepareEntityCreation(
             offChainProperties,
-            UserOffChainPropertiesSchema,
-            this.getUrl()
+            UserOffChainPropertiesSchema
         );
 
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
@@ -131,8 +130,7 @@ export const createUser = async (
 
     const offChainStorageProperties = user.prepareEntityCreation(
         userPropertiesOffChain,
-        UserOffChainPropertiesSchema,
-        user.getUrl()
+        UserOffChainPropertiesSchema
     );
 
     if (configuration.offChainDataSource) {

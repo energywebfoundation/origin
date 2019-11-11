@@ -140,12 +140,9 @@
                 "gpsLongitude": "0",
                 "timezone": "America/Los_Angeles",
                 "assetType": "Wind",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Wuthering Heights Windfarm"
             }
         },
@@ -170,12 +167,9 @@
                 "gpsLongitude": "0",
                 "timezone": "America/Los_Angeles",
                 "assetType": "Solar",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "IREC",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Solar Facility A"
             }
         },
@@ -200,12 +194,9 @@
                 "gpsLongitude": "0",
                 "timezone": "America/Los_Angeles",
                 "assetType": "Biomass from agriculture",
-                "certificatesCreatedForWh": 0,
-                "lastSmartMeterCO2OffsetRead": 0,
                 "complianceRegistry": "TIGR",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
-                "maxOwnerChanges": 3,
                 "facilityName": "Biomass Facility"
             }
         },
@@ -229,8 +220,6 @@
                 "gpsLatitude": "0",
                 "gpsLongitude": "0",
                 "timezone": "America/Los_Angeles",
-                "maxCapacitySet": true,
-                "certificatesUsedForWh": 0,
                 "facilityName": "Phone Factory"
             }
         },

@@ -68,7 +68,6 @@ Currently the following action types are supported:
 * SEND_ERC20_TOKENS_TO
 * TRANSFER_CERTIFICATE
 * SPLIT_CERTIFICATE
-* SET_ERC20_CERTIFICATE
 * PUBLISH_CERTIFICATE_FOR_SALE
 * PUBLISH_CERTIFICATE_FOR_SALE_OFFCHAIN
 * REQUEST_CERTIFICATES
@@ -160,8 +159,6 @@ usage: command to onboard a new consuming asset
 * <code>gpsLatitude</code>: the latitude of the asset as string
 * <code>gpsLongitude</code>: the longitude of the asset as string
 * <code>timezone</code>: the timezone of the asset as string
-* <code>maxCapacitySet</code>: flag if the maximal capacity is set
-* <code>certificatesUsedForWh</code>: amount of certificates already used by the consuming asset, will be 0 in most cases
 
 #### example
 Onboard a new consuming asset for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the AssetManager Organization)
@@ -189,9 +186,7 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "houseNumber": "11",
         "gpsLatitude": "0",
         "gpsLongitude": "0",
-        "timezone": "America/Los_Angeles",
-        "maxCapacitySet": true,
-        "certificatesUsedForWh": 0
+        "timezone": "America/Los_Angeles"
     }
 }
 </code>
@@ -220,8 +215,6 @@ usage: command to onboard a new producing asset
     Solar,
     RunRiverHydro,
     BiomassGas)
-* <code>certificatesCreatedForWh</code>: amount of certificates created for wh
-* <code>lastSmartMeterCO2OffsetRead</code>: last CO2 offset read
 * <code>cO2UsedForCertificate</code>: amount of CO2 already used for certificates
 * <code>complianceRegistry</code>: complaince as string (none,
     IREC,
@@ -229,7 +222,6 @@ usage: command to onboard a new producing asset
     TIGR)
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
-* <code>maxOwnerChanges</code>: specifies the maximum number of hands the certificates can change
 
 #### example
 Onboard a new energy producing asset for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the AssetManager Organization)
@@ -259,13 +251,10 @@ The asset is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code
         "gpsLongitude": "0",
         "timezone": "America/Los_Angeles",
         "assetType": "Biomass from agriculture",
-        "certificatesCreatedForWh": 0,
-        "lastSmartMeterCO2OffsetRead": 0,
         "cO2UsedForCertificate": 0,
         "complianceRegistry": "TIGR",
         "otherGreenAttributes": "N.A.",
-        "typeOfPublicSupport": "N.A",
-        "maxOwnerChanges": 3
+        "typeOfPublicSupport": "N.A"
     }
 }
 </code>
@@ -385,30 +374,6 @@ We want to split the certificate with id <code>1</code>. The transaction to do s
 }
 </code>
 
-### SET_ERC20_CERTIFICATE
-usage: command to deploy a test ERC20 token and the enable the certificate to use ERC20 tokens as a payment
-<br>params:
-* <code>certId</code>: id of the certificate to be transferred
-* <code>assetOwner</code>: address of the current owner of the certificate(must have trading rights)
-* <code>assetOwnerPK</code>: private key of the current owner of the certificate
-* <code>price</code>: price of the certificate in unit of the ERC20 test token
-* <code>testAccount</code>: an account address that gets intial ERC20 funds
-
-#### example
-We want to enable ERC20 trading in certificate with id <code>4</code>. The transaction to do so must be signed by the assetOwner proving the current ownership of the certificate. Therefore the asset owner's address and private key are required. The price of the certificate would be <code>1000</code> ERC20 test tokens. The initial funds of ERC20 test tokens will go to the account with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code>(for demo: it is set equal to the trader's address who will buy the certificate)
-
-<code>
-{
-    "type": "SET_ERC20_CERTIFICATE",
-    "data": {
-        "certId":4,
-        "assetOwner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-        "assetOwnerPK": "0x96ce644659ea5572aedc29296c866a62c36c6cdcafc8801c1c46d02abc8c0047",
-        "price": 1000,
-        "testAccount": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691"
-    }
-}
-</code>
 
 ### PUBLISH_CERTIFICATE_FOR_SALE
 usage: command to publish a certificate for sale using ERC-20 tokens

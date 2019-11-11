@@ -4,12 +4,10 @@ import Web3 from 'web3';
 import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import {
-    AssetProducingRegistryLogic,
-    AssetConsumingRegistryLogic
-} from '@energyweb/asset-registry';
+import { AssetLogic } from '@energyweb/asset-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
+import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
@@ -37,14 +35,7 @@ export const marketDemo = async (demoFile?: string) => {
 
     // create logic instances
     const userLogic = new UserLogic(web3, contractConfig.userLogic);
-    const assetProducingRegistryLogic = new AssetProducingRegistryLogic(
-        web3,
-        contractConfig.assetProducingRegistryLogic
-    );
-    const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(
-        web3,
-        contractConfig.assetConsumingRegistryLogic
-    );
+    const assetProducingRegistryLogic = new AssetLogic(web3, contractConfig.assetLogic);
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
@@ -61,15 +52,15 @@ export const marketDemo = async (demoFile?: string) => {
                 address: adminAccount.address,
                 privateKey: adminPK
             },
-            producingAssetLogicInstance: assetProducingRegistryLogic,
-            consumingAssetLogicInstance: assetConsumingRegistryLogic,
+            assetLogicInstance: assetProducingRegistryLogic,
             certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
             marketLogicInstance: marketLogic,
             web3
         },
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`
+            baseUrl: `${process.env.BACKEND_URL}/api`,
+            client: new OffChainDataClient()
         },
         logger
     };

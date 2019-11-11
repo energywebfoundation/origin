@@ -1,0 +1,14 @@
+FROM node:12-alpine
+
+RUN apk --no-cache add make gcc g++ python
+RUN npm i -g yarn
+
+WORKDIR /repo
+
+COPY . .
+
+RUN mkdir -p /var/db && touch /var/db/db.sqlite
+
+RUN yarn
+
+CMD ["yarn", "run:backend"]

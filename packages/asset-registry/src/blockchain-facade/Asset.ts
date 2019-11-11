@@ -1,27 +1,20 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
+import moment from 'moment';
+import { TransactionReceipt } from 'web3/types';
 
 import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
+import { AssetLogic } from '../wrappedContracts/AssetLogic';
+
+export enum UsageType {
+    Producing,
+    Consuming
+}
 
 export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
-    // certificatesUsedForWh: number;
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     active: boolean;
+    usageType: UsageType;
     lastSmartMeterReadFileHash: string;
 }
 
@@ -36,10 +29,14 @@ export interface IOffChainProperties {
     facilityName: string;
 }
 
+export interface ISmartMeterRead {
+    energy: number;
+    timestamp: number;
+}
+
 export abstract class Entity extends BlockchainDataModelEntity.Entity
     implements IOnChainProperties {
     offChainProperties: IOffChainProperties;
-    certificatesUsedForWh: number;
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
@@ -47,6 +44,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     propertiesDocumentHash: string;
     url: string;
     active: boolean;
+    usageType: UsageType;
 
     initialized: boolean;
 
@@ -56,5 +54,39 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         super(id, configuration);
 
         this.initialized = false;
+    }
+
+    async saveSmartMeterRead(
+        meterReading: number,
+        filehash: string,
+        timestamp: number = moment().unix()
+    ): Promise<TransactionReceipt> {
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
+                this.id,
+                meterReading,
+                filehash,
+                timestamp,
+                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
+            );
+        } else {
+            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
+                this.id,
+                meterReading,
+                filehash,
+                timestamp,
+                { from: this.configuration.blockchainProperties.activeUser.address }
+            );
+        }
+    }
+
+    async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
+        const logic: AssetLogic = this.configuration.blockchainProperties
+            .assetLogicInstance;
+
+        return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({
+            energy: Number(read.energy),
+            timestamp: Number(read.timestamp)
+        }));
     }
 }

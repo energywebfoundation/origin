@@ -2,30 +2,31 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 import { AppContainer } from '../components/AppContainer';
 import { Route } from 'react-router-dom';
-import { WrapperComponent, setupStore, wait, createRenderedHelpers } from './utils/helpers';
+import {
+    WrapperComponent,
+    setupStore,
+    wait,
+    createRenderedHelpers,
+    waitForConditionAndAssert
+} from './utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
-import { startAPI } from '@energyweb/origin-backend';
 import { dataTestSelector } from '../utils/Helper';
 import { TimeFrame } from '@energyweb/utils-general';
 
 import moment from 'moment';
 
-jest.setTimeout(80000);
-
-let ganacheServer;
-let apiServer;
+jest.setTimeout(100000);
 
 describe('Application[E2E]', () => {
-    beforeAll(async () => {
-        apiServer = await startAPI();
-        ganacheServer = await startGanache();
-        await deployDemo();
-    });
-
     it('correctly navigates to producing asset details', async () => {
+        const ganacheServer = await startGanache();
+        const { configurationClient, offChainDataClient } = await deployDemo();
+
         const { store, history } = setupStore([`/assets/?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
-            logActions: false
+            logActions: false,
+            configurationClient,
+            offChainDataClient
         });
 
         const rendered = mount(
@@ -117,10 +118,14 @@ describe('Application[E2E]', () => {
 
             submitForm('demandForm');
 
-            await wait(4000);
-            await refresh();
+            await waitForConditionAndAssert(
+                () => store.getState().router.location.pathname === '/demands/view/',
+                () => expect(store.getState().router.location.pathname).toContain('/demands/view/'),
+                100,
+                10000
+            );
 
-            expect(store.getState().router.location.pathname).toContain('/demands/view/');
+            await refresh();
 
             click('demands-link-list');
 
@@ -211,7 +216,5 @@ describe('Application[E2E]', () => {
         rendered.unmount();
 
         await ganacheServer.close();
-
-        apiServer.close();
     });
 });

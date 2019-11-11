@@ -1,3 +1,5 @@
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+
 export enum GeneralActions {
     showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
     hideAccountChangedModal = 'HIDE_ACCOUNT_CHANGED_MODAL',
@@ -5,7 +7,9 @@ export enum GeneralActions {
     setLoading = 'GENERAL_SET_LOADING',
     setError = 'GENERAL_SET_ERROR',
     showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
-    hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL'
+    hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
+    setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
+    setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT'
 }
 
 export interface IShowAccountChangedModalAction {
@@ -85,7 +89,31 @@ export const hideRequestPasswordModal = () => ({
     type: GeneralActions.hideRequestPasswordModal
 });
 
-export type THideRequestPasswordModal = typeof hideRequestPasswordModal;
+export type THideRequestPasswordModalAction = typeof hideRequestPasswordModal;
+
+export interface ISetOffChainDataClientAction {
+    type: GeneralActions.setOffChainDataClient;
+    payload: IOffChainDataClient;
+}
+
+export const setOffChainDataClient = (payload: ISetOffChainDataClientAction['payload']) => ({
+    type: GeneralActions.setOffChainDataClient,
+    payload
+});
+
+export type TSetOffChainDataClientAction = typeof setOffChainDataClient;
+
+export interface ISetConfigurationClientAction {
+    type: GeneralActions.setConfigurationClient;
+    payload: IConfigurationClient;
+}
+
+export const setConfigurationClient = (payload: ISetConfigurationClientAction['payload']) => ({
+    type: GeneralActions.setConfigurationClient,
+    payload
+});
+
+export type TSetConfigurationClientAction = typeof setConfigurationClient;
 
 export type IGeneralAction =
     | IShowAccountChangedModalAction
@@ -94,4 +122,6 @@ export type IGeneralAction =
     | ISetLoadingAction
     | ISetErrorAction
     | IRequestPasswordModalAction
-    | IHideRequestPasswordModalAction;
+    | IHideRequestPasswordModalAction
+    | ISetOffChainDataClientAction
+    | ISetConfigurationClientAction;

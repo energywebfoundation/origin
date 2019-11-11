@@ -19,6 +19,8 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
+import { IConfigurationClient, IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { setConfigurationClient, setOffChainDataClient } from '../../features/general/actions';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -46,7 +48,12 @@ export async function waitForConditionAndAssert(
     await assertFunction();
 }
 
-const setupStoreInternal = (initialHistoryEntries: string[], logActions = false) => {
+const setupStoreInternal = (
+    initialHistoryEntries: string[],
+    logActions = false,
+    configurationClient: IConfigurationClient,
+    offChainDataClient: IOffChainDataClient
+) => {
     const history = createMemoryHistory({
         initialEntries: initialHistoryEntries
     });
@@ -69,6 +76,14 @@ const setupStoreInternal = (initialHistoryEntries: string[], logActions = false)
     const middleware = applyMiddleware(...middlewareToApply);
 
     const store = createStore(createRootReducer(history), middleware);
+
+    if (configurationClient) {
+        store.dispatch(setConfigurationClient(configurationClient));
+    }
+
+    if (offChainDataClient) {
+        store.dispatch(setOffChainDataClient(offChainDataClient));
+    }
 
     const sagasTasks: Task[] = Object.keys(sagas).reduce(
         (a, saga) => [...a, sagaMiddleware.run(sagas[saga])],
@@ -181,6 +196,8 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
+    configurationClient?: IConfigurationClient;
+    offChainDataClient?: IOffChainDataClient;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
@@ -194,7 +211,9 @@ export const setupStore = (
 ) => {
     const { store, history, sagasTasks } = setupStoreInternal(
         initialHistoryEntries,
-        options.logActions
+        options.logActions,
+        options.configurationClient,
+        options.offChainDataClient
     );
 
     if (options.mockUserFetcher) {

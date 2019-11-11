@@ -95,7 +95,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             selectedState: SelectedState.Inbox,
             selectedCertificates: [],
             detailViewForCertificateId: null,
-            matchedCertificates: [],
+            matchedCertificates: null,
             showSellModal: false,
             sellModalForCertificate: null,
             showBuyModal: false,
@@ -125,10 +125,18 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         await super.componentDidMount();
     }
 
-    async componentDidUpdate(newProps: Props) {
+    async componentDidUpdate(prevProps: Props) {
         if (
-            newProps.certificates !== this.props.certificates ||
-            newProps.users.length !== this.props.users.length
+            this.props.demand &&
+            (!this.state.matchedCertificates ||
+                prevProps.certificates !== this.props.certificates) &&
+            this.props.selectedState === SelectedState.ForDemand
+        ) {
+            await this.initMatchingCertificates(this.props.demand);
+            await this.loadPage(1);
+        } else if (
+            prevProps.certificates !== this.props.certificates ||
+            prevProps.users.length !== this.props.users.length
         ) {
             await this.loadPage(1);
         }
@@ -139,20 +147,24 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         offset,
         filters
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const enrichedData = await this.enrichData(this.props.certificates);
+        const { currentUser, selectedState, certificates } = this.props;
+        const { matchedCertificates } = this.state;
+
+        const enrichedData = await this.enrichData(certificates);
 
         const filteredIEnrichedCertificateData = enrichedData.filter(
             (enrichedCertificateData: IEnrichedCertificateData) => {
                 const ownerOf =
-                    this.props.currentUser &&
-                    this.props.currentUser.id.toLowerCase() ===
+                    currentUser &&
+                    currentUser.id.toLowerCase() ===
                         enrichedCertificateData.certificate.owner.toLowerCase();
                 const claimed =
                     Number(enrichedCertificateData.certificate.status) ===
-                    Certificate.Status.Retired;
+                    Certificate.Status.Claimed;
                 const forSale = enrichedCertificateData.certificate.forSale;
                 const forDemand =
-                    this.state.matchedCertificates.find(
+                    matchedCertificates &&
+                    matchedCertificates.find(
                         cert => cert.id === enrichedCertificateData.certificate.id
                     ) !== undefined;
                 const isActive =
@@ -161,18 +173,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
                 return (
                     this.checkRecordPassesFilters(enrichedCertificateData, filters) &&
-                    ((isActive &&
-                        ownerOf &&
-                        !forSale &&
-                        this.props.selectedState === SelectedState.Inbox) ||
-                        (claimed && this.props.selectedState === SelectedState.Claimed) ||
-                        (isActive &&
-                            forSale &&
-                            this.props.selectedState === SelectedState.ForSale) ||
+                    ((isActive && ownerOf && !forSale && selectedState === SelectedState.Inbox) ||
+                        (claimed && selectedState === SelectedState.Claimed) ||
+                        (isActive && forSale && selectedState === SelectedState.ForSale) ||
                         (isActive &&
                             forSale &&
                             forDemand &&
-                            this.props.selectedState === SelectedState.ForDemand))
+                            selectedState === SelectedState.ForDemand))
                 );
             }
         );
@@ -223,11 +230,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async initMatchingCertificates(demand: Demand.Entity) {
+        const { certificates, configuration } = this.props;
+
         const matchableDemand = new MatchableDemand(demand);
         const find = async certificate => {
             const producingAsset = await new ProducingAsset.Entity(
                 certificate.assetId.toString(),
-                this.props.configuration
+                configuration
             ).sync();
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
@@ -236,7 +245,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return { result, certificate };
         };
 
-        const matchedCertificates = (await Promise.all(this.props.certificates.map(find)))
+        const matchedCertificates = (await Promise.all(certificates.map(find)))
             .filter(({ result }) => result)
             .map(({ certificate }) => certificate);
 

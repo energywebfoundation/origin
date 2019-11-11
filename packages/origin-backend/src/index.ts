@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import * as http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -34,12 +33,19 @@ app.use('/api', api);
 app.use('/api/v1', api);
 
 export async function startAPI(): Promise<http.Server> {
-    const PORT: number = parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
+    const PORT: number =
+        parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
 
-    let connectionOptions: ConnectionOptions = Object.assign(
-        ormConfig as ConnectionOptions,
-        { entities: [JsonEntity, MarketContractLookup] }
-    );
+    if (process.env.ORM_TYPE) {
+        ormConfig.type = process.env.ORM_TYPE;
+    }
+    if (process.env.ORM_DATABASE_DOCKER === 'TRUE') {
+        ormConfig.database = '/var/db/db.sqlite';
+    }
+
+    let connectionOptions: ConnectionOptions = Object.assign(ormConfig as ConnectionOptions, {
+        entities: [JsonEntity, MarketContractLookup]
+    });
 
     const connection: Connection = await createConnection(connectionOptions);
     const server: http.Server = app.listen(PORT, () => {
@@ -52,12 +58,4 @@ export async function startAPI(): Promise<http.Server> {
 
     console.log(`Express application is up and running on port ${PORT}`);
     return server;
-}
-
-if (require.main === module) {
-    dotenv.config({
-        path: '../../.env'
-    });
-
-    startAPI();
 }

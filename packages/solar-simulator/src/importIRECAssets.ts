@@ -37,7 +37,7 @@ if (!fs.existsSync(program.input)) {
     process.exit(1);
 }
 
-const processAssets = async (parsedContent: any) => {
+const processAssets = async parsedContent => {
     const assets = [];
     const flow = [];
 
@@ -95,12 +95,9 @@ const processAssets = async (parsedContent: any) => {
                 gpsLongitude: longitude.toString(),
                 timezone,
                 assetType,
-                certificatesCreatedForWh: 0,
-                lastSmartMeterCO2OffsetRead: 0,
                 complianceRegistry: 'IREC',
                 otherGreenAttributes: 'N.A.',
                 typeOfPublicSupport: 'N.A',
-                maxOwnerChanges: 1000,
                 facilityName: name
             }
         });

@@ -1,0 +1,35 @@
+{
+  "name": "@energyweb/origin-backend-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/js/src/index.js",
+  "scripts": {
+    "build": "yarn build:ts",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "clean": "shx rm -rf dist"
+  },
+  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-client#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "axios": "0.19.0"
+  },
+  "devDependencies": {
+
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}

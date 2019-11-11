@@ -1,22 +1,19 @@
 import Web3 from 'web3';
 import ganache from 'ganache-cli';
 import * as Winston from 'winston';
+
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { BACKEND_URL } from '../../utils/api';
-import { MarketLogic } from '@energyweb/market';
-import { IStoreState } from '../../types';
-import axios from 'axios';
-import { User, UserLogic, buildRights, Role } from '@energyweb/user-registry';
+
+import { User, buildRights, Role } from '@energyweb/user-registry';
 import { Compliance } from '@energyweb/utils-general';
-import { CertificateLogic } from '@energyweb/origin';
-import {
-    ProducingAsset,
-    AssetProducingRegistryLogic,
-    AssetConsumingRegistryLogic
-} from '@energyweb/asset-registry';
+import { Asset, ProducingAsset } from '@energyweb/asset-registry';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+
+import { BACKEND_URL } from '../../utils/api';
+import { IStoreState } from '../../types';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -65,68 +62,54 @@ export const ACCOUNTS = {
     }
 };
 
-export const deployDemo = async () => {
+export async function deployDemo() {
     const logger = Winston.createLogger({
-        level: 'debug',
+        level: 'verbose',
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
-    const userContracts: any = await migrateUserRegistryContracts(web3, adminPK);
-    const assetContracts: any = await migrateAssetRegistryContracts(
+    const userLogic = await migrateUserRegistryContracts(web3, adminPK);
+    const userLogicAddress = userLogic.web3Contract.options.address;
+
+    const assetLogic = await migrateAssetRegistryContracts(web3, userLogicAddress, adminPK);
+    const assetLogicAddress = assetLogic.web3Contract.options.address;
+
+    const certificateLogic = await migrateCertificateRegistryContracts(
         web3,
-        userContracts.UserContractLookup,
+        assetLogicAddress,
         adminPK
     );
-    const originContracts: any = await migrateCertificateRegistryContracts(
+    const certificateLogicAddress = certificateLogic.web3Contract.options.address;
+
+    const marketLogic = await migrateMarketRegistryContracts(
         web3,
-        assetContracts.AssetContractLookup,
-        adminPK
-    );
-    const marketContracts: any = await migrateMarketRegistryContracts(
-        web3,
-        assetContracts.AssetContractLookup,
-        originContracts.OriginContractLookup,
+        certificateLogicAddress,
         adminPK
     );
 
     const deployResult = {
-        userContractLookup: '',
-        assetContractLookup: '',
-        originContractLookup: '',
-        marketContractLookup: '',
         userLogic: '',
-        assetConsumingRegistryLogic: '',
-        assetProducingRegistryLogic: '',
+        assetLogic: '',
         certificateLogic: '',
         marketLogic: ''
     };
 
-    deployResult.userContractLookup = userContracts.UserContractLookup;
-    deployResult.assetContractLookup = assetContracts.AssetContractLookup;
-    deployResult.originContractLookup = originContracts.OriginContractLookup;
-    deployResult.marketContractLookup = marketContracts.MarketContractLookup;
-    deployResult.userLogic = userContracts.UserLogic;
-    deployResult.assetConsumingRegistryLogic = assetContracts.AssetConsumingRegistryLogic;
-    deployResult.assetProducingRegistryLogic = assetContracts.AssetProducingRegistryLogic;
-    deployResult.certificateLogic = originContracts.CertificateLogic;
-    deployResult.marketLogic = marketContracts.MarketLogic;
+    const marketContractLookup = marketLogic.web3Contract.options.address;
 
-    await axios.post(
-        `${BACKEND_URL}/api/MarketContractLookup/${deployResult.marketContractLookup.toLowerCase()}`
-    );
+    deployResult.userLogic = userLogicAddress;
+    deployResult.assetLogic = assetLogicAddress;
+    deployResult.certificateLogic = certificateLogicAddress;
+    deployResult.marketLogic = marketContractLookup;
 
-    const userLogic = new UserLogic(web3, deployResult.userLogic);
-    const assetProducingRegistryLogic = new AssetProducingRegistryLogic(
-        web3,
-        deployResult.assetProducingRegistryLogic
+    const configurationClient = new ConfigurationClientMock();
+    const offChainDataClient = new OffChainDataClientMock();
+
+    await configurationClient.add(
+        BACKEND_URL,
+        'MarketContractLookup',
+        marketContractLookup.toLowerCase()
     );
-    const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(
-        web3,
-        deployResult.assetConsumingRegistryLogic
-    );
-    const certificateLogic = new CertificateLogic(web3, deployResult.certificateLogic);
-    const marketLogic = new MarketLogic(web3, deployResult.marketLogic);
 
     const conf: IStoreState['configuration'] = {
         blockchainProperties: {
@@ -134,15 +117,15 @@ export const deployDemo = async () => {
                 address: ACCOUNTS.ADMIN.address,
                 privateKey: adminPK
             },
-            producingAssetLogicInstance: assetProducingRegistryLogic,
-            consumingAssetLogicInstance: assetConsumingRegistryLogic,
+            assetLogicInstance: assetLogic,
             certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
             marketLogicInstance: marketLogic,
             web3
         },
         offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`
+            baseUrl: `${BACKEND_URL}/api`,
+            client: offChainDataClient
         },
         logger
     };
@@ -193,15 +176,15 @@ export const deployDemo = async () => {
 
     await User.createUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
 
-    const assetProducingProps: ProducingAsset.IOnChainProperties = {
+    const assetProducingProps: Asset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.ASSET_MANAGER.address },
         lastSmartMeterReadWh: 0,
         active: true,
+        usageType: Asset.UsageType.Producing,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
-        url: null,
-        maxOwnerChanges: 1000
+        url: null
     };
 
     const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -225,25 +208,23 @@ export const deployDemo = async () => {
         throw new Error(error);
     }
 
-    return { conf, deployResult };
-};
+    return { conf, deployResult, configurationClient, offChainDataClient };
+}
 
-export const startGanache = async () => {
-    return new Promise(resolve => {
-        const ganacheServer = ganache.server({
-            mnemonic: 'chalk park staff buzz chair purchase wise oak receive avoid avoid home',
-            gasLimit: 8000000,
-            default_balance_ether: 1000000,
-            total_accounts: 20
-        });
+interface IGanacheServer {
+    close(): Promise<void>;
+    listen(port: number, callback: () => void): void;
+}
 
-        ganacheServer.listen(8545, function(err, blockchain) {
-            resolve({
-                blockchain,
-                ganacheServer
-            });
-        });
+export async function startGanache(): Promise<IGanacheServer> {
+    const ganacheServer = ganache.server({
+        mnemonic: 'chalk park staff buzz chair purchase wise oak receive avoid avoid home',
+        gasLimit: 8000000,
+        default_balance_ether: 1000000,
+        total_accounts: 20
+    }) as IGanacheServer;
 
-        resolve(ganacheServer);
-    });
-};
+    ganacheServer.listen(8545, () => {});
+
+    return ganacheServer;
+}

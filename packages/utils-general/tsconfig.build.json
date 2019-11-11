@@ -5,7 +5,10 @@
         "rootDir": "./",
         "outDir": "./dist/js"
     },
-    "include": [
-        "src/**/*", "build/**/*.json", "test/*"
+    "include": ["src/**/*", "build/**/*.json", "test/*"],
+    "references": [
+        {
+            "path": "../origin-backend-client/tsconfig.build.json"
+        }
     ]
 }

@@ -17,9 +17,8 @@ export class LocationService {
 
         const province = zip ? (provinceWithZip.split(zipRegex)[0] || '').trim() : '';
 
-        for (const region in THAILAND_REGIONS_PROVINCES_MAP) {
-            const provinces = (THAILAND_REGIONS_PROVINCES_MAP as any)[region] as string[];
-            const included = provinces.some(p => p == province);
+        for (const [region, provinces] of Object.entries(THAILAND_REGIONS_PROVINCES_MAP)) {
+            const included = provinces.some(p => p === province);
 
             if (included) {
                 return `${country};${region};${province}`;
@@ -29,13 +28,40 @@ export class LocationService {
         throw new Error('unable to translate address');
     }
 
-    public matches(currentLocation: string[], requestedLocation: string) {
-        return currentLocation.some(location => location.includes(requestedLocation));
+    public matches(currentLocation: string[], checkedLocation: string) {
+        const highestSpecificityTypes = this.filterForHighestSpecificity(currentLocation).map(
+            type => [...this.decode([type])[0]]
+        );
+
+        return highestSpecificityTypes.some(location =>
+            checkedLocation.startsWith(this.encode([location])[0])
+        );
     }
 
     private clear(input: string) {
         const terms = [['Nakhon Province', 'Nakhon Pathom']];
 
         return terms.reduce((res, term) => `${res}`.replace(term[0], term[1] || ''), input);
+    }
+
+    private filterForHighestSpecificity(types: string[]): string[] {
+        const decodedTypes = types.map(type => [...this.decode([type])[0]]);
+
+        return this.encode(
+            decodedTypes.filter(
+                type =>
+                    !decodedTypes.some(
+                        nestedType => nestedType[0] === type[0] && type.length < nestedType.length
+                    )
+            )
+        );
+    }
+
+    private encode(decoded: string[][]): string[] {
+        return decoded.map(group => group.join(';'));
+    }
+
+    private decode(encoded: string[]): string[][] {
+        return encoded.map(item => item.split(';'));
     }
 }

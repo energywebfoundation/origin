@@ -21,12 +21,12 @@
     "deploy-contracts": "truffle migrate",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 90000 --exit",
     "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"wait-on tcp:8552 && yarn test\"",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8552",
+    "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8552",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "solium -d contracts && eslint 'src/**/*{.ts,.tsx}'",
     "lint-fix": "solium -d contracts --fix && eslint --fix 'src/**/*{.ts,.tsx}'",
     "precommit": "lint-staged",
-    "clean": "rm -rf build dist"
+    "clean": "shx rm -rf build dist"
   },
   "dependencies": {
     "@energyweb/utils-general": "1.3.0",

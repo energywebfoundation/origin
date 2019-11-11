@@ -28,21 +28,21 @@
     "deploy-contracts": "truffle migrate",
     "lint": "solium -d contracts",
     "lint-fix": "solium -d contracts --fix",
-    "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
+    "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -g 0 -l 80000000 -e 1000000 -a 20",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --exit",
     "test:watch": "TS_NODE_PROJECT=\"tsconfig.build.json\" mocha -r ts-node/register src/test/*.test.ts --watch --watch-extensions ts",
-    "clean": "rm -rf build dist"
+    "clean": "shx rm -rf build dist"
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "axios": "0.19.0",
+    "@energyweb/origin-backend-client": "^1.0.0",
     "ew-utils-general-precise-proofs": "0.3.0",
     "jsonschema": "1.2.4",
     "moment": "^2.24.0",
     "web3": "1.2.1",
     "winston": "3.2.1"
-  },
+  }, 
   "devDependencies": {
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",

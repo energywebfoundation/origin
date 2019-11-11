@@ -1,12 +1,7 @@
-import axios from 'axios';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
-import {
-    AssetConsumingRegistryLogic,
-    AssetProducingRegistryLogic,
-    ProducingAsset
-} from '@energyweb/asset-registry';
+import { Asset, AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { MarketLogic, Demand } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
@@ -17,13 +12,18 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 
 import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
+import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 
 export class Demo {
     public marketContractLookup: string;
 
+    public marketLogic: MarketLogic;
+
     public certificateLogic: CertificateLogic;
 
-    public assetProducingRegistryLogic: AssetProducingRegistryLogic;
+    public assetLogic: AssetLogic;
+
+    public userLogic: UserLogic;
 
     private nextDeployedSmReadIndex = 0;
 
@@ -72,7 +72,7 @@ export class Demo {
         };
 
         this.logger = Winston.createLogger({
-            level: 'debug',
+            level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         });
@@ -82,66 +82,43 @@ export class Demo {
         return this.nextDeployedSmReadIndex - 1;
     }
 
-    async deploy() {
-        const userContracts: any = await migrateUserRegistryContracts(this.web3, this.adminPK);
-        const assetContracts: any = await migrateAssetRegistryContracts(
+    async deploy(offChainDataClient: IOffChainDataClient) {
+        this.userLogic = await migrateUserRegistryContracts(this.web3, this.adminPK);
+        const userLogicAddress = this.userLogic.web3Contract.options.address;
+
+        this.assetLogic = await migrateAssetRegistryContracts(
             this.web3,
-            userContracts.UserContractLookup,
+            userLogicAddress,
             this.adminPK
         );
-        const originContracts: any = await migrateCertificateRegistryContracts(
+        const assetLogicAddress = this.assetLogic.web3Contract.options.address;
+
+        this.certificateLogic = await migrateCertificateRegistryContracts(
             this.web3,
-            assetContracts.AssetContractLookup,
+            assetLogicAddress,
             this.adminPK
         );
-        const marketContracts: any = await migrateMarketRegistryContracts(
+        const certificateLogicAddress = this.certificateLogic.web3Contract.options.address;
+
+        this.marketLogic = await migrateMarketRegistryContracts(
             this.web3,
-            assetContracts.AssetContractLookup,
-            originContracts.OriginContractLookup,
+            certificateLogicAddress,
             this.adminPK
         );
 
         const deployResult = {
-            userContractLookup: '',
-            assetContractLookup: '',
-            originContractLookup: '',
-            marketContractLookup: '',
             userLogic: '',
-            assetConsumingRegistryLogic: '',
-            assetProducingRegistryLogic: '',
+            assetLogic: '',
             certificateLogic: '',
             marketLogic: ''
         };
 
-        this.marketContractLookup = marketContracts.MarketContractLookup;
+        this.marketContractLookup = this.marketLogic.web3Contract.options.address;
 
-        deployResult.userContractLookup = userContracts.UserContractLookup;
-        deployResult.assetContractLookup = assetContracts.AssetContractLookup;
-        deployResult.originContractLookup = originContracts.OriginContractLookup;
-        deployResult.marketContractLookup = marketContracts.MarketContractLookup;
-        deployResult.userLogic = userContracts.UserLogic;
-        deployResult.assetConsumingRegistryLogic = assetContracts.AssetConsumingRegistryLogic;
-        deployResult.assetProducingRegistryLogic = assetContracts.AssetProducingRegistryLogic;
-        deployResult.certificateLogic = originContracts.CertificateLogic;
-        deployResult.marketLogic = marketContracts.MarketLogic;
-
-        await axios.post(
-            `${
-                process.env.BACKEND_URL
-            }/api/MarketContractLookup/${this.marketContractLookup.toLowerCase()}`
-        );
-
-        const userLogic = new UserLogic(this.web3, deployResult.userLogic);
-        this.assetProducingRegistryLogic = new AssetProducingRegistryLogic(
-            this.web3,
-            deployResult.assetProducingRegistryLogic
-        );
-        const assetConsumingRegistryLogic = new AssetConsumingRegistryLogic(
-            this.web3,
-            deployResult.assetConsumingRegistryLogic
-        );
-        this.certificateLogic = new CertificateLogic(this.web3, deployResult.certificateLogic);
-        const marketLogic = new MarketLogic(this.web3, deployResult.marketLogic);
+        deployResult.userLogic = userLogicAddress;
+        deployResult.assetLogic = assetLogicAddress;
+        deployResult.certificateLogic = certificateLogicAddress;
+        deployResult.marketLogic = this.marketContractLookup;
 
         this.conf = {
             blockchainProperties: {
@@ -149,15 +126,15 @@ export class Demo {
                     address: this.ACCOUNTS.ADMIN.address,
                     privateKey: this.adminPK
                 },
-                producingAssetLogicInstance: this.assetProducingRegistryLogic,
-                consumingAssetLogicInstance: assetConsumingRegistryLogic,
+                assetLogicInstance: this.assetLogic,
                 certificateLogicInstance: this.certificateLogic,
-                userLogicInstance: userLogic,
-                marketLogicInstance: marketLogic,
+                userLogicInstance: this.userLogic,
+                marketLogicInstance: this.marketLogic,
                 web3: this.web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`
+                baseUrl: `${process.env.BACKEND_URL}/api`,
+                client: offChainDataClient
             },
             logger: this.logger
         };
@@ -272,15 +249,15 @@ export class Demo {
         };
         await User.createUser(traderOnChain, traderOffChain, this.conf);
 
-        const assetProducingProps: ProducingAsset.IOnChainProperties = {
+        const assetProducingProps: Asset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.ASSET_MANAGER.address },
             lastSmartMeterReadWh: 0,
             active: true,
+            usageType: Asset.UsageType.Producing,
             lastSmartMeterReadFileHash: '',
             propertiesDocumentHash: null,
-            url: null,
-            maxOwnerChanges: 1000
+            url: null
         };
 
         const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
@@ -315,7 +292,7 @@ export class Demo {
     async deploySmartMeterRead(smRead: number): Promise<void> {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
 
-        await this.assetProducingRegistryLogic.saveSmartMeterRead(
+        await this.assetLogic.saveSmartMeterRead(
             0,
             smRead,
             'newSmartMeterRead',
