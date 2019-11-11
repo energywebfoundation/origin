@@ -50,10 +50,9 @@ async function createBlockchainConfiguration() {
         }
     };
 
-    const storedMarketContractAddress = (await new ConfigurationClient().get(
-        baseUrl,
-        'MarketContractLookup'
-    )).pop();
+    const storedMarketContractAddress = (
+        await new ConfigurationClient().get(baseUrl, 'MarketContractLookup')
+    ).pop();
 
     const latestMarketContractLookupAddress: string =
         process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
