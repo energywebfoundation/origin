@@ -37,7 +37,7 @@
         "wait-on": "3.3.0"
     },
     "scripts": {
-        "build": "yarn build:static && yarn build:ts",
+        "build": "yarn build:ui && yarn build:static && yarn build:ts",
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
         "lint": "lerna run lint --parallel --stream",
         "lint-fix": "lerna run lint-fix --parallel --stream",
