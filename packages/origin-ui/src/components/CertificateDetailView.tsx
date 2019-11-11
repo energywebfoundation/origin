@@ -1,25 +1,9 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector,
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
-
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import './DetailView.scss';
 import { Configuration } from '@energyweb/utils-general';
@@ -44,7 +28,7 @@ type Props = IOwnProps & IStateProps;
 
 interface IDetailViewState {
     newId: number;
-    owner: User.Entity;
+    owner: MarketUser.Entity;
     events: IEnrichedEvent[];
 }
 
@@ -94,7 +78,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
     async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
         this.setState(
             {
-                owner: await new User.Entity(
+                owner: await new MarketUser.Entity(
                     selectedCertificate.owner,
                     props.configuration as any
                 ).sync()
@@ -124,16 +108,16 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                             '0x0000000000000000000000000000000000000000'
                         ) {
                             label = 'Initial owner';
-                            description = (await new User.Entity(
+                            description = (await new MarketUser.Entity(
                                 (event as any).returnValues._to,
                                 props.configuration as any
                             ).sync()).organization;
                         } else {
-                            const newOwner = (await new User.Entity(
+                            const newOwner = (await new MarketUser.Entity(
                                 (event as any).returnValues._to,
                                 props.configuration as any
                             ).sync()).organization;
-                            const oldOwner = (await new User.Entity(
+                            const oldOwner = (await new MarketUser.Entity(
                                 (event as any).returnValues._from,
                                 props.configuration as any
                             ).sync()).organization;

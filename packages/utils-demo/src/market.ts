@@ -6,7 +6,7 @@ import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { AssetLogic } from '@energyweb/asset-registry';
 import { CertificateLogic } from '@energyweb/origin';
-import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
+import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
 import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
@@ -74,7 +74,7 @@ export const marketDemo = async (demoFile?: string) => {
         organization: 'admin'
     };
 
-    const userPropsOffChain: User.IUserOffChainProperties = {
+    const userPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Admin',
         surname: 'User',
         email: 'admin@example.com',
@@ -84,10 +84,15 @@ export const marketDemo = async (demoFile?: string) => {
         city: '',
         country: '',
         state: '',
-        notifications: true
+        notifications: true,
+        autoPublish: {
+            enabled: true,
+            price: 1.5,
+            currency: Currency.USD
+        }
     };
 
-    await User.createUser(userPropsOnChain, userPropsOffChain, conf);
+    await MarketUser.createMarketUser(userPropsOnChain, userPropsOffChain, conf);
 
     const marketLogicMatcherRole: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -98,7 +103,7 @@ export const marketDemo = async (demoFile?: string) => {
         organization: 'admin'
     };
 
-    const marketLogicMatcherRoleOffChain: User.IUserOffChainProperties = {
+    const marketLogicMatcherRoleOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'MarketMatcher',
         surname: 'User',
         email: 'admin@example.com',
@@ -108,10 +113,15 @@ export const marketDemo = async (demoFile?: string) => {
         city: '',
         country: '',
         state: '',
-        notifications: true
+        notifications: true,
+        autoPublish: {
+            enabled: true,
+            price: 1.5,
+            currency: Currency.USD
+        }
     };
 
-    await User.createUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);
+    await MarketUser.createMarketUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);
 
     const actionsArray = demoConfig.flow;
 

@@ -2,10 +2,9 @@ import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand } from '@energyweb/market';
+import { Demand, MarketUser } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
 import {
     Configuration,
     ContractEventHandler,
@@ -167,10 +166,10 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     private async notify() {
-        const allUsers: Promise<User.Entity>[] = this.originEventsStore
+        const allUsers: Promise<MarketUser.Entity>[] = this.originEventsStore
             .getAllUsers()
-            .map(async userId => new User.Entity(userId, this.conf).sync());
-        const notifyUsers: User.Entity[] = (await Promise.all(allUsers)).filter(
+            .map(async userId => new MarketUser.Entity(userId, this.conf).sync());
+        const notifyUsers: MarketUser.Entity[] = (await Promise.all(allUsers)).filter(
             user => user.offChainProperties.notifications
         );
 

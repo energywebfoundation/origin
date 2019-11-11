@@ -5,7 +5,7 @@ import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { ConsumingAsset } from '@energyweb/asset-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/Helper';
@@ -32,7 +32,7 @@ type Props = IOwnProps & IStateProps;
 
 export interface IDetailViewState {
     newId: number;
-    owner: User.Entity;
+    owner: MarketUser.Entity;
     notSoldCertificates: number;
 }
 
@@ -81,7 +81,7 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
                 });
             }
             this.setState({
-                owner: await new User.Entity(
+                owner: await new MarketUser.Entity(
                     selectedAsset.owner.address,
                     props.configuration as any
                 ).sync()

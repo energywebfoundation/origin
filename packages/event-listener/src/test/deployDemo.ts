@@ -3,7 +3,7 @@ import * as Winston from 'winston';
 
 import { Asset, AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { MarketLogic, Demand } from '@energyweb/market';
+import { MarketLogic, Demand, MarketUser } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
@@ -147,7 +147,7 @@ export class Demo {
             roles: buildRights([Role.UserAdmin, Role.AssetAdmin, Role.Issuer]),
             organization: 'admin'
         };
-        const adminPropsOffChain: User.IUserOffChainProperties = {
+        const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Admin',
             surname: 'User',
             email: 'admin@example.com',
@@ -159,7 +159,7 @@ export class Demo {
             state: '',
             notifications: true
         };
-        await User.createUser(adminPropsOnChain, adminPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
         const assetManagerPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -169,7 +169,7 @@ export class Demo {
             roles: buildRights([Role.AssetAdmin, Role.AssetManager, Role.Trader]),
             organization: 'Asset Manager organization'
         };
-        const assetManagerPropsOffChain: User.IUserOffChainProperties = {
+        const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Admin',
             surname: 'User',
             email: 'admin@example.com',
@@ -181,7 +181,11 @@ export class Demo {
             state: '',
             notifications: true
         };
-        await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            assetManagerPropsOnChain,
+            assetManagerPropsOffChain,
+            this.conf
+        );
 
         const matcherPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -191,7 +195,7 @@ export class Demo {
             roles: buildRights([Role.Matcher]),
             organization: 'Matcher organization'
         };
-        const matcherPropsOffChain: User.IUserOffChainProperties = {
+        const matcherPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Matcher',
             surname: 'M',
             email: 'matcher@example.com',
@@ -203,7 +207,7 @@ export class Demo {
             state: '',
             notifications: true
         };
-        await User.createUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
 
         const marketLogicPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -213,7 +217,7 @@ export class Demo {
             roles: buildRights([Role.Matcher]),
             organization: 'MarketLogic matcher'
         };
-        const marketLogicPropsOffChain: User.IUserOffChainProperties = {
+        const marketLogicPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'MarketLogic',
             surname: 'Matcher',
             email: 'marketlogicmatcher@example.com',
@@ -225,7 +229,11 @@ export class Demo {
             state: '',
             notifications: true
         };
-        await User.createUser(marketLogicPropsOnChain, marketLogicPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            marketLogicPropsOnChain,
+            marketLogicPropsOffChain,
+            this.conf
+        );
 
         const traderOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -235,7 +243,7 @@ export class Demo {
             roles: buildRights([Role.Trader]),
             organization: 'Trader'
         };
-        const traderOffChain: User.IUserOffChainProperties = {
+        const traderOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Trader',
             surname: 'Trader',
             email: 'marketlogicmatcher@example.com',
@@ -247,7 +255,7 @@ export class Demo {
             state: '',
             notifications: true
         };
-        await User.createUser(traderOnChain, traderOffChain, this.conf);
+        await MarketUser.createMarketUser(traderOnChain, traderOffChain, this.conf);
 
         const assetProducingProps: Asset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },

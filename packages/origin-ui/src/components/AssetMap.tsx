@@ -3,7 +3,7 @@ import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-map
 import { APIKEY } from './GoogleApiKey';
 import { Asset } from '@energyweb/asset-registry';
 import { connect } from 'react-redux';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../types';
 import { Link } from 'react-router-dom';
 import { getProducingAssetDetailLink } from '../utils/routing';
@@ -24,7 +24,7 @@ type Props = IOwnProps & IStateProps;
 
 interface IState {
     assetHighlighted: Asset.Entity;
-    owner: User.Entity;
+    owner: MarketUser.Entity;
 }
 
 class AssetMapClass extends React.Component<Props, IState> {
@@ -42,7 +42,7 @@ class AssetMapClass extends React.Component<Props, IState> {
     async showWindowForAsset(asset: Asset.Entity) {
         this.setState({
             assetHighlighted: asset,
-            owner: await new User.Entity(asset.owner.address, this.props
+            owner: await new MarketUser.Entity(asset.owner.address, this.props
                 .configuration as any).sync()
         });
     }

@@ -1,5 +1,5 @@
-import { Demand } from '@energyweb/market';
-import { User } from '@energyweb/user-registry';
+import { Demand, MarketUser } from '@energyweb/market';
+
 import { Configuration, Currency, IRECAssetService, TimeFrame } from '@energyweb/utils-general';
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
@@ -33,7 +33,7 @@ import { getCurrentUser } from '../../features/users/selectors';
 interface IStateProps {
     configuration: Configuration.Entity;
     demands: Demand.Entity[];
-    currentUser: User.Entity;
+    currentUser: MarketUser.Entity;
     baseURL: string;
 }
 
@@ -46,7 +46,7 @@ export interface IDemandTableState extends IPaginatedLoaderFilteredState {
 
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
-    demandOwner: User.Entity;
+    demandOwner: MarketUser.Entity;
 }
 
 const NO_VALUE_TEXT = 'any';
@@ -96,7 +96,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         const promises = demands.map(async (demand: Demand.Entity) => {
             return {
                 demand,
-                demandOwner: await new User.Entity(
+                demandOwner: await new MarketUser.Entity(
                     demand.demandOwner,
                     this.props.configuration
                 ).sync()

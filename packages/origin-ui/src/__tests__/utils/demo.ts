@@ -13,6 +13,7 @@ import { Asset, ProducingAsset } from '@energyweb/asset-registry';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { BACKEND_URL } from '../../utils/api';
+import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
 
 const connectionConfig = {
@@ -138,7 +139,7 @@ export async function deployDemo() {
         roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
         organization: 'admin'
     };
-    const adminPropsOffChain: User.IUserOffChainProperties = {
+    const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Admin',
         surname: 'User',
         email: 'admin@example.com',
@@ -150,7 +151,7 @@ export async function deployDemo() {
         state: '',
         notifications: false
     };
-    await User.createUser(adminPropsOnChain, adminPropsOffChain, conf);
+    await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, conf);
 
     const assetManagerPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -160,7 +161,7 @@ export async function deployDemo() {
         roles: buildRights([Role.AssetManager]),
         organization: 'Asset Manager organization'
     };
-    const assetManagerPropsOffChain: User.IUserOffChainProperties = {
+    const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Asset',
         surname: 'Manager',
         email: 'assetmanager@example.com',
@@ -172,9 +173,9 @@ export async function deployDemo() {
         state: '',
         notifications: false
     };
-    await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
+    await MarketUser.createMarketUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
 
-    await User.createUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
+    await MarketUser.createMarketUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
 
     const assetProducingProps: Asset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
