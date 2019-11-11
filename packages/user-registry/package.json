@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://git.slock.it/ewf/origin/user-registry/ew-user-registry-lib"
   },
-  "version": "1.3.2",
+  "version": "1.3.3",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/schemas",
@@ -43,14 +43,14 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/utils-general": "1.3.0",
+    "@energyweb/utils-general": "1.3.1",
     "typedarray-to-buffer": "3.1.5",
     "web3": "1.2.1",
     "winston": "3.2.1",
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@energyweb/origin-backend-client": "1.0.0",
+    "@energyweb/origin-backend-client": "1.0.1",
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
