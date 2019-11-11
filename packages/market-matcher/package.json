@@ -32,7 +32,7 @@
         "test:concurrent": "rm -rf db.sqlite && concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"wait-on tcp:8549 && yarn test\"",
         "clean": "shx rm -rf build dist db.sqlite",
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
-        "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "precommit": "lint-staged"
     },
     "types": "dist/js/src/exports.d.ts",
