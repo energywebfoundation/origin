@@ -11,9 +11,11 @@ export async function migrateMarketRegistryContracts(
 ): Promise<MarketLogic> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    const marketLogicAddress = (await deploy(web3, MarketLogicJSON.bytecode, {
-        privateKey: privateKeyDeployment
-    })).contractAddress;
+    const marketLogicAddress = (
+        await deploy(web3, MarketLogicJSON.bytecode, {
+            privateKey: privateKeyDeployment
+        })
+    ).contractAddress;
 
     const marketLogic = new MarketLogic(web3, marketLogicAddress);
     await marketLogic.initialize(certificateLogicAddress);

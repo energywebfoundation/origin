@@ -8,6 +8,7 @@ import { Demands } from './Demand/Demands';
 import { Account } from './Account/Account';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 import { RequestPasswordModal } from '../elements/Modal/RequestPasswordModal';
+import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
 import { useSelector } from 'react-redux';
 import { ErrorComponent } from './ErrorComponent';
 import { LoadingComponent } from './LoadingComponent';
@@ -47,6 +48,7 @@ export function AppContainer() {
             </Switch>
             <AccountChangedModal />
             <RequestPasswordModal />
+            <RequestIRECsModal />
         </div>
     );
 }

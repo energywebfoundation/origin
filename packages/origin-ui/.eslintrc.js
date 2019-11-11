@@ -43,7 +43,8 @@ module.exports = {
         "import/order": "off",
         "prefer-destructuring": "off",
         "prefer-template": "off",
-        "react/prop-types": "off"
+        "react/prop-types": "off",
+        "no-undef": "off"
     },
     "settings": {
         "import/resolver": {

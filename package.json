@@ -39,8 +39,8 @@
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
-        "lint": "lerna run lint --parallel --stream --since master",
-        "lint-fix": "lerna run lint-fix --parallel --stream --since master",
+        "lint": "lerna run lint --parallel --stream",
+        "lint-fix": "lerna run lint-fix --parallel --stream",
         "clean": "lerna run clean --parallel",
         "build:user-asset-registry-origin": "lerna run build --scope @energyweb/user-registry build --scope @energyweb/asset-registry build --scope @energyweb/origin --parallel",
         "build:static": "lerna run build:static --parallel",
