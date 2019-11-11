@@ -11,7 +11,7 @@
     "import-irec-assets": "ts-node src/importIRECAssets.ts -i irec-example/irec-thailand.csv",
     "fund-assets-smart-meters": "ts-node src/fundAssets.ts",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
-    "lint": "eslint 'src/**/*{.ts,.tsx}'",
+    "lint": "eslint \"src/**/*{.ts,.tsx}\"",
     "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
     "clean": "shx rm -rf dist",
     "precommit": "lint-staged"

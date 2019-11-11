@@ -18,7 +18,7 @@
         "start-all": "yarn start",
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
-        "lint": "eslint 'src/**/*{.ts,.tsx}'",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint 'src/**/*{.ts,.tsx}' --fix",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "test": "mocha -r ts-node/register src/test/**/*.test.ts --timeout 60000 --exit",
