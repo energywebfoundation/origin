@@ -129,8 +129,8 @@ export function RequestIRECsModal() {
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Request I-RECs for Asset ${producingAsset?.offChainProperties
-                ?.facilityName || ''}`}</DialogTitle>
+            <DialogTitle>{`Request I-RECs for ${producingAsset?.offChainProperties?.facilityName ||
+                ''}`}</DialogTitle>
             <DialogContent>
                 <TextField
                     label="From"
@@ -160,7 +160,6 @@ export function RequestIRECsModal() {
                     Request
                 </Button>
             </DialogActions>
-            <br />
 
             {showLoader && <LinearProgress className={classes.progress} />}
         </Dialog>
