@@ -42,8 +42,8 @@ before_deploy:
 
 install:
   - yarn
-  - yarn build:ui
   - yarn build
+  - yarn build:ui
 
 script:
   - yarn lint
