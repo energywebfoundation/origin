@@ -1,6 +1,6 @@
 import { TransactionReceipt, EventLog } from 'web3/types';
 
-import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
+import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 
 import { CertificateLogic } from '..';
@@ -21,22 +21,10 @@ export interface ICertificate {
     creationTime: number;
     parentId: number;
     children: string[];
-    isOffChainSettlement: boolean;
-    price: number;
-    currency: Currency | string;
-
-    forSale: boolean;
-    acceptedToken?: string;
-    onChainDirectPurchasePrice: number;
 
     sync(): Promise<ICertificate>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
-}
-
-export interface IOffChainSettlementOptions {
-    price: number;
-    currency: Currency;
 }
 
 export const getCertificateListLength = async (configuration: Configuration.Entity): Promise<number> => {
@@ -135,13 +123,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     public parentId: number;
     public children: string[];
 
-    public forSale: boolean;
-    public acceptedToken?: string;
-    public onChainDirectPurchasePrice: number;
-
     public initialized: boolean;
-
-    public offChainSettlementOptions: IOffChainSettlementOptions
 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
@@ -165,15 +147,11 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.assetId = Number(cert.assetId);
             this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
             this.energy = Number(cert.energy);
-            this.forSale = cert.forSale;
-            this.acceptedToken = cert.acceptedToken;
-            this.onChainDirectPurchasePrice = Number(cert.onChainDirectPurchasePrice); //TODO: should be BN
 
             this.children = cert.children;
             this.status = Number(cert.status);
             this.creationTime = Number(cert.creationTime);
             this.parentId = Number(cert.parentId);
-            this.offChainSettlementOptions = await this.getOffChainSettlementOptions();
 
             this.initialized = true;
 
@@ -183,50 +161,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         }
 
         return this;
-    }
-
-    async buyCertificate(wh?: number): Promise<TransactionReceipt> {
-        const logic: CertificateLogic = this.configuration.blockchainProperties.certificateLogicInstance;
-        const id = Number(this.id);
-
-        if (wh) {
-            let splitAndBuyCertificateCall;
-            if (this.configuration.blockchainProperties.activeUser.privateKey) {
-                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(id, wh, {
-                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-                });
-            } else {
-                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(id, wh, {
-                    from: this.configuration.blockchainProperties.activeUser.address,
-                    privateKey: ''
-                });
-            }
-
-            const txResult = await splitAndBuyCertificateCall;
-
-            await this.sync();
-            const offChainSettlementOptions = await this.getOffChainSettlementOptions();
-
-            if (Number(this.status) === Status.Split) {
-                for (const certificateId of this.children) {
-                    const certificate = new Entity(certificateId.toString(), this.configuration);
-
-                    await certificate.setOffChainSettlementOptions(offChainSettlementOptions);
-                }
-            }
-
-            return txResult;
-        }
-
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return logic.buyCertificate(id, {
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            });
-        }
-        return logic.buyCertificate(id, {
-            from: this.configuration.blockchainProperties.activeUser.address,
-            privateKey: ''
-        });
     }
 
     async retireCertificate(): Promise<TransactionReceipt> {
@@ -255,87 +189,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             energy,
             { from: this.configuration.blockchainProperties.activeUser.address }
         );
-    }
-
-    async publishForSale(
-        price: number,
-        tokenAddressOrCurrency: string | Currency,
-        wh?: number
-    ): Promise<void> {
-        const isErc20Sale: boolean = this.configuration.blockchainProperties.web3.utils.isAddress(
-            tokenAddressOrCurrency
-        );
-        const isFiatSale: boolean = typeof tokenAddressOrCurrency !== 'string';
-
-        let certificate;
-
-        if (!isErc20Sale && !isFiatSale) {
-            throw Error('Please specify either an ERC20 token address or a currency.');
-        }
-
-        const certificateEnergy = Number(this.energy);
-        const saleParams = {
-            onChainPrice: isErc20Sale ? Math.floor(price) : 0,
-            tokenAddress: isErc20Sale
-                ? tokenAddressOrCurrency
-                : '0x0000000000000000000000000000000000000000',
-            offChainPrice: isFiatSale ? Math.floor(price * 100) : 0,
-            offChainCurrency: isFiatSale ? tokenAddressOrCurrency : Currency.NONE
-        };
-
-        if (wh > certificateEnergy || wh <= 0) {
-            throw Error(
-                `Invalid energy request: Certificate ${this.id} has ${certificateEnergy} Wh, but user requested ${wh} Wh.`
-            );
-        }
-
-        if (wh === undefined || wh === certificateEnergy) {
-            await this.configuration.blockchainProperties.certificateLogicInstance.publishForSale(
-                this.id,
-                saleParams.onChainPrice,
-                saleParams.tokenAddress,
-                this.configuration.blockchainProperties.activeUser.privateKey
-                    ? { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-                    : { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-
-            certificate = await new Entity(this.id, this.configuration).sync();
-        } else {
-            await this.configuration.blockchainProperties.certificateLogicInstance.splitAndPublishForSale(
-                this.id,
-                wh,
-                saleParams.onChainPrice,
-                saleParams.tokenAddress,
-                this.configuration.blockchainProperties.activeUser.privateKey
-                    ? { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-                    : { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-
-            await this.sync();
-
-            certificate = await new Entity(this.children[0], this.configuration).sync();
-        }
-
-        await certificate.setOffChainSettlementOptions({
-            price: saleParams.offChainPrice,
-            currency: saleParams.offChainCurrency as Currency
-        });
-    }
-
-    get isOffChainSettlement(): boolean {
-        return Number(this.acceptedToken) === 0x0;
-    }
-
-    get price() {
-        return this.isOffChainSettlement
-            ? this.offChainSettlementOptions.price
-            : this.onChainDirectPurchasePrice;
-    }
-
-    get currency() {
-        return this.isOffChainSettlement
-            ? this.offChainSettlementOptions.currency
-            : this.acceptedToken;
     }
 
     async getCertificateOwner(): Promise<string> {
@@ -378,76 +231,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
     async getApproved(): Promise<string> {
         return this.configuration.blockchainProperties.certificateLogicInstance.getApproved(this.id);
-    }
-
-    async getTradableToken(): Promise<string> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getTradableToken(
-            this.id
-        );
-    }
-
-    async getOnChainDirectPurchasePrice(): Promise<number> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getOnChainDirectPurchasePrice(
-            this.id
-        );
-    }
-
-    async unpublishForSale(): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.unpublishForSale(
-                this.id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.unpublishForSale(
-                this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
-        }
-    }
-
-    get offChainURL() {
-        const certificateLogicAddress = this.configuration.blockchainProperties
-            .certificateLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/TradableEntity/${certificateLogicAddress}/${this.id}`;
-    }
-
-    async setOffChainSettlementOptions(options: IOffChainSettlementOptions): Promise<void> {
-        if (!this.configuration.offChainDataSource) {
-            throw Error('No off chain data source set in the configuration');
-        }
-
-        await this.offChainDataClient.insertOrUpdate(this.offChainURL, {
-            properties: options,
-            salts: [],
-            schema: []
-        }); //TODO: anchor those options on the smart contract
-    }
-
-    async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
-        if (!this.configuration.offChainDataSource) {
-            throw Error('No off chain data source set in the configuration');
-        }
-
-        const defaultValues: IOffChainSettlementOptions = {
-            price: 0,
-            currency: Currency.NONE
-        };
-
-        try {
-            const { properties } = await this.offChainDataClient.get<IOffChainSettlementOptions>(this.offChainURL);
-            
-            return properties;
-        } catch (error) {
-            if (error.response.status !== 404) {
-                throw error;
-            }
-
-            await this.setOffChainSettlementOptions(defaultValues);
-
-            return defaultValues;
-        }
     }
 
     async getCertificationRequestEvents() {

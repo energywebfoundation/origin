@@ -12,9 +12,6 @@ contract ICertificateLogic is IERC721, IERC721Enumerable {
     event LogCertificateClaimed(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
 
-    event LogPublishForSale(uint indexed _certificateId, uint _price, address _token);
-    event LogUnpublishForSale(uint indexed _certificateId);
-
     event CertificationRequestCreated(uint assetId, uint readsStartIndex, uint readsEndIndex);
     event CertificationRequestApproved(uint assetId, uint readsStartIndex, uint readsEndIndex);
 
@@ -53,47 +50,6 @@ contract ICertificateLogic is IERC721, IERC721Enumerable {
     /// @param _certificateId The id of the requested certificate
     /// @return flag whether the certificate is claimed
     function isClaimed(uint _certificateId) public view returns (bool);
-
-    /// @notice makes the certificate available for sale
-    /// @param _certificateId The id of the certificate
-    /// @param _price the purchase price
-    /// @param _tokenAddress the address of the ERC20 token address
-    function publishForSale(uint _certificateId, uint _price, address _tokenAddress) public;
-
-    /// @notice makes the certificate not available for sale
-    /// @param _certificateId The id of the certificate
-    function unpublishForSale(uint _certificateId) public;
-
-    /// @notice gets the certificate
-    /// @param _certificateId the id of a certificate
-    /// @return the certificate (ERC20 contract)
-    function getTradableToken(uint _certificateId) public view returns (address);
-
-    /// @notice buys a certificate
-    /// @param _certificateId the id of the certificate
-    function buyCertificate(uint _certificateId) public;
-
-    /// @notice buys a certificate for owner
-    /// @param _certificateId the id of the certificate
-    /// @param _newOwner the address of the new owner
-    function buyCertificateFor(uint _certificateId, address _newOwner) public;
-
-    /// @notice buys a set of certificates
-    /// @param _idArray the ids of the certificates to be bought
-    function buyCertificateBulk(uint[] memory _idArray) public;
-
-    function splitAndBuyCertificate(uint _certificateId, uint _energy) public;
-
-    /// @notice Splits a certificate and publishes the first split certificate for sale
-    /// @param _certificateId The id of the certificate
-    /// @param _energy The amount of energy in W for the 1st certificate
-    /// @param _price the purchase price
-    /// @param _tokenAddress the address of the ERC20 token address
-    function splitAndPublishForSale(uint _certificateId, uint _energy, uint _price, address _tokenAddress) public;
-
-    /// @notice gets the price for a direct purchase onchain
-    /// @param _certificateId the certificate-id
-    function getOnChainDirectPurchasePrice(uint _certificateId) public view returns (uint);
 
     function getCertificationRequests() public view returns (CertificateDefinitions.CertificationRequest[] memory);
 
