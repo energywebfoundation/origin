@@ -167,7 +167,9 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     private async notify() {
-        const allUsers: Promise<User.Entity>[] = this.originEventsStore
+        const allUsers: Promise<
+            User.Entity
+        >[] = this.originEventsStore
             .getAllUsers()
             .map(async userId => new User.Entity(userId, this.conf).sync());
         const notifyUsers: User.Entity[] = (await Promise.all(allUsers)).filter(
