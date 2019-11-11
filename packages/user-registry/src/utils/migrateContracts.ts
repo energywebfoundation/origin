@@ -17,7 +17,9 @@ export async function migrateUserRegistryContracts(
     ).contractAddress;
 
     const userLogic = new UserLogic(web3, userLogicAddress);
-    await userLogic.initialize();
+    await userLogic.initialize({
+        privateKey: privateKeyDeployment
+    });
 
     return userLogic;
 }
