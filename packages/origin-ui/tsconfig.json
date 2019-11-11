@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "types": ["jest"],
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "noUnusedLocals": true
     }
 }

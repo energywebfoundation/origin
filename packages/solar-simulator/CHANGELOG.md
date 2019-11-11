@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@0.2.2...@energyweb/solar-simulator@0.2.3) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/origin/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/origin/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+* normalize API urls, fix solar simulator ([#228](https://github.com/energywebfoundation/origin/issues/228)) ([aeed701](https://github.com/energywebfoundation/origin/commit/aeed701b8d541fb30a26f63b84d716bea61b7101))
+* **deps:** pin dependency ethers to 4.0.38 ([#206](https://github.com/energywebfoundation/origin/issues/206)) ([32f3961](https://github.com/energywebfoundation/origin/commit/32f39618f65035649f1c2aab2f57f18f0d65b763))
+* **deps:** update dependency commander to v4 ([#216](https://github.com/energywebfoundation/origin/issues/216)) ([570de85](https://github.com/energywebfoundation/origin/commit/570de85910efb410abca0ef98799bc003e38393b))
+* **deps:** update dependency ethers to v4.0.39 ([#218](https://github.com/energywebfoundation/origin/issues/218)) ([29631af](https://github.com/energywebfoundation/origin/commit/29631af267b96f5fc6129c7ab30858eca2c7d7a0))
+
+
+
+
+
 ## [0.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@0.2.1...@energyweb/solar-simulator@0.2.2) (2019-10-30)
 
 **Note:** Version bump only for package @energyweb/solar-simulator

@@ -39,8 +39,8 @@
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
         "build:ui": "lerna run build --scope @energyweb/origin-ui --stream",
-        "lint": "lerna run lint --parallel --stream --since master",
-        "lint-fix": "lerna run lint-fix --parallel --stream --since master",
+        "lint": "lerna run lint --parallel --stream",
+        "lint-fix": "lerna run lint-fix --parallel --stream",
         "clean": "lerna run clean --parallel",
         "build:user-asset-registry-origin": "lerna run build --scope @energyweb/user-registry build --scope @energyweb/asset-registry build --scope @energyweb/origin --parallel",
         "build:static": "lerna run build:static --parallel",
@@ -71,8 +71,8 @@
         "test:ci:contracts": "lerna run --scope @energyweb/asset-registry --scope @energyweb/origin --scope @energyweb/user-registry --scope @energyweb/market --scope @energyweb/utils-general --scope @energyweb/erc-test-contracts test:concurrent --since master --parallel --stream",
         "test:ci:apps": "lerna run --scope @energyweb/market-matcher --scope @energyweb/event-listener --scope @energyweb/origin-backend --scope @energyweb/utils-demo test:concurrent --since master --parallel --stream",
         "test:ci:ui": "yarn test:ui",
-        "publish:canary": "lerna publish --canary --exact --yes",
-        "publish:release": "lerna version --conventional-commits --exact --yes && (lerna changed || exit 0) && lerna publish from-git --yes",
+        "publish:canary": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag canary --preid=alpha.$TRAVIS_BUILD_NUMBER",
+        "publish:release": "lerna version --conventional-commits --exact --yes && (lerna changed && lerna publish from-git --yes) || echo \"Skipping release\"",
         "build:containers:canary": "lerna run build:container:canary --stream",
         "build:containers:release": "lerna run build:container:latest --stream"
     },
@@ -84,7 +84,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lerna run --concurrency 1 --stream precommit --since master"
+            "pre-commit": "lerna run --concurrency 1 --stream precommit"
         }
     }
 }
