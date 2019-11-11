@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-backend-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/js/src/index.js",
   "scripts": {
@@ -21,9 +21,6 @@
   "license": "GPL-3.0",
   "dependencies": {
     "axios": "0.19.0"
-  },
-  "devDependencies": {
-
   },
   "files": [
     "dist"

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://github.com/energywebfoundation/origin/compare/@energyweb/asset-registry@1.3.2...@energyweb/asset-registry@1.3.3) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix running on Windows ([#222](https://github.com/energywebfoundation/origin/issues/222)) ([81f8c19](https://github.com/energywebfoundation/origin/commit/81f8c190c9841eaa7a0e5ed984cf0aa110f15e18))
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/origin/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/origin/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+
+
+
+
+
 ## [1.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/asset-registry@1.3.1...@energyweb/asset-registry@1.3.2) (2019-10-30)
 
 **Note:** Version bump only for package @energyweb/asset-registry
