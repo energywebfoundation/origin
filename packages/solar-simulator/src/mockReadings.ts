@@ -22,7 +22,7 @@ const fileContent = fs.readFileSync(`${__dirname}/../config/data.csv`);
 const DATA = parse(fileContent, { columns: false, trim: true });
 
 export async function getAssetConf() {
-    const web3 = new Web3('http://localhost:8545');
+    const web3 = new Web3(process.env.WEB3);
 
     const conf: Configuration.Entity = {
         blockchainProperties: {
