@@ -10,6 +10,7 @@
     "start-consuming-api": "ts-node src/consumerService.ts",
     "import-irec-assets": "ts-node src/importIRECAssets.ts -i irec-example/irec-thailand.csv",
     "fund-assets-smart-meters": "ts-node src/fundAssets.ts",
+    "deploy-mock-readings": "ts-node src/mockReadings.ts",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "lint": "eslint \"src/**/*{.ts,.tsx}\"",
     "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
