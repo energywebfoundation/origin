@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/erc-test-contracts@1.2.1...@energyweb/erc-test-contracts@1.2.2) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/origin/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/origin/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/erc-test-contracts@1.2.0...@energyweb/erc-test-contracts@1.2.1) (2019-10-25)
 
 

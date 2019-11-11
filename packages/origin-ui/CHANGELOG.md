@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.3.0...@energyweb/origin-ui@0.3.1) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix running on Windows ([#222](https://github.com/energywebfoundation/origin/issues/222)) ([81f8c19](https://github.com/energywebfoundation/origin/commit/81f8c190c9841eaa7a0e5ed984cf0aa110f15e18))
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/origin/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/origin/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+* **deps:** update dependency @react-google-maps/api to v1.7.8 ([#219](https://github.com/energywebfoundation/origin/issues/219)) ([807bb61](https://github.com/energywebfoundation/origin/commit/807bb61cae06128b5626a3361464ab149d3f7c62))
+* **deps:** update dependency chart.js to v2.9.2 ([#220](https://github.com/energywebfoundation/origin/issues/220)) ([957a357](https://github.com/energywebfoundation/origin/commit/957a357667f4f63ddbe63efc697ed040390e4ba3))
+* **deps:** update dependency formik-material-ui to v1 ([#217](https://github.com/energywebfoundation/origin/issues/217)) ([b2e933c](https://github.com/energywebfoundation/origin/commit/b2e933c88527d55c4fa1f2173d4e21e7f8336e06))
+* **origin-ui:** fix certificate history ([#201](https://github.com/energywebfoundation/origin/issues/201)) ([2c4fbbb](https://github.com/energywebfoundation/origin/commit/2c4fbbb799014dd272de6a3f3ac98987a078f9bd))
+* **origin-ui:** fix direct navigation to certificates ([#204](https://github.com/energywebfoundation/origin/issues/204)) ([cb84bae](https://github.com/energywebfoundation/origin/commit/cb84bae7beaacecf3aeb4fade7b9289d9525758f))
+* **origin-ui:** fix persisting demand location ([#205](https://github.com/energywebfoundation/origin/issues/205)) ([33eeb75](https://github.com/energywebfoundation/origin/commit/33eeb75a3866667fa2ecbb67b5eb5b4943e28693))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.2.1...@energyweb/origin-ui@0.3.0) (2019-10-30)
 
 

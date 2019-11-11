@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.2...@energyweb/market-matcher@1.3.3) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/origin/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/origin/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+* **origin-ui:** fix direct navigation to certificates ([#204](https://github.com/energywebfoundation/origin/issues/204)) ([cb84bae](https://github.com/energywebfoundation/origin/commit/cb84bae7beaacecf3aeb4fade7b9289d9525758f))
+* **origin-ui:** fix persisting demand location ([#205](https://github.com/energywebfoundation/origin/issues/205)) ([33eeb75](https://github.com/energywebfoundation/origin/commit/33eeb75a3866667fa2ecbb67b5eb5b4943e28693))
+
+
+
+
+
 ## [1.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.1...@energyweb/market-matcher@1.3.2) (2019-10-30)
 
 
