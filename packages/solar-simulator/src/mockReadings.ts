@@ -110,7 +110,10 @@ async function saveProducingAssetSmartMeterRead(
 
     for (const asset of CONFIG.assets) {
         const currentTime = moment.tz(asset.timezone);
-        let measurementTime = currentTime.subtract(1, 'week').startOf('day');
+        const measurementTime = currentTime
+            .clone()
+            .subtract(1, 'day')
+            .startOf('day');
 
         while (measurementTime.isSameOrBefore(currentTime)) {
             const generateReadingsTimeData = DATA.find(
@@ -144,7 +147,7 @@ async function saveProducingAssetSmartMeterRead(
                 } Energy Read of: ${energyGenerated} Wh - [${measurementTime.format()}]`
             );
 
-            measurementTime = measurementTime.add(15, 'minute');
+            measurementTime.add(15, 'minute');
         }
     }
 })();
