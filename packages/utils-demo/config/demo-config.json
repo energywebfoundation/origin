@@ -217,62 +217,6 @@
                 "timezone": "Asia/Bangkok",
                 "facilityName": "Phone Factory"
             }
-        },
-        {
-            "type": "SLEEP",
-            "data": 2000
-        },
-        {
-            "type": "SAVE_SMARTMETER_READ_PRODUCING",
-            "data": {
-                "assetId": "0",
-                "meterreading": 100000,
-                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
-                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
-                "filehash": "newMeterRead",
-                "timestamp": "1560988800"
-            }
-        },
-        {
-            "type": "SAVE_SMARTMETER_READ_PRODUCING",
-            "data": {
-                "assetId": "0",
-                "meterreading": 500000,
-                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
-                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
-                "filehash": "newMeterRead",
-                "timestamp": "1560989800"
-            }
-        },
-        {
-            "type": "SAVE_SMARTMETER_READ_PRODUCING",
-            "data": {
-                "assetId": "0",
-                "meterreading": 800000,
-                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
-                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
-                "filehash": "newMeterRead"
-            }
-        },
-        {
-            "type": "SAVE_SMARTMETER_READ_PRODUCING",
-            "data": {
-                "assetId": "0",
-                "meterreading": 900000,
-                "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
-                "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
-                "filehash": "newMeterRead"
-            }
-        },
-        {
-            "type": "SAVE_SMARTMETER_READ_CONSUMING",
-            "data": {
-                "assetId": "3",
-                "meterreading": 1000000,
-                "smartMeter": "0xf7f7c9186fa724c8392a55b9d83d0f3701c16176",
-                "smartMeterPK": "0x7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b",
-                "filehash": "newMeterRead"
-            }
         }
     ]
 }
