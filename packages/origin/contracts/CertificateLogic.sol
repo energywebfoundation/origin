@@ -308,7 +308,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
 
         AssetDefinitions.Asset memory asset = assetLogic.getAssetById(request.assetId);
 
-        _createNewCertificate(request.assetId, certifyEnergy, asset.owner);
+        _createNewCertificate(request.assetId, certifyEnergy, asset.owner,  request.readsStartIndex, request.readsEndIndex);
 
         request.status = CertificateDefinitions.CertificationRequestStatus.Approved;
 
@@ -318,8 +318,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /**
         internal functions
     */
-
-    function _createNewCertificate(uint assetId, uint energy, address owner) internal {
+    function _createNewCertificate(uint assetId, uint energy, address owner, uint readsStartIndex, uint readsEndIndex) internal {
         uint newCertificateId = totalSupply();
 
         certificates[newCertificateId] = CertificateDefinitions.Certificate({
@@ -331,7 +330,9 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             children: new uint256[](0),
             forSale: false,
             acceptedToken: address(0x0),
-            onChainDirectPurchasePrice: 0
+            onChainDirectPurchasePrice: 0,
+            readsStartIndex: readsStartIndex,
+            readsEndIndex: readsEndIndex
         });
 
         _mint(owner, newCertificateId);
@@ -398,6 +399,16 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @return The ids of the certificate
     function _createChildCertificates(uint parentId, uint energy) internal returns (uint childOneId, uint childTwoId) {
         CertificateDefinitions.Certificate memory parent = certificates[parentId];
+        AssetDefinitions.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(parent.assetId);
+
+        uint parentEnergy = 0;
+        uint index = parent.readsStartIndex;
+        while(parentEnergy < energy) {
+            parentEnergy += reads[index++].energy;
+        }
+        if (parentEnergy > energy) {
+            index--;
+        }
 
         uint childIdOne = totalSupply();
         certificates[childIdOne] = CertificateDefinitions.Certificate({
@@ -409,7 +420,9 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             children: new uint256[](0),
             forSale: parent.forSale,
             acceptedToken: address(0x0),
-            onChainDirectPurchasePrice: 0
+            onChainDirectPurchasePrice: 0,
+            readsStartIndex: parent.readsStartIndex,
+            readsEndIndex: index
         });
         _mint(ownerOf(parentId), childIdOne);
 
@@ -423,7 +436,9 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             children: new uint256[](0),
             forSale: parent.forSale,
             acceptedToken: address(0x0),
-            onChainDirectPurchasePrice: 0
+            onChainDirectPurchasePrice: 0,
+            readsStartIndex: index,
+            readsEndIndex: parent.readsEndIndex
         });
         _mint(ownerOf(parentId), childIdTwo);
 

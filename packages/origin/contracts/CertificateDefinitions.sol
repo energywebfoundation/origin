@@ -30,5 +30,7 @@ contract CertificateDefinitions {
         bool forSale;
         address acceptedToken;
         uint onChainDirectPurchasePrice;
+        uint readsStartIndex;
+        uint readsEndIndex;
     }
 }
