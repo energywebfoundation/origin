@@ -22,10 +22,10 @@ export abstract class Entity {
 
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
-            throw Error('An ID of an Entity should always be of type string.');
+            throw new Error('An ID of an Entity should always be of type string.');
         }
         if (isNaN(Number(id))) {
-            throw Error('An ID of an Entity should always be numeric string.');
+            throw new Error('An ID of an Entity should always be numeric string.');
         }
 
         this.offChainDataClient = configuration.offChainDataSource.client;

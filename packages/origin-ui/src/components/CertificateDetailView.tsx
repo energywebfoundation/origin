@@ -14,7 +14,7 @@
 //
 // @authors: slock.it GmbH; Heiko Burkhardt, heiko.burkhardt@slock.it; Martin Kuechler, martin.kuchler@slock.it
 
-import * as React from 'react';
+import React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';

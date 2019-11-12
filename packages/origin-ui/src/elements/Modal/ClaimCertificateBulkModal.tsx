@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Certificate } from '@energyweb/origin';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {

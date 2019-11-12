@@ -28,9 +28,11 @@ function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
     const fetcher: IUserFetcher = yield select(getUserFetcher);
 
     try {
-        const fetchedUser: User.Entity = yield call(fetcher.fetch, userId, configuration);
+        if (configuration) {
+            const fetchedUser: User.Entity = yield call(fetcher.fetch, userId, configuration);
 
-        yield put(addUser(fetchedUser));
+            yield put(addUser(fetchedUser));
+        }
     } catch (error) {
         console.error('Error while fetching user', error);
     }
