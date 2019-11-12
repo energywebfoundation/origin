@@ -1,12 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 
-import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { Certificate } from '@energyweb/origin';
 import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { Configuration, Unit } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { showNotification, NotificationType } from '../utils/notifications';
-import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
 import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,
@@ -27,6 +25,10 @@ import { Assignment } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
 import { getCertificates } from '../features/certificates/selectors';
+import {
+    showRequestCertificatesModal,
+    TShowRequestCertificatesModalAction
+} from '../features/certificates/actions';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -37,7 +39,11 @@ interface IStateProps {
     baseURL: string;
 }
 
-type Props = IStateProps;
+interface IDispatchProps {
+    showRequestCertificatesModal: TShowRequestCertificatesModalAction;
+}
+
+type Props = IStateProps & IDispatchProps;
 
 interface IEnrichedProducingAssetData {
     asset: ProducingAsset.Entity;
@@ -46,7 +52,6 @@ interface IEnrichedProducingAssetData {
 
 interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
     detailViewForAssetId: string;
-    requestIRECsModalAsset: ProducingAsset.Entity;
     showRequestIRECsModal: boolean;
     paginatedData: IEnrichedProducingAssetData[];
 }
@@ -58,11 +63,8 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         this.state = {
             ...getInitialPaginatedLoaderFilteredState(),
             detailViewForAssetId: null,
-            requestIRECsModalAsset: null,
             showRequestIRECsModal: false
         };
-
-        this.hideRequestIRECsModal = this.hideRequestIRECsModal.bind(this);
     }
 
     async componentDidUpdate(newProps: Props) {
@@ -98,67 +100,8 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
     }
 
     async requestIRECs(rowIndex: number) {
-        const asset = this.state.paginatedData[rowIndex].asset;
-
-        const isOwner =
-            asset.owner &&
-            asset.owner.address.toLowerCase() === this.props.currentUser.id.toLowerCase();
-        if (!isOwner) {
-            showNotification(
-                `You need to own the asset to request I-RECs.`,
-                NotificationType.Error
-            );
-
-            return;
-        }
-
-        const hasRights = this.props.currentUser.isRole(Role.AssetManager);
-        if (!hasRights) {
-            showNotification(
-                `You need to have Asset Manager role to request I-RECs.`,
-                NotificationType.Error
-            );
-
-            return;
-        }
-
-        const reads = await asset.getSmartMeterReads();
-
-        if (reads.length === 0) {
-            showNotification(
-                `There are no smart meter reads for this asset.`,
-                NotificationType.Error
-            );
-
-            return;
-        }
-
-        const certificateLogic: CertificateLogic = this.props.configuration.blockchainProperties
-            .certificateLogicInstance;
-
-        const lastRequestedSMReadIndex = Number(
-            await certificateLogic.getAssetRequestedCertsForSMReadsLength(Number(asset.id))
-        );
-
-        if (reads.length === lastRequestedSMReadIndex) {
-            showNotification(
-                `You have already requested certificates for all smart meter reads for this asset.`,
-                NotificationType.Error
-            );
-
-            return;
-        }
-
-        this.setState({
-            requestIRECsModalAsset: asset,
-            showRequestIRECsModal: true
-        });
-    }
-
-    hideRequestIRECsModal() {
-        this.setState({
-            requestIRECsModalAsset: null,
-            showRequestIRECsModal: false
+        this.props.showRequestCertificatesModal({
+            producingAsset: this.state.paginatedData[rowIndex].asset
         });
     }
 
@@ -222,14 +165,8 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         }));
     }
 
-    render(): JSX.Element {
-        const {
-            detailViewForAssetId,
-            total,
-            pageSize,
-            requestIRECsModalAsset,
-            showRequestIRECsModal
-        } = this.state;
+    render() {
+        const { detailViewForAssetId, total, pageSize } = this.state;
 
         if (detailViewForAssetId !== null) {
             return (
@@ -262,16 +199,14 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
                     handleRowClick={(row: number) => this.viewAsset(row)}
                     actions={actions}
                 />
-
-                <RequestIRECsModal
-                    producingAsset={requestIRECsModalAsset}
-                    showModal={showRequestIRECsModal}
-                    callback={this.hideRequestIRECsModal}
-                />
             </div>
         );
     }
 }
+
+const mapDispatchToProps: IDispatchProps = {
+    showRequestCertificatesModal
+};
 
 export const ProducingAssetTable = connect(
     (state: IStoreState): IStateProps => ({
@@ -281,5 +216,6 @@ export const ProducingAssetTable = connect(
         users: getUsers(state),
         currentUser: getCurrentUser(state),
         baseURL: getBaseURL()
-    })
+    }),
+    mapDispatchToProps
 )(ProducingAssetTableClass);

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.3](https://github.com/energywebfoundation/ew-origin-lib/compare/@energyweb/origin@1.3.2...@energyweb/origin@1.3.3) (2019-11-11)
+
+
+### Bug Fixes
+
+* fix yarn clean command ([#224](https://github.com/energywebfoundation/ew-origin-lib/issues/224)) ([e07e9d8](https://github.com/energywebfoundation/ew-origin-lib/commit/e07e9d85de1b80c9f1a721398e41d82db580049c))
+* **origin-ui:** fix certificate history ([#201](https://github.com/energywebfoundation/ew-origin-lib/issues/201)) ([2c4fbbb](https://github.com/energywebfoundation/ew-origin-lib/commit/2c4fbbb799014dd272de6a3f3ac98987a078f9bd))
+
+
+
+
+
 ## [1.3.2](https://github.com/energywebfoundation/ew-origin-lib/compare/@energyweb/origin@1.3.1...@energyweb/origin@1.3.2) (2019-10-30)
 
 **Note:** Version bump only for package @energyweb/origin

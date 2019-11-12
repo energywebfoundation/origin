@@ -16,7 +16,9 @@ export async function migrateCertificateRegistryContracts(
     })).contractAddress;
 
     const certificateLogic = new CertificateLogic(web3, certificateLogicAddress);
-    await certificateLogic.initialize(assetLogicAddress);
+    await certificateLogic.initialize(assetLogicAddress, {
+        privateKey: privateKeyDeployment
+    });
 
     return certificateLogic;
 }

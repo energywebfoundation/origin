@@ -10,12 +10,16 @@ export async function migrateUserRegistryContracts(
 ): Promise<UserLogic> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    const userLogicAddress = (await deploy(web3, UserLogicJSON.bytecode, {
-        privateKey: privateKeyDeployment
-    })).contractAddress;
+    const userLogicAddress = (
+        await deploy(web3, UserLogicJSON.bytecode, {
+            privateKey: privateKeyDeployment
+        })
+    ).contractAddress;
 
     const userLogic = new UserLogic(web3, userLogicAddress);
-    await userLogic.initialize();
+    await userLogic.initialize({
+        privateKey: privateKeyDeployment
+    });
 
     return userLogic;
 }

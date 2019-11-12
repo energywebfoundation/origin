@@ -16,7 +16,9 @@ export async function migrateAssetRegistryContracts(
     })).contractAddress;
 
     const assetLogic = new AssetLogic(web3, assetLogicAddress);
-    await assetLogic.initialize(userLogicAddress);
+    await assetLogic.initialize(userLogicAddress, {
+        privateKey: privateKeyDeployment
+    });
 
     return assetLogic;
 }

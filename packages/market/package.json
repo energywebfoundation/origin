@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "1.3.2",
+  "version": "1.3.3",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/build",
@@ -32,8 +32,8 @@
     "deploy-contracts": "truffle migrate",
     "extractABI": "node ./scripts/extractABI.js",
     "flatten-contracts": "truffle-flattener contracts/**/* contracts/MarketContractLookup.sol > build/flattenedContracts.sol && node scripts/removeExperimentalDuplicates.js build/flattenedContracts.sol",
-    "lint": "solium -d contracts && eslint 'src/**/*{.ts,.tsx}'",
-    "lint-fix": "solium -d contracts --fix && eslint 'src/**/*{.ts,.tsx}' --fix",
+    "lint": "solium -d contracts && eslint \"src/**/*{.ts,.tsx}\"",
+    "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
     "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8546",
     "test": "mocha -r ts-node/register src/test/MarketFacade.test.ts --timeout 60000 --exit",
     "test:unit": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit",
@@ -45,17 +45,17 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/asset-registry": "1.3.2",
-    "@energyweb/origin": "1.3.2",
-    "@energyweb/user-registry": "1.3.2",
-    "@energyweb/utils-general": "1.3.0",
+    "@energyweb/asset-registry": "1.3.3",
+    "@energyweb/origin": "1.3.3",
+    "@energyweb/user-registry": "1.3.3",
+    "@energyweb/utils-general": "1.3.1",
     "moment": "^2.24.0",
     "web3": "1.2.1",
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/erc-test-contracts": "1.2.1",
-    "@energyweb/origin-backend-client": "1.0.0",
+    "@energyweb/erc-test-contracts": "1.2.2",
+    "@energyweb/origin-backend-client": "1.0.1",
     "@fluffy-spoon/substitute": "1.89.0",
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",

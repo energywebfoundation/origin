@@ -15,10 +15,9 @@ dotenv.config({
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
     const baseUrl = `${backendUrl}/api`;
 
-    const storedMarketLogicAddress = (await new ConfigurationClient().get(
-        baseUrl,
-        'MarketContractLookup'
-    )).pop();
+    const storedMarketLogicAddress = (
+        await new ConfigurationClient().get(baseUrl, 'MarketContractLookup')
+    ).pop();
 
     const marketLogicAddress: string =
         process.env.MARKET_CONTRACT_ADDRESS || storedMarketLogicAddress;

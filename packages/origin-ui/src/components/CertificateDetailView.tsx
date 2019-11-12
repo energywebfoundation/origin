@@ -108,19 +108,25 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                             '0x0000000000000000000000000000000000000000'
                         ) {
                             label = 'Initial owner';
-                            description = (await new MarketUser.Entity(
-                                (event as any).returnValues._to,
-                                props.configuration as any
-                            ).sync()).organization;
+                            description = (
+                                await new MarketUser.Entity(
+                                    (event as any).returnValues._to,
+                                    props.configuration as any
+                                ).sync()
+                            ).organization;
                         } else {
-                            const newOwner = (await new MarketUser.Entity(
-                                (event as any).returnValues._to,
-                                props.configuration as any
-                            ).sync()).organization;
-                            const oldOwner = (await new MarketUser.Entity(
-                                (event as any).returnValues._from,
-                                props.configuration as any
-                            ).sync()).organization;
+                            const newOwner = (
+                                await new MarketUser.Entity(
+                                    (event as any).returnValues._to,
+                                    props.configuration as any
+                                ).sync()
+                            ).organization;
+                            const oldOwner = (
+                                await new MarketUser.Entity(
+                                    (event as any).returnValues._from,
+                                    props.configuration as any
+                                ).sync()
+                            ).organization;
                             label = 'Changed ownership';
                             description = `Transferred from ${oldOwner} to ${newOwner}`;
                         }
@@ -145,9 +151,11 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                     txHash: event.transactionHash,
                     label,
                     description,
-                    timestamp: (await props.configuration.blockchainProperties.web3.eth.getBlock(
-                        event.blockNumber
-                    )).timestamp
+                    timestamp: (
+                        await props.configuration.blockchainProperties.web3.eth.getBlock(
+                            event.blockNumber
+                        )
+                    ).timestamp
                 };
             }
         );
@@ -161,9 +169,11 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                 txHash: certificationRequestEvents.certificationRequestCreatedEvent.transactionHash,
                 label: 'Requested certification',
                 description: 'Asset owner requested certification based on meter reads',
-                timestamp: (await props.configuration.blockchainProperties.web3.eth.getBlock(
-                    certificationRequestEvents.certificationRequestCreatedEvent.blockNumber
-                )).timestamp
+                timestamp: (
+                    await props.configuration.blockchainProperties.web3.eth.getBlock(
+                        certificationRequestEvents.certificationRequestCreatedEvent.blockNumber
+                    )
+                ).timestamp
             });
         }
 

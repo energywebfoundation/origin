@@ -1511,10 +1511,10 @@
     web3 "1.2.1"
     web3-utils "1.2.0"
 
-"@react-google-maps/api@1.7.8":
-  version "1.7.8"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.7.8.tgz#3f4977679b5d23819e51f7223af39fd462a7e2f7"
-  integrity sha512-3nWHqCu5c7Ek+uJqsBymxu7X+Y5tkj6o8vATvI472rgyjs/580vUCdphTfQOF6ulJkZ0soCbzS3AePGHg0VLqA==
+"@react-google-maps/api@1.7.9":
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.7.9.tgz#3b4cadfce1730ca97df261d1b2bae53916b488be"
+  integrity sha512-rJexXZmeoJPCmEr3HtxMM4PRtfFXyv3PqlGCqIzNDHQ+VF6lLCSZ4kzLwjcQDlscBEqxV16QDXVnf7Jxo5GqGg==
   dependencies:
     "@react-google-maps/infobox" "1.7.8"
     "@react-google-maps/marker-clusterer" "1.7.8"
@@ -1530,7 +1530,7 @@
   resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.7.8.tgz#e09a28824d3c7c32bb86e45dd30f5fd7238e63df"
   integrity sha512-i3GVDMusP/BErRP9WuEka1mYEWQdBcpPNo9LyAaP0GGOmKxPczJrdzMFBqSSGJk+lefywZXGoTi52D2O7KWeyw==
 
-"@redux-saga/core@^1.1.1":
+"@redux-saga/core@^1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@redux-saga/core/-/core-1.1.3.tgz#3085097b57a4ea8db5528d58673f20ce0950f6a4"
   integrity sha512-8tInBftak8TPzE6X13ABmEtRJGjtK17w7VUs7qV17S8hCO5S3+aUTWZ/DBsBJPdE8Z5jOPwYALyvofgq1Ws+kg==
@@ -1644,10 +1644,10 @@
     pretty-format "^24.9.0"
     wait-for-expect "^3.0.0"
 
-"@testing-library/react@9.3.1":
-  version "9.3.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-9.3.1.tgz#96573fb9942e1ca0ed1ec9984ea7b12b66945963"
-  integrity sha512-BXlYrbxTkifNVb7rIC8EHqYXgG/rBeULqG3V0wbEAuSaZ7n5ERX9Bcp0i+9EecrNpLNPwR0cIxdKNp6qVTZS9A==
+"@testing-library/react@9.3.2":
+  version "9.3.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-9.3.2.tgz#418000daa980dafd2d9420cc733d661daece9aa0"
+  integrity sha512-J6ftWtm218tOLS175MF9eWCxGp+X+cUXCpkPIin8KAXWtyZbr9CbqJ8M8QNd6spZxJDAGlw+leLG4MJWLlqVgg==
   dependencies:
     "@babel/runtime" "^7.6.0"
     "@testing-library/dom" "^6.3.0"
@@ -1984,10 +1984,17 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
 
-"@types/react-dom@*", "@types/react-dom@16.9.3":
+"@types/react-dom@*":
   version "16.9.3"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.3.tgz#4006ff0e13958af91313869077c04cb20d9b9d04"
   integrity sha512-FUuZKXPr9qlzUT9lhuzrZgLjH63TvNn28Ch3MvKG4B+F52zQtO8DtE0Opbncy3xaucNZM2WIPfuNTgkbKx5Brg==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-dom@16.9.4":
+  version "16.9.4"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.4.tgz#0b58df09a60961dcb77f62d4f1832427513420df"
+  integrity sha512-fya9xteU/n90tda0s+FtN5Ym4tbgxpq/hb/Af24dvs6uYnYn+fspaxw5USlw0R8apDNwxsqumdRoCoKitckQqw==
   dependencies:
     "@types/react" "*"
 
@@ -4951,7 +4958,7 @@ dotenv-webpack@1.7.0:
   dependencies:
     dotenv-defaults "^1.0.2"
 
-dotenv@8.2.0:
+dotenv@8.2.0, dotenv@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
@@ -11595,10 +11602,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-redux@7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.1.1.tgz#ce6eee1b734a7a76e0788b3309bf78ff6b34fa0a"
-  integrity sha512-QsW0vcmVVdNQzEkrgzh2W3Ksvr8cqpAv5FhEk7tNEft+5pp7rXxAudTz3VOPawRkLIepItpkEIyLcN/VVXzjTg==
+react-redux@7.1.3:
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.1.3.tgz#717a3d7bbe3a1b2d535c94885ce04cdc5a33fc79"
+  integrity sha512-uI1wca+ECG9RoVkWQFF4jDMqmaw0/qnvaSvOoL/GA4dNxf6LoV8sUAcNDvE5NWKs4hFpn0t6wswNQnY3f7HT3w==
   dependencies:
     "@babel/runtime" "^7.5.5"
     hoist-non-react-statics "^3.3.0"
@@ -11892,12 +11899,12 @@ redux-logger@3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
-redux-saga@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-1.1.1.tgz#7e02879beb02c92030b5fbe746fd70e8bda97dfb"
-  integrity sha512-guSnGJ/uEF8yL8Mn4aNa7HxRGCpVUALCkec9iTTD0fOhQqkF6bRQkBLeS+7/cAH3nFnr299bi/DOurTi1apcCA==
+redux-saga@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-1.1.3.tgz#9f3e6aebd3c994bbc0f6901a625f9a42b51d1112"
+  integrity sha512-RkSn/z0mwaSa5/xH/hQLo8gNf4tlvT18qXDNvedihLcfzh+jMchDgaariQoehCpgRltEm4zHKJyINEz6aqswTw==
   dependencies:
-    "@redux-saga/core" "^1.1.1"
+    "@redux-saga/core" "^1.1.3"
 
 redux@4.0.4, redux@^4.0.0, redux@^4.0.4:
   version "4.0.4"
