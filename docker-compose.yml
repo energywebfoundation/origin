@@ -17,6 +17,13 @@ services:
       - ./.env
     depends_on:
       - origin_backend
+
+  event_listener:
+    image: "energyweb/event-listener:${TAG}"
+    env_file:
+      - ./.env
+    depends_on:
+      - origin_backend
   
   origin_backend:
     image: "energyweb/origin-backend:${TAG}"
