@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { PageContent } from '../../elements/PageContent/PageContent';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '../../utils/routing';

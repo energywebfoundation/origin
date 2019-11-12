@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
 import { Header } from './Header';
@@ -11,9 +11,9 @@ import { RequestPasswordModal } from '../elements/Modal/RequestPasswordModal';
 import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
 import { useSelector } from 'react-redux';
 import { ErrorComponent } from './ErrorComponent';
-import { LoadingComponent } from './LoadingComponent';
 import { useLinks } from '../utils/routing';
 import { getError, getLoading } from '../features/general/selectors';
+import { LinearProgress, makeStyles, createStyles, useTheme } from '@material-ui/core';
 
 export function AppContainer() {
     const error = useSelector(getError);
@@ -27,16 +27,33 @@ export function AppContainer() {
         getCertificatesLink
     } = useLinks();
 
+    const useStyles = makeStyles(() =>
+        createStyles({
+            progress: {
+                backgroundColor: 'rgb(39, 39, 39)'
+            },
+            progressWrapper: {
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                width: '100vw'
+            }
+        })
+    );
+
+    const classes = useStyles(useTheme());
+
     if (error) {
         return <ErrorComponent message={error} />;
     }
 
-    if (loading) {
-        return <LoadingComponent />;
-    }
-
     return (
         <div className={`AppWrapper`}>
+            {loading && (
+                <div className={classes.progressWrapper}>
+                    <LinearProgress className={classes.progress} />
+                </div>
+            )}
             <Header />
             <Switch>
                 <Route path={getAssetsLink()} component={Asset} />

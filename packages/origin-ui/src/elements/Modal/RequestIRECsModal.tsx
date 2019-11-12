@@ -7,11 +7,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    TextField,
-    LinearProgress,
-    makeStyles,
-    createStyles,
-    useTheme
+    TextField
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,8 +38,6 @@ export function RequestIRECsModal() {
     const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
     const [toDate, setToDate] = useState(DEFAULTS.toDate);
     const [reads, setReads] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [showLoader, setShowLoader] = useState(false);
 
     const configuration = useSelector(getConfiguration);
     const producingAsset = useSelector(getRequestCertificatesModalProducingAsset);
@@ -61,16 +55,6 @@ export function RequestIRECsModal() {
     const energy = producingAsset ? readsInTimeRange.reduce((a, b) => a + Number(b.energy), 0) : 0;
     const isFormValid = fromDate && toDate && fromDate <= toDate.toDate();
 
-    const useStyles = makeStyles(() =>
-        createStyles({
-            progress: {
-                backgroundColor: 'rgb(39, 39, 39)'
-            }
-        })
-    );
-
-    const classes = useStyles(useTheme());
-
     useEffect(() => {
         (async () => {
             if (!producingAsset) {
@@ -79,8 +63,6 @@ export function RequestIRECsModal() {
 
             setFromDate(DEFAULTS.fromDate);
             setToDate(DEFAULTS.toDate);
-            setLoading(true);
-            setShowLoader(false);
 
             const newReads = await producingAsset.getSmartMeterReads();
 
@@ -98,7 +80,6 @@ export function RequestIRECsModal() {
             if (lastRequestedRead) {
                 setFromDate(moment.unix(lastRequestedRead.timestamp).toDate());
                 setReads(newReads);
-                setLoading(false);
             }
         })();
     }, [producingAsset]);
@@ -108,10 +89,6 @@ export function RequestIRECsModal() {
     }
 
     async function requestIRECs() {
-        setLoading(true);
-
-        setTimeout(() => setShowLoader(true), 1000);
-
         const lastReadIndex = reads.indexOf(readsInTimeRange[readsInTimeRange.length - 1]);
 
         dispatch(
@@ -147,21 +124,18 @@ export function RequestIRECsModal() {
                     inputVariant="filled"
                     className="mt-4"
                     fullWidth
-                    disabled={loading}
                 />
 
                 <TextField label="kWh" value={energy / 1000} className="mt-4" fullWidth disabled />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="secondary" disabled={loading}>
+                <Button onClick={handleClose} color="secondary">
                     Cancel
                 </Button>
-                <Button onClick={requestIRECs} color="primary" disabled={!isFormValid || loading}>
+                <Button onClick={requestIRECs} color="primary" disabled={!isFormValid}>
                     Request
                 </Button>
             </DialogActions>
-
-            {showLoader && <LinearProgress className={classes.progress} />}
         </Dialog>
     );
 }

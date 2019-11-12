@@ -10,7 +10,7 @@ export interface IUsersState {
 
 const fetcher: IUserFetcher = {
     fetch: async (id: string, configuration: IStoreState['configuration']) =>
-        new User.Entity(id, configuration).sync()
+        configuration && new User.Entity(id, configuration).sync()
 };
 
 const defaultState: IUsersState = {

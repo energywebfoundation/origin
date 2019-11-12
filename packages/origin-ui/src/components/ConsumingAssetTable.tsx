@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { User } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { Configuration } from '@energyweb/utils-general';

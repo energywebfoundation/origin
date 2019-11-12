@@ -92,7 +92,7 @@ export const getAllCertificateEvents = async (
     for (const fullEvent of allEvents) {
         // we have to remove some false positives due to ERC721 interface
         if (fullEvent.event === 'Transfer') {
-            if (fullEvent.returnValues._tokenId === `${certId}`) {
+            if (fullEvent.returnValues.tokenId === `${certId}`) {
                 returnEvents.push(fullEvent);
             }
         } else {
@@ -229,14 +229,14 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         });
     }
 
-    async retireCertificate(): Promise<TransactionReceipt> {
+    async claimCertificate(): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+            return this.configuration.blockchainProperties.certificateLogicInstance.claimCertificate(
                 this.id,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         }
-        return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+        return this.configuration.blockchainProperties.certificateLogicInstance.claimCertificate(
             this.id,
             { from: this.configuration.blockchainProperties.activeUser.address }
         );
@@ -437,7 +437,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         try {
             const { properties } = await this.offChainDataClient.get<IOffChainSettlementOptions>(this.offChainURL);
-            
+
             return properties;
         } catch (error) {
             if (error.response.status !== 404) {
@@ -549,7 +549,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         for (const fullEvent of allEvents) {
             // we have to remove some false positives due to ERC721 interface
             if (fullEvent.event === 'Transfer') {
-                if (fullEvent.returnValues._tokenId === `${this.id}`) {
+                if (fullEvent.returnValues.tokenId === `${this.id}`) {
                     returnEvents.push(fullEvent);
                 }
             } else {

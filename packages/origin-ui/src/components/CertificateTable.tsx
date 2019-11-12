@@ -7,7 +7,7 @@ import { User } from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
@@ -33,6 +33,7 @@ import {
 } from './Table/PaginatedLoaderFilteredSorted';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
+import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 
@@ -52,7 +53,11 @@ interface IStateProps {
     baseURL: string;
 }
 
-type Props = IOwnProps & IStateProps;
+interface IDispatchProps {
+    setLoading: TSetLoading;
+}
+
+type Props = IOwnProps & IStateProps & IDispatchProps;
 
 interface IEnrichedCertificateData {
     certificate: Certificate.Entity;
@@ -274,7 +279,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             (cert: Certificate.Entity) => cert.id === certificateId.toString()
         );
 
-        if (certificate.owner === this.props.currentUser.id) {
+        if (certificate.owner?.toLowerCase() === this.props.currentUser?.id?.toLowerCase()) {
             showNotification(`You can't buy your own certificates.`, NotificationType.Error);
 
             return;
@@ -378,10 +383,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     hidePublishForSaleModal() {
-        this.setState({
-            sellModalForCertificate: null,
-            showSellModal: false
-        });
+        if (this.isMountedIndicator) {
+            this.setState({
+                sellModalForCertificate: null,
+                showSellModal: false
+            });
+        }
     }
 
     async returnToInbox(rowIndex: number) {
@@ -411,7 +418,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return;
         }
 
+        this.props.setLoading(true);
         await certificate.unpublishForSale();
+        this.props.setLoading(false);
+
         showNotification(
             `Certificate ${certificate.id} has been returned to Inbox.`,
             NotificationType.Success
@@ -430,7 +440,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             this.props.currentUser &&
             this.props.currentUser.id.toLowerCase() === certificate.owner.toLowerCase()
         ) {
-            await certificate.retireCertificate();
+            this.props.setLoading(true);
+            await certificate.claimCertificate();
+            this.props.setLoading(false);
             showNotification(
                 `Certificate ${certificate.id} has been claimed.`,
                 NotificationType.Success
@@ -466,7 +478,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 endTime: 0
             };
 
+            this.props.setLoading(true);
             await Demand.createDemand(offChainProperties, this.props.configuration);
+            this.props.setLoading(false);
         }
     }
 
@@ -550,17 +564,21 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     hideBuyModal() {
-        this.setState({
-            showBuyModal: false,
-            buyModalForCertificate: null,
-            buyModalForProducingAsset: null
-        });
+        if (this.isMountedIndicator) {
+            this.setState({
+                showBuyModal: false,
+                buyModalForCertificate: null,
+                buyModalForProducingAsset: null
+            });
+        }
     }
 
     hideBuyBulkModal() {
-        this.setState({
-            showBuyBulkModal: false
-        });
+        if (this.isMountedIndicator) {
+            this.setState({
+                showBuyBulkModal: false
+            });
+        }
     }
 
     hideClaimBulkModal() {
@@ -773,7 +791,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 />
 
                 <PublishForSaleModal
-                    conf={this.props.configuration}
                     certificate={this.state.sellModalForCertificate}
                     producingAsset={
                         this.state.sellModalForCertificate
@@ -788,7 +805,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 />
 
                 <BuyCertificateModal
-                    conf={this.props.configuration}
                     certificate={buyModalForCertificate}
                     producingAsset={buyModalForProducingAsset}
                     showModal={showBuyModal}
@@ -796,7 +812,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 />
 
                 <BuyCertificateBulkModal
-                    conf={this.props.configuration}
                     certificates={selectedCertificates}
                     showModal={showBuyBulkModal}
                     callback={this.hideBuyBulkModal}
@@ -812,6 +827,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 }
 
+const dispatchProps: IDispatchProps = {
+    setLoading
+};
+
 export const CertificateTable = connect(
     (state: IStoreState, ownProps: IOwnProps): IStateProps => ({
         baseURL: getBaseURL(),
@@ -820,5 +839,6 @@ export const CertificateTable = connect(
         currentUser: getCurrentUser(state),
         producingAssets: getProducingAssets(state),
         users: getUsers(state)
-    })
+    }),
+    dispatchProps
 )(CertificateTableClass);
