@@ -22,7 +22,7 @@ describe('Application[E2E]', () => {
         const ganacheServer = await startGanache();
         const { configurationClient, offChainDataClient } = await deployDemo();
 
-        const { store, history } = setupStore([`/assets/?rpc=ws://localhost:8545`], {
+        const { store, history } = setupStore([`/assets/production?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
             logActions: false,
             configurationClient,

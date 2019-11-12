@@ -40,7 +40,7 @@ async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
     offChainDataClient: IOffChainDataClient
-): Promise<Configuration.Entity> {
+): Promise<IStoreState['configuration']> {
     let web3: Web3 = null;
     const params = queryString.parse(routerSearch);
 
@@ -82,7 +82,7 @@ async function initConf(
 }
 
 function* initEventHandler() {
-    const configuration: Configuration.Entity = yield select(getConfiguration);
+    const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
     if (!configuration) {
         return;
