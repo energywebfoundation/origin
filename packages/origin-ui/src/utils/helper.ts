@@ -69,6 +69,13 @@ interface IEnvironment {
 }
 
 export function getEnv(): IEnvironment {
-    // eslint-disable-next-line dot-notation
-    return window['_env_'];
+    return (
+        // eslint-disable-next-line dot-notation
+        window['_env_'] || {
+            MODE: 'development',
+            BACKEND_URL: 'http://localhost:3030',
+            BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
+            WEB3: 'http://localhost:8545'
+        }
+    );
 }
