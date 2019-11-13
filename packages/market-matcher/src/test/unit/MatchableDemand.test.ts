@@ -1,5 +1,5 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand, Supply } from '@energyweb/market';
+import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Currency } from '@energyweb/utils-general';
 import { Substitute, Arg } from '@fluffy-spoon/substitute';
@@ -48,10 +48,12 @@ describe('MatchableDemand tests', () => {
             demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
             demand.offChainProperties.returns(demandOffChainProperties);
 
-            const certificate = Substitute.for<Certificate.ICertificate>();
+            const certificate = Substitute.for<PurchasableCertificate.IPurchasableCertificate>();
             certificate.price.returns(options.price || energyPrice);
             certificate.currency.returns(options.currency || currency);
-            certificate.energy.returns(options.energy || certificateEnergy);
+            certificate.certificate.returns({
+                energy: options.energy || certificateEnergy
+            } as Certificate.ICertificate);
 
             const producingAssetOffChainProperties = Substitute.for<
                 ProducingAsset.IOffChainProperties

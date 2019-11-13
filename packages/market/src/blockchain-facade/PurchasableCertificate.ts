@@ -20,6 +20,7 @@ export interface IPurchasableCertificate {
     onChainDirectPurchasePrice: number;
 
     sync(): Promise<IPurchasableCertificate>;
+    splitCertificate(energy: number): Promise<TransactionReceipt>;
 }
 
 export interface IOffChainSettlementOptions {
@@ -27,12 +28,11 @@ export interface IOffChainSettlementOptions {
     currency: Currency;
 }
 
-// export const getCertificateListLength = async (configuration: Configuration.Entity): Promise<number> => {
-//     return parseInt(
-//         await configuration.blockchainProperties.certificateLogicInstance.getCertificateListLength(),
-//         10
-//     );
-// };
+export const getCertificateListLength = async (
+    configuration: Configuration.Entity
+): Promise<number> => {
+    return Certificate.getCertificateListLength(configuration);
+};
 
 // const getAccountFromConfiguration = (configuration: Configuration.Entity) => ({
 //     from: configuration.blockchainProperties.activeUser.address,

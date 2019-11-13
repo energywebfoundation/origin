@@ -1,5 +1,4 @@
-import { Agreement, Demand, Supply } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 
 import { MatchingErrorReason } from './MatchingErrorReason';
 import { Validator } from './Validator';
@@ -8,7 +7,7 @@ export class MatchableAgreement {
     constructor(public agreement: Agreement.IAgreement) {}
 
     public async matchesCertificate(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         supply: Supply.ISupply,
         demand: Demand.IDemand
     ) {
@@ -18,7 +17,7 @@ export class MatchableAgreement {
 
         return new Validator<MatchingErrorReason>()
             .validate(
-                supply.assetId.toString() === certificate.assetId.toString(),
+                supply.assetId.toString() === certificate.certificate.assetId.toString(),
                 MatchingErrorReason.WRONG_ASSET_ID
             )
             .validate(missingEnergyInCurrentPeriod !== undefined, MatchingErrorReason.OUT_OF_RANGE)
@@ -27,8 +26,8 @@ export class MatchableAgreement {
                 MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
             .validate(
-                certificate.creationTime >= offChainProperties.start &&
-                    certificate.creationTime <= offChainProperties.end,
+                certificate.certificate.creationTime >= offChainProperties.start &&
+                    certificate.certificate.creationTime <= offChainProperties.end,
                 MatchingErrorReason.OUT_OF_RANGE
             )
             .result();

@@ -1,5 +1,4 @@
-import { Agreement, Demand, Supply } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import {
     Configuration,
     ContractEventHandler,
@@ -12,7 +11,7 @@ import polly from 'polly-js';
 
 export interface IEntityStore {
     init(): Promise<void>;
-    registerCertificateListener(listener: Listener<Certificate.Entity>): void;
+    registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>): void;
     registerDemandListener(listener: Listener<Demand.Entity>): void;
 
     getDemand(id: string): Promise<Demand.Entity>;
@@ -20,7 +19,7 @@ export interface IEntityStore {
 
     getAgreements(): Agreement.Entity[];
     getDemands(): Demand.Entity[];
-    getCertificates(): Certificate.Entity[];
+    getCertificates(): PurchasableCertificate.Entity[];
 }
 
 export type Listener<T> = (entity: T) => Promise<void>;
@@ -33,9 +32,12 @@ export class EntityStore implements IEntityStore {
 
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
 
-    private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
+    private certificates: Map<string, PurchasableCertificate.Entity> = new Map<
+        string,
+        PurchasableCertificate.Entity
+    >();
 
-    private certificateListeners: Listener<Certificate.Entity>[] = [];
+    private certificateListeners: Listener<PurchasableCertificate.Entity>[] = [];
 
     private demandListeners: Listener<Demand.Entity>[] = [];
 
@@ -44,7 +46,7 @@ export class EntityStore implements IEntityStore {
         @inject('logger') private logger: Winston.Logger
     ) {}
 
-    public registerCertificateListener(listener: Listener<Certificate.Entity>) {
+    public registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>) {
         this.certificateListeners.push(listener);
     }
 
@@ -102,7 +104,7 @@ export class EntityStore implements IEntityStore {
         }
     }
 
-    private async triggerCertificateListeners(certificate: Certificate.Entity) {
+    private async triggerCertificateListeners(certificate: PurchasableCertificate.Entity) {
         for (const listener of this.certificateListeners) {
             try {
                 await listener(certificate);
@@ -142,7 +144,9 @@ export class EntityStore implements IEntityStore {
         }
 
         this.logger.verbose('* Getting all certificates');
-        const certificateListLength = await Certificate.getCertificateListLength(this.config);
+        const certificateListLength = await PurchasableCertificate.getCertificateListLength(
+            this.config
+        );
         for (let i = 0; i < certificateListLength; i++) {
             await this.handleCertificate(i.toString(), false);
         }
@@ -293,7 +297,7 @@ export class EntityStore implements IEntityStore {
     }
 
     private async fetchCertificate(id: string) {
-        const certificate = await new Certificate.Entity(id, this.config).sync();
+        const certificate = await new PurchasableCertificate.Entity(id, this.config).sync();
 
         if (
             certificate.forSale &&

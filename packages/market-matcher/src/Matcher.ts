@@ -1,5 +1,4 @@
-import { Demand } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { inject, injectable } from 'tsyringe';
@@ -20,8 +19,9 @@ export class Matcher {
 
     public async init() {
         this.matchingQueue.pipe(concatMap(this.match.bind(this))).subscribe();
-        this.entityStore.registerCertificateListener(async (certificate: Certificate.Entity) =>
-            this.matchingQueue.next(certificate)
+        this.entityStore.registerCertificateListener(
+            async (certificate: PurchasableCertificate.Entity) =>
+                this.matchingQueue.next(certificate)
         );
         this.entityStore.registerDemandListener(async (demand: Demand.Entity) =>
             this.matchingQueue.next(demand)
@@ -29,9 +29,9 @@ export class Matcher {
         await this.entityStore.init();
     }
 
-    private async match(entity: Certificate.Entity | Demand.Entity) {
-        if (entity instanceof Certificate.Entity) {
-            return this.certificateMatcher.match(entity as Certificate.Entity);
+    private async match(entity: PurchasableCertificate.Entity | Demand.Entity) {
+        if (entity instanceof PurchasableCertificate.Entity) {
+            return this.certificateMatcher.match(entity as PurchasableCertificate.Entity);
         }
         return this.demandMatcher.match(entity as Demand.Entity);
     }

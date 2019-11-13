@@ -1,9 +1,9 @@
-import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
-import { Configuration } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
+
+import { ProducingAsset } from '@energyweb/asset-registry';
+import { Demand, PurchasableCertificate } from '@energyweb/market';
+import { Configuration } from '@energyweb/utils-general';
 
 import { CertificateService } from './CertificateService';
 import { IEntityStore } from './EntityStore';
@@ -57,9 +57,9 @@ export class DemandMatcher {
             this.entityStore
                 .getCertificates()
                 .filter(certificate => certificate.forSale)
-                .map(async (certificate: Certificate.Entity) => {
+                .map(async (certificate: PurchasableCertificate.Entity) => {
                     const producingAsset = await new ProducingAsset.Entity(
-                        certificate.assetId.toString(),
+                        certificate.certificate.assetId.toString(),
                         this.config
                     ).sync();
 
@@ -71,7 +71,7 @@ export class DemandMatcher {
             `[Demand #${demand.id}] Found ${(certificates || []).length} certificates on-sale`
         );
 
-        const matchingCertificates: Certificate.ICertificate[] = [];
+        const matchingCertificates: PurchasableCertificate.IPurchasableCertificate[] = [];
 
         for (const { certificate, producingAsset } of certificates) {
             const { result, reason } = await matchableDemand.matchesCertificate(
