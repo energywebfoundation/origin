@@ -1,0 +1,41 @@
+version: '3'
+services:
+  origin_ui:
+    image: "energyweb/origin-ui:${TAG}"
+    ports: 
+      - "80:80"
+    networks:
+      - app-network
+    env_file:
+      - ./.env
+    depends_on: 
+      - origin_backend
+  
+  market_matcher:
+    image: "energyweb/market-matcher:${TAG}"
+    env_file:
+      - ./.env
+    depends_on:
+      - origin_backend
+
+  event_listener:
+    image: "energyweb/event-listener:${TAG}"
+    env_file:
+      - ./.env
+    depends_on:
+      - origin_backend
+  
+  origin_backend:
+    image: "energyweb/origin-backend:${TAG}"
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    networks:
+      - app-network
+    env_file:
+      - ./.env
+    volumes:
+      - "./db.sqlite:/var/db/db.sqlite"
+
+networks:
+  app-network:
+    driver: bridge
