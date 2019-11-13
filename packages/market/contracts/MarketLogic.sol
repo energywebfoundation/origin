@@ -7,7 +7,9 @@ import "@energyweb/user-registry/contracts/RoleManagement.sol";
 import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
 import "@energyweb/origin/contracts/ICertificateLogic.sol";
 
-contract MarketLogic is Initializable, RoleManagement {
+import "./PurchasableCertificateLogic.sol";
+
+contract MarketLogic is Initializable, RoleManagement, PurchasableCertificateLogic {
 
     bool private _initialized;
     IAssetLogic private _assetLogic;
@@ -152,7 +154,7 @@ contract MarketLogic is Initializable, RoleManagement {
         require(demand.status == DemandStatus.ACTIVE, "demand should be in ACTIVE state");
 
         CertificateDefinitions.Certificate memory certificate = _certificateLogic.getCertificate(_certificateId);
-        _certificateLogic.buyCertificateFor(_certificateId, demand.demandOwner);
+        buyCertificateFor(_certificateId, demand.demandOwner);
 
         emit DemandPartiallyFilled(_demandId, _certificateId, certificate.energy);
     }

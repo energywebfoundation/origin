@@ -44,7 +44,7 @@ contract ICertificateLogic is IERC721, IERC721Enumerable {
     /// @notice Splits a certificate into two smaller ones, where (total - energy = 2ndCertificate)
     /// @param certificateId The id of the certificate
     /// @param energy The amount of energy in Wh for the 1st certificate
-    function splitCertificate(uint certificateId, uint energy) public;
+    function splitCertificate(uint certificateId, uint energy) public returns (uint childOneId, uint childTwoId);
 
     /// @notice gets whether the certificate is claimed
     /// @param _certificateId The id of the requested certificate

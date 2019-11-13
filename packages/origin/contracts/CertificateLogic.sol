@@ -32,9 +32,8 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     mapping(uint256 => CertificateDefinitions.Certificate) private certificates;
 
     modifier onlyCertificateOwner(uint _certificateId) {
-        address owner = ownerOf(_certificateId);
         require(
-            owner == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender),
+            ownerOf(_certificateId) == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender),
             "onlyCertificateOwner: not the certificate-owner or market matcher"
         );
         _;
@@ -126,13 +125,13 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @notice Splits a certificate into two smaller ones, where (total - energy = 2ndCertificate)
     /// @param certificateId The id of the certificate
     /// @param energy The amount of energy in Wh for the 1st certificate
-    function splitCertificate(uint certificateId, uint energy) public {
+    function splitCertificate(uint certificateId, uint energy) public returns (uint childOneId, uint childTwoId) {
         require(
             msg.sender == ownerOf(certificateId) || isRole(RoleManagement.Role.Matcher, msg.sender),
             "splitCertificate: You are not the owner of the certificate"
         );
 
-        _splitCertificate(certificateId, energy);
+        return _splitCertificate(certificateId, energy);
     }
 
     /// @notice gets whether the certificate is claimed

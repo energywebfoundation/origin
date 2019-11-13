@@ -23,8 +23,20 @@ export interface ICertificate {
     children: string[];
 
     sync(): Promise<ICertificate>;
+    
+    retireCertificate(): Promise<TransactionReceipt>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
+    getCertificateOwner(): Promise<string>;
+    isClaimed(): Promise<boolean>;
+    claim(): Promise<TransactionReceipt>;
+    
+    approve(_approved: string): Promise<TransactionReceipt>
+    getApproved(): Promise<string>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
+    safeTransferFrom(_to: string, _calldata?: string): Promise<TransactionReceipt>
+
+    getCertificationRequestEvents(): any;
+    getAllCertificateEvents(): Promise<EventLog[]>
 }
 
 export const getCertificateListLength = async (configuration: Configuration.Entity): Promise<number> => {
@@ -201,7 +213,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return this.configuration.blockchainProperties.certificateLogicInstance.isClaimed(this.id);
     }
 
-    async claim() {
+    async claim(): Promise<TransactionReceipt> {
         const accountProperties = {
             from: this.configuration.blockchainProperties.activeUser.address,
             privateKey: this.configuration.blockchainProperties.activeUser.privateKey
