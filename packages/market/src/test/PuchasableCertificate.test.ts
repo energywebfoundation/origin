@@ -125,6 +125,21 @@ describe('PurchasableCertificate-Facade', () => {
             privateKeyDeployment
         );
 
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            marketLogic.web3Contract.options.address,
+            'marketLogic',
+            { privateKey: privateKeyDeployment }
+        );
+        await userLogic.setRoles(
+            marketLogic.web3Contract.options.address,
+            buildRights([Role.Matcher]),
+            {
+                privateKey: privateKeyDeployment
+            }
+        );
+
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -240,11 +255,9 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should make certificate available for sale', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountAssetOwner,
-            privateKey: assetOwnerPK
-        };
+        setActiveUser(assetOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
+
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
         await pCert.publishForSale(10, '0x1230000000000000000000000000000000000000');
@@ -254,11 +267,10 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should fail unpublish certificate from sale if not the owner', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountTrader,
-            privateKey: traderPK
-        };
+        setActiveUser(assetOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
+
+        setActiveUser(traderPK);
         const pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
         let failed = false;
@@ -274,10 +286,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should unpublish certificate available from sale', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountAssetOwner,
-            privateKey: assetOwnerPK
-        };
+        setActiveUser(assetOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -289,7 +298,9 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should set erc20-token and price for a certificate', async () => {
+        setActiveUser(assetOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
+
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
         await pCert.publishForSale(100, erc20TestTokenAddress);
@@ -315,9 +326,10 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should fail buying a certificate when not for sale', async () => {
-        setActiveUser(traderPK);
-
+        setActiveUser(assetOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
+
+        setActiveUser(traderPK);
         const pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
         let failed = false;
@@ -346,13 +358,14 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should fail buying a certificate when not enough erc20 tokens approved', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountTrader,
-            privateKey: traderPK
-        };
-
+        setActiveUser(assetOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
-        const pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
+
+        let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
+        await pCert.publishForSale(10, erc20TestTokenAddress);
+
+        setActiveUser(traderPK);
+        pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
         let failed = false;
 
@@ -367,10 +380,15 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should buy a certificate when enough erc20 tokens are approved', async () => {
-        await erc20TestToken.approve(accountAssetOwner, 100, { privateKey: traderPK });
-
+        setActiveUser(assetOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
+        await pCert.publishForSale(10, erc20TestTokenAddress);
+
+        await erc20TestToken.approve(accountAssetOwner, 100, { privateKey: traderPK });
+
+        setActiveUser(traderPK);
+        pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
         await pCert.buyCertificate();
         pCert = await pCert.sync();
@@ -388,50 +406,6 @@ describe('PurchasableCertificate-Facade', () => {
         } as Partial<Certificate.Entity>);
     });
 
-    it('should make certificate available for sale', async () => {
-        const newCertificateId = await generateCertificateAndGetId();
-        let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
-
-        await pCert.publishForSale(10, '0x1230000000000000000000000000000000000000', 30);
-
-        pCert = await pCert.sync();
-
-        assert.equal(pCert.certificate.status, Certificate.Status.Split);
-        assert.isFalse(pCert.forSale);
-
-        const childCert1 = await new PurchasableCertificate.Entity(
-            newCertificateId + 1,
-            conf
-        ).sync();
-
-        assert.deepOwnInclude(childCert1, {
-            id: '11',
-            initialized: true,
-            forSale: true,
-            acceptedToken: '0x1230000000000000000000000000000000000000',
-            offChainSettlementOptions: {
-                price: 0,
-                currency: Currency.NONE
-            }
-        } as Partial<PurchasableCertificate.Entity>);
-
-        const childCert2 = await new PurchasableCertificate.Entity(
-            newCertificateId + 2,
-            conf
-        ).sync();
-
-        assert.deepOwnInclude(childCert2, {
-            id: '12',
-            initialized: true,
-            forSale: false,
-            acceptedToken: '0x0000000000000000000000000000000000000000',
-            offChainSettlementOptions: {
-                price: 0,
-                currency: Currency.NONE
-            }
-        } as Partial<PurchasableCertificate.Entity>);
-    });
-
     it('should make certificate available for sale with fiat', async () => {
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -443,7 +417,7 @@ describe('PurchasableCertificate-Facade', () => {
         pCert = await pCert.sync();
 
         assert.deepOwnInclude(pCert, {
-            id: '12',
+            id: newCertificateId,
             initialized: true,
             forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
@@ -557,7 +531,6 @@ describe('PurchasableCertificate-Facade', () => {
             newCertificateId,
             conf
         ).sync();
-
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, Currency.EUR);
 
         setActiveUser(traderPK);
@@ -572,9 +545,6 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should correctly set off-chain currency after buying and splitting certificate', async () => {
-        const STARTING_CERTIFICATE_LENGTH = Number(
-            await Certificate.getCertificateListLength(conf)
-        );
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
         const CERTIFICATE_CURRENCY = Currency.EUR;
@@ -609,21 +579,20 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
 
         setActiveUser(traderPK);
+        parentCertificate = await parentCertificate.sync();
 
         await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
+        parentCertificate = await parentCertificate.sync();
         assert.equal(
             await erc20TestToken.balanceOf(accountAssetOwner),
             ASSET_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
-
-        parentCertificate = await parentCertificate.sync();
-
         assert.equal(parentCertificate.certificate.status, Certificate.Status.Split);
 
         const firstChildCertificate = await new PurchasableCertificate.Entity(
-            (STARTING_CERTIFICATE_LENGTH + 1).toString(),
+            (newCertificateId + 1).toString(),
             conf
         ).sync();
 
@@ -637,7 +606,7 @@ describe('PurchasableCertificate-Facade', () => {
         );
 
         const secondChildCertificate = await new PurchasableCertificate.Entity(
-            (STARTING_CERTIFICATE_LENGTH + 2).toString(),
+            (newCertificateId + 2).toString(),
             conf
         ).sync();
 
@@ -706,7 +675,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should bulk buy certificates', async () => {
-        setActiveUser(traderPK);
+        setActiveUser(assetOwnerPK);
 
         const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
             await erc20TestToken.balanceOf(accountAssetOwner)
@@ -714,20 +683,29 @@ describe('PurchasableCertificate-Facade', () => {
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
 
         const newCertificateId = parseInt(await generateCertificateAndGetId(), 10);
+        let firstCertificate = await new PurchasableCertificate.Entity(
+            newCertificateId.toString(),
+            conf
+        ).sync();
+        await firstCertificate.publishForSale(3, erc20TestTokenAddress);
+
         const newCertificateId2 = parseInt(await generateCertificateAndGetId(), 10);
+        let secondCertificate = await new PurchasableCertificate.Entity(
+            newCertificateId2.toString(),
+            conf
+        ).sync();
+        await secondCertificate.publishForSale(3, erc20TestTokenAddress);
+
+        setActiveUser(traderPK);
+        firstCertificate = await firstCertificate.sync();
+        secondCertificate = await secondCertificate.sync();
 
         await marketLogic.buyCertificateBulk([newCertificateId, newCertificateId2], {
             privateKey: traderPK
         });
 
-        const firstCertificate = await new PurchasableCertificate.Entity(
-            newCertificateId.toString(),
-            conf
-        ).sync();
-        const secondCertificate = await new PurchasableCertificate.Entity(
-            newCertificateId2.toString(),
-            conf
-        ).sync();
+        firstCertificate = await firstCertificate.sync();
+        secondCertificate = await secondCertificate.sync();
 
         assert.equal(firstCertificate.certificate.owner, accountTrader);
         assert.equal(secondCertificate.certificate.owner, accountTrader);
