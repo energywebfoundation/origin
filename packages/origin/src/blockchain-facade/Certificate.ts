@@ -1,7 +1,7 @@
 import { TransactionReceipt, EventLog } from 'web3/types';
 
 import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingAsset, Asset } from '@energyweb/asset-registry';
 
 import { CertificateLogic } from '..';
 
@@ -15,6 +15,9 @@ export interface ICertificate {
     id: string;
 
     assetId: number;
+    generationStartTime: number;
+    generationEndTime: number;
+
     owner: string;
     energy: number;
     status: Status;
@@ -128,6 +131,9 @@ export const getAllCertificateEvents = async (
 
 export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
     public assetId: number;
+    public generationStartTime: number;
+    public generationEndTime: number;
+
     public owner: string;
     public energy: number;
     public status: Status;
@@ -158,10 +164,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const cert = await this.configuration.blockchainProperties.certificateLogicInstance.getCertificate(
-                this.id
-            );
+            const certificateLogicInstance: CertificateLogic = this.configuration.blockchainProperties.certificateLogicInstance;
 
+            const cert = await certificateLogicInstance.getCertificate(
+                Number(this.id)
+            );
+            
             this.assetId = Number(cert.assetId);
             this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
             this.energy = Number(cert.energy);
@@ -174,6 +182,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.creationTime = Number(cert.creationTime);
             this.parentId = Number(cert.parentId);
             this.offChainSettlementOptions = await this.getOffChainSettlementOptions();
+
+            const reads = await new ProducingAsset.Entity(this.assetId.toString(), this.configuration).getSmartMeterReadsByIndex([Number(cert.readsStartIndex), Number(cert.readsEndIndex)]);
+            this.generationStartTime = reads[0].timestamp;
+            this.generationEndTime = reads[1].timestamp;
 
             this.initialized = true;
 

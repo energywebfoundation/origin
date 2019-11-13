@@ -48,6 +48,10 @@ export class AssetLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents('LogAssetSetInactive', eventFilter);
     }
 
+    async getSmartMeterReadsForAssetByIndex(_assetId: number, _indexes: number[], txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getSmartMeterReadsForAssetByIndex(_assetId, _indexes).call(txParams);
+    }
+
     async getSmartMeterReadsForAsset(_assetId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getSmartMeterReadsForAsset(_assetId).call(txParams);
     }

@@ -256,6 +256,8 @@ describe('CertificateLogic-Facade', () => {
 
     it('should return certificate', async () => {
         const certificate = await new Certificate.Entity('0', conf).sync();
+        const reads = await assetLogic.getSmartMeterReadsForAsset(0);
+
         assert.equal(certificate.owner, accountAssetOwner);
 
         blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
@@ -276,7 +278,9 @@ describe('CertificateLogic-Facade', () => {
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
-            }
+            },
+            generationStartTime: Number(reads[0].timestamp),
+            generationEndTime: Number(reads[0].timestamp),
         } as Partial<Certificate.Entity>);
     });
 
@@ -584,6 +588,8 @@ describe('CertificateLogic-Facade', () => {
         };
 
         let certificate = await new Certificate.Entity('2', conf).sync();
+        
+        const reads = await assetLogic.getSmartMeterReadsForAsset(0);
 
         await certificate.splitCertificate(60);
 
@@ -627,7 +633,9 @@ describe('CertificateLogic-Facade', () => {
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
-            }
+            },
+            generationStartTime: Number(reads[2].timestamp),
+            generationEndTime: Number(reads[2].timestamp)
         } as Partial<Certificate.Entity>);
 
         assert.deepOwnInclude(c2, {
@@ -646,7 +654,9 @@ describe('CertificateLogic-Facade', () => {
             offChainSettlementOptions: {
                 price: 0,
                 currency: Currency.NONE
-            }
+            },
+            generationStartTime: Number(reads[2].timestamp),
+            generationEndTime: Number(reads[2].timestamp)
         } as Partial<Certificate.Entity>);
 
         const activeCerts = await Certificate.getActiveCertificates(conf);
