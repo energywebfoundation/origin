@@ -16,7 +16,7 @@ import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
 import { IStoreState } from '../types';
-import { formatCurrency } from '../utils/Helper';
+import { formatCurrency } from '../utils/helper';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';

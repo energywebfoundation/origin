@@ -17,7 +17,7 @@ import {
     TableSortLabel
 } from '@material-ui/core';
 import { Actions, ITableAction } from './Actions';
-import { deepEqual } from '../../utils/Helper';
+import { deepEqual } from '../../utils/helper';
 import {
     ColumnBatchActions,
     IBatchableAction,

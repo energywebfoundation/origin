@@ -18,7 +18,7 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { getEnumValues, dataTest } from '../../utils/Helper';
+import { getEnumValues, dataTest } from '../../utils/helper';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import './DemandForm.scss';

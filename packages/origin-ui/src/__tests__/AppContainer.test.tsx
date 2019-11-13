@@ -10,7 +10,7 @@ import {
     waitForConditionAndAssert
 } from './utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
-import { dataTestSelector } from '../utils/Helper';
+import { dataTestSelector } from '../utils/helper';
 import { TimeFrame } from '@energyweb/utils-general';
 
 import moment from 'moment';

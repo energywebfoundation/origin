@@ -60,3 +60,15 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 export function formatCurrency(value: number) {
     return currencyFormatter.format(value).replace('$', '');
 }
+
+interface IEnvironment {
+    MODE: string;
+    BACKEND_URL: string;
+    BLOCKCHAIN_EXPLORER_URL: string;
+    WEB3: string;
+}
+
+export function getEnv(): IEnvironment {
+    // eslint-disable-next-line dot-notation
+    return window['_env_'];
+}

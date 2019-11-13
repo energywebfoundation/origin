@@ -31,6 +31,7 @@ import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import { getOffChainDataClient, getConfigurationClient } from '../general/selectors';
+import { getEnv } from '../../utils/helper';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -58,8 +59,8 @@ async function initConf(
         }
     } else if ((window as any).web3) {
         web3 = new Web3(web3.currentProvider);
-    } else if (process.env.WEB3) {
-        web3 = new Web3(process.env.WEB3);
+    } else if (getEnv().WEB3) {
+        web3 = new Web3(getEnv().WEB3);
     }
 
     const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(

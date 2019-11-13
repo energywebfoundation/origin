@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { mount } from 'enzyme';
 import { EncodedAssetType, IRECAssetService } from '@energyweb/utils-general';
 import { setupStore, WrapperComponent } from './utils/helpers';
-import { dataTestSelector } from '../utils/Helper';
+import { dataTestSelector } from '../utils/helper';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType

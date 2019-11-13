@@ -13,7 +13,7 @@ import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/Helper';
+import { getOffChainText } from '../utils/helper';
 import { Compliance, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { AssetMap } from './AssetMap';

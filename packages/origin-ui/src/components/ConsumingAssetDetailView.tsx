@@ -8,7 +8,7 @@ import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
 import { ConsumingAsset } from '@energyweb/asset-registry';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/Helper';
+import { getOffChainText } from '../utils/helper';
 import { Configuration } from '@energyweb/utils-general';
 import { AssetMap } from './AssetMap';
 import { getConsumingAssetDetailLink } from '../utils/routing';

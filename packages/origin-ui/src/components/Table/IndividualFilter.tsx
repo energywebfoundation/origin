@@ -13,7 +13,7 @@ import {
     Chip
 } from '@material-ui/core';
 import { Moment } from 'moment';
-import { dataTest } from '../../utils/Helper';
+import { dataTest } from '../../utils/helper';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 
 interface IProps {
