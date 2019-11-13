@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -14,7 +14,7 @@ import { IStoreState } from '../../types/index';
 
 interface IBuyCertificateBulkModalProps {
     conf: IStoreState['configuration'];
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     showModal: boolean;
     callback: () => void;
 }
@@ -60,16 +60,20 @@ export class BuyCertificateBulkModal extends React.Component<
                 );
 
                 const currentAllowance = Number(
-                    await erc20TestToken.allowance(account.from, cert.owner)
+                    await erc20TestToken.allowance(account.from, cert.certificate.owner)
                 );
                 const price = Number(cert.onChainDirectPurchasePrice);
 
-                await erc20TestToken.approve(cert.owner, currentAllowance + price, account);
+                await erc20TestToken.approve(
+                    cert.certificate.owner,
+                    currentAllowance + price,
+                    account
+                );
             }
         }
 
         const certificateIds: number[] = this.props.certificates.map(cert => parseInt(cert.id, 10));
-        await this.props.conf.blockchainProperties.certificateLogicInstance.buyCertificateBulk(
+        await this.props.conf.blockchainProperties.marketLogicInstance.buyCertificateBulk(
             certificateIds,
             account
         );
@@ -84,7 +88,10 @@ export class BuyCertificateBulkModal extends React.Component<
     }
 
     render() {
-        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.energy), 0);
+        const totalWh = this.props.certificates.reduce(
+            (a, b) => a + Number(b.certificate.energy),
+            0
+        );
 
         return (
             <Dialog open={this.state.show} onClose={this.handleClose}>

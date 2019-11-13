@@ -3,7 +3,7 @@ import * as Winston from 'winston';
 
 import { Asset, AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { MarketLogic, Demand, MarketUser } from '@energyweb/market';
+import { MarketLogic, Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
@@ -322,7 +322,7 @@ export class Demo {
     async publishForSale(certificateId: number) {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
 
-        const deployedCertificate = await new Certificate.Entity(
+        const deployedCertificate = await new PurchasableCertificate.Entity(
             certificateId.toString(),
             this.conf
         ).sync();

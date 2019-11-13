@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand, MarketUser } from '@energyweb/market';
+import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate } from '@energyweb/origin';
 import {
@@ -83,8 +83,13 @@ export class OriginEventListener implements IOriginEventListener {
         });
 
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const fetchCertificate = async (certificateId: string) => {
-                const certificate = await new Certificate.Entity(certificateId, this.conf).sync();
+            const fetchCertificate = async (
+                certificateId: string
+            ): Promise<PurchasableCertificate.Entity> => {
+                const certificate = await new PurchasableCertificate.Entity(
+                    certificateId,
+                    this.conf
+                ).sync();
 
                 if (
                     certificate.forSale &&
@@ -98,7 +103,7 @@ export class OriginEventListener implements IOriginEventListener {
                 return certificate;
             };
 
-            const publishedCertificate = await polly()
+            const publishedCertificate: PurchasableCertificate.IPurchasableCertificate = await polly()
                 .waitAndRetry(10)
                 .executeForPromise(() => fetchCertificate(event.returnValues._certificateId));
 
@@ -109,7 +114,7 @@ export class OriginEventListener implements IOriginEventListener {
             const demands = await Demand.getAllDemands(this.conf);
 
             const producingAsset = await new ProducingAsset.Entity(
-                publishedCertificate.assetId.toString(),
+                publishedCertificate.certificate.assetId.toString(),
                 this.conf
             ).sync();
 
@@ -166,7 +171,9 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     private async notify() {
-        const allUsers: Promise<MarketUser.Entity>[] = this.originEventsStore
+        const allUsers: Promise<
+            MarketUser.Entity
+        >[] = this.originEventsStore
             .getAllUsers()
             .map(async userId => new MarketUser.Entity(userId, this.conf).sync());
         const notifyUsers: MarketUser.Entity[] = (await Promise.all(allUsers)).filter(

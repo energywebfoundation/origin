@@ -2,7 +2,7 @@ import * as React from 'react';
 import moment from 'moment';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Currency, Configuration } from '@energyweb/utils-general';
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import {
     Button,
@@ -27,7 +27,7 @@ interface IValidation {
 
 interface IPublishForSaleModalProps {
     conf: Configuration.Entity;
-    certificate: Certificate.Entity;
+    certificate: PurchasableCertificate.Entity;
     producingAsset: ProducingAsset.Entity;
     showModal: boolean;
     callback: () => void;
@@ -87,7 +87,7 @@ class PublishForSaleModal extends React.Component<
         }
 
         const newState = {
-            kwh: certificate.energy / 1000
+            kwh: certificate.certificate.energy / 1000
         };
 
         this.setState(newState);
@@ -128,7 +128,7 @@ class PublishForSaleModal extends React.Component<
                 const kwhValid =
                     !isNaN(kwh) &&
                     kwh >= this.state.minKwh &&
-                    kwh <= this.props.certificate.energy / 1000 &&
+                    kwh <= this.props.certificate.certificate.energy / 1000 &&
                     countDecimals(kwh) <= 3;
 
                 this.setState({
@@ -224,7 +224,8 @@ class PublishForSaleModal extends React.Component<
         let creationTime: string;
 
         try {
-            creationTime = certificate && moment.unix(certificate.creationTime).toString();
+            creationTime =
+                certificate && moment.unix(certificate.certificate.creationTime).toString();
         } catch (error) {
             console.error('Error in PublishForSaleModal', error);
         }

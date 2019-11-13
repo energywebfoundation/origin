@@ -1,7 +1,7 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { showNotification, NotificationType } from '../../utils/notifications';
@@ -21,7 +21,7 @@ interface IValidation {
 interface IBuyCertificateModalProps {
     conf: Configuration.Entity;
     producingAsset: ProducingAsset.Entity;
-    certificate: Certificate.Entity;
+    certificate: PurchasableCertificate.Entity;
     showModal: boolean;
     callback: () => void;
 }
@@ -62,7 +62,7 @@ export class BuyCertificateModal extends React.Component<
     async componentDidUpdate(prevProps: IBuyCertificateModalProps) {
         if (this.props.certificate && this.props.certificate !== prevProps.certificate) {
             this.setState({
-                kwh: this.props.certificate.energy / 1000,
+                kwh: this.props.certificate.certificate.energy / 1000,
                 validation: {
                     kwh: true
                 }
@@ -84,7 +84,7 @@ export class BuyCertificateModal extends React.Component<
                 );
 
                 await erc20TestToken.approve(
-                    certificate.owner,
+                    certificate.certificate.owner,
                     certificate.onChainDirectPurchasePrice
                 );
             }
@@ -111,7 +111,7 @@ export class BuyCertificateModal extends React.Component<
                 const kwhValid =
                     !isNaN(kwh) &&
                     kwh >= 0.001 &&
-                    kwh <= this.props.certificate.energy / 1000 &&
+                    kwh <= this.props.certificate.certificate.energy / 1000 &&
                     countDecimals(kwh) <= 3;
 
                 this.setState({
@@ -138,7 +138,7 @@ export class BuyCertificateModal extends React.Component<
     render() {
         const certificateId = this.props.certificate ? this.props.certificate.id : '';
         const date = this.props.certificate
-            ? moment.unix(this.props.certificate.creationTime).format('YYYY-MM-DD')
+            ? moment.unix(this.props.certificate.certificate.creationTime).format('YYYY-MM-DD')
             : '';
         const facilityName = this.props.producingAsset
             ? this.props.producingAsset.offChainProperties.facilityName
