@@ -15,6 +15,7 @@ import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
 import { CertificateService } from './CertificateService';
 import { DemandMatcher } from './DemandMatcher';
 import { CertificateMatcher } from './CertificateMatcher';
+import { TimeTrigger, ITimeTrigger } from './TimeTrigger';
 
 export interface IMatcherConfig {
     web3Url: string;
@@ -71,11 +72,13 @@ export async function startMatcher(config: IMatcherConfig) {
             container.register<DemandMatcher>('demandMatcher', {
                 useClass: DemandMatcher
             });
+            container.register<ITimeTrigger>('timeTrigger', { useClass: TimeTrigger });
+            container.register('interval', { useValue: 15 });
 
             const matcher = container.resolve<Matcher>(Matcher);
             await matcher.init();
         } catch (e) {
-            logger.error(e.message);
+            logger.error(e);
         }
     } else {
         throw new Error('No config specified');
