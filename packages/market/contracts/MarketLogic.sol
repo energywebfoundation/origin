@@ -386,7 +386,7 @@ contract MarketLogic is Initializable, RoleManagement {
         }
     }
 
-    function getPurchasableCertificate(uint256 certificateId)
+    function getPurchasableCertificate(uint certificateId)
         public view returns (PurchasableCertificate memory)
     {
         // require(certificateId < _certificateLogic.totalSupply(), "getPurchasableCertificate: index out of bounds");
@@ -398,11 +398,7 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @param _price the purchase price
     /// @param _tokenAddress the address of the ERC20 token address
     function publishForSale(uint _certificateId, uint _price, address _tokenAddress) public onlyCertificateOwner(_certificateId) {
-        _setOnChainDirectPurchasePrice(_certificateId, _price);
-        _setTradableToken(_certificateId, _tokenAddress);
-        purchasableCertificates[_certificateId].forSale = true;
-
-        emit LogPublishForSale(_certificateId, _price, _tokenAddress);
+        _publishForSale(_certificateId, _price, _tokenAddress);
     }
 
     /// @notice makes the certificate not available for sale
@@ -451,22 +447,15 @@ contract MarketLogic is Initializable, RoleManagement {
         PurchasableCertificate memory pCert = getPurchasableCertificate(_certificateId);
 
         require(_energy > 0 && _energy <= cert.energy, "Energy has to be higher than 0 and lower or equal than certificate energy");
+        require(pCert.forSale == true, "Unable to split and buy a certificate that is not for sale.");
 
         if (_energy == cert.energy) {
             _buyCertificate(_certificateId, msg.sender);
         } else {
-            require(pCert.forSale == true, "Unable to split and buy a certificate that is not for sale.");
-
             (uint childOneId, uint childTwoId) = _certificateLogic.splitCertificate(_certificateId, _energy);
 
-            _setOnChainDirectPurchasePrice(childOneId, pCert.onChainDirectPurchasePrice);
-            _setTradableToken(childOneId, pCert.acceptedToken);
-
-            _setOnChainDirectPurchasePrice(childTwoId, pCert.onChainDirectPurchasePrice);
-            _setTradableToken(childTwoId, pCert.acceptedToken);
-
-            emit LogPublishForSale(childOneId, pCert.onChainDirectPurchasePrice, pCert.acceptedToken);
-            emit LogPublishForSale(childTwoId, pCert.onChainDirectPurchasePrice, pCert.acceptedToken);
+            _publishForSale(childOneId, pCert.onChainDirectPurchasePrice, pCert.acceptedToken);
+            _publishForSale(childTwoId, pCert.onChainDirectPurchasePrice, pCert.acceptedToken);
 
             _buyCertificate(childOneId, msg.sender);
         }
@@ -477,12 +466,11 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @param _energy The amount of energy in W for the 1st certificate
     /// @param _price the purchase price
     /// @param _tokenAddress the address of the ERC20 token address
-    function splitAndPublishForSale(uint _certificateId, uint _energy, uint _price, address _tokenAddress) public {
+    function splitAndPublishForSale(uint _certificateId, uint _energy, uint _price, address _tokenAddress)
+        public onlyCertificateOwner(_certificateId)
+    {
         (uint childOneId, ) = _certificateLogic.splitCertificate(_certificateId, _energy);
-
-        publishForSale(childOneId, _price, _tokenAddress);
-
-        emit LogPublishForSale(childOneId, _price, _tokenAddress);
+        _publishForSale(childOneId, _price, _tokenAddress);
     }
 
     /// @notice gets the price for a direct purchase onchain
@@ -550,5 +538,13 @@ contract MarketLogic is Initializable, RoleManagement {
     function _removeTokenAndPrice(uint _certificateId) internal {
         _setTradableToken(_certificateId, address(0));
         _setOnChainDirectPurchasePrice(_certificateId, 0);
+    }
+
+    function _publishForSale(uint _certificateId, uint _price, address _tokenAddress) internal {
+        _setOnChainDirectPurchasePrice(_certificateId, _price);
+        _setTradableToken(_certificateId, _tokenAddress);
+        purchasableCertificates[_certificateId].forSale = true;
+
+        emit LogPublishForSale(_certificateId, _price, _tokenAddress);
     }
 }

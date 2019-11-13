@@ -447,6 +447,8 @@ describe('PurchasableCertificate-Facade', () => {
             conf
         ).sync();
 
+        setActiveUser(assetOwnerPK);
+
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, erc20TestTokenAddress);
 
         assert.equal(
@@ -456,6 +458,7 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
 
         setActiveUser(traderPK);
+        parentCertificate = await parentCertificate.sync();
 
         await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
@@ -480,6 +483,7 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(firstChildCertificate.certificate.status, Certificate.Status.Active);
         assert.equal(firstChildCertificate.forSale, false);
         assert.equal(firstChildCertificate.certificate.energy, CERTIFICATE_ENERGY / 2);
+        assert.equal(firstChildCertificate.certificate.owner, accountTrader);
 
         const secondChildCertificate = await new PurchasableCertificate.Entity(
             (STARTING_CERTIFICATE_LENGTH + 2).toString(),
@@ -489,6 +493,7 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(secondChildCertificate.certificate.status, Certificate.Status.Active);
         assert.equal(secondChildCertificate.forSale, true);
         assert.equal(secondChildCertificate.certificate.energy, CERTIFICATE_ENERGY / 2);
+        assert.equal(secondChildCertificate.certificate.owner, accountAssetOwner);
     });
 
     it('should fail to split and buy and split certificate when trying to buy higher ENERGY than certificate has', async () => {
@@ -545,6 +550,9 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should correctly set off-chain currency after buying and splitting certificate', async () => {
+        const STARTING_CERTIFICATE_LENGTH = Number(
+            await Certificate.getCertificateListLength(conf)
+        );
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
         const CERTIFICATE_CURRENCY = Currency.EUR;
@@ -592,7 +600,7 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(parentCertificate.certificate.status, Certificate.Status.Split);
 
         const firstChildCertificate = await new PurchasableCertificate.Entity(
-            (newCertificateId + 1).toString(),
+            (STARTING_CERTIFICATE_LENGTH + 1).toString(),
             conf
         ).sync();
 
@@ -606,7 +614,7 @@ describe('PurchasableCertificate-Facade', () => {
         );
 
         const secondChildCertificate = await new PurchasableCertificate.Entity(
-            (newCertificateId + 2).toString(),
+            (STARTING_CERTIFICATE_LENGTH + 2).toString(),
             conf
         ).sync();
 
