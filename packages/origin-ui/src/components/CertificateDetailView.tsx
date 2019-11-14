@@ -1,9 +1,9 @@
 import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { MarketUser } from '@energyweb/market';
+import { Certificate } from '@energyweb/origin';
+import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import './DetailView.scss';
 import { Configuration } from '@energyweb/utils-general';
@@ -20,7 +20,7 @@ interface IOwnProps {
 interface IStateProps {
     configuration: Configuration.Entity;
     baseURL: string;
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
 }
 
@@ -64,8 +64,8 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
 
     init(props: Props) {
         if (props.id !== null && props.id !== undefined) {
-            const selectedCertificate: Certificate.Entity = props.certificates.find(
-                (c: Certificate.Entity) => c.id === props.id.toString()
+            const selectedCertificate: PurchasableCertificate.Entity = props.certificates.find(
+                (c: PurchasableCertificate.Entity) => c.id === props.id.toString()
             );
             if (selectedCertificate) {
                 this.getOwner(props, selectedCertificate, () =>
@@ -75,11 +75,11 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
         }
     }
 
-    async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
+    async getOwner(props: Props, selectedCertificate: PurchasableCertificate.Entity, cb) {
         this.setState(
             {
                 owner: await new MarketUser.Entity(
-                    selectedCertificate.owner,
+                    selectedCertificate.certificate.owner,
                     props.configuration as any
                 ).sync()
             },
@@ -87,7 +87,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
         );
     }
 
-    async enrichEvent(props: Props, selectedCertificate: Certificate.Entity) {
+    async enrichEvent(props: Props, selectedCertificate: PurchasableCertificate.Entity) {
         const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
             async (event: any) => {
                 let label;
@@ -186,7 +186,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
         const selectedCertificate =
             this.props.id !== null && this.props.id !== undefined
                 ? this.props.certificates.find(
-                      (c: Certificate.Entity) => c.id === this.props.id.toString()
+                      (c: PurchasableCertificate.Entity) => c.id === this.props.id.toString()
                   )
                 : null;
 
@@ -214,7 +214,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
             ));
 
             const asset = this.props.producingAssets.find(
-                p => p.id === selectedCertificate.assetId.toString()
+                p => p.id === selectedCertificate.certificate.assetId.toString()
             );
 
             data = [
@@ -230,7 +230,9 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                     {
                         label: 'Claimed',
                         data:
-                            selectedCertificate.status === Certificate.Status.Claimed ? 'yes' : 'no'
+                            selectedCertificate.certificate.status === Certificate.Status.Claimed
+                                ? 'yes'
+                                : 'no'
                     },
                     {
                         label: 'Producing Asset Id',
@@ -240,11 +242,13 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
 
                     {
                         label: 'Certified Energy (kWh)',
-                        data: (selectedCertificate.energy / 1000).toLocaleString()
+                        data: (selectedCertificate.certificate.energy / 1000).toLocaleString()
                     },
                     {
                         label: 'Creation Date',
-                        data: moment(selectedCertificate.creationTime * 1000).format('DD MMM YY')
+                        data: moment(selectedCertificate.certificate.creationTime * 1000).format(
+                            'DD MMM YY'
+                        )
                     }
                 ]
             ];
@@ -307,7 +311,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                     </div>
                     {selectedCertificate ? (
                         <ProducingAssetDetailView
-                            id={selectedCertificate.assetId}
+                            id={selectedCertificate.certificate.assetId}
                             addSearchField={false}
                             showSmartMeterReadings={false}
                             showCertificates={false}

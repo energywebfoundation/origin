@@ -10,14 +10,15 @@ import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate } from '@energyweb/origin';
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import Web3 from 'web3';
 import {
+    PurchasableCertificate,
     Demand,
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
+import Web3 from 'web3';
+
 import {
     configurationUpdated,
     demandDeleted,
@@ -112,7 +113,7 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogPublishForSale', async function(
                 event: any
             ) {
-                const certificate = await new Certificate.Entity(
+                const certificate = await new PurchasableCertificate.Entity(
                     event.returnValues._certificateId,
                     configuration
                 ).sync();
@@ -125,7 +126,7 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogCertificateSplit', async function(
                 event: any
             ) {
-                const certificate = await new Certificate.Entity(
+                const certificate = await new PurchasableCertificate.Entity(
                     event.returnValues._certificateId,
                     configuration
                 ).sync();
@@ -138,7 +139,7 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogCertificateClaimed', async function(
                 event: any
             ) {
-                const certificate = await new Certificate.Entity(
+                const certificate = await new PurchasableCertificate.Entity(
                     event.returnValues._certificateId,
                     configuration
                 ).sync();
@@ -149,7 +150,7 @@ function* initEventHandler() {
             });
 
             certificateContractEventHandler.onEvent('Transfer', async function(event: any) {
-                const certificate = await new Certificate.Entity(
+                const certificate = await new PurchasableCertificate.Entity(
                     event.returnValues._tokenId,
                     configuration
                 ).sync();
@@ -162,7 +163,7 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogUnpublishForSale', async function(
                 event: any
             ) {
-                const certificate = await new Certificate.Entity(
+                const certificate = await new PurchasableCertificate.Entity(
                     event.returnValues._certificateId,
                     configuration
                 ).sync();
@@ -313,9 +314,9 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             yield put(demandCreated(demand));
         }
 
-        const certificates: Certificate.Entity[] = yield apply(
-            Certificate,
-            Certificate.getAllCertificates,
+        const certificates: PurchasableCertificate.Entity[] = yield apply(
+            PurchasableCertificate,
+            PurchasableCertificate.getAllCertificates,
             [configuration]
         );
 

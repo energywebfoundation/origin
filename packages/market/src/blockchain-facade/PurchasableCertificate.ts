@@ -39,13 +39,9 @@ export const getCertificateListLength = async (
 //     privateKey: configuration.blockchainProperties.activeUser.privateKey
 // });
 
-// export const getAllCertificates = async (configuration: Configuration.Entity) => {
-//     const certificatePromises = Array(await getCertificateListLength(configuration))
-//         .fill(null)
-//         .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-//     return Promise.all(certificatePromises);
-// };
+export const getAllCertificates = async (configuration: Configuration.Entity) => {
+    return Certificate.getAllCertificates(configuration);
+};
 
 // export const getActiveCertificates = async (configuration: Configuration.Entity) => {
 //     const certificatePromises = Array(await getCertificateListLength(configuration))
