@@ -43,10 +43,10 @@ export class TimeTrigger implements ITimeTrigger {
         return (next.unix() - now.unix()) * 1000;
     }
 
-    private trigger(timeout: number = this.interval * 60 * 1000) {
+    private trigger(timeout: number) {
         setTimeout(() => {
             this.triggerCertificates();
-            this.trigger();
+            this.trigger(this.interval * 60 * 1000);
         }, timeout);
     }
 
