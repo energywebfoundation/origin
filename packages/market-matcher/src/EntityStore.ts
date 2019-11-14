@@ -9,6 +9,8 @@ import {
 import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
 import polly from 'polly-js';
+import { Listener } from './Matcher';
+import { EntityListener } from './EntityListener';
 
 export interface IEntityStore {
     init(): Promise<void>;
@@ -23,8 +25,6 @@ export interface IEntityStore {
     getCertificates(): Certificate.Entity[];
 }
 
-export type Listener<T> = (entity: T) => Promise<void>;
-
 @singleton()
 export class EntityStore implements IEntityStore {
     private demands: Map<string, Demand.Entity> = new Map<string, Demand.Entity>();
@@ -35,21 +35,24 @@ export class EntityStore implements IEntityStore {
 
     private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
 
-    private certificateListeners: Listener<Certificate.Entity>[] = [];
+    private certificateListeners: EntityListener<Certificate.Entity>;
 
-    private demandListeners: Listener<Demand.Entity>[] = [];
+    private demandListeners: EntityListener<Demand.Entity>;
 
     constructor(
         @inject('config') private config: Configuration.Entity,
         @inject('logger') private logger: Winston.Logger
-    ) {}
+    ) {
+        this.certificateListeners = new EntityListener<Certificate.Entity>(this.logger);
+        this.demandListeners = new EntityListener<Demand.Entity>(this.logger);
+    }
 
     public registerCertificateListener(listener: Listener<Certificate.Entity>) {
-        this.certificateListeners.push(listener);
+        this.certificateListeners.register(listener);
     }
 
     public registerDemandListener(listener: Listener<Demand.Entity>) {
-        this.demandListeners.push(listener);
+        this.demandListeners.register(listener);
     }
 
     public async getDemand(id: string): Promise<Demand.Entity> {
@@ -92,34 +95,10 @@ export class EntityStore implements IEntityStore {
 
     private async triggerExistingEvents() {
         const certificates = this.getCertificates();
-        for (const certificate of certificates) {
-            await this.triggerCertificateListeners(certificate);
-        }
+        certificates.forEach(certificate => this.certificateListeners.trigger(certificate));
 
         const demands = this.getDemands();
-        for (const demand of demands) {
-            await this.triggerDemandListeners(demand);
-        }
-    }
-
-    private async triggerCertificateListeners(certificate: Certificate.Entity) {
-        for (const listener of this.certificateListeners) {
-            try {
-                await listener(certificate);
-            } catch (e) {
-                this.logger.error(`Certificate listener failed to execute: ${e}`);
-            }
-        }
-    }
-
-    private async triggerDemandListeners(demand: Demand.Entity) {
-        for (const listener of this.demandListeners) {
-            try {
-                await listener(demand);
-            } catch (e) {
-                this.logger.error(`Demand listener failed to execute: ${e}`);
-            }
-        }
+        demands.forEach(demand => this.demandListeners.trigger(demand));
     }
 
     private async syncExistingEvents() {
@@ -259,7 +238,7 @@ export class EntityStore implements IEntityStore {
         this.logger.verbose(`[Demand ${demand.id}] Registered`);
 
         if (trigger) {
-            await this.triggerDemandListeners(demand);
+            this.demandListeners.trigger(demand);
         }
     }
 
@@ -288,7 +267,7 @@ export class EntityStore implements IEntityStore {
         this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
 
         if (trigger) {
-            await this.triggerCertificateListeners(certificate);
+            this.certificateListeners.trigger(certificate);
         }
     }
 
