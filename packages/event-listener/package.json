@@ -61,6 +61,7 @@
         "registry": "https://registry.npmjs.org"
     },
     "files": [
+        "bin",
         "dist/js/src"
     ]
 }
