@@ -108,7 +108,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             buyModalForProducingAsset: null,
             showBuyBulkModal: false,
             showClaimBulkModal: false,
-            currentSort: ['certificate.creationTime'],
+            currentSort: ['certificate.certificate.creationTime'],
             sortAscending: false
         };
 
