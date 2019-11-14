@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { mount } from 'enzyme';
 import { CertificateTable, SelectedState } from '../components/CertificateTable';
 import { Certificate } from '@energyweb/origin';

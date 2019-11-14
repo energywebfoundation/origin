@@ -89,4 +89,14 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             timestamp: Number(read.timestamp)
         }));
     }
+
+    async getSmartMeterReadsByIndex(indexes: number[]): Promise<ISmartMeterRead[]> {
+        const logic: AssetLogic = this.configuration.blockchainProperties
+            .assetLogicInstance;
+
+        return (await logic.getSmartMeterReadsForAssetByIndex(Number(this.id), indexes)).map((read: ISmartMeterRead) => ({
+            energy: Number(read.energy),
+            timestamp: Number(read.timestamp)
+        }));
+    }
 }

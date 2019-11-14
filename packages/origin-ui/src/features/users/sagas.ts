@@ -30,7 +30,9 @@ function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
     try {
         const fetchedUser: User.Entity = yield call(fetcher.fetch, userId, configuration);
 
-        yield put(addUser(fetchedUser));
+        if (fetchedUser) {
+            yield put(addUser(fetchedUser));
+        }
     } catch (error) {
         console.error('Error while fetching user', error);
     }

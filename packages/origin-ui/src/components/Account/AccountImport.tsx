@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
     Paper,
     FormControl,
@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { importAccount, clearEncryptedAccounts } from '../../features/authentication/actions';
 import { getEncryptedAccounts } from '../../features/authentication/selectors';
-import { dataTest } from '../../utils/Helper';
+import { dataTest } from '../../utils/helper';
 import { showRequestPasswordModal } from '../../features/general/actions';
 
 export function AccountImport() {

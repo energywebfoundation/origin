@@ -17,6 +17,7 @@ import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role, User } from '@energyweb/user-registry';
 import { Asset } from '@energyweb/asset-registry';
 import { getCurrentUser } from '../users/selectors';
+import { setLoading } from '../general/actions';
 
 function* requestCertificateDetailsSaga(): SagaIterator {
     while (true) {
@@ -34,6 +35,10 @@ function* requestCertificatesSaga(): SagaIterator {
             CertificatesActions.requestCertificates
         );
 
+        yield put(setLoading(true));
+
+        yield put(hideRequestCertificatesModal());
+
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
         try {
@@ -50,13 +55,11 @@ function* requestCertificatesSaga(): SagaIterator {
                 `Certificates for ${energyInKWh} kWh requested.`,
                 NotificationType.Success
             );
-
-            yield put(hideRequestCertificatesModal());
         } catch (error) {
             showNotification(`Transaction could not be completed.`, NotificationType.Error);
-
-            yield put(hideRequestCertificatesModal());
         }
+
+        yield put(setLoading(false));
     }
 }
 

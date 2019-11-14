@@ -178,7 +178,8 @@ const deploy = async () => {
         matcherAccount: {
             address: accountDeployment,
             privateKey: privateKeyDeployment
-        }
+        },
+        matcherInterval: 15
     };
 
     return { config, matcherConfig };

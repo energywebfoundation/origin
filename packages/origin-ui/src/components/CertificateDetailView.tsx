@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { ProducingAsset } from '@energyweb/asset-registry';
@@ -12,6 +12,7 @@ import { IStoreState } from '../types';
 import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
 import { getProducingAssetDetailLink, getCertificateDetailLink } from '../utils/routing';
 import { getCertificates } from '../features/certificates/selectors';
+import { getEnv } from '../utils/helper';
 
 interface IOwnProps {
     id: number;
@@ -88,77 +89,74 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
     }
 
     async enrichEvent(props: Props, selectedCertificate: PurchasableCertificate.Entity) {
-        const jointEvents = (await selectedCertificate.getAllCertificateEvents()).map(
-            async (event: any) => {
-                let label;
-                let description;
+        const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
 
-                switch (event.event) {
-                    case 'LogNewMeterRead':
-                        label = 'Initial logging';
-                        description = 'Logging by Asset #' + event.returnValues._assetId;
-                        break;
-                    case 'LogCreatedCertificate':
-                        label = 'Certified';
-                        description = 'Local issuer approved the certification request';
-                        break;
-                    case 'Transfer':
-                        if (
-                            (event as any).returnValues._from ===
-                            '0x0000000000000000000000000000000000000000'
-                        ) {
-                            label = 'Initial owner';
-                            description = (
-                                await new MarketUser.Entity(
-                                    (event as any).returnValues._to,
-                                    props.configuration as any
-                                ).sync()
-                            ).organization;
-                        } else {
-                            const newOwner = (
-                                await new MarketUser.Entity(
-                                    (event as any).returnValues._to,
-                                    props.configuration as any
-                                ).sync()
-                            ).organization;
-                            const oldOwner = (
-                                await new MarketUser.Entity(
-                                    (event as any).returnValues._from,
-                                    props.configuration as any
-                                ).sync()
-                            ).organization;
-                            label = 'Changed ownership';
-                            description = `Transferred from ${oldOwner} to ${newOwner}`;
-                        }
-                        break;
-                    case 'LogPublishForSale':
-                        label = 'Certificate published for sale';
-                        break;
-                    case 'LogUnpublishForSale':
-                        label = 'Certificate unpublished from sale';
-                        break;
+        const jointEvents = allCertificateEvents.map(async event => {
+            let label;
+            let description;
 
-                    case 'LogCertificateClaimed':
-                        label = 'Certificate claimed';
-                        description = `Initiated by ${this.state.owner.organization}`;
-                        break;
+            switch (event.event) {
+                case 'LogNewMeterRead':
+                    label = 'Initial logging';
+                    description = 'Logging by Asset #' + event.returnValues._assetId;
+                    break;
+                case 'LogCreatedCertificate':
+                    label = 'Certified';
+                    description = 'Local issuer approved the certification request';
+                    break;
+                case 'Transfer':
+                    if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
+                        label = 'Initial owner';
+                        description = (
+                            await new MarketUser.Entity(
+                                event.returnValues.to,
+                                props.configuration
+                            ).sync()
+                        ).organization;
+                    } else {
+                        const newOwner = (
+                            await new MarketUser.Entity(
+                                event.returnValues.to,
+                                props.configuration
+                            ).sync()
+                        ).organization;
+                        const oldOwner = (
+                            await new MarketUser.Entity(
+                                event.returnValues.from,
+                                props.configuration
+                            ).sync()
+                        ).organization;
+                        label = 'Changed ownership';
+                        description = `Transferred from ${oldOwner} to ${newOwner}`;
+                    }
+                    break;
+                case 'LogPublishForSale':
+                    label = 'Certificate published for sale';
+                    break;
+                case 'LogUnpublishForSale':
+                    label = 'Certificate unpublished from sale';
+                    break;
 
-                    default:
-                        label = event.event;
-                }
+                case 'LogCertificateClaimed':
+                    label = 'Certificate claimed';
+                    description = `Initiated by ${this.state.owner.organization}`;
+                    break;
 
-                return {
-                    txHash: event.transactionHash,
-                    label,
-                    description,
-                    timestamp: (
-                        await props.configuration.blockchainProperties.web3.eth.getBlock(
-                            event.blockNumber
-                        )
-                    ).timestamp
-                };
+                default:
+                    label = event.event;
             }
-        );
+
+            return {
+                txHash: event.transactionHash,
+                label,
+                description,
+                timestamp: (
+                    await props.configuration.blockchainProperties.web3.eth.getBlock(
+                        event.blockNumber
+                    )
+                ).timestamp
+            };
+        });
 
         const resolvedEvents = await Promise.all(jointEvents);
 
@@ -178,7 +176,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
         }
 
         this.setState({
-            events: resolvedEvents.sort((a, b) => a.timestamp - b.timestamp) as any
+            events: resolvedEvents.sort((a, b) => a.timestamp - b.timestamp)
         });
     }
 
@@ -198,7 +196,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                     <span className="timestamp text-muted">
                         {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
                         <a
-                            href={`${process.env.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
+                            href={`${getEnv().BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
                             className="text-muted"
                             target="_blank"
                             rel="noopener"

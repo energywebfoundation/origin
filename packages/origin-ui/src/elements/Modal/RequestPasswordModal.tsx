@@ -15,7 +15,7 @@ import {
     getRequestPasswordModalCallback,
     getRequestPasswordModalTitle
 } from '../../features/general/selectors';
-import { dataTest } from '../../utils/Helper';
+import { dataTest } from '../../utils/helper';
 
 export function RequestPasswordModal() {
     const show = useSelector(getRequestPasswordModalVisible);

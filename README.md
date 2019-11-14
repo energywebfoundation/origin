@@ -9,6 +9,11 @@
 
 **Origin** is a set of toolkits that together provide a system for issuance and management of Energy Attribute Certificates (EACs). This repository is an entry point to Origin systems. It has a goal of explaining briefly the whole system and providing you with insight and info where to explore next.
 
+<p align="center">
+  <a href="https://travis-ci.com/energywebfoundation/origin"><img src="https://img.shields.io/travis/com/energywebfoundation/origin/master"/></a>
+  <a href="https://github.com/renovatebot/renovate"><img src="https://badges.renovateapi.com/github/energywebfoundation/origin"/></a>
+</p>
+
 ## Table of Contents
 - [Packages](#packages)
 - [Installation](#installation)

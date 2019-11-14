@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { PageContent } from '../../elements/PageContent/PageContent';
 import { useSelector } from 'react-redux';
 import { getAccountLink } from '../../utils/routing';
@@ -6,7 +6,7 @@ import { getBaseURL } from '../../features/selectors';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
-import { dataTest } from '../../utils/Helper';
+import { dataTest } from '../../utils/helper';
 
 export function Account() {
     const baseURL = useSelector(getBaseURL);

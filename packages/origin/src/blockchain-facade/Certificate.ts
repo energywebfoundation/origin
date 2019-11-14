@@ -15,6 +15,9 @@ export interface ICertificate {
     id: string;
 
     assetId: number;
+    generationStartTime: number;
+    generationEndTime: number;
+
     owner: string;
     energy: number;
     status: Status;
@@ -24,7 +27,7 @@ export interface ICertificate {
 
     sync(): Promise<ICertificate>;
     
-    retireCertificate(): Promise<TransactionReceipt>;
+    claimCertificate(): Promise<TransactionReceipt>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     getCertificateOwner(): Promise<string>;
     isClaimed(): Promise<boolean>;
@@ -92,7 +95,7 @@ export const getAllCertificateEvents = async (
     for (const fullEvent of allEvents) {
         // we have to remove some false positives due to ERC721 interface
         if (fullEvent.event === 'Transfer') {
-            if (fullEvent.returnValues._tokenId === `${certId}`) {
+            if (fullEvent.returnValues.tokenId === `${certId}`) {
                 returnEvents.push(fullEvent);
             }
         } else {
@@ -128,6 +131,9 @@ export const getAllCertificateEvents = async (
 
 export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
     public assetId: number;
+    public generationStartTime: number;
+    public generationEndTime: number;
+
     public owner: string;
     public energy: number;
     public status: Status;
@@ -152,10 +158,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const cert = await this.configuration.blockchainProperties.certificateLogicInstance.getCertificate(
-                this.id
-            );
+            const certificateLogicInstance: CertificateLogic = this.configuration.blockchainProperties.certificateLogicInstance;
 
+            const cert = await certificateLogicInstance.getCertificate(
+                Number(this.id)
+            );
+            
             this.assetId = Number(cert.assetId);
             this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
             this.energy = Number(cert.energy);
@@ -164,6 +172,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.status = Number(cert.status);
             this.creationTime = Number(cert.creationTime);
             this.parentId = Number(cert.parentId);
+
+            const reads = await new ProducingAsset.Entity(this.assetId.toString(), this.configuration).getSmartMeterReadsByIndex([Number(cert.readsStartIndex), Number(cert.readsEndIndex)]);
+            this.generationStartTime = reads[0].timestamp;
+            this.generationEndTime = reads[1].timestamp;
 
             this.initialized = true;
 
@@ -175,14 +187,14 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return this;
     }
 
-    async retireCertificate(): Promise<TransactionReceipt> {
+    async claimCertificate(): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+            return this.configuration.blockchainProperties.certificateLogicInstance.claimCertificate(
                 this.id,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         }
-        return this.configuration.blockchainProperties.certificateLogicInstance.retireCertificate(
+        return this.configuration.blockchainProperties.certificateLogicInstance.claimCertificate(
             this.id,
             { from: this.configuration.blockchainProperties.activeUser.address }
         );
@@ -344,7 +356,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         for (const fullEvent of allEvents) {
             // we have to remove some false positives due to ERC721 interface
             if (fullEvent.event === 'Transfer') {
-                if (fullEvent.returnValues._tokenId === `${this.id}`) {
+                if (fullEvent.returnValues.tokenId === `${this.id}`) {
                     returnEvents.push(fullEvent);
                 }
             } else {

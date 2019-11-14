@@ -1,6 +1,5 @@
 const baseConfig = require('./base.config');
 const merge = require('webpack-merge');
-const Dotenv = require('dotenv-webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = merge(baseConfig, {
@@ -9,12 +8,7 @@ module.exports = merge(baseConfig, {
     // Enable sourcemaps for debugging webpack's output.
     devtool: 'source-map',
 
-    plugins: [
-        new Dotenv({
-            path: '../../.env'
-        }),
-        new ForkTsCheckerWebpackPlugin()
-    ],
+    plugins: [new ForkTsCheckerWebpackPlugin()],
 
     module: {
         rules: [

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { APIKEY } from './GoogleApiKey';
 import { Asset } from '@energyweb/asset-registry';

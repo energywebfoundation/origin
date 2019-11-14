@@ -3,7 +3,7 @@ import { Demand, MarketUser } from '@energyweb/market';
 import { Configuration, Currency, IRECAssetService, TimeFrame } from '@energyweb/utils-general';
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
 

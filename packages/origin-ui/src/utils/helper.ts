@@ -60,3 +60,22 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 export function formatCurrency(value: number) {
     return currencyFormatter.format(value).replace('$', '');
 }
+
+interface IEnvironment {
+    MODE: string;
+    BACKEND_URL: string;
+    BLOCKCHAIN_EXPLORER_URL: string;
+    WEB3: string;
+}
+
+export function getEnv(): IEnvironment {
+    return (
+        // eslint-disable-next-line dot-notation
+        window['_env_'] || {
+            MODE: 'development',
+            BACKEND_URL: 'http://localhost:3030',
+            BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
+            WEB3: 'http://localhost:8545'
+        }
+    );
+}

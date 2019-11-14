@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
@@ -17,6 +17,7 @@ import { getProducingAssets, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
 import { getCurrentUser } from '../features/users/selectors';
+import { TSetLoading, setLoading } from '../features/general/actions';
 
 interface IEnrichedData {
     certificationRequestId: number;
@@ -38,7 +39,11 @@ interface IStateProps {
     currentUser: User.Entity;
 }
 
-type Props = IOwnProps & IStateProps;
+interface IDispatchProps {
+    setLoading: TSetLoading;
+}
+
+type Props = IOwnProps & IStateProps & IDispatchProps;
 
 class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
     constructor(props: Props) {
@@ -163,11 +168,12 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
     async approve(rowIndex: number) {
         const certificationRequestId = this.state.paginatedData[rowIndex].certificationRequestId;
 
+        const { configuration } = this.props;
+
+        this.props.setLoading(true);
+
         try {
-            await Certificate.approveCertificationRequest(
-                certificationRequestId,
-                this.props.configuration
-            );
+            await Certificate.approveCertificationRequest(certificationRequestId, configuration);
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 
@@ -176,13 +182,20 @@ class CertificationRequestsTableClass extends PaginatedLoader<Props, IState> {
             showNotification(`Could not approve certification request.`, NotificationType.Error);
             console.error(error);
         }
+
+        this.props.setLoading(false);
     }
 }
+
+const dispatchProps: IDispatchProps = {
+    setLoading
+};
 
 export const CertificationRequestsTable = connect(
     (state: IStoreState): IStateProps => ({
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),
         producingAssets: getProducingAssets(state)
-    })
+    }),
+    dispatchProps
 )(CertificationRequestsTableClass);

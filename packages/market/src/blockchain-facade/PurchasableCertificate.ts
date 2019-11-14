@@ -203,8 +203,8 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         });
     }
 
-    async retireCertificate(): Promise<TransactionReceipt> {
-        return this.certificate.retireCertificate();
+    async claimCertificate(): Promise<TransactionReceipt> {
+        return this.certificate.claimCertificate();
     }
 
     async splitCertificate(energy: number): Promise<TransactionReceipt> {

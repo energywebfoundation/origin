@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import moment from 'moment';
 import marker from '../../assets/marker.svg';
@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { ConsumingAsset } from '@energyweb/asset-registry';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/Helper';
+import { getOffChainText } from '../utils/helper';
 import { Configuration } from '@energyweb/utils-general';
 import { AssetMap } from './AssetMap';
 import { getConsumingAssetDetailLink } from '../utils/routing';

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { mount } from 'enzyme';
 import { AppContainer } from '../components/AppContainer';
 import { Route } from 'react-router-dom';
@@ -10,7 +10,7 @@ import {
     waitForConditionAndAssert
 } from './utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
-import { dataTestSelector } from '../utils/Helper';
+import { dataTestSelector } from '../utils/helper';
 import { TimeFrame } from '@energyweb/utils-general';
 
 import moment from 'moment';
@@ -22,7 +22,7 @@ describe('Application[E2E]', () => {
         const ganacheServer = await startGanache();
         const { configurationClient, offChainDataClient } = await deployDemo();
 
-        const { store, history } = setupStore([`/assets/?rpc=ws://localhost:8545`], {
+        const { store, history } = setupStore([`/assets/production?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
             logActions: false,
             configurationClient,

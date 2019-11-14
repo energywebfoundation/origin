@@ -5,7 +5,7 @@ import {
     getInitialPaginatedLoaderState,
     IPaginatedLoader
 } from './PaginatedLoader';
-import { getPropertyByPath, indexOfEnd } from '../../utils/Helper';
+import { getPropertyByPath, indexOfEnd } from '../../utils/helper';
 import moment, { Moment } from 'moment';
 import { IRECAssetService } from '@energyweb/utils-general';
 

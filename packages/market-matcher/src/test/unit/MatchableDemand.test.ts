@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';

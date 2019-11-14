@@ -32,6 +32,7 @@ import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import { getOffChainDataClient, getConfigurationClient } from '../general/selectors';
+import { getEnv } from '../../utils/helper';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -41,7 +42,7 @@ async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
     offChainDataClient: IOffChainDataClient
-): Promise<Configuration.Entity> {
+): Promise<IStoreState['configuration']> {
     let web3: Web3 = null;
     const params = queryString.parse(routerSearch);
 
@@ -59,8 +60,8 @@ async function initConf(
         }
     } else if ((window as any).web3) {
         web3 = new Web3(web3.currentProvider);
-    } else if (process.env.WEB3) {
-        web3 = new Web3(process.env.WEB3);
+    } else if (getEnv().WEB3) {
+        web3 = new Web3(getEnv().WEB3);
     }
 
     const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
@@ -83,7 +84,7 @@ async function initConf(
 }
 
 function* initEventHandler() {
-    const configuration: Configuration.Entity = yield select(getConfiguration);
+    const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
     if (!configuration) {
         return;
@@ -113,8 +114,14 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogPublishForSale', async function(
                 event: any
             ) {
+                const id = event.returnValues._certificateId?.toString();
+
+                if (typeof id === 'undefined') {
+                    return;
+                }
+
                 const certificate = await new PurchasableCertificate.Entity(
-                    event.returnValues._certificateId,
+                    id,
                     configuration
                 ).sync();
 
@@ -126,8 +133,14 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogCertificateSplit', async function(
                 event: any
             ) {
+                const id = event.returnValues._certificateId?.toString();
+
+                if (typeof id !== 'string') {
+                    return;
+                }
+
                 const certificate = await new PurchasableCertificate.Entity(
-                    event.returnValues._certificateId,
+                    id,
                     configuration
                 ).sync();
 
@@ -139,8 +152,14 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogCertificateClaimed', async function(
                 event: any
             ) {
+                const id = event.returnValues._certificateId?.toString();
+
+                if (typeof id !== 'string') {
+                    return;
+                }
+
                 const certificate = await new PurchasableCertificate.Entity(
-                    event.returnValues._certificateId,
+                    id,
                     configuration
                 ).sync();
 
@@ -150,8 +169,14 @@ function* initEventHandler() {
             });
 
             certificateContractEventHandler.onEvent('Transfer', async function(event: any) {
+                const id = event.returnValues.tokenId?.toString();
+
+                if (typeof id !== 'string') {
+                    return;
+                }
+
                 const certificate = await new PurchasableCertificate.Entity(
-                    event.returnValues._tokenId,
+                    id,
                     configuration
                 ).sync();
 
@@ -163,8 +188,14 @@ function* initEventHandler() {
             certificateContractEventHandler.onEvent('LogUnpublishForSale', async function(
                 event: any
             ) {
+                const id = event.returnValues._certificateId?.toString();
+
+                if (typeof id !== 'string') {
+                    return;
+                }
+
                 const certificate = await new PurchasableCertificate.Entity(
-                    event.returnValues._certificateId,
+                    id,
                     configuration
                 ).sync();
 
@@ -175,7 +206,7 @@ function* initEventHandler() {
 
             demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
                 const demand = await new Demand.Entity(
-                    event.returnValues._demandId,
+                    event.returnValues._demandId.toString(),
                     configuration
                 ).sync();
 
@@ -189,7 +220,7 @@ function* initEventHandler() {
                     emitter({
                         action: demandDeleted(
                             await new Demand.Entity(
-                                event.returnValues._demandId,
+                                event.returnValues._demandId.toString(),
                                 configuration
                             ).sync()
                         )
