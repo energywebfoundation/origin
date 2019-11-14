@@ -37,7 +37,7 @@ export class EntityStore implements IEntityStore {
         PurchasableCertificate.Entity
     >();
 
-    private certificateListeners: EntityListener<PurchasableCertificate.Entity>[] = [];
+    private certificateListeners: EntityListener<PurchasableCertificate.Entity>;
 
     private demandListeners: EntityListener<Demand.Entity>;
 

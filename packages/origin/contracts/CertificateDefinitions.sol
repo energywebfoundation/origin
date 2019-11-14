@@ -27,5 +27,7 @@ contract CertificateDefinitions {
         uint creationTime;
         uint parentId;
         uint[] children;
+        uint readsStartIndex;
+        uint readsEndIndex;
     }
 }
