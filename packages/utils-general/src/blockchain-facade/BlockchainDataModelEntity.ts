@@ -18,8 +18,7 @@ export abstract class Entity {
     id: string;
     configuration: Configuration.Entity;
     proofs: PreciseProofs.Proof[];
-    offChainDataClient: IOffChainDataClient;
-
+    
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
             throw new Error('An ID of an Entity should always be of type string.');
@@ -28,11 +27,14 @@ export abstract class Entity {
             throw new Error('An ID of an Entity should always be numeric string.');
         }
 
-        this.offChainDataClient = configuration.offChainDataSource.client;
         this.id = id;
         this.configuration = configuration;
         this.proofs = [];
     }
+
+    get offChainDataClient() {
+        return this.configuration.offChainDataSource.client
+    };
 
     addProof(proof: PreciseProofs.Proof) {
         this.proofs.push(proof);
