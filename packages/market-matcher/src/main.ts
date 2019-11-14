@@ -15,6 +15,8 @@ dotenv.config({
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
     const baseUrl = `${backendUrl}/api`;
 
+    const matcherInterval = Number(process.env.MATCHER_INTERVAL) || 15;
+
     const storedMarketLogicAddress = (
         await new ConfigurationClient().get(baseUrl, 'MarketContractLookup')
     ).pop();
@@ -30,7 +32,8 @@ dotenv.config({
             privateKey
         },
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
-        offChainDataSourceClient: new OffChainDataClient()
+        offChainDataSourceClient: new OffChainDataClient(),
+        matcherInterval
     };
 
     startMatcher(config);
