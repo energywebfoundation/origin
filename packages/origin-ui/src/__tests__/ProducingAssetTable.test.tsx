@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { ProducingAssetTable } from '../components/ProducingAssetTable';
-import { dataTestSelector } from '../utils/Helper';
+import { dataTestSelector } from '../utils/helper';
 import { setupStore, WrapperComponent, createRenderedHelpers } from './utils/helpers';
 
 describe('ProducingAssetTable', () => {

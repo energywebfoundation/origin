@@ -1,7 +1,7 @@
 import { TransactionReceipt, EventLog } from 'web3/types';
 
 import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { ProducingAsset, Asset } from '@energyweb/asset-registry';
+import { ProducingAsset } from '@energyweb/asset-registry';
 
 import { CertificateLogic } from '..';
 

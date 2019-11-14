@@ -1,4 +1,4 @@
-import { getPropertyByPath, deepEqual } from '../../utils/Helper';
+import { getPropertyByPath, deepEqual } from '../../utils/helper';
 import {
     IPaginatedLoaderFilteredState,
     PaginatedLoaderFiltered,

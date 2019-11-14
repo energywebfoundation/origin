@@ -12,7 +12,7 @@ import { Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { producingAssetCreatedOrUpdated } from '../../features/producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../../features/certificates/actions';
-import { dataTestSelector } from '../../utils/Helper';
+import { dataTestSelector } from '../../utils/helper';
 import moment from 'moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';

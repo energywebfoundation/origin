@@ -1,1 +1,3 @@
-export const BACKEND_URL = process.env.BACKEND_URL;
+import { getEnv } from './helper';
+
+export const BACKEND_URL = getEnv().BACKEND_URL;

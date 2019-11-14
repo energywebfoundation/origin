@@ -23,7 +23,7 @@ import {
 import { requestUser } from '../features/users/actions';
 import { setActiveAccount, unlockAccount } from '../features/authentication/actions';
 import { showRequestPasswordModal } from '../features/general/actions';
-import { dataTest } from '../utils/Helper';
+import { dataTest } from '../utils/helper';
 
 const useStyles = makeStyles(() =>
     createStyles({
