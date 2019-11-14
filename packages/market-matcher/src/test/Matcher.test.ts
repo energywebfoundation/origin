@@ -70,12 +70,12 @@ describe('Market-matcher e2e tests', async () => {
             asset = await deployAsset(config);
             certificate = await deployCertificate(config, asset.id, requiredEnergy);
 
-            await startMatcher(matcherConfig);
-
             await certificate.publishForSale(
                 demand.offChainProperties.maxPricePerMwh / 100,
                 demand.offChainProperties.currency
             );
+
+            await startMatcher(matcherConfig);
         });
 
         it('certificate should be matched with existing demand', done => {
