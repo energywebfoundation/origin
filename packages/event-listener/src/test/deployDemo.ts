@@ -5,7 +5,7 @@ import { Asset, AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { MarketLogic, Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { CertificateLogic, Certificate } from '@energyweb/origin';
+import { CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
@@ -327,7 +327,6 @@ export class Demo {
             this.conf
         ).sync();
         await deployedCertificate.publishForSale(1000, Currency.USD);
-        console.log('PUBLISHED FOR SALE');
     }
 
     async deployDemand() {
@@ -357,7 +356,7 @@ export class Demo {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.MATCHER;
 
         const demand = await new Demand.Entity(demandId, this.conf).sync();
-        const certificate = await new Certificate.Entity(certId, this.conf).sync();
+        const certificate = await new PurchasableCertificate.Entity(certId, this.conf).sync();
         const fillTx = await demand.fill(certificate.id);
 
         return fillTx.status;

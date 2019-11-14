@@ -403,7 +403,7 @@ describe('PurchasableCertificate-Facade', () => {
                 price: 0,
                 currency: Currency.NONE
             }
-        } as Partial<Certificate.Entity>);
+        } as Partial<PurchasableCertificate.Entity>);
     });
 
     it('should make certificate available for sale with fiat', async () => {

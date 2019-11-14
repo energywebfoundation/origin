@@ -4,7 +4,6 @@ import polly from 'polly-js';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
-import { Certificate } from '@energyweb/origin';
 import {
     Configuration,
     ContractEventHandler,
@@ -74,12 +73,12 @@ export class OriginEventListener implements IOriginEventListener {
             const certId = event.returnValues._certificateId;
             this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
 
-            const newCertificate: Certificate.Entity = await new Certificate.Entity(
+            const newCertificate: PurchasableCertificate.Entity = await new PurchasableCertificate.Entity(
                 certId,
                 this.conf
             ).sync();
 
-            this.originEventsStore.registerIssuedCertificate(newCertificate.owner);
+            this.originEventsStore.registerIssuedCertificate(newCertificate.certificate.owner);
         });
 
         certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
