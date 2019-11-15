@@ -34,6 +34,7 @@
     "bn.js": "5.0.0",
     "body-parser": "1.19.0",
     "commander": "4.0.0",
+    "concurrently": "5.0.0",
     "cors": "2.8.5",
     "csv-parse": "4.6.5",
     "dotenv": "^8.2.0",
