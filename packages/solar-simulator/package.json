@@ -1,10 +1,15 @@
 {
   "name": "@energyweb/solar-simulator",
   "version": "0.2.3",
+  "bin": {
+    "solar-simulator": "./bin/solar-simulator"
+  },
   "description": "",
   "scripts": {
     "build": "yarn build:ts",
-    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty && cp config/data.csv dist/js/config/data.csv",
+    "build:container:canary": "make build-canary push",
+    "build:container:latest": "make build-latest push",
     "start": "concurrently --restart-tries 3 --restart-after 1500 -n simulator,consumer \"yarn start-simulation\" \"yarn start-consuming-api\"",
     "start-simulation": "ts-node src/simulatorService.ts",
     "start-consuming-api": "ts-node src/consumerService.ts",
@@ -29,6 +34,7 @@
     "bn.js": "5.0.0",
     "body-parser": "1.19.0",
     "commander": "4.0.0",
+    "concurrently": "5.0.0",
     "cors": "2.8.5",
     "csv-parse": "4.6.5",
     "dotenv": "^8.2.0",
@@ -42,6 +48,14 @@
     "web3": "1.2.1",
     "winston": "3.2.1"
   },
-  "postinstall": "rm -f node_modules/web3/index.d.ts",
-  "private": true
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "files": [
+    "bin",
+    "dist/js/src",
+    "dist/js/config"
+  ],
+  "postinstall": "rm -f node_modules/web3/index.d.ts"
 }
