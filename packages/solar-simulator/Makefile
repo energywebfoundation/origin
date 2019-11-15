@@ -7,7 +7,7 @@ LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
 build-canary:
-	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY}.
+	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} .
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
 build-latest:
