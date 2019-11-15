@@ -55,9 +55,8 @@ contract MarketLogic is Initializable, RoleManagement {
     Agreement[] private allAgreements;
 
     modifier onlyDemandOwner(uint _demandId) {
-        address owner = allDemands[_demandId].demandOwner;
-        require(owner == msg.sender, "onlyDemandOwner: not the demand owner");
         require(isRole(RoleManagement.Role.Trader, msg.sender), "onlyDemandOwner: demand owner has to be a trader");
+        require(allDemands[_demandId].demandOwner == msg.sender, "onlyDemandOwner: not the demand owner");
         _;
     }
 
