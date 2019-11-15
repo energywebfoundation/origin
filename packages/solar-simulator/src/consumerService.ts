@@ -50,9 +50,22 @@ async function createBlockchainConfiguration() {
         }
     };
 
-    const storedMarketContractAddress = (
-        await new ConfigurationClient().get(baseUrl, 'MarketContractLookup')
-    ).pop();
+    let storedMarketContractAddresses: string[] = [];
+
+    console.log(`[SIMULATOR-CONSUMER] Trying to get Market contract address`);
+
+    while (storedMarketContractAddresses.length === 0) {
+        storedMarketContractAddresses = await new ConfigurationClient().get(
+            baseUrl,
+            'MarketContractLookup'
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 10000));
+    }
+
+    const storedMarketContractAddress = storedMarketContractAddresses.pop();
+
+    console.log(`[SIMULATOR-CONSUMER] Starting for Market ${storedMarketContractAddress}`);
 
     const latestMarketContractLookupAddress: string =
         process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
