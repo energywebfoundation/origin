@@ -10,30 +10,19 @@ import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
 import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
 
-export async function getAssetConf() {
-    dotenv.config({
-        path: '../../.env'
-    });
+dotenv.config({
+    path: '../../.env'
+});
 
-    const web3 = new Web3(process.env.WEB3);
+const web3 = new Web3(process.env.WEB3);
+const baseUrl = `${process.env.BACKEND_URL}/api`;
 
-    const baseUrl = `${process.env.BACKEND_URL}/api`;
+console.log('mockReadingsWorker', {
+    processEnvWeb3: process.env.WEB3,
+    baseUrl
+});
 
-    const conf: Configuration.Entity = {
-        blockchainProperties: {
-            web3
-        },
-        offChainDataSource: {
-            baseUrl,
-            client: new OffChainDataClient()
-        },
-        logger: Winston.createLogger({
-            level: 'verbose',
-            format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-            transports: [new Winston.transports.Console({ level: 'silly' })]
-        })
-    };
-
+async function getMarketContractLookupAddress() {
     let storedMarketContractAddresses: string[] = [];
 
     console.log(`[SIMULATOR-MOCK-READINGS] Trying to get Market contract address`);
@@ -51,12 +40,28 @@ export async function getAssetConf() {
 
     const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
-    const latestMarketContractLookupAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
+    return process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
+}
+
+async function getAssetConf(marketContractLookupAddress: string) {
+    const conf: Configuration.Entity = {
+        blockchainProperties: {
+            web3
+        },
+        offChainDataSource: {
+            baseUrl,
+            client: new OffChainDataClient()
+        },
+        logger: Winston.createLogger({
+            level: 'verbose',
+            format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
+            transports: [new Winston.transports.Console({ level: 'silly' })]
+        })
+    };
 
     conf.blockchainProperties = await createBlockchainProperties(
         conf.blockchainProperties.web3,
-        latestMarketContractLookupAddress
+        marketContractLookupAddress
     );
 
     return conf;
@@ -123,7 +128,8 @@ const measurementTime = currentTime
     .startOf('day');
 
 (async () => {
-    const conf = await getAssetConf();
+    const marketContractLookupAddress = await getMarketContractLookupAddress();
+    const conf = await getAssetConf(marketContractLookupAddress);
 
     while (measurementTime.isSameOrBefore(currentTime)) {
         const generateReadingsTimeData = workerData.DATA.find(
@@ -141,15 +147,19 @@ const measurementTime = currentTime
         const isValidMeterReading = energyGenerated > 0;
 
         if (isValidMeterReading) {
-            const previousRead: number = await getProducingAssetSmartMeterRead(asset.id, conf);
+            try {
+                const previousRead: number = await getProducingAssetSmartMeterRead(asset.id, conf);
 
-            await saveProducingAssetSmartMeterRead(
-                previousRead + energyGenerated,
-                asset.id,
-                measurementTime.unix(),
-                asset.smartMeterPrivateKey,
-                conf
-            );
+                await saveProducingAssetSmartMeterRead(
+                    previousRead + energyGenerated,
+                    asset.id,
+                    measurementTime.unix(),
+                    asset.smartMeterPrivateKey,
+                    conf
+                );
+            } catch (error) {
+                console.error(`Error while trying to save meter read for asset ${asset.id}`);
+            }
         }
 
         parentPort.postMessage(

@@ -33,6 +33,8 @@ services:
       - ./.env
     depends_on:
       - origin_backend
+    networks:
+      - app-network
 
   origin_backend:
     image: "energyweb/origin-backend:${TAG}"

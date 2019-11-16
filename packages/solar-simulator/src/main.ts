@@ -36,7 +36,7 @@ function runSimulatorAndConsumer() {
         {
             prefix: 'name',
             killOthers: ['failure', 'success'],
-            restartTries: 3,
+            restartTries: 2,
             restartDelay: 1500
         }
     );
@@ -48,7 +48,7 @@ function runSimulatorAndConsumer() {
             await concurrently([{ command: getServiceCommand('mockReadings'), name: 'mock' }], {
                 prefix: 'name',
                 killOthers: ['failure', 'success'],
-                restartTries: 3,
+                restartTries: 2,
                 restartAfter: 1500,
                 successCondition: 'last'
             });
