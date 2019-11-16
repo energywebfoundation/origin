@@ -60,7 +60,9 @@ async function createBlockchainConfiguration() {
             'MarketContractLookup'
         );
 
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        if (storedMarketContractAddresses.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        }
     }
 
     const storedMarketContractAddress = storedMarketContractAddresses.pop();

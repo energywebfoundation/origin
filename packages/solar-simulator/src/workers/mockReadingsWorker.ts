@@ -17,12 +17,14 @@ export async function getAssetConf() {
 
     const web3 = new Web3(process.env.WEB3);
 
+    const baseUrl = `${process.env.BACKEND_URL}/api`;
+
     const conf: Configuration.Entity = {
         blockchainProperties: {
             web3
         },
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`,
+            baseUrl,
             client: new OffChainDataClient()
         },
         logger: Winston.createLogger({
@@ -32,9 +34,22 @@ export async function getAssetConf() {
         })
     };
 
-    const storedMarketContractAddress = (
-        await new ConfigurationClient().get(conf.offChainDataSource.baseUrl, 'MarketContractLookup')
-    ).pop();
+    let storedMarketContractAddresses: string[] = [];
+
+    console.log(`[SIMULATOR-MOCK-READINGS] Trying to get Market contract address`);
+
+    while (storedMarketContractAddresses.length === 0) {
+        storedMarketContractAddresses = await new ConfigurationClient().get(
+            baseUrl,
+            'MarketContractLookup'
+        );
+
+        if (storedMarketContractAddresses.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+    }
+
+    const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     const latestMarketContractLookupAddress: string =
         process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
@@ -47,9 +62,10 @@ export async function getAssetConf() {
     return conf;
 }
 
-async function getProducingAssetSmartMeterRead(assetId: string): Promise<number> {
-    const conf = await getAssetConf();
-
+async function getProducingAssetSmartMeterRead(
+    assetId: string,
+    conf: Configuration.Entity
+): Promise<number> {
     const asset = await new ProducingAsset.Entity(assetId, conf).sync();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,16 +76,16 @@ async function saveProducingAssetSmartMeterRead(
     meterReading: number,
     assetId: string,
     timestamp: number,
-    smartMeterPrivateKey: string
+    smartMeterPrivateKey: string,
+    conf: Configuration.Entity
 ) {
     console.log('-----------------------------------------------------------');
-
-    const conf = await getAssetConf();
 
     const smartMeterAddress: string = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
         smartMeterPrivateKey
     ).address;
 
+    // eslint-disable-next-line no-param-reassign
     conf.blockchainProperties.activeUser = {
         address: smartMeterAddress,
         privateKey: smartMeterPrivateKey
@@ -107,6 +123,8 @@ const measurementTime = currentTime
     .startOf('day');
 
 (async () => {
+    const conf = await getAssetConf();
+
     while (measurementTime.isSameOrBefore(currentTime)) {
         const generateReadingsTimeData = workerData.DATA.find(
             (row: any) =>
@@ -123,13 +141,14 @@ const measurementTime = currentTime
         const isValidMeterReading = energyGenerated > 0;
 
         if (isValidMeterReading) {
-            const previousRead: number = await getProducingAssetSmartMeterRead(asset.id);
+            const previousRead: number = await getProducingAssetSmartMeterRead(asset.id, conf);
 
             await saveProducingAssetSmartMeterRead(
                 previousRead + energyGenerated,
                 asset.id,
                 measurementTime.unix(),
-                asset.smartMeterPrivateKey
+                asset.smartMeterPrivateKey,
+                conf
             );
         }
 
