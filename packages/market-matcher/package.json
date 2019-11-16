@@ -52,7 +52,7 @@
         "winston": "3.2.1"
     },
     "devDependencies": {
-        "@fluffy-spoon/substitute": "1.89.0",
+        "@fluffy-spoon/substitute": "1.104.0",
         "@types/lolex": "^3.1.1",
         "@types/web3": "1.0.20",
         "ganache-cli": "6.6.0",
