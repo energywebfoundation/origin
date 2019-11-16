@@ -27,7 +27,7 @@ function runSimulatorAndConsumer() {
         [
             { command: getServiceCommand('simulatorService'), name: 'server' },
             {
-                command: `wait-on ${
+                command: `npx wait-on ${
                     process.env.ENERGY_API_BASE_URL
                 }/asset/0/energy && ${getServiceCommand('consumerService')}`,
                 name: 'client'
