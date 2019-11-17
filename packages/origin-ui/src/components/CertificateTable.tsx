@@ -220,19 +220,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     asset => asset.id === certificate.assetId.toString()
                 );
 
-            let assetTypeLabel = '';
-
-            if (producingAsset && producingAsset.offChainProperties) {
-                assetTypeLabel = producingAsset.offChainProperties.assetType;
-            }
-
             let producingAssetRegion = '';
             let producingAssetProvince = '';
             try {
                 const decodedLocation = this.locationService.decode([
                     this.locationService.translateAddress(
-                        producingAsset.offChainProperties.address,
-                        producingAsset.offChainProperties.country
+                        producingAsset.offChainProperties?.address,
+                        producingAsset.offChainProperties?.country
                     )
                 ])[0];
 
@@ -245,7 +239,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel,
+                assetTypeLabel: producingAsset?.offChainProperties?.assetType,
                 certificateOwner: getUserById(this.props.users, certificate.owner),
                 price: certificate.isOffChainSettlement
                     ? formatCurrency(certificate.price / 100)

@@ -3,12 +3,7 @@ import { mount } from 'enzyme';
 import { CertificateTable, SelectedState } from '../components/CertificateTable';
 import { Certificate } from '@energyweb/origin';
 import { Unit } from '@energyweb/utils-general';
-import {
-    setupStore,
-    createRenderedHelpers,
-    DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES,
-    WrapperComponent
-} from './utils/helpers';
+import { setupStore, createRenderedHelpers, WrapperComponent } from './utils/helpers';
 
 describe('CertificateTable', () => {
     it('correctly renders', async () => {
@@ -74,7 +69,7 @@ describe('CertificateTable', () => {
             '',
             'Solar - Photovoltaic - Roof mounted',
             'Sep 19',
-            `${DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.address}, Thailand`,
+            `Nakhon Pathom, Central`,
             'IREC',
             'Example Organization',
             'Sun Sep 29 2019',
@@ -83,7 +78,7 @@ describe('CertificateTable', () => {
             '',
             'Solar - Photovoltaic - Roof mounted',
             'Sep 19',
-            `${DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.address}, Thailand`,
+            `Nakhon Pathom, Central`,
             'IREC',
             'Example Organization',
             'Wed Sep 25 2019',
