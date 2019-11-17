@@ -17,11 +17,6 @@ dotenv.config({
 const web3 = new Web3(process.env.WEB3);
 const baseUrl = `${process.env.BACKEND_URL}/api`;
 
-console.log('mockReadingsWorker', {
-    processEnvWeb3: process.env.WEB3,
-    baseUrl
-});
-
 async function getMarketContractLookupAddress() {
     let storedMarketContractAddresses: string[] = [];
 

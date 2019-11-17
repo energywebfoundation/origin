@@ -191,16 +191,16 @@ export function ProducingAssetDetailView(props: IProps) {
             ) : (
                 <table>
                     <tbody>
-                        {data.map(row => (
-                            <tr key={row.key}>
-                                {row.map(col => {
+                        {data.map((row, rowIndex) => (
+                            <tr key={rowIndex}>
+                                {row.map((col, colIndex) => {
                                     if (col.isAdditionalInformation && !props.addSearchField) {
                                         return null;
                                     }
 
                                     return (
                                         <td
-                                            key={col.key}
+                                            key={colIndex}
                                             rowSpan={col.rowspan || 1}
                                             colSpan={col.colspan || 1}
                                         >

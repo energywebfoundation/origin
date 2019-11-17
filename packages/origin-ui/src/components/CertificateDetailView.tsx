@@ -1,99 +1,75 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
-import { ProducingAsset } from '@energyweb/asset-registry';
 import { User } from '@energyweb/user-registry';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import './DetailView.scss';
-import { Configuration } from '@energyweb/utils-general';
-import { connect } from 'react-redux';
-import { IStoreState } from '../types';
-import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
-import { getProducingAssetDetailLink, getCertificateDetailLink } from '../utils/routing';
+import { useSelector, useDispatch } from 'react-redux';
+import { getConfiguration, getProducingAssets } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
-import { getEnv } from '../utils/helper';
+import { getEnv, deduplicate } from '../utils/helper';
+import { useLinks } from '../utils/routing';
+import { getUsers, getUserById } from '../features/users/selectors';
+import { requestUser } from '../features/users/actions';
+import { Skeleton } from '@material-ui/lab';
+import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 
-interface IOwnProps {
-    id: number;
+interface IProps {
+    id: string;
 }
 
-interface IStateProps {
-    configuration: Configuration.Entity;
-    baseURL: string;
-    certificates: Certificate.Entity[];
-    producingAssets: ProducingAsset.Entity[];
-}
-
-type Props = IOwnProps & IStateProps;
-
-interface IDetailViewState {
-    newId: number;
-    owner: User.Entity;
-    events: IEnrichedEvent[];
-}
-
-export interface IEnrichedEvent {
+interface IEnrichedEvent {
     txHash: string;
     label: string;
     description: string;
     timestamp: number;
 }
 
-class CertificateDetailViewClass extends React.Component<Props, IDetailViewState> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            newId: null,
-            owner: null,
-            events: []
-        };
-        this.onInputChange = this.onInputChange.bind(this);
-    }
+export function CertificateDetailView(props: IProps) {
+    const { id } = props;
 
-    onInputChange(e) {
-        this.setState({ newId: e.target.value });
-    }
+    const certificates = useSelector(getCertificates);
+    const configuration = useSelector(getConfiguration);
+    const producingAssets = useSelector(getProducingAssets);
+    const users = useSelector(getUsers);
 
-    componentDidMount() {
-        this.init(this.props);
-    }
+    const [newId, setNewId] = useState<string>(null);
+    const [events, setEvents] = useState<IEnrichedEvent[]>([]);
 
-    UNSAFE_componentWillReceiveProps(newProps: Props) {
-        this.init(newProps);
-    }
+    const dispatch = useDispatch();
 
-    init(props: Props) {
-        if (props.id !== null && props.id !== undefined) {
-            const selectedCertificate: Certificate.Entity = props.certificates.find(
-                (c: Certificate.Entity) => c.id === props.id.toString()
-            );
-            if (selectedCertificate) {
-                this.getOwner(props, selectedCertificate, () =>
-                    this.enrichEvent(props, selectedCertificate)
-                );
+    const useStyles = makeStyles(() =>
+        createStyles({
+            eventsLoader: {
+                padding: '20px'
             }
+        })
+    );
+
+    const classes = useStyles(useTheme());
+
+    const { getCertificateDetailLink, getProducingAssetDetailLink } = useLinks();
+
+    const selectedCertificate =
+        id !== null && id !== undefined && certificates.find(c => c.id === id);
+
+    let owner: User.Entity = null;
+
+    if (selectedCertificate) {
+        owner = getUserById(users, selectedCertificate.owner);
+
+        if (!owner) {
+            dispatch(requestUser(selectedCertificate.owner));
         }
     }
 
-    async getOwner(props: Props, selectedCertificate: Certificate.Entity, cb) {
-        this.setState(
-            {
-                owner: await new User.Entity(
-                    selectedCertificate.owner,
-                    props.configuration as any
-                ).sync()
-            },
-            cb
-        );
-    }
-
-    async enrichEvent(props: Props, selectedCertificate: Certificate.Entity) {
+    async function enrichEvent() {
         const allCertificateEvents = await selectedCertificate.getAllCertificateEvents();
 
         const jointEvents = allCertificateEvents.map(async event => {
-            let label;
-            let description;
+            let label: string;
+            let description: string;
 
             switch (event.event) {
                 case 'LogNewMeterRead':
@@ -107,19 +83,21 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                 case 'Transfer':
                     if (event.returnValues.from === '0x0000000000000000000000000000000000000000') {
                         label = 'Initial owner';
-                        description = (
-                            await new User.Entity(event.returnValues.to, props.configuration).sync()
-                        ).organization;
+                        const user =
+                            getUserById(users, event.returnValues.to) ||
+                            (await new User.Entity(event.returnValues.to, configuration).sync());
+                        description = user.organization;
                     } else {
                         const newOwner = (
-                            await new User.Entity(event.returnValues.to, props.configuration).sync()
+                            getUserById(users, event.returnValues.to) ||
+                            (await new User.Entity(event.returnValues.to, configuration).sync())
                         ).organization;
+
                         const oldOwner = (
-                            await new User.Entity(
-                                event.returnValues.from,
-                                props.configuration
-                            ).sync()
+                            getUserById(users, event.returnValues.from) ||
+                            (await new User.Entity(event.returnValues.from, configuration).sync())
                         ).organization;
+
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
                     }
@@ -133,7 +111,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
 
                 case 'LogCertificateClaimed':
                     label = 'Certificate claimed';
-                    description = `Initiated by ${this.state.owner.organization}`;
+                    description = `Initiated by ${owner.organization}`;
                     break;
 
                 default:
@@ -145,9 +123,7 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                 label,
                 description,
                 timestamp: (
-                    await props.configuration.blockchainProperties.web3.eth.getBlock(
-                        event.blockNumber
-                    )
+                    await configuration.blockchainProperties.web3.eth.getBlock(event.blockNumber)
                 ).timestamp
             };
         });
@@ -162,167 +138,163 @@ class CertificateDetailViewClass extends React.Component<Props, IDetailViewState
                 label: 'Requested certification',
                 description: 'Asset owner requested certification based on meter reads',
                 timestamp: (
-                    await props.configuration.blockchainProperties.web3.eth.getBlock(
+                    await configuration.blockchainProperties.web3.eth.getBlock(
                         certificationRequestEvents.certificationRequestCreatedEvent.blockNumber
                     )
                 ).timestamp
             });
         }
 
-        this.setState({
-            events: resolvedEvents.sort((a, b) => a.timestamp - b.timestamp)
-        });
+        setEvents(deduplicate(resolvedEvents).sort((a, b) => a.timestamp - b.timestamp));
     }
 
-    render() {
-        const selectedCertificate =
-            this.props.id !== null && this.props.id !== undefined
-                ? this.props.certificates.find(
-                      (c: Certificate.Entity) => c.id === this.props.id.toString()
-                  )
-                : null;
+    useEffect(() => {
+        async function init() {
+            if (!selectedCertificate) {
+                return;
+            }
 
-        let data;
-        let events = [];
-        if (selectedCertificate) {
-            events = this.state.events.reverse().map((event: IEnrichedEvent) => (
-                <p key={event.txHash}>
-                    <span className="timestamp text-muted">
-                        {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
-                        <a
-                            href={`${getEnv().BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
-                            className="text-muted"
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            {event.txHash}
-                        </a>
-                    </span>
-                    <br />
-                    {event.label}
-                    {event.description ? ` - ${event.description}` : ''}
-                    <br />
-                </p>
-            ));
-
-            const asset = this.props.producingAssets.find(
-                p => p.id === selectedCertificate.assetId.toString()
-            );
-
-            data = [
-                [
-                    {
-                        label: 'Certificate Id',
-                        data: selectedCertificate.id
-                    },
-                    {
-                        label: 'Current Owner',
-                        data: this.state.owner ? this.state.owner.organization : ''
-                    },
-                    {
-                        label: 'Claimed',
-                        data:
-                            selectedCertificate.status === Certificate.Status.Claimed ? 'yes' : 'no'
-                    },
-                    {
-                        label: 'Producing Asset Id',
-                        data: asset.id,
-                        link: getProducingAssetDetailLink(this.props.baseURL, asset.id)
-                    },
-
-                    {
-                        label: 'Certified Energy (kWh)',
-                        data: (selectedCertificate.energy / 1000).toLocaleString()
-                    },
-                    {
-                        label: 'Creation Date',
-                        data: moment(selectedCertificate.creationTime * 1000).format('DD MMM YY')
-                    }
-                ]
-            ];
+            await enrichEvent();
         }
 
-        return (
-            <div className="DetailViewWrapper">
-                <div className="FindAsset">
-                    <input
-                        onChange={this.onInputChange}
-                        defaultValue={
-                            this.props.id || this.props.id === 0 ? this.props.id.toString() : ''
-                        }
-                    />
+        init();
+    }, [selectedCertificate?.id]);
 
-                    <Link
-                        className="btn btn-primary find-asset-button"
-                        to={getCertificateDetailLink(this.props.baseURL, this.state.newId)}
+    let data: Array<{
+        label: string;
+        data: string;
+        link?: string;
+    }>[];
+
+    let eventsDisplay = [];
+    if (selectedCertificate) {
+        eventsDisplay = events.reverse().map((event, index) => (
+            <p key={index}>
+                <span className="timestamp text-muted">
+                    {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
+                    <a
+                        href={`${getEnv().BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
+                        className="text-muted"
+                        target="_blank"
+                        rel="noopener"
                     >
-                        Find Certificate
-                    </Link>
+                        {event.txHash}
+                    </a>
+                </span>
+                <br />
+                {event.label}
+                {event.description ? ` - ${event.description}` : ''}
+                <br />
+            </p>
+        ));
+
+        const asset = producingAssets.find(p => p.id === selectedCertificate.assetId.toString());
+
+        data = [
+            [
+                {
+                    label: 'Certificate Id',
+                    data: selectedCertificate.id
+                },
+                {
+                    label: 'Current Owner',
+                    data: owner?.organization || ''
+                },
+                {
+                    label: 'Claimed',
+                    data: selectedCertificate.status === Certificate.Status.Claimed ? 'yes' : 'no'
+                },
+                {
+                    label: 'Producing Asset Id',
+                    data: asset.id,
+                    link: getProducingAssetDetailLink(asset.id)
+                }
+            ],
+            [
+                {
+                    label: 'Certified Energy (kWh)',
+                    data: (selectedCertificate.energy / 1000).toLocaleString()
+                },
+                {
+                    label: 'Generation Start',
+                    data: moment(selectedCertificate.generationStartTime * 1000).format(
+                        'DD MMM YY HH:mm'
+                    )
+                },
+                {
+                    label: 'Generation End',
+                    data: moment(selectedCertificate.generationEndTime * 1000).format(
+                        'DD MMM YY HH:mm'
+                    )
+                },
+                {
+                    label: 'Creation Date',
+                    data: moment(selectedCertificate.creationTime * 1000).format('DD MMM YY')
+                }
+            ]
+        ];
+    }
+
+    return (
+        <div className="DetailViewWrapper">
+            <div className="FindAsset">
+                <input onChange={e => setNewId(e.target.value)} defaultValue={id} />
+
+                <Link
+                    className="btn btn-primary find-asset-button"
+                    to={getCertificateDetailLink(newId)}
+                >
+                    Find Certificate
+                </Link>
+            </div>
+            <div className="PageContentWrapper">
+                <div className="PageBody">
+                    {selectedCertificate ? (
+                        <div>
+                            <table>
+                                <tbody>
+                                    {data.map((row, rowIndex) => (
+                                        <tr key={rowIndex}>
+                                            {row.map(col => (
+                                                <td key={col.label} rowSpan={1} colSpan={1}>
+                                                    <div className="Label">{col.label}</div>
+                                                    <div className="Data">{col.data}</div>
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div className="text-center">
+                            <strong>Certificate not found</strong>
+                        </div>
+                    )}
                 </div>
-                <div className="PageContentWrapper">
+                {selectedCertificate && (
+                    <ProducingAssetDetailView
+                        id={selectedCertificate.assetId}
+                        addSearchField={false}
+                        showSmartMeterReadings={false}
+                        showCertificates={false}
+                    />
+                )}
+
+                {selectedCertificate && (
                     <div className="PageBody">
-                        {!selectedCertificate ? (
-                            <div className="text-center">
-                                <strong>Certificate not found</strong>
+                        {eventsDisplay.length === 0 ? (
+                            <div className={classes.eventsLoader}>
+                                <Skeleton variant="rect" height={50} />
                             </div>
                         ) : (
-                            <div>
-                                <table>
-                                    <tbody>
-                                        {data.map((row: any) => (
-                                            <tr key={row.label}>
-                                                {row.map(col => (
-                                                    <td
-                                                        key={col.label}
-                                                        rowSpan={col.rowspan || 1}
-                                                        colSpan={col.colspan || 1}
-                                                    >
-                                                        <div className="Label">{col.label}</div>
-                                                        <div className="Data">
-                                                            {col.data}{' '}
-                                                            {col.tip && <span>{col.tip}</span>}
-                                                        </div>
-
-                                                        {col.description && (
-                                                            <div className="Description">
-                                                                {col.description}
-                                                            </div>
-                                                        )}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="history">
+                                <div>{eventsDisplay}</div>
                             </div>
                         )}
                     </div>
-                    {selectedCertificate ? (
-                        <ProducingAssetDetailView
-                            id={selectedCertificate.assetId}
-                            addSearchField={false}
-                            showSmartMeterReadings={false}
-                            showCertificates={false}
-                        />
-                    ) : null}
-                    {selectedCertificate ? (
-                        <div className="PageBody">
-                            <div className="history">
-                                <div>{events}</div>
-                            </div>
-                        </div>
-                    ) : null}
-                </div>
+                )}
             </div>
-        );
-    }
+        </div>
+    );
 }
-
-export const CertificateDetailView = connect(
-    (state: IStoreState): IStateProps => ({
-        baseURL: getBaseURL(),
-        certificates: getCertificates(state),
-        configuration: getConfiguration(state),
-        producingAssets: getProducingAssets(state)
-    })
-)(CertificateDetailViewClass);

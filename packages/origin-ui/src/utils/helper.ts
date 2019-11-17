@@ -79,3 +79,11 @@ export function getEnv(): IEnvironment {
         }
     );
 }
+
+export function deduplicate(inputArray: any[]) {
+    return inputArray.filter(
+        (item, index, array) =>
+            array.map(nestedItem => JSON.stringify(nestedItem)).indexOf(JSON.stringify(item)) ===
+            index
+    );
+}
