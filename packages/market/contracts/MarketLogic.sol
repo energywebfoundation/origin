@@ -75,6 +75,12 @@ contract MarketLogic is Initializable, RoleManagement {
         _;
     }
 
+    modifier onlyDemandOwner(uint _demandId) {
+        require(isRole(RoleManagement.Role.Trader, msg.sender), "onlyDemandOwner: demand owner has to be a trader");
+        require(allDemands[_demandId].demandOwner == msg.sender, "onlyDemandOwner: not the demand owner");
+        _;
+    }
+
     function initialize(address certificateLogicContract) public initializer {
         require(certificateLogicContract != address(0), "initialize: Cannot use address 0x0 as certificateLogicContract.");
 
@@ -137,10 +143,8 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @notice Deletes the demand on a specific index
 	/// @dev will return an event with the event-Id
 	/// @param _demandId index of the demand in the allDemands-array
-    function deleteDemand(uint _demandId) external onlyRole(RoleManagement.Role.Trader) {
+    function deleteDemand(uint _demandId) external onlyDemandOwner(_demandId) {
         Demand memory demand = allDemands[_demandId];
-        require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
-
         changeDemandStatus(_demandId, DemandStatus.ARCHIVED);
     }
 
@@ -153,9 +157,8 @@ contract MarketLogic is Initializable, RoleManagement {
         uint _demandId,
         string calldata _propertiesDocumentHash,
         string calldata _documentDBURL
-    ) external onlyRole(RoleManagement.Role.Trader) {
+    ) external onlyDemandOwner(_demandId) {
         Demand memory demand = allDemands[_demandId];
-        require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
         require(demand.status != DemandStatus.ARCHIVED, "demand cannot be in archived state");
 
         allDemands[_demandId].propertiesDocumentHash = _propertiesDocumentHash;
@@ -180,11 +183,10 @@ contract MarketLogic is Initializable, RoleManagement {
 
     function changeDemandStatus(uint _demandId, DemandStatus _status)
         public
-        onlyRole(RoleManagement.Role.Trader)
+        onlyDemandOwner(_demandId)
         returns (DemandStatus)
     {
         Demand memory demand = allDemands[_demandId];
-        require(msg.sender == demand.demandOwner, "user is not the owner of this demand");
 
         if (demand.status == _status) {
             return _status;
@@ -199,7 +201,10 @@ contract MarketLogic is Initializable, RoleManagement {
         return status;
     }
 
-    function setDemandStatus(uint _demandId, DemandStatus _status) public returns (DemandStatus){
+    function setDemandStatus(uint _demandId, DemandStatus _status)
+        public onlyDemandOwner(_demandId)
+        returns (DemandStatus)
+    {
         allDemands[_demandId].status = _status;
         return _status;
     }

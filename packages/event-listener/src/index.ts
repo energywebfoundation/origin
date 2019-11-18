@@ -14,9 +14,25 @@ const startEventListener = async () => {
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
     const baseUrl = `${backendUrl}/api`;
 
-    const storedMarketContractAddress = (
-        await new ConfigurationClient().get(baseUrl, 'MarketContractLookup')
-    ).pop();
+    let storedMarketContractAddresses: string[] = [];
+
+    console.log(`[EVENT-LISTENER] Trying to get Market contract address`);
+
+    while (storedMarketContractAddresses.length === 0) {
+        storedMarketContractAddresses = await new ConfigurationClient().get(
+            baseUrl,
+            'MarketContractLookup'
+        );
+
+        if (storedMarketContractAddresses.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+    }
+
+    const storedMarketContractAddress = storedMarketContractAddresses.pop();
+
+    console.log(`[EVENT-LISTENER] Starting for Market ${storedMarketContractAddress}`);
+
     const latestMarketContract: string =
         process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 

@@ -162,7 +162,7 @@ describe('Application[E2E]', () => {
             assertMainTableContent([
                 'Asset Manager organization',
                 'Wuthering Heights Windfarm',
-                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
+                'Nakhon Pathom, Central',
                 'Wind - Onshore',
                 '0',
                 '0'

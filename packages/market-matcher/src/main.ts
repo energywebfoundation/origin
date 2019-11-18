@@ -17,12 +17,27 @@ dotenv.config({
 
     const matcherInterval = Number(process.env.MATCHER_INTERVAL) || 15;
 
-    const storedMarketLogicAddress = (
-        await new ConfigurationClient().get(baseUrl, 'MarketContractLookup')
-    ).pop();
+    let storedMarketContractAddresses: string[] = [];
+
+    console.log(`[MARKET-MATCHER] Trying to get Market contract address`);
+
+    while (storedMarketContractAddresses.length === 0) {
+        storedMarketContractAddresses = await new ConfigurationClient().get(
+            baseUrl,
+            'MarketContractLookup'
+        );
+
+        if (storedMarketContractAddresses.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+    }
+
+    const storedMarketContractAddress = storedMarketContractAddresses.pop();
+
+    console.log(`[MARKET-MATCHER] Starting for Market ${storedMarketContractAddress}`);
 
     const marketLogicAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || storedMarketLogicAddress;
+        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 
     const config = {
         web3Url: process.env.WEB3,

@@ -56,7 +56,7 @@
   "devDependencies": {
     "@energyweb/erc-test-contracts": "1.2.2",
     "@energyweb/origin-backend-client": "1.0.1",
-    "@fluffy-spoon/substitute": "1.89.0",
+    "@fluffy-spoon/substitute": "1.104.0",
     "@types/web3": "1.0.20",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",

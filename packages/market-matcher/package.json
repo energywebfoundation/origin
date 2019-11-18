@@ -52,11 +52,11 @@
         "winston": "3.2.1"
     },
     "devDependencies": {
-        "@fluffy-spoon/substitute": "1.89.0",
-        "@types/lolex": "^3.1.1",
+        "@fluffy-spoon/substitute": "1.104.0",
+        "@types/lolex": "5.1.0",
         "@types/web3": "1.0.20",
         "ganache-cli": "6.6.0",
-        "lolex": "^5.1.1"
+        "lolex": "5.1.1"
     },
     "postinstall": "rm -f node_modules/web3/index.d.ts",
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

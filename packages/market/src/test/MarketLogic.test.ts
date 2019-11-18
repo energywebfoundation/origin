@@ -860,7 +860,7 @@ describe('MarketLogic', () => {
             });
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'user does not have the required role');
+            assert.include(ex.message, 'demand owner has to be a trader');
         }
 
         assert.isTrue(failed);
@@ -874,7 +874,7 @@ describe('MarketLogic', () => {
             });
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'user is not the owner of this demand');
+            assert.include(ex.message, 'not the demand owner');
         }
 
         assert.isTrue(failed);
