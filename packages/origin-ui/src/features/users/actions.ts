@@ -1,4 +1,4 @@
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
 
 export enum UsersActions {
@@ -11,7 +11,7 @@ export enum UsersActions {
 
 export interface IAddUserAction {
     type: UsersActions.addUser;
-    payload: User.Entity;
+    payload: MarketUser.Entity;
 }
 
 export const addUser = (payload: IAddUserAction['payload']) => ({
@@ -23,7 +23,7 @@ export type TAddUserAction = typeof addUser;
 
 export interface IUpdateUserAction {
     type: UsersActions.updateUser;
-    payload: User.Entity;
+    payload: MarketUser.Entity;
 }
 
 export const updateUser = (payload: IUpdateUserAction['payload']) => ({
@@ -58,7 +58,7 @@ export const requestUser = (payload: IRequestUserAction['payload']) => ({
 export type TRequestUserAction = typeof requestUser;
 
 export interface IUserFetcher {
-    fetch: (id: string, configuration: IStoreState['configuration']) => Promise<User.Entity>;
+    fetch: (id: string, configuration: IStoreState['configuration']) => Promise<MarketUser.Entity>;
 }
 
 export interface IUpdateFetcherAction {

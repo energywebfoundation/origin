@@ -51,6 +51,7 @@
         "run:simulator": "lerna run start --scope @energyweb/solar-simulator --stream",
         "run:matcher": "lerna run start --scope @energyweb/market-matcher --stream",
         "run:event-listener": "lerna run start --scope @energyweb/event-listener --stream",
+        "run:mock-data": "lerna run deploy-mock-readings --scope @energyweb/solar-simulator --stream",
         "test": "yarn test:ui && lerna run test:concurrent --stream --parallel --since master",
         "test:serial": "yarn test:ui && lerna run test:concurrent --stream",
         "test:ui": "lerna run test --scope @energyweb/origin-ui --stream --since master",
