@@ -26,7 +26,7 @@ import { getBaseURL, getConfiguration, getProducingAssets } from '../features/se
 import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 
 interface IProps {
@@ -56,7 +56,7 @@ export function ProducingAssetDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    let owner: User.Entity = null;
+    let owner: MarketUser.Entity = null;
     let selectedAsset: ProducingAsset.Entity = null;
 
     const assetTypeService = new IRECAssetService();

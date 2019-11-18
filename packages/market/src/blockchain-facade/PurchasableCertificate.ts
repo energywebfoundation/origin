@@ -33,8 +33,13 @@ export const getCertificateListLength = async (
 ): Promise<number> => {
     return Certificate.getCertificateListLength(configuration);
 };
+
 export const getAllCertificates = async (configuration: Configuration.Entity) => {
-    return Certificate.getAllCertificates(configuration);
+    const certificatePromises = Array(await getCertificateListLength(configuration))
+        .fill(null)
+        .map((item, index) => new Entity(index.toString(), configuration).sync());
+
+    return Promise.all(certificatePromises);
 };
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IPurchasableCertificate {
@@ -208,6 +213,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
     }
 
     get price() {
+        if (!this.initialized) {
+            throw new Error(`PurchasableCertificate #${this.id} has not been initialized yet.`);
+        }
+
         return this.isOffChainSettlement
             ? this.offChainSettlementOptions.price
             : this.onChainDirectPurchasePrice;
@@ -269,7 +278,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
             throw Error('No off chain data source set in the configuration');
         }
 
-        await this.offChainDataClient.insertOrUpdate(this.getUrl(), {
+        await this.offChainDataClient.insertOrUpdate(`${this.getUrl()}/${this.id}`, {
             properties: options,
             salts: [],
             schema: []
@@ -288,7 +297,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
 
         try {
             const { properties } = await this.offChainDataClient.get<IOffChainSettlementOptions>(
-                this.getUrl()
+                `${this.getUrl()}/${this.id}`
             );
 
             return properties;
