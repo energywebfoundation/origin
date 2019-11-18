@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { ProducingAssetDetailView } from './ProducingAssetDetailView';
 import './DetailView.scss';
 import { useSelector, useDispatch } from 'react-redux';
@@ -54,13 +54,13 @@ export function CertificateDetailView(props: IProps) {
     const selectedCertificate =
         id !== null && id !== undefined && certificates.find(c => c.id === id);
 
-    let owner: User.Entity = null;
+    let owner: MarketUser.Entity = null;
 
     if (selectedCertificate) {
-        owner = getUserById(users, selectedCertificate.owner);
+        owner = getUserById(users, selectedCertificate.certificate.owner);
 
         if (!owner) {
-            dispatch(requestUser(selectedCertificate.owner));
+            dispatch(requestUser(selectedCertificate.certificate.owner));
         }
     }
 
@@ -85,17 +85,26 @@ export function CertificateDetailView(props: IProps) {
                         label = 'Initial owner';
                         const user =
                             getUserById(users, event.returnValues.to) ||
-                            (await new User.Entity(event.returnValues.to, configuration).sync());
+                            (await new MarketUser.Entity(
+                                event.returnValues.to,
+                                configuration
+                            ).sync());
                         description = user.organization;
                     } else {
                         const newOwner = (
                             getUserById(users, event.returnValues.to) ||
-                            (await new User.Entity(event.returnValues.to, configuration).sync())
+                            (await new MarketUser.Entity(
+                                event.returnValues.to,
+                                configuration
+                            ).sync())
                         ).organization;
 
                         const oldOwner = (
                             getUserById(users, event.returnValues.from) ||
-                            (await new User.Entity(event.returnValues.from, configuration).sync())
+                            (await new MarketUser.Entity(
+                                event.returnValues.from,
+                                configuration
+                            ).sync())
                         ).organization;
 
                         label = 'Changed ownership';
@@ -188,7 +197,9 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
-        const asset = producingAssets.find(p => p.id === selectedCertificate.assetId.toString());
+        const asset = producingAssets.find(
+            p => p.id === selectedCertificate.certificate.assetId.toString()
+        );
 
         data = [
             [
@@ -202,7 +213,10 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Claimed',
-                    data: selectedCertificate.status === Certificate.Status.Claimed ? 'yes' : 'no'
+                    data:
+                        selectedCertificate.certificate.status === Certificate.Status.Claimed
+                            ? 'yes'
+                            : 'no'
                 },
                 {
                     label: 'Producing Asset Id',
@@ -213,23 +227,25 @@ export function CertificateDetailView(props: IProps) {
             [
                 {
                     label: 'Certified Energy (kWh)',
-                    data: (selectedCertificate.energy / 1000).toLocaleString()
+                    data: (selectedCertificate.certificate.energy / 1000).toLocaleString()
                 },
                 {
                     label: 'Generation Start',
-                    data: moment(selectedCertificate.generationStartTime * 1000).format(
+                    data: moment(selectedCertificate.certificate.generationStartTime * 1000).format(
                         'DD MMM YY HH:mm'
                     )
                 },
                 {
                     label: 'Generation End',
-                    data: moment(selectedCertificate.generationEndTime * 1000).format(
+                    data: moment(selectedCertificate.certificate.generationEndTime * 1000).format(
                         'DD MMM YY HH:mm'
                     )
                 },
                 {
                     label: 'Creation Date',
-                    data: moment(selectedCertificate.creationTime * 1000).format('DD MMM YY')
+                    data: moment(selectedCertificate.certificate.creationTime * 1000).format(
+                        'DD MMM YY'
+                    )
                 }
             ]
         ];
@@ -274,7 +290,7 @@ export function CertificateDetailView(props: IProps) {
                 </div>
                 {selectedCertificate && (
                     <ProducingAssetDetailView
-                        id={selectedCertificate.assetId}
+                        id={selectedCertificate.certificate.assetId}
                         addSearchField={false}
                         showSmartMeterReadings={false}
                         showCertificates={false}

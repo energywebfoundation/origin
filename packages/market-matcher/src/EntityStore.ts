@@ -1,5 +1,4 @@
-import { Agreement, Demand, Supply } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import {
     Configuration,
     ContractEventHandler,
@@ -14,7 +13,7 @@ import { EntityListener } from './EntityListener';
 
 export interface IEntityStore {
     init(): Promise<void>;
-    registerCertificateListener(listener: Listener<Certificate.Entity>): void;
+    registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>): void;
     registerDemandListener(listener: Listener<Demand.Entity>): void;
 
     getDemand(id: string): Promise<Demand.Entity>;
@@ -22,7 +21,7 @@ export interface IEntityStore {
 
     getAgreements(): Agreement.Entity[];
     getDemands(): Demand.Entity[];
-    getCertificates(): Certificate.Entity[];
+    getCertificates(): PurchasableCertificate.Entity[];
 }
 
 @singleton()
@@ -33,9 +32,12 @@ export class EntityStore implements IEntityStore {
 
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
 
-    private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
+    private certificates: Map<string, PurchasableCertificate.Entity> = new Map<
+        string,
+        PurchasableCertificate.Entity
+    >();
 
-    private certificateListeners: EntityListener<Certificate.Entity>;
+    private certificateListeners: EntityListener<PurchasableCertificate.Entity>;
 
     private demandListeners: EntityListener<Demand.Entity>;
 
@@ -43,11 +45,11 @@ export class EntityStore implements IEntityStore {
         @inject('config') private config: Configuration.Entity,
         @inject('logger') private logger: Winston.Logger
     ) {
-        this.certificateListeners = new EntityListener<Certificate.Entity>(this.logger);
+        this.certificateListeners = new EntityListener<PurchasableCertificate.Entity>(this.logger);
         this.demandListeners = new EntityListener<Demand.Entity>(this.logger);
     }
 
-    public registerCertificateListener(listener: Listener<Certificate.Entity>) {
+    public registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>) {
         this.certificateListeners.register(listener);
     }
 
@@ -121,7 +123,9 @@ export class EntityStore implements IEntityStore {
         }
 
         this.logger.verbose('* Getting all certificates');
-        const certificateListLength = await Certificate.getCertificateListLength(this.config);
+        const certificateListLength = await PurchasableCertificate.getCertificateListLength(
+            this.config
+        );
         for (let i = 0; i < certificateListLength; i++) {
             await this.handleCertificate(i.toString(), false);
         }
@@ -145,6 +149,7 @@ export class EntityStore implements IEntityStore {
         this.registerToDemandEvents(marketContractEventHandler);
         this.registerToSupplyEvents(marketContractEventHandler);
         this.registerToAgreementEvents(marketContractEventHandler);
+        this.registerToPurchasableCertificateEvents(marketContractEventHandler);
 
         const eventHandlerManager = new EventHandlerManager(4000, this.config);
         eventHandlerManager.registerEventHandler(marketContractEventHandler);
@@ -153,13 +158,6 @@ export class EntityStore implements IEntityStore {
     }
 
     private registerToCertificateEvents(certificateContractEventHandler: ContractEventHandler) {
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const { _certificateId: id } = event.returnValues;
-            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
-
-            await this.handleCertificate(id);
-        });
-
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const { _certificateId: id } = event.returnValues;
             this.logger.verbose(`Event: LogCreatedCertificate certificate #${id}`);
@@ -200,6 +198,17 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(`Event: createdNewSupply supply: ${id}`);
 
             await this.registerSupply(id);
+        });
+    }
+
+    private registerToPurchasableCertificateEvents(
+        marketContractEventHandler: ContractEventHandler
+    ) {
+        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const { _certificateId: id } = event.returnValues;
+            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
+
+            await this.handleCertificate(id);
         });
     }
 
@@ -272,7 +281,7 @@ export class EntityStore implements IEntityStore {
     }
 
     private async fetchCertificate(id: string) {
-        const certificate = await new Certificate.Entity(id, this.config).sync();
+        const certificate = await new PurchasableCertificate.Entity(id, this.config).sync();
 
         if (
             certificate.forSale &&

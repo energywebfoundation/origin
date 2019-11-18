@@ -27,30 +27,38 @@ describe('CertificateTable', () => {
 
         addCertificate({
             id: '0',
-            owner: '0x123',
-            energy: 1 * Unit.MWh,
-            creationTime: 1569436970,
-            assetId: 0,
-            status: Certificate.Status.Active
+            certificate: {
+                owner: '0x123',
+                energy: 1 * Unit.MWh,
+                creationTime: 1569436970,
+                assetId: 0,
+                status: Certificate.Status.Active
+            } as Certificate.ICertificate
         });
 
         addCertificate({
             id: '1',
-            owner: '0x123',
-            energy: 2.5 * Unit.kWh,
-            creationTime: 1569746970,
-            assetId: 0
+            certificate: {
+                owner: '0x123',
+                energy: 2.5 * Unit.kWh,
+                creationTime: 1569746970,
+                assetId: 0
+            } as Certificate.ICertificate
         });
 
         addCertificate({
             id: '2',
-            owner: '0x124'
+            certificate: {
+                owner: '0x124'
+            } as Certificate.ICertificate
         });
 
         addCertificate({
             id: '3',
-            owner: '0x123',
-            status: Certificate.Status.Claimed
+            certificate: {
+                owner: '0x123',
+                status: Certificate.Status.Claimed
+            } as Certificate.ICertificate
         });
 
         const rendered = mount(

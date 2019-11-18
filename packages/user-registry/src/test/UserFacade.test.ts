@@ -60,8 +60,7 @@ describe('User Facade', () => {
             zip: '14789',
             city: 'Shelbyville',
             country: 'US',
-            state: 'FL',
-            notifications: false
+            state: 'FL'
         };
 
         conf = {
@@ -115,7 +114,6 @@ describe('User Facade', () => {
             email: 'john@doe.com',
             firstName: 'John',
             number: '101',
-            notifications: false,
             state: 'FL',
             street: 'Evergreen Terrace',
             surname: 'Doe',

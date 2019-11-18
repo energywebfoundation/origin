@@ -1,5 +1,4 @@
-import { Demand } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
 import { inject, injectable } from 'tsyringe';
@@ -14,7 +13,7 @@ export type Listener<T> = (entity: T) => void;
 
 @injectable()
 export class Matcher {
-    private matchingQueue = new Subject<Certificate.Entity | Demand.Entity>();
+    private matchingQueue = new Subject<PurchasableCertificate.Entity | Demand.Entity>();
 
     constructor(
         @inject('certificateMatcher') private certificateMatcher: CertificateMatcher,
@@ -41,15 +40,15 @@ export class Matcher {
         this.timeTrigger.init();
     }
 
-    private log(entity: Certificate.Entity | Demand.Entity) {
-        const name = entity instanceof Certificate.Entity ? 'Certificate' : 'Demand';
+    private log(entity: PurchasableCertificate.Entity | Demand.Entity) {
+        const name = entity instanceof PurchasableCertificate.Entity ? 'Certificate' : 'Demand';
 
         this.logger.verbose(`[${name} ${entity.id}] queued for matching`);
     }
 
-    private async match(entity: Certificate.Entity | Demand.Entity) {
-        if (entity instanceof Certificate.Entity) {
-            return this.certificateMatcher.match(entity as Certificate.Entity);
+    private async match(entity: PurchasableCertificate.Entity | Demand.Entity) {
+        if (entity instanceof PurchasableCertificate.Entity) {
+            return this.certificateMatcher.match(entity as PurchasableCertificate.Entity);
         }
         return this.demandMatcher.match(entity as Demand.Entity);
     }

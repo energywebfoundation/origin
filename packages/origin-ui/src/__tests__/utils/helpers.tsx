@@ -9,6 +9,7 @@ import { addUser, updateCurrentUserId, updateFetcher } from '../../features/user
 import { ReactWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { producingAssetCreatedOrUpdated } from '../../features/producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../../features/certificates/actions';
@@ -165,16 +166,18 @@ export const createProducingAsset = (
 
 interface ICreateCertificateProperties {
     id: string;
-    owner?: string;
-    energy?: number;
-    creationTime?: number;
-    assetId?: number;
-    status?: Certificate.Status;
+    certificate: Certificate.ICertificate;
 }
 
-export const createCertificate = (properties: ICreateCertificateProperties): Certificate.Entity => {
+export const createCertificate = (
+    properties: ICreateCertificateProperties
+): PurchasableCertificate.Entity => {
     const status =
-        typeof properties.status === 'undefined' ? Certificate.Status.Active : properties.status;
+        typeof properties.certificate.status === 'undefined'
+            ? Certificate.Status.Active
+            : properties.certificate.status;
+
+    properties.certificate.status = status;
 
     return {
         id: properties.id,
@@ -185,12 +188,8 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
                 }
             }
         } as Partial<Configuration.Entity>) as Configuration.Entity,
-        status,
-        owner: properties.owner,
-        energy: properties.energy,
-        creationTime: properties.creationTime,
-        assetId: properties.assetId
-    } as Certificate.Entity;
+        certificate: properties.certificate
+    } as PurchasableCertificate.Entity;
 };
 
 interface ISetupStoreOptions {

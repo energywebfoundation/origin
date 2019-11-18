@@ -1,5 +1,4 @@
-import { Demand } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, Unit } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
@@ -13,7 +12,7 @@ export class CertificateService {
     ) {}
 
     public async executeMatching(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         demand: Demand.IDemand,
         fromAgreement: boolean
     ) {
@@ -30,10 +29,11 @@ export class CertificateService {
         );
 
         this.logger.verbose(
-            `[Certificate #${certificate.id}] Available energy: ${certificate.energy / Unit.kWh}KWh`
+            `[Certificate #${certificate.id}] Available energy: ${certificate.certificate.energy /
+                Unit.kWh}KWh`
         );
 
-        if (certificate.energy <= requiredEnergy) {
+        if (certificate.certificate.energy <= requiredEnergy) {
             return fromAgreement
                 ? this.matchDemandFromAgreement(certificate, demand)
                 : this.matchDemand(certificate, demand);
@@ -42,7 +42,7 @@ export class CertificateService {
     }
 
     private async splitCertificate(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         requiredEnergy: number
     ): Promise<boolean> {
         this.logger.info(`[Certificate #${certificate.id}] Splitting at ${requiredEnergy}`);
@@ -52,19 +52,22 @@ export class CertificateService {
         return splitTx.status;
     }
 
-    private async matchDemand(certificate: Certificate.ICertificate, demand: Demand.IDemand) {
+    private async matchDemand(
+        certificate: PurchasableCertificate.IPurchasableCertificate,
+        demand: Demand.IDemand
+    ) {
         return this.match(certificate, demand, demand.fill.bind(demand));
     }
 
     private async matchDemandFromAgreement(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         demand: Demand.IDemand
     ) {
         return this.match(certificate, demand, demand.fillAgreement.bind(demand));
     }
 
     private async match(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         demand: Demand.IDemand,
         match: (entityId: string) => Promise<TransactionReceipt>
     ) {
@@ -90,10 +93,13 @@ export class CertificateService {
         return false;
     }
 
-    private async isAlreadyTransferred(certificate: Certificate.ICertificate, owner: string) {
+    private async isAlreadyTransferred(
+        certificate: PurchasableCertificate.IPurchasableCertificate,
+        owner: string
+    ) {
         const syncedCertificate = await certificate.sync();
 
-        if (certificate.owner.toLowerCase() === owner.toLowerCase()) {
+        if (certificate.certificate.owner.toLowerCase() === owner.toLowerCase()) {
             this.logger.verbose(
                 `[Certificate #${syncedCertificate.id}] Already transferred to request demand owner ${owner}`
             );

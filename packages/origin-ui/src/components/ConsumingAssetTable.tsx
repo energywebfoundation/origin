@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { Redirect } from 'react-router-dom';
 import { Configuration } from '@energyweb/utils-general';
 import { ConsumingAsset } from '@energyweb/asset-registry';
@@ -103,7 +103,10 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
         const promises = consumingAssets.map(async (asset: ConsumingAsset.Entity) => ({
             asset,
             organizationName: (
-                await new User.Entity(asset.owner.address, this.props.configuration as any).sync()
+                await new MarketUser.Entity(
+                    asset.owner.address,
+                    this.props.configuration as any
+                ).sync()
             ).organization
         }));
 

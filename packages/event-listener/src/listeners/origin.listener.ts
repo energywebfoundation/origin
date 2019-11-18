@@ -2,10 +2,8 @@ import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand } from '@energyweb/market';
+import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
-import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
 import {
     Configuration,
     ContractEventHandler,
@@ -75,17 +73,22 @@ export class OriginEventListener implements IOriginEventListener {
             const certId = event.returnValues._certificateId;
             this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
 
-            const newCertificate: Certificate.Entity = await new Certificate.Entity(
+            const newCertificate: PurchasableCertificate.Entity = await new PurchasableCertificate.Entity(
                 certId,
                 this.conf
             ).sync();
 
-            this.originEventsStore.registerIssuedCertificate(newCertificate.owner);
+            this.originEventsStore.registerIssuedCertificate(newCertificate.certificate.owner);
         });
 
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const fetchCertificate = async (certificateId: string) => {
-                const certificate = await new Certificate.Entity(certificateId, this.conf).sync();
+        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const fetchCertificate = async (
+                certificateId: string
+            ): Promise<PurchasableCertificate.Entity> => {
+                const certificate = await new PurchasableCertificate.Entity(
+                    certificateId,
+                    this.conf
+                ).sync();
 
                 if (
                     certificate.forSale &&
@@ -99,7 +102,7 @@ export class OriginEventListener implements IOriginEventListener {
                 return certificate;
             };
 
-            const publishedCertificate = await polly()
+            const publishedCertificate: PurchasableCertificate.IPurchasableCertificate = await polly()
                 .waitAndRetry(10)
                 .executeForPromise(() => fetchCertificate(event.returnValues._certificateId));
 
@@ -110,7 +113,7 @@ export class OriginEventListener implements IOriginEventListener {
             const demands = await Demand.getAllDemands(this.conf);
 
             const producingAsset = await new ProducingAsset.Entity(
-                publishedCertificate.assetId.toString(),
+                publishedCertificate.certificate.assetId.toString(),
                 this.conf
             ).sync();
 
@@ -168,11 +171,11 @@ export class OriginEventListener implements IOriginEventListener {
 
     private async notify() {
         const allUsers: Promise<
-            User.Entity
+            MarketUser.Entity
         >[] = this.originEventsStore
             .getAllUsers()
-            .map(async userId => new User.Entity(userId, this.conf).sync());
-        const notifyUsers: User.Entity[] = (await Promise.all(allUsers)).filter(
+            .map(async userId => new MarketUser.Entity(userId, this.conf).sync());
+        const notifyUsers: MarketUser.Entity[] = (await Promise.all(allUsers)).filter(
             user => user.offChainProperties.notifications
         );
 

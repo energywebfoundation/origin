@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Currency } from '@energyweb/utils-general';
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import {
     Button,
@@ -23,7 +23,7 @@ import { getConfiguration } from '../../features/selectors';
 import { setLoading } from '../../features/general/actions';
 
 interface IProps {
-    certificate: Certificate.Entity;
+    certificate: PurchasableCertificate.Entity;
     producingAsset: ProducingAsset.Entity;
     showModal: boolean;
     callback: () => void;
@@ -62,7 +62,7 @@ export function PublishForSaleModal(props: IProps) {
 
     useEffect(() => {
         if (certificate) {
-            setKwh(certificate.energy / 1000);
+            setKwh(certificate.certificate.energy / 1000);
         }
     }, [certificate]);
 
@@ -112,7 +112,7 @@ export function PublishForSaleModal(props: IProps) {
                 const kwhValid =
                     !isNaN(newKwh) &&
                     newKwh >= minKwh &&
-                    newKwh <= certificate.energy / 1000 &&
+                    newKwh <= certificate.certificate.energy / 1000 &&
                     countDecimals(newKwh) <= 3;
 
                 setKwh(event.target.value);
@@ -173,7 +173,7 @@ export function PublishForSaleModal(props: IProps) {
     let creationTime: string;
 
     try {
-        creationTime = certificate && moment.unix(certificate.creationTime).toString();
+        creationTime = certificate && moment.unix(certificate.certificate.creationTime).toString();
     } catch (error) {
         console.error('Error in PublishForSaleModal', error);
     }

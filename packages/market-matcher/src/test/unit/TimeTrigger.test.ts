@@ -3,7 +3,7 @@ import { Substitute } from '@fluffy-spoon/substitute';
 import * as Winston from 'winston';
 import { assert } from 'chai';
 
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import * as lolex from 'lolex';
 import { IEntityStore } from '../../EntityStore';
 import { TimeTrigger } from '../../TimeTrigger';
@@ -14,7 +14,7 @@ describe('TimeTrigger tests', () => {
 
     const createTimeTrigger = (certificatesId: string[], intervalInMinutes: number) => {
         const certificatesMocks = certificatesId.map(id => {
-            const certificateMock = Substitute.for<Certificate.Entity>();
+            const certificateMock = Substitute.for<PurchasableCertificate.Entity>();
             certificateMock.id.returns(id);
             return certificateMock;
         });
@@ -31,7 +31,7 @@ describe('TimeTrigger tests', () => {
         const intervalInMinutes = 5;
 
         const timeTrigger = createTimeTrigger([idOne, idTwo], intervalInMinutes);
-        const triggeredCertificates: Certificate.Entity[] = [];
+        const triggeredCertificates: PurchasableCertificate.Entity[] = [];
 
         timeTrigger.registerCertificateListener(certificate => {
             triggeredCertificates.push(certificate);
@@ -57,7 +57,7 @@ describe('TimeTrigger tests', () => {
         const nextIntervalInMinutes = 5;
 
         const timeTrigger = createTimeTrigger([idOne, idTwo], nextIntervalInMinutes);
-        const triggeredCertificates: Certificate.Entity[] = [];
+        const triggeredCertificates: PurchasableCertificate.Entity[] = [];
 
         timeTrigger.registerCertificateListener(certificate => {
             triggeredCertificates.push(certificate);

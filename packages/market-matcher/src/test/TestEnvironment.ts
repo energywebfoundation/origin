@@ -4,9 +4,9 @@ import Web3 from 'web3';
 
 import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
+import { Agreement, Demand, MarketLogic, Supply, PurchasableCertificate } from '@energyweb/market';
 import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
@@ -307,7 +307,7 @@ const deployCertificate = async (
         privateKey: assetOwnerPK
     });
 
-    return new Certificate.Entity('0', assetOwnerConfig).sync();
+    return new PurchasableCertificate.Entity('0', assetOwnerConfig).sync();
 };
 
 const deployAgreement = async (

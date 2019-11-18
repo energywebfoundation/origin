@@ -1,4 +1,4 @@
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
 
 export enum CertificatesActions {
@@ -11,10 +11,10 @@ export enum CertificatesActions {
 
 export interface ICertificateCreatedOrUpdatedAction {
     type: CertificatesActions.certificateCreatedOrUpdated;
-    certificate: Certificate.Entity;
+    certificate: PurchasableCertificate.Entity;
 }
 
-export const certificateCreatedOrUpdated = (certificate: Certificate.Entity) => ({
+export const certificateCreatedOrUpdated = (certificate: PurchasableCertificate.Entity) => ({
     type: CertificatesActions.certificateCreatedOrUpdated,
     certificate
 });

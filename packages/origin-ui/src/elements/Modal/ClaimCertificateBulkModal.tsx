@@ -1,4 +1,5 @@
 import React from 'react';
+import { PurchasableCertificate } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
@@ -21,7 +22,7 @@ interface IStateProps {
 }
 
 interface IOwnProps {
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     showModal: boolean;
     callback: () => void;
 }
@@ -50,7 +51,10 @@ class ClaimCertificateBulkModalClass extends React.Component<Props> {
     }
 
     render() {
-        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.energy), 0);
+        const totalWh = this.props.certificates.reduce(
+            (a, b) => a + Number(b.certificate.energy),
+            0
+        );
 
         return (
             <Dialog open={this.props.showModal} onClose={this.handleClose}>

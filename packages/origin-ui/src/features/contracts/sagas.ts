@@ -10,14 +10,15 @@ import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate } from '@energyweb/origin';
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import Web3 from 'web3';
 import {
+    PurchasableCertificate,
     Demand,
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
+import Web3 from 'web3';
+
 import {
     configurationUpdated,
     demandDeleted,
@@ -104,22 +105,23 @@ function* initEventHandler() {
             currentBlockNumber
         );
 
-        const demandContractEventHandler: ContractEventHandler = new ContractEventHandler(
+        const marketContractEventHandler: ContractEventHandler = new ContractEventHandler(
             configuration.blockchainProperties.marketLogicInstance,
             currentBlockNumber
         );
 
         const channel = eventChannel(emitter => {
-            certificateContractEventHandler.onEvent('LogPublishForSale', async function(
-                event: any
-            ) {
+            marketContractEventHandler.onEvent('LogPublishForSale', async function(event: any) {
                 const id = event.returnValues._certificateId?.toString();
 
                 if (typeof id === 'undefined') {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
@@ -135,7 +137,10 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
@@ -151,7 +156,10 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
@@ -165,7 +173,10 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
@@ -181,14 +192,17 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
                 });
             });
 
-            demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
                 const demand = await new Demand.Entity(
                     event.returnValues._demandId.toString(),
                     configuration
@@ -199,7 +213,7 @@ function* initEventHandler() {
                 });
             });
 
-            demandContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
                 if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
                     emitter({
                         action: demandDeleted(
@@ -218,7 +232,7 @@ function* initEventHandler() {
         });
 
         eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-        eventHandlerManager.registerEventHandler(demandContractEventHandler);
+        eventHandlerManager.registerEventHandler(marketContractEventHandler);
         eventHandlerManager.start();
 
         while (true) {
@@ -329,9 +343,9 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             yield put(demandCreated(demand));
         }
 
-        const certificates: Certificate.Entity[] = yield apply(
-            Certificate,
-            Certificate.getAllCertificates,
+        const certificates: PurchasableCertificate.Entity[] = yield apply(
+            PurchasableCertificate,
+            PurchasableCertificate.getAllCertificates,
             [configuration]
         );
 

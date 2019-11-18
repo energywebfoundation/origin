@@ -1,6 +1,5 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand, Supply } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
+import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { IRECAssetService, LocationService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
@@ -14,7 +13,7 @@ export class MatchableDemand {
     constructor(public demand: Demand.IDemand) {}
 
     public async matchesCertificate(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         producingAsset: ProducingAsset.IProducingAsset
     ) {
         const { offChainProperties } = this.demand;

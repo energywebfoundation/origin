@@ -1,9 +1,9 @@
-import { Certificate } from '@energyweb/origin';
 import { inject, injectable } from 'tsyringe';
 import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand, Agreement } from '@energyweb/market';
+import { Demand, Agreement, PurchasableCertificate } from '@energyweb/market';
+
 import { IEntityStore } from './EntityStore';
 import { IStrategy } from './strategy/IStrategy';
 import { CertificateService } from './CertificateService';
@@ -21,7 +21,7 @@ export class CertificateMatcher {
         @inject('logger') private logger: Winston.Logger
     ) {}
 
-    public async match(certificate: Certificate.Entity) {
+    public async match(certificate: PurchasableCertificate.Entity) {
         try {
             const matchingResult =
                 (await this.matchWithAgreements(certificate)) ||
@@ -41,7 +41,7 @@ export class CertificateMatcher {
         return false;
     }
 
-    private async matchWithAgreements(certificate: Certificate.ICertificate) {
+    private async matchWithAgreements(certificate: PurchasableCertificate.IPurchasableCertificate) {
         this.logger.info(`[Certificate #${certificate.id}] Started matching with agreements`);
 
         const matchingAgreements = await this.findMatchingAgreements(certificate);
@@ -54,7 +54,7 @@ export class CertificateMatcher {
         return this.executeForDemands(certificate, demands, true);
     }
 
-    private async matchWithDemands(certificate: Certificate.ICertificate) {
+    private async matchWithDemands(certificate: PurchasableCertificate.IPurchasableCertificate) {
         this.logger.info(`[Certificate #${certificate.id}] Started matching with demands`);
 
         if (!certificate.forSale) {
@@ -69,7 +69,7 @@ export class CertificateMatcher {
     }
 
     private async executeForDemands(
-        certificate: Certificate.ICertificate,
+        certificate: PurchasableCertificate.IPurchasableCertificate,
         demands: Demand.IDemand[],
         fromAgreement: boolean
     ) {
@@ -92,7 +92,7 @@ export class CertificateMatcher {
     }
 
     private async findMatchingAgreements(
-        certificate: Certificate.ICertificate
+        certificate: PurchasableCertificate.IPurchasableCertificate
     ): Promise<Agreement.IAgreement[]> {
         const agreements = this.entityStore
             .getAgreements()
@@ -137,10 +137,10 @@ export class CertificateMatcher {
     }
 
     private async findMatchingDemands(
-        certificate: Certificate.ICertificate
+        certificate: PurchasableCertificate.IPurchasableCertificate
     ): Promise<MatchableDemand[]> {
         const producingAsset = await new ProducingAsset.Entity(
-            certificate.assetId.toString(),
+            certificate.certificate.assetId.toString(),
             this.config
         ).sync();
 

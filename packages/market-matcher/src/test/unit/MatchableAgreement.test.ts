@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Agreement, Supply, Demand } from '@energyweb/market';
+import { Agreement, Supply, Demand, PurchasableCertificate } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
@@ -30,11 +30,11 @@ describe('MatchableAgreement tests', () => {
             const agreement = Substitute.for<Agreement.IAgreement>();
             agreement.offChainProperties.returns(agreementOffChainProperties);
 
-            const certificate = Substitute.for<Certificate.ICertificate>();
-            certificate.creationTime.returns(
-                options.certificateCreationTime || certificateCreationTime
-            );
-            certificate.assetId.returns(Number(options.assetId || assetId));
+            const certificate = Substitute.for<PurchasableCertificate.IPurchasableCertificate>();
+            certificate.certificate.returns({
+                creationTime: options.certificateCreationTime || certificateCreationTime,
+                assetId: Number(options.assetId || assetId)
+            } as Certificate.ICertificate);
 
             const supply = Substitute.for<Supply.ISupply>();
             supply.assetId.returns(assetId);

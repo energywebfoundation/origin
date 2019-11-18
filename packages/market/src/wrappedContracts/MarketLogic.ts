@@ -179,6 +179,76 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getPurchasableCertificate(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getPurchasableCertificate(_certificateId).call(txParams);
+    }
+
+    async splitAndPublishForSale(
+        _certificateId: number,
+        _energy: number,
+        _price: number,
+        _tokenAddress: string,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.splitAndPublishForSale(
+            _certificateId,
+            _energy,
+            _price,
+            _tokenAddress
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async splitAndBuyCertificate(_certificateId: number, _energy: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.splitAndBuyCertificate(_certificateId, _energy);
+
+        return this.send(method, txParams);
+    }
+
+    async buyCertificate(_certificateId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.buyCertificate(_certificateId);
+
+        return this.send(method, txParams);
+    }
+
+    async buyCertificateBulk(_idArray: number[], txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.buyCertificateBulk(_idArray);
+
+        return this.send(method, txParams);
+    }
+
+    async publishForSale(
+        _certificateId: number,
+        _price: number,
+        _tokenAddress: string,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.publishForSale(
+            _certificateId,
+            _price,
+            _tokenAddress
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async unpublishForSale(_certificateId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.unpublishForSale(_certificateId);
+
+        return this.send(method, txParams);
+    }
+
+    async getOnChainDirectPurchasePrice(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods
+            .getOnChainDirectPurchasePrice(_certificateId)
+            .call(txParams);
+    }
+
+    async getTradableToken(_certificateId: number, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getTradableToken(_certificateId).call(txParams);
+    }
+
     async certificateLogicAddress(txParams?: ISpecialTx) {
         return this.web3Contract.methods.certificateLogicAddress().call(txParams);
     }

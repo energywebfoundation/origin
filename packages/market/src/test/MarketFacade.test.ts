@@ -8,17 +8,16 @@ import { AssetLogic, Asset, ProducingAsset } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
 import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { Certificate, CertificateLogic } from '@energyweb/origin';
+import { CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
 import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
-import * as Market from '..';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
-import { MarketLogic } from '../wrappedContracts/MarketLogic';
+import { PurchasableCertificate, MarketLogic, Demand, Supply, Agreement } from '..';
 
 describe('Market-Facade', () => {
     dotenv.config({
@@ -245,7 +244,7 @@ describe('Market-Facade', () => {
                 privateKey: traderPK
             };
 
-            const demandOffChainProps: Market.Demand.IDemandOffChainProperties = {
+            const demandOffChainProps: Demand.IDemandOffChainProperties = {
                 timeFrame: TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
                 currency: Currency.USD,
@@ -260,11 +259,11 @@ describe('Market-Facade', () => {
                 endTime: END_TIME
             };
 
-            assert.equal(await Market.Demand.getDemandListLength(conf), 0);
+            assert.equal(await Demand.getDemandListLength(conf), 0);
 
-            const demand = await Market.Demand.createDemand(demandOffChainProps, conf);
+            const demand = await Demand.createDemand(demandOffChainProps, conf);
 
-            assert.equal(await Market.Demand.getDemandListLength(conf), 1);
+            assert.equal(await Demand.getDemandListLength(conf), 1);
 
             assert.ownInclude(demand, {
                 id: '0',
@@ -272,18 +271,18 @@ describe('Market-Facade', () => {
                 url: `${process.env.BACKEND_URL}/api/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
-            } as Partial<Market.Demand.Entity>);
+            } as Partial<Demand.Entity>);
 
             assert.deepEqual(demand.offChainProperties, demandOffChainProps);
         });
 
         it('should return 1 demand for getAllDemands', async () => {
-            const allDemands = await Market.Demand.getAllDemands(conf);
+            const allDemands = await Demand.getAllDemands(conf);
             assert.equal(allDemands.length, 1);
         });
 
         it('should return demand', async () => {
-            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const demand = await new Demand.Entity('0', conf).sync();
 
             assert.ownInclude(demand, {
                 id: '0',
@@ -291,7 +290,7 @@ describe('Market-Facade', () => {
                 url: `${process.env.BACKEND_URL}/api/Demand/${marketLogic.web3Contract.options.address}`,
                 demandOwner: accountTrader,
                 status: 0
-            } as Partial<Market.Demand.Entity>);
+            } as Partial<Demand.Entity>);
 
             assert.deepOwnInclude(demand.offChainProperties, {
                 assetType: ['Solar'],
@@ -310,7 +309,7 @@ describe('Market-Facade', () => {
         });
 
         it('should clone demand', async () => {
-            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const demand = await new Demand.Entity('0', conf).sync();
             const clone = await demand.clone();
 
             assert.notEqual(clone.id, demand.id);
@@ -321,7 +320,7 @@ describe('Market-Facade', () => {
         });
 
         it('should update off chain properties', async () => {
-            const demand = await new Market.Demand.Entity('0', conf).clone();
+            const demand = await new Demand.Entity('0', conf).clone();
 
             const offChainProperties = { ...demand.offChainProperties };
             offChainProperties.procureFromSingleFacility = !demand.offChainProperties
@@ -359,7 +358,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            let certificate = await new Certificate.Entity('0', conf).sync();
+            let certificate = await new PurchasableCertificate.Entity('0', conf).sync();
 
             await erc20TestToken.approve(assetOwnerAddress, 2, { privateKey: traderPK });
 
@@ -367,7 +366,7 @@ describe('Market-Facade', () => {
                 address: matcherAccount,
                 privateKey: matcherPK
             };
-            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const demand = await new Demand.Entity('0', conf).sync();
 
             const fillTx = await demand.fillAgreement(certificate.id);
 
@@ -382,7 +381,7 @@ describe('Market-Facade', () => {
             assert.equal(demandPartiallyFilledEvents.length, 1);
 
             certificate = await certificate.sync();
-            assert.equal(certificate.owner, demand.demandOwner);
+            assert.equal(certificate.certificate.owner, demand.demandOwner);
         });
 
         it('should trigger DemandPartiallyFilled event after demand filled', async () => {
@@ -408,7 +407,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            const certificate = await new Certificate.Entity('1', conf).sync();
+            const certificate = await new PurchasableCertificate.Entity('1', conf).sync();
 
             await certificate.publishForSale(1000, Currency.USD);
 
@@ -417,7 +416,7 @@ describe('Market-Facade', () => {
                 privateKey: matcherPK
             };
 
-            const demand = await new Market.Demand.Entity('0', conf).sync();
+            const demand = await new Demand.Entity('0', conf).sync();
             const fillTx = await demand.fill(certificate.id);
 
             const demandPartiallyFilledEvents = await marketLogic.getEvents(
@@ -431,7 +430,7 @@ describe('Market-Facade', () => {
             assert.equal(demandPartiallyFilledEvents.length, 1);
 
             const filledCertificate = await certificate.sync();
-            assert.equal(filledCertificate.owner, demand.demandOwner);
+            assert.equal(filledCertificate.certificate.owner, demand.demandOwner);
         });
     });
 
@@ -442,28 +441,24 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            const supplyOffChainProperties: Market.Supply.ISupplyOffChainProperties = {
+            const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
                 price: 10,
                 currency: Currency.USD,
                 availableWh: 10,
                 timeFrame: TimeFrame.hourly
             };
 
-            const supplyProps: Market.Supply.ISupplyOnChainProperties = {
+            const supplyProps: Supply.ISupplyOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
                 assetId: '0'
             };
 
-            assert.equal(await Market.Supply.getSupplyListLength(conf), 0);
+            assert.equal(await Supply.getSupplyListLength(conf), 0);
 
-            const supply = await Market.Supply.createSupply(
-                supplyProps,
-                supplyOffChainProperties,
-                conf
-            );
+            const supply = await Supply.createSupply(supplyProps, supplyOffChainProperties, conf);
 
-            assert.equal(await Market.Supply.getSupplyListLength(conf), 1);
+            assert.equal(await Supply.getSupplyListLength(conf), 1);
 
             assert.deepOwnInclude(supply, {
                 id: '0',
@@ -476,11 +471,11 @@ describe('Market-Facade', () => {
                     price: 10,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Supply.Entity>);
+            } as Partial<Supply.Entity>);
         });
 
         it('should return supply', async () => {
-            const supply: Market.Supply.Entity = await new Market.Supply.Entity('0', conf).sync();
+            const supply: Supply.Entity = await new Supply.Entity('0', conf).sync();
 
             assert.deepOwnInclude(supply, {
                 id: '0',
@@ -493,11 +488,11 @@ describe('Market-Facade', () => {
                     price: 10,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Supply.Entity>);
+            } as Partial<Supply.Entity>);
         });
 
         it('should get all supplies', async () => {
-            const allSupplies = await Market.Supply.getAllSupplies(conf);
+            const allSupplies = await Supply.getAllSupplies(conf);
             assert.equal(allSupplies.length, 1);
         });
     });
@@ -522,20 +517,20 @@ describe('Market-Facade', () => {
                 timeFrame: TimeFrame.hourly
             };
 
-            const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
+            const agreementProps: Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
                 demandId: '0',
                 supplyId: '0'
             };
 
-            const agreement = await Market.Agreement.createAgreement(
+            const agreement = await Agreement.createAgreement(
                 agreementProps,
                 agreementOffchainProps,
                 conf
             );
 
-            assert.equal(await Market.Agreement.getAgreementListLength(conf), 1);
+            assert.equal(await Agreement.getAgreementListLength(conf), 1);
 
             delete agreement.proofs;
             delete agreement.configuration;
@@ -557,14 +552,11 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Agreement.Entity>);
+            } as Partial<Agreement.Entity>);
         });
 
         it('should return an agreement', async () => {
-            const agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
-                '0',
-                conf
-            ).sync();
+            const agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
 
             delete agreement.proofs;
             delete agreement.configuration;
@@ -586,7 +578,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Agreement.Entity>);
+            } as Partial<Agreement.Entity>);
         });
 
         it('should agree to an agreement as supply', async () => {
@@ -595,10 +587,7 @@ describe('Market-Facade', () => {
                 privateKey: assetOwnerPK
             };
 
-            let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
-                '0',
-                conf
-            ).sync();
+            let agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
 
             await agreement.approveAgreementSupply();
 
@@ -620,7 +609,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Agreement.Entity>);
+            } as Partial<Agreement.Entity>);
         });
 
         it('should create a 2nd agreement', async () => {
@@ -640,20 +629,20 @@ describe('Market-Facade', () => {
                 timeFrame: TimeFrame.hourly
             };
 
-            const agreementProps: Market.Agreement.IAgreementOnChainProperties = {
+            const agreementProps: Agreement.IAgreementOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
                 demandId: '0',
                 supplyId: '0'
             };
 
-            const agreement = await Market.Agreement.createAgreement(
+            const agreement = await Agreement.createAgreement(
                 agreementProps,
                 agreementOffchainProps,
                 conf
             );
 
-            assert.equal(await Market.Agreement.getAgreementListLength(conf), 2);
+            assert.equal(await Agreement.getAgreementListLength(conf), 2);
 
             assert.deepOwnInclude(agreement, {
                 id: '1',
@@ -671,7 +660,7 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Agreement.Entity>);
+            } as Partial<Agreement.Entity>);
         });
 
         it('should agree to an agreement as demand', async () => {
@@ -680,10 +669,7 @@ describe('Market-Facade', () => {
                 privateKey: traderPK
             };
 
-            let agreement: Market.Agreement.Entity = await new Market.Agreement.Entity(
-                '1',
-                conf
-            ).sync();
+            let agreement: Agreement.Entity = await new Agreement.Entity('1', conf).sync();
 
             await agreement.approveAgreementDemand();
 
@@ -705,14 +691,14 @@ describe('Market-Facade', () => {
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
-            } as Partial<Market.Agreement.Entity>);
+            } as Partial<Agreement.Entity>);
         });
 
         it('should get all agreements', async () => {
-            const allAgreements = await Market.Agreement.getAllAgreements(conf);
+            const allAgreements = await Agreement.getAllAgreements(conf);
 
             assert.equal(allAgreements.length, 2);
-            assert.equal(allAgreements.length, await Market.Agreement.getAgreementListLength(conf));
+            assert.equal(allAgreements.length, await Agreement.getAgreementListLength(conf));
         });
 
         it('should delete a demand', async () => {
@@ -721,13 +707,13 @@ describe('Market-Facade', () => {
                 privateKey: traderPK
             };
 
-            const amountOfDemands = await Market.Demand.getDemandListLength(conf);
+            const amountOfDemands = await Demand.getDemandListLength(conf);
 
-            const deleted = await Market.Demand.deleteDemand('0', conf);
+            const deleted = await Demand.deleteDemand('0', conf);
             assert.isTrue(deleted);
 
             // Should remain the same
-            assert.equal(await Market.Demand.getDemandListLength(conf), amountOfDemands);
+            assert.equal(await Demand.getDemandListLength(conf), amountOfDemands);
         });
     });
 });

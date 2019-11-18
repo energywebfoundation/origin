@@ -301,7 +301,7 @@ export function ProducingAssetDetailView(props: IProps) {
                             <br />
                             <CertificateTable
                                 certificates={certificates.filter(
-                                    c => c.assetId.toString() === props.id.toString()
+                                    c => c.certificate.assetId.toString() === props.id.toString()
                                 )}
                                 selectedState={SelectedState.ForSale}
                                 demand={null}

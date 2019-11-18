@@ -25,7 +25,7 @@ function* requestCertificateDetailsSaga(): SagaIterator {
             CertificatesActions.certificateCreatedOrUpdated
         );
 
-        yield put(requestUser(action.certificate.owner));
+        yield put(requestUser(action.certificate.certificate.owner));
     }
 }
 
