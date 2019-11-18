@@ -105,15 +105,13 @@ function* initEventHandler() {
             currentBlockNumber
         );
 
-        const demandContractEventHandler: ContractEventHandler = new ContractEventHandler(
+        const marketContractEventHandler: ContractEventHandler = new ContractEventHandler(
             configuration.blockchainProperties.marketLogicInstance,
             currentBlockNumber
         );
 
         const channel = eventChannel(emitter => {
-            certificateContractEventHandler.onEvent('LogPublishForSale', async function(
-                event: any
-            ) {
+            marketContractEventHandler.onEvent('LogPublishForSale', async function(event: any) {
                 const id = event.returnValues._certificateId?.toString();
 
                 if (typeof id === 'undefined') {
@@ -204,7 +202,7 @@ function* initEventHandler() {
                 });
             });
 
-            demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
                 const demand = await new Demand.Entity(
                     event.returnValues._demandId.toString(),
                     configuration
@@ -215,7 +213,7 @@ function* initEventHandler() {
                 });
             });
 
-            demandContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
                 if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
                     emitter({
                         action: demandDeleted(
@@ -234,7 +232,7 @@ function* initEventHandler() {
         });
 
         eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-        eventHandlerManager.registerEventHandler(demandContractEventHandler);
+        eventHandlerManager.registerEventHandler(marketContractEventHandler);
         eventHandlerManager.start();
 
         while (true) {
