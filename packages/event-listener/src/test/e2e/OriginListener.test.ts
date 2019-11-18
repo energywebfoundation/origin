@@ -56,7 +56,11 @@ describe('Origin Listener Tests', async () => {
     const offChainDataClient = new OffChainDataClientMock();
 
     before(async () => {
-        demo = new Demo(process.env.WEB3, process.env.DEPLOY_KEY);
+        demo = new Demo(
+            process.env.WEB3,
+            process.env.DEPLOY_KEY,
+            process.env.EVENT_LISTENER_PRIV_KEY
+        );
         await demo.deploy(offChainDataClient);
     });
 
@@ -78,6 +82,23 @@ describe('Origin Listener Tests', async () => {
 
     afterEach(async () => {
         listener.stop();
+    });
+
+    it('a certificate is published for sale when autoPublish enabled', async () => {
+        await listener.start();
+
+        currentSmRead += 1 * Unit.MWh;
+        await demo.deploySmartMeterRead(currentSmRead);
+        const certificateId = demo.latestDeployedSmReadIndex.toString();
+
+        await waitForConditionAndAssert(
+            async () => demo.isForSale(certificateId),
+            async () => {
+                const isForSale = await demo.isForSale(certificateId);
+                assert.isTrue(isForSale);
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
     });
 
     it('an email is sent when a certificate is created', async () => {
@@ -103,7 +124,16 @@ describe('Origin Listener Tests', async () => {
 
         currentSmRead += 1 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
-        await demo.publishForSale(demo.latestDeployedSmReadIndex);
+        const certificateId = demo.latestDeployedSmReadIndex.toString();
+
+        await waitForConditionAndAssert(
+            async () => demo.isForSale(certificateId),
+            async () => {
+                const isForSale = await demo.isForSale(certificateId);
+                assert.isTrue(isForSale);
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
 
         await waitForConditionAndAssert(
             () => emailService.sentEmails.length > 1,
@@ -123,7 +153,16 @@ describe('Origin Listener Tests', async () => {
 
         currentSmRead += 0.5 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
-        await demo.publishForSale(demo.latestDeployedSmReadIndex);
+        const certificateId = demo.latestDeployedSmReadIndex.toString();
+
+        await waitForConditionAndAssert(
+            async () => demo.isForSale(certificateId),
+            async () => {
+                const isForSale = await demo.isForSale(certificateId);
+                assert.isTrue(isForSale);
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
 
         await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
 
@@ -147,7 +186,16 @@ describe('Origin Listener Tests', async () => {
 
         currentSmRead += 1 * Unit.MWh;
         await demo.deploySmartMeterRead(currentSmRead);
-        await demo.publishForSale(demo.latestDeployedSmReadIndex);
+        const certificateId = demo.latestDeployedSmReadIndex.toString();
+
+        await waitForConditionAndAssert(
+            async () => demo.isForSale(certificateId),
+            async () => {
+                const isForSale = await demo.isForSale(certificateId);
+                assert.isTrue(isForSale);
+            },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
 
         await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
 

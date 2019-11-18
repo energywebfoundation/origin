@@ -50,11 +50,7 @@ export class OriginEventListener implements IOriginEventListener {
     }
 
     public async start(): Promise<void> {
-        this.conf = await initOriginConfig(
-            this.marketLookupAddress,
-            this.web3,
-            this.config.offChainDataSourceClient
-        );
+        this.conf = await initOriginConfig(this.marketLookupAddress, this.web3, this.config);
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
@@ -76,7 +72,20 @@ export class OriginEventListener implements IOriginEventListener {
                 this.conf
             ).sync();
 
-            this.originEventsStore.registerIssuedCertificate(newCertificate.certificate.owner);
+            const { owner } = newCertificate.certificate;
+
+            this.originEventsStore.registerIssuedCertificate(owner);
+
+            const certificateOwner = await new MarketUser.Entity(owner, this.conf).sync();
+            const autoPublishSettings = (certificateOwner.offChainProperties as MarketUser.IMarketUserOffChainProperties)
+                .autoPublish;
+
+            if (autoPublishSettings.enabled) {
+                await newCertificate.publishForSale(
+                    autoPublishSettings.price,
+                    autoPublishSettings.currency
+                );
+            }
         });
 
         marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
@@ -165,6 +174,11 @@ export class OriginEventListener implements IOriginEventListener {
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);
+        this.conf.logger.info(
+            `Running the listener with account ${
+                this.web3.eth.accounts.privateKeyToAccount(this.config.accountPrivKey).address
+            }`
+        );
     }
 
     private async notify() {
