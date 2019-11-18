@@ -11,8 +11,7 @@ import {
     Currency
 } from '@energyweb/utils-general';
 
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
-import { SCAN_INTERVAL } from '..';
+import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { initOriginConfig } from '../config/origin.config';
 import EmailTypes from '../email/EmailTypes';
 import { IEmailServiceProvider } from '../services/email.service';
@@ -29,6 +28,8 @@ export interface IOriginEventListener extends IEventListener {
 }
 
 export class OriginEventListener implements IOriginEventListener {
+    public web3: Web3;
+
     public started: boolean;
 
     public conf: Configuration.Entity;
@@ -38,15 +39,12 @@ export class OriginEventListener implements IOriginEventListener {
     private interval: any;
 
     constructor(
+        public config: IEventListenerConfig,
         public marketLookupAddress: string,
-        public web3: Web3,
         public emailService: IEmailServiceProvider,
-        private originEventsStore: IOriginEventsStore,
-        private offChainDataClient: IOffChainDataClient,
-        public notificationInterval?: number
+        private originEventsStore: IOriginEventsStore
     ) {
-        this.notificationInterval = notificationInterval || 60000; // Default to 1 min intervals
-
+        this.web3 = new Web3(config.web3Url || 'http://localhost:8550');
         this.started = false;
         this.interval = null;
     }
@@ -55,7 +53,7 @@ export class OriginEventListener implements IOriginEventListener {
         this.conf = await initOriginConfig(
             this.marketLookupAddress,
             this.web3,
-            this.offChainDataClient
+            this.config.offChainDataSourceClient
         );
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
@@ -158,12 +156,12 @@ export class OriginEventListener implements IOriginEventListener {
             }
         });
 
-        this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
+        this.manager = new EventHandlerManager(this.config.scanInterval, this.conf);
         this.manager.registerEventHandler(certificateContractEventHandler);
         this.manager.registerEventHandler(marketContractEventHandler);
 
         this.manager.start();
-        this.interval = setInterval(this.notify.bind(this), this.notificationInterval);
+        this.interval = setInterval(this.notify.bind(this), this.config.notificationInterval);
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);

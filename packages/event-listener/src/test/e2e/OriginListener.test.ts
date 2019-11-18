@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import Web3 from 'web3';
 import dotenv from 'dotenv';
 
 import { Unit } from '@energyweb/utils-general';
@@ -12,7 +11,7 @@ import { Demo } from '../deployDemo';
 import { TestEmailAdapter } from '../TestAdapter';
 import EmailTypes from '../../email/EmailTypes';
 
-const SCAN_INTERVAL = 3000;
+const SCAN_INTERVAL = 1000;
 const APPROX_EMAIL_SENDING_TIME = 3000;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -53,8 +52,8 @@ describe('Origin Listener Tests', async () => {
     let emailService: EmailServiceProvider;
     let store: OriginEventsStore;
 
-    const offChainDataClient = new OffChainDataClientMock();
     let currentSmRead = 0;
+    const offChainDataClient = new OffChainDataClientMock();
 
     before(async () => {
         demo = new Demo(process.env.WEB3, process.env.DEPLOY_KEY);
@@ -62,18 +61,19 @@ describe('Origin Listener Tests', async () => {
     });
 
     beforeEach(async () => {
-        const web3 = new Web3(process.env.WEB3);
         emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
         store = new OriginEventsStore();
 
-        listener = new OriginEventListener(
-            demo.marketContractLookup,
-            web3,
-            emailService,
-            store,
-            offChainDataClient,
-            SCAN_INTERVAL
-        );
+        const config = {
+            web3Url: process.env.WEB3,
+            offChainDataSourceUrl: process.env.BACKEND_URL,
+            offChainDataSourceClient: offChainDataClient,
+            accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
+            scanInterval: SCAN_INTERVAL,
+            notificationInterval: SCAN_INTERVAL
+        };
+
+        listener = new OriginEventListener(config, demo.marketContractLookup, emailService, store);
     });
 
     afterEach(async () => {
