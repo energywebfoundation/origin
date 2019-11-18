@@ -1,9 +1,8 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Certificate } from '@energyweb/origin';
-import { Demand, PurchasableCertificate } from '@energyweb/market';
+import { Demand, PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
-import { User } from '@energyweb/user-registry';
 import {
     Compliance,
     Configuration,
@@ -54,8 +53,8 @@ interface IStateProps {
     certificates: PurchasableCertificate.Entity[];
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
-    currentUser: User.Entity;
-    users: User.Entity[];
+    currentUser: MarketUser.Entity;
+    users: MarketUser.Entity[];
     baseURL: string;
 }
 
@@ -67,7 +66,7 @@ type Props = IOwnProps & IStateProps & IDispatchProps;
 
 interface IEnrichedCertificateData {
     certificate: PurchasableCertificate.Entity;
-    certificateOwner: User.Entity;
+    certificateOwner: MarketUser.Entity;
     producingAsset: ProducingAsset.Entity;
     currency: string;
     price: string;
@@ -262,7 +261,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const matchableDemand = new MatchableDemand(demand);
         const find = async certificate => {
             const producingAsset = await new ProducingAsset.Entity(
-                certificate.assetId.toString(),
+                certificate.certificate.assetId.toString(),
                 configuration
             ).sync();
             const { result } = await matchableDemand.matchesCertificate(

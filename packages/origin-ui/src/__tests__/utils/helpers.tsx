@@ -4,12 +4,12 @@ import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import sagas from '../../features/sagas';
-import { User } from '@energyweb/user-registry';
+import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { addUser, updateCurrentUserId, updateFetcher } from '../../features/users/actions';
 import { ReactWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
-import { PurchasableCertificate } from '@energyweb/market';
+
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { producingAssetCreatedOrUpdated } from '../../features/producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../../features/certificates/actions';
@@ -221,7 +221,7 @@ export const setupStore = (
                 return ({
                     id,
                     organization: 'Example Organization'
-                } as Partial<User.Entity>) as User.Entity;
+                } as Partial<MarketUser.Entity>) as MarketUser.Entity;
             }
         };
 
@@ -231,13 +231,13 @@ export const setupStore = (
     return {
         store,
         setCurrentUser: (properties: ISetCurrentUserProperties) => {
-            const user: Partial<User.Entity> = {
+            const user: Partial<MarketUser.Entity> = {
                 id: properties.id,
                 organization: properties.organization || 'Example Organization',
                 isRole: () => true
             };
 
-            store.dispatch(addUser(user as User.Entity));
+            store.dispatch(addUser(user as MarketUser.Entity));
 
             store.dispatch(updateCurrentUserId(user.id));
         },

@@ -2,7 +2,8 @@ import React from 'react';
 import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { User, Role } from '@energyweb/user-registry';
+import { Role } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     PaginatedLoader,
@@ -36,7 +37,7 @@ interface IOwnProps {
 interface IStateProps {
     configuration: Configuration.Entity;
     producingAssets: ProducingAsset.Entity[];
-    currentUser: User.Entity;
+    currentUser: MarketUser.Entity;
 }
 
 interface IDispatchProps {

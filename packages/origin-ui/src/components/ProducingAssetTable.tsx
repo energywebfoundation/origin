@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { PurchasableCertificate } from '@energyweb/market';
-import { User, Role } from '@energyweb/user-registry';
+import { PurchasableCertificate, MarketUser } from '@energyweb/market';
+import { Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { Configuration, Unit, LocationService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
@@ -34,8 +34,8 @@ interface IStateProps {
     configuration: Configuration.Entity;
     certificates: PurchasableCertificate.Entity[];
     producingAssets: ProducingAsset.Entity[];
-    currentUser: User.Entity;
-    users: User.Entity[];
+    currentUser: MarketUser.Entity;
+    users: MarketUser.Entity[];
     baseURL: string;
 }
 
