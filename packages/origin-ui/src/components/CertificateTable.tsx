@@ -571,14 +571,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: `${RECORD_INDICATOR}certificate.creationTime`,
+                property: `${RECORD_INDICATOR}certificate.certificate.creationTime`,
                 label: 'Certification Date',
                 input: {
                     type: CustomFilterInputType.yearMonth
                 }
             },
             {
-                property: `${FILTER_SPECIAL_TYPES.DIVIDE}::${RECORD_INDICATOR}certificate.energy::1000`,
+                property: `${FILTER_SPECIAL_TYPES.DIVIDE}::${RECORD_INDICATOR}certificate.certificate.energy::1000`,
                 label: 'Certified Energy (kWh)',
                 input: {
                     type: CustomFilterInputType.slider,
