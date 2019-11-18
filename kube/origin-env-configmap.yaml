@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  ASSET_CONTRACT_LOOKUP_ADDRESS: 0x24B207fFf1a1097d3c3D69fcE461544f83c6E774
+  BACKEND_PORT: "3030"
+  BACKEND_URL: http://localhost:3030
+  DEPLOY_KEY: d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5
+  EMAIL_FROM: no-reply@example.com
+  EMAIL_REPLY_TO: reply-to@example.com
+  ENERGY_API_BASE_URL: http://localhost:3031
+  MANDRILL_API_KEY: <API_KEY>
+  MARKET_CONTRACT_ADDRESS: 0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b
+  MATCHER_PRIV_KEY: 0x05369a7c890005a9babfb52645d0347bbb456ae562bbac5aad27118e2e9e3a6c
+  MODE: production
+  ORM_DATABASE_DOCKER: "TRUE"
+  ORM_TYPE: sqlite
+  UI_BASE_URL: http://localhost:3000
+  WEB3: https://volta-rpc.energyweb.org
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: origin-env
+  name: origin-env

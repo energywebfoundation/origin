@@ -1,0 +1,107 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.collective.yml
+    kompose.version: 1.19.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: origin-ui
+  name: origin-ui
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.collective.yml
+        kompose.version: 1.19.0 ()
+      creationTimestamp: null
+      labels:
+        io.kompose.service: origin-ui
+    spec:
+      containers:
+      - env:
+        - name: ASSET_CONTRACT_LOOKUP_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: ASSET_CONTRACT_LOOKUP_ADDRESS
+              name: origin-env
+        - name: BACKEND_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: BACKEND_PORT
+              name: origin-env
+        - name: BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              key: BACKEND_URL
+              name: origin-env
+        - name: DEPLOY_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: DEPLOY_KEY
+              name: origin-env
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_FROM
+              name: origin-env
+        - name: EMAIL_REPLY_TO
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_REPLY_TO
+              name: origin-env
+        - name: ENERGY_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: ENERGY_API_BASE_URL
+              name: origin-env
+        - name: MANDRILL_API_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: MANDRILL_API_KEY
+              name: origin-env
+        - name: MARKET_CONTRACT_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: MARKET_CONTRACT_ADDRESS
+              name: origin-env
+        - name: MATCHER_PRIV_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: MATCHER_PRIV_KEY
+              name: origin-env
+        - name: MODE
+          valueFrom:
+            configMapKeyRef:
+              key: MODE
+              name: origin-env
+        - name: ORM_DATABASE_DOCKER
+          valueFrom:
+            configMapKeyRef:
+              key: ORM_DATABASE_DOCKER
+              name: origin-env
+        - name: ORM_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: ORM_TYPE
+              name: origin-env
+        - name: UI_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: UI_BASE_URL
+              name: origin-env
+        - name: WEB3
+          valueFrom:
+            configMapKeyRef:
+              key: WEB3
+              name: origin-env
+        image: energyweb/origin-ui:canary
+        name: origin-ui
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+status: {}

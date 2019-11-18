@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.collective.yml
+    kompose.version: 1.19.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: solar-simulator
+  name: solar-simulator
+spec:
+  ports:
+  - name: "3031"
+    port: 3031
+    targetPort: 3031
+  selector:
+    io.kompose.service: solar-simulator
+status:
+  loadBalancer: {}
