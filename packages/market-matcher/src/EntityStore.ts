@@ -149,6 +149,7 @@ export class EntityStore implements IEntityStore {
         this.registerToDemandEvents(marketContractEventHandler);
         this.registerToSupplyEvents(marketContractEventHandler);
         this.registerToAgreementEvents(marketContractEventHandler);
+        this.registerToPurchasableCertificateEvents(marketContractEventHandler);
 
         const eventHandlerManager = new EventHandlerManager(4000, this.config);
         eventHandlerManager.registerEventHandler(marketContractEventHandler);
@@ -157,13 +158,6 @@ export class EntityStore implements IEntityStore {
     }
 
     private registerToCertificateEvents(certificateContractEventHandler: ContractEventHandler) {
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const { _certificateId: id } = event.returnValues;
-            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
-
-            await this.handleCertificate(id);
-        });
-
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const { _certificateId: id } = event.returnValues;
             this.logger.verbose(`Event: LogCreatedCertificate certificate #${id}`);
@@ -204,6 +198,17 @@ export class EntityStore implements IEntityStore {
             this.logger.verbose(`Event: createdNewSupply supply: ${id}`);
 
             await this.registerSupply(id);
+        });
+    }
+
+    private registerToPurchasableCertificateEvents(
+        marketContractEventHandler: ContractEventHandler
+    ) {
+        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const { _certificateId: id } = event.returnValues;
+            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
+
+            await this.handleCertificate(id);
         });
     }
 

@@ -81,7 +81,7 @@ export class OriginEventListener implements IOriginEventListener {
             this.originEventsStore.registerIssuedCertificate(newCertificate.certificate.owner);
         });
 
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
             const fetchCertificate = async (
                 certificateId: string
             ): Promise<PurchasableCertificate.Entity> => {
