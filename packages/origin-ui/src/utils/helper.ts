@@ -87,3 +87,7 @@ export function deduplicate(inputArray: any[]) {
             index
     );
 }
+
+export function reverse(array: any[]) {
+    return array.map((item, idx) => array[array.length - 1 - idx]);
+}

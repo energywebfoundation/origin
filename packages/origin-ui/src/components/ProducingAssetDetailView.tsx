@@ -65,7 +65,7 @@ export function ProducingAssetDetailView(props: IProps) {
         selectedAsset = producingAssets.find(p => p.id === props.id.toString());
     }
 
-    if (selectedAsset && certificates.length > 0) {
+    if (selectedAsset) {
         owner = getUserById(users, selectedAsset.owner.address);
 
         if (!owner) {
@@ -286,7 +286,6 @@ export function ProducingAssetDetailView(props: IProps) {
 
                                         <div className="col-lg-8">
                                             <SmartMeterReadingsChart
-                                                conf={configuration}
                                                 producingAsset={selectedAsset}
                                             />
                                         </div>

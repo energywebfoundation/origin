@@ -6,7 +6,7 @@ import { createRootReducer } from '../../reducers';
 import sagas from '../../features/sagas';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { addUser, updateCurrentUserId, updateFetcher } from '../../features/users/actions';
-import { ReactWrapper } from 'enzyme';
+import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
@@ -262,7 +262,7 @@ interface ISetCurrentUserProperties {
     organization?: string;
 }
 
-export const createRefreshFunction = (rendered: ReactWrapper) => async () => {
+export const createRefreshFunction = (rendered: CommonWrapper) => async () => {
     await flushPromises();
     rendered.update();
 };
