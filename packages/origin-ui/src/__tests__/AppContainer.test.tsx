@@ -182,7 +182,7 @@ describe('Application[E2E]', () => {
                 'Facility Name',
                 'Wuthering Heights Windfarm ',
                 'Asset Owner',
-                ' ',
+                'Asset Manager organization ',
                 'Certified by Registry (private)',
                 'IREC ',
                 'Other Green Attributes (private)',
