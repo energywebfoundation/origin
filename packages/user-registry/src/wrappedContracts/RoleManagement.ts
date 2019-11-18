@@ -8,7 +8,8 @@ export enum Role {
     AssetManager,
     Trader,
     Matcher,
-    Issuer
+    Issuer,
+    Listener
 }
 
 export function buildRights(roles: Role[]): number {

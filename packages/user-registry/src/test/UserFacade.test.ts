@@ -10,7 +10,7 @@ import { UserLogic } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { User } from '..';
 import { logger } from '../blockchain-facade/Logger';
-import { buildRights, Role } from '../blockchain-facade/RoleManagement';
+import { buildRights, Role } from '../wrappedContracts/RoleManagement';
 
 describe('User Facade', () => {
     dotenv.config({
