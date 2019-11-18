@@ -33,82 +33,9 @@ export const getCertificateListLength = async (
 ): Promise<number> => {
     return Certificate.getCertificateListLength(configuration);
 };
-
-// const getAccountFromConfiguration = (configuration: Configuration.Entity) => ({
-//     from: configuration.blockchainProperties.activeUser.address,
-//     privateKey: configuration.blockchainProperties.activeUser.privateKey
-// });
-
 export const getAllCertificates = async (configuration: Configuration.Entity) => {
     return Certificate.getAllCertificates(configuration);
 };
-
-// export const getActiveCertificates = async (configuration: Configuration.Entity) => {
-//     const certificatePromises = Array(await getCertificateListLength(configuration))
-//         .fill(null)
-//         .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-//     const certs = await Promise.all(certificatePromises);
-
-//     return certs.filter((cert: Entity) => Number(cert.status) === Status.Active);
-// };
-
-// export const getAllCertificateEvents = async (
-//     certId: number,
-//     configuration: Configuration.Entity
-// ): Promise<EventLog[]> => {
-//     const allEvents = await configuration.blockchainProperties.certificateLogicInstance.getAllEvents(
-//         {
-//             topics: [
-//                 null,
-//                 configuration.blockchainProperties.web3.utils.padLeft(
-//                     configuration.blockchainProperties.web3.utils.fromDecimal(certId),
-//                     64,
-//                     '0'
-//                 )
-//             ],
-//             toBlock: undefined
-//         }
-//     );
-
-//     const returnEvents = [];
-
-//     for (const fullEvent of allEvents) {
-//         // we have to remove some false positives due to ERC721 interface
-//         if (fullEvent.event === 'Transfer') {
-//             if (fullEvent.returnValues._tokenId === `${certId}`) {
-//                 returnEvents.push(fullEvent);
-//             }
-//         } else {
-//             returnEvents.push(fullEvent);
-//         }
-//     }
-
-//     // we also have to search
-//     if (certId !== 0) {
-//         const transferEvents = await configuration.blockchainProperties.certificateLogicInstance.getAllTransferEvents(
-//             {
-//                 topics: [
-//                     '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-//                     null,
-//                     null,
-//                     configuration.blockchainProperties.web3.utils.padLeft(
-//                         configuration.blockchainProperties.web3.utils.fromDecimal(certId),
-//                         64,
-//                         '0'
-//                     )
-//                 ],
-//                 toBlock: undefined
-//             }
-//         );
-
-//         for (const transferEvent of transferEvents) {
-//             returnEvents.push(transferEvent);
-//         }
-//     }
-
-//     return returnEvents;
-// };
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IPurchasableCertificate {
     public certificate: Certificate.ICertificate;
