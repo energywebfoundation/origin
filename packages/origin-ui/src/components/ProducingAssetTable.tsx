@@ -3,7 +3,7 @@ import React from 'react';
 import { Certificate } from '@energyweb/origin';
 import { User, Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
-import { Configuration, Unit } from '@energyweb/utils-general';
+import { Configuration, Unit, LocationService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import {
     PaginatedLoaderFiltered,
@@ -48,6 +48,8 @@ type Props = IStateProps & IDispatchProps;
 interface IEnrichedProducingAssetData {
     asset: ProducingAsset.Entity;
     organizationName: string;
+    assetProvince: string;
+    assetRegion: string;
 }
 
 interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
@@ -57,6 +59,8 @@ interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
 }
 
 class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducingAssetTableState> {
+    private locationService = new LocationService();
+
     constructor(props: Props) {
         super(props);
 
@@ -82,9 +86,27 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         const promises = producingAssets.map(async asset => {
             const user = getUserById(this.props.users, asset.owner.address);
 
+            let assetRegion = '';
+            let assetProvince = '';
+            try {
+                const decodedLocation = this.locationService.decode([
+                    this.locationService.translateAddress(
+                        asset.offChainProperties.address,
+                        asset.offChainProperties.country
+                    )
+                ])[0];
+
+                assetRegion = decodedLocation[1];
+                assetProvince = decodedLocation[2];
+            } catch (error) {
+                console.error('Error while parsing location', error);
+            }
+
             return {
                 asset,
-                organizationName: user && user.organization
+                organizationName: user?.organization,
+                assetProvince,
+                assetRegion
             };
         });
 
@@ -141,7 +163,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
     columns = [
         { id: 'owner', label: 'Owner' },
         { id: 'facilityName', label: 'Facility name' },
-        { id: 'townCountry', label: 'Town, country' },
+        { id: 'provinceRegion', label: 'Province, region' },
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: 'Nameplate capacity (kW)' },
         { id: 'read', label: 'Meter read (kWh)' }
@@ -151,10 +173,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         return this.state.paginatedData.map(enrichedData => ({
             owner: enrichedData.organizationName,
             facilityName: enrichedData.asset.offChainProperties.facilityName,
-            townCountry:
-                enrichedData.asset.offChainProperties.address +
-                ', ' +
-                enrichedData.asset.offChainProperties.country,
+            provinceRegion: `${enrichedData.assetProvince}, ${enrichedData.assetRegion}`,
             type: this.assetTypeService.getDisplayText(
                 enrichedData.asset.offChainProperties.assetType
             ),

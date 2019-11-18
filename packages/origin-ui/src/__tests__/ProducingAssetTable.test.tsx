@@ -16,8 +16,9 @@ describe('ProducingAssetTable', () => {
             id: '1',
             facilityName: 'Biomass Energy Facility',
             assetType: 'Gaseous;Agricultural gas',
-            address: 'Amsterdam',
-            country: 'Netherlands',
+            address:
+                '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+            country: 'Thailand',
             capacityWh: 736123,
             lastSmartMeterReadWh: 312
         });
@@ -37,14 +38,14 @@ describe('ProducingAssetTable', () => {
         assertMainTableContent([
             'Example Organization',
             'Wuthering Heights facility',
-            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
+            'Nakhon Pathom, Central',
             'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777',
             // next asset
             'Example Organization',
             'Biomass Energy Facility',
-            'Amsterdam, Netherlands',
+            'Nakhon Pathom, Central',
             'Gaseous - Agricultural gas',
             '736.123',
             '0.312'
@@ -61,7 +62,7 @@ describe('ProducingAssetTable', () => {
         assertMainTableContent([
             'Example Organization',
             'Biomass Energy Facility',
-            'Amsterdam, Netherlands',
+            'Nakhon Pathom, Central',
             'Gaseous - Agricultural gas',
             '736.123',
             '0.312'
@@ -76,7 +77,7 @@ describe('ProducingAssetTable', () => {
         assertMainTableContent([
             'Example Organization',
             'Wuthering Heights facility',
-            '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140, Thailand',
+            'Nakhon Pathom, Central',
             'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777'

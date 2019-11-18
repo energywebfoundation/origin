@@ -4,7 +4,13 @@ import { Demand } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
 import { Certificate } from '@energyweb/origin';
 import { User } from '@energyweb/user-registry';
-import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
+import {
+    Compliance,
+    Configuration,
+    Currency,
+    TimeFrame,
+    LocationService
+} from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React from 'react';
@@ -67,6 +73,8 @@ interface IEnrichedCertificateData {
     price: string;
     isOffChainSettlement: boolean;
     assetTypeLabel: string;
+    producingAssetProvince: string;
+    producingAssetRegion: string;
 }
 
 interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
@@ -92,6 +100,8 @@ export enum SelectedState {
 }
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
+    private locationService = new LocationService();
+
     constructor(props: Props) {
         super(props);
 
@@ -201,7 +211,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async enrichData(certificates: Certificate.Entity[]) {
-        const enrichedData = [];
+        const enrichedData: IEnrichedCertificateData[] = [];
 
         for (const certificate of certificates) {
             const producingAsset =
@@ -210,24 +220,36 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     asset => asset.id === certificate.assetId.toString()
                 );
 
-            let assetTypeLabel = '';
+            let producingAssetRegion = '';
+            let producingAssetProvince = '';
+            try {
+                const decodedLocation = this.locationService.decode([
+                    this.locationService.translateAddress(
+                        producingAsset.offChainProperties?.address,
+                        producingAsset.offChainProperties?.country
+                    )
+                ])[0];
 
-            if (producingAsset && producingAsset.offChainProperties) {
-                assetTypeLabel = producingAsset.offChainProperties.assetType;
+                producingAssetRegion = decodedLocation[1];
+                producingAssetProvince = decodedLocation[2];
+            } catch (error) {
+                console.error('Error while parsing location', error);
             }
 
             enrichedData.push({
                 certificate,
                 producingAsset,
-                assetTypeLabel,
+                assetTypeLabel: producingAsset?.offChainProperties?.assetType,
                 certificateOwner: getUserById(this.props.users, certificate.owner),
                 price: certificate.isOffChainSettlement
                     ? formatCurrency(certificate.price / 100)
-                    : certificate.price,
+                    : certificate.price?.toString(),
                 currency: certificate.isOffChainSettlement
                     ? Currency[certificate.currency]
                     : await this.getTokenSymbol(certificate.currency),
-                isOffChainSettlement: certificate.isOffChainSettlement
+                isOffChainSettlement: certificate.isOffChainSettlement,
+                producingAssetProvince,
+                producingAssetRegion
             });
         }
 
@@ -504,7 +526,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
         return [
             {
-                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAsset.offChainProperties.country::${RECORD_INDICATOR}producingAsset.offChainProperties.city::${RECORD_INDICATOR}certificateOwner.organization`,
+                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAssetProvince::${RECORD_INDICATOR}producingAssetRegion`,
                 label: 'Search',
                 input: {
                     type: CustomFilterInputType.string
@@ -531,8 +553,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAsset.offChainProperties.city::, ::${RECORD_INDICATOR}producingAsset.offChainProperties.country`,
-                label: 'Town, Country',
+                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAssetProvince::, ::${RECORD_INDICATOR}producingAsset.producingAssetRegion`,
+                label: 'Province, Region',
                 input: {
                     type: CustomFilterInputType.string
                 }
@@ -683,12 +705,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 sortProperties: ['producingAsset.offChainProperties.operationalSince']
             },
             {
-                id: 'townCountry',
-                label: 'Town, country',
-                sortProperties: [
-                    'producingAsset.offChainProperties.country',
-                    'producingAsset.offChainProperties.city'
-                ]
+                id: 'provinceRegion',
+                label: 'Province, region',
+                sortProperties: ['producingAssetProvince', 'producingAssetRegion']
             },
             { id: 'compliance', label: 'Compliance' },
             { id: 'owner', label: 'Owner', sortProperties: ['certificateOwner.organization'] },
@@ -711,7 +730,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         return this.state.paginatedData.map(enrichedData => {
             let assetType = '';
             let commissioningDate = '';
-            let townCountry = '';
+            let provinceRegion = '';
             let compliance = '';
 
             if (enrichedData.producingAsset && enrichedData.producingAsset.offChainProperties) {
@@ -724,7 +743,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     'x'
                 ).format('MMM YY');
 
-                townCountry = `${enrichedData.producingAsset.offChainProperties.address}, ${enrichedData.producingAsset.offChainProperties.country}`;
+                provinceRegion = `${enrichedData.producingAssetProvince}, ${enrichedData.producingAssetRegion}`;
 
                 compliance =
                     Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry];
@@ -733,7 +752,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return {
                 assetType,
                 commissioningDate,
-                townCountry,
+                provinceRegion,
                 compliance,
                 owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
                 certificationDate: new Date(

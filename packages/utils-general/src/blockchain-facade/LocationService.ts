@@ -29,13 +29,21 @@ export class LocationService {
     }
 
     public matches(currentLocation: string[], checkedLocation: string) {
-        const highestSpecificityTypes = this.filterForHighestSpecificity(currentLocation).map(
-            type => [...this.decode([type])[0]]
-        );
+        const highestSpecificityTypes = this.filterForHighestSpecificity(
+            currentLocation
+        ).map(type => [...this.decode([type])[0]]);
 
         return highestSpecificityTypes.some(location =>
             checkedLocation.startsWith(this.encode([location])[0])
         );
+    }
+
+    public encode(decoded: string[][]): string[] {
+        return decoded.map(group => group.join(';'));
+    }
+
+    public decode(encoded: string[]): string[][] {
+        return encoded.map(item => item.split(';'));
     }
 
     private clear(input: string) {
@@ -55,13 +63,5 @@ export class LocationService {
                     )
             )
         );
-    }
-
-    private encode(decoded: string[][]): string[] {
-        return decoded.map(group => group.join(';'));
-    }
-
-    private decode(encoded: string[]): string[][] {
-        return encoded.map(item => item.split(';'));
     }
 }
