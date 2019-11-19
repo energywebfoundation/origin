@@ -1,26 +1,9 @@
-// Copyright 2018 Energy Web Foundation
-// This file is part of the Origin Application brought to you by the Energy Web Foundation,
-// a global non-profit organization focused on accelerating blockchain technology across the energy sector, 
-// incorporated in Zug, Switzerland.
-//
-// The Origin Application is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// This is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY and without an implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details, at <http://www.gnu.org/licenses/>.
-//
-// @authors: Martin Kuechler, martin.kuechler@slock.it
-
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "../../contracts/Interfaces/ERC721TokenReceiver.sol";
-import "../../contracts/Interfaces/ERC721.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.sol";
 
-contract TestReceiver is ERC721TokenReceiver {
+contract TestReceiver {
 
     ERC721 public entityContract;
 

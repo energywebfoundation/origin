@@ -1,4 +1,4 @@
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/market/contracts';
 import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';

@@ -8,11 +8,12 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
-import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
+import { deployERC20TestToken } from '../utils/deployERC20TestToken';
+import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
 import { PurchasableCertificate, MarketLogic } from '..';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { logger } from '../Logger';
@@ -83,9 +84,11 @@ describe('PurchasableCertificate-Facade', () => {
     }
 
     it('should set ERC20 token', async () => {
-        erc20TestTokenAddress = (
-            await deployERC20TestToken(web3, accountTrader, privateKeyDeployment)
-        ).contractAddress;
+        erc20TestTokenAddress = await deployERC20TestToken(
+            web3,
+            accountTrader,
+            privateKeyDeployment
+        );
 
         erc20TestToken = new Erc20TestToken(web3, erc20TestTokenAddress);
     });
@@ -373,7 +376,10 @@ describe('PurchasableCertificate-Facade', () => {
             await pCert.buyCertificate();
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'the buyer should have enough allowance to buy');
+            assert.include(
+                ex.message,
+                'the marketLogic contract should have enough allowance to buy'
+            );
         }
 
         assert.isTrue(failed);
@@ -385,7 +391,9 @@ describe('PurchasableCertificate-Facade', () => {
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
         await pCert.publishForSale(10, erc20TestTokenAddress);
 
-        await erc20TestToken.approve(accountAssetOwner, 100, { privateKey: traderPK });
+        await erc20TestToken.approve(marketLogic.web3Contract.options.address, 10, {
+            privateKey: traderPK
+        });
 
         setActiveUser(traderPK);
         pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -459,6 +467,10 @@ describe('PurchasableCertificate-Facade', () => {
 
         setActiveUser(traderPK);
         parentCertificate = await parentCertificate.sync();
+
+        await erc20TestToken.approve(marketLogic.web3Contract.options.address, CERTIFICATE_PRICE, {
+            privateKey: traderPK
+        });
 
         await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
@@ -707,6 +719,10 @@ describe('PurchasableCertificate-Facade', () => {
         setActiveUser(traderPK);
         firstCertificate = await firstCertificate.sync();
         secondCertificate = await secondCertificate.sync();
+
+        await erc20TestToken.approve(marketLogic.web3Contract.options.address, 6, {
+            privateKey: traderPK
+        });
 
         await marketLogic.buyCertificateBulk([newCertificateId, newCertificateId2], {
             privateKey: traderPK
