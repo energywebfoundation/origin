@@ -39,9 +39,9 @@ export const onboardDemo = async (
                 city: action.data.city,
                 country: action.data.country,
                 state: action.data.state,
-                notifications: true,
-                autoPublish: {
-                    enabled: true,
+                notifications: action.data.notifications || false,
+                autoPublish: action.data.autoPublish || {
+                    enabled: false,
                     price: 1.5,
                     currency: Currency.USD
                 }

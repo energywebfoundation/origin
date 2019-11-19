@@ -27,8 +27,6 @@ export class Demo {
 
     private nextDeployedSmReadIndex = 0;
 
-    private connectionConfig: any;
-
     private conf: Configuration.Entity;
 
     private adminPK: string;
@@ -39,14 +37,9 @@ export class Demo {
 
     private logger: Winston.Logger;
 
-    constructor(web3Url: string, deployKey: string) {
-        this.connectionConfig = {
-            web3: web3Url,
-            deployKey
-        };
-
-        this.adminPK = this.connectionConfig.deployKey;
-        this.web3 = new Web3(this.connectionConfig.web3);
+    constructor(public web3Url: string, public deployKey: string, listenerPK: string) {
+        this.adminPK = deployKey;
+        this.web3 = new Web3(web3Url);
 
         this.ACCOUNTS = {
             ADMIN: {
@@ -68,6 +61,10 @@ export class Demo {
             TRADER: {
                 address: '0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651',
                 privateKey: '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e'
+            },
+            LISTENER: {
+                address: this.web3.eth.accounts.privateKeyToAccount(listenerPK).address,
+                privateKey: listenerPK
             }
         };
 
@@ -156,8 +153,7 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: '',
-            notifications: true
+            state: ''
         };
         await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
@@ -179,13 +175,39 @@ export class Demo {
             city: '',
             country: '',
             state: '',
-            notifications: true
+            notifications: true,
+            autoPublish: {
+                enabled: true,
+                price: 1000,
+                currency: Currency.USD
+            }
         };
         await MarketUser.createMarketUser(
             assetManagerPropsOnChain,
             assetManagerPropsOffChain,
             this.conf
         );
+
+        const listenerPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: this.ACCOUNTS.LISTENER.address,
+            active: true,
+            roles: buildRights([Role.Listener]),
+            organization: 'Listener organization'
+        };
+        const listenerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
+            firstName: 'Listener',
+            surname: 'L',
+            email: 'listener@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: ''
+        };
+        await MarketUser.createMarketUser(listenerPropsOnChain, listenerPropsOffChain, this.conf);
 
         const matcherPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -204,8 +226,7 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: '',
-            notifications: true
+            state: ''
         };
         await MarketUser.createMarketUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
 
@@ -226,9 +247,9 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: '',
-            notifications: true
+            state: ''
         };
+
         await MarketUser.createMarketUser(
             marketLogicPropsOnChain,
             marketLogicPropsOffChain,
@@ -360,5 +381,12 @@ export class Demo {
         const fillTx = await demand.fill(certificate.id);
 
         return fillTx.status;
+    }
+
+    async isForSale(certId: string) {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.LISTENER;
+        const certificate = await new PurchasableCertificate.Entity(certId, this.conf).sync();
+
+        return certificate.forSale;
     }
 }

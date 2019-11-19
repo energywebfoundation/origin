@@ -279,7 +279,7 @@ describe('PurchasableCertificate-Facade', () => {
             await pCert.unpublishForSale();
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'not the certificate-owner or market matcher');
+            assert.include(ex.message, 'not the certificate-owner, market matcher or listener');
         }
 
         assert.isTrue(failed);

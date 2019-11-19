@@ -11,8 +11,7 @@ import {
     Currency
 } from '@energyweb/utils-general';
 
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
-import { SCAN_INTERVAL } from '..';
+import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { initOriginConfig } from '../config/origin.config';
 import EmailTypes from '../email/EmailTypes';
 import { IEmailServiceProvider } from '../services/email.service';
@@ -29,6 +28,8 @@ export interface IOriginEventListener extends IEventListener {
 }
 
 export class OriginEventListener implements IOriginEventListener {
+    public web3: Web3;
+
     public started: boolean;
 
     public conf: Configuration.Entity;
@@ -38,25 +39,18 @@ export class OriginEventListener implements IOriginEventListener {
     private interval: any;
 
     constructor(
+        public config: IEventListenerConfig,
         public marketLookupAddress: string,
-        public web3: Web3,
         public emailService: IEmailServiceProvider,
-        private originEventsStore: IOriginEventsStore,
-        private offChainDataClient: IOffChainDataClient,
-        public notificationInterval?: number
+        private originEventsStore: IOriginEventsStore
     ) {
-        this.notificationInterval = notificationInterval || 60000; // Default to 1 min intervals
-
+        this.web3 = new Web3(config.web3Url || 'http://localhost:8550');
         this.started = false;
         this.interval = null;
     }
 
     public async start(): Promise<void> {
-        this.conf = await initOriginConfig(
-            this.marketLookupAddress,
-            this.web3,
-            this.offChainDataClient
-        );
+        this.conf = await initOriginConfig(this.marketLookupAddress, this.web3, this.config);
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
@@ -78,7 +72,26 @@ export class OriginEventListener implements IOriginEventListener {
                 this.conf
             ).sync();
 
-            this.originEventsStore.registerIssuedCertificate(newCertificate.certificate.owner);
+            const { owner } = newCertificate.certificate;
+
+            this.originEventsStore.registerIssuedCertificate(owner);
+
+            const certificateOwner = await new MarketUser.Entity(owner, this.conf).sync();
+            const autoPublishSettings = (certificateOwner.offChainProperties as MarketUser.IMarketUserOffChainProperties)
+                .autoPublish;
+
+            if (autoPublishSettings.enabled) {
+                this.conf.logger.info(
+                    `Automatically publishing Certificate #${newCertificate.id} for sale...`
+                );
+                await newCertificate.publishForSale(
+                    autoPublishSettings.price,
+                    autoPublishSettings.currency
+                );
+                this.conf.logger.info(
+                    `Automatically published Certificate #${newCertificate.id} for sale.`
+                );
+            }
         });
 
         marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
@@ -158,15 +171,20 @@ export class OriginEventListener implements IOriginEventListener {
             }
         });
 
-        this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
+        this.manager = new EventHandlerManager(this.config.scanInterval, this.conf);
         this.manager.registerEventHandler(certificateContractEventHandler);
         this.manager.registerEventHandler(marketContractEventHandler);
 
         this.manager.start();
-        this.interval = setInterval(this.notify.bind(this), this.notificationInterval);
+        this.interval = setInterval(this.notify.bind(this), this.config.notificationInterval);
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);
+        this.conf.logger.info(
+            `Running the listener with account ${
+                this.web3.eth.accounts.privateKeyToAccount(this.config.accountPrivKey).address
+            }`
+        );
     }
 
     private async notify() {

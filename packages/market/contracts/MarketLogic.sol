@@ -69,8 +69,10 @@ contract MarketLogic is Initializable, RoleManagement {
 
     modifier onlyCertificateOwner(uint _certificateId) {
         require(
-            _certificateLogic.ownerOf(_certificateId) == msg.sender || isRole(RoleManagement.Role.Matcher, msg.sender),
-            "onlyCertificateOwner: not the certificate-owner or market matcher"
+            _certificateLogic.ownerOf(_certificateId) == msg.sender
+            || isRole(RoleManagement.Role.Matcher, msg.sender)
+            || isRole(RoleManagement.Role.Listener, msg.sender),
+            "onlyCertificateOwner: not the certificate-owner, market matcher or listener"
         );
         _;
     }

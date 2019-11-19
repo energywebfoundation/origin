@@ -83,13 +83,7 @@ export const marketDemo = async (demoFile?: string) => {
         zip: '',
         city: '',
         country: '',
-        state: '',
-        notifications: true,
-        autoPublish: {
-            enabled: true,
-            price: 1.5,
-            currency: Currency.USD
-        }
+        state: ''
     };
 
     await MarketUser.createMarketUser(userPropsOnChain, userPropsOffChain, conf);
@@ -112,13 +106,7 @@ export const marketDemo = async (demoFile?: string) => {
         zip: '',
         city: '',
         country: '',
-        state: '',
-        notifications: true,
-        autoPublish: {
-            enabled: true,
-            price: 1.5,
-            currency: Currency.USD
-        }
+        state: ''
     };
 
     await MarketUser.createMarketUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);

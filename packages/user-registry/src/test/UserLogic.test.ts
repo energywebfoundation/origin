@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { UserLogic } from '../wrappedContracts/UserLogic';
-import { Role, buildRights } from '../blockchain-facade/RoleManagement';
+import { Role, buildRights } from '../wrappedContracts/RoleManagement';
 
 describe('UserLogic', () => {
     dotenv.config({

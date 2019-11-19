@@ -69,7 +69,8 @@
                 "state": "Anystate",
                 "address": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "privateKey": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
-                "rights": 12
+                "rights": 12,
+                "notifications": true
             }
         },
         {
@@ -124,6 +125,24 @@
                 "address": "0x2bda153cd94a10cc6584115eada312b27d4166d3",
                 "privateKey": "0x05369a7c890005a9babfb52645d0347bbb456ae562bbac5aad27118e2e9e3a6c",
                 "rights": 63
+            }
+        },
+        {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "Listener",
+                "surname": "Origin Listener",
+                "email": "listener@mailinator.com",
+                "organization": "Listener Organization",
+                "street": "Main Street",
+                "number": "7",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0x4Db81bEfaF6B82553898739B788963d20Be8068a",
+                "privateKey": "0x968cc146af9c9d3ac08cca0dd3f915ed5a0966c118e26fd5e99066b0ff8bc060",
+                "rights": 64
             }
         },
         {
