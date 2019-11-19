@@ -203,14 +203,18 @@ function* initEventHandler() {
             });
 
             marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-                const demand = await new Demand.Entity(
-                    event.returnValues._demandId.toString(),
-                    configuration
-                ).sync();
+                try {
+                    const demand = await new Demand.Entity(
+                        event.returnValues._demandId.toString(),
+                        configuration
+                    ).sync();
 
-                emitter({
-                    action: demandCreated(demand)
-                });
+                    emitter({
+                        action: demandCreated(demand)
+                    });
+                } catch (error) {
+                    console.error(`Error while handling "createdNewDemand" event`, error);
+                }
             });
 
             marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {

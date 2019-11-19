@@ -35,11 +35,11 @@ export class OffChainDataClient implements IOffChainDataClient {
 
             postOrPut = axios.put;
         } catch (error) {
-            if (error.response.status !== 404) {
+            if (error.response?.status === 404) {
+                postOrPut = axios.post;
+            } else {
                 throw error;
             }
-
-            postOrPut = axios.post;
         }
 
         const result = await postOrPut(normalizedURL, offChainData);

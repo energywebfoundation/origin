@@ -256,7 +256,8 @@ describe('Market-Facade', () => {
                 energyPerTimeFrame: 10,
                 registryCompliance: Compliance.EEC,
                 startTime: START_TIME,
-                endTime: END_TIME
+                endTime: END_TIME,
+                automaticMatching: true
             };
 
             assert.equal(await Demand.getDemandListLength(conf), 0);

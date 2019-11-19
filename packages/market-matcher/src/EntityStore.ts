@@ -1,15 +1,10 @@
 import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    Currency
-} from '@energyweb/utils-general';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
-import polly from 'polly-js';
 import { Listener } from './Matcher';
 import { EntityListener } from './EntityListener';
+import { IEntityFetcher } from './EntityFetcher';
 
 export interface IEntityStore {
     init(): Promise<void>;
@@ -43,7 +38,9 @@ export class EntityStore implements IEntityStore {
 
     constructor(
         @inject('config') private config: Configuration.Entity,
-        @inject('logger') private logger: Winston.Logger
+        @inject('logger') private logger: Winston.Logger,
+        @inject('entityFetcher') private fetcher: IEntityFetcher,
+        private watchEvents: boolean = true
     ) {
         this.certificateListeners = new EntityListener<PurchasableCertificate.Entity>(this.logger);
         this.demandListeners = new EntityListener<Demand.Entity>(this.logger);
@@ -59,7 +56,7 @@ export class EntityStore implements IEntityStore {
 
     public async getDemand(id: string): Promise<Demand.Entity> {
         if (!this.demands.has(id)) {
-            const demand = await new Demand.Entity(id, this.config).sync();
+            const demand = await this.fetcher.getDemand(id);
 
             this.demands.set(id, demand);
         }
@@ -69,7 +66,7 @@ export class EntityStore implements IEntityStore {
 
     public async getSupply(id: string): Promise<Supply.Entity> {
         if (!this.supplies.has(id)) {
-            const supply = await new Supply.Entity(id, this.config).sync();
+            const supply = await this.fetcher.getSupply(id);
 
             this.supplies.set(id, supply);
         }
@@ -91,7 +88,11 @@ export class EntityStore implements IEntityStore {
 
     public async init() {
         await this.syncExistingEvents();
-        await this.subscribeToEvents();
+
+        if (this.watchEvents) {
+            await this.subscribeToEvents();
+        }
+
         await this.triggerExistingEvents();
     }
 
@@ -105,27 +106,25 @@ export class EntityStore implements IEntityStore {
 
     private async syncExistingEvents() {
         this.logger.verbose('* Getting all active agreements');
-        const agreementListLength = await Agreement.getAgreementListLength(this.config);
+        const agreementListLength = await this.fetcher.getAgreementListLength();
         for (let i = 0; i < agreementListLength; i++) {
             await this.registerAgreement(i.toString());
         }
 
         this.logger.verbose('* Getting all active demands');
-        const demandListLength = await Demand.getDemandListLength(this.config);
+        const demandListLength = await this.fetcher.getDemandListLength();
         for (let i = 0; i < demandListLength; i++) {
             await this.handleDemand(i.toString(), false);
         }
 
         this.logger.verbose('* Getting all active supplies');
-        const supplyListLength = await Supply.getSupplyListLength(this.config);
+        const supplyListLength = await this.fetcher.getSupplyListLength();
         for (let i = 0; i < supplyListLength; i++) {
             await this.registerSupply(i.toString());
         }
 
         this.logger.verbose('* Getting all certificates');
-        const certificateListLength = await PurchasableCertificate.getCertificateListLength(
-            this.config
-        );
+        const certificateListLength = await this.fetcher.getCertificateListLength();
         for (let i = 0; i < certificateListLength; i++) {
             await this.handleCertificate(i.toString(), false);
         }
@@ -229,9 +228,14 @@ export class EntityStore implements IEntityStore {
     }
 
     private async handleDemand(id: string, trigger = true) {
-        const demand = await polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => new Demand.Entity(id, this.config).sync());
+        const demand = await this.fetcher.getDemand(id, 10);
+
+        if (!demand.offChainProperties.automaticMatching) {
+            this.logger.verbose(
+                `[Demand ${demand.id}] Skipped. Does not allow automatic matching.`
+            );
+            return;
+        }
 
         const isFulfilled = await demand.isFulfilled();
         if (isFulfilled) {
@@ -252,25 +256,21 @@ export class EntityStore implements IEntityStore {
     }
 
     private async registerSupply(id: string) {
-        const supply = await polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => new Supply.Entity(id, this.config).sync());
+        const supply = await this.fetcher.getSupply(id, 10);
 
         this.supplies.set(supply.id, supply);
         this.logger.verbose(`Registered new supply #${supply.id}`);
     }
 
     private async registerAgreement(id: string) {
-        const agreement = await polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => new Agreement.Entity(id, this.config).sync());
+        const agreement = await this.fetcher.getAgreement(id, 10);
 
         this.agreements.set(agreement.id, agreement);
         this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
     }
 
     private async handleCertificate(id: string, trigger = true) {
-        const certificate = await this.pollCertificate(id);
+        const certificate = await this.fetcher.getCertificate(id, 10);
 
         this.certificates.set(certificate.id, certificate);
         this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
@@ -278,26 +278,5 @@ export class EntityStore implements IEntityStore {
         if (trigger) {
             this.certificateListeners.trigger(certificate);
         }
-    }
-
-    private async fetchCertificate(id: string) {
-        const certificate = await new PurchasableCertificate.Entity(id, this.config).sync();
-
-        if (
-            certificate.forSale &&
-            certificate.isOffChainSettlement &&
-            certificate.currency === Currency.NONE &&
-            certificate.price === 0
-        ) {
-            throw new Error(`[Certificate #${id}] Missing settlement options`);
-        }
-
-        return certificate;
-    }
-
-    private pollCertificate(id: string) {
-        return polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => this.fetchCertificate(id));
     }
 }

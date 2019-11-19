@@ -182,7 +182,8 @@ export const marketDemo = async (demoFile?: string) => {
                     energyPerTimeFrame: action.data.energyPerTimeFrame,
                     registryCompliance: assetCompliance,
                     startTime: action.data.startTime,
-                    endTime: action.data.endTime
+                    endTime: action.data.endTime,
+                    automaticMatching: true
                 };
 
                 try {
