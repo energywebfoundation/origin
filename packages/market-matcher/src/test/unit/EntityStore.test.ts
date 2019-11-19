@@ -22,11 +22,7 @@ describe('EntityStore', () => {
         return demand;
     }
 
-    it('should skip demand that has automaticMatching set to false', async () => {
-        const demand = setupDemand('1', false, false);
-
-        const config = Substitute.for<Configuration.Entity>();
-        const logger = Substitute.for<Winston.Logger>();
+    function setupFetcher(demand: Demand.Entity) {
         const fetcher = Substitute.for<IEntityFetcher>();
 
         fetcher.getAgreementListLength().returns(Promise.resolve(0));
@@ -34,6 +30,16 @@ describe('EntityStore', () => {
         fetcher.getCertificateListLength().returns(Promise.resolve(0));
         fetcher.getDemandListLength().returns(Promise.resolve(1));
         fetcher.getDemand(Arg.all()).returns(Promise.resolve(demand));
+
+        return fetcher;
+    }
+
+    it('should skip demand that has automaticMatching set to false', async () => {
+        const demand = setupDemand('1', false, false);
+
+        const config = Substitute.for<Configuration.Entity>();
+        const logger = Substitute.for<Winston.Logger>();
+        const fetcher = setupFetcher(demand);
 
         const entityStore = new EntityStore(config, logger, fetcher);
 
@@ -49,13 +55,7 @@ describe('EntityStore', () => {
 
         const config = Substitute.for<Configuration.Entity>();
         const logger = Substitute.for<Winston.Logger>();
-        const fetcher = Substitute.for<IEntityFetcher>();
-
-        fetcher.getAgreementListLength().returns(Promise.resolve(0));
-        fetcher.getSupplyListLength().returns(Promise.resolve(0));
-        fetcher.getCertificateListLength().returns(Promise.resolve(0));
-        fetcher.getDemandListLength().returns(Promise.resolve(1));
-        fetcher.getDemand(Arg.all()).returns(Promise.resolve(demand));
+        const fetcher = setupFetcher(demand);
 
         const entityStore = new EntityStore(config, logger, fetcher);
 
@@ -71,13 +71,7 @@ describe('EntityStore', () => {
 
         const config = Substitute.for<Configuration.Entity>();
         const logger = Substitute.for<Winston.Logger>();
-        const fetcher = Substitute.for<IEntityFetcher>();
-
-        fetcher.getAgreementListLength().returns(Promise.resolve(0));
-        fetcher.getSupplyListLength().returns(Promise.resolve(0));
-        fetcher.getCertificateListLength().returns(Promise.resolve(0));
-        fetcher.getDemandListLength().returns(Promise.resolve(1));
-        fetcher.getDemand(Arg.all()).returns(Promise.resolve(demand));
+        const fetcher = setupFetcher(demand);
 
         const entityStore = new EntityStore(config, logger, fetcher);
 

@@ -36,25 +36,25 @@ export class EntityFetcher implements IEntityFetcher {
         return Supply.getSupplyListLength(this.config);
     }
 
-    getAgreement(id: string, tries = 1) {
+    getAgreement(id: string, tries = 10) {
         return polly()
             .waitAndRetry(tries)
             .executeForPromise(() => this.fetchAgreement(id));
     }
 
-    getDemand(id: string, tries = 1) {
+    getDemand(id: string, tries = 10) {
         return polly()
             .waitAndRetry(tries)
             .executeForPromise(() => this.fetchDemand(id));
     }
 
-    getSupply(id: string, tries = 1) {
+    getSupply(id: string, tries = 10) {
         return polly()
             .waitAndRetry(tries)
             .executeForPromise(() => this.fetchSupply(id));
     }
 
-    getCertificate(id: string, tries = 1) {
+    getCertificate(id: string, tries = 10) {
         return polly()
             .waitAndRetry(tries)
             .executeForPromise(() => this.fetchCertificate(id));

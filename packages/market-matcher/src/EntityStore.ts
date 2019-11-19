@@ -55,7 +55,7 @@ export class EntityStore implements IEntityStore {
 
     public async getDemand(id: string): Promise<Demand.Entity> {
         if (!this.demands.has(id)) {
-            const demand = await this.fetcher.getDemand(id);
+            const demand = await this.fetcher.getDemand(id, 1);
 
             this.demands.set(id, demand);
         }
@@ -65,7 +65,7 @@ export class EntityStore implements IEntityStore {
 
     public async getSupply(id: string): Promise<Supply.Entity> {
         if (!this.supplies.has(id)) {
-            const supply = await this.fetcher.getSupply(id);
+            const supply = await this.fetcher.getSupply(id, 1);
 
             this.supplies.set(id, supply);
         }
@@ -227,7 +227,7 @@ export class EntityStore implements IEntityStore {
     }
 
     private async handleDemand(id: string, trigger = true) {
-        const demand = await this.fetcher.getDemand(id, 10);
+        const demand = await this.fetcher.getDemand(id);
 
         if (!demand.offChainProperties.automaticMatching) {
             this.logger.verbose(
@@ -255,21 +255,21 @@ export class EntityStore implements IEntityStore {
     }
 
     private async registerSupply(id: string) {
-        const supply = await this.fetcher.getSupply(id, 10);
+        const supply = await this.fetcher.getSupply(id);
 
         this.supplies.set(supply.id, supply);
         this.logger.verbose(`Registered new supply #${supply.id}`);
     }
 
     private async registerAgreement(id: string) {
-        const agreement = await this.fetcher.getAgreement(id, 10);
+        const agreement = await this.fetcher.getAgreement(id);
 
         this.agreements.set(agreement.id, agreement);
         this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
     }
 
     private async handleCertificate(id: string, trigger = true) {
-        const certificate = await this.fetcher.getCertificate(id, 10);
+        const certificate = await this.fetcher.getCertificate(id);
 
         this.certificates.set(certificate.id, certificate);
         this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
