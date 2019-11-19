@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
-import "@energyweb/erc-test-contracts/contracts/Interfaces/ERC20Interface.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
 import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
 import "@energyweb/origin/contracts/ICertificateLogic.sol";
@@ -146,7 +146,6 @@ contract MarketLogic is Initializable, RoleManagement {
 	/// @dev will return an event with the event-Id
 	/// @param _demandId index of the demand in the allDemands-array
     function deleteDemand(uint _demandId) external onlyDemandOwner(_demandId) {
-        Demand memory demand = allDemands[_demandId];
         changeDemandStatus(_demandId, DemandStatus.ARCHIVED);
     }
 
@@ -501,14 +500,14 @@ contract MarketLogic is Initializable, RoleManagement {
         bool isOnChainSettlement = pCert.acceptedToken != address(0x0);
 
         if (isOnChainSettlement) {
-            ERC20Interface erc20 = ERC20Interface(pCert.acceptedToken);
+            IERC20 erc20 = IERC20(pCert.acceptedToken);
             require(
                 erc20.balanceOf(buyer) >= pCert.onChainDirectPurchasePrice,
                 "_buyCertificate: the buyer should have enough tokens to buy"
             );
             require(
-                erc20.allowance(buyer, _certificateLogic.ownerOf(_certificateId)) >= pCert.onChainDirectPurchasePrice,
-                "_buyCertificate: the buyer should have enough allowance to buy"
+                erc20.allowance(buyer, address(this)) >= pCert.onChainDirectPurchasePrice,
+                "_buyCertificate: the marketLogic contract should have enough allowance to buy"
             );
             erc20.transferFrom(buyer, _certificateLogic.ownerOf(_certificateId), pCert.onChainDirectPurchasePrice);
         } else {

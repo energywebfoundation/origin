@@ -11,9 +11,10 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { CertificateLogic } from '@energyweb/origin';
 import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
 import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
-import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
+import { deployERC20TestToken } from '../utils/deployERC20TestToken';
+import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
@@ -58,9 +59,11 @@ describe('Market-Facade', () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     it('should set ERC20 token', async () => {
-        erc20TestTokenAddress = (
-            await deployERC20TestToken(web3, accountTrader, privateKeyDeployment)
-        ).contractAddress;
+        erc20TestTokenAddress = await deployERC20TestToken(
+            web3,
+            accountTrader,
+            privateKeyDeployment
+        );
 
         erc20TestToken = new Erc20TestToken(web3, erc20TestTokenAddress);
     });

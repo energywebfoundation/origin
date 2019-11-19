@@ -23,7 +23,6 @@
   "types": "dist/js/index.d.ts",
   "dependencies": {
     "@energyweb/asset-registry": "1.3.3",
-    "@energyweb/erc-test-contracts": "1.2.2",
     "@energyweb/market": "1.3.3",
     "@energyweb/origin": "1.3.3",
     "@energyweb/origin-backend": "1.3.3",

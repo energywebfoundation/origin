@@ -14,9 +14,6 @@
             "path": "../user-registry/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../erc-test-contracts/tsconfig.build.json"
-        },
-        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {

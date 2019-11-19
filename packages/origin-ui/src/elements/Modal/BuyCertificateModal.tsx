@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { PurchasableCertificate } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/market/contracts';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
