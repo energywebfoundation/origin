@@ -1,4 +1,4 @@
-import { TransactionReceipt, EventLog } from 'web3/types';
+import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
@@ -26,23 +26,25 @@ export interface ICertificate {
     children: string[];
 
     sync(): Promise<ICertificate>;
-    
+
     claimCertificate(): Promise<TransactionReceipt>;
     splitCertificate(energy: number): Promise<TransactionReceipt>;
     getCertificateOwner(): Promise<string>;
     isClaimed(): Promise<boolean>;
     claim(): Promise<TransactionReceipt>;
-    
-    approve(_approved: string): Promise<TransactionReceipt>
+
+    approve(_approved: string): Promise<TransactionReceipt>;
     getApproved(): Promise<string>;
     transferFrom(_to: string): Promise<TransactionReceipt>;
-    safeTransferFrom(_to: string, _calldata?: string): Promise<TransactionReceipt>
+    safeTransferFrom(_to: string, _calldata?: string): Promise<TransactionReceipt>;
 
     getCertificationRequestEvents(): any;
-    getAllCertificateEvents(): Promise<EventLog[]>
+    getAllCertificateEvents(): Promise<EventLog[]>;
 }
 
-export const getCertificateListLength = async (configuration: Configuration.Entity): Promise<number> => {
+export const getCertificateListLength = async (
+    configuration: Configuration.Entity
+): Promise<number> => {
     return parseInt(
         await configuration.blockchainProperties.certificateLogicInstance.getCertificateListLength(),
         10
@@ -131,14 +133,21 @@ export const getAllCertificateEvents = async (
 
 export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
     public assetId: number;
+
     public generationStartTime: number;
+
     public generationEndTime: number;
 
     public owner: string;
+
     public energy: number;
+
     public status: Status;
+
     public creationTime: number;
+
     public parentId: number;
+
     public children: string[];
 
     public initialized: boolean;
@@ -158,14 +167,14 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const certificateLogicInstance: CertificateLogic = this.configuration.blockchainProperties.certificateLogicInstance;
+            const { certificateLogicInstance } = this.configuration.blockchainProperties;
 
-            const cert = await certificateLogicInstance.getCertificate(
-                Number(this.id)
-            );
-            
+            const cert = await certificateLogicInstance.getCertificate(Number(this.id));
+
             this.assetId = Number(cert.assetId);
-            this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(this.id);
+            this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(
+                this.id
+            );
             this.energy = Number(cert.energy);
 
             this.children = cert.children;
@@ -173,7 +182,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.creationTime = Number(cert.creationTime);
             this.parentId = Number(cert.parentId);
 
-            const reads = await new ProducingAsset.Entity(this.assetId.toString(), this.configuration).getSmartMeterReadsByIndex([Number(cert.readsStartIndex), Number(cert.readsEndIndex)]);
+            const reads = await new ProducingAsset.Entity(
+                this.assetId.toString(),
+                this.configuration
+            ).getSmartMeterReadsByIndex([Number(cert.readsStartIndex), Number(cert.readsEndIndex)]);
             this.generationStartTime = reads[0].timestamp;
             this.generationEndTime = reads[1].timestamp;
 
@@ -244,17 +256,18 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
                 this.id,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.approve(
-                _approved,
-                this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
         }
+        return this.configuration.blockchainProperties.certificateLogicInstance.approve(
+            _approved,
+            this.id,
+            { from: this.configuration.blockchainProperties.activeUser.address }
+        );
     }
 
     async getApproved(): Promise<string> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getApproved(this.id);
+        return this.configuration.blockchainProperties.certificateLogicInstance.getApproved(
+            this.id
+        );
     }
 
     async getCertificationRequestEvents() {
@@ -294,10 +307,9 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             return null;
         }
 
-        const allReads = await (await new ProducingAsset.Entity(
-            this.assetId.toString(),
-            this.configuration
-        ).sync()).getSmartMeterReads();
+        const allReads = await (
+            await new ProducingAsset.Entity(this.assetId.toString(), this.configuration).sync()
+        ).getSmartMeterReads();
 
         const approvedCertificationRequestEvent = certificationRequestsApprovedEvents.filter(
             request => {
@@ -396,18 +408,17 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
                 this.owner,
                 _to,
                 this.id,
-                _calldata ? _calldata : null,
+                _calldata || null,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.safeTransferFrom(
-                this.owner,
-                _to,
-                this.id,
-                _calldata ? _calldata : null,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
         }
+        return this.configuration.blockchainProperties.certificateLogicInstance.safeTransferFrom(
+            this.owner,
+            _to,
+            this.id,
+            _calldata || null,
+            { from: this.configuration.blockchainProperties.activeUser.address }
+        );
     }
 
     async transferFrom(_to: string): Promise<TransactionReceipt> {
@@ -418,18 +429,20 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
                 this.id,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        } else {
-            return this.configuration.blockchainProperties.certificateLogicInstance.transferFrom(
-                this.owner,
-                _to,
-                this.id,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
         }
+        return this.configuration.blockchainProperties.certificateLogicInstance.transferFrom(
+            this.owner,
+            _to,
+            this.id,
+            { from: this.configuration.blockchainProperties.activeUser.address }
+        );
     }
 }
 
-export async function claimCertificates(certificateIds: string[], configuration: Configuration.Entity) {
+export async function claimCertificates(
+    certificateIds: string[],
+    configuration: Configuration.Entity
+) {
     const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
 
     return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(

@@ -1,4 +1,4 @@
-import { PrivateKey } from 'web3/eth/accounts'; // eslint-disable-line import/no-unresolved
+import { EncryptedKeystoreV3Json } from 'web3-core';
 
 export enum AuthenticationActions {
     addAccount = 'ADD_ACCOUNT',
@@ -16,7 +16,7 @@ export interface IAccount {
 
 export interface IEncryptedAccount {
     address: string;
-    encryptedPrivateKey: PrivateKey;
+    encryptedPrivateKey: EncryptedKeystoreV3Json;
 }
 
 export interface IAddAccountAction {

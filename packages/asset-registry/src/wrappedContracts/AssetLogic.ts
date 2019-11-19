@@ -1,7 +1,8 @@
-import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
 import Web3 from 'web3';
-import AssetLogicJSON from '../../build/contracts/lightweight/AssetLogic.json';
 import moment from 'moment';
+import AssetLogicJSON from '../../build/contracts/lightweight/AssetLogic.json';
 import { UsageType } from '../blockchain-facade/Asset';
 
 export class AssetLogic extends GeneralFunctions {
@@ -13,10 +14,8 @@ export class AssetLogic extends GeneralFunctions {
             address
                 ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                    buildFile.abi,
-                    buildFile.networks.length > 0
-                        ? buildFile.networks[0]
-                        : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
@@ -28,39 +27,45 @@ export class AssetLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getAllLogNewMeterReadEvents(eventFilter?: ISearchLog) {
+    async getAllLogNewMeterReadEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogNewMeterRead', eventFilter);
     }
 
-    async getAllLogAssetCreatedEvents(eventFilter?: ISearchLog) {
+    async getAllLogAssetCreatedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogAssetCreated', eventFilter);
     }
 
-    async getAllLogAssetFullyInitializedEvents(eventFilter?: ISearchLog) {
+    async getAllLogAssetFullyInitializedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogAssetFullyInitialized', eventFilter);
     }
 
-    async getAllLogAssetSetActiveEvents(eventFilter?: ISearchLog) {
+    async getAllLogAssetSetActiveEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogAssetSetActive', eventFilter);
     }
 
-    async getAllLogAssetSetInactiveEvents(eventFilter?: ISearchLog) {
+    async getAllLogAssetSetInactiveEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogAssetSetInactive', eventFilter);
     }
 
-    async getSmartMeterReadsForAssetByIndex(_assetId: number, _indexes: number[], txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getSmartMeterReadsForAssetByIndex(_assetId, _indexes).call(txParams);
+    async getSmartMeterReadsForAssetByIndex(
+        _assetId: number,
+        _indexes: number[],
+        txParams?: ISpecialTx
+    ) {
+        return this.web3Contract.methods
+            .getSmartMeterReadsForAssetByIndex(_assetId, _indexes)
+            .call(txParams);
     }
 
     async getSmartMeterReadsForAsset(_assetId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getSmartMeterReadsForAsset(_assetId).call(txParams);
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 

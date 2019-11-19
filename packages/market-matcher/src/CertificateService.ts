@@ -2,7 +2,7 @@ import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, Unit } from '@energyweb/utils-general';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
-import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
+import { TransactionReceipt } from 'web3-core';
 
 @injectable()
 export class CertificateService {

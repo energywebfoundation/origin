@@ -8,13 +8,13 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { Configuration, Compliance } from '@energyweb/utils-general';
+import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { deployERC721TestReceiver } from './deploy';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
 
 import { CertificateLogic, Certificate } from '..';
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { logger } from '../blockchain-facade/Logger';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 describe('CertificateLogic-Facade', () => {
     let userLogic: UserLogic;
@@ -61,33 +61,24 @@ describe('CertificateLogic-Facade', () => {
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
         const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
-        const LAST_SMART_METER_READ = Number(
-            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
+        const LAST_SMART_METER_READ = Number((await assetLogic.getAsset(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
+            await certificateLogic.getCertificationRequestsLength({
+                privateKey: issuerPK
+            })
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
-            privateKey: issuerPK
-        }));
 
         setActiveUser(assetOwnerPK);
-        
-        await assetLogic.saveSmartMeterRead(
-            0,
-            LAST_SMART_METER_READ + energy,
-            '',
-            0,
-            {
-                privateKey: assetSmartmeterPK
-            }
-        );
+
+        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
+            privateKey: assetSmartmeterPK
+        });
         await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
             privateKey: assetOwnerPK
         });
-        await certificateLogic.approveCertificationRequest(
-            INITIAL_CERTIFICATION_REQUESTS_LENGTH,
-            {
-                privateKey: issuerPK
-            }
-        );
+        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+            privateKey: issuerPK
+        });
 
         return (Number(await Certificate.getCertificateListLength(conf)) - 1).toString(); // latestCertificateId
     }
@@ -244,8 +235,8 @@ describe('CertificateLogic-Facade', () => {
 
         assert.equal(certificate.owner, accountAssetOwner);
 
-        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
-        
+        blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
+
         assert.deepOwnInclude(certificate, {
             id: '0',
             initialized: true,
@@ -257,7 +248,7 @@ describe('CertificateLogic-Facade', () => {
             creationTime: blockCreationTime,
             parentId: 0,
             generationStartTime: Number(reads[0].timestamp),
-            generationEndTime: Number(reads[0].timestamp),
+            generationEndTime: Number(reads[0].timestamp)
         } as Partial<Certificate.Entity>);
     });
 
@@ -309,7 +300,7 @@ describe('CertificateLogic-Facade', () => {
 
         const certificate = await new Certificate.Entity('1', conf).sync();
 
-        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
         assert.deepOwnInclude(certificate, {
             id: '1',
             initialized: true,
@@ -360,7 +351,7 @@ describe('CertificateLogic-Facade', () => {
         });
 
         const certificate = await new Certificate.Entity('2', conf).sync();
-        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
 
         assert.deepOwnInclude(certificate, {
             id: '2',
@@ -382,13 +373,13 @@ describe('CertificateLogic-Facade', () => {
         };
 
         let certificate = await new Certificate.Entity('2', conf).sync();
-        
+
         const reads = await assetLogic.getSmartMeterReadsForAsset(0);
 
         await certificate.splitCertificate(60);
 
         certificate = await certificate.sync();
-        
+
         assert.deepOwnInclude(certificate, {
             id: '2',
             initialized: true,
@@ -478,7 +469,7 @@ describe('CertificateLogic-Facade', () => {
 
         const certificate = await new Certificate.Entity('5', conf).sync();
 
-        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
         assert.deepOwnInclude(certificate, {
             id: '5',
             initialized: true,
@@ -493,11 +484,13 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should be able to use safeTransferFrom without calldata', async () => {
-        const testReceiverAddress = (await deployERC721TestReceiver(
-            web3,
-            certificateLogic.web3Contract.options.address,
-            privateKeyDeployment
-        )).contractAddress;
+        const testReceiverAddress = (
+            await deployERC721TestReceiver(
+                web3,
+                certificateLogic.web3Contract.options.address,
+                privateKeyDeployment
+            )
+        ).contractAddress;
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
@@ -546,7 +539,7 @@ describe('CertificateLogic-Facade', () => {
 
         const certificate = await new Certificate.Entity('6', conf).sync();
 
-        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
         assert.deepOwnInclude(certificate, {
             id: '6',
             initialized: true,
@@ -561,11 +554,13 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should be able to use safeTransferFrom', async () => {
-        const testReceiverAddress = (await deployERC721TestReceiver(
-            web3,
-            certificateLogic.web3Contract.options.address,
-            privateKeyDeployment
-        )).contractAddress;
+        const testReceiverAddress = (
+            await deployERC721TestReceiver(
+                web3,
+                certificateLogic.web3Contract.options.address,
+                privateKeyDeployment
+            )
+        ).contractAddress;
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
@@ -607,12 +602,12 @@ describe('CertificateLogic-Facade', () => {
             await certificateLogic.balanceOf(accountAssetOwner)
         );
         const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
-        const LAST_SMART_METER_READ = Number(
-            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
+        const LAST_SMART_METER_READ = Number((await assetLogic.getAsset(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
+            await certificateLogic.getCertificationRequestsLength({
+                privateKey: issuerPK
+            })
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
-            privateKey: issuerPK
-        }));
 
         await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
             privateKey: assetSmartmeterPK
@@ -718,12 +713,12 @@ describe('CertificateLogic-Facade', () => {
             await certificateLogic.balanceOf(accountAssetOwner)
         );
         const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
-        const LAST_SMART_METER_READ = Number(
-            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
+        const LAST_SMART_METER_READ = Number((await assetLogic.getAsset(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
+            await certificateLogic.getCertificationRequestsLength({
+                privateKey: issuerPK
+            })
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
-            privateKey: issuerPK
-        }));
 
         await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
             privateKey: assetSmartmeterPK
@@ -760,7 +755,10 @@ describe('CertificateLogic-Facade', () => {
                 }
             );
         } catch (e) {
-            assert.include(e.message, 'approveCertificationRequest: request has to be in pending state');
+            assert.include(
+                e.message,
+                'approveCertificationRequest: request has to be in pending state'
+            );
         }
 
         assert.equal(
@@ -778,12 +776,12 @@ describe('CertificateLogic-Facade', () => {
             await Certificate.getCertificateListLength(conf)
         );
         const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
-        const LAST_SMART_METER_READ = Number(
-            (await assetLogic.getAsset(0)).lastSmartMeterReadWh
+        const LAST_SMART_METER_READ = Number((await assetLogic.getAsset(0)).lastSmartMeterReadWh);
+        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
+            await certificateLogic.getCertificationRequestsLength({
+                privateKey: issuerPK
+            })
         );
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(await certificateLogic.getCertificationRequestsLength({
-            privateKey: issuerPK
-        }));
 
         conf.blockchainProperties.activeUser = {
             address: accountAssetOwner,
@@ -813,7 +811,7 @@ describe('CertificateLogic-Facade', () => {
             conf
         ).sync();
 
-        blockCreationTime = (await web3.eth.getBlock('latest')).timestamp;
+        blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
         assert.deepOwnInclude(certificate, {
             id: STARTING_CERTIFICATE_LENGTH.toString(),
             initialized: true,
@@ -836,23 +834,20 @@ describe('CertificateLogic-Facade', () => {
         ];
 
         for (const certificateId of certificatesToClaim) {
-            const certificate = await new Certificate.Entity(
-                certificateId,
-                conf
-            ).sync();
+            const certificate = await new Certificate.Entity(certificateId, conf).sync();
 
             assert.equal(certificate.status, Certificate.Status.Active);
         }
-        
-        await certificateLogic.claimCertificateBulk(certificatesToClaim.map(cId => parseInt(cId, 10)), {
-            privateKey: assetOwnerPK
-        });
+
+        await certificateLogic.claimCertificateBulk(
+            certificatesToClaim.map(cId => parseInt(cId, 10)),
+            {
+                privateKey: assetOwnerPK
+            }
+        );
 
         for (const certificateId of certificatesToClaim) {
-            const certificate = await new Certificate.Entity(
-                certificateId,
-                conf
-            ).sync();
+            const certificate = await new Certificate.Entity(certificateId, conf).sync();
 
             assert.equal(certificate.status, Certificate.Status.Claimed);
         }

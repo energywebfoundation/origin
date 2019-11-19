@@ -9,8 +9,7 @@ import {
     TS,
     TimeSeriesElement
 } from '@energyweb/utils-general';
-// eslint-disable-next-line import/no-unresolved
-import { TransactionReceipt } from 'web3/types';
+import { TransactionReceipt } from 'web3-core';
 
 import moment from 'moment';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
@@ -370,7 +369,7 @@ export const calculateMissingEnergyDemand = async (
         filledEvents.map(async log => {
             const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
             const nearestTime = moment
-                .unix(block.timestamp)
+                .unix(parseInt(block.timestamp.toString(), 10))
                 .startOf(resolution as moment.unitOfTime.StartOf)
                 .unix();
 

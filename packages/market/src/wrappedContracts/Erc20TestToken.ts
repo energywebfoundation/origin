@@ -1,5 +1,6 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISearchLog, ISpecialTx } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
 import Erc20TestTokenJSON from '../../build/contracts/Erc20TestToken.json';
 
 export class Erc20TestToken extends GeneralFunctions {
@@ -18,7 +19,7 @@ export class Erc20TestToken extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllTransferEvents(eventFilter?: ISearchLog) {
+    async getAllTransferEvents(eventFilter?: PastEventOptions) {
         let filterParams: any;
         if (eventFilter) {
             filterParams = {
@@ -38,7 +39,7 @@ export class Erc20TestToken extends GeneralFunctions {
         return this.web3Contract.getPastEvents('Transfer', eventFilter);
     }
 
-    async getAllApprovalEvents(eventFilter?: ISearchLog) {
+    async getAllApprovalEvents(eventFilter?: PastEventOptions) {
         let filterParams: any;
         if (eventFilter) {
             filterParams = {
@@ -58,7 +59,7 @@ export class Erc20TestToken extends GeneralFunctions {
         return this.web3Contract.getPastEvents('Approval', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 

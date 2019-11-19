@@ -1,6 +1,7 @@
 import Web3 from 'web3';
-import { EventLog } from 'web3/types'; // eslint-disable-line import/no-unresolved
-import { GeneralFunctions, ISearchLog, ISpecialTx } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
+import { EventLog } from 'web3-core';
 import MarketLogicJSON from '../../build/contracts/lightweight/MarketLogic.json';
 import { DemandStatus } from '../blockchain-facade/Demand';
 
@@ -33,7 +34,7 @@ export class MarketLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getEvents(event: string, eventFilter?: ISearchLog): Promise<EventLog[]> {
+    async getEvents(event: string, eventFilter?: PastEventOptions): Promise<EventLog[]> {
         if (!SUPPORTED_EVENTS.includes(event)) {
             throw new Error('This event does not exist.');
         }
@@ -41,7 +42,7 @@ export class MarketLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents(event, eventFilter);
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.getEvents('allEvents', eventFilter);
     }
 

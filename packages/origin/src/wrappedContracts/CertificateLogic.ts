@@ -1,4 +1,5 @@
-import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
 import Web3 from 'web3';
 import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 
@@ -24,43 +25,43 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getAllCertificationApprovedEvents(eventFilter?: ISearchLog) {
+    async getAllCertificationApprovedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('CertificationRequestApproved', eventFilter);
     }
 
-    async getAllCertificationCreatedEvents(eventFilter?: ISearchLog) {
+    async getAllCertificationCreatedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('CertificationRequestCreated', eventFilter);
     }
 
-    async getAllLogCreatedCertificateEvents(eventFilter?: ISearchLog) {
+    async getAllLogCreatedCertificateEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogCreatedCertificate', eventFilter);
     }
 
-    async getAllLogCertificateClaimedEvents(eventFilter?: ISearchLog) {
+    async getAllLogCertificateClaimedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogCertificateClaimed', eventFilter);
     }
 
-    async getAllLogCertificateSplitEvents(eventFilter?: ISearchLog) {
+    async getAllLogCertificateSplitEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogCertificateSplit', eventFilter);
     }
 
-    async getAllTransferEvents(eventFilter?: ISearchLog) {
+    async getAllTransferEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('Transfer', eventFilter);
     }
 
-    async getAllApprovalEvents(eventFilter?: ISearchLog) {
+    async getAllApprovalEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('Approval', eventFilter);
     }
 
-    async getAllApprovalForAllEvents(eventFilter?: ISearchLog) {
+    async getAllApprovalForAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('ApprovalForAll', eventFilter);
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
@@ -86,16 +87,26 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async safeTransferFrom(_from: string, _to: string, _certificateId: string, _data?: any, txParams?: ISpecialTx) {
+    async safeTransferFrom(
+        _from: string,
+        _to: string,
+        _certificateId: string,
+        _data?: any,
+        txParams?: ISpecialTx
+    ) {
         if (_data) {
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId, _data);
+            const method = this.web3Contract.methods.safeTransferFrom(
+                _from,
+                _to,
+                _certificateId,
+                _data
+            );
 
             return this.send(method, txParams);
         }
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId);
+        const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId);
 
-            return this.send(method, txParams);
-
+        return this.send(method, txParams);
     }
 
     async getCertificate(_certificateId: number, txParams?: ISpecialTx) {
