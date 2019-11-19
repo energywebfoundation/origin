@@ -69,7 +69,8 @@
                 "state": "Anystate",
                 "address": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "privateKey": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac",
-                "rights": 12
+                "rights": 12,
+                "notifications": true
             }
         },
         {
