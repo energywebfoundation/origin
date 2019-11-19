@@ -127,6 +127,24 @@
             }
         },
         {
+            "type": "CREATE_ACCOUNT",
+            "data": {
+                "firstName": "Listener",
+                "surname": "Origin Listener",
+                "email": "listener@mailinator.com",
+                "organization": "Listener Organization",
+                "street": "Main Street",
+                "number": "7",
+                "zip": "01234",
+                "city": "Anytown",
+                "country": "USA",
+                "state": "Anystate",
+                "address": "0x4Db81bEfaF6B82553898739B788963d20Be8068a",
+                "privateKey": "0x968cc146af9c9d3ac08cca0dd3f915ed5a0966c118e26fd5e99066b0ff8bc060",
+                "rights": 64
+            }
+        },
+        {
             "type": "CREATE_PRODUCING_ASSET",
             "data": {
                 "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",

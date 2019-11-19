@@ -81,9 +81,15 @@ export class OriginEventListener implements IOriginEventListener {
                 .autoPublish;
 
             if (autoPublishSettings.enabled) {
+                this.conf.logger.info(
+                    `Automatically publishing Certificate #${newCertificate.id} for sale...`
+                );
                 await newCertificate.publishForSale(
                     autoPublishSettings.price,
                     autoPublishSettings.currency
+                );
+                this.conf.logger.info(
+                    `Automatically published Certificate #${newCertificate.id} for sale.`
                 );
             }
         });

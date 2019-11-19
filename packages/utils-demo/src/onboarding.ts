@@ -41,7 +41,7 @@ export const onboardDemo = async (
                 state: action.data.state,
                 notifications: true,
                 autoPublish: {
-                    enabled: true,
+                    enabled: false,
                     price: 1.5,
                     currency: Currency.USD
                 }

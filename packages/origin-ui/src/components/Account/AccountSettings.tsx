@@ -144,8 +144,6 @@ export function AccountSettings() {
         showNotification(`User settings have been updated.`, NotificationType.Success);
     }
 
-    const autoPublishEnabled = false;
-
     return (
         <Paper>
             <Grid container spacing={3} className={classes.container}>
@@ -175,7 +173,7 @@ export function AccountSettings() {
                                 />
                             </FormGroup>
 
-                            {autoPublishCandidate !== null && autoPublishEnabled && (
+                            {autoPublishCandidate !== null && (
                                 <div>
                                     <hr />
                                     <FormGroup>
