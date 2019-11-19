@@ -33,7 +33,7 @@
     "ew-utils-general-precise-proofs": "0.3.0",
     "jsonschema": "1.2.4",
     "moment": "^2.24.0",
-    "web3": "1.2.1",
+    "web3": "1.2.4",
     "winston": "3.2.1"
   },
   "devDependencies": {

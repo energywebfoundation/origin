@@ -48,7 +48,7 @@
         "reflect-metadata": "^0.1.13",
         "rxjs": "^6.5.3",
         "tsyringe": "^3.4.0",
-        "web3": "1.2.1",
+        "web3": "1.2.4",
         "winston": "3.2.1"
     },
     "devDependencies": {
