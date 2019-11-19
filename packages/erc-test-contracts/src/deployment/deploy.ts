@@ -4,20 +4,28 @@ import { TransactionReceipt } from 'web3/types';
 
 import Web3 from 'web3';
 import { Erc20TestTokenJSON, Erc721TestReceiverJSON } from '..';
+import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
 
 export async function deployERC20TestToken(
     web3: Web3,
-    testaccount: string,
+    testAccount: string,
     deployKey: string
-): Promise<TransactionReceipt> {
+): Promise<string> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    return deploy(
+    const tx = await deploy(
         web3,
         Erc20TestTokenJSON.bytecode +
-            web3.eth.abi.encodeParameter('address', testaccount).substr(2),
+            web3.eth.abi.encodeParameter('address', testAccount).substr(2),
         { privateKey: privateKeyDeployment }
     );
+
+    const { contractAddress } = tx;
+
+    const erc20 = new Erc20TestToken(web3, contractAddress);
+    await erc20.initialize(testAccount);
+
+    return contractAddress;
 }
 
 export async function deployERC721TestReceiver(

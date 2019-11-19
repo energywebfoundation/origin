@@ -58,9 +58,11 @@ describe('Market-Facade', () => {
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
     it('should set ERC20 token', async () => {
-        erc20TestTokenAddress = (
-            await deployERC20TestToken(web3, accountTrader, privateKeyDeployment)
-        ).contractAddress;
+        erc20TestTokenAddress = await deployERC20TestToken(
+            web3,
+            accountTrader,
+            privateKeyDeployment
+        );
 
         erc20TestToken = new Erc20TestToken(web3, erc20TestTokenAddress);
     });

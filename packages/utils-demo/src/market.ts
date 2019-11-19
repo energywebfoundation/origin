@@ -113,11 +113,11 @@ export const marketDemo = async (demoFile?: string) => {
 
     const actionsArray = demoConfig.flow;
 
-    const erc20TestAddress = (await deployERC20TestToken(
+    const erc20TestAddress = await deployERC20TestToken(
         conf.blockchainProperties.web3,
         adminAccount.address,
         adminPK
-    )).contractAddress;
+    );
 
     const token = new Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
     const symbol = await token.web3Contract.methods.symbol().call();
