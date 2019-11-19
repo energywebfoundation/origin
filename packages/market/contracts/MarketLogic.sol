@@ -146,7 +146,6 @@ contract MarketLogic is Initializable, RoleManagement {
 	/// @dev will return an event with the event-Id
 	/// @param _demandId index of the demand in the allDemands-array
     function deleteDemand(uint _demandId) external onlyDemandOwner(_demandId) {
-        Demand memory demand = allDemands[_demandId];
         changeDemandStatus(_demandId, DemandStatus.ARCHIVED);
     }
 
@@ -507,8 +506,8 @@ contract MarketLogic is Initializable, RoleManagement {
                 "_buyCertificate: the buyer should have enough tokens to buy"
             );
             require(
-                erc20.allowance(buyer, _certificateLogic.ownerOf(_certificateId)) >= pCert.onChainDirectPurchasePrice,
-                "_buyCertificate: the buyer should have enough allowance to buy"
+                erc20.allowance(buyer, address(this)) >= pCert.onChainDirectPurchasePrice,
+                "_buyCertificate: the marketLogic contract should have enough allowance to buy"
             );
             erc20.transferFrom(buyer, _certificateLogic.ownerOf(_certificateId), pCert.onChainDirectPurchasePrice);
         } else {

@@ -375,7 +375,10 @@ describe('PurchasableCertificate-Facade', () => {
             await pCert.buyCertificate();
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'the buyer should have enough allowance to buy');
+            assert.include(
+                ex.message,
+                'the marketLogic contract should have enough allowance to buy'
+            );
         }
 
         assert.isTrue(failed);
@@ -387,7 +390,9 @@ describe('PurchasableCertificate-Facade', () => {
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
         await pCert.publishForSale(10, erc20TestTokenAddress);
 
-        await erc20TestToken.approve(accountAssetOwner, 100, { privateKey: traderPK });
+        await erc20TestToken.approve(marketLogic.web3Contract.options.address, 10, {
+            privateKey: traderPK
+        });
 
         setActiveUser(traderPK);
         pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -461,6 +466,10 @@ describe('PurchasableCertificate-Facade', () => {
 
         setActiveUser(traderPK);
         parentCertificate = await parentCertificate.sync();
+
+        await erc20TestToken.approve(marketLogic.web3Contract.options.address, CERTIFICATE_PRICE, {
+            privateKey: traderPK
+        });
 
         await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
@@ -709,6 +718,10 @@ describe('PurchasableCertificate-Facade', () => {
         setActiveUser(traderPK);
         firstCertificate = await firstCertificate.sync();
         secondCertificate = await secondCertificate.sync();
+
+        await erc20TestToken.approve(marketLogic.web3Contract.options.address, 6, {
+            privateKey: traderPK
+        });
 
         await marketLogic.buyCertificateBulk([newCertificateId, newCertificateId2], {
             privateKey: traderPK
