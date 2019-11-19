@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, Currency } from '@energyweb/utils-general';
 import { inject, singleton } from 'tsyringe';

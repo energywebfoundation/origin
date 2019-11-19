@@ -35,11 +35,11 @@ describe('EntityStore', () => {
         fetcher.getDemandListLength().returns(Promise.resolve(1));
         fetcher.getDemand(Arg.all()).returns(Promise.resolve(demand));
 
-        const entityStore = new EntityStore(config, logger, fetcher, false);
+        const entityStore = new EntityStore(config, logger, fetcher);
 
         assert.deepEqual(entityStore.getDemands(), []);
 
-        await entityStore.init();
+        await entityStore.init(false);
 
         assert.deepEqual(entityStore.getDemands(), []);
     });
@@ -57,11 +57,11 @@ describe('EntityStore', () => {
         fetcher.getDemandListLength().returns(Promise.resolve(1));
         fetcher.getDemand(Arg.all()).returns(Promise.resolve(demand));
 
-        const entityStore = new EntityStore(config, logger, fetcher, false);
+        const entityStore = new EntityStore(config, logger, fetcher);
 
         assert.deepEqual(entityStore.getDemands(), []);
 
-        await entityStore.init();
+        await entityStore.init(false);
 
         assert.deepEqual(entityStore.getDemands(), [demand]);
     });
@@ -79,11 +79,11 @@ describe('EntityStore', () => {
         fetcher.getDemandListLength().returns(Promise.resolve(1));
         fetcher.getDemand(Arg.all()).returns(Promise.resolve(demand));
 
-        const entityStore = new EntityStore(config, logger, fetcher, false);
+        const entityStore = new EntityStore(config, logger, fetcher);
 
         assert.deepEqual(entityStore.getDemands(), []);
 
-        await entityStore.init();
+        await entityStore.init(false);
 
         assert.deepEqual(entityStore.getDemands(), []);
     });

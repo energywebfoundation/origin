@@ -39,8 +39,7 @@ export class EntityStore implements IEntityStore {
     constructor(
         @inject('config') private config: Configuration.Entity,
         @inject('logger') private logger: Winston.Logger,
-        @inject('entityFetcher') private fetcher: IEntityFetcher,
-        private watchEvents: boolean = true
+        @inject('entityFetcher') private fetcher: IEntityFetcher
     ) {
         this.certificateListeners = new EntityListener<PurchasableCertificate.Entity>(this.logger);
         this.demandListeners = new EntityListener<Demand.Entity>(this.logger);
@@ -86,10 +85,10 @@ export class EntityStore implements IEntityStore {
         return Array.from(this.certificates.values());
     }
 
-    public async init() {
+    public async init(watchEvents = true) {
         await this.syncExistingEvents();
 
-        if (this.watchEvents) {
+        if (watchEvents) {
             await this.subscribeToEvents();
         }
 
