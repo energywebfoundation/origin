@@ -2,9 +2,8 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.sol";
-import "../../contracts/Interfaces/ERC721TokenReceiver.sol";
 
-contract TestReceiver is ERC721TokenReceiver {
+contract TestReceiver {
 
     ERC721 public entityContract;
 

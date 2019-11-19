@@ -8,7 +8,8 @@ import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts
 import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
 import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
 import { Configuration, Compliance } from '@energyweb/utils-general';
-import { TestReceiver, deployERC721TestReceiver } from '@energyweb/erc-test-contracts';
+import { deployERC721TestReceiver } from './deploy';
+import { TestReceiver } from '../wrappedContracts/TestReceiver';
 
 import { CertificateLogic, Certificate } from '..';
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';

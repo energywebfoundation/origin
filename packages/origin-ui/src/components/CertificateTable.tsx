@@ -1,5 +1,5 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
+import { Erc20TestToken } from '@energyweb/market/contracts';
 import { Certificate } from '@energyweb/origin';
 import { Demand, PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher';
