@@ -1,5 +1,5 @@
 import * as GeneralLib from '@energyweb/utils-general';
-import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
+import { TransactionReceipt } from 'web3-core';
 import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 
 export interface IAgreementOffChainProperties {

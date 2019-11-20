@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { TransactionReceipt } from 'web3/types';
+import { TransactionReceipt } from 'web3-core';
 
 import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';

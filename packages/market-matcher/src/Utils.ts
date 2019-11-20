@@ -7,7 +7,7 @@ export class Utils {
         config: Configuration.Entity
     ): Promise<number> {
         const { timestamp } = await config.blockchainProperties.web3.eth.getBlock('latest');
-        const timeDifference = timestamp - startDate;
+        const timeDifference = parseInt(timestamp.toString(), 10) - startDate;
 
         switch (timeFrame) {
             case TimeFrame.yearly:

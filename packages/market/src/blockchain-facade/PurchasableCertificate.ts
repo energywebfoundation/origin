@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
-import { TransactionReceipt, EventLog } from 'web3/types';
+import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
@@ -149,7 +148,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         wh?: number
     ): Promise<void> {
         const isErc20Sale: boolean = this.configuration.blockchainProperties.web3.utils.isAddress(
-            tokenAddressOrCurrency
+            tokenAddressOrCurrency.toString()
         );
         const isFiatSale: boolean = typeof tokenAddressOrCurrency !== 'string';
 

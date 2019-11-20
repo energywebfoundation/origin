@@ -1,6 +1,5 @@
 import { deploy } from '@energyweb/utils-general';
-// eslint-disable-next-line import/no-unresolved
-import { TransactionReceipt } from 'web3/types';
+import { TransactionReceipt } from 'web3-core';
 
 import Web3 from 'web3';
 import Erc721TestReceiverJSON from '../../build/contracts/TestReceiver.json';
