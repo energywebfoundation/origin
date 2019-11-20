@@ -64,6 +64,7 @@ interface IFormValues {
     endDate: Moment;
     activeUntilDate: Moment;
     procureFromSingleFacility: boolean;
+    automaticMatching: boolean;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -74,7 +75,8 @@ const INITIAL_FORM_VALUES: IFormValues = {
     activeUntilDate: null,
     startDate: null,
     endDate: null,
-    procureFromSingleFacility: false
+    procureFromSingleFacility: false,
+    automaticMatching: true
 };
 
 interface IProps {
@@ -118,7 +120,8 @@ export function DemandForm(props: IProps) {
                     demand.offChainProperties.maxPricePerMwh / 100
                 ).toString(),
                 procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
-                timeframe: demand.offChainProperties.timeFrame
+                timeframe: demand.offChainProperties.timeFrame,
+                automaticMatching: demand.offChainProperties.automaticMatching
             };
 
             setInitialFormValuesFromDemand(newInitialFormValuesFromDemand);
@@ -193,7 +196,8 @@ export function DemandForm(props: IProps) {
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
+            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
+            automaticMatching: values.automaticMatching
         };
 
         if (values.procureFromSingleFacility) {
@@ -389,6 +393,18 @@ export function DemandForm(props: IProps) {
                                         component={FormikDatePicker}
                                         disabled={disabled}
                                         {...dataTest('activeUntilDate')}
+                                    />
+
+                                    <Field
+                                        name="automaticMatching"
+                                        Label={{
+                                            label: 'Automatically buy certificates',
+                                            className: 'mt-3'
+                                        }}
+                                        color="primary"
+                                        component={CheckboxWithLabel}
+                                        disabled={disabled}
+                                        {...dataTest('automaticMatching')}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>

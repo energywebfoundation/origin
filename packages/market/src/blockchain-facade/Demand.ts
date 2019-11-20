@@ -31,6 +31,7 @@ export interface IDemandOffChainProperties {
     endTime: number;
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
+    automaticMatching: boolean;
 }
 
 export enum DemandStatus {

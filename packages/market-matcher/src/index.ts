@@ -16,6 +16,7 @@ import { CertificateService } from './CertificateService';
 import { DemandMatcher } from './DemandMatcher';
 import { CertificateMatcher } from './CertificateMatcher';
 import { TimeTrigger, ITimeTrigger } from './TimeTrigger';
+import { IEntityFetcher, EntityFetcher } from './EntityFetcher';
 
 export interface IMatcherConfig {
     web3Url: string;
@@ -60,6 +61,7 @@ export async function startMatcher(config: IMatcherConfig) {
         container.register<Configuration.Entity>('config', {
             useValue: configEntity
         });
+        container.register<IEntityFetcher>('entityFetcher', { useClass: EntityFetcher });
         container.register<IEntityStore>(
             'entityStore',
             { useClass: EntityStore },

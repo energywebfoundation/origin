@@ -481,7 +481,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
         if (certificate) {
             let asset = this.props.producingAssets.find(
-                (a: ProducingAsset.Entity) => a.id === certificate.certificate.assetId.toString()
+                a => a.id === certificate.certificate.assetId.toString()
             );
             if (!asset) {
                 asset = await new ProducingAsset.Entity(
@@ -499,7 +499,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 energyPerTimeFrame: certificate.certificate.energy,
                 registryCompliance: asset.offChainProperties.complianceRegistry,
                 startTime: 0,
-                endTime: 0
+                endTime: 0,
+                automaticMatching: true
             };
 
             this.props.setLoading(true);

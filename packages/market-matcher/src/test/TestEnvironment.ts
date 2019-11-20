@@ -210,7 +210,8 @@ const deployDemand = async (
         startTime: moment().unix(),
         endTime: moment()
             .add(1, 'hour')
-            .unix()
+            .unix(),
+        automaticMatching: true
     };
 
     return Demand.createDemand(demandOffChainProps, traderConfig);
