@@ -53,7 +53,8 @@ const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
     configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient
+    offChainDataClient: IOffChainDataClient,
+    runSagas = true
 ) => {
     const history = createMemoryHistory({
         initialEntries: initialHistoryEntries
@@ -86,10 +87,9 @@ const setupStoreInternal = (
         store.dispatch(setOffChainDataClient(offChainDataClient));
     }
 
-    const sagasTasks: Task[] = Object.keys(sagas).reduce(
-        (a, saga) => [...a, sagaMiddleware.run(sagas[saga])],
-        []
-    );
+    const sagasTasks: Task[] = runSagas
+        ? Object.keys(sagas).reduce((a, saga) => [...a, sagaMiddleware.run(sagas[saga])], [])
+        : [];
 
     return {
         store,
@@ -197,11 +197,13 @@ interface ISetupStoreOptions {
     logActions: boolean;
     configurationClient?: IConfigurationClient;
     offChainDataClient?: IOffChainDataClient;
+    runSagas?: boolean;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
     mockUserFetcher: true,
-    logActions: false
+    logActions: false,
+    runSagas: true
 };
 
 export const setupStore = (
@@ -212,7 +214,8 @@ export const setupStore = (
         initialHistoryEntries,
         options.logActions,
         options.configurationClient,
-        options.offChainDataClient
+        options.offChainDataClient,
+        options.runSagas
     );
 
     if (options.mockUserFetcher) {

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { mount } from 'enzyme';
 import { EncodedAssetType, IRECAssetService } from '@energyweb/utils-general';
-import { setupStore, WrapperComponent } from './utils/helpers';
-import { dataTestSelector } from '../utils/helper';
+import { setupStore, WrapperComponent } from '../utils/helpers';
+import { dataTestSelector } from '../../utils/helper';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
-} from '../components/MultiSelectAutocomplete';
+} from '../../components/MultiSelectAutocomplete';
 import { act } from '@testing-library/react';
-import { HierarchicalMultiSelect } from '../components/HierarchicalMultiSelect';
+import { HierarchicalMultiSelect } from '../../components/HierarchicalMultiSelect';
 
 describe('AssetTypeSelector', () => {
     it('correctly renders', async () => {

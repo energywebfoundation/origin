@@ -45,6 +45,7 @@ export function Header() {
     const accounts = useSelector(getAccounts);
     const users = useSelector(getUsers);
     const encryptedAccounts = useSelector(getEncryptedAccounts);
+    let activeAccount = useSelector(getActiveAccount);
 
     const dispatch = useDispatch();
 
@@ -124,8 +125,6 @@ export function Header() {
             }
         }
     };
-
-    let activeAccount = useSelector(getActiveAccount);
 
     const GUEST_ACCOUNT = {
         id: '0x0',
