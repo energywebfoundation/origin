@@ -47,9 +47,7 @@ export abstract class Entity {
     }
 
     prepareEntityCreation(offChainProperties: any, schema: any): IOffChainProperties {
-        if (!this.configuration.offChainDataSource) {
-            return null;
-        }
+        this.checkOffChainStorage();
 
         validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
 
@@ -57,56 +55,66 @@ export abstract class Entity {
     }
 
     async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<boolean> {
-        if (this.configuration.offChainDataSource) {
-            const hasSynced = await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
-                properties,
-                salts: offChainStorageProperties.salts,
-                schema: offChainStorageProperties.schema
-            });
+        this.checkOffChainStorage();
 
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(
-                    `Put off chain properties to ${this.entityLocation}`
-                );
-            }
+        const hasSynced = await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
+            properties,
+            salts: offChainStorageProperties.salts,
+            schema: offChainStorageProperties.schema
+        });
 
-            return hasSynced;
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Put off chain properties to ${this.entityLocation}`
+            );
         }
 
-        return false;
+        return hasSynced;
     }
 
     async deleteFromOffChainStorage() {
-        if (this.configuration.offChainDataSource) {
-            await this.offChainDataClient.delete(this.entityLocation);
+        this.checkOffChainStorage();
 
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(
-                    `Deleted off chain properties of ${this.entityLocation}`
-                );
-            }
+        await this.offChainDataClient.delete(this.entityLocation);
+
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Deleted off chain properties of ${this.entityLocation}`
+            );
         }
     }
 
     async getOffChainProperties<T>(hash: string): Promise<T> {
-        if (this.configuration.offChainDataSource) {
-            const { properties, salts, schema } = await this.offChainDataClient.get<T>(
+        this.checkOffChainStorage();
+
+        const { properties, salts, schema } = await this.offChainDataClient.get<T>(
+            this.entityLocation
+        );
+
+        this.generateAndAddProofs(properties, salts);
+        this.verifyOffChainProperties(hash, properties, schema);
+
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Got off chain properties from ${this.entityLocation}`
+            );
+        }
+
+        return properties;
+    }
+
+    async entityExists(): Promise<boolean> {
+        this.checkOffChainStorage();
+
+        try {
+            await this.offChainDataClient.get(
                 this.entityLocation
             );
 
-            this.generateAndAddProofs(properties, salts);
-            this.verifyOffChainProperties(hash, properties, schema);
-
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(
-                    `Got off chain properties from ${this.entityLocation}`
-                );
-            }
-
-            return properties;
+            return true;
+        } catch (e) {
+            return false;
         }
-
-        return null;
     }
 
     verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {
@@ -132,6 +140,12 @@ export abstract class Entity {
     }
 
     abstract async sync(): Promise<Entity>;
+
+    protected checkOffChainStorage() {
+        if (!this.configuration.offChainDataSource) {
+            throw new Error('Entity: Off-chain storage has not been initialized.');
+        }
+    }
 
     protected generateAndAddProofs(properties: any, salts?: string[]): IOffChainProperties {
         this.proofs = [];
