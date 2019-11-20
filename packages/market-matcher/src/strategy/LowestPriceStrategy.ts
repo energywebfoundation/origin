@@ -1,6 +1,6 @@
 import { Agreement, PurchasableCertificate } from '@energyweb/market';
 
-import { IStrategy } from './IStrategy';
+import { IStrategy } from '@energyweb/market-matcher-core';
 
 export class LowestPriceStrategy implements IStrategy {
     private agreementPriorities = [

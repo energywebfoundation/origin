@@ -1,22 +1,26 @@
 import 'reflect-metadata';
-import * as Winston from 'winston';
-import Web3 from 'web3';
-import { container } from 'tsyringe';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
-import { Configuration } from '@energyweb/utils-general';
+import {
+    CertificateMatcher,
+    CertificateService,
+    DemandMatcher,
+    IEntityStore,
+    IStrategy,
+    ITimeTrigger,
+    TimeTrigger
+} from '@energyweb/market-matcher-core';
 import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { Configuration } from '@energyweb/utils-general';
+import { container } from 'tsyringe';
+import Web3 from 'web3';
+import * as Winston from 'winston';
 
+import { EntityFetcher, IEntityFetcher } from './EntityFetcher';
+import { EntityStore } from './EntityStore';
 import { logger } from './Logger';
 import { Matcher } from './Matcher';
-import { EntityStore, IEntityStore } from './EntityStore';
-import { IStrategy } from './strategy/IStrategy';
 import { LowestPriceStrategy } from './strategy/LowestPriceStrategy';
-import { CertificateService } from './CertificateService';
-import { DemandMatcher } from './DemandMatcher';
-import { CertificateMatcher } from './CertificateMatcher';
-import { TimeTrigger, ITimeTrigger } from './TimeTrigger';
-import { IEntityFetcher, EntityFetcher } from './EntityFetcher';
 
 export interface IMatcherConfig {
     web3Url: string;
@@ -89,6 +93,3 @@ export async function startMatcher(config: IMatcherConfig) {
 
     logger.info('Matcher application started.');
 }
-
-export { MatchableDemand } from './MatchableDemand';
-export { MatchableAgreement } from './MatchableAgreement';

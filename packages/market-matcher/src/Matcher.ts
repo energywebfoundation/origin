@@ -4,12 +4,12 @@ import { concatMap, tap } from 'rxjs/operators';
 import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
 
-import { CertificateMatcher } from './CertificateMatcher';
-import { DemandMatcher } from './DemandMatcher';
-import { IEntityStore } from './EntityStore';
-import { ITimeTrigger } from './TimeTrigger';
-
-export type Listener<T> = (entity: T) => void;
+import {
+    CertificateMatcher,
+    DemandMatcher,
+    IEntityStore,
+    ITimeTrigger
+} from '@energyweb/market-matcher-core';
 
 @injectable()
 export class Matcher {

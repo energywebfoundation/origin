@@ -1,5 +1,5 @@
 import * as Winston from 'winston';
-import { Listener } from './Matcher';
+import { Listener } from './interface/Listener';
 
 export class EntityListener<T> {
     private listeners: Listener<T>[] = [];

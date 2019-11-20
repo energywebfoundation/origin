@@ -2,14 +2,10 @@ import { injectable, inject } from 'tsyringe';
 import { PurchasableCertificate } from '@energyweb/market';
 import moment from 'moment';
 import * as Winston from 'winston';
-import { IEntityStore } from './EntityStore';
-import { Listener } from './Matcher';
+import { IEntityStore } from './interface/IEntityStore';
+import { Listener } from './interface/Listener';
 import { EntityListener } from './EntityListener';
-
-export interface ITimeTrigger {
-    init(): void;
-    registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>): void;
-}
+import { ITimeTrigger } from './interface/ITimeTrigger';
 
 @injectable()
 export class TimeTrigger implements ITimeTrigger {

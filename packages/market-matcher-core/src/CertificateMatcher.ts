@@ -4,8 +4,8 @@ import * as Winston from 'winston';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Agreement, PurchasableCertificate } from '@energyweb/market';
 
-import { IEntityStore } from './EntityStore';
-import { IStrategy } from './strategy/IStrategy';
+import { IEntityStore } from './interface/IEntityStore';
+import { IStrategy } from './interface/IStrategy';
 import { CertificateService } from './CertificateService';
 import { MatchableDemand } from './MatchableDemand';
 import { MatchableAgreement } from './MatchableAgreement';

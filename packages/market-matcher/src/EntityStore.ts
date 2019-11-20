@@ -2,22 +2,8 @@ import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/ma
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
-import { Listener } from './Matcher';
-import { EntityListener } from './EntityListener';
+import { IEntityStore, EntityListener, Listener } from '@energyweb/market-matcher-core';
 import { IEntityFetcher } from './EntityFetcher';
-
-export interface IEntityStore {
-    init(): Promise<void>;
-    registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>): void;
-    registerDemandListener(listener: Listener<Demand.Entity>): void;
-
-    getDemand(id: string): Promise<Demand.Entity>;
-    getSupply(id: string): Promise<Supply.Entity>;
-
-    getAgreements(): Agreement.Entity[];
-    getDemands(): Demand.Entity[];
-    getCertificates(): PurchasableCertificate.Entity[];
-}
 
 @singleton()
 export class EntityStore implements IEntityStore {

@@ -6,10 +6,10 @@ import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 
 import { CertificateService } from './CertificateService';
-import { IEntityStore } from './EntityStore';
+import { IEntityStore } from './interface/IEntityStore';
 import { MatchableDemand } from './MatchableDemand';
 import { reasonsToString } from './MatchingErrorReason';
-import { IStrategy } from './strategy/IStrategy';
+import { IStrategy } from './interface/IStrategy';
 
 @injectable()
 export class DemandMatcher {
