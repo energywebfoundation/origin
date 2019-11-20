@@ -5,14 +5,81 @@ import { Header } from '../../components/Header';
 import { User } from '@energyweb/user-registry';
 import { addUser } from '../../features/users/actions';
 import { addAccount, addEncryptedAccount } from '../../features/authentication/actions';
+import { IStoreState } from '../../types';
+import { Store } from 'redux';
+import { MemoryHistory } from 'history';
+
+const ENCRYPTED_TRADER_KEYSTORE = {
+    address: '0x7672fa3f8C04aBBcbaD14d896AaD8bedECe72d2b',
+    encryptedPrivateKey: {
+        version: 3,
+        id: 'd1d724f0-885c-4e29-8793-42e74796c9f1',
+        address: '7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+        crypto: {
+            ciphertext: '279fc512834f30baeaad358c7ddd13639bfcfb533c924bba479ede42665cc3c1',
+            cipherparams: { iv: 'a3ade44783ab731e3dfbbc33abfa271c' },
+            cipher: 'aes-128-ctr',
+            kdf: 'scrypt',
+            kdfparams: {
+                dklen: 32,
+                salt: 'dd0adc71172df6d395385989a878f5bb8fe5758c4fb8805f90c3bb4a14426799',
+                n: 8192,
+                r: 8,
+                p: 1
+            },
+            mac: 'c92788334ac87b13023e406e18bd78803ab879e1f4f2133362c0cce457b17970'
+        }
+    }
+};
 
 describe('Header', () => {
-    it('displays only one MetaMask account', async () => {
-        const { store, history, cleanupStore } = setupStore(undefined, {
+    let store: Store<IStoreState>;
+    let history: MemoryHistory;
+    let cleanupStore: () => void;
+
+    beforeEach(() => {
+        const userFetcher = {
+            async fetch() {
+                return null;
+            }
+        };
+
+        const initializedStore = setupStore(undefined, {
             mockUserFetcher: true,
-            logActions: false
+            logActions: false,
+            userFetcher
         });
 
+        store = initializedStore.store;
+        history = initializedStore.history;
+        cleanupStore = initializedStore.cleanupStore;
+    });
+
+    afterEach(() => {
+        document.querySelectorAll(`#menu- ul`).forEach(item => item.remove());
+        cleanupStore();
+    });
+
+    it('displays shows account as Guest when no accounts', async () => {
+        function TestWrapper() {
+            return <Header />;
+        }
+
+        const rendered = await mount(
+            <WrapperComponent store={store} history={history}>
+                <TestWrapper />
+            </WrapperComponent>
+        );
+
+        expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
+        expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(true);
+
+        rendered.find(`.MuiSelect-root`).simulate('click');
+
+        expect(document.querySelectorAll(`#menu- ul li`).length).toEqual(0);
+    });
+
+    it('displays only one MetaMask account', async () => {
         const SETUP = {
             accounts: [{ address: '0x7672fa3f8C04aBBcbaD14d896AaD8bedECe72d2b' }],
             encryptedAccounts: [],
@@ -51,22 +118,14 @@ describe('Header', () => {
         );
 
         expect(rendered.find('.MuiSelect-root').text()).toBe('Trader Organization');
+        expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(true);
 
         rendered.find(`.MuiSelect-root`).simulate('click');
 
-        expect(
-            Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
-        ).toStrictEqual(['Trader Organization (MetaMask)']);
-
-        cleanupStore();
+        expect(document.querySelectorAll(`#menu- ul li`).length).toEqual(0);
     });
 
-    it('displays correctly displays MetaMask accounts next to encrypted accounts', async () => {
-        const { store, history, cleanupStore } = setupStore(undefined, {
-            mockUserFetcher: false,
-            logActions: false
-        });
-
+    it('correctly displays MetaMask accounts next to encrypted accounts', async () => {
         const SETUP = {
             accounts: [{ address: '0x7672fa3f8C04aBBcbaD14d896AaD8bedECe72d2b' }],
             encryptedAccounts: [
@@ -94,30 +153,7 @@ describe('Header', () => {
                         }
                     }
                 },
-                {
-                    address: '0x7672fa3f8C04aBBcbaD14d896AaD8bedECe72d2b',
-                    encryptedPrivateKey: {
-                        version: 3,
-                        id: 'd1d724f0-885c-4e29-8793-42e74796c9f1',
-                        address: '7672fa3f8c04abbcbad14d896aad8bedece72d2b',
-                        crypto: {
-                            ciphertext:
-                                '279fc512834f30baeaad358c7ddd13639bfcfb533c924bba479ede42665cc3c1',
-                            cipherparams: { iv: 'a3ade44783ab731e3dfbbc33abfa271c' },
-                            cipher: 'aes-128-ctr',
-                            kdf: 'scrypt',
-                            kdfparams: {
-                                dklen: 32,
-                                salt:
-                                    'dd0adc71172df6d395385989a878f5bb8fe5758c4fb8805f90c3bb4a14426799',
-                                n: 8192,
-                                r: 8,
-                                p: 1
-                            },
-                            mac: 'c92788334ac87b13023e406e18bd78803ab879e1f4f2133362c0cce457b17970'
-                        }
-                    }
-                }
+                ENCRYPTED_TRADER_KEYSTORE
             ],
             isUsingPK: false,
             users: [
@@ -166,6 +202,7 @@ describe('Header', () => {
         );
 
         expect(rendered.find('.MuiSelect-root').text()).toBe('Trader Organization');
+        expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
 
         rendered.find(`.MuiSelect-root`).simulate('click');
 
@@ -176,7 +213,99 @@ describe('Header', () => {
             'AssetManager Organization',
             'Trader Organization'
         ]);
+    });
 
-        cleanupStore();
+    it('correctly allows to pick encrypted account when no account (no MetaMask)', async () => {
+        const SETUP = {
+            encryptedAccounts: [ENCRYPTED_TRADER_KEYSTORE],
+            isUsingPK: false,
+            users: [
+                {
+                    active: true,
+                    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+                    initialized: true,
+                    offChainProperties: {
+                        firstName: 'John',
+                        surname: 'Doe Six',
+                        email: 'trader@mailinator.com'
+                    },
+                    organization: 'Trader Organization',
+
+                    roles: 8
+                } as Partial<User.Entity>
+            ]
+        };
+
+        SETUP.encryptedAccounts.map(encryptedAccount =>
+            store.dispatch(addEncryptedAccount(encryptedAccount))
+        );
+        SETUP.users.map(user => store.dispatch(addUser(user as User.Entity)));
+
+        function TestWrapper() {
+            return <Header />;
+        }
+
+        const rendered = await mount(
+            <WrapperComponent store={store} history={history}>
+                <TestWrapper />
+            </WrapperComponent>
+        );
+
+        expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
+        expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
+
+        rendered.find(`.MuiSelect-root`).simulate('click');
+
+        expect(
+            Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
+        ).toStrictEqual(['Trader Organization', 'Guest (MetaMask)']);
+    });
+
+    it('correctly displays MetaMask guest account alongside encrypted account', async () => {
+        const SETUP = {
+            accounts: [{ address: '0x7110D0F07Be70Fc2A6C84fe66BF128593b2102Fb' }],
+            encryptedAccounts: [ENCRYPTED_TRADER_KEYSTORE],
+            isUsingPK: false,
+            users: [
+                {
+                    active: true,
+                    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+                    initialized: true,
+                    offChainProperties: {
+                        firstName: 'John',
+                        surname: 'Doe Six',
+                        email: 'trader@mailinator.com'
+                    },
+                    organization: 'Trader Organization',
+
+                    roles: 8
+                } as Partial<User.Entity>
+            ]
+        };
+
+        SETUP.encryptedAccounts.map(encryptedAccount =>
+            store.dispatch(addEncryptedAccount(encryptedAccount))
+        );
+        SETUP.users.map(user => store.dispatch(addUser(user as User.Entity)));
+        store.dispatch(addAccount(SETUP.accounts[0]));
+
+        function TestWrapper() {
+            return <Header />;
+        }
+
+        const rendered = await mount(
+            <WrapperComponent store={store} history={history}>
+                <TestWrapper />
+            </WrapperComponent>
+        );
+
+        expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
+        expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
+
+        rendered.find(`.MuiSelect-root`).simulate('click');
+
+        expect(
+            Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
+        ).toStrictEqual(['Guest (MetaMask)', 'Trader Organization']);
     });
 });

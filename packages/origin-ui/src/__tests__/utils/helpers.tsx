@@ -5,7 +5,12 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import sagas from '../../features/sagas';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { addUser, updateCurrentUserId, updateFetcher } from '../../features/users/actions';
+import {
+    addUser,
+    updateCurrentUserId,
+    updateFetcher,
+    IUserFetcher
+} from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
@@ -198,6 +203,7 @@ interface ISetupStoreOptions {
     configurationClient?: IConfigurationClient;
     offChainDataClient?: IOffChainDataClient;
     runSagas?: boolean;
+    userFetcher?: IUserFetcher;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
@@ -219,7 +225,7 @@ export const setupStore = (
     );
 
     if (options.mockUserFetcher) {
-        const mockUserFetcher = {
+        const mockUserFetcher = options.userFetcher || {
             async fetch(id: string) {
                 return ({
                     id,

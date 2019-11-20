@@ -65,7 +65,7 @@ export function Header() {
         return {
             id: `${a.address}${a.privateKey ? 'PK' : ''}`,
             value: a.address,
-            label: (user && user.organization) || 'Guest',
+            label: user?.organization || 'Guest',
             isPrivateKey: Boolean(a.privateKey),
             isLocked: false
         };
