@@ -56,9 +56,9 @@ export abstract class Entity {
         return this.generateAndAddProofs(offChainProperties);
     }
 
-    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties) {
+    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<boolean> {
         if (this.configuration.offChainDataSource) {
-            await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
+            const hasSynced = await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
                 properties,
                 salts: offChainStorageProperties.salts,
                 schema: offChainStorageProperties.schema
@@ -69,7 +69,11 @@ export abstract class Entity {
                     `Put off chain properties to ${this.entityLocation}`
                 );
             }
+
+            return hasSynced;
         }
+
+        return false;
     }
 
     async deleteFromOffChainStorage() {
