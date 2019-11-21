@@ -100,10 +100,14 @@ export abstract class Entity {
         return properties;
     }
 
-    async checkEntityExists(): Promise<void> {
-        await this.offChainDataClient.get(
-            this.entityLocation
-        );
+    // Throws an error if it doesn' exist
+    async throwIfExists(): Promise<void> {
+        try {
+            await this.offChainDataClient.get(this.entityLocation);
+            throw new Error('Entity: Already exists.');
+        } catch (e) {
+            return;
+        }
     }
 
     verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {

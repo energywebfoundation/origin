@@ -60,7 +60,7 @@ export const createAsset = async (
         .waitAndRetry(10)
         .executeForPromise(async () => {
             producingAsset.id = (await getAssetListLength(configuration)).toString();
-            await producingAsset.checkEntityExists();
+            await producingAsset.throwIfExists();
         });
 
     await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
