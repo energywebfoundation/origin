@@ -50,16 +50,12 @@ export abstract class Entity {
     }
 
     prepareEntityCreation(offChainProperties: any, schema: any): IOffChainProperties {
-        this.checkOffChainStorage();
-
         validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
 
         return this.generateAndAddProofs(offChainProperties);
     }
 
     async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
-        this.checkOffChainStorage();
-
         const hasSynced = await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
             properties,
             salts: offChainStorageProperties.salts,
@@ -78,8 +74,6 @@ export abstract class Entity {
     }
 
     async deleteFromOffChainStorage() {
-        this.checkOffChainStorage();
-
         await this.offChainDataClient.delete(this.entityLocation);
 
         if (this.configuration.logger) {
@@ -90,8 +84,6 @@ export abstract class Entity {
     }
 
     async getOffChainProperties<T>(hash: string): Promise<T> {
-        this.checkOffChainStorage();
-
         const { properties, salts, schema } = await this.offChainDataClient.get<T>(
             this.entityLocation
         );
@@ -109,8 +101,6 @@ export abstract class Entity {
     }
 
     async entityExists(): Promise<boolean> {
-        this.checkOffChainStorage();
-
         try {
             await this.offChainDataClient.get(
                 this.entityLocation
@@ -145,12 +135,6 @@ export abstract class Entity {
     }
 
     abstract async sync(): Promise<Entity>;
-
-    protected checkOffChainStorage() {
-        if (!this.configuration.offChainDataSource) {
-            throw new Error('Entity: Off-chain storage has not been initialized.');
-        }
-    }
 
     protected generateAndAddProofs(properties: any, salts?: string[]): IOffChainProperties {
         this.proofs = [];
