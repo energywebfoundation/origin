@@ -32,6 +32,19 @@ const ENCRYPTED_TRADER_KEYSTORE = {
     }
 };
 
+const USER_TRADER = {
+    active: true,
+    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+    initialized: true,
+    offChainProperties: {
+        firstName: 'John',
+        surname: 'Doe Six',
+        email: 'trader@mailinator.com'
+    },
+    organization: 'Trader Organization',
+    roles: 8
+};
+
 describe('Header', () => {
     let store: Store<IStoreState>;
     let history: MemoryHistory;
@@ -83,22 +96,7 @@ describe('Header', () => {
         const SETUP = {
             accounts: [{ address: '0x7672fa3f8C04aBBcbaD14d896AaD8bedECe72d2b' }],
             encryptedAccounts: [],
-            isUsingPK: false,
-            users: [
-                {
-                    active: true,
-                    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
-                    initialized: true,
-                    offChainProperties: {
-                        firstName: 'John',
-                        surname: 'Doe Six',
-                        email: 'trader@mailinator.com'
-                    },
-                    organization: 'Trader Organization',
-
-                    roles: 8
-                } as Partial<User.Entity>
-            ]
+            users: [USER_TRADER]
         };
 
         SETUP.encryptedAccounts.map(encryptedAccount =>
@@ -155,7 +153,6 @@ describe('Header', () => {
                 },
                 ENCRYPTED_TRADER_KEYSTORE
             ],
-            isUsingPK: false,
             users: [
                 {
                     active: true,
@@ -169,19 +166,7 @@ describe('Header', () => {
                     organization: 'AssetManager Organization',
                     roles: 12
                 },
-                {
-                    active: true,
-                    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
-                    initialized: true,
-                    offChainProperties: {
-                        firstName: 'John',
-                        surname: 'Doe Six',
-                        email: 'trader@mailinator.com'
-                    },
-                    organization: 'Trader Organization',
-
-                    roles: 8
-                } as Partial<User.Entity>
+                USER_TRADER
             ]
         };
 
@@ -218,22 +203,7 @@ describe('Header', () => {
     it('correctly allows to pick encrypted account when no account (no MetaMask)', async () => {
         const SETUP = {
             encryptedAccounts: [ENCRYPTED_TRADER_KEYSTORE],
-            isUsingPK: false,
-            users: [
-                {
-                    active: true,
-                    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
-                    initialized: true,
-                    offChainProperties: {
-                        firstName: 'John',
-                        surname: 'Doe Six',
-                        email: 'trader@mailinator.com'
-                    },
-                    organization: 'Trader Organization',
-
-                    roles: 8
-                } as Partial<User.Entity>
-            ]
+            users: [USER_TRADER]
         };
 
         SETUP.encryptedAccounts.map(encryptedAccount =>
@@ -265,22 +235,7 @@ describe('Header', () => {
         const SETUP = {
             accounts: [{ address: '0x7110D0F07Be70Fc2A6C84fe66BF128593b2102Fb' }],
             encryptedAccounts: [ENCRYPTED_TRADER_KEYSTORE],
-            isUsingPK: false,
-            users: [
-                {
-                    active: true,
-                    id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
-                    initialized: true,
-                    offChainProperties: {
-                        firstName: 'John',
-                        surname: 'Doe Six',
-                        email: 'trader@mailinator.com'
-                    },
-                    organization: 'Trader Organization',
-
-                    roles: 8
-                } as Partial<User.Entity>
-            ]
+            users: [USER_TRADER]
         };
 
         SETUP.encryptedAccounts.map(encryptedAccount =>
