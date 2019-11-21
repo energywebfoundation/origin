@@ -24,8 +24,7 @@ import {
 import {
     getInitialPaginatedLoaderFilteredState,
     IPaginatedLoaderFilteredState,
-    PaginatedLoaderFiltered,
-    RECORD_INDICATOR
+    PaginatedLoaderFiltered
 } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
@@ -64,28 +63,28 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
     get filters(): ICustomFilterDefinition[] {
         return [
             {
-                property: `${RECORD_INDICATOR}demand.status`,
+                property: (record: IEnrichedDemandData) => record?.demand?.status.toString(),
                 label: 'Status',
                 input: {
                     type: CustomFilterInputType.multiselect,
                     availableOptions: [
                         {
                             label: 'Active',
-                            value: Demand.DemandStatus.ACTIVE
+                            value: Demand.DemandStatus.ACTIVE.toString()
                         },
                         {
                             label: 'Paused',
-                            value: Demand.DemandStatus.PAUSED
+                            value: Demand.DemandStatus.PAUSED.toString()
                         },
                         {
                             label: 'Archived',
-                            value: Demand.DemandStatus.ARCHIVED
+                            value: Demand.DemandStatus.ARCHIVED.toString()
                         }
                     ],
                     defaultOptions: [
-                        Demand.DemandStatus.ACTIVE,
-                        Demand.DemandStatus.PAUSED,
-                        Demand.DemandStatus.ARCHIVED
+                        Demand.DemandStatus.ACTIVE.toString(),
+                        Demand.DemandStatus.PAUSED.toString(),
+                        Demand.DemandStatus.ARCHIVED.toString()
                     ]
                 }
             }

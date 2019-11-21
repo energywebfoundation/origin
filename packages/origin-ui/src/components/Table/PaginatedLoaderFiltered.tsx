@@ -5,9 +5,9 @@ import {
     getInitialPaginatedLoaderState,
     IPaginatedLoader
 } from './PaginatedLoader';
-import { getPropertyByPath, indexOfEnd } from '../../utils/helper';
 import moment, { Moment } from 'moment';
 import { IRECAssetService } from '@energyweb/utils-general';
+import { clone } from '../../utils/helper';
 
 export type IPaginatedLoaderFilteredProps = {};
 
@@ -21,66 +21,7 @@ export const PAGINATED_LOADER_FILTERED_INITIAL_STATE: IPaginatedLoaderFilteredSt
 };
 
 export function getInitialPaginatedLoaderFilteredState(): IPaginatedLoaderFilteredState {
-    return JSON.parse(JSON.stringify(PAGINATED_LOADER_FILTERED_INITIAL_STATE));
-}
-
-export enum FILTER_SPECIAL_TYPES {
-    COMBINE = 'FILTER_COMBINE',
-    DATE_YEAR = 'FILTER_DATE_YEAR',
-    DIVIDE = 'FILTER_DIVIDE',
-    SPLIT_INCLUDES = 'SPLIT_INCLUDES'
-}
-
-export const RECORD_INDICATOR = 'RECORD|';
-const FILTER_PROPERTY_SEPARATOR = '::';
-
-function getIndividualPropertyFilterValue(record: any, property: string) {
-    const recordSignIndex = indexOfEnd(property, RECORD_INDICATOR);
-
-    if (recordSignIndex === -1) {
-        return property;
-    }
-
-    const recordPropertyName = property.slice(recordSignIndex, property.length);
-
-    return getPropertyByPath(record, recordPropertyName);
-}
-
-const FILTER_PROPERTY_PROCESSING_FUNCTIONS = {
-    [FILTER_SPECIAL_TYPES.COMBINE](record: any, ...properties: string[]) {
-        return properties
-            .map(property => getIndividualPropertyFilterValue(record, property))
-            .join('');
-    },
-    [FILTER_SPECIAL_TYPES.DATE_YEAR](record: any, property: string) {
-        return moment.unix(parseInt(getIndividualPropertyFilterValue(record, property), 10)).year();
-    },
-    [FILTER_SPECIAL_TYPES.DIVIDE](record: any, ...properties: string[]) {
-        return properties
-            .map(property => getIndividualPropertyFilterValue(record, property))
-            .reduce((a, b, index) => (index === 0 ? a : a / b));
-    }
-};
-
-function parseFilter(record: any, property: string) {
-    if (property.indexOf(FILTER_PROPERTY_SEPARATOR) === -1) {
-        return getIndividualPropertyFilterValue(record, property);
-    }
-
-    const splitString = property.split(FILTER_PROPERTY_SEPARATOR);
-
-    for (const specialFilterKey of Object.keys(FILTER_SPECIAL_TYPES)) {
-        const specialFilter = FILTER_SPECIAL_TYPES[specialFilterKey];
-
-        if (splitString[0] === specialFilter) {
-            return FILTER_PROPERTY_PROCESSING_FUNCTIONS[specialFilter](
-                record,
-                ...splitString.slice(1, splitString.length)
-            );
-        }
-    }
-
-    return property;
+    return clone(PAGINATED_LOADER_FILTERED_INITIAL_STATE);
 }
 
 export abstract class PaginatedLoaderFiltered<
@@ -109,7 +50,7 @@ export abstract class PaginatedLoaderFiltered<
         }
 
         for (const filter of filters) {
-            const filteredPropertyResolvedValue = parseFilter(record, filter.property);
+            const filteredPropertyResolvedValue = filter.property(record);
 
             if (typeof filteredPropertyResolvedValue !== 'undefined') {
                 switch (filter.input.type) {
@@ -131,7 +72,7 @@ export abstract class PaginatedLoaderFiltered<
                             filter.selectedValue &&
                             filter.selectedValue.length !== 0 &&
                             !this.assetTypeService.includesAssetType(
-                                filteredPropertyResolvedValue as string,
+                                filteredPropertyResolvedValue,
                                 filter.selectedValue as string[]
                             )
                         ) {
@@ -151,10 +92,12 @@ export abstract class PaginatedLoaderFiltered<
                         if (filter.selectedValue) {
                             const [min, max] = filter.selectedValue as number[];
 
-                            if (
-                                filteredPropertyResolvedValue < min ||
-                                filteredPropertyResolvedValue > max
-                            ) {
+                            const valueAsNumber = parseInt(
+                                filteredPropertyResolvedValue.toString(),
+                                10
+                            );
+
+                            if (valueAsNumber < min || valueAsNumber > max) {
                                 return false;
                             }
                         }
@@ -164,7 +107,9 @@ export abstract class PaginatedLoaderFiltered<
                             const year = (filter.selectedValue as Moment).year();
                             const month = (filter.selectedValue as Moment).month();
 
-                            const recordDate = moment.unix(filteredPropertyResolvedValue);
+                            const recordDate = moment.unix(
+                                parseInt(filteredPropertyResolvedValue?.toString(), 10)
+                            );
 
                             if (recordDate.month() !== month || recordDate.year() !== year) {
                                 return false;
