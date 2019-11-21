@@ -1,26 +1,24 @@
 import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Subject } from 'rxjs';
 import { concatMap, tap } from 'rxjs/operators';
-import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
 
-import { CertificateMatcher } from './CertificateMatcher';
-import { DemandMatcher } from './DemandMatcher';
-import { IEntityStore } from './EntityStore';
-import { ITimeTrigger } from './TimeTrigger';
+import {
+    CertificateMatcher,
+    DemandMatcher,
+    IEntityStore,
+    ITimeTrigger
+} from '@energyweb/market-matcher-core';
 
-export type Listener<T> = (entity: T) => void;
-
-@injectable()
 export class Matcher {
     private matchingQueue = new Subject<PurchasableCertificate.Entity | Demand.Entity>();
 
     constructor(
-        @inject('certificateMatcher') private certificateMatcher: CertificateMatcher,
-        @inject('demandMatcher') private demandMatcher: DemandMatcher,
-        @inject('entityStore') private entityStore: IEntityStore,
-        @inject('timeTrigger') private timeTrigger: ITimeTrigger,
-        @inject('logger') private logger: Winston.Logger
+        private certificateMatcher: CertificateMatcher,
+        private demandMatcher: DemandMatcher,
+        private entityStore: IEntityStore,
+        private timeTrigger: ITimeTrigger,
+        private logger: Winston.Logger
     ) {}
 
     public async init() {

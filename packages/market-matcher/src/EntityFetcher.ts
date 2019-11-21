@@ -1,7 +1,5 @@
-import 'reflect-metadata';
 import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, Currency } from '@energyweb/utils-general';
-import { inject, singleton } from 'tsyringe';
 import polly from 'polly-js';
 
 export interface IEntityFetcher {
@@ -16,9 +14,8 @@ export interface IEntityFetcher {
     getCertificate(id: string, tries?: number): Promise<PurchasableCertificate.Entity>;
 }
 
-@singleton()
 export class EntityFetcher implements IEntityFetcher {
-    constructor(@inject('config') private config: Configuration.Entity) {}
+    constructor(private config: Configuration.Entity) {}
 
     getAgreementListLength() {
         return Agreement.getAgreementListLength(this.config);

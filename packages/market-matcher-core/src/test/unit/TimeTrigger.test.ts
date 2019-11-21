@@ -1,11 +1,10 @@
-import 'reflect-metadata';
 import { Substitute } from '@fluffy-spoon/substitute';
 import * as Winston from 'winston';
 import { assert } from 'chai';
 
 import { PurchasableCertificate } from '@energyweb/market';
 import * as lolex from 'lolex';
-import { IEntityStore } from '../../EntityStore';
+import { IEntityStore } from '../../interface/IEntityStore';
 import { TimeTrigger } from '../../TimeTrigger';
 
 describe('TimeTrigger tests', () => {

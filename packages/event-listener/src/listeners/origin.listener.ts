@@ -3,7 +3,7 @@ import polly from 'polly-js';
 
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { MatchableDemand } from '@energyweb/market-matcher';
+import { MatchableDemand } from '@energyweb/market-matcher-core';
 import {
     Configuration,
     ContractEventHandler,
