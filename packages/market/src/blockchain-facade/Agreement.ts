@@ -1,5 +1,7 @@
-import * as GeneralLib from '@energyweb/utils-general';
+import polly from 'polly-js';
 import { TransactionReceipt } from 'web3-core';
+
+import * as GeneralLib from '@energyweb/utils-general';
 import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 
 export interface IAgreementOffChainProperties {
@@ -120,11 +122,12 @@ export const createAgreement = async (
     url = agreement.getUrl();
     propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    let idExists = false;
-    do {
-        agreement.id = (await getAgreementListLength(configuration)).toString();
-        idExists = await agreement.entityExists();
-    } while (idExists);
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            agreement.id = (await getAgreementListLength(configuration)).toString();
+            await agreement.entityExists();
+        });
 
     await agreement.syncOffChainStorage(agreementPropertiesOffChain, offChainStorageProperties);
 

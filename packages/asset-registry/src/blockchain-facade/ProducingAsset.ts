@@ -1,3 +1,5 @@
+import polly from 'polly-js';
+
 import { Compliance, Configuration } from '@energyweb/utils-general';
 
 import { ProducingAssetPropertiesOffChainSchema } from '..';
@@ -54,11 +56,12 @@ export const createAsset = async (
     assetPropertiesOnChain.url = producingAsset.getUrl();
     assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    let idExists = false;
-    do {
-        producingAsset.id = (await getAssetListLength(configuration)).toString();
-        idExists = await producingAsset.entityExists();
-    } while (idExists);
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            producingAsset.id = (await getAssetListLength(configuration)).toString();
+            await producingAsset.entityExists();
+        });
 
     await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 

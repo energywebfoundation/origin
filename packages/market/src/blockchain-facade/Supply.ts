@@ -1,3 +1,5 @@
+import polly from 'polly-js';
+
 import * as GeneralLib from '@energyweb/utils-general';
 
 import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperties.schema.json';
@@ -95,11 +97,12 @@ export const createSupply = async (
     url = supply.getUrl();
     propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    let idExists = false;
-    do {
-        supply.id = (await getSupplyListLength(configuration)).toString();
-        idExists = await supply.entityExists();
-    } while (idExists);
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            supply.id = (await getSupplyListLength(configuration)).toString();
+            await supply.entityExists();
+        });
 
     await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
 

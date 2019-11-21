@@ -1,3 +1,7 @@
+import polly from 'polly-js';
+import { TransactionReceipt } from 'web3-core';
+import moment from 'moment';
+
 import {
     BlockchainDataModelEntity,
     Compliance,
@@ -9,9 +13,7 @@ import {
     TS,
     TimeSeriesElement
 } from '@energyweb/utils-general';
-import { TransactionReceipt } from 'web3-core';
 
-import moment from 'moment';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -227,11 +229,12 @@ export const createDemand = async (
         DemandOffChainPropertiesSchema
     );
 
-    let idExists = false;
-    do {
-        demand.id = (await getDemandListLength(configuration)).toString();
-        idExists = await demand.entityExists();
-    } while (idExists);
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            demand.id = (await getDemandListLength(configuration)).toString();
+            await demand.entityExists();
+        });
 
     await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
 
