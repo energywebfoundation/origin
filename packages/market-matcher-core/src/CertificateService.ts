@@ -1,7 +1,7 @@
 import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, Unit } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import { TransactionReceipt } from 'web3-core'; // eslint-disable-line import/no-unresolved
+import { TransactionReceipt } from 'web3-core';
 
 export class CertificateService {
     constructor(private config: Configuration.Entity, private logger: Winston.Logger) {}
