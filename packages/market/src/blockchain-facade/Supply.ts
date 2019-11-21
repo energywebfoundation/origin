@@ -129,8 +129,6 @@ export const createSupply = async (
         .toString();
 
     if (supply.id !== idFromTx) {
-        await supply.deleteFromOffChainStorage();
-
         supply.id = idFromTx;
         await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
     }

@@ -155,8 +155,6 @@ export const createAgreement = async (
         .toString();
 
     if (agreement.id !== idFromTx) {
-        await agreement.deleteFromOffChainStorage();
-
         agreement.id = idFromTx;
         await agreement.syncOffChainStorage(agreementPropertiesOffChain, offChainStorageProperties);
     }

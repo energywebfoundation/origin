@@ -260,8 +260,6 @@ export const createDemand = async (
         .toString();
 
     if (demand.id !== idFromTx) {
-        await demand.deleteFromOffChainStorage();
-
         demand.id = idFromTx;
         await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
     }

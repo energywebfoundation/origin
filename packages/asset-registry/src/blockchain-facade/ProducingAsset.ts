@@ -91,8 +91,6 @@ export const createAsset = async (
         .toString();
 
     if (producingAsset.id !== idFromTx) {
-        await producingAsset.deleteFromOffChainStorage();
-
         producingAsset.id = idFromTx;
         await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties)
     }
