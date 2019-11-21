@@ -5,7 +5,12 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import sagas from '../../features/sagas';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { addUser, updateCurrentUserId, updateFetcher } from '../../features/users/actions';
+import {
+    addUser,
+    updateCurrentUserId,
+    updateFetcher,
+    IUserFetcher
+} from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
@@ -53,7 +58,8 @@ const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
     configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient
+    offChainDataClient: IOffChainDataClient,
+    runSagas = true
 ) => {
     const history = createMemoryHistory({
         initialEntries: initialHistoryEntries
@@ -86,10 +92,9 @@ const setupStoreInternal = (
         store.dispatch(setOffChainDataClient(offChainDataClient));
     }
 
-    const sagasTasks: Task[] = Object.keys(sagas).reduce(
-        (a, saga) => [...a, sagaMiddleware.run(sagas[saga])],
-        []
-    );
+    const sagasTasks: Task[] = runSagas
+        ? Object.keys(sagas).reduce((a, saga) => [...a, sagaMiddleware.run(sagas[saga])], [])
+        : [];
 
     return {
         store,
@@ -197,11 +202,14 @@ interface ISetupStoreOptions {
     logActions: boolean;
     configurationClient?: IConfigurationClient;
     offChainDataClient?: IOffChainDataClient;
+    runSagas?: boolean;
+    userFetcher?: IUserFetcher;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
     mockUserFetcher: true,
-    logActions: false
+    logActions: false,
+    runSagas: true
 };
 
 export const setupStore = (
@@ -212,11 +220,12 @@ export const setupStore = (
         initialHistoryEntries,
         options.logActions,
         options.configurationClient,
-        options.offChainDataClient
+        options.offChainDataClient,
+        options.runSagas
     );
 
     if (options.mockUserFetcher) {
-        const mockUserFetcher = {
+        const mockUserFetcher = options.userFetcher || {
             async fetch(id: string) {
                 return ({
                     id,

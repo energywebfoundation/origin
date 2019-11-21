@@ -3,8 +3,8 @@ import {
     IPaginatedLoaderFilteredSortedState,
     IPaginatedLoaderFilteredSortedProps,
     getInitialPaginatedLoaderFilteredSortedState
-} from '../components/Table/PaginatedLoaderFilteredSorted';
-import { IPaginatedLoaderFetchDataReturnValues } from '../components/Table/PaginatedLoader';
+} from '../../components/Table/PaginatedLoaderFilteredSorted';
+import { IPaginatedLoaderFetchDataReturnValues } from '../../components/Table/PaginatedLoader';
 
 describe('PaginatedLoaderFilteredSorted', () => {
     it('sortData correctly sorts records by multiple properties', async () => {

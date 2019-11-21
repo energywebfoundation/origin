@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { AppContainer } from '../components/AppContainer';
+import { AppContainer } from '../../components/AppContainer';
 import { Route } from 'react-router-dom';
 import {
     WrapperComponent,
@@ -8,9 +8,9 @@ import {
     wait,
     createRenderedHelpers,
     waitForConditionAndAssert
-} from './utils/helpers';
-import { startGanache, deployDemo, ACCOUNTS } from './utils/demo';
-import { dataTestSelector } from '../utils/helper';
+} from '../utils/helpers';
+import { startGanache, deployDemo, ACCOUNTS } from '../utils/demo';
+import { dataTestSelector } from '../../utils/helper';
 import { TimeFrame } from '@energyweb/utils-general';
 
 import moment from 'moment';

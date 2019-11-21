@@ -17,7 +17,11 @@
     "start": "yarn config-env && cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" webpack-dev-server --config webpack/dev.config.js --watch",
     "start-all": "yarn start",
     "test": "yarn config-env && jest",
+    "test:unit": "yarn config-env && jest -c jest.config.unit.js",
+    "test:e2e": "yarn config-env && jest -c jest.config.e2e.js",
     "test:watch": "yarn config-env && jest -u --watchAll",
+    "test:unit:watch": "yarn config-env && jest -u --watchAll -c jest.config.unit.js",
+    "test:e2e:watch": "yarn config-env && jest -u --watchAll -c jest.e2e.unit.js",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "clean": "shx rm -rf dist"

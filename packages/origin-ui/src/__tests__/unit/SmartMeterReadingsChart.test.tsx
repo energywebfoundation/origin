@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { SmartMeterReadingsChart } from '../components/SmartMeterReadingsChart';
+import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
 import { ProducingAsset, Asset } from '@energyweb/asset-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
