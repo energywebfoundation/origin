@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Route } from 'react-router-dom';
 import { AppContainer } from './components/AppContainer';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, StoreEnhancer } from 'redux';
 import { createRootReducer } from './reducers';
 import './index.scss';
 import createSagaMiddleware from 'redux-saga';
@@ -15,13 +15,12 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { DEFAULT_MATERIAL_THEME } from './styles/styleConfig';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
-import { getEnv } from './utils/helper';
 
 const history = createBrowserHistory();
 
-const IS_PRODUCTION = getEnv().MODE === 'production';
+const IS_PRODUCTION = process.env.MODE === 'production';
 
-let middleware;
+let middleware: StoreEnhancer;
 
 const sagaMiddleware = createSagaMiddleware();
 

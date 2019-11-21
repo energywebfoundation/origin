@@ -12,7 +12,6 @@ import { Compliance } from '@energyweb/utils-general';
 import { Asset, ProducingAsset } from '@energyweb/asset-registry';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
-import { BACKEND_URL } from '../../utils/api';
 import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
 
@@ -105,6 +104,8 @@ export async function deployDemo() {
 
     const configurationClient = new ConfigurationClientMock();
     const offChainDataClient = new OffChainDataClientMock();
+
+    const BACKEND_URL = 'http://localhost:3030';
 
     await configurationClient.add(
         BACKEND_URL,

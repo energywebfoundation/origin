@@ -1,11 +1,17 @@
 import { call, put, delay, select, take, all, fork } from 'redux-saga/effects';
 import { Configuration } from '@energyweb/utils-general';
 import { SagaIterator } from 'redux-saga';
-import { hideAccountChangedModal, showAccountChangedModal } from './actions';
+import {
+    hideAccountChangedModal,
+    showAccountChangedModal,
+    setEnvironment,
+    IEnvironment
+} from './actions';
 import { getConfiguration } from '../selectors';
 import { getAccountChangedModalVisible, getAccountChangedModalEnabled } from './selectors';
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
+import axios from 'axios';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -54,6 +60,29 @@ function* showAccountChangedModalOnChange(): SagaIterator {
     }
 }
 
+async function getENV(): Promise<IEnvironment> {
+    try {
+        const response = await axios.get('env-config.js');
+
+        return response.data;
+    } catch (error) {
+        console.error('Error while fetching env-config.js');
+    }
+
+    return {
+        MODE: 'development',
+        BACKEND_URL: 'http://localhost:3030',
+        BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
+        WEB3: 'http://localhost:8545'
+    };
+}
+
+function* setupEnvironment(): SagaIterator {
+    const environment: IEnvironment = yield call(getENV);
+
+    yield put(setEnvironment(environment));
+}
+
 export function* generalSaga(): SagaIterator {
-    yield all([fork(showAccountChangedModalOnChange)]);
+    yield all([fork(showAccountChangedModalOnChange), fork(setupEnvironment)]);
 }
