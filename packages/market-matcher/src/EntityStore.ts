@@ -1,11 +1,9 @@
 import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import { inject, singleton } from 'tsyringe';
 import * as Winston from 'winston';
 import { IEntityStore, EntityListener, Listener } from '@energyweb/market-matcher-core';
 import { IEntityFetcher } from './EntityFetcher';
 
-@singleton()
 export class EntityStore implements IEntityStore {
     private demands: Map<string, Demand.Entity> = new Map<string, Demand.Entity>();
 
@@ -23,9 +21,9 @@ export class EntityStore implements IEntityStore {
     private demandListeners: EntityListener<Demand.Entity>;
 
     constructor(
-        @inject('config') private config: Configuration.Entity,
-        @inject('logger') private logger: Winston.Logger,
-        @inject('entityFetcher') private fetcher: IEntityFetcher
+        private config: Configuration.Entity,
+        private logger: Winston.Logger,
+        private fetcher: IEntityFetcher
     ) {
         this.certificateListeners = new EntityListener<PurchasableCertificate.Entity>(this.logger);
         this.demandListeners = new EntityListener<Demand.Entity>(this.logger);
