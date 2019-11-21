@@ -100,16 +100,10 @@ export abstract class Entity {
         return properties;
     }
 
-    async entityExists(): Promise<boolean> {
-        try {
-            await this.offChainDataClient.get(
-                this.entityLocation
-            );
-
-            return true;
-        } catch (e) {
-            return false;
-        }
+    async checkEntityExists(): Promise<void> {
+        await this.offChainDataClient.get(
+            this.entityLocation
+        );
     }
 
     verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {

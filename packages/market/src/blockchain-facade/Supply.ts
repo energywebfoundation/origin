@@ -101,7 +101,7 @@ export const createSupply = async (
         .waitAndRetry(10)
         .executeForPromise(async () => {
             supply.id = (await getSupplyListLength(configuration)).toString();
-            await supply.entityExists();
+            await supply.checkEntityExists();
         });
 
     await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);

@@ -126,7 +126,7 @@ export const createAgreement = async (
         .waitAndRetry(10)
         .executeForPromise(async () => {
             agreement.id = (await getAgreementListLength(configuration)).toString();
-            await agreement.entityExists();
+            await agreement.checkEntityExists();
         });
 
     await agreement.syncOffChainStorage(agreementPropertiesOffChain, offChainStorageProperties);

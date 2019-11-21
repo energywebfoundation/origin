@@ -233,7 +233,7 @@ export const createDemand = async (
         .waitAndRetry(10)
         .executeForPromise(async () => {
             demand.id = (await getDemandListLength(configuration)).toString();
-            await demand.entityExists();
+            await demand.checkEntityExists();
         });
 
     await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
