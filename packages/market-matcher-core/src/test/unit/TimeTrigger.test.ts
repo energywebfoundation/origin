@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Substitute } from '@fluffy-spoon/substitute';
 import * as Winston from 'winston';
 import { assert } from 'chai';

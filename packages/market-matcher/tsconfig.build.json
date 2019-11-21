@@ -4,8 +4,6 @@
         "rootDir": "./",
         "outDir": "./dist/js",
         "types": ["mocha"],
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "declaration": false
     },
     "include": ["./src/**/*"],

@@ -1,4 +1,3 @@
-import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
 
 import { ProducingAsset } from '@energyweb/asset-registry';
@@ -11,14 +10,13 @@ import { MatchableDemand } from './MatchableDemand';
 import { reasonsToString } from './MatchingErrorReason';
 import { IStrategy } from './interface/IStrategy';
 
-@injectable()
 export class DemandMatcher {
     constructor(
-        @inject('config') private config: Configuration.Entity,
-        @inject('entityStore') private entityStore: IEntityStore,
-        @inject('certificateService') private certificateService: CertificateService,
-        @inject('strategy') private strategy: IStrategy,
-        @inject('logger') private logger: Winston.Logger
+        private config: Configuration.Entity,
+        private entityStore: IEntityStore,
+        private certificateService: CertificateService,
+        private strategy: IStrategy,
+        private logger: Winston.Logger
     ) {}
 
     public async match(demand: Demand.Entity) {

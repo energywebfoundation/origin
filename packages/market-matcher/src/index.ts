@@ -1,22 +1,15 @@
-import 'reflect-metadata';
-
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
 import {
     CertificateMatcher,
     CertificateService,
     DemandMatcher,
-    IEntityStore,
-    IStrategy,
-    ITimeTrigger,
     TimeTrigger
 } from '@energyweb/market-matcher-core';
 import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 import { Configuration } from '@energyweb/utils-general';
-import { container } from 'tsyringe';
 import Web3 from 'web3';
-import * as Winston from 'winston';
 
-import { EntityFetcher, IEntityFetcher } from './EntityFetcher';
+import { EntityFetcher } from './EntityFetcher';
 import { EntityStore } from './EntityStore';
 import { logger } from './Logger';
 import { Matcher } from './Matcher';
@@ -52,40 +45,45 @@ const createBlockchainConf = async (
     };
 };
 
-export async function startMatcher(config: IMatcherConfig) {
+export async function startMatcher(matcherConfig: IMatcherConfig) {
     logger.info('Matcher application is starting.');
 
-    if (!config) {
+    if (!matcherConfig) {
         throw new Error('No config specified');
     }
 
     try {
-        const configEntity = await createBlockchainConf(config);
+        const config = await createBlockchainConf(matcherConfig);
+        const entityFetcher = new EntityFetcher(config);
+        const entityStore = new EntityStore(config, logger, entityFetcher);
 
-        container.register<Configuration.Entity>('config', {
-            useValue: configEntity
-        });
-        container.register<IEntityFetcher>('entityFetcher', { useClass: EntityFetcher });
-        container.register<IEntityStore>(
-            'entityStore',
-            { useClass: EntityStore },
-            { singleton: true }
+        const certificationService = new CertificateService(config, logger);
+
+        const strategy = new LowestPriceStrategy();
+        const certificateMatcher = new CertificateMatcher(
+            config,
+            entityStore,
+            certificationService,
+            strategy,
+            logger
         );
-        container.register<IStrategy>('strategy', { useClass: LowestPriceStrategy });
-        container.register<CertificateService>('certificateService', {
-            useClass: CertificateService
-        });
-        container.register<Winston.Logger>('logger', { useValue: logger });
-        container.register<CertificateMatcher>('certificateMatcher', {
-            useClass: CertificateMatcher
-        });
-        container.register<DemandMatcher>('demandMatcher', {
-            useClass: DemandMatcher
-        });
-        container.register<ITimeTrigger>('timeTrigger', { useClass: TimeTrigger });
-        container.register('interval', { useValue: config.matcherInterval });
+        const demandMatcher = new DemandMatcher(
+            config,
+            entityStore,
+            certificationService,
+            strategy,
+            logger
+        );
 
-        const matcher = container.resolve<Matcher>(Matcher);
+        const timeTrigger = new TimeTrigger(entityStore, logger, matcherConfig.matcherInterval);
+        const matcher = new Matcher(
+            certificateMatcher,
+            demandMatcher,
+            entityStore,
+            timeTrigger,
+            logger
+        );
+
         await matcher.init();
     } catch (e) {
         logger.error(e);
