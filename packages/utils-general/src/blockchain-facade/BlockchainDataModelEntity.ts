@@ -26,6 +26,9 @@ export abstract class Entity {
         if (isNaN(Number(id))) {
             throw new Error('An ID of an Entity should always be numeric string.');
         }
+        if (!configuration.offChainDataSource) {
+            throw new Error('Entity::constructor: Please set offChainDataSource in the configuration.');
+        }
 
         this.id = id;
         this.configuration = configuration;
@@ -54,7 +57,7 @@ export abstract class Entity {
         return this.generateAndAddProofs(offChainProperties);
     }
 
-    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<boolean> {
+    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
         this.checkOffChainStorage();
 
         const hasSynced = await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
@@ -69,7 +72,9 @@ export abstract class Entity {
             );
         }
 
-        return hasSynced;
+        if (!hasSynced) {
+            throw new Error('createAsset: Saving off-chain data failed.');
+        }
     }
 
     async deleteFromOffChainStorage() {

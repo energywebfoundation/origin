@@ -104,14 +104,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
             UserOffChainPropertiesSchema
         );
 
-        const hasUpdatedOffChain = await this.syncOffChainStorage(
-            offChainProperties,
-            updatedOffChainStorageProperties
-        );
-
-        if (!hasUpdatedOffChain) {
-            throw new Error('User::update: Unable to update off-chain storage');
-        }
+        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
             this.id,
@@ -132,10 +125,6 @@ export const createUser = async (
     userPropertiesOffChain: IUserOffChainProperties,
     configuration: Configuration.Entity
 ): Promise<Entity> => {
-    if (!configuration.offChainDataSource) {
-        throw new Error('createUser: Please set offChainDataSource in the configuration.');
-    }
-
     const user = new Entity(null, configuration);
 
     const offChainStorageProperties = user.prepareEntityCreation(
@@ -152,14 +141,7 @@ export const createUser = async (
         privateKey: configuration.blockchainProperties.activeUser.privateKey
     };
 
-    const hasSyncedOffChain = await user.syncOffChainStorage(
-        userPropertiesOffChain,
-        offChainStorageProperties
-    );
-
-    if (!hasSyncedOffChain) {
-        throw new Error('createUser: Saving off-chain data failed.');
-    }
+    await user.syncOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
 
     const {
         status: successCreateUser

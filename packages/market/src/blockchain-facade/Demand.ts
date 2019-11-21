@@ -73,7 +73,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
-        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance!;
+        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance;
         this.initialized = false;
     }
 
@@ -227,7 +227,18 @@ export const createDemand = async (
         DemandOffChainPropertiesSchema
     );
 
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
+    let idExists = false;
+    do {
+        demand.id = (await getDemandListLength(configuration)).toString();
+        idExists = await demand.entityExists();
+    } while (idExists);
+
+    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateDemand,
+        logs
+    } = await configuration.blockchainProperties.marketLogicInstance.createDemand(
         offChainStorageProperties.rootHash,
         demand.getUrl(),
         {
@@ -236,11 +247,21 @@ export const createDemand = async (
         }
     );
 
-    demand.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
+    if (!successCreateDemand) {
+        await demand.deleteFromOffChainStorage();
+        throw new Error('createDemand: Saving on-chain data failed. Reverting...');
+    }
+
+    const idFromTx = configuration.blockchainProperties.web3.utils
+        .hexToNumber(logs[0].topics[1])
         .toString();
 
-    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    if (demand.id !== idFromTx) {
+        await demand.deleteFromOffChainStorage();
+
+        demand.id = idFromTx;
+        await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demand.id} created`);

@@ -45,10 +45,6 @@ export const createAsset = async (
     assetPropertiesOffChain: IOffChainProperties,
     configuration: Configuration.Entity
 ): Promise<Entity> => {
-    if (!configuration.offChainDataSource) {
-        throw new Error('createAsset: Please set offChainDataSource in the configuration.');
-    }
-
     const producingAsset = new Entity(null, configuration);
     const offChainStorageProperties = producingAsset.prepareEntityCreation(
         assetPropertiesOffChain,
@@ -58,17 +54,13 @@ export const createAsset = async (
     assetPropertiesOnChain.url = producingAsset.getUrl();
     assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    let existsAlready = false;
+    let idExists = false;
     do {
         producingAsset.id = (await getAssetListLength(configuration)).toString();
-        existsAlready = await producingAsset.entityExists();
-    } while (existsAlready);
+        idExists = await producingAsset.entityExists();
+    } while (idExists);
 
-    const hasSyncedOffChain = await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
-
-    if (!hasSyncedOffChain) {
-        throw new Error('createAsset: Saving off-chain data failed.');
-    }
+    await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
 
     const {
         status: successCreateAsset,

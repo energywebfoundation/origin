@@ -45,40 +45,47 @@ export const createMarketUser = async (
 ): Promise<Entity> => {
     const user = new Entity(null, configuration);
 
-    const updatedUserPropertiesOnChain = userPropertiesOnChain;
-
     const offChainStorageProperties = user.prepareEntityCreation(
         userPropertiesOffChain,
         MarketUserOffChainPropertiesSchema
     );
 
-    if (configuration.offChainDataSource) {
-        updatedUserPropertiesOnChain.url = user.getUrl();
-        updatedUserPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
+    user.id = userPropertiesOnChain.id;
+
+    let { url, propertiesDocumentHash } = userPropertiesOnChain;
+
+    url = user.getUrl();
+    propertiesDocumentHash = offChainStorageProperties.rootHash;
 
     const accountProperties = {
         from: configuration.blockchainProperties.activeUser.address,
         privateKey: configuration.blockchainProperties.activeUser.privateKey
     };
 
-    await configuration.blockchainProperties.userLogicInstance.createUser(
-        updatedUserPropertiesOnChain.propertiesDocumentHash,
-        updatedUserPropertiesOnChain.url,
-        updatedUserPropertiesOnChain.id,
-        updatedUserPropertiesOnChain.organization,
-        accountProperties
-    );
-
-    await configuration.blockchainProperties.userLogicInstance.setRoles(
-        updatedUserPropertiesOnChain.id,
-        updatedUserPropertiesOnChain.roles,
-        accountProperties
-    );
-
-    user.id = updatedUserPropertiesOnChain.id;
-
     await user.syncOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateUser
+    } = await configuration.blockchainProperties.userLogicInstance.createUser(
+        propertiesDocumentHash,
+        url,
+        userPropertiesOnChain.id,
+        userPropertiesOnChain.organization,
+        accountProperties
+    );
+
+    const {
+        status: successSetRoles
+    } = await configuration.blockchainProperties.userLogicInstance.setRoles(
+        userPropertiesOnChain.id,
+        userPropertiesOnChain.roles,
+        accountProperties
+    );
+
+    if (!successCreateUser || !successSetRoles) {
+        await user.deleteFromOffChainStorage();
+        throw new Error('createMarketUser: Saving on-chain data failed. Reverting...');
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`User ${user.id} created`);
