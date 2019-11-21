@@ -90,7 +90,7 @@ export function Header() {
         selectorAccounts.push({
             id: `${a.address}PK`,
             value: a.address,
-            label: (user && user.organization) || 'Guest',
+            label: user?.organization || 'Guest',
             isPrivateKey: true,
             isLocked: true
         });
@@ -134,10 +134,10 @@ export function Header() {
         value: '0x0'
     };
 
-    if (accounts.length === 0 || encryptedAccounts.length === 0) {
+    if (accounts.length === 0 || selectorAccounts.length === 0) {
         selectorAccounts.push(GUEST_ACCOUNT);
 
-        if (selectorAccounts.length === 1) {
+        if (!activeAccount) {
             activeAccount = {
                 address: '0x0'
             };
@@ -167,11 +167,21 @@ export function Header() {
                 <div className="ViewProfile">
                     <Select
                         input={
-                            <FilledInput value={activeAccount ? activeAccount.address : '0x0'} />
+                            <FilledInput
+                                value={
+                                    activeAccount
+                                        ? `${activeAccount.address}${
+                                              activeAccount.privateKey ? 'PK' : ''
+                                          }`
+                                        : ''
+                                }
+                            />
                         }
                         renderValue={(selected: string) => {
+                            const accountToFind = selected || '0x0';
+
                             const selectedAccount = selectorAccounts.find(
-                                a => a.value === selected
+                                a => a.id === accountToFind
                             );
 
                             return (
