@@ -49,6 +49,7 @@ install:
 script:
   - yarn lint
   - yarn test:ci:contracts
+  - yarn test:ci:contracts:deployment
   - yarn test:ci:apps
   - yarn test:ci:ui
 

@@ -1,3 +1,7 @@
+import polly from 'polly-js';
+import { TransactionReceipt } from 'web3-core';
+import moment from 'moment';
+
 import {
     BlockchainDataModelEntity,
     Compliance,
@@ -9,9 +13,7 @@ import {
     TS,
     TimeSeriesElement
 } from '@energyweb/utils-general';
-import { TransactionReceipt } from 'web3-core';
 
-import moment from 'moment';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -73,7 +75,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
-        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance!;
+        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance;
         this.initialized = false;
     }
 
@@ -227,7 +229,19 @@ export const createDemand = async (
         DemandOffChainPropertiesSchema
     );
 
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            demand.id = (await getDemandListLength(configuration)).toString();
+            await demand.throwIfExists();
+        });
+
+    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateDemand,
+        logs
+    } = await configuration.blockchainProperties.marketLogicInstance.createDemand(
         offChainStorageProperties.rootHash,
         demand.getUrl(),
         {
@@ -236,11 +250,19 @@ export const createDemand = async (
         }
     );
 
-    demand.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
+    if (!successCreateDemand) {
+        await demand.deleteFromOffChainStorage();
+        throw new Error('createDemand: Saving on-chain data failed. Reverting...');
+    }
+
+    const idFromTx = configuration.blockchainProperties.web3.utils
+        .hexToNumber(logs[0].topics[1])
         .toString();
 
-    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    if (demand.id !== idFromTx) {
+        demand.id = idFromTx;
+        await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demand.id} created`);

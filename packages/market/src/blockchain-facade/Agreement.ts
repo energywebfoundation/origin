@@ -1,5 +1,7 @@
-import * as GeneralLib from '@energyweb/utils-general';
+import polly from 'polly-js';
 import { TransactionReceipt } from 'web3-core';
+
+import * as GeneralLib from '@energyweb/utils-general';
 import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 
 export interface IAgreementOffChainProperties {
@@ -110,19 +112,29 @@ export const createAgreement = async (
 ): Promise<Entity> => {
     const agreement = new Entity(null, configuration);
 
-    const agreementOffChainStorageProperties = agreement.prepareEntityCreation(
+    const offChainStorageProperties = agreement.prepareEntityCreation(
         agreementPropertiesOffChain,
         AgreementOffChainPropertiesSchema
     );
 
     let { url, propertiesDocumentHash } = agreementPropertiesOnChain;
 
-    if (configuration.offChainDataSource) {
-        url = agreement.getUrl();
-        propertiesDocumentHash = agreementOffChainStorageProperties.rootHash;
-    }
+    url = agreement.getUrl();
+    propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createAgreement(
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            agreement.id = (await getAgreementListLength(configuration)).toString();
+            await agreement.throwIfExists();
+        });
+
+    await agreement.syncOffChainStorage(agreementPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateAgreement,
+        logs
+    } = await configuration.blockchainProperties.marketLogicInstance.createAgreement(
         propertiesDocumentHash,
         url,
         agreementPropertiesOnChain.demandId,
@@ -133,14 +145,19 @@ export const createAgreement = async (
         }
     );
 
-    agreement.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
+    if (!successCreateAgreement) {
+        await agreement.deleteFromOffChainStorage();
+        throw new Error('createAgreement: Saving on-chain data failed. Reverting...');
+    }
+
+    const idFromTx = configuration.blockchainProperties.web3.utils
+        .hexToNumber(logs[0].topics[1])
         .toString();
 
-    await agreement.syncOffChainStorage(
-        agreementPropertiesOffChain,
-        agreementOffChainStorageProperties
-    );
+    if (agreement.id !== idFromTx) {
+        agreement.id = idFromTx;
+        await agreement.syncOffChainStorage(agreementPropertiesOffChain, offChainStorageProperties);
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`Agreement ${agreement.id} created`);
