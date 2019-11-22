@@ -22,7 +22,7 @@ import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingAssetDetailLink } from '../utils/routing';
-import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
+import { getBaseURL, getProducingAssets } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
@@ -39,7 +39,6 @@ interface IProps {
 export function ProducingAssetDetailView(props: IProps) {
     const baseURL = useSelector(getBaseURL);
     const certificates = useSelector(getCertificates);
-    const configuration = useSelector(getConfiguration);
     const producingAssets = useSelector(getProducingAssets);
     const users = useSelector(getUsers);
 
@@ -279,7 +278,6 @@ export function ProducingAssetDetailView(props: IProps) {
                                     <div className="row">
                                         <div className="col-lg-4">
                                             <SmartMeterReadingsTable
-                                                conf={configuration}
                                                 producingAsset={selectedAsset}
                                             />
                                         </div>
