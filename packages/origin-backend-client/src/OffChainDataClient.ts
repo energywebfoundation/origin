@@ -44,7 +44,7 @@ export class OffChainDataClient implements IOffChainDataClient {
 
         const result = await postOrPut(normalizedURL, offChainData);
 
-        return result.status === 200;
+        return result.status >= 200 || result.status < 300;
     }
 
     private normalizeURL(url: string): string {
