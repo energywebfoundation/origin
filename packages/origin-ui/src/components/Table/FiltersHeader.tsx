@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FiltersHeader.scss';
 import { FilterIcon } from '../icons/FilterIcon';
 import { IndividualFilter } from './IndividualFilter';
 import clsx from 'clsx';
+import { deepEqual } from '../../utils/helper';
 
 export enum CustomFilterInputType {
     assetType = 'assetType',
@@ -21,13 +22,15 @@ interface ICustomFilterAvailableOption {
 interface ICustomFilterInput {
     type: CustomFilterInputType;
     availableOptions?: ICustomFilterAvailableOption[];
-    defaultOptions?: any[];
+    defaultOptions?: string[];
     min?: number;
     max?: number;
 }
 
+export type RecordPropertyGetterFunction = (record: any) => string;
+
 export interface ICustomFilterDefinition {
-    property: string;
+    property: RecordPropertyGetterFunction;
     label: string;
     input: ICustomFilterInput;
     search?: boolean;
@@ -42,25 +45,11 @@ interface IProps {
     filtersChanged: (filters: ICustomFilter[]) => void;
 }
 
-interface IState {
-    menuShown: boolean;
-    processedFilters: ICustomFilter[];
-}
+export function FiltersHeader(props: IProps) {
+    const [menuShown, setMenuShown] = useState(false);
+    const [processedFilters, setProcessedFilters] = useState<ICustomFilter[]>([]);
 
-export class FiltersHeader extends Component<IProps, IState> {
-    constructor(props, context) {
-        super(props, context);
-
-        this.state = {
-            menuShown: false,
-            processedFilters: []
-        };
-
-        this.changeFilterValue = this.changeFilterValue.bind(this);
-    }
-
-    changeFilterValue(targetFilter: ICustomFilter, selectedValue: any) {
-        const { processedFilters } = this.state;
+    function changeFilterValue(targetFilter: ICustomFilter, selectedValue: any) {
         const index = processedFilters.indexOf(targetFilter);
 
         const updatedFilter: ICustomFilter = {
@@ -74,19 +63,28 @@ export class FiltersHeader extends Component<IProps, IState> {
             ...processedFilters.slice(index + 1)
         ];
 
-        this.props.filtersChanged(updatedFilters);
+        props.filtersChanged(updatedFilters);
 
-        this.setState({
-            processedFilters: updatedFilters
-        });
+        setProcessedFilters(updatedFilters);
     }
 
-    setupProcessedFilters() {
-        if (!this.props.filters) {
+    function setupProcessedFilters() {
+        if (
+            !props.filters ||
+            deepEqual(
+                props.filters,
+                processedFilters.map(({ label, input, search, property: propertyNew }) => ({
+                    label,
+                    input,
+                    search,
+                    propertyNew
+                }))
+            )
+        ) {
             return;
         }
 
-        const processedFilters: ICustomFilter[] = this.props.filters.map(filter => {
+        const newProcessedFilters: ICustomFilter[] = props.filters.map(filter => {
             if (filter.input.type === CustomFilterInputType.multiselect) {
                 return {
                     ...filter,
@@ -100,81 +98,63 @@ export class FiltersHeader extends Component<IProps, IState> {
             };
         });
 
-        this.setState({
-            processedFilters
-        });
+        setProcessedFilters(newProcessedFilters);
     }
 
-    componentDidMount() {
-        this.setupProcessedFilters();
+    useEffect(() => {
+        setupProcessedFilters();
+    }, [props.filters]);
+
+    if (processedFilters.length === 0) {
+        return null;
     }
 
-    componentDidUpdate(prevProps) {
-        if (JSON.stringify(prevProps) === JSON.stringify(this.props)) {
-            return;
-        }
+    const searchFilter = processedFilters.find(f => f.search);
+    const standardFilters = processedFilters.filter(f => !f.search);
 
-        this.setupProcessedFilters();
-    }
+    return (
+        <>
+            {searchFilter && (
+                <div className="pb-4">
+                    <IndividualFilter filter={searchFilter} changeFilterValue={changeFilterValue} />
+                </div>
+            )}
 
-    render() {
-        const { menuShown, processedFilters } = this.state;
-
-        if (processedFilters.length === 0) {
-            return null;
-        }
-
-        const searchFilter = processedFilters.find(f => f.search);
-
-        const standardFilters = processedFilters.filter(f => !f.search);
-
-        return (
-            <>
-                {searchFilter && (
-                    <div className="pb-4">
-                        <IndividualFilter
-                            filter={searchFilter}
-                            changeFilterValue={this.changeFilterValue}
-                        />
-                    </div>
-                )}
-
-                {standardFilters.length > 0 && (
-                    <div className="FiltersHeader">
-                        <div
-                            className={`Filter ${menuShown ? 'Filter-opened' : ''}`}
-                            onClick={() => this.setState({ menuShown: !menuShown })}
-                        >
-                            <div className="Filter_icon">
-                                <FilterIcon />
-                            </div>
-                            Filter
+            {standardFilters.length > 0 && (
+                <div className="FiltersHeader">
+                    <div
+                        className={`Filter ${menuShown ? 'Filter-opened' : ''}`}
+                        onClick={() => setMenuShown(!menuShown)}
+                    >
+                        <div className="Filter_icon">
+                            <FilterIcon />
                         </div>
-                        {menuShown && (
-                            <div className="Filter_menu">
-                                {standardFilters.map((filter, index) => {
-                                    return (
-                                        <div
-                                            className={clsx('Filter_menu_item', {
-                                                'Filter_menu_item-fullWidth':
-                                                    filter.input &&
-                                                    filter.input.type ===
-                                                        CustomFilterInputType.assetType
-                                            })}
-                                            key={index}
-                                        >
-                                            <IndividualFilter
-                                                filter={filter}
-                                                changeFilterValue={this.changeFilterValue}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
+                        Filter
                     </div>
-                )}
-            </>
-        );
-    }
+                    {menuShown && (
+                        <div className="Filter_menu">
+                            {standardFilters.map((filter, index) => {
+                                return (
+                                    <div
+                                        className={clsx('Filter_menu_item', {
+                                            'Filter_menu_item-fullWidth':
+                                                filter.input &&
+                                                filter.input.type ===
+                                                    CustomFilterInputType.assetType
+                                        })}
+                                        key={index}
+                                    >
+                                        <IndividualFilter
+                                            filter={filter}
+                                            changeFilterValue={changeFilterValue}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            )}
+        </>
+    );
 }

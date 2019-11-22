@@ -2,8 +2,7 @@ import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,
     IPaginatedLoaderFilteredProps,
-    getInitialPaginatedLoaderFilteredState,
-    RECORD_INDICATOR
+    getInitialPaginatedLoaderFilteredState
 } from '../../components/Table/PaginatedLoaderFiltered';
 import { IPaginatedLoaderFetchDataReturnValues } from '../../components/Table/PaginatedLoader';
 import { CustomFilterInputType, ICustomFilter } from '../../components/Table/FiltersHeader';
@@ -35,7 +34,7 @@ describe('PaginatedLoaderFiltered', () => {
 
             const filters: ICustomFilter[] = [
                 {
-                    property: `${RECORD_INDICATOR}assetType`,
+                    property: (r: typeof record) => r.assetType,
                     label: 'Asset Type',
                     input: {
                         type: CustomFilterInputType.assetType,
@@ -44,7 +43,7 @@ describe('PaginatedLoaderFiltered', () => {
                     selectedValue: null
                 },
                 {
-                    property: `${RECORD_INDICATOR}owner`,
+                    property: (r: typeof record) => r.owner,
                     label: 'Owner',
                     input: {
                         type: CustomFilterInputType.string

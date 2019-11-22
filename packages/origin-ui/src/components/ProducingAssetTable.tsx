@@ -8,9 +8,7 @@ import { ProducingAsset } from '@energyweb/asset-registry';
 import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,
-    getInitialPaginatedLoaderFilteredState,
-    FILTER_SPECIAL_TYPES,
-    RECORD_INDICATOR
+    getInitialPaginatedLoaderFilteredState
 } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
 import {
@@ -129,7 +127,8 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
 
     filters: ICustomFilterDefinition[] = [
         {
-            property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}asset.offChainProperties.facilityName::${RECORD_INDICATOR}organizationName`,
+            property: (record: IEnrichedProducingAssetData) =>
+                `${record?.asset?.offChainProperties?.facilityName}${record?.organizationName}`,
             label: 'Search',
             input: {
                 type: CustomFilterInputType.string

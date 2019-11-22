@@ -10,8 +10,6 @@ import {
 import {
     IPaginatedLoaderFilteredState,
     getInitialPaginatedLoaderFilteredState,
-    FILTER_SPECIAL_TYPES,
-    RECORD_INDICATOR,
     PaginatedLoaderFiltered
 } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
@@ -60,7 +58,8 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
 
     filters: ICustomFilterDefinition[] = [
         {
-            property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}asset.offChainProperties.facilityName::${RECORD_INDICATOR}organizationName`,
+            property: (record: IEnrichedConsumingAssetData) =>
+                `${record?.asset?.offChainProperties?.facilityName}${record?.organizationName}`,
             label: 'Search',
             input: {
                 type: CustomFilterInputType.string

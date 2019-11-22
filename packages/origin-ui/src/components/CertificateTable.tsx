@@ -30,7 +30,6 @@ import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
 } from './Table/PaginatedLoader';
-import { FILTER_SPECIAL_TYPES, RECORD_INDICATOR } from './Table/PaginatedLoaderFiltered';
 import {
     getInitialPaginatedLoaderFilteredSortedState,
     IPaginatedLoaderFilteredSortedState,
@@ -529,9 +528,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 0
             ) / 1000;
 
-        return [
+        const filters: ICustomFilterDefinition[] = [
             {
-                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAssetProvince::${RECORD_INDICATOR}producingAssetRegion`,
+                property: (record: IEnrichedCertificateData) =>
+                    `${record?.producingAssetProvince}${record?.producingAssetRegion}`,
                 label: 'Search',
                 input: {
                     type: CustomFilterInputType.string
@@ -539,7 +539,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 search: true
             },
             {
-                property: `${RECORD_INDICATOR}producingAsset.offChainProperties.assetType`,
+                property: (record: IEnrichedCertificateData) =>
+                    record?.producingAsset?.offChainProperties?.assetType,
                 label: 'Asset Type',
                 input: {
                     type: CustomFilterInputType.assetType,
@@ -547,7 +548,11 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: `${FILTER_SPECIAL_TYPES.DATE_YEAR}::${RECORD_INDICATOR}producingAsset.offChainProperties.operationalSince`,
+                property: (record: IEnrichedCertificateData) =>
+                    moment
+                        .unix(record?.producingAsset?.offChainProperties?.operationalSince)
+                        .year()
+                        .toString(),
                 label: 'Commissioning Date',
                 input: {
                     type: CustomFilterInputType.dropdown,
@@ -558,28 +563,32 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}producingAssetProvince::, ::${RECORD_INDICATOR}producingAsset.producingAssetRegion`,
+                property: (record: IEnrichedCertificateData) =>
+                    `${record?.producingAssetProvince}${record?.producingAssetRegion}`,
                 label: 'Province, Region',
                 input: {
                     type: CustomFilterInputType.string
                 }
             },
             {
-                property: `${RECORD_INDICATOR}certificateOwner.organization`,
+                property: (record: IEnrichedCertificateData) =>
+                    record?.certificateOwner?.organization,
                 label: 'Owner',
                 input: {
                     type: CustomFilterInputType.string
                 }
             },
             {
-                property: `${RECORD_INDICATOR}certificate.certificate.creationTime`,
+                property: (record: IEnrichedCertificateData) =>
+                    record?.certificate?.certificate?.creationTime?.toString(),
                 label: 'Certification Date',
                 input: {
                     type: CustomFilterInputType.yearMonth
                 }
             },
             {
-                property: `${FILTER_SPECIAL_TYPES.DIVIDE}::${RECORD_INDICATOR}certificate.certificate.energy::1000`,
+                property: (record: IEnrichedCertificateData) =>
+                    (record?.certificate?.certificate?.energy / 1000)?.toString(),
                 label: 'Certified Energy (kWh)',
                 input: {
                     type: CustomFilterInputType.slider,
@@ -587,7 +596,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     max: maxCertificateEnergyInkWh
                 }
             }
-        ].filter(filter => !this.hiddenColumns.includes(filter.label));
+        ];
+
+        return filters.filter(filter => !this.hiddenColumns.includes(filter.label));
     }
 
     hideBuyModal() {
