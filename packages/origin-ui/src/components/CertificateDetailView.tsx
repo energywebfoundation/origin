@@ -8,12 +8,13 @@ import './DetailView.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration, getProducingAssets } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
-import { getEnv, deduplicate } from '../utils/helper';
+import { deduplicate } from '../utils/helper';
 import { useLinks } from '../utils/routing';
 import { getUsers, getUserById } from '../features/users/selectors';
 import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
+import { getEnvironment } from '../features/general/selectors';
 
 interface IProps {
     id: string;
@@ -33,6 +34,7 @@ export function CertificateDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const producingAssets = useSelector(getProducingAssets);
     const users = useSelector(getUsers);
+    const environment = useSelector(getEnvironment);
 
     const [newId, setNewId] = useState<string>(null);
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
@@ -182,7 +184,7 @@ export function CertificateDetailView(props: IProps) {
                 <span className="timestamp text-muted">
                     {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
                     <a
-                        href={`${getEnv().BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
+                        href={`${environment.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
                         className="text-muted"
                         target="_blank"
                         rel="noopener"

@@ -14417,13 +14417,6 @@ tsutils@^3.17.1:
   dependencies:
     tslib "^1.8.1"
 
-tsyringe@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/tsyringe/-/tsyringe-3.4.0.tgz#76c9517b8db6b8fac38bc371694ae6545ee9576e"
-  integrity sha512-Ol5x1/mP4Q5vnsZGIYWGURe4CKmAqUz4uEGhew+NYp0sA5a6gbqw6/2C1gqde11fuDfiZ5F07dVeBdyGlhDCNg==
-  dependencies:
-    tslib "^1.9.3"
-
 tty-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/tty-browserify/-/tty-browserify-0.0.0.tgz#a157ba402da24e9bf957f9aa69d524eed42901a6"

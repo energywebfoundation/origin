@@ -9,7 +9,15 @@ export enum GeneralActions {
     showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
     hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
     setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
-    setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT'
+    setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
+    setEnvironment = 'GENERAL_SET_ENVIRONMENT'
+}
+
+export interface IEnvironment {
+    MODE: string;
+    BACKEND_URL: string;
+    BLOCKCHAIN_EXPLORER_URL: string;
+    WEB3: string;
 }
 
 export interface IShowAccountChangedModalAction {
@@ -115,6 +123,18 @@ export const setConfigurationClient = (payload: ISetConfigurationClientAction['p
 
 export type TSetConfigurationClientAction = typeof setConfigurationClient;
 
+export interface ISetEnvironmentAction {
+    type: GeneralActions.setEnvironment;
+    payload: IEnvironment;
+}
+
+export const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
+    type: GeneralActions.setEnvironment,
+    payload
+});
+
+export type TSetEnvironmentAction = typeof setEnvironment;
+
 export type IGeneralAction =
     | IShowAccountChangedModalAction
     | IHideAccountChangedModalAction
@@ -124,4 +144,5 @@ export type IGeneralAction =
     | IRequestPasswordModalAction
     | IHideRequestPasswordModalAction
     | ISetOffChainDataClientAction
-    | ISetConfigurationClientAction;
+    | ISetConfigurationClientAction
+    | ISetEnvironmentAction;
