@@ -4,9 +4,9 @@ import {
     IPaginatedLoaderFilteredProps,
     getInitialPaginatedLoaderFilteredState,
     RECORD_INDICATOR
-} from '../components/Table/PaginatedLoaderFiltered';
-import { IPaginatedLoaderFetchDataReturnValues } from '../components/Table/PaginatedLoader';
-import { CustomFilterInputType, ICustomFilter } from '../components/Table/FiltersHeader';
+} from '../../components/Table/PaginatedLoaderFiltered';
+import { IPaginatedLoaderFetchDataReturnValues } from '../../components/Table/PaginatedLoader';
+import { CustomFilterInputType, ICustomFilter } from '../../components/Table/FiltersHeader';
 
 describe('PaginatedLoaderFiltered', () => {
     describe('checkRecordPassesFilters()', () => {

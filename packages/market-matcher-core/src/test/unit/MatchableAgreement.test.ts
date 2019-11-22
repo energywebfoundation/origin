@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Agreement, Supply, Demand, PurchasableCertificate } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Substitute } from '@fluffy-spoon/substitute';

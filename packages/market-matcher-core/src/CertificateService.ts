@@ -1,15 +1,10 @@
 import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Configuration, Unit } from '@energyweb/utils-general';
-import { inject, injectable } from 'tsyringe';
 import * as Winston from 'winston';
 import { TransactionReceipt } from 'web3-core';
 
-@injectable()
 export class CertificateService {
-    constructor(
-        @inject('config') private config: Configuration.Entity,
-        @inject('logger') private logger: Winston.Logger
-    ) {}
+    constructor(private config: Configuration.Entity, private logger: Winston.Logger) {}
 
     public async executeMatching(
         certificate: PurchasableCertificate.IPurchasableCertificate,

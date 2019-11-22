@@ -1,9 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { CertificateTable, SelectedState } from '../components/CertificateTable';
+import { CertificateTable, SelectedState } from '../../components/CertificateTable';
 import { Certificate } from '@energyweb/origin';
 import { Unit } from '@energyweb/utils-general';
-import { setupStore, createRenderedHelpers, WrapperComponent } from './utils/helpers';
+import { setupStore, createRenderedHelpers, WrapperComponent } from '../utils/helpers';
 
 describe('CertificateTable', () => {
     it('correctly renders', async () => {

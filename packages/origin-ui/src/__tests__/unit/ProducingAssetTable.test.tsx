@@ -1,8 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { ProducingAssetTable } from '../components/ProducingAssetTable';
-import { dataTestSelector } from '../utils/helper';
-import { setupStore, WrapperComponent, createRenderedHelpers } from './utils/helpers';
+import { ProducingAssetTable } from '../../components/ProducingAssetTable';
+import { dataTestSelector } from '../../utils/helper';
+import { setupStore, WrapperComponent, createRenderedHelpers } from '../utils/helpers';
 
 describe('ProducingAssetTable', () => {
     it('correctly renders and search works', async () => {

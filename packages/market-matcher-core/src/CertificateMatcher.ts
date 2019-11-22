@@ -1,24 +1,22 @@
-import { inject, injectable } from 'tsyringe';
 import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { Demand, Agreement, PurchasableCertificate } from '@energyweb/market';
 
-import { IEntityStore } from './EntityStore';
-import { IStrategy } from './strategy/IStrategy';
+import { IEntityStore } from './interface/IEntityStore';
+import { IStrategy } from './interface/IStrategy';
 import { CertificateService } from './CertificateService';
 import { MatchableDemand } from './MatchableDemand';
 import { MatchableAgreement } from './MatchableAgreement';
 import { reasonsToString } from './MatchingErrorReason';
 
-@injectable()
 export class CertificateMatcher {
     constructor(
-        @inject('config') private config: Configuration.Entity,
-        @inject('entityStore') private entityStore: IEntityStore,
-        @inject('certificateService') private certificateService: CertificateService,
-        @inject('strategy') private strategy: IStrategy,
-        @inject('logger') private logger: Winston.Logger
+        private config: Configuration.Entity,
+        private entityStore: IEntityStore,
+        private certificateService: CertificateService,
+        private strategy: IStrategy,
+        private logger: Winston.Logger
     ) {}
 
     public async match(certificate: PurchasableCertificate.Entity) {

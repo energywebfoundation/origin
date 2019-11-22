@@ -5,8 +5,7 @@
         "module": "es2015",
         "moduleResolution": "node",
         "declaration": false,
-        "noImplicitAny": false,
-        "noUnusedLocals": true
+        "noImplicitAny": false
     },
     "include": ["./src/**/*"],
     "references": [
@@ -23,7 +22,7 @@
             "path": "../market/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../market-matcher/tsconfig.build.json"
+            "path": "../market-matcher-core/tsconfig.build.json"
         },
         {
             "path": "../origin/tsconfig.build.shakeable.json"

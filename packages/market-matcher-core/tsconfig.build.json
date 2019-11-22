@@ -1,10 +1,10 @@
 {
     "extends": "../../tsconfig.build.json",
     "compilerOptions": {
+        "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
-        "types": ["mocha"],
-        "declaration": false
+        "types": ["mocha"]
     },
     "include": ["./src/**/*"],
     "references": [
@@ -25,9 +25,6 @@
         },
         {
             "path": "../origin-backend-client/tsconfig.build.json"
-        },
-        {
-            "path": "../market-matcher-core/tsconfig.build.json"
         }
     ]
 }

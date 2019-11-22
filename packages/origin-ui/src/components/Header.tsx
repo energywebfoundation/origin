@@ -45,6 +45,7 @@ export function Header() {
     const accounts = useSelector(getAccounts);
     const users = useSelector(getUsers);
     const encryptedAccounts = useSelector(getEncryptedAccounts);
+    let activeAccount = useSelector(getActiveAccount);
 
     const dispatch = useDispatch();
 
@@ -64,7 +65,7 @@ export function Header() {
         return {
             id: `${a.address}${a.privateKey ? 'PK' : ''}`,
             value: a.address,
-            label: (user && user.organization) || 'Guest',
+            label: user?.organization || 'Guest',
             isPrivateKey: Boolean(a.privateKey),
             isLocked: false
         };
@@ -89,7 +90,7 @@ export function Header() {
         selectorAccounts.push({
             id: `${a.address}PK`,
             value: a.address,
-            label: (user && user.organization) || 'Guest',
+            label: user?.organization || 'Guest',
             isPrivateKey: true,
             isLocked: true
         });
@@ -125,8 +126,6 @@ export function Header() {
         }
     };
 
-    let activeAccount = useSelector(getActiveAccount);
-
     const GUEST_ACCOUNT = {
         id: '0x0',
         isLocked: false,
@@ -135,10 +134,10 @@ export function Header() {
         value: '0x0'
     };
 
-    if (accounts.length === 0 || encryptedAccounts.length === 0) {
+    if (accounts.length === 0 || selectorAccounts.length === 0) {
         selectorAccounts.push(GUEST_ACCOUNT);
 
-        if (selectorAccounts.length === 1) {
+        if (!activeAccount) {
             activeAccount = {
                 address: '0x0'
             };
@@ -168,11 +167,21 @@ export function Header() {
                 <div className="ViewProfile">
                     <Select
                         input={
-                            <FilledInput value={activeAccount ? activeAccount.address : '0x0'} />
+                            <FilledInput
+                                value={
+                                    activeAccount
+                                        ? `${activeAccount.address}${
+                                              activeAccount.privateKey ? 'PK' : ''
+                                          }`
+                                        : ''
+                                }
+                            />
                         }
                         renderValue={(selected: string) => {
+                            const accountToFind = selected || '0x0';
+
                             const selectedAccount = selectorAccounts.find(
-                                a => a.value === selected
+                                a => a.id === accountToFind
                             );
 
                             return (

@@ -1,24 +1,18 @@
-import { injectable, inject } from 'tsyringe';
 import { PurchasableCertificate } from '@energyweb/market';
 import moment from 'moment';
 import * as Winston from 'winston';
-import { IEntityStore } from './EntityStore';
-import { Listener } from './Matcher';
+import { IEntityStore } from './interface/IEntityStore';
+import { Listener } from './interface/Listener';
 import { EntityListener } from './EntityListener';
+import { ITimeTrigger } from './interface/ITimeTrigger';
 
-export interface ITimeTrigger {
-    init(): void;
-    registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>): void;
-}
-
-@injectable()
 export class TimeTrigger implements ITimeTrigger {
     private certificateListeners: EntityListener<PurchasableCertificate.Entity>;
 
     constructor(
-        @inject('entityStore') private entityStore: IEntityStore,
-        @inject('logger') private logger: Winston.Logger,
-        @inject('interval') private interval: number
+        private entityStore: IEntityStore,
+        private logger: Winston.Logger,
+        private interval: number
     ) {
         this.certificateListeners = new EntityListener<PurchasableCertificate.Entity>(this.logger);
     }

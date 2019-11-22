@@ -123,7 +123,9 @@ function* applyActiveUser(): SagaIterator {
 
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
 
-        configuration.blockchainProperties.activeUser = action.payload;
+        if (configuration) {
+            configuration.blockchainProperties.activeUser = action.payload;
+        }
 
         try {
             yield put(updateCurrentUserId(action.payload.address));
