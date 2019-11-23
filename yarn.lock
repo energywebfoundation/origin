@@ -6802,10 +6802,10 @@ genfun@^5.0.0:
   resolved "https://registry.yarnpkg.com/genfun/-/genfun-5.0.0.tgz#9dd9710a06900a5c4a5bf57aca5da4e52fe76537"
   integrity sha512-KGDOARWVga7+rnB3z9Sd2Letx515owfk0hSxHGuqjANb1M+x2bGZGqHLiozPsYMdM2OubeMni/Hpwmjq6qIUhA==
 
-geo-tz@5.0.5:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-5.0.5.tgz#764d4aee88952a9343a78bf265d5d3dabe1b5562"
-  integrity sha512-EG+qG+4XgWZam+L82ki2WvhmCIb0en9yBtTrq+QnjdCAVDvvD995IV5xV/J4X4r5nJIDbFp0OZOgwFLIluv/8A==
+geo-tz@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/geo-tz/-/geo-tz-5.1.0.tgz#7cfb3046109287b8f0d1ed5d54cf4ffab1b4fbf4"
+  integrity sha512-W5eiXHAgfQz41jDf0KvBjvwOblySw3yz7cjeUjwezKTVt9GILNCsoMN7xXWdS5PncH+ZS01IzjfiBs1WqHSJ8A==
   dependencies:
     "@turf/boolean-point-in-polygon" "^6.0.1"
     "@turf/helpers" "^6.1.4"
@@ -14292,10 +14292,10 @@ truffle@5.1.1:
     mocha "5.2.0"
     original-require "1.0.1"
 
-ts-jest@24.1.0:
-  version "24.1.0"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-24.1.0.tgz#2eaa813271a2987b7e6c3fefbda196301c131734"
-  integrity sha512-HEGfrIEAZKfu1pkaxB9au17b1d9b56YZSqz5eCVE8mX68+5reOvlM93xGOzzCREIov9mdH7JBG+s0UyNAqr0tQ==
+ts-jest@24.2.0:
+  version "24.2.0"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-24.2.0.tgz#7abca28c2b4b0a1fdd715cd667d65d047ea4e768"
+  integrity sha512-Yc+HLyldlIC9iIK8xEN7tV960Or56N49MDP7hubCZUeI7EbIOTsas6rXCMB4kQjLACJ7eDOF4xWEO5qumpKsag==
   dependencies:
     bs-logger "0.x"
     buffer-from "1.x"
