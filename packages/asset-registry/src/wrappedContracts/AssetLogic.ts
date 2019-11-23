@@ -21,7 +21,7 @@ export class AssetLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(userContractAddress: string, txParams?: ISpecialTx) {
+    async initialize(userContractAddress: string, txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize(userContractAddress);
 
         return this.send(method, txParams);

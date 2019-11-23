@@ -23,7 +23,7 @@ export class UserLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async initialize(txParams?: ISpecialTx) {
+    async initialize(txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize();
 
         return this.send(method, txParams);
