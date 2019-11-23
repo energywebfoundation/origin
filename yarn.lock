@@ -14487,10 +14487,10 @@ type@^2.0.0:
   resolved "https://registry.yarnpkg.com/type/-/type-2.0.0.tgz#5f16ff6ef2eb44f260494dae271033b29c09a9c3"
   integrity sha512-KBt58xCHry4Cejnc2ISQAF7QY+ORngsWfxezO68+12hKV6lQY8P/psIkcbjeHWn7MqcgciWJyCCevFMJdIXpow==
 
-typechain-target-web3-v1@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/typechain-target-web3-v1/-/typechain-target-web3-v1-1.0.1.tgz#35b1e1f419dd61c6ade3a725c80c6e6fdddf2320"
-  integrity sha512-vlJ0hNgsDKIXcathK1dmOHHTQe75djCWA0NnLP/qH1xSaEFI6Af+uPPqAnUjUwSjbpY2RFvb7XRHYo70knfOWQ==
+typechain-target-web3-v1@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/typechain-target-web3-v1/-/typechain-target-web3-v1-1.0.2.tgz#bea12649769689d83540dfa49709069eaf57515b"
+  integrity sha512-32vOvKocSJ6I1KLOH0lS9h31SIplsnCDH98aUL6Bv8beEybnqvVJZQp/Lu8nWQ4DDNv9CeXJ9uSM7GJlQcCgmQ==
   dependencies:
     lodash "^4.17.15"
 
