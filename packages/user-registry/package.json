@@ -55,9 +55,7 @@
     "@energyweb/origin-backend-client": "1.0.1",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
-    "ganache-cli": "6.5.1",
-    "typechain": "1.0.3",
-    "typechain-target-web3-v1": "1.0.1"
+    "ganache-cli": "6.5.1"
   },
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
   "publishConfig": {
