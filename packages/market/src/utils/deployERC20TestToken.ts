@@ -22,7 +22,9 @@ export async function deployERC20TestToken(
     const { contractAddress } = tx;
 
     const erc20 = new Erc20TestToken(web3, contractAddress);
-    await erc20.initialize(testAccount);
+    await erc20.initialize(testAccount, {
+        privateKey: privateKeyDeployment
+    });
 
     return contractAddress;
 }
