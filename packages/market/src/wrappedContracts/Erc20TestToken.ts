@@ -63,7 +63,7 @@ export class Erc20TestToken extends GeneralFunctions {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async initialize(testAccount: string, txParams?: ISpecialTx) {
+    async initialize(testAccount: string, txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize(testAccount);
 
         return this.send(method, txParams);

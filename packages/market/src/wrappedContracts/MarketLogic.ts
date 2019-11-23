@@ -46,7 +46,7 @@ export class MarketLogic extends GeneralFunctions {
         return this.getEvents('allEvents', eventFilter);
     }
 
-    async initialize(certificateContractAddress: string, txParams?: ISpecialTx) {
+    async initialize(certificateContractAddress: string, txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize(certificateContractAddress);
 
         return this.send(method, txParams);

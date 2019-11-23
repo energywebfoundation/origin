@@ -19,7 +19,7 @@ export class CertificateLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(assetContractAddress: string, txParams?: ISpecialTx) {
+    async initialize(assetContractAddress: string, txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize(assetContractAddress);
 
         return this.send(method, txParams);
