@@ -1,7 +1,7 @@
 import * as Configuration from './Configuration';
 import { PreciseProofs } from 'ew-utils-general-precise-proofs';
 import { validateJson } from '../off-chain-data/json-validator';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainData } from '@energyweb/origin-backend-client';
 
 export interface IOffChainProperties {
     rootHash: string;
@@ -98,6 +98,12 @@ export abstract class Entity {
         }
 
         return properties;
+    }
+
+    async getOffChainDump<T>(): Promise<IOffChainData<T>> {
+        return this.offChainDataClient.get<T>(
+            this.entityLocation
+        );
     }
 
     // Throws an error if it doesn' exist

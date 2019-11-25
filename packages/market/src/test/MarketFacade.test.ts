@@ -25,7 +25,7 @@ import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
-import { PurchasableCertificate, MarketLogic, Demand, Supply, Agreement } from '..';
+import { PurchasableCertificate, MarketLogic, Demand, Supply, Agreement, MarketUser } from '..';
 
 describe('Market-Facade', () => {
     dotenv.config({
@@ -80,69 +80,7 @@ describe('Market-Facade', () => {
             web3,
             privateKeyDeployment
         );
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            'admin',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.setRoles(
-            accountDeployment,
-            buildRights([
-                Role.UserAdmin,
-                Role.AssetAdmin,
-                Role.AssetManager,
-                Role.Trader,
-                Role.Matcher
-            ]),
-            { privateKey: privateKeyDeployment }
-        );
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountTrader,
-            'trader',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
-            privateKey: privateKeyDeployment
-        });
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            assetOwnerAddress,
-            'assetOwner',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
-            privateKey: privateKeyDeployment
-        });
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            issuerAccount,
-            'issuer',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
-            privateKey: privateKeyDeployment
-        });
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            matcherAccount,
-            'matcher',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.setRoles(matcherAccount, buildRights([Role.Matcher]), {
-            privateKey: privateKeyDeployment
-        });
+        assert.exists(userLogic);
     });
 
     it('should deploy asset-registry contracts', async () => {
@@ -151,7 +89,6 @@ describe('Market-Facade', () => {
             userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-
         assert.exists(assetLogic);
     });
 
@@ -161,7 +98,6 @@ describe('Market-Facade', () => {
             assetLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-
         assert.exists(certificateLogic);
     });
 
@@ -171,27 +107,15 @@ describe('Market-Facade', () => {
             certificateLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-
-        const marketLogicAddress = marketLogic.web3Contract.options.address;
-
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            marketLogicAddress,
-            'marketLogic',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.setRoles(marketLogicAddress, buildRights([Role.Matcher]), {
-            privateKey: privateKeyDeployment
-        });
+        assert.exists(marketLogic);
     });
 
     it('should init the config', () => {
         conf = {
             blockchainProperties: {
                 activeUser: {
-                    address: accountTrader,
-                    privateKey: traderPK
+                    address: accountDeployment,
+                    privateKey: privateKeyDeployment
                 },
                 userLogicInstance: userLogic,
                 assetLogicInstance: assetLogic,
@@ -205,6 +129,208 @@ describe('Market-Facade', () => {
             },
             logger
         };
+    });
+
+    it('should create all the users', async () => {
+        await MarketUser.createMarketUser(
+            {
+                url: null,
+                propertiesDocumentHash: null,
+                id: accountDeployment,
+                active: true,
+                roles: buildRights([
+                    Role.UserAdmin,
+                    Role.AssetAdmin,
+                    Role.AssetManager,
+                    Role.Trader,
+                    Role.Matcher
+                ]),
+                organization: 'Admin'
+            },
+            {
+                firstName: 'Admin',
+                surname: 'Admin',
+                email: '',
+                street: '',
+                number: '',
+                zip: '',
+                city: '',
+                country: '',
+                state: ''
+            },
+            conf
+        );
+
+        await MarketUser.createMarketUser(
+            {
+                url: null,
+                propertiesDocumentHash: null,
+                id: accountTrader,
+                active: true,
+                roles: buildRights([Role.Trader]),
+                organization: 'trader'
+            },
+            {
+                firstName: 'trader',
+                surname: 'trader',
+                email: '',
+                street: '',
+                number: '',
+                zip: '',
+                city: '',
+                country: '',
+                state: ''
+            },
+            conf
+        );
+
+        await MarketUser.createMarketUser(
+            {
+                url: null,
+                propertiesDocumentHash: null,
+                id: assetOwnerAddress,
+                active: true,
+                roles: buildRights([Role.AssetManager]),
+                organization: 'assetOwner'
+            },
+            {
+                firstName: 'assetOwner',
+                surname: 'assetOwner',
+                email: '',
+                street: '',
+                number: '',
+                zip: '',
+                city: '',
+                country: '',
+                state: ''
+            },
+            conf
+        );
+
+        await MarketUser.createMarketUser(
+            {
+                url: null,
+                propertiesDocumentHash: null,
+                id: issuerAccount,
+                active: true,
+                roles: buildRights([Role.Issuer]),
+                organization: 'issuer'
+            },
+            {
+                firstName: 'issuer',
+                surname: 'issuer',
+                email: '',
+                street: '',
+                number: '',
+                zip: '',
+                city: '',
+                country: '',
+                state: ''
+            },
+            conf
+        );
+
+        await MarketUser.createMarketUser(
+            {
+                url: null,
+                propertiesDocumentHash: null,
+                id: matcherAccount,
+                active: true,
+                roles: buildRights([Role.Matcher]),
+                organization: 'matcher'
+            },
+            {
+                firstName: 'matcher',
+                surname: 'matcher',
+                email: '',
+                street: '',
+                number: '',
+                zip: '',
+                city: '',
+                country: '',
+                state: ''
+            },
+            conf
+        );
+
+        await MarketUser.createMarketUser(
+            {
+                url: null,
+                propertiesDocumentHash: null,
+                id: marketLogic.web3Contract.options.address,
+                active: true,
+                roles: buildRights([Role.Matcher]),
+                organization: 'marketLogic'
+            },
+            {
+                firstName: 'marketLogic',
+                surname: 'marketLogic',
+                email: '',
+                street: '',
+                number: '',
+                zip: '',
+                city: '',
+                country: '',
+                state: ''
+            },
+            conf
+        );
+    });
+
+    it('should update MarketUser off-chain properties', async () => {
+        const newEmail = 'testemail@example.com';
+
+        let user = await new MarketUser.Entity(accountDeployment, conf).sync();
+        await user.update({
+            firstName: 'Admin',
+            surname: 'Admin',
+            email: newEmail,
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: ''
+        });
+
+        user = await user.sync();
+
+        assert.equal(user.offChainProperties.email, newEmail);
+    });
+
+    it('should not update user properties when blockchain tx fails', async () => {
+        const newEmail = 'testemail@example.com';
+
+        conf.blockchainProperties.userLogicInstance.updateUser = async (
+            id: string,
+            hash: string,
+            url: string,
+            tx: any
+        ) => {
+            throw new Error(`Intentional Error: ${id}, ${hash}, ${url}, ${tx}`);
+        };
+
+        let user = await new MarketUser.Entity(accountDeployment, conf).sync();
+
+        const oldUserProperties = user.offChainProperties;
+
+        const newOffChainProperties = { ...oldUserProperties };
+        newOffChainProperties.email = newEmail;
+
+        let failed = false;
+
+        try {
+            await user.update(newOffChainProperties);
+        } catch (e) {
+            assert.isTrue(e.message.includes('Intentional Error'));
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+
+        user = await user.sync();
+
+        assert.deepEqual(user.offChainProperties, oldUserProperties);
     });
 
     it('should onboard a producing asset', async () => {
@@ -333,7 +459,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(clone.offChainProperties, demand.offChainProperties);
         });
 
-        it('should update off chain properties', async () => {
+        it('should update demand off chain properties', async () => {
             const demand = await new Demand.Entity('0', conf).clone();
 
             const offChainProperties = { ...demand.offChainProperties };
@@ -347,6 +473,39 @@ describe('Market-Facade', () => {
             assert.equal(updated.status, demand.status);
             assert.notEqual(updated.propertiesDocumentHash, demand.propertiesDocumentHash);
             assert.notDeepEqual(updated.offChainProperties, demand.offChainProperties);
+        });
+
+        it('should not update demand properties when blockchain tx fails', async () => {
+            conf.blockchainProperties.marketLogicInstance.updateDemand = async (
+                id: string,
+                hash: string,
+                url: string,
+                tx: any
+            ) => {
+                throw new Error(`Intentional Error: ${id}, ${hash}, ${url}, ${tx}`);
+            };
+
+            let demand = await new Demand.Entity('0', conf).sync();
+
+            const oldDemandProperties = demand.offChainProperties;
+
+            const newOffChainProperties = { ...oldDemandProperties };
+            newOffChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
+
+            let failed = false;
+
+            try {
+                await demand.update(newOffChainProperties);
+            } catch (e) {
+                assert.isTrue(e.message.includes('Intentional Error'));
+                failed = true;
+            }
+
+            assert.isTrue(failed);
+
+            demand = await demand.sync();
+
+            assert.deepEqual(demand.offChainProperties, oldDemandProperties);
         });
 
         it('should trigger DemandPartiallyFilled event after agreement demand filled', async () => {
