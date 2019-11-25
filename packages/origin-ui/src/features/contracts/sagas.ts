@@ -133,6 +133,51 @@ function* initEventHandler() {
                 });
             });
 
+            marketContractEventHandler.onEvent('LogUnpublishForSale', async function(event: any) {
+                const id = event.returnValues._certificateId?.toString();
+
+                if (typeof id !== 'string') {
+                    return;
+                }
+
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
+
+                emitter({
+                    action: certificateCreatedOrUpdated(certificate)
+                });
+            });
+
+            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+                try {
+                    const demand = await new Demand.Entity(
+                        event.returnValues._demandId.toString(),
+                        configuration
+                    ).sync();
+
+                    emitter({
+                        action: demandCreated(demand)
+                    });
+                } catch (error) {
+                    console.error(`Error while handling "createdNewDemand" event`, error);
+                }
+            });
+
+            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
+                    emitter({
+                        action: demandDeleted(
+                            await new Demand.Entity(
+                                event.returnValues._demandId.toString(),
+                                configuration
+                            ).sync()
+                        )
+                    });
+                }
+            });
+
             certificateContractEventHandler.onEvent('LogCertificateSplit', async function(
                 event: any
             ) {
@@ -186,53 +231,6 @@ function* initEventHandler() {
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
                 });
-            });
-
-            certificateContractEventHandler.onEvent('LogUnpublishForSale', async function(
-                event: any
-            ) {
-                const id = event.returnValues._certificateId?.toString();
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                const certificate = await new PurchasableCertificate.Entity(
-                    id,
-                    configuration
-                ).sync();
-
-                emitter({
-                    action: certificateCreatedOrUpdated(certificate)
-                });
-            });
-
-            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-                try {
-                    const demand = await new Demand.Entity(
-                        event.returnValues._demandId.toString(),
-                        configuration
-                    ).sync();
-
-                    emitter({
-                        action: demandCreated(demand)
-                    });
-                } catch (error) {
-                    console.error(`Error while handling "createdNewDemand" event`, error);
-                }
-            });
-
-            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
-                    emitter({
-                        action: demandDeleted(
-                            await new Demand.Entity(
-                                event.returnValues._demandId.toString(),
-                                configuration
-                            ).sync()
-                        )
-                    });
-                }
             });
 
             return () => {
