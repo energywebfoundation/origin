@@ -5,8 +5,7 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 
 import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
@@ -36,7 +35,7 @@ describe('AssetLogic', () => {
     const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
 
     it('should deploy the contracts', async () => {
-        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         await userLogic.createUser(
             'propertiesDocumentHash',

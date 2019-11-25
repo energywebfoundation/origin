@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { Erc20TestToken } from '@energyweb/market/contracts';
+import { Contracts as MarketContracts, PurchasableCertificate } from '@energyweb/market';
 import { Currency } from '@energyweb/utils-general';
-import { PurchasableCertificate } from '@energyweb/market';
+
 import { ProducingAsset } from '@energyweb/asset-registry';
 import {
     Button,
@@ -145,7 +145,7 @@ export function PublishForSaleModal(props: IProps) {
                 let isInitializedToken = true;
 
                 if (isAddress) {
-                    const token = new Erc20TestToken(
+                    const token = new MarketContracts.Erc20TestToken(
                         configuration.blockchainProperties.web3,
                         givenAddress
                     );

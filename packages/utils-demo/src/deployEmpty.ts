@@ -1,10 +1,10 @@
 import Web3 from 'web3';
 import { logger } from './Logger';
 
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
+import * as UserRegistry from '@energyweb/user-registry';
+import * as AssetRegistry from '@energyweb/asset-registry';
+import * as Origin from '@energyweb/origin';
+import * as Market from '@energyweb/market';
 
 export async function deployEmptyContracts() {
     const web3: Web3 = new Web3(process.env.WEB3);
@@ -15,11 +15,11 @@ export async function deployEmptyContracts() {
     console.log('-----------------------------------------------------------');
 
     // deploy user, asset and market contracts and store instances of lookup contracts
-    const userLogic = await migrateUserRegistryContracts(web3, adminPK);
+    const userLogic = await UserRegistry.Contracts.migrateUserRegistryContracts(web3, adminPK);
     const userLogicAddress = userLogic.web3Contract.options.address;
     logger.info('UserLogic Contract Deployed: ' + userLogicAddress);
 
-    const assetLogic = await migrateAssetRegistryContracts(
+    const assetLogic = await AssetRegistry.Contracts.migrateAssetRegistryContracts(
         web3,
         userLogicAddress,
         adminPK
@@ -27,7 +27,7 @@ export async function deployEmptyContracts() {
     const assetLogicAddress = assetLogic.web3Contract.options.address;
     logger.info('AssetLogic Contract Deployed: ' + assetLogicAddress);
 
-    const certificateLogic = await migrateCertificateRegistryContracts(
+    const certificateLogic = await Origin.Contracts.migrateCertificateRegistryContracts(
         web3,
         assetLogicAddress,
         adminPK
@@ -35,7 +35,7 @@ export async function deployEmptyContracts() {
     const certificateLogicAddress = certificateLogic.web3Contract.options.address;
     logger.info('CertificateLogic Contract Deployed: ' + certificateLogicAddress);
 
-    const marketLogic = await migrateMarketRegistryContracts(
+    const marketLogic = await Market.Contracts.migrateMarketRegistryContracts(
         web3,
         certificateLogicAddress,
         adminPK

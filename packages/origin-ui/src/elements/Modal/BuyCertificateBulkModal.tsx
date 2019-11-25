@@ -1,6 +1,5 @@
 import React from 'react';
-import { Erc20TestToken } from '@energyweb/market/contracts';
-import { PurchasableCertificate } from '@energyweb/market';
+import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -42,7 +41,7 @@ export function BuyCertificateBulkModal(props: IProps) {
             const acceptedToken = (cert.acceptedToken as any) as string;
 
             if (acceptedToken !== '0x0000000000000000000000000000000000000000') {
-                const erc20TestToken = new Erc20TestToken(
+                const erc20TestToken = new MarketContracts.Erc20TestToken(
                     configuration.blockchainProperties.web3,
                     acceptedToken
                 );

@@ -1,8 +1,7 @@
-import { Erc20TestToken } from '@energyweb/market/contracts';
 import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
-import { PurchasableCertificate } from '@energyweb/market';
+import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 
 import { onboardDemo } from './onboarding';
 
@@ -251,7 +250,7 @@ export const certificateDemo = async (
                 address: action.data.buyer,
                 privateKey: action.data.buyerPK
             };
-            const erc20TestToken = new Erc20TestToken(
+            const erc20TestToken = new MarketContracts.Erc20TestToken(
                 conf.blockchainProperties.web3,
                 erc20TestAddress
             );
@@ -295,7 +294,7 @@ export const certificateDemo = async (
                 const acceptedToken = (cert.acceptedToken as any) as string;
 
                 if (acceptedToken !== '0x0000000000000000000000000000000000000000') {
-                    const token = new Erc20TestToken(
+                    const token = new MarketContracts.Erc20TestToken(
                         conf.blockchainProperties.web3,
                         erc20TestAddress
                     );
