@@ -10,18 +10,30 @@ export class LocationService {
 
         const zipRegex = /[0-9]{5}/;
         const split = clean.split(',').reverse();
-        const provinceWithZip = split[0];
+        const provinceWithZip = (split[0] || '').trim();
 
         const matchZipResult = provinceWithZip.match(zipRegex);
         const zip = matchZipResult ? matchZipResult[0].trim() : '';
 
-        const province = zip ? (provinceWithZip.split(zipRegex)[0] || '').trim() : '';
+        const splitResult = provinceWithZip.split(zipRegex);
+
+        const province = zip
+            ? (splitResult[0]?.trim() || splitResult[1]?.trim() || '').trim()
+            : provinceWithZip || '';
 
         for (const [region, provinces] of Object.entries(THAILAND_REGIONS_PROVINCES_MAP)) {
             const included = provinces.some(p => p === province);
 
             if (included) {
                 return `${country};${region};${province}`;
+            }
+
+            const alternativeProvince =
+                provinces.find(p => province.includes(p)) ||
+                provinces.find(p => p.includes(province));
+
+            if (alternativeProvince) {
+                return `${country};${region};${alternativeProvince}`;
             }
         }
 
