@@ -3,10 +3,8 @@ import 'mocha';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
+import { UserLogic, Role, buildRights, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
+import { Asset, ProducingAsset, AssetLogic, Contracts as AssetRegistryContracts } from '@energyweb/asset-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { deployERC721TestReceiver } from './deploy';
@@ -84,7 +82,7 @@ describe('CertificateLogic-Facade', () => {
     }
 
     it('should deploy the contracts', async () => {
-        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -100,7 +98,7 @@ describe('CertificateLogic-Facade', () => {
             { privateKey: privateKeyDeployment }
         );
 
-        assetLogic = await migrateAssetRegistryContracts(
+        assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment

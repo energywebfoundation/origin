@@ -4,12 +4,19 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 import moment from 'moment';
 
-import { AssetLogic, Asset, ProducingAsset } from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { CertificateLogic } from '@energyweb/origin';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import {
+    AssetLogic,
+    Asset,
+    ProducingAsset,
+    Contracts as AssetRegistryContracts
+} from '@energyweb/asset-registry';
+import {
+    buildRights,
+    Role,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
+import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
@@ -69,7 +76,10 @@ describe('Market-Facade', () => {
     });
 
     it('should deploy user-registry contracts', async () => {
-        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            web3,
+            privateKeyDeployment
+        );
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -136,7 +146,7 @@ describe('Market-Facade', () => {
     });
 
     it('should deploy asset-registry contracts', async () => {
-        assetLogic = await migrateAssetRegistryContracts(
+        assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment
@@ -146,7 +156,7 @@ describe('Market-Facade', () => {
     });
 
     it('should deploy origin contracts', async () => {
-        certificateLogic = await migrateCertificateRegistryContracts(
+        certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             web3,
             assetLogic.web3Contract.options.address,
             privateKeyDeployment

@@ -1,14 +1,27 @@
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
-import { Asset, AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { MarketLogic, Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { CertificateLogic } from '@energyweb/origin';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import {
+    Asset,
+    AssetLogic,
+    ProducingAsset,
+    Contracts as AssetRegistryContracts
+} from '@energyweb/asset-registry';
+import {
+    MarketLogic,
+    Demand,
+    MarketUser,
+    PurchasableCertificate,
+    Contracts as MarketContracts
+} from '@energyweb/market';
+import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
+import {
+    buildRights,
+    Role,
+    User,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
 
 import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
@@ -80,24 +93,27 @@ export class Demo {
     }
 
     async deploy(offChainDataClient: IOffChainDataClient) {
-        this.userLogic = await migrateUserRegistryContracts(this.web3, this.adminPK);
+        this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            this.web3,
+            this.adminPK
+        );
         const userLogicAddress = this.userLogic.web3Contract.options.address;
 
-        this.assetLogic = await migrateAssetRegistryContracts(
+        this.assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
             this.web3,
             userLogicAddress,
             this.adminPK
         );
         const assetLogicAddress = this.assetLogic.web3Contract.options.address;
 
-        this.certificateLogic = await migrateCertificateRegistryContracts(
+        this.certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             this.web3,
             assetLogicAddress,
             this.adminPK
         );
         const certificateLogicAddress = this.certificateLogic.web3Contract.options.address;
 
-        this.marketLogic = await migrateMarketRegistryContracts(
+        this.marketLogic = await MarketContracts.migrateMarketRegistryContracts(
             this.web3,
             certificateLogicAddress,
             this.adminPK

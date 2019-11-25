@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import Web3 from 'web3';
 
-import { Erc20TestToken, deployERC20TestToken } from '@energyweb/market/contracts';
+import * as Market from '@energyweb/market';
 import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { AssetLogic } from '@energyweb/asset-registry';
@@ -113,13 +113,13 @@ export const marketDemo = async (demoFile?: string) => {
 
     const actionsArray = demoConfig.flow;
 
-    const erc20TestAddress = await deployERC20TestToken(
+    const erc20TestAddress = await Market.Contracts.deployERC20TestToken(
         conf.blockchainProperties.web3,
         adminAccount.address,
         adminPK
     );
 
-    const token = new Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
+    const token = new Market.Contracts.Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
     const symbol = await token.web3Contract.methods.symbol().call();
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
@@ -129,7 +129,7 @@ export const marketDemo = async (demoFile?: string) => {
             case 'SEND_ERC20_TOKENS_TO':
                 console.log('-----------------------------------------------------------');
 
-                const erc20token = new Erc20TestToken(
+                const erc20token = new Market.Contracts.Erc20TestToken(
                     conf.blockchainProperties.web3,
                     erc20TestAddress
                 );

@@ -2,17 +2,24 @@ import Web3 from 'web3';
 import ganache from 'ganache-cli';
 import * as Winston from 'winston';
 
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
+import {
+    Contracts as UserRegistryContracts,
+    User,
+    buildRights,
+    Role
+} from '@energyweb/user-registry';
+import {
+    Contracts as AssetRegistryContracts,
+    Asset,
+    ProducingAsset
+} from '@energyweb/asset-registry';
+import { Contracts as OriginContracts } from '@energyweb/origin';
+import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 
-import { User, buildRights, Role } from '@energyweb/user-registry';
 import { Compliance } from '@energyweb/utils-general';
-import { Asset, ProducingAsset } from '@energyweb/asset-registry';
+
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
-import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
 
 const connectionConfig = {
@@ -69,20 +76,24 @@ export async function deployDemo() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
-    const userLogic = await migrateUserRegistryContracts(web3, adminPK);
+    const userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, adminPK);
     const userLogicAddress = userLogic.web3Contract.options.address;
 
-    const assetLogic = await migrateAssetRegistryContracts(web3, userLogicAddress, adminPK);
+    const assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+        web3,
+        userLogicAddress,
+        adminPK
+    );
     const assetLogicAddress = assetLogic.web3Contract.options.address;
 
-    const certificateLogic = await migrateCertificateRegistryContracts(
+    const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
         web3,
         assetLogicAddress,
         adminPK
     );
     const certificateLogicAddress = certificateLogic.web3Contract.options.address;
 
-    const marketLogic = await migrateMarketRegistryContracts(
+    const marketLogic = await MarketContracts.migrateMarketRegistryContracts(
         web3,
         certificateLogicAddress,
         adminPK
