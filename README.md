@@ -29,7 +29,7 @@
 | Package | Stable | Canary | Description |
 | --- | --- | --- | --- |
 | [`@energyweb/asset-registry`](/packages/asset-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/asset-registry.svg)](https://www.npmjs.com/package/@energyweb/asset-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/asset-registry/canary)](https://www.npmjs.com/package/@energyweb/asset-registry) | Contracts and client for Asset Registry |
-| [`@energyweb/market-matcher`](/packages/market-matcher) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher.svg)](https://www.npmjs.com/package/@energyweb/market-matcher) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher/canary)](https://www.npmjs.com/package/@energyweb/market-matcher) | Off-chain services for demand and supply matching |
+| [`@energyweb/market-matcher-core`](/packages/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core.svg)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core/canary)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | Matching rules and logic for market-matcher |
 | [`@energyweb/market`](/packages/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market.svg)](https://www.npmjs.com/package/@energyweb/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contacts and client for Origin Market |
 | [`@energyweb/origin`](/packages/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/origin.svg)](https://www.npmjs.com/package/@energyweb/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contracts and client Origin ceritifacts |
 | [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source |
@@ -37,11 +37,12 @@
 | [`@energyweb/user-registry`](/packages/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry.svg)](https://www.npmjs.com/package/@energyweb/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry/canary)](https://www.npmjs.com/package/@energyweb/user-registry) | Contracts and client User Registry |
 | [`@energyweb/utils-general`](/packages/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general) | Utilities |
 
-### UI and demo
+### Applications, Infrastructure and Demo
 
 | Package | Description |
 | --- | --- |
 | [`@energyweb/origin-ui`](/packages/origin-ui) | UI for Origin |
+| [`@energyweb/market-matcher`](/packages/market-matcher) | Off-chain agent for demand and supply matching |
 | [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
 | [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events and sends notifications |
 | [`@energyweb/utils-demo`](/packages/utils-demo) | Demo deployment and configuration utilities |
