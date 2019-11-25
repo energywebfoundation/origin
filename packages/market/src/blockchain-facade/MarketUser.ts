@@ -22,6 +22,8 @@ export class Entity extends User.Entity {
             MarketUserOffChainPropertiesSchema
         );
 
+        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
             this.id,
             updatedOffChainStorageProperties.rootHash,
@@ -31,8 +33,6 @@ export class Entity extends User.Entity {
                 privateKey: this.configuration.blockchainProperties.activeUser.privateKey
             }
         );
-
-        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
         return new Entity(this.id, this.configuration).sync();
     }
