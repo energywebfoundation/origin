@@ -22,17 +22,33 @@ export class Entity extends User.Entity {
             MarketUserOffChainPropertiesSchema
         );
 
+        const oldOffChainData = await this.getOffChainDump();
+        const oldHash = this.propertiesDocumentHash;
+
         await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
-        await this.configuration.blockchainProperties.userLogicInstance.updateUser(
-            this.id,
-            updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
-            {
-                from: this.configuration.blockchainProperties.activeUser.address,
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            }
-        );
+        try {
+            await this.configuration.blockchainProperties.userLogicInstance.updateUser(
+                this.id,
+                updatedOffChainStorageProperties.rootHash,
+                this.getUrl(),
+                {
+                    from: this.configuration.blockchainProperties.activeUser.address,
+                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+                }
+            );
+        } catch (e) {
+            this.configuration.logger.error(
+                `MarketUser::update: Failed to write to the chain. Reverting off-chain properties...`
+            );
+            this.syncOffChainStorage(oldOffChainData.properties, {
+                rootHash: oldHash,
+                salts: oldOffChainData.salts,
+                schema: oldOffChainData.schema
+            });
+
+            throw e;
+        }
 
         return new Entity(this.id, this.configuration).sync();
     }

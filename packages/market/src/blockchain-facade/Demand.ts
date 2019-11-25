@@ -120,17 +120,33 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             DemandOffChainPropertiesSchema
         );
 
-        await this.marketLogicInstance.updateDemand(
-            this.id,
-            updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
-            {
-                from: this.configuration.blockchainProperties.activeUser.address,
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            }
-        );
+        const oldOffChainData = await this.getOffChainDump();
+        const oldHash = this.propertiesDocumentHash;
 
         await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+
+        try {
+            await this.marketLogicInstance.updateDemand(
+                this.id,
+                updatedOffChainStorageProperties.rootHash,
+                this.getUrl(),
+                {
+                    from: this.configuration.blockchainProperties.activeUser.address,
+                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+                }
+            );
+        } catch (e) {
+            this.configuration.logger.error(
+                `Demand::update: Failed to write to the chain. Reverting off-chain properties...`
+            );
+            this.syncOffChainStorage(oldOffChainData.properties, {
+                rootHash: oldHash,
+                salts: oldOffChainData.salts,
+                schema: oldOffChainData.schema
+            });
+
+            throw e;
+        }
 
         return new Entity(this.id, this.configuration).sync();
     }

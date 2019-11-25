@@ -298,6 +298,41 @@ describe('Market-Facade', () => {
         assert.equal(user.offChainProperties.email, newEmail);
     });
 
+    it('should not update user properties when blockchain tx fails', async () => {
+        const newEmail = 'testemail@example.com';
+
+        conf.blockchainProperties.userLogicInstance.updateUser = async (
+            id: string,
+            hash: string,
+            url: string,
+            tx: any
+        ) => {
+            throw new Error(`Intentional Error: ${id}, ${hash}, ${url}, ${tx}`);
+        };
+
+        let user = await new MarketUser.Entity(accountDeployment, conf).sync();
+
+        const oldUserProperties = user.offChainProperties;
+
+        const newOffChainProperties = { ...oldUserProperties };
+        newOffChainProperties.email = newEmail;
+
+        let failed = false;
+
+        try {
+            await user.update(newOffChainProperties);
+        } catch (e) {
+            assert.isTrue(e.message.includes('Intentional Error'));
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+
+        user = await user.sync();
+
+        assert.deepEqual(user.offChainProperties, oldUserProperties);
+    });
+
     it('should onboard a producing asset', async () => {
         conf.blockchainProperties.activeUser = {
             address: accountDeployment,
@@ -424,7 +459,7 @@ describe('Market-Facade', () => {
             assert.deepEqual(clone.offChainProperties, demand.offChainProperties);
         });
 
-        it('should update off chain properties', async () => {
+        it('should update demand off chain properties', async () => {
             const demand = await new Demand.Entity('0', conf).clone();
 
             const offChainProperties = { ...demand.offChainProperties };
@@ -438,6 +473,39 @@ describe('Market-Facade', () => {
             assert.equal(updated.status, demand.status);
             assert.notEqual(updated.propertiesDocumentHash, demand.propertiesDocumentHash);
             assert.notDeepEqual(updated.offChainProperties, demand.offChainProperties);
+        });
+
+        it('should not update demand properties when blockchain tx fails', async () => {
+            conf.blockchainProperties.marketLogicInstance.updateDemand = async (
+                id: string,
+                hash: string,
+                url: string,
+                tx: any
+            ) => {
+                throw new Error(`Intentional Error: ${id}, ${hash}, ${url}, ${tx}`);
+            };
+
+            let demand = await new Demand.Entity('0', conf).sync();
+
+            const oldDemandProperties = demand.offChainProperties;
+
+            const newOffChainProperties = { ...oldDemandProperties };
+            newOffChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
+
+            let failed = false;
+
+            try {
+                await demand.update(newOffChainProperties);
+            } catch (e) {
+                assert.isTrue(e.message.includes('Intentional Error'));
+                failed = true;
+            }
+
+            assert.isTrue(failed);
+
+            demand = await demand.sync();
+
+            assert.deepEqual(demand.offChainProperties, oldDemandProperties);
         });
 
         it('should trigger DemandPartiallyFilled event after agreement demand filled', async () => {
