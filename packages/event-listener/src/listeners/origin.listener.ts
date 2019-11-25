@@ -2,10 +2,8 @@ import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand } from '@energyweb/market';
-import { MatchableDemand } from '@energyweb/market-matcher';
-import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
+import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
+import { MatchableDemand } from '@energyweb/market-matcher-core';
 import {
     Configuration,
     ContractEventHandler,
@@ -13,8 +11,7 @@ import {
     Currency
 } from '@energyweb/utils-general';
 
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
-import { SCAN_INTERVAL } from '..';
+import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { initOriginConfig } from '../config/origin.config';
 import EmailTypes from '../email/EmailTypes';
 import { IEmailServiceProvider } from '../services/email.service';
@@ -31,6 +28,8 @@ export interface IOriginEventListener extends IEventListener {
 }
 
 export class OriginEventListener implements IOriginEventListener {
+    public web3: Web3;
+
     public started: boolean;
 
     public conf: Configuration.Entity;
@@ -40,25 +39,18 @@ export class OriginEventListener implements IOriginEventListener {
     private interval: any;
 
     constructor(
+        public config: IEventListenerConfig,
         public marketLookupAddress: string,
-        public web3: Web3,
         public emailService: IEmailServiceProvider,
-        private originEventsStore: IOriginEventsStore,
-        private offChainDataClient: IOffChainDataClient,
-        public notificationInterval?: number
+        private originEventsStore: IOriginEventsStore
     ) {
-        this.notificationInterval = notificationInterval || 60000; // Default to 1 min intervals
-
+        this.web3 = new Web3(config.web3Url || 'http://localhost:8550');
         this.started = false;
         this.interval = null;
     }
 
     public async start(): Promise<void> {
-        this.conf = await initOriginConfig(
-            this.marketLookupAddress,
-            this.web3,
-            this.offChainDataClient
-        );
+        this.conf = await initOriginConfig(this.marketLookupAddress, this.web3, this.config);
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
@@ -75,17 +67,41 @@ export class OriginEventListener implements IOriginEventListener {
             const certId = event.returnValues._certificateId;
             this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
 
-            const newCertificate: Certificate.Entity = await new Certificate.Entity(
+            const newCertificate: PurchasableCertificate.Entity = await new PurchasableCertificate.Entity(
                 certId,
                 this.conf
             ).sync();
 
-            this.originEventsStore.registerIssuedCertificate(newCertificate.owner);
+            const { owner } = newCertificate.certificate;
+
+            this.originEventsStore.registerIssuedCertificate(owner);
+
+            const certificateOwner = await new MarketUser.Entity(owner, this.conf).sync();
+            const autoPublishSettings = (certificateOwner.offChainProperties as MarketUser.IMarketUserOffChainProperties)
+                .autoPublish;
+
+            if (autoPublishSettings.enabled) {
+                this.conf.logger.info(
+                    `Automatically publishing Certificate #${newCertificate.id} for sale...`
+                );
+                await newCertificate.publishForSale(
+                    autoPublishSettings.price,
+                    autoPublishSettings.currency
+                );
+                this.conf.logger.info(
+                    `Automatically published Certificate #${newCertificate.id} for sale.`
+                );
+            }
         });
 
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const fetchCertificate = async (certificateId: string) => {
-                const certificate = await new Certificate.Entity(certificateId, this.conf).sync();
+        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const fetchCertificate = async (
+                certificateId: string
+            ): Promise<PurchasableCertificate.Entity> => {
+                const certificate = await new PurchasableCertificate.Entity(
+                    certificateId,
+                    this.conf
+                ).sync();
 
                 if (
                     certificate.forSale &&
@@ -99,7 +115,7 @@ export class OriginEventListener implements IOriginEventListener {
                 return certificate;
             };
 
-            const publishedCertificate = await polly()
+            const publishedCertificate: PurchasableCertificate.IPurchasableCertificate = await polly()
                 .waitAndRetry(10)
                 .executeForPromise(() => fetchCertificate(event.returnValues._certificateId));
 
@@ -110,7 +126,7 @@ export class OriginEventListener implements IOriginEventListener {
             const demands = await Demand.getAllDemands(this.conf);
 
             const producingAsset = await new ProducingAsset.Entity(
-                publishedCertificate.assetId.toString(),
+                publishedCertificate.certificate.assetId.toString(),
                 this.conf
             ).sync();
 
@@ -155,24 +171,29 @@ export class OriginEventListener implements IOriginEventListener {
             }
         });
 
-        this.manager = new EventHandlerManager(SCAN_INTERVAL, this.conf);
+        this.manager = new EventHandlerManager(this.config.scanInterval, this.conf);
         this.manager.registerEventHandler(certificateContractEventHandler);
         this.manager.registerEventHandler(marketContractEventHandler);
 
         this.manager.start();
-        this.interval = setInterval(this.notify.bind(this), this.notificationInterval);
+        this.interval = setInterval(this.notify.bind(this), this.config.notificationInterval);
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);
+        this.conf.logger.info(
+            `Running the listener with account ${
+                this.web3.eth.accounts.privateKeyToAccount(this.config.accountPrivKey).address
+            }`
+        );
     }
 
     private async notify() {
         const allUsers: Promise<
-            User.Entity
+            MarketUser.Entity
         >[] = this.originEventsStore
             .getAllUsers()
-            .map(async userId => new User.Entity(userId, this.conf).sync());
-        const notifyUsers: User.Entity[] = (await Promise.all(allUsers)).filter(
+            .map(async userId => new MarketUser.Entity(userId, this.conf).sync());
+        const notifyUsers: MarketUser.Entity[] = (await Promise.all(allUsers)).filter(
             user => user.offChainProperties.notifications
         );
 

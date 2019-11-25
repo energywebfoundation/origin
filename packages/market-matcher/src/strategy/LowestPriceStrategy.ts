@@ -1,7 +1,6 @@
-import { Certificate } from '@energyweb/origin';
-import { Agreement } from '@energyweb/market';
+import { Agreement, PurchasableCertificate } from '@energyweb/market';
 
-import { IStrategy } from './IStrategy';
+import { IStrategy } from '@energyweb/market-matcher-core';
 
 export class LowestPriceStrategy implements IStrategy {
     private agreementPriorities = [
@@ -10,7 +9,10 @@ export class LowestPriceStrategy implements IStrategy {
     ];
 
     private certificatePriorities = [
-        (a: Certificate.ICertificate, b: Certificate.ICertificate) => a.price - b.price
+        (
+            a: PurchasableCertificate.IPurchasableCertificate,
+            b: PurchasableCertificate.IPurchasableCertificate
+        ) => a.price - b.price
     ];
 
     public executeForAgreements(
@@ -20,8 +22,8 @@ export class LowestPriceStrategy implements IStrategy {
     }
 
     public executeForCertificates(
-        certificates: Certificate.ICertificate[]
-    ): Promise<Certificate.ICertificate[]> {
+        certificates: PurchasableCertificate.IPurchasableCertificate[]
+    ): Promise<PurchasableCertificate.IPurchasableCertificate[]> {
         return Promise.resolve(certificates.sort(this.certificatePriorities[0]));
     }
 }

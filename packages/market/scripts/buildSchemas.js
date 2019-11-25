@@ -84,6 +84,11 @@ async function run() {
         '/schemas/SupplyOffChainProperties.schema.json'
     );
 
+    await generateSchemaIfNew(
+        'yarn --silent build-schema:MarketUserPropertiesOffChain',
+        '/schemas/MarketUserOffChainProperties.schema.json'
+    );
+
     console.log('MARKET: Building schemas done');
 }
 

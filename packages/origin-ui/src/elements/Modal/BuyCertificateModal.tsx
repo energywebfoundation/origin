@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -18,7 +17,7 @@ import { setLoading } from '../../features/general/actions';
 
 interface IProps {
     producingAsset: ProducingAsset.Entity;
-    certificate: Certificate.Entity;
+    certificate: PurchasableCertificate.Entity;
     showModal: boolean;
     callback: () => void;
 }
@@ -39,7 +38,7 @@ export function BuyCertificateModal(props: IProps) {
             return;
         }
 
-        setKwh(certificate.energy / 1000);
+        setKwh(certificate.certificate.energy / 1000);
         setValidation({
             kwh: true
         });
@@ -61,12 +60,15 @@ export function BuyCertificateModal(props: IProps) {
             ((certificate.acceptedToken as any) as string) !==
             '0x0000000000000000000000000000000000000000'
         ) {
-            const erc20TestToken = new Erc20TestToken(
+            const erc20TestToken = new MarketContracts.Erc20TestToken(
                 configuration.blockchainProperties.web3,
                 (certificate.acceptedToken as any) as string
             );
 
-            await erc20TestToken.approve(certificate.owner, certificate.onChainDirectPurchasePrice);
+            await erc20TestToken.approve(
+                certificate.certificate.owner,
+                certificate.onChainDirectPurchasePrice
+            );
         }
 
         await certificate.buyCertificate(kwh * 1000);
@@ -87,7 +89,7 @@ export function BuyCertificateModal(props: IProps) {
                 const kwhValid =
                     !isNaN(newKwh) &&
                     newKwh >= 0.001 &&
-                    newKwh <= certificate.energy / 1000 &&
+                    newKwh <= certificate.certificate.energy / 1000 &&
                     countDecimals(newKwh) <= 3;
 
                 setKwh(event.target.value);
@@ -102,7 +104,9 @@ export function BuyCertificateModal(props: IProps) {
     const isFormValid = Object.keys(validation).every(property => validation[property] === true);
 
     const certificateId = certificate?.id || '';
-    const date = certificate ? moment.unix(certificate.creationTime).format('YYYY-MM-DD') : '';
+    const date = certificate
+        ? moment.unix(certificate.certificate.creationTime).format('YYYY-MM-DD')
+        : '';
     const facilityName = producingAsset?.offChainProperties?.facilityName || '';
 
     return (

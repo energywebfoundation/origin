@@ -11,14 +11,17 @@ REQUIRED_VARIABLES=(
 rm -rf ./env-config.js
 touch ./env-config.js
 
-# Add assignment 
-echo "window._env_ = {" >> ./env-config.js
+# Add assignment
+echo "{" >> ./env-config.js
 
 envToRead=.env
 rootEnvFile=../../.env
 if [ ! -e "$envToRead" ]; then
     envToRead=$rootEnvFile
-fi 
+fi
+
+pos=$(( ${#REQUIRED_VARIABLES[*]} - 1 ))
+last=${REQUIRED_VARIABLES[$pos]}
 
 for i in "${REQUIRED_VARIABLES[@]}"
   do
@@ -27,11 +30,15 @@ for i in "${REQUIRED_VARIABLES[@]}"
 
     if [ -z "$value" ]; then
       if test -f $rootEnvFile; then
-        value=$(grep -e '^'$varname'=.*' $rootEnvFile | cut -d '=' -f2 | xargs)    
+        value=$(grep -e '^'$varname'=.*' $rootEnvFile | cut -d '=' -f2 | xargs)
       fi
     fi
 
-    echo "    $varname: \"$value\"," >> ./env-config.js
+    if [[ $i == $last ]]; then
+        echo "    \"$varname\": \"$value\"" >> ./env-config.js
+      else
+        echo "    \"$varname\": \"$value\"," >> ./env-config.js
+    fi
   done
 
-echo "};" >> ./env-config.js
+echo "}" >> ./env-config.js

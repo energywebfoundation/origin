@@ -14,7 +14,8 @@ import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { Unit } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
-import { Role, User } from '@energyweb/user-registry';
+import { Role } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { Asset } from '@energyweb/asset-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
@@ -25,7 +26,7 @@ function* requestCertificateDetailsSaga(): SagaIterator {
             CertificatesActions.certificateCreatedOrUpdated
         );
 
-        yield put(requestUser(action.certificate.owner));
+        yield put(requestUser(action.certificate.certificate.owner));
     }
 }
 
@@ -71,7 +72,7 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
         const asset = action.payload.producingAsset;
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
-        const currentUser: User.Entity = yield select(getCurrentUser);
+        const currentUser: MarketUser.Entity = yield select(getCurrentUser);
 
         const reads: Asset.ISmartMeterRead[] = yield apply(asset, asset.getSmartMeterReads, []);
 

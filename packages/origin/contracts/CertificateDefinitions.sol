@@ -27,9 +27,6 @@ contract CertificateDefinitions {
         uint creationTime;
         uint parentId;
         uint[] children;
-        bool forSale;
-        address acceptedToken;
-        uint onChainDirectPurchasePrice;
         uint readsStartIndex;
         uint readsEndIndex;
     }

@@ -9,10 +9,16 @@ import {
     Switch,
     FormControlLabel,
     FormGroup,
-    TextField
+    FormControl,
+    InputLabel,
+    Select,
+    TextField,
+    MenuItem,
+    FilledInput
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
+import { Currency } from '@energyweb/utils-general';
 
 import { withStyles } from '@material-ui/core/styles';
 import { showNotification, NotificationType } from '../../utils/notifications';
@@ -35,6 +41,14 @@ const PurpleSwitch = withStyles({
     checked: {},
     track: {}
 })(Switch);
+
+const availableCurrencies = () => {
+    let currencies = Object.keys(Currency);
+    currencies = currencies.splice(Math.ceil(currencies.length / 2), currencies.length - 1);
+    currencies = currencies.filter(curr => Currency[curr] !== Currency.NONE);
+
+    return currencies;
+};
 
 export function AccountSettings() {
     const dispatch = useDispatch();
@@ -66,6 +80,12 @@ export function AccountSettings() {
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
+    const autoPublish: MarketUser.IAutoPublishConfig = currentUser
+        ? currentUser.offChainProperties.autoPublish
+        : null;
+
+    const [autoPublishCandidate, setAutoPublish] = useState(autoPublish);
+
     if (currentUser) {
         if (notificationsEnabled === null) {
             setNotificationsEnabled(userNotificationsEnabled);
@@ -73,6 +93,10 @@ export function AccountSettings() {
 
         if (userEmailCandidate === null) {
             setUserEmail(userEmail);
+        }
+
+        if (autoPublishCandidate === null) {
+            setAutoPublish(autoPublish);
         }
     }
 
@@ -82,9 +106,11 @@ export function AccountSettings() {
 
     const emailChanged = userEmailCandidate !== userEmail;
     const notificationChanged = notificationsEnabled !== userNotificationsEnabled;
+    const autoPublishChanged = autoPublishCandidate !== autoPublish;
     const contractChanged = marketLookupAddressCandidate !== marketLookupAddress;
 
-    const propertiesChanged = notificationChanged || contractChanged || emailChanged;
+    const propertiesChanged =
+        notificationChanged || contractChanged || emailChanged || autoPublishChanged;
 
     async function saveChanges() {
         if (!propertiesChanged) {
@@ -93,10 +119,16 @@ export function AccountSettings() {
             return;
         }
 
-        if (emailChanged || notificationChanged) {
-            const newProperties: User.IUserOffChainProperties = currentUser.offChainProperties;
+        if (emailChanged || notificationChanged || autoPublishChanged) {
+            const newProperties: MarketUser.IMarketUserOffChainProperties =
+                currentUser.offChainProperties;
+
             newProperties.email = emailChanged ? userEmailCandidate : newProperties.email;
             newProperties.notifications = notificationsEnabled;
+            newProperties.autoPublish = autoPublishChanged
+                ? autoPublishCandidate
+                : newProperties.autoPublish;
+
             await currentUser.update(newProperties);
         }
 
@@ -140,8 +172,75 @@ export function AccountSettings() {
                                     label="Notifications"
                                 />
                             </FormGroup>
+
+                            {autoPublishCandidate !== null && (
+                                <div>
+                                    <hr />
+                                    <FormGroup>
+                                        <FormControlLabel
+                                            control={
+                                                <PurpleSwitch
+                                                    checked={autoPublishCandidate.enabled}
+                                                    onChange={(e, checked) =>
+                                                        setAutoPublish({
+                                                            ...autoPublishCandidate,
+                                                            enabled: checked
+                                                        })
+                                                    }
+                                                />
+                                            }
+                                            label="Automatically post certificates for sale"
+                                        />
+                                    </FormGroup>
+
+                                    {autoPublishCandidate.enabled && (
+                                        <div>
+                                            <TextField
+                                                label="Price"
+                                                value={autoPublishCandidate.price}
+                                                type="number"
+                                                placeholder="1"
+                                                onChange={e =>
+                                                    setAutoPublish({
+                                                        ...autoPublishCandidate,
+                                                        price: parseFloat(e.target.value)
+                                                    })
+                                                }
+                                                id="priceInput"
+                                                fullWidth
+                                            />
+
+                                            <FormControl fullWidth={true} variant="filled">
+                                                <InputLabel>Currency</InputLabel>
+                                                <Select
+                                                    value={Currency[autoPublishCandidate.currency]}
+                                                    onChange={e =>
+                                                        setAutoPublish({
+                                                            ...autoPublishCandidate,
+                                                            currency:
+                                                                Currency[e.target.value as string]
+                                                        })
+                                                    }
+                                                    fullWidth
+                                                    variant="filled"
+                                                    input={<FilledInput />}
+                                                >
+                                                    {availableCurrencies().map(currency => (
+                                                        <MenuItem key={currency} value={currency}>
+                                                            {currency}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            <hr />
                         </>
                     )}
+
                     <TextField
                         label="Market Lookup Address"
                         value={marketLookupAddressCandidate}

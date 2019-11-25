@@ -1,7 +1,7 @@
 import * as http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import 'reflect-metadata';
+
 import express, { Express } from 'express';
 import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 

@@ -134,7 +134,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             },
             tableWrapper: {},
             tableCellWrappingActions: {
-                position: 'relative'
+                position: 'relative',
+                minWidth: '56px'
             }
         })
     );

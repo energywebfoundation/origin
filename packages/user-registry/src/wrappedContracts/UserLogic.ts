@@ -1,5 +1,6 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
 import UserLogicJSON from '../../build/contracts/lightweight/UserLogic.json';
 
 export class UserLogic extends GeneralFunctions {
@@ -18,11 +19,11 @@ export class UserLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
-    async initialize(txParams?: ISpecialTx) {
+    async initialize(txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize();
 
         return this.send(method, txParams);

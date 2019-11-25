@@ -11,12 +11,12 @@ import {
 } from './actions';
 import { getConfiguration } from '../selectors';
 import { getUserById, getUsers, getUserFetcher } from './selectors';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 
 function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
-    const users: User.Entity[] = yield select(getUsers);
+    const users: MarketUser.Entity[] = yield select(getUsers);
 
-    const existingUser: User.Entity = yield call(getUserById, users, userId);
+    const existingUser: MarketUser.Entity = yield call(getUserById, users, userId);
 
     if (existingUser || usersBeingFetched.has(userId)) {
         return;
@@ -28,7 +28,7 @@ function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
     const fetcher: IUserFetcher = yield select(getUserFetcher);
 
     try {
-        const fetchedUser: User.Entity = yield call(fetcher.fetch, userId, configuration);
+        const fetchedUser: MarketUser.Entity = yield call(fetcher.fetch, userId, configuration);
 
         if (fetchedUser) {
             yield put(addUser(fetchedUser));
@@ -61,11 +61,11 @@ function* requestUserSaga(): SagaIterator {
 }
 
 function* requestCurrentUserDetailsSaga(action: IUpdateCurrentUserIdAction): SagaIterator {
-    const users: User.Entity[] = yield select(getUsers);
+    const users: MarketUser.Entity[] = yield select(getUsers);
 
     const userId = action.payload.toLowerCase();
 
-    const existingUser: User.Entity = yield call(getUserById, users, userId);
+    const existingUser: MarketUser.Entity = yield call(getUserById, users, userId);
 
     if (existingUser) {
         return;

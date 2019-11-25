@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import Web3 from 'web3';
 
-import { deployERC20TestToken, Erc20TestToken } from '@energyweb/erc-test-contracts';
+import * as Market from '@energyweb/market';
 import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { AssetLogic } from '@energyweb/asset-registry';
 import { CertificateLogic } from '@energyweb/origin';
-import { Demand, Supply, Agreement, MarketLogic } from '@energyweb/market';
+import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
 import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
@@ -74,7 +74,7 @@ export const marketDemo = async (demoFile?: string) => {
         organization: 'admin'
     };
 
-    const userPropsOffChain: User.IUserOffChainProperties = {
+    const userPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Admin',
         surname: 'User',
         email: 'admin@example.com',
@@ -83,11 +83,10 @@ export const marketDemo = async (demoFile?: string) => {
         zip: '',
         city: '',
         country: '',
-        state: '',
-        notifications: true
+        state: ''
     };
 
-    await User.createUser(userPropsOnChain, userPropsOffChain, conf);
+    await MarketUser.createMarketUser(userPropsOnChain, userPropsOffChain, conf);
 
     const marketLogicMatcherRole: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -98,7 +97,7 @@ export const marketDemo = async (demoFile?: string) => {
         organization: 'admin'
     };
 
-    const marketLogicMatcherRoleOffChain: User.IUserOffChainProperties = {
+    const marketLogicMatcherRoleOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'MarketMatcher',
         surname: 'User',
         email: 'admin@example.com',
@@ -107,21 +106,20 @@ export const marketDemo = async (demoFile?: string) => {
         zip: '',
         city: '',
         country: '',
-        state: '',
-        notifications: true
+        state: ''
     };
 
-    await User.createUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);
+    await MarketUser.createMarketUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);
 
     const actionsArray = demoConfig.flow;
 
-    const erc20TestAddress = (await deployERC20TestToken(
+    const erc20TestAddress = await Market.Contracts.deployERC20TestToken(
         conf.blockchainProperties.web3,
         adminAccount.address,
         adminPK
-    )).contractAddress;
+    );
 
-    const token = new Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
+    const token = new Market.Contracts.Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
     const symbol = await token.web3Contract.methods.symbol().call();
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
@@ -131,7 +129,7 @@ export const marketDemo = async (demoFile?: string) => {
             case 'SEND_ERC20_TOKENS_TO':
                 console.log('-----------------------------------------------------------');
 
-                const erc20token = new Erc20TestToken(
+                const erc20token = new Market.Contracts.Erc20TestToken(
                     conf.blockchainProperties.web3,
                     erc20TestAddress
                 );
@@ -184,7 +182,8 @@ export const marketDemo = async (demoFile?: string) => {
                     energyPerTimeFrame: action.data.energyPerTimeFrame,
                     registryCompliance: assetCompliance,
                     startTime: action.data.startTime,
-                    endTime: action.data.endTime
+                    endTime: action.data.endTime,
+                    automaticMatching: true
                 };
 
                 try {

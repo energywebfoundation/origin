@@ -2,14 +2,27 @@ import dotenv from 'dotenv';
 import moment from 'moment';
 import Web3 from 'web3';
 
-import { Asset, ProducingAsset, AssetLogic } from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { Agreement, Demand, MarketLogic, Supply } from '@energyweb/market';
-import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { Certificate, CertificateLogic } from '@energyweb/origin';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import {
+    Asset,
+    ProducingAsset,
+    AssetLogic,
+    Contracts as AssetRegistryContracts
+} from '@energyweb/asset-registry';
+import {
+    Agreement,
+    Demand,
+    MarketLogic,
+    Supply,
+    PurchasableCertificate,
+    Contracts as MarketContracts
+} from '@energyweb/market';
+import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
+import {
+    buildRights,
+    Role,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
 import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
@@ -39,7 +52,10 @@ const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7
 const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
 const deployUserRegistry = async () => {
-    const userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+    const userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+        web3,
+        privateKeyDeployment
+    );
 
     await userLogic.createUser(
         'propertiesDocumentHash',
@@ -92,7 +108,7 @@ const deployUserRegistry = async () => {
 };
 
 const deployAssetRegistry = async (userLogicAddress: string) => {
-    const assetLogic = await migrateAssetRegistryContracts(
+    const assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
         web3,
         userLogicAddress,
         privateKeyDeployment
@@ -102,7 +118,7 @@ const deployAssetRegistry = async (userLogicAddress: string) => {
 };
 
 const deployCertificateRegistry = async (assetLogicAddress: string) => {
-    const certificateLogic = await migrateCertificateRegistryContracts(
+    const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
         web3,
         assetLogicAddress,
         privateKeyDeployment
@@ -111,7 +127,7 @@ const deployCertificateRegistry = async (assetLogicAddress: string) => {
 };
 
 const deployMarket = async (originLogicAddress: string) => {
-    const marketLogic = await migrateMarketRegistryContracts(
+    const marketLogic = await MarketContracts.migrateMarketRegistryContracts(
         web3,
         originLogicAddress,
         privateKeyDeployment
@@ -210,7 +226,8 @@ const deployDemand = async (
         startTime: moment().unix(),
         endTime: moment()
             .add(1, 'hour')
-            .unix()
+            .unix(),
+        automaticMatching: true
     };
 
     return Demand.createDemand(demandOffChainProps, traderConfig);
@@ -307,7 +324,7 @@ const deployCertificate = async (
         privateKey: assetOwnerPK
     });
 
-    return new Certificate.Entity('0', assetOwnerConfig).sync();
+    return new PurchasableCertificate.Entity('0', assetOwnerConfig).sync();
 };
 
 const deployAgreement = async (

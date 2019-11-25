@@ -10,14 +10,15 @@ import { getSearch } from 'connected-react-router';
 import { getConfiguration } from '../selectors';
 import * as queryString from 'query-string';
 import * as Winston from 'winston';
-import { Certificate } from '@energyweb/origin';
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import Web3 from 'web3';
 import {
+    PurchasableCertificate,
     Demand,
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
+import Web3 from 'web3';
+
 import {
     configurationUpdated,
     demandDeleted,
@@ -25,13 +26,16 @@ import {
     demandCreated
 } from '../actions';
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
-import { BACKEND_URL } from '../../utils/api';
-import { setError, setLoading } from '../general/actions';
+import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../certificates/actions';
 import { IStoreState } from '../../types';
-import { getOffChainDataClient, getConfigurationClient } from '../general/selectors';
-import { getEnv } from '../../utils/helper';
+import {
+    getOffChainDataClient,
+    getConfigurationClient,
+    getEnvironment
+} from '../general/selectors';
+import { getMarketContractLookupAddress } from './selectors';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -40,7 +44,9 @@ enum ERROR {
 async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
-    offChainDataClient: IOffChainDataClient
+    offChainDataClient: IOffChainDataClient,
+    baseURL: string,
+    environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
     let web3: Web3 = null;
     const params = queryString.parse(routerSearch);
@@ -59,8 +65,8 @@ async function initConf(
         }
     } else if ((window as any).web3) {
         web3 = new Web3(web3.currentProvider);
-    } else if (getEnv().WEB3) {
-        web3 = new Web3(getEnv().WEB3);
+    } else if (environmentWeb3) {
+        web3 = new Web3(environmentWeb3);
     }
 
     const blockchainProperties: Configuration.BlockchainProperties = await marketCreateBlockchainProperties(
@@ -71,7 +77,7 @@ async function initConf(
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`,
+            baseUrl: baseURL,
             client: offChainDataClient
         },
         logger: Winston.createLogger({
@@ -104,26 +110,72 @@ function* initEventHandler() {
             currentBlockNumber
         );
 
-        const demandContractEventHandler: ContractEventHandler = new ContractEventHandler(
+        const marketContractEventHandler: ContractEventHandler = new ContractEventHandler(
             configuration.blockchainProperties.marketLogicInstance,
             currentBlockNumber
         );
 
         const channel = eventChannel(emitter => {
-            certificateContractEventHandler.onEvent('LogPublishForSale', async function(
-                event: any
-            ) {
+            marketContractEventHandler.onEvent('LogPublishForSale', async function(event: any) {
                 const id = event.returnValues._certificateId?.toString();
 
                 if (typeof id === 'undefined') {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
                 });
+            });
+
+            marketContractEventHandler.onEvent('LogUnpublishForSale', async function(event: any) {
+                const id = event.returnValues._certificateId?.toString();
+
+                if (typeof id !== 'string') {
+                    return;
+                }
+
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
+
+                emitter({
+                    action: certificateCreatedOrUpdated(certificate)
+                });
+            });
+
+            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+                try {
+                    const demand = await new Demand.Entity(
+                        event.returnValues._demandId.toString(),
+                        configuration
+                    ).sync();
+
+                    emitter({
+                        action: demandCreated(demand)
+                    });
+                } catch (error) {
+                    console.error(`Error while handling "createdNewDemand" event`, error);
+                }
+            });
+
+            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
+                    emitter({
+                        action: demandDeleted(
+                            await new Demand.Entity(
+                                event.returnValues._demandId.toString(),
+                                configuration
+                            ).sync()
+                        )
+                    });
+                }
             });
 
             certificateContractEventHandler.onEvent('LogCertificateSplit', async function(
@@ -135,7 +187,10 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
@@ -151,7 +206,10 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
+                    configuration
+                ).sync();
 
                 emitter({
                     action: certificateCreatedOrUpdated(certificate)
@@ -165,51 +223,14 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new Certificate.Entity(id, configuration).sync();
-
-                emitter({
-                    action: certificateCreatedOrUpdated(certificate)
-                });
-            });
-
-            certificateContractEventHandler.onEvent('LogUnpublishForSale', async function(
-                event: any
-            ) {
-                const id = event.returnValues._certificateId?.toString();
-
-                if (typeof id !== 'string') {
-                    return;
-                }
-
-                const certificate = await new Certificate.Entity(id, configuration).sync();
-
-                emitter({
-                    action: certificateCreatedOrUpdated(certificate)
-                });
-            });
-
-            demandContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-                const demand = await new Demand.Entity(
-                    event.returnValues._demandId.toString(),
+                const certificate = await new PurchasableCertificate.Entity(
+                    id,
                     configuration
                 ).sync();
 
                 emitter({
-                    action: demandCreated(demand)
+                    action: certificateCreatedOrUpdated(certificate)
                 });
-            });
-
-            demandContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
-                    emitter({
-                        action: demandDeleted(
-                            await new Demand.Entity(
-                                event.returnValues._demandId.toString(),
-                                configuration
-                            ).sync()
-                        )
-                    });
-                }
             });
 
             return () => {
@@ -218,7 +239,7 @@ function* initEventHandler() {
         });
 
         eventHandlerManager.registerEventHandler(certificateContractEventHandler);
-        eventHandlerManager.registerEventHandler(demandContractEventHandler);
+        eventHandlerManager.registerEventHandler(marketContractEventHandler);
         eventHandlerManager.start();
 
         while (true) {
@@ -235,10 +256,13 @@ function* initEventHandler() {
     }
 }
 
-async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
+async function getMarketContractLookupAddressFromAPI(
+    configurationClient: IConfigurationClient,
+    baseURL: string
+) {
     try {
         const marketContracts: string[] = await configurationClient.get(
-            `${BACKEND_URL}/api`,
+            baseURL,
             'MarketContractLookup'
         );
 
@@ -253,95 +277,117 @@ async function getMarketContractLookupAddressFromAPI(configurationClient: IConfi
 }
 
 function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
-    const savedAddress = localStorage.getItem(MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY);
-    let marketContractLookupAddress: string = savedAddress;
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
 
-    if (!marketContractLookupAddress) {
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-
-        marketContractLookupAddress = yield call(
-            getMarketContractLookupAddressFromAPI,
-            configurationClient
-        );
-    }
-
-    if (marketContractLookupAddress) {
-        yield put(
-            setMarketContractLookupAddress({
-                address: marketContractLookupAddress
-            })
-        );
-    } else {
-        yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-        yield put(setLoading(false));
-
-        return;
-    }
-
-    const routerSearch: string = yield select(getSearch);
-
-    let configuration: IStoreState['configuration'];
-    try {
-        const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
-
-        configuration = yield call(
-            initConf,
-            marketContractLookupAddress,
-            routerSearch,
-            offChainDataClient
+        let marketContractLookupAddress: string = localStorage.getItem(
+            MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
         );
 
-        yield put(configurationUpdated(configuration));
-
-        yield put(setLoading(false));
-    } catch (error) {
-        console.error('ContractsSaga::WrongNetwork', error);
-        yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
-        yield put(setLoading(false));
-
-        yield cancel();
-    }
-
-    try {
-        const producingAssets: ProducingAsset.Entity[] = yield apply(
-            ProducingAsset,
-            ProducingAsset.getAllAssets,
-            [configuration]
+        const existingMartketContractLookupAddress: string = yield select(
+            getMarketContractLookupAddress
         );
 
-        for (const asset of producingAssets) {
-            yield put(producingAssetCreatedOrUpdated(asset));
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        if (existingMartketContractLookupAddress || !environment) {
+            return;
         }
 
-        const consumingAssets: ConsumingAsset.Entity[] = yield apply(
-            ConsumingAsset,
-            ConsumingAsset.getAllAssets,
-            [configuration]
-        );
+        const baseURL = `${environment.BACKEND_URL}/api`;
 
-        for (const asset of consumingAssets) {
-            yield put(consumingAssetCreatedOrUpdated(asset));
+        if (!marketContractLookupAddress) {
+            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+            marketContractLookupAddress = yield call(
+                getMarketContractLookupAddressFromAPI,
+                configurationClient,
+                baseURL
+            );
         }
 
-        const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [configuration]);
+        if (marketContractLookupAddress) {
+            yield put(
+                setMarketContractLookupAddress({
+                    address: marketContractLookupAddress
+                })
+            );
+        } else {
+            yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
+            yield put(setLoading(false));
 
-        for (const demand of demands) {
-            yield put(demandCreated(demand));
+            return;
         }
 
-        const certificates: Certificate.Entity[] = yield apply(
-            Certificate,
-            Certificate.getAllCertificates,
-            [configuration]
-        );
+        const routerSearch: string = yield select(getSearch);
 
-        for (const certificate of certificates) {
-            yield put(certificateCreatedOrUpdated(certificate));
+        let configuration: IStoreState['configuration'];
+        try {
+            const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
+
+            configuration = yield call(
+                initConf,
+                marketContractLookupAddress,
+                routerSearch,
+                offChainDataClient,
+                baseURL,
+                environment.WEB3
+            );
+
+            yield put(configurationUpdated(configuration));
+
+            yield put(setLoading(false));
+        } catch (error) {
+            console.error('ContractsSaga::WrongNetwork', error);
+            yield put(setError(ERROR.WRONG_NETWORK_OR_CONTRACT_ADDRESS));
+            yield put(setLoading(false));
+
+            yield cancel();
         }
 
-        yield call(initEventHandler);
-    } catch (error) {
-        console.error('fillMarketContractLookupAddressIfMissing() error', error);
+        try {
+            const producingAssets: ProducingAsset.Entity[] = yield apply(
+                ProducingAsset,
+                ProducingAsset.getAllAssets,
+                [configuration]
+            );
+
+            for (const asset of producingAssets) {
+                yield put(producingAssetCreatedOrUpdated(asset));
+            }
+
+            const consumingAssets: ConsumingAsset.Entity[] = yield apply(
+                ConsumingAsset,
+                ConsumingAsset.getAllAssets,
+                [configuration]
+            );
+
+            for (const asset of consumingAssets) {
+                yield put(consumingAssetCreatedOrUpdated(asset));
+            }
+
+            const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [
+                configuration
+            ]);
+
+            for (const demand of demands) {
+                yield put(demandCreated(demand));
+            }
+
+            const certificates: PurchasableCertificate.Entity[] = yield apply(
+                PurchasableCertificate,
+                PurchasableCertificate.getAllCertificates,
+                [configuration]
+            );
+
+            for (const certificate of certificates) {
+                yield put(certificateCreatedOrUpdated(certificate));
+            }
+
+            yield call(initEventHandler);
+        } catch (error) {
+            console.error('fillMarketContractLookupAddressIfMissing() error', error);
+        }
     }
 }
 

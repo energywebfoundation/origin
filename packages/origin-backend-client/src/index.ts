@@ -1,4 +1,4 @@
-export { IOffChainDataClient, OffChainDataClient } from './OffChainDataClient';
+export { IOffChainData, IOffChainDataClient, OffChainDataClient } from './OffChainDataClient';
 export { OffChainDataClientMock } from './OffChainDataClientMock';
 export { IConfigurationClient, ConfigurationClient } from './ConfigurationClient';
 export { ConfigurationClientMock } from './ConfigurationClientMock';

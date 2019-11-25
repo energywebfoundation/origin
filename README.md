@@ -29,7 +29,7 @@
 | Package | Stable | Canary | Description |
 | --- | --- | --- | --- |
 | [`@energyweb/asset-registry`](/packages/asset-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/asset-registry.svg)](https://www.npmjs.com/package/@energyweb/asset-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/asset-registry/canary)](https://www.npmjs.com/package/@energyweb/asset-registry) | Contracts and client for Asset Registry |
-| [`@energyweb/market-matcher`](/packages/market-matcher) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher.svg)](https://www.npmjs.com/package/@energyweb/market-matcher) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher/canary)](https://www.npmjs.com/package/@energyweb/market-matcher) | Off-chain services for demand and supply matching |
+| [`@energyweb/market-matcher-core`](/packages/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core.svg)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core/canary)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | Matching rules and logic for market-matcher |
 | [`@energyweb/market`](/packages/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market.svg)](https://www.npmjs.com/package/@energyweb/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contacts and client for Origin Market |
 | [`@energyweb/origin`](/packages/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/origin.svg)](https://www.npmjs.com/package/@energyweb/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contracts and client Origin ceritifacts |
 | [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for off-chain data source |
@@ -37,11 +37,12 @@
 | [`@energyweb/user-registry`](/packages/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry.svg)](https://www.npmjs.com/package/@energyweb/user-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/user-registry/canary)](https://www.npmjs.com/package/@energyweb/user-registry) | Contracts and client User Registry |
 | [`@energyweb/utils-general`](/packages/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general) | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general) | Utilities |
 
-### UI and demo
+### Applications, Infrastructure and Demo
 
 | Package | Description |
 | --- | --- |
 | [`@energyweb/origin-ui`](/packages/origin-ui) | UI for Origin |
+| [`@energyweb/market-matcher`](/packages/market-matcher) | Off-chain agent for demand and supply matching |
 | [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
 | [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events and sends notifications |
 | [`@energyweb/utils-demo`](/packages/utils-demo) | Demo deployment and configuration utilities |
@@ -102,10 +103,9 @@ This section lists key entry points to start your journey with Origin.
 3. [origin](https://github.com/energywebfoundation/origin/tree/master/packages/origin) - a heart of Origin systems, contains logic for storing and transferring Energy Attribute Certificates (as a form of unique [ERC721](http://erc721.org/) tokens). This library also has a more general construct called **TradeableEntity** that can be used to wrap, as name suggests, other tradeable entities, such as [Power Purchase Agreements](https://en.wikipedia.org/wiki/Power_purchase_agreement) or certificate bundles.
 4. [market](https://github.com/energywebfoundation/origin/tree/master/packages/market) - a library that allows to create demand (for buyers), supply (for sellers) and agreements between buyers and sellers.
 5. [market-matcher](https://github.com/energywebfoundation/origin/tree/master/packages/market-matcher) - the most important part of marketplace, guarantees automatic matching of supply and demand between sellers and buyers. Matching rules can be highly customized and afterwards the algorithm can be tested by running matching simulator.
-6. [erc-test-contracts](https://github.com/energywebfoundation/origin/tree/master/packages/erc-test-contracts) - Test ERC20 token for demo purposes, especially for doing an on-chain test purchase of a certificate using tokens
-7. [utils-general](https://github.com/energywebfoundation/origin/tree/master/packages/utils-general) - Contains logic for more straightforward interaction with contracts, such as watching events. It is also a base layer for other libraries to build upon. It provides a foundation for things like off-chain data storage that is universal for all entities.
-8. [solar-simulator](https://github.com/energywebfoundation/origin/tree/master/packages/solar-simulator) - This service simulates smart-meter readings based on example solar data from whole year in 15-mins intervals. Also allows you to generate the config based on data from public I-REC registry.
-9. [event-listener](https://github.com/energywebfoundation/origin/tree/master/packages/event-listener) - Event listeners listen to events on the blockchain and react accordingly.
+6. [utils-general](https://github.com/energywebfoundation/origin/tree/master/packages/utils-general) - Contains logic for more straightforward interaction with contracts, such as watching events. It is also a base layer for other libraries to build upon. It provides a foundation for things like off-chain data storage that is universal for all entities.
+7. [solar-simulator](https://github.com/energywebfoundation/origin/tree/master/packages/solar-simulator) - This service simulates smart-meter readings based on example solar data from whole year in 15-mins intervals. Also allows you to generate the config based on data from public I-REC registry.
+8. [event-listener](https://github.com/energywebfoundation/origin/tree/master/packages/event-listener) - Event listeners listen to events on the blockchain and react accordingly.
 
 ## Deployment
 

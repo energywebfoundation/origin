@@ -1,31 +1,9 @@
-import { Agreement, Demand, Supply } from '@energyweb/market';
-import { Certificate } from '@energyweb/origin';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    Currency
-} from '@energyweb/utils-general';
-import { inject, singleton } from 'tsyringe';
+import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import polly from 'polly-js';
-import { Listener } from './Matcher';
-import { EntityListener } from './EntityListener';
+import { IEntityStore, EntityListener, Listener } from '@energyweb/market-matcher-core';
+import { IEntityFetcher } from './EntityFetcher';
 
-export interface IEntityStore {
-    init(): Promise<void>;
-    registerCertificateListener(listener: Listener<Certificate.Entity>): void;
-    registerDemandListener(listener: Listener<Demand.Entity>): void;
-
-    getDemand(id: string): Promise<Demand.Entity>;
-    getSupply(id: string): Promise<Supply.Entity>;
-
-    getAgreements(): Agreement.Entity[];
-    getDemands(): Demand.Entity[];
-    getCertificates(): Certificate.Entity[];
-}
-
-@singleton()
 export class EntityStore implements IEntityStore {
     private demands: Map<string, Demand.Entity> = new Map<string, Demand.Entity>();
 
@@ -33,21 +11,25 @@ export class EntityStore implements IEntityStore {
 
     private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
 
-    private certificates: Map<string, Certificate.Entity> = new Map<string, Certificate.Entity>();
+    private certificates: Map<string, PurchasableCertificate.Entity> = new Map<
+        string,
+        PurchasableCertificate.Entity
+    >();
 
-    private certificateListeners: EntityListener<Certificate.Entity>;
+    private certificateListeners: EntityListener<PurchasableCertificate.Entity>;
 
     private demandListeners: EntityListener<Demand.Entity>;
 
     constructor(
-        @inject('config') private config: Configuration.Entity,
-        @inject('logger') private logger: Winston.Logger
+        private config: Configuration.Entity,
+        private logger: Winston.Logger,
+        private fetcher: IEntityFetcher
     ) {
-        this.certificateListeners = new EntityListener<Certificate.Entity>(this.logger);
+        this.certificateListeners = new EntityListener<PurchasableCertificate.Entity>(this.logger);
         this.demandListeners = new EntityListener<Demand.Entity>(this.logger);
     }
 
-    public registerCertificateListener(listener: Listener<Certificate.Entity>) {
+    public registerCertificateListener(listener: Listener<PurchasableCertificate.Entity>) {
         this.certificateListeners.register(listener);
     }
 
@@ -57,7 +39,7 @@ export class EntityStore implements IEntityStore {
 
     public async getDemand(id: string): Promise<Demand.Entity> {
         if (!this.demands.has(id)) {
-            const demand = await new Demand.Entity(id, this.config).sync();
+            const demand = await this.fetcher.getDemand(id, 1);
 
             this.demands.set(id, demand);
         }
@@ -67,7 +49,7 @@ export class EntityStore implements IEntityStore {
 
     public async getSupply(id: string): Promise<Supply.Entity> {
         if (!this.supplies.has(id)) {
-            const supply = await new Supply.Entity(id, this.config).sync();
+            const supply = await this.fetcher.getSupply(id, 1);
 
             this.supplies.set(id, supply);
         }
@@ -87,9 +69,13 @@ export class EntityStore implements IEntityStore {
         return Array.from(this.certificates.values());
     }
 
-    public async init() {
+    public async init(watchEvents = true) {
         await this.syncExistingEvents();
-        await this.subscribeToEvents();
+
+        if (watchEvents) {
+            await this.subscribeToEvents();
+        }
+
         await this.triggerExistingEvents();
     }
 
@@ -103,25 +89,25 @@ export class EntityStore implements IEntityStore {
 
     private async syncExistingEvents() {
         this.logger.verbose('* Getting all active agreements');
-        const agreementListLength = await Agreement.getAgreementListLength(this.config);
+        const agreementListLength = await this.fetcher.getAgreementListLength();
         for (let i = 0; i < agreementListLength; i++) {
             await this.registerAgreement(i.toString());
         }
 
         this.logger.verbose('* Getting all active demands');
-        const demandListLength = await Demand.getDemandListLength(this.config);
+        const demandListLength = await this.fetcher.getDemandListLength();
         for (let i = 0; i < demandListLength; i++) {
             await this.handleDemand(i.toString(), false);
         }
 
         this.logger.verbose('* Getting all active supplies');
-        const supplyListLength = await Supply.getSupplyListLength(this.config);
+        const supplyListLength = await this.fetcher.getSupplyListLength();
         for (let i = 0; i < supplyListLength; i++) {
             await this.registerSupply(i.toString());
         }
 
         this.logger.verbose('* Getting all certificates');
-        const certificateListLength = await Certificate.getCertificateListLength(this.config);
+        const certificateListLength = await this.fetcher.getCertificateListLength();
         for (let i = 0; i < certificateListLength; i++) {
             await this.handleCertificate(i.toString(), false);
         }
@@ -145,6 +131,7 @@ export class EntityStore implements IEntityStore {
         this.registerToDemandEvents(marketContractEventHandler);
         this.registerToSupplyEvents(marketContractEventHandler);
         this.registerToAgreementEvents(marketContractEventHandler);
+        this.registerToPurchasableCertificateEvents(marketContractEventHandler);
 
         const eventHandlerManager = new EventHandlerManager(4000, this.config);
         eventHandlerManager.registerEventHandler(marketContractEventHandler);
@@ -153,13 +140,6 @@ export class EntityStore implements IEntityStore {
     }
 
     private registerToCertificateEvents(certificateContractEventHandler: ContractEventHandler) {
-        certificateContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const { _certificateId: id } = event.returnValues;
-            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
-
-            await this.handleCertificate(id);
-        });
-
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const { _certificateId: id } = event.returnValues;
             this.logger.verbose(`Event: LogCreatedCertificate certificate #${id}`);
@@ -203,6 +183,17 @@ export class EntityStore implements IEntityStore {
         });
     }
 
+    private registerToPurchasableCertificateEvents(
+        marketContractEventHandler: ContractEventHandler
+    ) {
+        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
+            const { _certificateId: id } = event.returnValues;
+            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
+
+            await this.handleCertificate(id);
+        });
+    }
+
     private registerToDemandEvents(marketContractEventHandler: ContractEventHandler) {
         marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
             this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
@@ -220,9 +211,14 @@ export class EntityStore implements IEntityStore {
     }
 
     private async handleDemand(id: string, trigger = true) {
-        const demand = await polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => new Demand.Entity(id, this.config).sync());
+        const demand = await this.fetcher.getDemand(id);
+
+        if (!demand.offChainProperties.automaticMatching) {
+            this.logger.verbose(
+                `[Demand ${demand.id}] Skipped. Does not allow automatic matching.`
+            );
+            return;
+        }
 
         const isFulfilled = await demand.isFulfilled();
         if (isFulfilled) {
@@ -243,25 +239,21 @@ export class EntityStore implements IEntityStore {
     }
 
     private async registerSupply(id: string) {
-        const supply = await polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => new Supply.Entity(id, this.config).sync());
+        const supply = await this.fetcher.getSupply(id);
 
         this.supplies.set(supply.id, supply);
         this.logger.verbose(`Registered new supply #${supply.id}`);
     }
 
     private async registerAgreement(id: string) {
-        const agreement = await polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => new Agreement.Entity(id, this.config).sync());
+        const agreement = await this.fetcher.getAgreement(id);
 
         this.agreements.set(agreement.id, agreement);
         this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
     }
 
     private async handleCertificate(id: string, trigger = true) {
-        const certificate = await this.pollCertificate(id);
+        const certificate = await this.fetcher.getCertificate(id);
 
         this.certificates.set(certificate.id, certificate);
         this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
@@ -269,26 +261,5 @@ export class EntityStore implements IEntityStore {
         if (trigger) {
             this.certificateListeners.trigger(certificate);
         }
-    }
-
-    private async fetchCertificate(id: string) {
-        const certificate = await new Certificate.Entity(id, this.config).sync();
-
-        if (
-            certificate.forSale &&
-            certificate.isOffChainSettlement &&
-            certificate.currency === Currency.NONE &&
-            certificate.price === 0
-        ) {
-            throw new Error(`[Certificate #${id}] Missing settlement options`);
-        }
-
-        return certificate;
-    }
-
-    private pollCertificate(id: string) {
-        return polly()
-            .waitAndRetry(10)
-            .executeForPromise(() => this.fetchCertificate(id));
     }
 }

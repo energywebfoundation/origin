@@ -1,5 +1,5 @@
-import { Demand } from '@energyweb/market';
-import { User } from '@energyweb/user-registry';
+import { Demand, MarketUser } from '@energyweb/market';
+
 import { Configuration, Currency, IRECAssetService, TimeFrame } from '@energyweb/utils-general';
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
@@ -24,8 +24,7 @@ import {
 import {
     getInitialPaginatedLoaderFilteredState,
     IPaginatedLoaderFilteredState,
-    PaginatedLoaderFiltered,
-    RECORD_INDICATOR
+    PaginatedLoaderFiltered
 } from '../Table/PaginatedLoaderFiltered';
 import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
@@ -33,7 +32,7 @@ import { getCurrentUser } from '../../features/users/selectors';
 interface IStateProps {
     configuration: Configuration.Entity;
     demands: Demand.Entity[];
-    currentUser: User.Entity;
+    currentUser: MarketUser.Entity;
     baseURL: string;
 }
 
@@ -46,7 +45,7 @@ export interface IDemandTableState extends IPaginatedLoaderFilteredState {
 
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
-    demandOwner: User.Entity;
+    demandOwner: MarketUser.Entity;
 }
 
 const NO_VALUE_TEXT = 'any';
@@ -64,28 +63,28 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
     get filters(): ICustomFilterDefinition[] {
         return [
             {
-                property: `${RECORD_INDICATOR}demand.status`,
+                property: (record: IEnrichedDemandData) => record?.demand?.status.toString(),
                 label: 'Status',
                 input: {
                     type: CustomFilterInputType.multiselect,
                     availableOptions: [
                         {
                             label: 'Active',
-                            value: Demand.DemandStatus.ACTIVE
+                            value: Demand.DemandStatus.ACTIVE.toString()
                         },
                         {
                             label: 'Paused',
-                            value: Demand.DemandStatus.PAUSED
+                            value: Demand.DemandStatus.PAUSED.toString()
                         },
                         {
                             label: 'Archived',
-                            value: Demand.DemandStatus.ARCHIVED
+                            value: Demand.DemandStatus.ARCHIVED.toString()
                         }
                     ],
                     defaultOptions: [
-                        Demand.DemandStatus.ACTIVE,
-                        Demand.DemandStatus.PAUSED,
-                        Demand.DemandStatus.ARCHIVED
+                        Demand.DemandStatus.ACTIVE.toString(),
+                        Demand.DemandStatus.PAUSED.toString(),
+                        Demand.DemandStatus.ARCHIVED.toString()
                     ]
                 }
             }
@@ -96,7 +95,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         const promises = demands.map(async (demand: Demand.Entity) => {
             return {
                 demand,
-                demandOwner: await new User.Entity(
+                demandOwner: await new MarketUser.Entity(
                     demand.demandOwner,
                     this.props.configuration
                 ).sync()

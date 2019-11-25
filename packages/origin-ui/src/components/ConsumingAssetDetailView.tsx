@@ -4,8 +4,7 @@ import moment from 'moment';
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import { Link } from 'react-router-dom';
-import { Certificate } from '@energyweb/origin';
-import { User } from '@energyweb/user-registry';
+import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { ConsumingAsset } from '@energyweb/asset-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
@@ -23,7 +22,7 @@ interface IOwnProps {
 
 interface IStateProps {
     baseURL: string;
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     configuration: Configuration.Entity;
     consumingAssets: ConsumingAsset.Entity[];
 }
@@ -32,7 +31,7 @@ type Props = IOwnProps & IStateProps;
 
 export interface IDetailViewState {
     newId: number;
-    owner: User.Entity;
+    owner: MarketUser.Entity;
     notSoldCertificates: number;
 }
 
@@ -71,17 +70,17 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
             if (this.props.certificates.length > 0) {
                 this.setState({
                     notSoldCertificates: this.props.certificates
-                        .map((certificate: Certificate.Entity) =>
-                            certificate.owner === selectedAsset.owner.address &&
-                            certificate.assetId.toString() === selectedAsset.id
-                                ? certificate.energy
+                        .map((certificate: PurchasableCertificate.Entity) =>
+                            certificate.certificate.owner === selectedAsset.owner.address &&
+                            certificate.certificate.assetId.toString() === selectedAsset.id
+                                ? certificate.certificate.energy
                                 : 0
                         )
                         .reduce((a, b) => a + b)
                 });
             }
             this.setState({
-                owner: await new User.Entity(
+                owner: await new MarketUser.Entity(
                     selectedAsset.owner.address,
                     props.configuration as any
                 ).sync()

@@ -3,10 +3,8 @@ import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
 import Web3 from 'web3';
-
-import Eth from 'web3/eth'; // eslint-disable-line import/no-unresolved
-import { Block } from 'web3/eth/types'; // eslint-disable-line import/no-unresolved
-import { EventLog } from 'web3/types'; // eslint-disable-line import/no-unresolved
+import { Eth, BlockTransactionObject } from 'web3-eth';
+import { EventLog } from 'web3-core';
 
 import {
     calculateMissingEnergyDemand,
@@ -21,7 +19,7 @@ describe('Demand unit tests', () => {
     describe('Demand time-series calculations', () => {
         const createConfig = (blockTimeStamps: number[], filledEvents: FilledEvent[]) => {
             const blocks = blockTimeStamps.map((timeStamp, index) => {
-                const block = Substitute.for<Block>();
+                const block = Substitute.for<BlockTransactionObject>();
                 block.timestamp.returns(timeStamp);
                 block.number.returns(index + 1);
 
@@ -37,7 +35,9 @@ describe('Demand unit tests', () => {
             });
 
             const eth = Substitute.for<Eth>();
-            blocks.forEach(block => eth.getBlock(block.number).returns(Promise.resolve(block)));
+            blocks.forEach(block =>
+                (eth.getBlock(block.number) as any).returns(Promise.resolve(block))
+            );
 
             const web3 = Substitute.for<Web3>();
             web3.eth.returns(eth);

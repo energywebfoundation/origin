@@ -1,8 +1,7 @@
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
-import { Certificate } from '@energyweb/origin';
 import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
-import { CertificateLogic } from '@energyweb/origin';
+import { CertificateLogic, Certificate } from '@energyweb/origin';
+import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 
 import { onboardDemo } from './onboarding';
 
@@ -165,7 +164,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
+                let certificate = await new PurchasableCertificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.publishForSale(action.data.price, erc20TestAddress);
                 certificate = await certificate.sync();
@@ -185,7 +184,7 @@ export const certificateDemo = async (
                 privateKey: action.data.certificateOwnerPK
             };
             try {
-                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
+                let certificate = await new PurchasableCertificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.publishForSale(action.data.price, Currency[action.data.currency]);
                 certificate = await certificate.sync();
@@ -232,7 +231,7 @@ export const certificateDemo = async (
             };
 
             try {
-                let certificate = await new Certificate.Entity(action.data.certId, conf).sync();
+                let certificate = await new PurchasableCertificate.Entity(action.data.certId, conf).sync();
 
                 await certificate.unpublishForSale();
                 certificate = await certificate.sync();
@@ -251,7 +250,7 @@ export const certificateDemo = async (
                 address: action.data.buyer,
                 privateKey: action.data.buyerPK
             };
-            const erc20TestToken = new Erc20TestToken(
+            const erc20TestToken = new MarketContracts.Erc20TestToken(
                 conf.blockchainProperties.web3,
                 erc20TestAddress
             );
@@ -268,7 +267,7 @@ export const certificateDemo = async (
                     'Buyer Balance(BEFORE): ' +
                         (await certificateLogic.balanceOf(action.data.buyer))
                 );
-                const certificate = await new Certificate.Entity(action.data.certId, conf).sync();
+                const certificate = await new PurchasableCertificate.Entity(action.data.certId, conf).sync();
                 await certificate.buyCertificate();
                 conf.logger.info('Certificate Bought');
                 conf.logger.verbose(
@@ -291,21 +290,21 @@ export const certificateDemo = async (
             };
 
             for (const certId of action.data.certificateIds) {
-                const cert = await new Certificate.Entity(certId, conf).sync();
+                const cert = await new PurchasableCertificate.Entity(certId, conf).sync();
                 const acceptedToken = (cert.acceptedToken as any) as string;
 
                 if (acceptedToken !== '0x0000000000000000000000000000000000000000') {
-                    const token = new Erc20TestToken(
+                    const token = new MarketContracts.Erc20TestToken(
                         conf.blockchainProperties.web3,
                         erc20TestAddress
                     );
 
                     const currentAllowance = Number(
-                        await token.allowance(action.data.buyer, cert.owner)
+                        await token.allowance(action.data.buyer, cert.certificate.owner)
                     );
                     const price = Number(cert.onChainDirectPurchasePrice);
 
-                    await token.approve(cert.owner, currentAllowance + price, {
+                    await token.approve(cert.certificate.owner, currentAllowance + price, {
                         from: action.data.buyer,
                         privateKey: ''
                     });
@@ -315,7 +314,7 @@ export const certificateDemo = async (
                             (await token.balanceOf(action.data.buyer))
                     );
                     conf.logger.verbose(
-                        `Allowance: ${await token.allowance(action.data.buyer, cert.owner)}`
+                        `Allowance: ${await token.allowance(action.data.buyer, cert.certificate.owner)}`
                     );
                 }
             }

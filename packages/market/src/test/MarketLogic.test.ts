@@ -3,13 +3,14 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { AssetLogic } from '@energyweb/asset-registry';
-import { buildRights, Role, UserLogic } from '@energyweb/user-registry';
-import { CertificateLogic } from '@energyweb/origin';
-
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
+import { AssetLogic, Contracts as AssetRegistryContracts } from '@energyweb/asset-registry';
+import {
+    buildRights,
+    Role,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
+import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 
 import { DemandStatus } from '../blockchain-facade/Demand';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
@@ -68,7 +69,10 @@ describe('MarketLogic', () => {
 
     it('should deploy the contracts', async () => {
         isGanache = true;
-        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            web3,
+            privateKeyDeployment
+        );
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -80,13 +84,13 @@ describe('MarketLogic', () => {
 
         await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
 
-        assetLogic = await migrateAssetRegistryContracts(
+        assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
-        certificateLogic = await migrateCertificateRegistryContracts(
+        certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             web3,
             assetLogic.web3Contract.options.address,
             privateKeyDeployment
@@ -860,7 +864,7 @@ describe('MarketLogic', () => {
             });
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'user does not have the required role');
+            assert.include(ex.message, 'demand owner has to be a trader');
         }
 
         assert.isTrue(failed);
@@ -874,7 +878,7 @@ describe('MarketLogic', () => {
             });
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'user is not the owner of this demand');
+            assert.include(ex.message, 'not the demand owner');
         }
 
         assert.isTrue(failed);

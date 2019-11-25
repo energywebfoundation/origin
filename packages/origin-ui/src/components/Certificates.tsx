@@ -25,7 +25,7 @@ export function Certificates() {
         return <CertificateTable selectedState={key} demand={demand} />;
     }
 
-    function CertificateDetailViewId(id: number) {
+    function CertificateDetailViewId(id: string) {
         return <CertificateDetailView id={id} />;
     }
 
@@ -130,8 +130,7 @@ export function Certificates() {
                     });
                     if (matches.length > 0) {
                         if (key === 'detail_view') {
-                            matches[0].component = () =>
-                                CertificateDetailViewId(id ? parseInt(id, 10) : id);
+                            matches[0].component = () => CertificateDetailViewId(id);
                         } else if (key === 'for_demand') {
                             matches[0].component = () =>
                                 ForDemandCertificates(id ? parseInt(id, 10) : id);

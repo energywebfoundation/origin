@@ -28,12 +28,6 @@ export function getPropertyByPath(obj, path) {
     }, obj || self);
 }
 
-export function indexOfEnd(baseString: string, searchString: string) {
-    const index = baseString.indexOf(searchString);
-
-    return index === -1 ? -1 : index + searchString.length;
-}
-
 export function deepEqual(a: any, b: any) {
     if (typeof a !== typeof b) {
         return false;
@@ -61,21 +55,18 @@ export function formatCurrency(value: number) {
     return currencyFormatter.format(value).replace('$', '');
 }
 
-interface IEnvironment {
-    MODE: string;
-    BACKEND_URL: string;
-    BLOCKCHAIN_EXPLORER_URL: string;
-    WEB3: string;
+export function deduplicate(inputArray: any[]) {
+    return inputArray.filter(
+        (item, index, array) =>
+            array.map(nestedItem => JSON.stringify(nestedItem)).indexOf(JSON.stringify(item)) ===
+            index
+    );
 }
 
-export function getEnv(): IEnvironment {
-    return (
-        // eslint-disable-next-line dot-notation
-        window['_env_'] || {
-            MODE: 'development',
-            BACKEND_URL: 'http://localhost:3030',
-            BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
-            WEB3: 'http://localhost:8545'
-        }
-    );
+export function reverse(array: any[]) {
+    return array.map((item, idx) => array[array.length - 1 - idx]);
+}
+
+export function clone(item: any) {
+    return JSON.parse(JSON.stringify(item));
 }

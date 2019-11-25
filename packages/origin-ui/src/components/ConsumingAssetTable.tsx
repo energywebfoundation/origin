@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { Redirect } from 'react-router-dom';
 import { Configuration } from '@energyweb/utils-general';
 import { ConsumingAsset } from '@energyweb/asset-registry';
@@ -10,8 +10,6 @@ import {
 import {
     IPaginatedLoaderFilteredState,
     getInitialPaginatedLoaderFilteredState,
-    FILTER_SPECIAL_TYPES,
-    RECORD_INDICATOR,
     PaginatedLoaderFiltered
 } from './Table/PaginatedLoaderFiltered';
 import { ICustomFilterDefinition, CustomFilterInputType } from './Table/FiltersHeader';
@@ -60,7 +58,8 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
 
     filters: ICustomFilterDefinition[] = [
         {
-            property: `${FILTER_SPECIAL_TYPES.COMBINE}::${RECORD_INDICATOR}asset.offChainProperties.facilityName::${RECORD_INDICATOR}organizationName`,
+            property: (record: IEnrichedConsumingAssetData) =>
+                `${record?.asset?.offChainProperties?.facilityName}${record?.organizationName}`,
             label: 'Search',
             input: {
                 type: CustomFilterInputType.string
@@ -103,7 +102,10 @@ class ConsumingAssetTableClass extends PaginatedLoaderFiltered<
         const promises = consumingAssets.map(async (asset: ConsumingAsset.Entity) => ({
             asset,
             organizationName: (
-                await new User.Entity(asset.owner.address, this.props.configuration as any).sync()
+                await new MarketUser.Entity(
+                    asset.owner.address,
+                    this.props.configuration as any
+                ).sync()
             ).organization
         }));
 

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Erc20TestToken } from '@energyweb/erc-test-contracts';
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -15,7 +14,7 @@ import { getConfiguration } from '../../features/selectors';
 import { setLoading } from '../../features/general/actions';
 
 interface IProps {
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     showModal: boolean;
     callback: () => void;
 }
@@ -42,22 +41,26 @@ export function BuyCertificateBulkModal(props: IProps) {
             const acceptedToken = (cert.acceptedToken as any) as string;
 
             if (acceptedToken !== '0x0000000000000000000000000000000000000000') {
-                const erc20TestToken = new Erc20TestToken(
+                const erc20TestToken = new MarketContracts.Erc20TestToken(
                     configuration.blockchainProperties.web3,
                     acceptedToken
                 );
 
                 const currentAllowance = Number(
-                    await erc20TestToken.allowance(account.from, cert.owner)
+                    await erc20TestToken.allowance(account.from, cert.certificate.owner)
                 );
                 const price = Number(cert.onChainDirectPurchasePrice);
 
-                await erc20TestToken.approve(cert.owner, currentAllowance + price, account);
+                await erc20TestToken.approve(
+                    cert.certificate.owner,
+                    currentAllowance + price,
+                    account
+                );
             }
         }
 
         const certificateIds: number[] = certificates.map(cert => parseInt(cert.id, 10));
-        await configuration.blockchainProperties.certificateLogicInstance.buyCertificateBulk(
+        await configuration.blockchainProperties.marketLogicInstance.buyCertificateBulk(
             certificateIds,
             account
         );
@@ -68,7 +71,7 @@ export function BuyCertificateBulkModal(props: IProps) {
         handleClose();
     }
 
-    const totalWh = certificates.reduce((a, b) => a + Number(b.energy), 0);
+    const totalWh = certificates.reduce((a, b) => a + Number(b.certificate.energy), 0);
 
     return (
         <Dialog open={showModal} onClose={handleClose}>

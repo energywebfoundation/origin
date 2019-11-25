@@ -1,9 +1,9 @@
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { CertificatesActions, ICertificatesAction } from './actions';
 import { ProducingAsset } from '@energyweb/asset-registry';
 
 export interface ICertificatesState {
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     requestCertificatesModal: {
         visible: boolean;
         producingAsset: ProducingAsset.Entity;

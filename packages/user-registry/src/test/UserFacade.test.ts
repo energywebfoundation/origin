@@ -10,7 +10,7 @@ import { UserLogic } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
 import { User } from '..';
 import { logger } from '../blockchain-facade/Logger';
-import { buildRights, Role } from '../blockchain-facade/RoleManagement';
+import { buildRights, Role } from '../wrappedContracts/RoleManagement';
 
 describe('User Facade', () => {
     dotenv.config({
@@ -60,8 +60,7 @@ describe('User Facade', () => {
             zip: '14789',
             city: 'Shelbyville',
             country: 'US',
-            state: 'FL',
-            notifications: false
+            state: 'FL'
         };
 
         conf = {
@@ -115,7 +114,6 @@ describe('User Facade', () => {
             email: 'john@doe.com',
             firstName: 'John',
             number: '101',
-            notifications: false,
             state: 'FL',
             street: 'Evergreen Terrace',
             surname: 'Doe',

@@ -1,3 +1,5 @@
+import polly from 'polly-js';
+
 import { Compliance, Configuration } from '@energyweb/utils-general';
 
 import { ProducingAssetPropertiesOffChainSchema } from '..';
@@ -51,12 +53,22 @@ export const createAsset = async (
         ProducingAssetPropertiesOffChainSchema
     );
 
-    if (configuration.offChainDataSource) {
-        assetPropertiesOnChain.url = producingAsset.getUrl();
-        assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
+    assetPropertiesOnChain.url = producingAsset.getUrl();
+    assetPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    const tx = await configuration.blockchainProperties.assetLogicInstance.createAsset(
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            producingAsset.id = (await getAssetListLength(configuration)).toString();
+            await producingAsset.throwIfExists();
+        });
+
+    await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateAsset,
+        logs
+    } = await configuration.blockchainProperties.assetLogicInstance.createAsset(
         assetPropertiesOnChain.smartMeter.address,
         assetPropertiesOnChain.owner.address,
         assetPropertiesOnChain.active,
@@ -69,11 +81,19 @@ export const createAsset = async (
         }
     );
 
-    producingAsset.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
+    if (!successCreateAsset) {
+        await producingAsset.deleteFromOffChainStorage();
+        throw new Error('createAsset: Saving on-chain data failed. Reverting...');
+    }
+
+    const idFromTx = configuration.blockchainProperties.web3.utils
+        .hexToNumber(logs[0].topics[1])
         .toString();
 
-    await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties);
+    if (producingAsset.id !== idFromTx) {
+        producingAsset.id = idFromTx;
+        await producingAsset.syncOffChainStorage(assetPropertiesOffChain, offChainStorageProperties)
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`Producing asset ${producingAsset.id} created`);

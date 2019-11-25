@@ -22,3 +22,5 @@ export const getRequestPasswordModalTitle = (state: IStoreState) =>
 export const getOffChainDataClient = (state: IStoreState) => state.general.offChainDataClient;
 
 export const getConfigurationClient = (state: IStoreState) => state.general.configurationClient;
+
+export const getEnvironment = (state: IStoreState) => state.general.environment;
