@@ -16,7 +16,7 @@ Market matcher consist of 4 major components:
 
 - **Triggers** - serves as an input for the matcher
 - **EntityStore** - serves as a data layer for the matcher
-- **Matchable componenets** - encapsulates the matching rules
+- **Matchable components** - encapsulates the matching rules
 - **Strategies** - provides a customized ordering 
 
 ## General matching flow
