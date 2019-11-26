@@ -82,7 +82,9 @@ export class CertificateService {
 
             return fillTx.status;
         } catch (e) {
-            this.logger.error(`[Certificate #${certificate.id}] Transferring failed with ${e}`);
+            this.logger.error(
+                `[Certificate #${certificate.id}] Transferring failed with ${e.message} ${e.stack}`
+            );
         }
 
         return false;

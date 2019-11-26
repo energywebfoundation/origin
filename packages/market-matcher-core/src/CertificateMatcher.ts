@@ -32,7 +32,7 @@ export class CertificateMatcher {
             return matchingResult;
         } catch (e) {
             this.logger.error(
-                `[Certificate #${certificate.id}] Processing certificate failed with ${e.message}`
+                `[Certificate #${certificate.id}] Processing certificate failed with ${e.message} ${e.stack}`
             );
         }
 

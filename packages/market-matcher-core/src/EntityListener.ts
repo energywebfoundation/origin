@@ -15,7 +15,9 @@ export class EntityListener<T> {
             try {
                 listener(entity);
             } catch (e) {
-                this.logger.error(`Certificate listener failed to execute: ${e} ${e.stack}`);
+                this.logger.error(
+                    `Certificate listener failed to execute: ${e.message} ${e.stack}`
+                );
             }
         }
     }
