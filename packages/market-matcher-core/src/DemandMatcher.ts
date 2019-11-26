@@ -42,7 +42,9 @@ export class DemandMatcher {
 
             return matched;
         } catch (e) {
-            this.logger.error(`[Demand #${demand.id}] Processing failed with ${e.message}`);
+            this.logger.error(
+                `[Demand #${demand.id}] Processing failed with ${e.message} ${e.stack}`
+            );
         }
 
         return true;
