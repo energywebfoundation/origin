@@ -9,7 +9,7 @@ import { NavLink, Route, Redirect } from 'react-router-dom';
 import { DemandEdit } from './DemandEdit';
 import { DemandClone } from './DemandClone';
 import { DemandView } from './DemandView';
-import { dataTest } from '../../utils/Helper';
+import { dataTest } from '../../utils/helper';
 
 export function Demands() {
     const baseURL = useSelector(getBaseURL);

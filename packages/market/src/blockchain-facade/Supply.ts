@@ -1,3 +1,5 @@
+import polly from 'polly-js';
+
 import * as GeneralLib from '@energyweb/utils-general';
 
 import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperties.schema.json';
@@ -92,12 +94,22 @@ export const createSupply = async (
 
     let { url, propertiesDocumentHash } = supplyPropertiesOnChain;
 
-    if (configuration.offChainDataSource) {
-        url = supply.getUrl();
-        propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
+    url = supply.getUrl();
+    propertiesDocumentHash = offChainStorageProperties.rootHash;
 
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createSupply(
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            supply.id = (await getSupplyListLength(configuration)).toString();
+            await supply.throwIfExists();
+        });
+
+    await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateSupply,
+        logs
+    } = await configuration.blockchainProperties.marketLogicInstance.createSupply(
         propertiesDocumentHash,
         url,
         supplyPropertiesOnChain.assetId,
@@ -107,11 +119,19 @@ export const createSupply = async (
         }
     );
 
-    supply.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
+    if (!successCreateSupply) {
+        await supply.deleteFromOffChainStorage();
+        throw new Error('createSupply: Saving on-chain data failed. Reverting...');
+    }
+
+    const idFromTx = configuration.blockchainProperties.web3.utils
+        .hexToNumber(logs[0].topics[1])
         .toString();
 
-    await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
+    if (supply.id !== idFromTx) {
+        supply.id = idFromTx;
+        await supply.syncOffChainStorage(supplyPropertiesOffChain, offChainStorageProperties);
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`Supply ${supply.id} created`);

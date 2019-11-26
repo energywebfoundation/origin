@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
@@ -13,15 +14,14 @@ import { IStoreState } from '../../types/index';
 import { connect } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { getCurrentUser } from '../../features/users/selectors';
-import { User } from '@energyweb/user-registry';
 
 interface IStateProps {
     configuration: IStoreState['configuration'];
-    currentUser: User.Entity;
+    currentUser: MarketUser.Entity;
 }
 
 interface IOwnProps {
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
     showModal: boolean;
     callback: () => void;
 }
@@ -50,7 +50,10 @@ class ClaimCertificateBulkModalClass extends React.Component<Props> {
     }
 
     render() {
-        const totalWh = this.props.certificates.reduce((a, b) => a + Number(b.energy), 0);
+        const totalWh = this.props.certificates.reduce(
+            (a, b) => a + Number(b.certificate.energy),
+            0
+        );
 
         return (
             <Dialog open={this.props.showModal} onClose={this.handleClose}>

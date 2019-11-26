@@ -17,7 +17,7 @@ import {
     TableSortLabel
 } from '@material-ui/core';
 import { Actions, ITableAction } from './Actions';
-import { deepEqual } from '../../utils/Helper';
+import { deepEqual } from '../../utils/helper';
 import {
     ColumnBatchActions,
     IBatchableAction,
@@ -58,11 +58,6 @@ interface IProps<T extends readonly ITableColumn[]> {
     handleRowClick?: (rowIndex: number) => void;
     batchableActions?: IBatchableAction[];
     customSelectCounterGenerator?: CustomCounterGeneratorFunction;
-}
-
-interface IState {
-    currentPage: number;
-    selectedIndexes: number[];
 }
 
 export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T>) {
@@ -139,7 +134,8 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             },
             tableWrapper: {},
             tableCellWrappingActions: {
-                position: 'relative'
+                position: 'relative',
+                minWidth: '56px'
             }
         })
     );

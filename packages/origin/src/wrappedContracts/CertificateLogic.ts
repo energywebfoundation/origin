@@ -1,4 +1,5 @@
-import { GeneralFunctions, ISpecialTx, ISearchLog, getClientVersion } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
 import Web3 from 'web3';
 import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 
@@ -11,58 +12,56 @@ export class CertificateLogic extends GeneralFunctions {
             address
                 ? new web3.eth.Contract(buildFile.abi, address)
                 : new web3.eth.Contract(
-                    buildFile.abi,
-                    buildFile.networks.length > 0
-                        ? buildFile.networks[0]
-                        : null
+                      buildFile.abi,
+                      buildFile.networks.length > 0 ? buildFile.networks[0] : null
                   )
         );
         this.web3 = web3;
     }
 
-    async initialize(assetContractAddress: string, txParams?: ISpecialTx) {
+    async initialize(assetContractAddress: string, txParams: ISpecialTx) {
         const method = this.web3Contract.methods.initialize(assetContractAddress);
 
         return this.send(method, txParams);
     }
 
-    async getAllCertificationApprovedEvents(eventFilter?: ISearchLog) {
+    async getAllCertificationApprovedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('CertificationRequestApproved', eventFilter);
     }
 
-    async getAllCertificationCreatedEvents(eventFilter?: ISearchLog) {
+    async getAllCertificationCreatedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('CertificationRequestCreated', eventFilter);
     }
 
-    async getAllLogCreatedCertificateEvents(eventFilter?: ISearchLog) {
+    async getAllLogCreatedCertificateEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogCreatedCertificate', eventFilter);
     }
 
-    async getAllLogCertificateClaimedEvents(eventFilter?: ISearchLog) {
+    async getAllLogCertificateClaimedEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogCertificateClaimed', eventFilter);
     }
 
-    async getAllLogCertificateSplitEvents(eventFilter?: ISearchLog) {
+    async getAllLogCertificateSplitEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogCertificateSplit', eventFilter);
     }
 
-    async getAllTransferEvents(eventFilter?: ISearchLog) {
+    async getAllTransferEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('Transfer', eventFilter);
     }
 
-    async getAllApprovalEvents(eventFilter?: ISearchLog) {
+    async getAllApprovalEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('Approval', eventFilter);
     }
 
-    async getAllApprovalForAllEvents(eventFilter?: ISearchLog) {
+    async getAllApprovalForAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('ApprovalForAll', eventFilter);
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 
@@ -88,33 +87,26 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async splitAndPublishForSale(
-        _certificateId: number,
-        _energy: number,
-        _price: number,
-        _tokenAddress: string,
+    async safeTransferFrom(
+        _from: string,
+        _to: string,
+        _certificateId: string,
+        _data?: any,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.splitAndPublishForSale(
-            _certificateId,
-            _energy,
-            _price,
-            _tokenAddress
-        );
-
-        return this.send(method, txParams);
-    }
-
-    async safeTransferFrom(_from: string, _to: string, _certificateId: string, _data?: any, txParams?: ISpecialTx) {
         if (_data) {
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId, _data);
-
-            return this.send(method, txParams);
-        } else {
-            const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId);
+            const method = this.web3Contract.methods.safeTransferFrom(
+                _from,
+                _to,
+                _certificateId,
+                _data
+            );
 
             return this.send(method, txParams);
         }
+        const method = this.web3Contract.methods.safeTransferFrom(_from, _to, _certificateId);
+
+        return this.send(method, txParams);
     }
 
     async getCertificate(_certificateId: number, txParams?: ISpecialTx) {
@@ -133,24 +125,6 @@ export class CertificateLogic extends GeneralFunctions {
         return this.web3Contract.methods.getCertificateOwner(_certificateId).call(txParams);
     }
 
-    async splitAndBuyCertificate(_certificateId: number, _energy: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.splitAndBuyCertificate(_certificateId, _energy);
-
-        return this.send(method, txParams);
-    }
-
-    async buyCertificate(_certificateId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.buyCertificate(_certificateId);
-
-        return this.send(method, txParams);
-    }
-
-    async buyCertificateBulk(_idArray: number[], txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.buyCertificateBulk(_idArray);
-
-        return this.send(method, txParams);
-    }
-
     async setApprovalForAll(_escrow: string, _approved: boolean, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.setApprovalForAll(_escrow, _approved);
 
@@ -163,27 +137,6 @@ export class CertificateLogic extends GeneralFunctions {
 
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
         return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
-    }
-
-    async publishForSale(
-        _certificateId: number,
-        _price: number,
-        _tokenAddress: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.publishForSale(
-            _certificateId,
-            _price,
-            _tokenAddress
-        );
-
-        return this.send(method, txParams);
-    }
-
-    async unpublishForSale(_certificateId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.unpublishForSale(_certificateId);
-
-        return this.send(method, txParams);
     }
 
     async isClaimed(_certificateId: number, txParams?: ISpecialTx) {
@@ -200,12 +153,6 @@ export class CertificateLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.claimCertificateBulk(_idArray);
 
         return this.send(method, txParams);
-    }
-
-    async getOnChainDirectPurchasePrice(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods
-            .getOnChainDirectPurchasePrice(_certificateId)
-            .call(txParams);
     }
 
     async isApprovedForAll(_owner: string, _operator: string, txParams?: ISpecialTx) {
@@ -245,10 +192,6 @@ export class CertificateLogic extends GeneralFunctions {
         return await this.web3Contract.methods
             .getAssetRequestedCertsForSMReadsLength(_assetId)
             .call(txParams);
-    }
-
-    async getTradableToken(_certificateId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getTradableToken(_certificateId).call(txParams);
     }
 
     async assetLogicAddress(txParams?: ISpecialTx) {

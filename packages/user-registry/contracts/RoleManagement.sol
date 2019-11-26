@@ -10,13 +10,14 @@ contract RoleManagement is Initializable {
 
     /// @notice all possible available roles
     /*
-    no role:        0x0...-----0 = 0
-    UserAdmin:      0x0...-----1 = 1
-    AssetAdmin:     0x0...----1- = 2
-    AssetManager:   0x0...---1-- = 4
-    Trader:         0x0...--1--- = 8
-    Matcher:        0x0...-1---- = 16
-    Issuer:         0x0...1----- = 32
+    no role:        0x0...------0 = 0
+    UserAdmin:      0x0...------1 = 1
+    AssetAdmin:     0x0...-----1- = 2
+    AssetManager:   0x0...----1-- = 4
+    Trader:         0x0...---1--- = 8
+    Matcher:        0x0...--1---- = 16
+    Issuer:         0x0...-1----- = 32
+    Listener:         0x0...1------ = 64
     */
     enum Role {
         UserAdmin,
@@ -24,7 +25,8 @@ contract RoleManagement is Initializable {
         AssetManager,
         Trader,
         Matcher,
-        Issuer
+        Issuer,
+        Listener
     }
 
     ///@param contract-lookup for users

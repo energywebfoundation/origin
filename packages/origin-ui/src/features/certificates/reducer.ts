@@ -1,12 +1,21 @@
-import { Certificate } from '@energyweb/origin';
+import { PurchasableCertificate } from '@energyweb/market';
 import { CertificatesActions, ICertificatesAction } from './actions';
+import { ProducingAsset } from '@energyweb/asset-registry';
 
 export interface ICertificatesState {
-    certificates: Certificate.Entity[];
+    certificates: PurchasableCertificate.Entity[];
+    requestCertificatesModal: {
+        visible: boolean;
+        producingAsset: ProducingAsset.Entity;
+    };
 }
 
 const defaultState: ICertificatesState = {
-    certificates: []
+    certificates: [],
+    requestCertificatesModal: {
+        visible: false,
+        producingAsset: null
+    }
 };
 
 export default function reducer(
@@ -29,6 +38,33 @@ export default function reducer(
                               action.certificate,
                               ...state.certificates.slice(certificateIndex + 1)
                           ]
+            };
+
+        case CertificatesActions.showRequestCertificatesModal:
+            return {
+                ...state,
+                requestCertificatesModal: {
+                    ...state.requestCertificatesModal,
+                    producingAsset: action.payload.producingAsset
+                }
+            };
+
+        case CertificatesActions.setRequestCertificatesModalVisibility:
+            return {
+                ...state,
+                requestCertificatesModal: {
+                    ...state.requestCertificatesModal,
+                    visible: true
+                }
+            };
+
+        case CertificatesActions.hideRequestCertificatesModal:
+            return {
+                ...state,
+                requestCertificatesModal: {
+                    visible: false,
+                    producingAsset: null
+                }
             };
 
         default:

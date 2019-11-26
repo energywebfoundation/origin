@@ -1,17 +1,9 @@
 import Web3 from 'web3';
-import { Tx, BlockType } from 'web3/eth/types'; // eslint-disable-line import/no-unresolved
-import { TransactionReceipt } from 'web3/types'; // eslint-disable-line import/no-unresolved
-import Contract from 'web3/eth/contract';
+import { TransactionConfig, TransactionReceipt } from 'web3-core';
+import { Contract } from 'web3-eth-contract';
 
-export declare interface ISpecialTx extends Tx {
+export declare interface ISpecialTx extends TransactionConfig {
     privateKey?: string;
-}
-
-export declare interface ISearchLog {
-    filter?: object;
-    fromBlock?: BlockType;
-    toBlock?: BlockType;
-    topics?: string[];
 }
 
 export async function getClientVersion(web3: Web3): Promise<string> {
@@ -67,7 +59,11 @@ export class GeneralFunctions {
         }
     }
 
-    async sendRaw(web3: Web3, privateKey: string, txParams: Tx): Promise<TransactionReceipt> {
+    async sendRaw(
+        web3: Web3,
+        privateKey: string,
+        txParams: TransactionConfig
+    ): Promise<TransactionReceipt> {
         const txData = {
             nonce: txParams.nonce,
             gasLimit: txParams.gas,
@@ -79,7 +75,7 @@ export class GeneralFunctions {
 
         const txObject = await web3.eth.accounts.signTransaction(txData, privateKey);
 
-        return web3.eth.sendSignedTransaction((txObject as any).rawTransaction);
+        return web3.eth.sendSignedTransaction(txObject.rawTransaction);
     }
 
     async send(method: any, txParams: ISpecialTx): Promise<TransactionReceipt> {
@@ -96,7 +92,7 @@ export class GeneralFunctions {
         return this.web3Contract;
     }
 
-    async getErrorMessage(web3: Web3, txObj: Tx): Promise<string> {
+    async getErrorMessage(web3: Web3, txObj: TransactionConfig): Promise<string> {
         return new Promise<any>((resolve, reject) => {
             (web3.currentProvider as any).send(
                 {

@@ -4,8 +4,7 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic, } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 
 import { AssetLogic, ProducingAsset, Asset, ConsumingAsset } from '..';
@@ -41,7 +40,7 @@ describe('Asset Facade', () => {
     const SM_READ_TIMESTAMP = moment().unix();
 
     it('should deploy user-registry contracts', async () => {
-        userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         await userLogic.createUser(
             'propertiesDocumentHash',

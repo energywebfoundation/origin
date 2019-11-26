@@ -1,14 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import 'moment/min/locales.min';
 
-import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset, Asset } from '@energyweb/asset-registry';
 
 import './SmartMeterReadingsChart.scss';
 import { STYLE_CONFIG } from '../styles/styleConfig';
 import { Button, ButtonGroup } from '@material-ui/core';
+import { reverse } from '../utils/helper';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -17,17 +17,18 @@ enum TIMEFRAME {
     YEAR = 'Year'
 }
 
+const DEFAULT_TIMEFRAME = TIMEFRAME.MONTH;
+
 interface ISelectedTimeFrame {
     timeframe: string;
     endDate: Date;
 }
 
-export interface ISmartMeterReadingsChartProps {
-    conf: Configuration.Entity;
+interface ISmartMeterReadingsChartProps {
     producingAsset: ProducingAsset.Entity;
 }
 
-export interface ISmartMeterReadingsChartState {
+interface ISmartMeterReadingsChartState {
     graphOptions: object;
     selectedTimeFrame: ISelectedTimeFrame;
     readings: Asset.ISmartMeterRead[];
@@ -66,7 +67,7 @@ export class SmartMeterReadingsChart extends React.Component<
                 }
             },
             selectedTimeFrame: {
-                timeframe: TIMEFRAME.MONTH,
+                timeframe: DEFAULT_TIMEFRAME,
                 endDate: moment().toDate()
             },
             readings: []
@@ -82,13 +83,19 @@ export class SmartMeterReadingsChart extends React.Component<
         this.setState({ readings });
     }
 
+    get endDateInTimezone() {
+        return moment(this.state.selectedTimeFrame?.endDate)
+            .tz(this.props.producingAsset?.offChainProperties?.timezone)
+            .clone();
+    }
+
     setSelectedTimeFrame(timeframe: ISelectedTimeFrame) {
         this.setState({ selectedTimeFrame: timeframe });
     }
 
     changeSelectedTimeFrame(increment = true) {
         const {
-            selectedTimeFrame: { timeframe, endDate }
+            selectedTimeFrame: { timeframe }
         } = this.state;
 
         let measurementUnit;
@@ -103,7 +110,7 @@ export class SmartMeterReadingsChart extends React.Component<
             measurementUnit = 'year';
         }
 
-        const currentDate = moment(endDate);
+        const currentDate = this.endDateInTimezone;
 
         const newEndDate = increment
             ? currentDate.add(1, measurementUnit)
@@ -115,11 +122,11 @@ export class SmartMeterReadingsChart extends React.Component<
         });
     }
 
-    get formattedReadings() {
-        const {
-            readings,
-            selectedTimeFrame: { endDate, timeframe }
-        } = this.state;
+    getFormattedReadings(
+        readings: Asset.ISmartMeterRead[],
+        timeframe: string,
+        producingAsset: ProducingAsset.Entity
+    ) {
         const formatted = [];
 
         let measurementUnit;
@@ -132,28 +139,28 @@ export class SmartMeterReadingsChart extends React.Component<
                 measurementUnit = 'hour';
                 amount = 24;
                 keyFormat = 'HH';
-                chartEndDate = moment(endDate).endOf('day');
+                chartEndDate = this.endDateInTimezone.endOf('day');
                 break;
 
             case TIMEFRAME.WEEK:
                 measurementUnit = 'day';
                 amount = 7;
                 keyFormat = 'ddd D MMM';
-                chartEndDate = moment(endDate).endOf('week');
+                chartEndDate = this.endDateInTimezone.endOf('week');
                 break;
 
             case TIMEFRAME.MONTH:
                 measurementUnit = 'day';
-                amount = moment(endDate).daysInMonth();
+                amount = this.endDateInTimezone.daysInMonth();
                 keyFormat = 'D MMM';
-                chartEndDate = moment(endDate).endOf('month');
+                chartEndDate = this.endDateInTimezone.endOf('month');
                 break;
 
             case TIMEFRAME.YEAR:
                 measurementUnit = 'month';
                 amount = 12;
                 keyFormat = 'MMM';
-                chartEndDate = moment(endDate).endOf('year');
+                chartEndDate = this.endDateInTimezone.endOf('year');
         }
 
         let currentIndex = 0;
@@ -162,13 +169,14 @@ export class SmartMeterReadingsChart extends React.Component<
             const currentDate = chartEndDate
                 .clone()
                 .subtract(currentIndex, measurementUnit)
-                .tz(this.props.producingAsset.offChainProperties.timezone);
+                .tz(producingAsset.offChainProperties.timezone);
+
             let totalEnergy = 0;
 
             for (const reading of readings) {
                 const readingDate = moment
                     .unix(reading.timestamp)
-                    .tz(this.props.producingAsset.offChainProperties.timezone);
+                    .tz(producingAsset.offChainProperties.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
                     totalEnergy += reading.energy;
@@ -187,39 +195,46 @@ export class SmartMeterReadingsChart extends React.Component<
             currentIndex += 1;
         }
 
-        return formatted.reverse();
+        return reverse(formatted);
     }
 
     get currentRangeInfo(): string {
         const {
-            selectedTimeFrame: { timeframe, endDate }
+            selectedTimeFrame: { timeframe }
         } = this.state;
 
-        const endDateRef = moment(endDate);
-
         if (timeframe === TIMEFRAME.WEEK) {
-            return `${endDateRef.startOf('week').format('D MMM YYYY')} - ${endDateRef
+            return `${this.endDateInTimezone
+                .startOf('week')
+                .format('D MMM YYYY')} - ${this.endDateInTimezone
                 .endOf('week')
                 .format('D MMM YYYY')}`;
         } else if (timeframe === TIMEFRAME.MONTH) {
-            return endDateRef.format('MMM YYYY');
+            return this.endDateInTimezone.format('MMM YYYY');
         } else if (timeframe === TIMEFRAME.YEAR) {
-            return endDateRef.format('YYYY');
+            return this.endDateInTimezone.format('YYYY');
         }
 
-        return endDateRef.format('D MMM YYYY');
+        return this.endDateInTimezone.format('D MMM YYYY');
     }
 
     render() {
-        const { selectedTimeFrame, graphOptions } = this.state;
+        const { selectedTimeFrame, graphOptions, readings } = this.state;
+        const { producingAsset } = this.props;
+
+        const formattedReadings = this.getFormattedReadings(
+            readings,
+            selectedTimeFrame.timeframe,
+            producingAsset
+        );
 
         const data = {
-            labels: this.formattedReadings.map(entry => entry.label),
+            labels: formattedReadings.map(entry => entry.label),
             datasets: [
                 {
                     label: 'Energy (Wh)',
-                    backgroundColor: this.formattedReadings.map(entry => entry.color),
-                    data: this.formattedReadings.map(entry => entry.value)
+                    backgroundColor: formattedReadings.map(entry => entry.color),
+                    data: formattedReadings.map(entry => entry.value)
                 }
             ]
         };

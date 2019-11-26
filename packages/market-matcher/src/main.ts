@@ -15,13 +15,29 @@ dotenv.config({
     const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
     const baseUrl = `${backendUrl}/api`;
 
-    const storedMarketLogicAddress = (await new ConfigurationClient().get(
-        baseUrl,
-        'MarketContractLookup'
-    )).pop();
+    const matcherInterval = Number(process.env.MATCHER_INTERVAL) || 15;
+
+    let storedMarketContractAddresses: string[] = [];
+
+    console.log(`[MARKET-MATCHER] Trying to get Market contract address`);
+
+    while (storedMarketContractAddresses.length === 0) {
+        storedMarketContractAddresses = await new ConfigurationClient().get(
+            baseUrl,
+            'MarketContractLookup'
+        );
+
+        if (storedMarketContractAddresses.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        }
+    }
+
+    const storedMarketContractAddress = storedMarketContractAddresses.pop();
+
+    console.log(`[MARKET-MATCHER] Starting for Market ${storedMarketContractAddress}`);
 
     const marketLogicAddress: string =
-        process.env.MARKET_CONTRACT_ADDRESS || storedMarketLogicAddress;
+        process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 
     const config = {
         web3Url: process.env.WEB3,
@@ -31,7 +47,8 @@ dotenv.config({
             privateKey
         },
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
-        offChainDataSourceClient: new OffChainDataClient()
+        offChainDataSourceClient: new OffChainDataClient(),
+        matcherInterval
     };
 
     startMatcher(config);

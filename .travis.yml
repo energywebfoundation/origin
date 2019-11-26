@@ -16,6 +16,7 @@ cache:
         - packages/user-registry/build
         - packages/user-registry/dist
         - packages/origin-backend/dist
+        - packages/origin-backend-client/dist
         - packages/asset-registry/schemas
         - packages/asset-registry/build
         - packages/asset-registry/dist
@@ -24,10 +25,10 @@ cache:
         - packages/market/schemas
         - packages/market/build
         - packages/market/dist
-        - packages/market-matcher/schemas
         - packages/market-matcher/dist
-        - packages/erc-test-contracts/build
-        - packages/erc-test-contracts/dist
+        - packages/market-matcher-core/dist
+        - packages/event-listener/dist
+        
 
 before_install:
     - sh scripts/restore-original-timestamps.sh
@@ -43,10 +44,12 @@ before_deploy:
 install:
   - yarn
   - yarn build
+  - yarn build:ui
 
 script:
   - yarn lint
   - yarn test:ci:contracts
+  - yarn test:ci:contracts:deployment
   - yarn test:ci:apps
   - yarn test:ci:ui
 

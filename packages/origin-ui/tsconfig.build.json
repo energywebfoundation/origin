@@ -13,9 +13,6 @@
             "path": "../user-registry/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../erc-test-contracts/tsconfig.build.json"
-        },
-        {
             "path": "../utils-general/tsconfig.build.json"
         },
         {
@@ -25,7 +22,7 @@
             "path": "../market/tsconfig.build.shakeable.json"
         },
         {
-            "path": "../market-matcher/tsconfig.build.json"
+            "path": "../market-matcher-core/tsconfig.build.json"
         },
         {
             "path": "../origin/tsconfig.build.shakeable.json"

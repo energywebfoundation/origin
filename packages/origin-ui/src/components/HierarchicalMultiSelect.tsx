@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
 } from './MultiSelectAutocomplete';
-import { dataTest } from '../utils/Helper';
+import { dataTest } from '../utils/helper';
 
 type Level = 1 | 2 | 3;
 

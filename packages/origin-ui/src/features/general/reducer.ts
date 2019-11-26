@@ -1,4 +1,4 @@
-import { GeneralActions, IGeneralAction } from './actions';
+import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
 import {
     IOffChainDataClient,
     OffChainDataClient,
@@ -16,6 +16,7 @@ export interface IGeneralState {
     requestPasswordModalCallback: (password: string) => void;
     offChainDataClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
+    environment: IEnvironment;
 }
 
 const defaultState: IGeneralState = {
@@ -27,7 +28,8 @@ const defaultState: IGeneralState = {
     requestPasswordModalCallback: null,
     requestPasswordModalTitle: null,
     offChainDataClient: new OffChainDataClient(),
-    configurationClient: new ConfigurationClient()
+    configurationClient: new ConfigurationClient(),
+    environment: null
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -83,6 +85,12 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
             return {
                 ...state,
                 configurationClient: action.payload
+            };
+
+        case GeneralActions.setEnvironment:
+            return {
+                ...state,
+                environment: action.payload
             };
 
         default:

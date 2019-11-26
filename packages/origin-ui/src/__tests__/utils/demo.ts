@@ -2,17 +2,24 @@ import Web3 from 'web3';
 import ganache from 'ganache-cli';
 import * as Winston from 'winston';
 
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
+import {
+    Contracts as UserRegistryContracts,
+    User,
+    buildRights,
+    Role
+} from '@energyweb/user-registry';
+import {
+    Contracts as AssetRegistryContracts,
+    Asset,
+    ProducingAsset
+} from '@energyweb/asset-registry';
+import { Contracts as OriginContracts } from '@energyweb/origin';
+import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 
-import { User, buildRights, Role } from '@energyweb/user-registry';
 import { Compliance } from '@energyweb/utils-general';
-import { Asset, ProducingAsset } from '@energyweb/asset-registry';
+
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
-import { BACKEND_URL } from '../../utils/api';
 import { IStoreState } from '../../types';
 
 const connectionConfig = {
@@ -69,20 +76,24 @@ export async function deployDemo() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
-    const userLogic = await migrateUserRegistryContracts(web3, adminPK);
+    const userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, adminPK);
     const userLogicAddress = userLogic.web3Contract.options.address;
 
-    const assetLogic = await migrateAssetRegistryContracts(web3, userLogicAddress, adminPK);
+    const assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+        web3,
+        userLogicAddress,
+        adminPK
+    );
     const assetLogicAddress = assetLogic.web3Contract.options.address;
 
-    const certificateLogic = await migrateCertificateRegistryContracts(
+    const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
         web3,
         assetLogicAddress,
         adminPK
     );
     const certificateLogicAddress = certificateLogic.web3Contract.options.address;
 
-    const marketLogic = await migrateMarketRegistryContracts(
+    const marketLogic = await MarketContracts.migrateMarketRegistryContracts(
         web3,
         certificateLogicAddress,
         adminPK
@@ -104,6 +115,8 @@ export async function deployDemo() {
 
     const configurationClient = new ConfigurationClientMock();
     const offChainDataClient = new OffChainDataClientMock();
+
+    const BACKEND_URL = 'http://localhost:3030';
 
     await configurationClient.add(
         BACKEND_URL,
@@ -138,7 +151,7 @@ export async function deployDemo() {
         roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
         organization: 'admin'
     };
-    const adminPropsOffChain: User.IUserOffChainProperties = {
+    const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Admin',
         surname: 'User',
         email: 'admin@example.com',
@@ -150,7 +163,7 @@ export async function deployDemo() {
         state: '',
         notifications: false
     };
-    await User.createUser(adminPropsOnChain, adminPropsOffChain, conf);
+    await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, conf);
 
     const assetManagerPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -160,7 +173,7 @@ export async function deployDemo() {
         roles: buildRights([Role.AssetManager]),
         organization: 'Asset Manager organization'
     };
-    const assetManagerPropsOffChain: User.IUserOffChainProperties = {
+    const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
         firstName: 'Asset',
         surname: 'Manager',
         email: 'assetmanager@example.com',
@@ -172,9 +185,9 @@ export async function deployDemo() {
         state: '',
         notifications: false
     };
-    await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
+    await MarketUser.createMarketUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
 
-    await User.createUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
+    await MarketUser.createMarketUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
 
     const assetProducingProps: Asset.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },

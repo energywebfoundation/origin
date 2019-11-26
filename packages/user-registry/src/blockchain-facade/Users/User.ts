@@ -1,5 +1,5 @@
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { Role } from '../RoleManagement';
+import { Role } from '../../wrappedContracts/RoleManagement';
 import UserOffChainPropertiesSchema from '../../../schemas/UserOffChainProperties.schema.json';
 
 export interface IUserOffChainProperties {
@@ -12,7 +12,6 @@ export interface IUserOffChainProperties {
     city?: string;
     country?: string;
     state?: string;
-    notifications?: boolean;
 }
 
 export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
@@ -105,6 +104,8 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
             UserOffChainPropertiesSchema
         );
 
+        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
             this.id,
             updatedOffChainStorageProperties.rootHash,
@@ -114,8 +115,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
                 privateKey: this.configuration.blockchainProperties.activeUser.privateKey
             }
         );
-
-        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
         return new Entity(this.id, this.configuration).sync();
     }
@@ -133,17 +132,20 @@ export const createUser = async (
         UserOffChainPropertiesSchema
     );
 
-    if (configuration.offChainDataSource) {
-        userPropertiesOnChain.url = user.getUrl();
-        userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-    }
+    user.id = userPropertiesOnChain.id;
+    userPropertiesOnChain.url = user.getUrl();
+    userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
 
     const accountProperties = {
         from: configuration.blockchainProperties.activeUser.address,
         privateKey: configuration.blockchainProperties.activeUser.privateKey
     };
 
-    await configuration.blockchainProperties.userLogicInstance.createUser(
+    await user.syncOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateUser
+    } = await configuration.blockchainProperties.userLogicInstance.createUser(
         userPropertiesOnChain.propertiesDocumentHash,
         userPropertiesOnChain.url,
         userPropertiesOnChain.id,
@@ -151,15 +153,18 @@ export const createUser = async (
         accountProperties
     );
 
-    await configuration.blockchainProperties.userLogicInstance.setRoles(
+    const {
+        status: successSetRoles
+    } = await configuration.blockchainProperties.userLogicInstance.setRoles(
         userPropertiesOnChain.id,
         userPropertiesOnChain.roles,
         accountProperties
     );
 
-    user.id = userPropertiesOnChain.id;
-
-    await user.syncOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+    if (!successCreateUser || !successSetRoles) {
+        await user.deleteFromOffChainStorage();
+        throw new Error('createUser: Saving on-chain data failed. Reverting...');
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`User ${user.id} created`);

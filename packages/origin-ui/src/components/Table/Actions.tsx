@@ -1,6 +1,4 @@
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@material-ui/lab';
 import { MoreHoriz } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useTheme, createStyles, makeStyles } from '@material-ui/core';

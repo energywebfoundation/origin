@@ -1,42 +1,27 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import moment from 'moment-timezone';
-
-import { Configuration } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
-import {
-    IPaginatedLoaderState,
-    PaginatedLoader,
-    IPaginatedLoaderFetchDataParameters,
-    IPaginatedLoaderFetchDataReturnValues,
-    getInitialPaginatedLoaderState
-} from './Table/PaginatedLoader';
 import { TableMaterial } from './Table/TableMaterial';
+import {
+    usePaginatedLoader,
+    IPaginatedLoaderHooksFetchDataParameters
+} from './Table/PaginatedLoaderHooks';
 
-interface IOwnProps {
-    conf: Configuration.Entity;
+interface IProps {
     producingAsset: ProducingAsset.Entity;
 }
 
-interface IState extends IPaginatedLoaderState {
-    paginatedData: Array<[string, number]>;
-}
+type TRecord = [string, number];
 
-export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> {
-    constructor(props: IOwnProps) {
-        super(props);
+export function SmartMeterReadingsTable(props: IProps) {
+    const { producingAsset } = props;
 
-        this.state = {
-            ...getInitialPaginatedLoaderState(),
-            pageSize: 10
-        };
-    }
-
-    async getPaginatedData({
-        pageSize,
+    async function getPaginatedData({
+        requestedPageSize,
         offset
-    }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const readings = await this.props.producingAsset.getSmartMeterReads();
-        const assetTimezone = this.props.producingAsset.offChainProperties.timezone;
+    }: IPaginatedLoaderHooksFetchDataParameters) {
+        const readings = await producingAsset.getSmartMeterReads();
+        const assetTimezone = producingAsset.offChainProperties.timezone;
 
         const data = [];
         let currentSmartMeterState = 0;
@@ -54,32 +39,37 @@ export class SmartMeterReadingsTable extends PaginatedLoader<IOwnProps, IState> 
         }
 
         return {
-            paginatedData: data.reverse().slice(offset, offset + pageSize),
+            paginatedData: data.reverse().slice(offset, offset + requestedPageSize),
             total: readings.length
         };
     }
 
-    columns = [
-        { id: 'time', label: `Time (${this.props.producingAsset.offChainProperties.timezone})` },
+    const { loadPage, total, pageSize, paginatedData } = usePaginatedLoader<TRecord>({
+        initialPageSize: 10,
+        getPaginatedData
+    });
+
+    useEffect(() => {
+        loadPage(1);
+    }, [producingAsset]);
+
+    const columns = [
+        { id: 'time', label: `Time (${producingAsset.offChainProperties.timezone})` },
         { id: 'value', label: 'Smart Meter Value' }
     ] as const;
 
-    get rows() {
-        return this.state.paginatedData.map(data => ({
-            time: data[0],
-            value: data[1].toLocaleString()
-        }));
-    }
+    const rows = paginatedData.map(data => ({
+        time: data[0],
+        value: data[1].toLocaleString()
+    }));
 
-    render() {
-        return (
-            <TableMaterial
-                columns={this.columns}
-                rows={this.rows}
-                loadPage={this.loadPage}
-                total={this.state.total}
-                pageSize={this.state.pageSize}
-            />
-        );
-    }
+    return (
+        <TableMaterial
+            columns={columns}
+            rows={rows}
+            loadPage={loadPage}
+            total={total}
+            pageSize={pageSize}
+        />
+    );
 }

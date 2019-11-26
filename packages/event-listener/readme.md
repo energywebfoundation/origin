@@ -6,6 +6,9 @@ This repository/package is not designed for productive usage. Instead it should 
 
 ## How to use
 
+Add a `EVENT_LISTENER_PRIV_KEY` variable that contains the private key to the root `.env` file.
+Event listener will use this private key to perform transactions on-chain.
+
 ### Run
 
 From the root of the monorepo, run the following commands in two separate terminals:

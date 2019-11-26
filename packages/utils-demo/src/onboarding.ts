@@ -1,6 +1,7 @@
 import { ConsumingAsset, Asset, ProducingAsset } from '@energyweb/asset-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -28,7 +29,7 @@ export const onboardDemo = async (
                 organization: action.data.organization
             };
 
-            const userPropsOffChain: User.IUserOffChainProperties = {
+            const userPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
                 firstName: action.data.firstName,
                 surname: action.data.surname,
                 email: action.data.email,
@@ -38,10 +39,15 @@ export const onboardDemo = async (
                 city: action.data.city,
                 country: action.data.country,
                 state: action.data.state,
-                notifications: true
+                notifications: action.data.notifications || false,
+                autoPublish: action.data.autoPublish || {
+                    enabled: false,
+                    price: 1.5,
+                    currency: Currency.USD
+                }
             };
 
-            await User.createUser(userPropsOnChain, userPropsOffChain, conf);
+            await MarketUser.createMarketUser(userPropsOnChain, userPropsOffChain, conf);
 
             conf.logger.info('Onboarded a new user: ' + action.data.address);
             conf.logger.verbose(

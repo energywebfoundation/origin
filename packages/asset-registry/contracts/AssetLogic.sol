@@ -143,7 +143,21 @@ contract AssetLogic is Initializable, RoleManagement, IAssetLogic {
         emit LogAssetCreated(msg.sender, assetId);
     }
 
-    function getSmartMeterReadsForAsset(uint _assetId) external view
+    function getSmartMeterReadsForAssetByIndex(uint _assetId, uint[] calldata _indexes) external view
+        returns (AssetDefinitions.SmartMeterRead[] memory)
+    {   
+        uint length = _indexes.length;
+        AssetDefinitions.SmartMeterRead[] memory reads = new AssetDefinitions.SmartMeterRead[](length);
+        AssetDefinitions.SmartMeterRead[] memory allReads = getSmartMeterReadsForAsset(_assetId);
+
+        for (uint i=0; i < length; i++) {
+            reads[i] = allReads[_indexes[i]];
+        }
+
+        return reads;
+    }
+
+    function getSmartMeterReadsForAsset(uint _assetId) public view
         returns (AssetDefinitions.SmartMeterRead[] memory reads)
     {
         return _assetSmartMeterReadsMapping[_smAddressForAssetId(_assetId)];

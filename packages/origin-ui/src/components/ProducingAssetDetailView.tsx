@@ -13,7 +13,7 @@ import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/Helper';
+import { getOffChainText } from '../utils/helper';
 import { Compliance, IRECAssetService } from '@energyweb/utils-general';
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { AssetMap } from './AssetMap';
@@ -22,11 +22,11 @@ import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProducingAssetDetailLink } from '../utils/routing';
-import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
+import { getBaseURL, getProducingAssets } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
-import { User } from '@energyweb/user-registry';
+import { MarketUser } from '@energyweb/market';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 
 interface IProps {
@@ -39,7 +39,6 @@ interface IProps {
 export function ProducingAssetDetailView(props: IProps) {
     const baseURL = useSelector(getBaseURL);
     const certificates = useSelector(getCertificates);
-    const configuration = useSelector(getConfiguration);
     const producingAssets = useSelector(getProducingAssets);
     const users = useSelector(getUsers);
 
@@ -56,7 +55,7 @@ export function ProducingAssetDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    let owner: User.Entity = null;
+    let owner: MarketUser.Entity = null;
     let selectedAsset: ProducingAsset.Entity = null;
 
     const assetTypeService = new IRECAssetService();
@@ -65,7 +64,7 @@ export function ProducingAssetDetailView(props: IProps) {
         selectedAsset = producingAssets.find(p => p.id === props.id.toString());
     }
 
-    if (selectedAsset && certificates.length > 0) {
+    if (selectedAsset) {
         owner = getUserById(users, selectedAsset.owner.address);
 
         if (!owner) {
@@ -191,16 +190,16 @@ export function ProducingAssetDetailView(props: IProps) {
             ) : (
                 <table>
                     <tbody>
-                        {data.map(row => (
-                            <tr key={row.key}>
-                                {row.map(col => {
+                        {data.map((row, rowIndex) => (
+                            <tr key={rowIndex}>
+                                {row.map((col, colIndex) => {
                                     if (col.isAdditionalInformation && !props.addSearchField) {
                                         return null;
                                     }
 
                                     return (
                                         <td
-                                            key={col.key}
+                                            key={colIndex}
                                             rowSpan={col.rowspan || 1}
                                             colSpan={col.colspan || 1}
                                         >
@@ -279,14 +278,12 @@ export function ProducingAssetDetailView(props: IProps) {
                                     <div className="row">
                                         <div className="col-lg-4">
                                             <SmartMeterReadingsTable
-                                                conf={configuration}
                                                 producingAsset={selectedAsset}
                                             />
                                         </div>
 
                                         <div className="col-lg-8">
                                             <SmartMeterReadingsChart
-                                                conf={configuration}
                                                 producingAsset={selectedAsset}
                                             />
                                         </div>
@@ -301,7 +298,7 @@ export function ProducingAssetDetailView(props: IProps) {
                             <br />
                             <CertificateTable
                                 certificates={certificates.filter(
-                                    c => c.assetId.toString() === props.id.toString()
+                                    c => c.certificate.assetId.toString() === props.id.toString()
                                 )}
                                 selectedState={SelectedState.ForSale}
                                 demand={null}

@@ -4,15 +4,21 @@ import { applyMiddleware, createStore } from 'redux';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createRootReducer } from '../../reducers';
 import sagas from '../../features/sagas';
-import { User } from '@energyweb/user-registry';
-import { addUser, updateCurrentUserId, updateFetcher } from '../../features/users/actions';
-import { ReactWrapper } from 'enzyme';
+import { MarketUser, PurchasableCertificate } from '@energyweb/market';
+import {
+    addUser,
+    updateCurrentUserId,
+    updateFetcher,
+    IUserFetcher
+} from '../../features/users/actions';
+import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
+
 import { ProducingAsset } from '@energyweb/asset-registry';
 import { producingAssetCreatedOrUpdated } from '../../features/producingAssets/actions';
 import { certificateCreatedOrUpdated } from '../../features/certificates/actions';
-import { dataTestSelector } from '../../utils/Helper';
+import { dataTestSelector } from '../../utils/helper';
 import moment from 'moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
@@ -52,7 +58,8 @@ const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
     configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient
+    offChainDataClient: IOffChainDataClient,
+    runSagas = true
 ) => {
     const history = createMemoryHistory({
         initialEntries: initialHistoryEntries
@@ -85,10 +92,9 @@ const setupStoreInternal = (
         store.dispatch(setOffChainDataClient(offChainDataClient));
     }
 
-    const sagasTasks: Task[] = Object.keys(sagas).reduce(
-        (a, saga) => [...a, sagaMiddleware.run(sagas[saga])],
-        []
-    );
+    const sagasTasks: Task[] = runSagas
+        ? Object.keys(sagas).reduce((a, saga) => [...a, sagaMiddleware.run(sagas[saga])], [])
+        : [];
 
     return {
         store,
@@ -165,16 +171,18 @@ export const createProducingAsset = (
 
 interface ICreateCertificateProperties {
     id: string;
-    owner?: string;
-    energy?: number;
-    creationTime?: number;
-    assetId?: number;
-    status?: Certificate.Status;
+    certificate: Certificate.ICertificate;
 }
 
-export const createCertificate = (properties: ICreateCertificateProperties): Certificate.Entity => {
+export const createCertificate = (
+    properties: ICreateCertificateProperties
+): PurchasableCertificate.Entity => {
     const status =
-        typeof properties.status === 'undefined' ? Certificate.Status.Active : properties.status;
+        typeof properties.certificate.status === 'undefined'
+            ? Certificate.Status.Active
+            : properties.certificate.status;
+
+    properties.certificate.status = status;
 
     return {
         id: properties.id,
@@ -185,12 +193,8 @@ export const createCertificate = (properties: ICreateCertificateProperties): Cer
                 }
             }
         } as Partial<Configuration.Entity>) as Configuration.Entity,
-        status,
-        owner: properties.owner,
-        energy: properties.energy,
-        creationTime: properties.creationTime,
-        assetId: properties.assetId
-    } as Certificate.Entity;
+        certificate: properties.certificate
+    } as PurchasableCertificate.Entity;
 };
 
 interface ISetupStoreOptions {
@@ -198,11 +202,14 @@ interface ISetupStoreOptions {
     logActions: boolean;
     configurationClient?: IConfigurationClient;
     offChainDataClient?: IOffChainDataClient;
+    runSagas?: boolean;
+    userFetcher?: IUserFetcher;
 }
 
 const DEFAULT_SETUP_STORE_OPTIONS: ISetupStoreOptions = {
     mockUserFetcher: true,
-    logActions: false
+    logActions: false,
+    runSagas: true
 };
 
 export const setupStore = (
@@ -213,16 +220,17 @@ export const setupStore = (
         initialHistoryEntries,
         options.logActions,
         options.configurationClient,
-        options.offChainDataClient
+        options.offChainDataClient,
+        options.runSagas
     );
 
     if (options.mockUserFetcher) {
-        const mockUserFetcher = {
+        const mockUserFetcher = options.userFetcher || {
             async fetch(id: string) {
                 return ({
                     id,
                     organization: 'Example Organization'
-                } as Partial<User.Entity>) as User.Entity;
+                } as Partial<MarketUser.Entity>) as MarketUser.Entity;
             }
         };
 
@@ -232,13 +240,13 @@ export const setupStore = (
     return {
         store,
         setCurrentUser: (properties: ISetCurrentUserProperties) => {
-            const user: Partial<User.Entity> = {
+            const user: Partial<MarketUser.Entity> = {
                 id: properties.id,
                 organization: properties.organization || 'Example Organization',
                 isRole: () => true
             };
 
-            store.dispatch(addUser(user as User.Entity));
+            store.dispatch(addUser(user as MarketUser.Entity));
 
             store.dispatch(updateCurrentUserId(user.id));
         },
@@ -263,7 +271,7 @@ interface ISetCurrentUserProperties {
     organization?: string;
 }
 
-export const createRefreshFunction = (rendered: ReactWrapper) => async () => {
+export const createRefreshFunction = (rendered: CommonWrapper) => async () => {
     await flushPromises();
     rendered.update();
 };
@@ -365,7 +373,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                     .value
             ).toBe('');
 
-            rendered.find(`#select-${name}`).simulate('click');
+            rendered.find(`#mui-component-select-${name}`).simulate('click');
 
             expect(
                 Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(i => i.textContent)

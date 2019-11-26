@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { TransactionReceipt } from 'web3/types';
+import { TransactionReceipt } from 'web3-core';
 
 import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
@@ -85,6 +85,16 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
             .assetLogicInstance;
 
         return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({
+            energy: Number(read.energy),
+            timestamp: Number(read.timestamp)
+        }));
+    }
+
+    async getSmartMeterReadsByIndex(indexes: number[]): Promise<ISmartMeterRead[]> {
+        const logic: AssetLogic = this.configuration.blockchainProperties
+            .assetLogicInstance;
+
+        return (await logic.getSmartMeterReadsForAssetByIndex(Number(this.id), indexes)).map((read: ISmartMeterRead) => ({
             energy: Number(read.energy),
             timestamp: Number(read.timestamp)
         }));

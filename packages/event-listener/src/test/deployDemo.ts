@@ -1,14 +1,27 @@
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
-import { Asset, AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
-import { migrateAssetRegistryContracts } from '@energyweb/asset-registry/contracts';
-import { MarketLogic, Demand } from '@energyweb/market';
-import { migrateMarketRegistryContracts } from '@energyweb/market/contracts';
-import { CertificateLogic, Certificate } from '@energyweb/origin';
-import { migrateCertificateRegistryContracts } from '@energyweb/origin/contracts';
-import { buildRights, Role, User, UserLogic } from '@energyweb/user-registry';
-import { migrateUserRegistryContracts } from '@energyweb/user-registry/contracts';
+import {
+    Asset,
+    AssetLogic,
+    ProducingAsset,
+    Contracts as AssetRegistryContracts
+} from '@energyweb/asset-registry';
+import {
+    MarketLogic,
+    Demand,
+    MarketUser,
+    PurchasableCertificate,
+    Contracts as MarketContracts
+} from '@energyweb/market';
+import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
+import {
+    buildRights,
+    Role,
+    User,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
 
 import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
@@ -27,8 +40,6 @@ export class Demo {
 
     private nextDeployedSmReadIndex = 0;
 
-    private connectionConfig: any;
-
     private conf: Configuration.Entity;
 
     private adminPK: string;
@@ -39,14 +50,9 @@ export class Demo {
 
     private logger: Winston.Logger;
 
-    constructor(web3Url: string, deployKey: string) {
-        this.connectionConfig = {
-            web3: web3Url,
-            deployKey
-        };
-
-        this.adminPK = this.connectionConfig.deployKey;
-        this.web3 = new Web3(this.connectionConfig.web3);
+    constructor(public web3Url: string, public deployKey: string, listenerPK: string) {
+        this.adminPK = deployKey;
+        this.web3 = new Web3(web3Url);
 
         this.ACCOUNTS = {
             ADMIN: {
@@ -68,6 +74,10 @@ export class Demo {
             TRADER: {
                 address: '0xb00f0793d0ce69d7b07db16f92dc982cd6bdf651',
                 privateKey: '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e'
+            },
+            LISTENER: {
+                address: this.web3.eth.accounts.privateKeyToAccount(listenerPK).address,
+                privateKey: listenerPK
             }
         };
 
@@ -83,24 +93,27 @@ export class Demo {
     }
 
     async deploy(offChainDataClient: IOffChainDataClient) {
-        this.userLogic = await migrateUserRegistryContracts(this.web3, this.adminPK);
+        this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            this.web3,
+            this.adminPK
+        );
         const userLogicAddress = this.userLogic.web3Contract.options.address;
 
-        this.assetLogic = await migrateAssetRegistryContracts(
+        this.assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
             this.web3,
             userLogicAddress,
             this.adminPK
         );
         const assetLogicAddress = this.assetLogic.web3Contract.options.address;
 
-        this.certificateLogic = await migrateCertificateRegistryContracts(
+        this.certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             this.web3,
             assetLogicAddress,
             this.adminPK
         );
         const certificateLogicAddress = this.certificateLogic.web3Contract.options.address;
 
-        this.marketLogic = await migrateMarketRegistryContracts(
+        this.marketLogic = await MarketContracts.migrateMarketRegistryContracts(
             this.web3,
             certificateLogicAddress,
             this.adminPK
@@ -147,7 +160,7 @@ export class Demo {
             roles: buildRights([Role.UserAdmin, Role.AssetAdmin, Role.Issuer]),
             organization: 'admin'
         };
-        const adminPropsOffChain: User.IUserOffChainProperties = {
+        const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Admin',
             surname: 'User',
             email: 'admin@example.com',
@@ -156,10 +169,9 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: '',
-            notifications: true
+            state: ''
         };
-        await User.createUser(adminPropsOnChain, adminPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
         const assetManagerPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -169,7 +181,7 @@ export class Demo {
             roles: buildRights([Role.AssetAdmin, Role.AssetManager, Role.Trader]),
             organization: 'Asset Manager organization'
         };
-        const assetManagerPropsOffChain: User.IUserOffChainProperties = {
+        const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Admin',
             surname: 'User',
             email: 'admin@example.com',
@@ -179,9 +191,39 @@ export class Demo {
             city: '',
             country: '',
             state: '',
-            notifications: true
+            notifications: true,
+            autoPublish: {
+                enabled: true,
+                price: 1000,
+                currency: Currency.USD
+            }
         };
-        await User.createUser(assetManagerPropsOnChain, assetManagerPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            assetManagerPropsOnChain,
+            assetManagerPropsOffChain,
+            this.conf
+        );
+
+        const listenerPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: this.ACCOUNTS.LISTENER.address,
+            active: true,
+            roles: buildRights([Role.Listener]),
+            organization: 'Listener organization'
+        };
+        const listenerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
+            firstName: 'Listener',
+            surname: 'L',
+            email: 'listener@example.com',
+            street: '',
+            number: '',
+            zip: '',
+            city: '',
+            country: '',
+            state: ''
+        };
+        await MarketUser.createMarketUser(listenerPropsOnChain, listenerPropsOffChain, this.conf);
 
         const matcherPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -191,7 +233,7 @@ export class Demo {
             roles: buildRights([Role.Matcher]),
             organization: 'Matcher organization'
         };
-        const matcherPropsOffChain: User.IUserOffChainProperties = {
+        const matcherPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Matcher',
             surname: 'M',
             email: 'matcher@example.com',
@@ -200,10 +242,9 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: '',
-            notifications: true
+            state: ''
         };
-        await User.createUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
 
         const marketLogicPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -213,7 +254,7 @@ export class Demo {
             roles: buildRights([Role.Matcher]),
             organization: 'MarketLogic matcher'
         };
-        const marketLogicPropsOffChain: User.IUserOffChainProperties = {
+        const marketLogicPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'MarketLogic',
             surname: 'Matcher',
             email: 'marketlogicmatcher@example.com',
@@ -222,10 +263,14 @@ export class Demo {
             zip: '',
             city: '',
             country: '',
-            state: '',
-            notifications: true
+            state: ''
         };
-        await User.createUser(marketLogicPropsOnChain, marketLogicPropsOffChain, this.conf);
+
+        await MarketUser.createMarketUser(
+            marketLogicPropsOnChain,
+            marketLogicPropsOffChain,
+            this.conf
+        );
 
         const traderOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
@@ -235,7 +280,7 @@ export class Demo {
             roles: buildRights([Role.Trader]),
             organization: 'Trader'
         };
-        const traderOffChain: User.IUserOffChainProperties = {
+        const traderOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Trader',
             surname: 'Trader',
             email: 'marketlogicmatcher@example.com',
@@ -247,7 +292,7 @@ export class Demo {
             state: '',
             notifications: true
         };
-        await User.createUser(traderOnChain, traderOffChain, this.conf);
+        await MarketUser.createMarketUser(traderOnChain, traderOffChain, this.conf);
 
         const assetProducingProps: Asset.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
@@ -314,12 +359,11 @@ export class Demo {
     async publishForSale(certificateId: number) {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
 
-        const deployedCertificate = await new Certificate.Entity(
+        const deployedCertificate = await new PurchasableCertificate.Entity(
             certificateId.toString(),
             this.conf
         ).sync();
         await deployedCertificate.publishForSale(1000, Currency.USD);
-        console.log('PUBLISHED FOR SALE');
     }
 
     async deployDemand() {
@@ -339,7 +383,8 @@ export class Demo {
             startTime: moment().unix(),
             endTime: moment()
                 .add(1, 'hour')
-                .unix()
+                .unix(),
+            automaticMatching: true
         };
 
         return Demand.createDemand(demandOffChainProps, this.conf);
@@ -349,9 +394,16 @@ export class Demo {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.MATCHER;
 
         const demand = await new Demand.Entity(demandId, this.conf).sync();
-        const certificate = await new Certificate.Entity(certId, this.conf).sync();
+        const certificate = await new PurchasableCertificate.Entity(certId, this.conf).sync();
         const fillTx = await demand.fill(certificate.id);
 
         return fillTx.status;
+    }
+
+    async isForSale(certId: string) {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.LISTENER;
+        const certificate = await new PurchasableCertificate.Entity(certId, this.conf).sync();
+
+        return certificate.forSale;
     }
 }

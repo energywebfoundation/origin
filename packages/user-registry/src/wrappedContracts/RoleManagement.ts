@@ -1,5 +1,6 @@
 import Web3 from 'web3';
-import { GeneralFunctions, ISpecialTx, ISearchLog } from '@energyweb/utils-general';
+import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
+import { PastEventOptions } from 'web3-eth-contract';
 import RoleManagementJSON from '../../build/contracts/lightweight/RoleManagement.json';
 
 export enum Role {
@@ -8,7 +9,8 @@ export enum Role {
     AssetManager,
     Trader,
     Matcher,
-    Issuer
+    Issuer,
+    Listener
 }
 
 export function buildRights(roles: Role[]): number {
@@ -37,7 +39,7 @@ export class RoleManagement extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async getAllLogChangeOwnerEvents(eventFilter?: ISearchLog) {
+    async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
         let filterParams: any;
         if (eventFilter) {
             filterParams = {
@@ -57,7 +59,7 @@ export class RoleManagement extends GeneralFunctions {
         return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
     }
 
-    async getAllEvents(eventFilter?: ISearchLog) {
+    async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', eventFilter);
     }
 

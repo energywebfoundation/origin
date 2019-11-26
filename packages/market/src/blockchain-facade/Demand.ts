@@ -1,3 +1,7 @@
+import polly from 'polly-js';
+import { TransactionReceipt } from 'web3-core';
+import moment from 'moment';
+
 import {
     BlockchainDataModelEntity,
     Compliance,
@@ -9,10 +13,7 @@ import {
     TS,
     TimeSeriesElement
 } from '@energyweb/utils-general';
-// eslint-disable-next-line import/no-unresolved
-import { TransactionReceipt } from 'web3/types';
 
-import moment from 'moment';
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 
@@ -31,6 +32,7 @@ export interface IDemandOffChainProperties {
     endTime: number;
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
+    automaticMatching: boolean;
 }
 
 export enum DemandStatus {
@@ -73,7 +75,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
-        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance!;
+        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance;
         this.initialized = false;
     }
 
@@ -118,17 +120,33 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             DemandOffChainPropertiesSchema
         );
 
-        await this.marketLogicInstance.updateDemand(
-            this.id,
-            updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
-            {
-                from: this.configuration.blockchainProperties.activeUser.address,
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            }
-        );
+        const oldOffChainData = await this.getOffChainDump();
+        const oldHash = this.propertiesDocumentHash;
 
         await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
+
+        try {
+            await this.marketLogicInstance.updateDemand(
+                this.id,
+                updatedOffChainStorageProperties.rootHash,
+                this.getUrl(),
+                {
+                    from: this.configuration.blockchainProperties.activeUser.address,
+                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+                }
+            );
+        } catch (e) {
+            this.configuration.logger.error(
+                `Demand::update: Failed to write to the chain. Reverting off-chain properties...`
+            );
+            this.syncOffChainStorage(oldOffChainData.properties, {
+                rootHash: oldHash,
+                salts: oldOffChainData.salts,
+                schema: oldOffChainData.schema
+            });
+
+            throw e;
+        }
 
         return new Entity(this.id, this.configuration).sync();
     }
@@ -227,7 +245,19 @@ export const createDemand = async (
         DemandOffChainPropertiesSchema
     );
 
-    const tx = await configuration.blockchainProperties.marketLogicInstance.createDemand(
+    await polly()
+        .waitAndRetry(10)
+        .executeForPromise(async () => {
+            demand.id = (await getDemandListLength(configuration)).toString();
+            await demand.throwIfExists();
+        });
+
+    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+
+    const {
+        status: successCreateDemand,
+        logs
+    } = await configuration.blockchainProperties.marketLogicInstance.createDemand(
         offChainStorageProperties.rootHash,
         demand.getUrl(),
         {
@@ -236,11 +266,19 @@ export const createDemand = async (
         }
     );
 
-    demand.id = configuration.blockchainProperties.web3.utils
-        .hexToNumber(tx.logs[0].topics[1])
+    if (!successCreateDemand) {
+        await demand.deleteFromOffChainStorage();
+        throw new Error('createDemand: Saving on-chain data failed. Reverting...');
+    }
+
+    const idFromTx = configuration.blockchainProperties.web3.utils
+        .hexToNumber(logs[0].topics[1])
         .toString();
 
-    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    if (demand.id !== idFromTx) {
+        demand.id = idFromTx;
+        await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
+    }
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demand.id} created`);
@@ -370,7 +408,7 @@ export const calculateMissingEnergyDemand = async (
         filledEvents.map(async log => {
             const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
             const nearestTime = moment
-                .unix(block.timestamp)
+                .unix(parseInt(block.timestamp.toString(), 10))
                 .startOf(resolution as moment.unitOfTime.StartOf)
                 .unix();
 

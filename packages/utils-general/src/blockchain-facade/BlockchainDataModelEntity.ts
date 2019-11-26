@@ -1,7 +1,7 @@
 import * as Configuration from './Configuration';
 import { PreciseProofs } from 'ew-utils-general-precise-proofs';
 import { validateJson } from '../off-chain-data/json-validator';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainData } from '@energyweb/origin-backend-client';
 
 export interface IOffChainProperties {
     rootHash: string;
@@ -18,21 +18,26 @@ export abstract class Entity {
     id: string;
     configuration: Configuration.Entity;
     proofs: PreciseProofs.Proof[];
-    offChainDataClient: IOffChainDataClient;
-
+    
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
-            throw Error('An ID of an Entity should always be of type string.');
+            throw new Error('An ID of an Entity should always be of type string.');
         }
         if (isNaN(Number(id))) {
-            throw Error('An ID of an Entity should always be numeric string.');
+            throw new Error('An ID of an Entity should always be numeric string.');
+        }
+        if (!configuration.offChainDataSource) {
+            throw new Error('Entity::constructor: Please set offChainDataSource in the configuration.');
         }
 
-        this.offChainDataClient = configuration.offChainDataSource.client;
         this.id = id;
         this.configuration = configuration;
         this.proofs = [];
     }
+
+    get offChainDataClient() {
+        return this.configuration.offChainDataSource.client
+    };
 
     addProof(proof: PreciseProofs.Proof) {
         this.proofs.push(proof);
@@ -45,62 +50,70 @@ export abstract class Entity {
     }
 
     prepareEntityCreation(offChainProperties: any, schema: any): IOffChainProperties {
-        if (!this.configuration.offChainDataSource) {
-            return null;
-        }
-
         validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
 
         return this.generateAndAddProofs(offChainProperties);
     }
 
-    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties) {
-        if (this.configuration.offChainDataSource) {
-            await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
-                properties,
-                salts: offChainStorageProperties.salts,
-                schema: offChainStorageProperties.schema
-            });
+    async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
+        const hasSynced = await this.offChainDataClient.insertOrUpdate(this.entityLocation, {
+            properties,
+            salts: offChainStorageProperties.salts,
+            schema: offChainStorageProperties.schema
+        });
 
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(
-                    `Put off chain properties to ${this.entityLocation}`
-                );
-            }
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Put off chain properties to ${this.entityLocation}`
+            );
+        }
+
+        if (!hasSynced) {
+            throw new Error('createAsset: Saving off-chain data failed.');
         }
     }
 
     async deleteFromOffChainStorage() {
-        if (this.configuration.offChainDataSource) {
-            await this.offChainDataClient.delete(this.entityLocation);
+        await this.offChainDataClient.delete(this.entityLocation);
 
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(
-                    `Deleted off chain properties of ${this.entityLocation}`
-                );
-            }
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Deleted off chain properties of ${this.entityLocation}`
+            );
         }
     }
 
     async getOffChainProperties<T>(hash: string): Promise<T> {
-        if (this.configuration.offChainDataSource) {
-            const { properties, salts, schema } = await this.offChainDataClient.get<T>(
-                this.entityLocation
+        const { properties, salts, schema } = await this.offChainDataClient.get<T>(
+            this.entityLocation
+        );
+
+        this.generateAndAddProofs(properties, salts);
+        this.verifyOffChainProperties(hash, properties, schema);
+
+        if (this.configuration.logger) {
+            this.configuration.logger.verbose(
+                `Got off chain properties from ${this.entityLocation}`
             );
-
-            this.generateAndAddProofs(properties, salts);
-            this.verifyOffChainProperties(hash, properties, schema);
-
-            if (this.configuration.logger) {
-                this.configuration.logger.verbose(
-                    `Got off chain properties from ${this.entityLocation}`
-                );
-            }
-
-            return properties;
         }
 
-        return null;
+        return properties;
+    }
+
+    async getOffChainDump<T>(): Promise<IOffChainData<T>> {
+        return this.offChainDataClient.get<T>(
+            this.entityLocation
+        );
+    }
+
+    // Throws an error if it doesn' exist
+    async throwIfExists(): Promise<void> {
+        try {
+            await this.offChainDataClient.get(this.entityLocation);
+            throw new Error('Entity: Already exists.');
+        } catch (e) {
+            return;
+        }
     }
 
     verifyOffChainProperties(rootHash: string, properties: any, schema: string[]) {

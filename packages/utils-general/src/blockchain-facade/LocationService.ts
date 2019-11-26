@@ -10,12 +10,16 @@ export class LocationService {
 
         const zipRegex = /[0-9]{5}/;
         const split = clean.split(',').reverse();
-        const provinceWithZip = split[0];
+        const provinceWithZip = (split[0] || '').trim();
 
         const matchZipResult = provinceWithZip.match(zipRegex);
         const zip = matchZipResult ? matchZipResult[0].trim() : '';
 
-        const province = zip ? (provinceWithZip.split(zipRegex)[0] || '').trim() : '';
+        const splitResult = provinceWithZip.split(zipRegex);
+
+        const province = zip
+            ? (splitResult[0]?.trim() || splitResult[1]?.trim() || '').trim()
+            : provinceWithZip || '';
 
         for (const [region, provinces] of Object.entries(THAILAND_REGIONS_PROVINCES_MAP)) {
             const included = provinces.some(p => p === province);
@@ -23,19 +27,35 @@ export class LocationService {
             if (included) {
                 return `${country};${region};${province}`;
             }
+
+            const alternativeProvince =
+                provinces.find(p => province.includes(p)) ||
+                provinces.find(p => p.includes(province));
+
+            if (alternativeProvince) {
+                return `${country};${region};${alternativeProvince}`;
+            }
         }
 
         throw new Error('unable to translate address');
     }
 
     public matches(currentLocation: string[], checkedLocation: string) {
-        const highestSpecificityTypes = this.filterForHighestSpecificity(currentLocation).map(
-            type => [...this.decode([type])[0]]
-        );
+        const highestSpecificityTypes = this.filterForHighestSpecificity(
+            currentLocation
+        ).map(type => [...this.decode([type])[0]]);
 
         return highestSpecificityTypes.some(location =>
             checkedLocation.startsWith(this.encode([location])[0])
         );
+    }
+
+    public encode(decoded: string[][]): string[] {
+        return decoded.map(group => group.join(';'));
+    }
+
+    public decode(encoded: string[]): string[][] {
+        return encoded.map(item => item.split(';'));
     }
 
     private clear(input: string) {
@@ -55,13 +75,5 @@ export class LocationService {
                     )
             )
         );
-    }
-
-    private encode(decoded: string[][]): string[] {
-        return decoded.map(group => group.join(';'));
-    }
-
-    private decode(encoded: string[]): string[][] {
-        return encoded.map(item => item.split(';'));
     }
 }

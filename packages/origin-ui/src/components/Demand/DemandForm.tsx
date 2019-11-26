@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Role } from '@energyweb/user-registry';
 import {
     Currency,
@@ -18,8 +18,8 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { getEnumValues, dataTest } from '../../utils/Helper';
-import { useSelector } from 'react-redux';
+import { getEnumValues, dataTest } from '../../utils/helper';
+import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import './DemandForm.scss';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
@@ -28,12 +28,13 @@ import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { Select, TextField, CheckboxWithLabel } from 'formik-material-ui';
 import { Demand } from '@energyweb/market';
-import { LoadingComponent } from '../LoadingComponent';
 import { useHistory } from 'react-router-dom';
 import { useLinks } from '../../utils/routing';
 import { FormikDatePicker } from '../FormikDatePicker';
 import { getCurrentUser } from '../../features/users/selectors';
+import { setLoading } from '../../features/general/actions';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
+import { Skeleton } from '@material-ui/lab';
 
 const REPEATABLE_TIMEFRAMES = [
     {
@@ -63,6 +64,7 @@ interface IFormValues {
     endDate: Moment;
     activeUntilDate: Moment;
     procureFromSingleFacility: boolean;
+    automaticMatching: boolean;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -73,7 +75,8 @@ const INITIAL_FORM_VALUES: IFormValues = {
     activeUntilDate: null,
     startDate: null,
     endDate: null,
-    procureFromSingleFacility: false
+    procureFromSingleFacility: false,
+    automaticMatching: true
 };
 
 interface IProps {
@@ -90,14 +93,15 @@ const DEFAULT_COUNTRY = 'Thailand';
 export function DemandForm(props: IProps) {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
+    const dispatch = useDispatch();
     const { getDemandViewLink } = useLinks();
 
     const irecAssetService = new IRECAssetService();
 
-    const [selectedLocation, setSelectedLocation] = React.useState([]);
-    const [selectedAssetType, setSelectedAssetType] = React.useState([]);
-    const [initialFormValuesFromDemand, setInitialFormValuesFromDemand] = React.useState(null);
-    const [vintage, setVintage] = React.useState(null);
+    const [selectedLocation, setSelectedLocation] = useState([]);
+    const [selectedAssetType, setSelectedAssetType] = useState([]);
+    const [initialFormValuesFromDemand, setInitialFormValuesFromDemand] = useState(null);
+    const [vintage, setVintage] = useState(null);
     const history = useHistory();
 
     const { edit, demand, clone, readOnly } = props;
@@ -116,7 +120,8 @@ export function DemandForm(props: IProps) {
                     demand.offChainProperties.maxPricePerMwh / 100
                 ).toString(),
                 procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
-                timeframe: demand.offChainProperties.timeFrame
+                timeframe: demand.offChainProperties.timeFrame,
+                automaticMatching: demand.offChainProperties.automaticMatching
             };
 
             setInitialFormValuesFromDemand(newInitialFormValuesFromDemand);
@@ -183,6 +188,7 @@ export function DemandForm(props: IProps) {
         }
 
         formikActions.setSubmitting(true);
+        dispatch(setLoading(true));
 
         const offChainProps: Demand.IDemandOffChainProperties = {
             currency: Currency[values.currency as keyof typeof Currency],
@@ -190,7 +196,8 @@ export function DemandForm(props: IProps) {
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000)
+            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
+            automaticMatching: values.automaticMatching
         };
 
         if (values.procureFromSingleFacility) {
@@ -232,6 +239,7 @@ export function DemandForm(props: IProps) {
             showNotification(`Can't save demand`, NotificationType.Error);
         }
 
+        dispatch(setLoading(false));
         formikActions.setSubmitting(false);
     }
 
@@ -244,7 +252,7 @@ export function DemandForm(props: IProps) {
     }
 
     if (!initialFormValues) {
-        return <LoadingComponent />;
+        return <Skeleton variant="rect" height={200} />;
     }
 
     let submitButtonText: string;
@@ -385,6 +393,18 @@ export function DemandForm(props: IProps) {
                                         component={FormikDatePicker}
                                         disabled={disabled}
                                         {...dataTest('activeUntilDate')}
+                                    />
+
+                                    <Field
+                                        name="automaticMatching"
+                                        Label={{
+                                            label: 'Automatically buy certificates',
+                                            className: 'mt-3'
+                                        }}
+                                        color="primary"
+                                        component={CheckboxWithLabel}
+                                        disabled={disabled}
+                                        {...dataTest('automaticMatching')}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
