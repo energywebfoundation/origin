@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@0.2.3...@energyweb/solar-simulator@0.3.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v4.0.1 ([#280](https://github.com/energywebfoundation/origin/issues/280)) ([7c90c94](https://github.com/energywebfoundation/origin/commit/7c90c94b84cdfc3b50897f49d555a89731e130f8))
+* **deps:** update dependency csv-parse to v4.8.2 ([#281](https://github.com/energywebfoundation/origin/issues/281)) ([9e2fac7](https://github.com/energywebfoundation/origin/commit/9e2fac708cbe155389a6d6b2f958f23a50c63dbc))
+* **deps:** update dependency ethers to v4.0.40 ([#315](https://github.com/energywebfoundation/origin/issues/315)) ([1d50136](https://github.com/energywebfoundation/origin/commit/1d50136b48efb9082a6673b4ad0e807526618b7a))
+* **origin-ui:** fix day graph starts at 00:00 independent of timezone ([#291](https://github.com/energywebfoundation/origin/issues/291)) ([f5ebf39](https://github.com/energywebfoundation/origin/commit/f5ebf39872cbbb6c085082ef9efeb6d484ca30f1))
+* **solar-simulator:** add concurrently to dependencies ([45fe968](https://github.com/energywebfoundation/origin/commit/45fe96866d96f81237b13949a0d337cd4863e086))
+* **solar-simulator:** add wait-on to dependencies ([e7c6201](https://github.com/energywebfoundation/origin/commit/e7c62011010b2ea482773a56a0923c5749d8249b))
+* **solar-simulator:** additional logging for solar-simulator mock readings ([beda09f](https://github.com/energywebfoundation/origin/commit/beda09f6dd19bdec36532c9ff75d6f97b0a63c81))
+* **solar-simulator:** use dynamic web3 for mockReadings ([#252](https://github.com/energywebfoundation/origin/issues/252)) ([14ca949](https://github.com/energywebfoundation/origin/commit/14ca949a10f776c2ab6841b066c9a810fffb4c72))
+* **solar-simulator:** use npx to run global wait-on command ([616819f](https://github.com/energywebfoundation/origin/commit/616819fe95bd266ca1191747565e255df1d3ef13))
+* **solar-simulator:** wait for market contract in mock readings ([f7e6c87](https://github.com/energywebfoundation/origin/commit/f7e6c87e10c8d62c7e5799fde629005e6eac87f3))
+* fix Makefile build-canary ([3b630ff](https://github.com/energywebfoundation/origin/commit/3b630ffe4d08bb186792bb5bd0c5f2419677523d))
+
+
+### Features
+
+* **origin-ui:** show certificate generation timeframe ([#287](https://github.com/energywebfoundation/origin/issues/287)) ([8c2bf43](https://github.com/energywebfoundation/origin/commit/8c2bf439970fcaea3ddfee5a9f92fdc2d4e435a5))
+* **solar-simulator:** extended docker config ([#266](https://github.com/energywebfoundation/origin/issues/266)) ([b20e9af](https://github.com/energywebfoundation/origin/commit/b20e9af0ff4b43e46964dda1b71fd744d26891e5))
+* add solar simulator to docker compose ([#263](https://github.com/energywebfoundation/origin/issues/263)) ([3cd4441](https://github.com/energywebfoundation/origin/commit/3cd4441649cb4f94f7ce951b428e3627bfa188de))
+* **origin-ui:** add loader to request irec modal ([#241](https://github.com/energywebfoundation/origin/issues/241)) ([fbcbb19](https://github.com/energywebfoundation/origin/commit/fbcbb19c1808db3026b777fe9fe4808cdaf38732))
+* **solar-simulator:** Generate historic readings ([#248](https://github.com/energywebfoundation/origin/issues/248)) ([174f264](https://github.com/energywebfoundation/origin/commit/174f2645b1dcd85a1327f666e7f4556f38177e19))
+* **solar-simulator:** make deploy-mock-readings deploy for each asset in a new worker process ([#253](https://github.com/energywebfoundation/origin/issues/253)) ([69512be](https://github.com/energywebfoundation/origin/commit/69512be33dab3e018e7f7d6f303f1fcad22776a4))
+
+
+
+
+
 ## [0.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@0.2.2...@energyweb/solar-simulator@0.2.3) (2019-11-11)
 
 

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-demo@1.2.3...@energyweb/utils-demo@1.3.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* include contracts in the package ([#316](https://github.com/energywebfoundation/origin/issues/316)) ([9c9712b](https://github.com/energywebfoundation/origin/commit/9c9712ba3b2b4b82adb2c94a9fea1e72d0b076ec))
+* **deps:** update dependency write-json-file to v4.2.1 ([#286](https://github.com/energywebfoundation/origin/issues/286)) ([829176c](https://github.com/energywebfoundation/origin/commit/829176cfc5fecac3d8e41ed50e03505f1acace44))
+
+
+### Features
+
+* Add support for toggling between manual/automatic matcher ([#293](https://github.com/energywebfoundation/origin/issues/293)) ([0adde5e](https://github.com/energywebfoundation/origin/commit/0adde5e256bf4d41c6991764bb366648adfe78ca))
+* **origin-ui:** show certificate generation timeframe ([#287](https://github.com/energywebfoundation/origin/issues/287)) ([8c2bf43](https://github.com/energywebfoundation/origin/commit/8c2bf439970fcaea3ddfee5a9f92fdc2d4e435a5))
+* **solar-simulator:** Generate historic readings ([#248](https://github.com/energywebfoundation/origin/issues/248)) ([174f264](https://github.com/energywebfoundation/origin/commit/174f2645b1dcd85a1327f666e7f4556f38177e19))
+
+
+
+
+
 ## [1.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-demo@1.2.2...@energyweb/utils-demo@1.2.3) (2019-11-11)
 
 

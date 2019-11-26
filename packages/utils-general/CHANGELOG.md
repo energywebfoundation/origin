@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@1.3.1...@energyweb/utils-general@1.4.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* **market:** Updating off-chain properties - Handle cases where on-chain transactions fail ([#318](https://github.com/energywebfoundation/origin/issues/318)) ([324e1ee](https://github.com/energywebfoundation/origin/commit/324e1ee8605a122c54a41bec752333b0ac56b8dd))
+* **utils-general:** Alternative ways to extract asset location ([#317](https://github.com/energywebfoundation/origin/issues/317)) ([73d2e84](https://github.com/energywebfoundation/origin/commit/73d2e842f043d019194f42eb5abf3b4a9494a72a))
+
+
+### Features
+
+* **origin-ui:** Add process indicator while executing tx ([#256](https://github.com/energywebfoundation/origin/issues/256)) ([21e1649](https://github.com/energywebfoundation/origin/commit/21e1649ad7ef026b7cf935701c966340f650789b))
+* **origin-ui:** show certificate generation timeframe ([#287](https://github.com/energywebfoundation/origin/issues/287)) ([8c2bf43](https://github.com/energywebfoundation/origin/commit/8c2bf439970fcaea3ddfee5a9f92fdc2d4e435a5))
+
+
+
+
+
 ## [1.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@1.3.0...@energyweb/utils-general@1.3.1) (2019-11-11)
 
 
