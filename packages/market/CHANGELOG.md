@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@1.3.3...@energyweb/market@2.0.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* **market:** Updating off-chain properties - Handle cases where on-chain transactions fail ([#318](https://github.com/energywebfoundation/origin/issues/318)) ([324e1ee](https://github.com/energywebfoundation/origin/commit/324e1ee8605a122c54a41bec752333b0ac56b8dd))
+* include contracts in the package ([#316](https://github.com/energywebfoundation/origin/issues/316)) ([9c9712b](https://github.com/energywebfoundation/origin/commit/9c9712ba3b2b4b82adb2c94a9fea1e72d0b076ec))
+* **monorepo:** build order ([b582839](https://github.com/energywebfoundation/origin/commit/b58283958289e5525739a8918bd2db6739e88b39))
+* **monorepo:** volta deployments ([#249](https://github.com/energywebfoundation/origin/issues/249)) ([432abae](https://github.com/energywebfoundation/origin/commit/432abae72a4a8bd39a7dd9a975585b22c36d9b47))
+* **origin-ui:** PurchasableCertificate not fetching off-chain data ([#289](https://github.com/energywebfoundation/origin/issues/289)) ([594944d](https://github.com/energywebfoundation/origin/commit/594944d289d04c43e26d17561c3aa1685a42a423))
+* **volta:** deploy ERC20 token ([5a85ebe](https://github.com/energywebfoundation/origin/commit/5a85ebe20b71a3ccf7f7396849a2fe08d3ec4be0))
+
+
+### chore
+
+* **market:** update README ([529c4b5](https://github.com/energywebfoundation/origin/commit/529c4b55f50ba46c7e1a7fb257e21ae5930b903c))
+
+
+### Features
+
+* Add support for toggling between manual/automatic matcher ([#293](https://github.com/energywebfoundation/origin/issues/293)) ([0adde5e](https://github.com/energywebfoundation/origin/commit/0adde5e256bf4d41c6991764bb366648adfe78ca))
+* **origin-ui:** add loader to request irec modal ([#241](https://github.com/energywebfoundation/origin/issues/241)) ([fbcbb19](https://github.com/energywebfoundation/origin/commit/fbcbb19c1808db3026b777fe9fe4808cdaf38732))
+
+
+### BREAKING CHANGES
+
+* **market:** added MarketUser and moved price references from origin to market (PurchasableCertificate)
+
+
+
+
+
 ## [1.3.3](https://github.com/energywebfoundation/origin/compare/@energyweb/market@1.3.2...@energyweb/market@1.3.3) (2019-11-11)
 
 

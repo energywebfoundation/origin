@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/ew-user-registry-lib/compare/@energyweb/user-registry@1.3.3...@energyweb/user-registry@1.4.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* include contracts in the package ([#316](https://github.com/energywebfoundation/ew-user-registry-lib/issues/316)) ([9c9712b](https://github.com/energywebfoundation/ew-user-registry-lib/commit/9c9712ba3b2b4b82adb2c94a9fea1e72d0b076ec))
+* **monorepo:** volta deployments ([#249](https://github.com/energywebfoundation/ew-user-registry-lib/issues/249)) ([432abae](https://github.com/energywebfoundation/ew-user-registry-lib/commit/432abae72a4a8bd39a7dd9a975585b22c36d9b47))
+
+
+### Features
+
+* **origin-ui:** add loader to request irec modal ([#241](https://github.com/energywebfoundation/ew-user-registry-lib/issues/241)) ([fbcbb19](https://github.com/energywebfoundation/ew-user-registry-lib/commit/fbcbb19c1808db3026b777fe9fe4808cdaf38732))
+
+
+
+
+
 ## [1.3.3](https://github.com/energywebfoundation/ew-user-registry-lib/compare/@energyweb/user-registry@1.3.2...@energyweb/user-registry@1.3.3) (2019-11-11)
 
 

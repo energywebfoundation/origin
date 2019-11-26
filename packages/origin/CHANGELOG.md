@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/ew-origin-lib/compare/@energyweb/origin@1.3.3...@energyweb/origin@2.0.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* include contracts in the package ([#316](https://github.com/energywebfoundation/ew-origin-lib/issues/316)) ([9c9712b](https://github.com/energywebfoundation/ew-origin-lib/commit/9c9712ba3b2b4b82adb2c94a9fea1e72d0b076ec))
+* **monorepo:** build order ([b582839](https://github.com/energywebfoundation/ew-origin-lib/commit/b58283958289e5525739a8918bd2db6739e88b39))
+* **monorepo:** volta deployments ([#249](https://github.com/energywebfoundation/ew-origin-lib/issues/249)) ([432abae](https://github.com/energywebfoundation/ew-origin-lib/commit/432abae72a4a8bd39a7dd9a975585b22c36d9b47))
+
+
+### chore
+
+* release preparations ([#321](https://github.com/energywebfoundation/ew-origin-lib/issues/321)) ([b07fe10](https://github.com/energywebfoundation/ew-origin-lib/commit/b07fe106142ccddd295ca66287dba842ebd7dbf0))
+
+
+### Features
+
+* **market:** add generation time range to the certificate ([#255](https://github.com/energywebfoundation/ew-origin-lib/issues/255)) ([e0be305](https://github.com/energywebfoundation/ew-origin-lib/commit/e0be3059869e0abfe6521600ef2dd0b5849fb83b))
+* **origin-ui:** add loader to request irec modal ([#241](https://github.com/energywebfoundation/ew-origin-lib/issues/241)) ([fbcbb19](https://github.com/energywebfoundation/ew-origin-lib/commit/fbcbb19c1808db3026b777fe9fe4808cdaf38732))
+* **origin-ui:** Add process indicator while executing tx ([#256](https://github.com/energywebfoundation/ew-origin-lib/issues/256)) ([21e1649](https://github.com/energywebfoundation/ew-origin-lib/commit/21e1649ad7ef026b7cf935701c966340f650789b))
+* **origin-ui:** runtime Docker environment variables ([#259](https://github.com/energywebfoundation/ew-origin-lib/issues/259)) ([dc72ec8](https://github.com/energywebfoundation/ew-origin-lib/commit/dc72ec8047275de0cc9cb7427070cefe453c9e1e))
+
+
+### BREAKING CHANGES
+
+* part of the matcher logic has been moved to market-matcher-logic package
+
+* chore(origin): semver update. added README.md
+* Certificate logic related to the market moved to market package
+
+
+
+
+
 ## [1.3.3](https://github.com/energywebfoundation/ew-origin-lib/compare/@energyweb/origin@1.3.2...@energyweb/origin@1.3.3) (2019-11-11)
 
 

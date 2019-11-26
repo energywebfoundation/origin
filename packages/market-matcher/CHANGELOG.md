@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.3...@energyweb/market-matcher@2.0.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* include contracts in the package ([#316](https://github.com/energywebfoundation/origin/issues/316)) ([9c9712b](https://github.com/energywebfoundation/origin/commit/9c9712ba3b2b4b82adb2c94a9fea1e72d0b076ec))
+* **solar-simulator:** wait for market contract in mock readings ([f7e6c87](https://github.com/energywebfoundation/origin/commit/f7e6c87e10c8d62c7e5799fde629005e6eac87f3))
+* fix Makefile build-canary ([3b630ff](https://github.com/energywebfoundation/origin/commit/3b630ffe4d08bb186792bb5bd0c5f2419677523d))
+
+
+### chore
+
+* release preparations ([#321](https://github.com/energywebfoundation/origin/issues/321)) ([b07fe10](https://github.com/energywebfoundation/origin/commit/b07fe106142ccddd295ca66287dba842ebd7dbf0))
+
+
+### Features
+
+* Add support for toggling between manual/automatic matcher ([#293](https://github.com/energywebfoundation/origin/issues/293)) ([0adde5e](https://github.com/energywebfoundation/origin/commit/0adde5e256bf4d41c6991764bb366648adfe78ca))
+* **market-matcher:** time triggers ([#258](https://github.com/energywebfoundation/origin/issues/258)) ([d14e2d1](https://github.com/energywebfoundation/origin/commit/d14e2d1b6e93ea1d812e8db7a2abe0457b05c3b6))
+* **origin-ui:** add loader to request irec modal ([#241](https://github.com/energywebfoundation/origin/issues/241)) ([fbcbb19](https://github.com/energywebfoundation/origin/commit/fbcbb19c1808db3026b777fe9fe4808cdaf38732))
+* **solar-simulator:** extended docker config ([#266](https://github.com/energywebfoundation/origin/issues/266)) ([b20e9af](https://github.com/energywebfoundation/origin/commit/b20e9af0ff4b43e46964dda1b71fd744d26891e5))
+
+
+### BREAKING CHANGES
+
+* part of the matcher logic has been moved to market-matcher-logic package
+
+* chore(origin): semver update. added README.md
+* Certificate logic related to the market moved to market package
+
+
+
+
+
 ## [1.3.3](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.2...@energyweb/market-matcher@1.3.3) (2019-11-11)
 
 

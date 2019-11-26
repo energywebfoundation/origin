@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.3.1...@energyweb/origin-ui@0.4.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* **origin-ui:** fix watching for return to inbox event ([#319](https://github.com/energywebfoundation/origin/issues/319)) ([8494cb3](https://github.com/energywebfoundation/origin/commit/8494cb3d3121a7fd4b8f6a3391c6582089c0103a))
+* include contracts in the package ([#316](https://github.com/energywebfoundation/origin/issues/316)) ([9c9712b](https://github.com/energywebfoundation/origin/commit/9c9712ba3b2b4b82adb2c94a9fea1e72d0b076ec))
+* **deps:** update dependency chart.js to v2.9.3 ([#279](https://github.com/energywebfoundation/origin/issues/279)) ([86260b5](https://github.com/energywebfoundation/origin/commit/86260b53938e17b1a490977afad3458209466876))
+* **deps:** update dependency query-string to v6.9.0 ([#282](https://github.com/energywebfoundation/origin/issues/282)) ([544390c](https://github.com/energywebfoundation/origin/commit/544390c8e5547b16448b54f7323bde6995503c28))
+* **deps:** update react ([#239](https://github.com/energywebfoundation/origin/issues/239)) ([e074ccb](https://github.com/energywebfoundation/origin/commit/e074ccb40bc19560df5b27f158c9568380284413))
+* **deps:** update react ([#283](https://github.com/energywebfoundation/origin/issues/283)) ([4880f7c](https://github.com/energywebfoundation/origin/commit/4880f7cc502ae62e185701a20e13962ccf5d757b))
+* **deps:** update webpack ([#312](https://github.com/energywebfoundation/origin/issues/312)) ([9f19344](https://github.com/energywebfoundation/origin/commit/9f19344436ad0e0537bceaf586bfd638efa65bd3))
+* **origin-ui:** fix day graph starts at 00:00 independent of timezone ([#291](https://github.com/energywebfoundation/origin/issues/291)) ([f5ebf39](https://github.com/energywebfoundation/origin/commit/f5ebf39872cbbb6c085082ef9efeb6d484ca30f1))
+* **origin-ui:** fix displaying accounts in header ([#296](https://github.com/energywebfoundation/origin/issues/296)) ([535531f](https://github.com/energywebfoundation/origin/commit/535531f3b917b6491fc92ebfd694283fe6b6eb48))
+* **origin-ui:** fix UI randomly not loading ([#299](https://github.com/energywebfoundation/origin/issues/299)) ([2c61843](https://github.com/energywebfoundation/origin/commit/2c61843287407cee6a54bee9566bf9ec75f2dc97))
+* **origin-ui:** PurchasableCertificate not fetching off-chain data ([#289](https://github.com/energywebfoundation/origin/issues/289)) ([594944d](https://github.com/energywebfoundation/origin/commit/594944d289d04c43e26d17561c3aa1685a42a423))
+
+
+### Features
+
+* Add support for toggling between manual/automatic matcher ([#293](https://github.com/energywebfoundation/origin/issues/293)) ([0adde5e](https://github.com/energywebfoundation/origin/commit/0adde5e256bf4d41c6991764bb366648adfe78ca))
+* **origin-ui:** add loader to request irec modal ([#241](https://github.com/energywebfoundation/origin/issues/241)) ([fbcbb19](https://github.com/energywebfoundation/origin/commit/fbcbb19c1808db3026b777fe9fe4808cdaf38732))
+* **origin-ui:** Add process indicator while executing tx ([#256](https://github.com/energywebfoundation/origin/issues/256)) ([21e1649](https://github.com/energywebfoundation/origin/commit/21e1649ad7ef026b7cf935701c966340f650789b))
+* **origin-ui:** runtime Docker environment variables ([#259](https://github.com/energywebfoundation/origin/issues/259)) ([dc72ec8](https://github.com/energywebfoundation/origin/commit/dc72ec8047275de0cc9cb7427070cefe453c9e1e))
+* **origin-ui:** show certificate generation timeframe ([#287](https://github.com/energywebfoundation/origin/issues/287)) ([8c2bf43](https://github.com/energywebfoundation/origin/commit/8c2bf439970fcaea3ddfee5a9f92fdc2d4e435a5))
+
+
+
+
+
 ## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.3.0...@energyweb/origin-ui@0.3.1) (2019-11-11)
 
 
