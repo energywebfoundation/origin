@@ -42,11 +42,13 @@ before_deploy:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
 
 install:
+  - set -e
   - yarn
   - yarn build
   - yarn build:ui
 
 script:
+  - set -e
   - yarn lint
   - yarn test:ci:contracts
   - yarn test:ci:contracts:deployment
