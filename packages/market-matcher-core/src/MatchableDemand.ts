@@ -50,6 +50,7 @@ export class MatchableDemand {
                 this.matchesLocation(producingAsset),
                 MatchingErrorReason.NON_MATCHING_LOCATION
             )
+            .validate(this.matchesVintage(producingAsset), MatchingErrorReason.VINTAGE_OUT_OF_RANGE)
             .result();
     }
 
@@ -74,6 +75,18 @@ export class MatchableDemand {
 
     private get isActive() {
         return this.demand.status === Demand.DemandStatus.ACTIVE;
+    }
+
+    private matchesVintage(asset: ProducingAsset.IProducingAsset) {
+        if (!this.demand.offChainProperties.vintage) {
+            return true;
+        }
+
+        const { operationalSince } = asset.offChainProperties;
+        const [vintageStart, vintageEnd] = this.demand.offChainProperties.vintage;
+        const operationalSinceYear = moment.unix(operationalSince).year();
+
+        return operationalSinceYear >= vintageStart && operationalSinceYear <= vintageEnd;
     }
 
     private matchesLocation(asset: ProducingAsset.IProducingAsset) {

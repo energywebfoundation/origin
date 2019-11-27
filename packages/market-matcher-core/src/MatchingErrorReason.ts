@@ -7,7 +7,8 @@ export enum MatchingErrorReason {
     WRONG_ASSET_ID,
     OUT_OF_RANGE,
     NON_MATCHING_LOCATION,
-    PERIOD_ALREADY_FILLED
+    PERIOD_ALREADY_FILLED,
+    VINTAGE_OUT_OF_RANGE
 }
 
 export function reasonsToString(reasons: MatchingErrorReason[]) {
