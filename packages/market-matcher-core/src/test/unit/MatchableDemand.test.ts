@@ -1,9 +1,10 @@
 import { ProducingAsset } from '@energyweb/asset-registry';
-import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
+import { Demand, PurchasableCertificate, Supply } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency } from '@energyweb/utils-general';
-import { Substitute, Arg } from '@fluffy-spoon/substitute';
+import { Currency, Year } from '@energyweb/utils-general';
+import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
+import moment from 'moment';
 
 import { MatchableDemand } from '../../MatchableDemand';
 import { MatchingErrorReason } from '../../MatchingErrorReason';
@@ -14,9 +15,11 @@ interface IMockOptions {
     price?: number;
     currency?: Currency;
     producingAssetAssetType?: string;
+    producingAssetOperationalSince?: number;
     address?: string;
     isFilledDemand?: boolean;
     location?: string[];
+    vintage?: [Year, Year];
 }
 
 describe('MatchableDemand tests', () => {
@@ -38,6 +41,7 @@ describe('MatchableDemand tests', () => {
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.assetType.returns([assetType]);
             demandOffChainProperties.location.returns(options.location || location);
+            demandOffChainProperties.vintage.returns(options.vintage || null);
 
             const demand = Substitute.for<Demand.IDemand>();
             demand
@@ -63,6 +67,9 @@ describe('MatchableDemand tests', () => {
             );
             producingAssetOffChainProperties.country.returns(country);
             producingAssetOffChainProperties.address.returns(options.address || address);
+            producingAssetOffChainProperties.operationalSince.returns(
+                options.producingAssetOperationalSince || 0
+            );
 
             const producingAsset = Substitute.for<ProducingAsset.IProducingAsset>();
             producingAsset.offChainProperties.returns(producingAssetOffChainProperties);
@@ -203,6 +210,23 @@ describe('MatchableDemand tests', () => {
 
             assert.isFalse(result);
             assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_LOCATION);
+        });
+
+        it('should not match demand with certificate when requested vintage is out of device range', async () => {
+            const now = moment().unix();
+            const { demand, certificate, producingAsset } = createMatchingMocks({
+                producingAssetOperationalSince: now,
+                vintage: [2000, 2005]
+            });
+
+            const matchableDemand = new MatchableDemand(demand);
+            const { result, reason } = await matchableDemand.matchesCertificate(
+                certificate,
+                producingAsset
+            );
+
+            assert.isFalse(result);
+            assert.equal(reason[0], MatchingErrorReason.VINTAGE_OUT_OF_RANGE);
         });
     });
     describe('Supply', () => {
