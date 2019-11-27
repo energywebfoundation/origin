@@ -9,7 +9,7 @@ import {
     TimeSeriesElement,
     Timestamp,
     TS,
-    Year,
+    Year
 } from '@energyweb/utils-general';
 import moment from 'moment';
 import polly from 'polly-js';
