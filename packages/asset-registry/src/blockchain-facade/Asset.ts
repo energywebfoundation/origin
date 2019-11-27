@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { TransactionReceipt } from 'web3-core';
 
-import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
+import { BlockchainDataModelEntity, Configuration, Timestamp } from '@energyweb/utils-general';
 import { AssetLogic } from '../wrappedContracts/AssetLogic';
 
 export enum UsageType {
@@ -19,7 +19,7 @@ export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainPr
 }
 
 export interface IOffChainProperties {
-    operationalSince: number;
+    operationalSince: Timestamp;
     capacityWh: number;
     country: string;
     address: string;
