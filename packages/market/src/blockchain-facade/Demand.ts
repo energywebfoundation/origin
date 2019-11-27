@@ -1,18 +1,19 @@
-import polly from 'polly-js';
-import { TransactionReceipt } from 'web3-core';
-import moment from 'moment';
-
 import {
     BlockchainDataModelEntity,
     Compliance,
     Configuration,
     Currency,
     extendArray,
-    TimeFrame,
     Resolution,
+    TimeFrame,
+    TimeSeriesElement,
+    Timestamp,
     TS,
-    TimeSeriesElement
+    Year,
 } from '@energyweb/utils-general';
+import moment from 'moment';
+import polly from 'polly-js';
+import { TransactionReceipt } from 'web3-core';
 
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
@@ -28,10 +29,10 @@ export interface IDemandOffChainProperties {
     typeOfPublicSupport?: string;
     energyPerTimeFrame: number;
     registryCompliance?: Compliance;
-    startTime: number;
-    endTime: number;
+    startTime: Timestamp;
+    endTime: Timestamp;
     procureFromSingleFacility?: boolean;
-    vintage?: [number, number];
+    vintage?: [Year, Year];
     automaticMatching: boolean;
 }
 

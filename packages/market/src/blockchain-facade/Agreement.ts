@@ -5,8 +5,8 @@ import * as GeneralLib from '@energyweb/utils-general';
 import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 
 export interface IAgreementOffChainProperties {
-    start: number;
-    end: number;
+    start: GeneralLib.Timestamp;
+    end: GeneralLib.Timestamp;
     price: number;
     currency: GeneralLib.Currency;
     period: number;
