@@ -6,8 +6,15 @@ This repository/package is not designed for productive usage. Instead it should 
 
 ## How to use
 
-Add a `EVENT_LISTENER_PRIV_KEY` variable that contains the private key to the root `.env` file.
-Event listener will use this private key to perform transactions on-chain.
+Edit your root .env file to the following properties:
+
+**REQUIRED**
+- `EVENT_LISTENER_PRIV_KEY` variable that contains the private key to the root `.env` file. Event listener will use this private key to perform transactions on-chain.
+
+**OPTIONAL** (necessary for e-mail notifications)
+- `MANDRILL_API_KEY` - API key generated in Mandrill (mandrill.com)
+- `EMAIL_FROM` - E-mail from which you want to send email addresses
+- `EMAIL_REPLY_TO` - E-mail to which we the users would be able to reply
 
 ### Run
 
