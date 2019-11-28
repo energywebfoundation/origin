@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { ICustomFilter, FiltersHeader, ICustomFilterDefinition } from './FiltersHeader';
 import { SortPropertiesType } from './PaginatedLoaderFilteredSorted';
 import {
@@ -39,7 +39,7 @@ type GetReadonlyArrayItemType<T extends ReadonlyArray<any>> = T extends Readonly
     : never;
 
 type TTableRow<T extends string> = {
-    [key in T]: string;
+    [key in T]: ReactNode;
 };
 
 interface IProps<T extends readonly ITableColumn[]> {
