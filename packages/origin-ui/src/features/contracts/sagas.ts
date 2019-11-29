@@ -28,7 +28,7 @@ import {
 import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
 import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
-import { certificateCreatedOrUpdated } from '../certificates/actions';
+import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import {
     getOffChainDataClient,
@@ -123,13 +123,8 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new PurchasableCertificate.Entity(
-                    id,
-                    configuration
-                ).sync();
-
                 emitter({
-                    action: certificateCreatedOrUpdated(certificate)
+                    action: requestCertificateEntityFetch(id)
                 });
             });
 
@@ -140,13 +135,8 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new PurchasableCertificate.Entity(
-                    id,
-                    configuration
-                ).sync();
-
                 emitter({
-                    action: certificateCreatedOrUpdated(certificate)
+                    action: requestCertificateEntityFetch(id)
                 });
             });
 
@@ -187,13 +177,8 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new PurchasableCertificate.Entity(
-                    id,
-                    configuration
-                ).sync();
-
                 emitter({
-                    action: certificateCreatedOrUpdated(certificate)
+                    action: requestCertificateEntityFetch(id)
                 });
             });
 
@@ -206,13 +191,8 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new PurchasableCertificate.Entity(
-                    id,
-                    configuration
-                ).sync();
-
                 emitter({
-                    action: certificateCreatedOrUpdated(certificate)
+                    action: requestCertificateEntityFetch(id)
                 });
             });
 
@@ -223,13 +203,8 @@ function* initEventHandler() {
                     return;
                 }
 
-                const certificate = await new PurchasableCertificate.Entity(
-                    id,
-                    configuration
-                ).sync();
-
                 emitter({
-                    action: certificateCreatedOrUpdated(certificate)
+                    action: requestCertificateEntityFetch(id)
                 });
             });
 
@@ -381,7 +356,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             );
 
             for (const certificate of certificates) {
-                yield put(certificateCreatedOrUpdated(certificate));
+                yield put(addCertificate(certificate));
             }
 
             yield call(initEventHandler);

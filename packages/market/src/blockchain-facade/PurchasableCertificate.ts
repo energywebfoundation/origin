@@ -301,13 +301,13 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
 
             return properties;
         } catch (error) {
-            if (error.response.status !== 404) {
-                throw error;
+            if (error.response?.status === 404) {
+                await this.setOffChainSettlementOptions(defaultValues);
+
+                return defaultValues;
             }
 
-            await this.setOffChainSettlementOptions(defaultValues);
-
-            return defaultValues;
+            throw error;
         }
     }
 

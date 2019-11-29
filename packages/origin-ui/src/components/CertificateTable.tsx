@@ -16,7 +16,7 @@ import {
 } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
@@ -44,6 +44,7 @@ import { getUserById, getUsers, getCurrentUser } from '../features/users/selecto
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
+import { CircularProgress } from '@material-ui/core';
 
 interface IOwnProps {
     certificates?: PurchasableCertificate.Entity[];
@@ -771,6 +772,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry];
             }
 
+            let price: string | ReactNode = enrichedData.price;
+            let currency = enrichedData.currency;
+
+            if (price === '0.00' && currency === 'NONE') {
+                price = <CircularProgress />;
+                currency = '';
+            }
+
             return {
                 assetType,
                 commissioningDate,
@@ -780,8 +789,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 certificationDate: new Date(
                     enrichedData.certificate.certificate.creationTime * 1000
                 ).toDateString(),
-                price: enrichedData.price,
-                currency: enrichedData.currency,
+                price,
+                currency,
                 energy: (enrichedData.certificate.certificate.energy / 1000).toLocaleString()
             };
         });
