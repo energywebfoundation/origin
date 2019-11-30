@@ -6,8 +6,8 @@ export enum Actions {
     demandCreated = 'DEMAND_CREATED',
     demandUpdated = 'DEMAND_UPDATED',
     demandDeleted = 'DEMAND_DELETED',
-    producingDeviceCreatedOrUpdated = 'PRODUCING_ASSET_CREATED_OR_UPDATED',
-    consumingDeviceCreatedOrUpdated = 'CONSUMING_ASSET_CREATED_OR_UPDATED',
+    producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED',
+    consumingDeviceCreatedOrUpdated = 'CONSUMING_DEVICE_CREATED_OR_UPDATED',
     configurationUpdated = 'CONFIGURATION_UPDATED'
 }
 

@@ -165,7 +165,7 @@ describe('MatchableDemand tests', () => {
             );
 
             assert.isFalse(result);
-            assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_ASSET_TYPE);
+            assert.equal(reason[0], MatchingErrorReason.NON_MATCHING_DEVICE_TYPE);
         });
 
         it('should not match demand with from different location', async () => {

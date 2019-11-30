@@ -158,7 +158,7 @@ export async function startAPI() {
 
         if (!device) {
             return res.status(404).json({
-                error: 'ASSET_NOT_FOUND',
+                error: 'DEVICE_NOT_FOUND',
                 message: `Device not found.`
             });
         }
@@ -195,7 +195,7 @@ export async function startAPI() {
 
         if (!device) {
             return res.status(404).json({
-                error: 'ASSET_NOT_FOUND',
+                error: 'DEVICE_NOT_FOUND',
                 message: `Device not found.`
             });
         }

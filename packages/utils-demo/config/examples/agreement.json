@@ -120,7 +120,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x343854a430653571b4de6bf2b8c475f828036c30",
                 "smartMeterPK": "12c5c7473dbdb92a524a93baa14ded529fe29acef8d269a3901c14a15e2b0f98",
@@ -147,7 +147,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x84a2c086ffa013d06285cdd303556ec9be5a1ff7",
                 "smartMeterPK": "a05ddf7fe8302d117b516c0e401468a30c39a3e467ad3720381cf89500f0854b",
@@ -174,7 +174,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
                 "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
@@ -201,7 +201,7 @@
             }
         },
         {
-            "type": "CREATE_CONSUMING_ASSET",
+            "type": "CREATE_CONSUMING_DEVICE",
             "data": {
                 "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
                 "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",

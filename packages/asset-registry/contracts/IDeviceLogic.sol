@@ -28,12 +28,12 @@ contract IDeviceLogic {
     function getDevice(uint _deviceId) external view returns (DeviceDefinitions.Device memory device);
 
 	/// @notice Sets active to false
-	/// @param _deviceId The id belonging to an entry in the device registry
+	/// @param _deviceId The id belonging to an entry in the asset registry
 	/// @param _active flag if the device is device or not
     function setActive(uint _deviceId, bool _active) external;
 
 	/// @notice Logs meter read
-	/// @param _deviceId The id belonging to an entry in the device registry
+	/// @param _deviceId The id belonging to an entry in the asset registry
 	/// @param _newMeterRead The current meter read of the device
 	/// @param _lastSmartMeterReadFileHash Last meter read file hash
     function saveSmartMeterRead(
@@ -62,7 +62,7 @@ contract IDeviceLogic {
         returns (DeviceDefinitions.SmartMeterRead[] memory reads);
 
     /// @notice Gets an device
-	/// @param _deviceId The id belonging to an entry in the device registry
+	/// @param _deviceId The id belonging to an entry in the asset registry
 	/// @return Full informations of an device
     function getDeviceById(uint _deviceId) public view returns (DeviceDefinitions.Device memory);
 

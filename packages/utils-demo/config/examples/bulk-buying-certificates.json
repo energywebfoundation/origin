@@ -86,7 +86,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
                 "smartMeterPK": "191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",

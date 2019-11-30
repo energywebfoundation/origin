@@ -35,7 +35,7 @@ export const ACCOUNTS = {
         address: web3.eth.accounts.privateKeyToAccount(adminPK).address,
         privateKey: adminPK
     },
-    ASSET_MANAGER: {
+    DEVICE_MANAGER: {
         address: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
         privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac'
     },
@@ -168,7 +168,7 @@ export async function deployDemo() {
     const deviceManagerPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
         url: null,
-        id: ACCOUNTS.ASSET_MANAGER.address,
+        id: ACCOUNTS.DEVICE_MANAGER.address,
         active: true,
         roles: buildRights([Role.DeviceManager]),
         organization: 'Device Manager organization'
@@ -191,7 +191,7 @@ export async function deployDemo() {
 
     const deviceProducingProps: Device.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
-        owner: { address: ACCOUNTS.ASSET_MANAGER.address },
+        owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
         active: true,
         usageType: Device.UsageType.Producing,

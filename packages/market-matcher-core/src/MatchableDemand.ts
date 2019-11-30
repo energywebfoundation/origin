@@ -44,7 +44,7 @@ export class MatchableDemand {
                           offChainProperties.deviceType
                       )
                     : true,
-                MatchingErrorReason.NON_MATCHING_ASSET_TYPE
+                MatchingErrorReason.NON_MATCHING_DEVICE_TYPE
             )
             .validate(
                 this.matchesLocation(producingDevice),

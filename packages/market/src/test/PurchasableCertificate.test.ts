@@ -457,7 +457,7 @@ describe('PurchasableCertificate-Facade', () => {
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
-        const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
+        const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
             await erc20TestToken.balanceOf(accountDeviceOwner)
         );
 
@@ -475,7 +475,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         assert.equal(
             await erc20TestToken.balanceOf(accountDeviceOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
 
@@ -490,7 +490,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         assert.equal(
             await erc20TestToken.balanceOf(accountDeviceOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE + CERTIFICATE_PRICE
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE + CERTIFICATE_PRICE
         );
         assert.equal(
             await erc20TestToken.balanceOf(accountTrader),
@@ -583,7 +583,7 @@ describe('PurchasableCertificate-Facade', () => {
         const CERTIFICATE_PRICE = 7;
         const CERTIFICATE_CURRENCY = Currency.EUR;
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
-        const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
+        const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
             await erc20TestToken.balanceOf(accountDeviceOwner)
         );
 
@@ -608,7 +608,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         assert.equal(
             await erc20TestToken.balanceOf(accountDeviceOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
 
@@ -620,7 +620,7 @@ describe('PurchasableCertificate-Facade', () => {
         parentCertificate = await parentCertificate.sync();
         assert.equal(
             await erc20TestToken.balanceOf(accountDeviceOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
         assert.equal(parentCertificate.certificate.status, Certificate.Status.Split);
@@ -711,7 +711,7 @@ describe('PurchasableCertificate-Facade', () => {
     it('should bulk buy certificates', async () => {
         setActiveUser(deviceOwnerPK);
 
-        const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
+        const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
             await erc20TestToken.balanceOf(accountDeviceOwner)
         );
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
@@ -750,7 +750,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         assert.isAbove(
             Number(await erc20TestToken.balanceOf(accountDeviceOwner)),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.isBelow(
             Number(await erc20TestToken.balanceOf(accountTrader)),

@@ -78,7 +78,7 @@ const processDevices = async parsedContent => {
         });
 
         flow.push({
-            type: 'CREATE_PRODUCING_ASSET',
+            type: 'CREATE_PRODUCING_DEVICE',
             data: {
                 smartMeter: account.address,
                 smartMeterPK: account.privateKey,

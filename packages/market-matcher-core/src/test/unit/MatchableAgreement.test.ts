@@ -78,7 +78,7 @@ describe('MatchableAgreement tests', () => {
             );
 
             assert.isFalse(result);
-            assert.equal(reason[0], MatchingErrorReason.WRONG_ASSET_ID);
+            assert.equal(reason[0], MatchingErrorReason.WRONG_DEVICE_ID);
         });
 
         it('should not match certificate with creation time outside agreement range', async () => {

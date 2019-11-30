@@ -116,7 +116,7 @@ interface ICreateProducingDeviceProperties {
     complianceRegistry?: Compliance;
 }
 
-export const DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES = ({
+export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
     country: 'Thailand',
@@ -133,18 +133,20 @@ export const createProducingDevice = (
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
     const offChainProperties: ProducingDevice.IOffChainProperties = {
-        address: properties.address || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.address,
+        address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
-            properties.facilityName || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.facilityName,
-        deviceType: properties.deviceType || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.deviceType,
-        capacityWh: properties.capacityWh || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.capacityWh,
+            properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,
+        deviceType:
+            properties.deviceType || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.deviceType,
+        capacityWh:
+            properties.capacityWh || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.capacityWh,
         operationalSince:
             properties.operationalSince ||
-            DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.operationalSince,
+            DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.operationalSince,
         complianceRegistry:
             properties.complianceRegistry ||
-            DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.complianceRegistry,
-        country: properties.country || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.country,
+            DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.complianceRegistry,
+        country: properties.country || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
         gpsLatitude: '',
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',

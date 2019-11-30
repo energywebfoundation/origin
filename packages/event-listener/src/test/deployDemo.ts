@@ -59,7 +59,7 @@ export class Demo {
                 address: this.web3.eth.accounts.privateKeyToAccount(this.adminPK).address,
                 privateKey: this.adminPK
             },
-            ASSET_MANAGER: {
+            DEVICE_MANAGER: {
                 address: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
                 privateKey: '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac'
             },
@@ -176,7 +176,7 @@ export class Demo {
         const deviceManagerPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
             url: null,
-            id: this.ACCOUNTS.ASSET_MANAGER.address,
+            id: this.ACCOUNTS.DEVICE_MANAGER.address,
             active: true,
             roles: buildRights([Role.DeviceAdmin, Role.DeviceManager, Role.Trader]),
             organization: 'Device Manager organization'
@@ -296,7 +296,7 @@ export class Demo {
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
-            owner: { address: this.ACCOUNTS.ASSET_MANAGER.address },
+            owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
             active: true,
             usageType: Device.UsageType.Producing,
@@ -335,7 +335,7 @@ export class Demo {
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
-        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.DEVICE_MANAGER;
 
         await this.deviceLogic.saveSmartMeterRead(
             0,
@@ -347,7 +347,7 @@ export class Demo {
             }
         );
         await this.certificateLogic.requestCertificates(0, this.nextDeployedSmReadIndex, {
-            privateKey: this.ACCOUNTS.ASSET_MANAGER.privateKey
+            privateKey: this.ACCOUNTS.DEVICE_MANAGER.privateKey
         });
         await this.certificateLogic.approveCertificationRequest(this.nextDeployedSmReadIndex, {
             privateKey: this.adminPK
@@ -357,7 +357,7 @@ export class Demo {
     }
 
     async publishForSale(certificateId: number) {
-        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.DEVICE_MANAGER;
 
         const deployedCertificate = await new PurchasableCertificate.Entity(
             certificateId.toString(),

@@ -61,8 +61,8 @@ Every flowaction has two entries:
 Currently the following action types are supported:
 * APPROVE_CERTIFICATION_REQUEST
 * CREATE_ACCOUNT
-* CREATE_CONSUMING_ASSET
-* CREATE_PRODUCING_ASSET
+* CREATE_CONSUMING_DEVICE
+* CREATE_PRODUCING_DEVICE
 * SAVE_SMARTMETER_READ_PRODUCING
 * SAVE_SMARTMETER_READ_CONSUMING
 * SEND_ERC20_TOKENS_TO
@@ -139,7 +139,7 @@ Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organizat
 }
 </code>
 
-### CREATE_CONSUMING_ASSET
+### CREATE_CONSUMING_DEVICE
 usage: command to onboard a new consuming device
 <br>params:
 * <code>smartMeter</code>: ethereum address of the used smart meter
@@ -168,7 +168,7 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
 
 <code>
 {
-    "type": "CREATE_CONSUMING_ASSET",
+    "type": "CREATE_CONSUMING_DEVICE",
     "data": {
         "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
         "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
@@ -191,7 +191,7 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
 }
 </code>
 
-### CREATE_PRODUCING_ASSET
+### CREATE_PRODUCING_DEVICE
 usage: command to onboard a new producing device
 <br>params:
 * <code>smartMeter</code>: ethereum address of the smart meter
@@ -231,7 +231,7 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
 
 <code>
 {
-    type": "CREATE_PRODUCING_ASSET",
+    type": "CREATE_PRODUCING_DEVICE",
     data": {
         "smartMeter": "0x00f4af465162c05843ea38d203d37f7aad2e2c17",
         "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",

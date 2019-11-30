@@ -1,7 +1,7 @@
 import { ProducingDevice } from '@energyweb/asset-registry';
 
 export enum ProducingDevicesActions {
-    producingDeviceCreatedOrUpdated = 'PRODUCING_ASSET_CREATED_OR_UPDATED'
+    producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED'
 }
 
 export interface IProducingDeviceCreatedOrUpdatedAction {

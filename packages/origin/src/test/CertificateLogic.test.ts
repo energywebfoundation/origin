@@ -596,7 +596,7 @@ describe('CertificateLogic-Facade', () => {
         const STARTING_CERTIFICATE_LENGTH = Number(
             await Certificate.getCertificateListLength(conf)
         );
-        const STARTING_ASSET_OWNER_BALANCE = Number(
+        const STARTING_DEVICE_OWNER_BALANCE = Number(
             await certificateLogic.balanceOf(accountDeviceOwner)
         );
         const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
@@ -649,7 +649,7 @@ describe('CertificateLogic-Facade', () => {
         assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
         assert.equal(
             await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_ASSET_OWNER_BALANCE
+            STARTING_DEVICE_OWNER_BALANCE
         );
 
         await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
@@ -662,7 +662,7 @@ describe('CertificateLogic-Facade', () => {
         );
         assert.equal(
             await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_ASSET_OWNER_BALANCE + 1
+            STARTING_DEVICE_OWNER_BALANCE + 1
         );
 
         await certificateLogic.approveCertificationRequest(
@@ -685,7 +685,7 @@ describe('CertificateLogic-Facade', () => {
         );
         assert.equal(
             await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_ASSET_OWNER_BALANCE + 2
+            STARTING_DEVICE_OWNER_BALANCE + 2
         );
 
         const certificateOne = await new Certificate.Entity(
@@ -707,7 +707,7 @@ describe('CertificateLogic-Facade', () => {
         const STARTING_CERTIFICATE_LENGTH = Number(
             await Certificate.getCertificateListLength(conf)
         );
-        const STARTING_ASSET_OWNER_BALANCE = Number(
+        const STARTING_DEVICE_OWNER_BALANCE = Number(
             await certificateLogic.balanceOf(accountDeviceOwner)
         );
         const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
@@ -725,7 +725,7 @@ describe('CertificateLogic-Facade', () => {
         assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
         assert.equal(
             await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_ASSET_OWNER_BALANCE
+            STARTING_DEVICE_OWNER_BALANCE
         );
 
         await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
@@ -742,7 +742,7 @@ describe('CertificateLogic-Facade', () => {
         );
         assert.equal(
             await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_ASSET_OWNER_BALANCE + 1
+            STARTING_DEVICE_OWNER_BALANCE + 1
         );
 
         try {
@@ -765,7 +765,7 @@ describe('CertificateLogic-Facade', () => {
         );
         assert.equal(
             await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_ASSET_OWNER_BALANCE + 1
+            STARTING_DEVICE_OWNER_BALANCE + 1
         );
     });
 
@@ -851,7 +851,7 @@ describe('CertificateLogic-Facade', () => {
         }
     });
 
-    it('should return device registry address', async () => {
+    it('should return asset registry address', async () => {
         const deviceLogicAddress = await certificateLogic.deviceLogicAddress();
 
         assert.equal(deviceLogicAddress, deviceLogic.web3Contract.options.address);

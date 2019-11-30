@@ -56,7 +56,7 @@ export const onboardDemo = async (
 
             break;
 
-        case 'CREATE_PRODUCING_ASSET':
+        case 'CREATE_PRODUCING_DEVICE':
             console.log('-----------------------------------------------------------');
 
             const deviceProducingProps: Device.IOnChainProperties = {
@@ -101,7 +101,7 @@ export const onboardDemo = async (
             console.log('-----------------------------------------------------------\n');
 
             break;
-        case 'CREATE_CONSUMING_ASSET':
+        case 'CREATE_CONSUMING_DEVICE':
             console.log('-----------------------------------------------------------');
 
             const deviceConsumingProps: Device.IOnChainProperties = {
