@@ -462,6 +462,9 @@ describe('Market-Facade', () => {
         it('should update demand off chain properties', async () => {
             const demand = await new Demand.Entity('0', conf).clone();
 
+            const oldPropertiesHash = demand.propertiesDocumentHash;
+            const oldOffChainProperties = demand.offChainProperties;
+
             const offChainProperties = { ...demand.offChainProperties };
             offChainProperties.procureFromSingleFacility = !demand.offChainProperties
                 .procureFromSingleFacility;
@@ -471,8 +474,8 @@ describe('Market-Facade', () => {
 
             assert.equal(updated.id, demand.id);
             assert.equal(updated.status, demand.status);
-            assert.notEqual(updated.propertiesDocumentHash, demand.propertiesDocumentHash);
-            assert.notDeepEqual(updated.offChainProperties, demand.offChainProperties);
+            assert.notEqual(updated.propertiesDocumentHash, oldPropertiesHash);
+            assert.notDeepEqual(updated.offChainProperties, oldOffChainProperties);
         });
 
         it('should not update demand properties when blockchain tx fails', async () => {

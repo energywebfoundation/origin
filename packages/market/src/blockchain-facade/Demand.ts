@@ -59,17 +59,11 @@ export interface IDemand extends IDemandOnChainProperties {
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
     offChainProperties: IDemandOffChainProperties;
 
-    propertiesDocumentHash: string;
-
-    url: string;
-
     status: DemandStatus;
 
     demandOwner: string;
 
     initialized: boolean;
-
-    configuration: Configuration.Entity;
 
     marketLogicInstance: MarketLogic;
 
@@ -99,7 +93,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             this.demandOwner = demand._owner;
             this.status = Number(demand._status);
             this.initialized = true;
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+            this.offChainProperties = await this.getOffChainProperties();
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Demand ${this.id} synced`);
@@ -121,33 +115,17 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             DemandOffChainPropertiesSchema
         );
 
-        const oldOffChainData = await this.getOffChainDump();
-        const oldHash = this.propertiesDocumentHash;
-
         await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
-        try {
-            await this.marketLogicInstance.updateDemand(
-                this.id,
-                updatedOffChainStorageProperties.rootHash,
-                this.getUrl(),
-                {
-                    from: this.configuration.blockchainProperties.activeUser.address,
-                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-                }
-            );
-        } catch (e) {
-            this.configuration.logger.error(
-                `Demand::update: Failed to write to the chain. Reverting off-chain properties...`
-            );
-            this.syncOffChainStorage(oldOffChainData.properties, {
-                rootHash: oldHash,
-                salts: oldOffChainData.salts,
-                schema: oldOffChainData.schema
-            });
-
-            throw e;
-        }
+        await this.marketLogicInstance.updateDemand(
+            this.id,
+            updatedOffChainStorageProperties.rootHash,
+            this.getUrl(),
+            {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
 
         return new Entity(this.id, this.configuration).sync();
     }

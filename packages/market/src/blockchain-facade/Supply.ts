@@ -1,18 +1,22 @@
 import polly from 'polly-js';
 
-import * as GeneralLib from '@energyweb/utils-general';
+import {
+    Configuration,
+    Currency,
+    TimeFrame,
+    BlockchainDataModelEntity
+} from '@energyweb/utils-general';
 
 import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperties.schema.json';
 
 export interface ISupplyOffChainProperties {
     price: number;
-    currency: GeneralLib.Currency;
+    currency: Currency;
     availableWh: number;
-    timeFrame: GeneralLib.TimeFrame;
+    timeFrame: TimeFrame;
 }
 
-export interface ISupplyOnChainProperties
-    extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
+export interface ISupplyOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
     assetId: string;
 }
 
@@ -20,20 +24,14 @@ export interface ISupply extends ISupplyOnChainProperties {
     offChainProperties: ISupplyOffChainProperties;
 }
 
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements ISupply {
+export class Entity extends BlockchainDataModelEntity.Entity implements ISupply {
     offChainProperties: ISupplyOffChainProperties;
-
-    propertiesDocumentHash: string;
-
-    url: string;
 
     assetId: string;
 
     initialized: boolean;
 
-    configuration: GeneralLib.Configuration.Entity;
-
-    constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
+    constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
         this.initialized = false;
@@ -57,7 +55,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             this.assetId = demand._assetId;
             this.initialized = true;
 
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+            this.offChainProperties = await this.getOffChainProperties();
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Supply ${this.id} synced`);
@@ -68,11 +66,11 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
     }
 }
 
-export const getSupplyListLength = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getSupplyListLength = async (configuration: Configuration.Entity) => {
     return configuration.blockchainProperties.marketLogicInstance.getAllSupplyListLength();
 };
 
-export const getAllSupplies = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAllSupplies = async (configuration: Configuration.Entity) => {
     const suppliesPromises = Array(parseInt(await getSupplyListLength(configuration), 10))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
@@ -83,7 +81,7 @@ export const getAllSupplies = async (configuration: GeneralLib.Configuration.Ent
 export const createSupply = async (
     supplyPropertiesOnChain: ISupplyOnChainProperties,
     supplyPropertiesOffChain: ISupplyOffChainProperties,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<Entity> => {
     const supply = new Entity(null, configuration);
 

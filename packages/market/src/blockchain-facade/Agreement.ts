@@ -1,20 +1,25 @@
 import polly from 'polly-js';
 import { TransactionReceipt } from 'web3-core';
 
-import * as GeneralLib from '@energyweb/utils-general';
+import {
+    BlockchainDataModelEntity,
+    Timestamp,
+    Currency,
+    TimeFrame,
+    Configuration
+} from '@energyweb/utils-general';
 import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 
 export interface IAgreementOffChainProperties {
-    start: GeneralLib.Timestamp;
-    end: GeneralLib.Timestamp;
+    start: Timestamp;
+    end: Timestamp;
     price: number;
-    currency: GeneralLib.Currency;
+    currency: Currency;
     period: number;
-    timeFrame: GeneralLib.TimeFrame;
+    timeFrame: TimeFrame;
 }
 
-export interface IAgreementOnChainProperties
-    extends GeneralLib.BlockchainDataModelEntity.IOnChainProperties {
+export interface IAgreementOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
     demandId: string;
     supplyId: string;
 }
@@ -23,12 +28,8 @@ export interface IAgreement extends IAgreementOnChainProperties {
     offChainProperties: IAgreementOffChainProperties;
 }
 
-export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implements IAgreement {
+export class Entity extends BlockchainDataModelEntity.Entity implements IAgreement {
     offChainProperties: IAgreementOffChainProperties;
-
-    propertiesDocumentHash: string;
-
-    url: string;
 
     demandId: string;
 
@@ -40,9 +41,9 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 
     initialized: boolean;
 
-    configuration: GeneralLib.Configuration.Entity;
+    configuration: Configuration.Entity;
 
-    constructor(id: string, configuration: GeneralLib.Configuration.Entity) {
+    constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
         this.initialized = false;
     }
@@ -66,7 +67,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
             this.supplyId = agreement._supplyId;
             this.approvedBySupplyOwner = agreement._approvedBySupplyOwner;
             this.approvedByDemandOwner = agreement._approvedByDemandOwner;
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+            this.offChainProperties = await this.getOffChainProperties();
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Agreement with ${this.id} synced`);
@@ -108,7 +109,7 @@ export class Entity extends GeneralLib.BlockchainDataModelEntity.Entity implemen
 export const createAgreement = async (
     agreementPropertiesOnChain: IAgreementOnChainProperties,
     agreementPropertiesOffChain: IAgreementOffChainProperties,
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<Entity> => {
     const agreement = new Entity(null, configuration);
 
@@ -167,14 +168,14 @@ export const createAgreement = async (
 };
 
 export const getAgreementListLength = async (
-    configuration: GeneralLib.Configuration.Entity
+    configuration: Configuration.Entity
 ): Promise<number> => {
     return Number(
         await configuration.blockchainProperties.marketLogicInstance.getAllAgreementListLength()
     );
 };
 
-export const getAllAgreements = async (configuration: GeneralLib.Configuration.Entity) => {
+export const getAllAgreements = async (configuration: Configuration.Entity) => {
     const agreementsPromises = Array(await getAgreementListLength(configuration))
         .fill(null)
         .map((item, index) => new Entity(index.toString(), configuration).sync());
