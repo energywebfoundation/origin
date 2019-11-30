@@ -24,19 +24,11 @@ export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnCha
 export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnChainProperties {
     offChainProperties: IUserOffChainProperties;
 
-    propertiesDocumentHash: string;
-
-    url: string;
-
-    id: string;
-
     organization: string;
 
     roles: number;
 
     active: boolean;
-
-    configuration: Configuration.Entity;
 
     initialized: boolean;
 
@@ -79,7 +71,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
         this.roles = parseInt(userData._roles, 10);
         this.active = userData._active;
 
-        this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+        this.offChainProperties = await this.getOffChainProperties();
 
         this.initialized = true;
 
