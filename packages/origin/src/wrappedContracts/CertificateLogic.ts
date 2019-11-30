@@ -19,8 +19,8 @@ export class CertificateLogic extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(assetContractAddress: string, txParams: ISpecialTx) {
-        const method = this.web3Contract.methods.initialize(assetContractAddress);
+    async initialize(deviceContractAddress: string, txParams: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(deviceContractAddress);
 
         return this.send(method, txParams);
     }
@@ -168,12 +168,12 @@ export class CertificateLogic extends GeneralFunctions {
     }
 
     async requestCertificates(
-        _assetId: number,
+        _deviceId: number,
         limitingSmartMeterReadIndex: number,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.requestCertificates(
-            _assetId,
+            _deviceId,
             limitingSmartMeterReadIndex
         );
 
@@ -188,13 +188,13 @@ export class CertificateLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async getAssetRequestedCertsForSMReadsLength(_assetId: number, txParams?: ISpecialTx) {
+    async getDeviceRequestedCertsForSMReadsLength(_deviceId: number, txParams?: ISpecialTx) {
         return await this.web3Contract.methods
-            .getAssetRequestedCertsForSMReadsLength(_assetId)
+            .getDeviceRequestedCertsForSMReadsLength(_deviceId)
             .call(txParams);
     }
 
-    async assetLogicAddress(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.assetLogicAddress().call(txParams);
+    async deviceLogicAddress(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.deviceLogicAddress().call(txParams);
     }
 }

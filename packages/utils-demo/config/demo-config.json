@@ -59,8 +59,8 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Four",
-                "email": "assetmanager@mailinator.com",
-                "organization": "AssetManager Organization",
+                "email": "devicemanager@mailinator.com",
+                "organization": "Device Manager Organization",
                 "street": "Main Street",
                 "number": "4",
                 "zip": "01234",
@@ -78,8 +78,8 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Five",
-                "email": "assetmanager2@mailinator.com",
-                "organization": "AssetManager Second Organization",
+                "email": "devicemanager2@mailinator.com",
+                "organization": "Device Manager Second Organization",
                 "street": "Main Street",
                 "number": "5",
                 "zip": "01234",
@@ -146,7 +146,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x43daf8EF8C29126cDBABEDD07b364ad9e49aa6f7",
                 "smartMeterPK": "0xf4254d3ddc25041a85b40877184eb2f1ff9be8b686d9edacf13ce6fa958d562e",
@@ -161,7 +161,7 @@
                 "gpsLatitude": "14.059500",
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
-                "assetType": "Wind;Onshore",
+                "deviceType": "Wind;Onshore",
                 "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
@@ -169,7 +169,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x7942d95A7DA329C1De09b5437dCEd7Bf68EEC0F6",
                 "smartMeterPK": "0xfd59741dab6ba03ed19a7810f8d852cb3ac57e3f816f8131c47bdf863c978ab8",
@@ -188,7 +188,7 @@
                 "gpsLatitude": "15.1739",
                 "gpsLongitude": "101.4928",
                 "timezone": "Asia/Bangkok",
-                "assetType": "Solar;Photovoltaic;Roof mounted",
+                "deviceType": "Solar;Photovoltaic;Roof mounted",
                 "complianceRegistry": "IREC",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
@@ -196,7 +196,7 @@
             }
         },
         {
-            "type": "CREATE_PRODUCING_ASSET",
+            "type": "CREATE_PRODUCING_DEVICE",
             "data": {
                 "smartMeter": "0x30e69056aAADEE6A3B9ee98afBd34eb6c10d8556",
                 "smartMeterPK": "0xc49bbcd1f71568b55d1ad85bae035b94df402f875a7a6d32ff100fc7e6bb6e33",
@@ -211,7 +211,7 @@
                 "gpsLatitude": "14.059500",
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
-                "assetType": "Solid;Biomass from agriculture;Agricultural products",
+                "deviceType": "Solid;Biomass from agriculture;Agricultural products",
                 "complianceRegistry": "TIGR",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
@@ -219,7 +219,7 @@
             }
         },
         {
-            "type": "CREATE_CONSUMING_ASSET",
+            "type": "CREATE_CONSUMING_DEVICE",
             "data": {
                 "smartMeter": "0xf7f7c9186fa724c8392a55b9d83d0f3701c16176",
                 "smartMeterPK": "7da67da863672d4cc2984e93ce28d98b0d782d8caa43cd1c977b919c0209541b",

@@ -2,7 +2,7 @@
 
 .PageWrapper {
     .DetailViewWrapper {
-        .FindAsset {
+        .FindDevice {
             display: flex;
 
             input {
@@ -20,7 +20,7 @@
                 padding: 0 14px;
             }
 
-            .find-asset-button {
+            .find-device-button {
                 background: $primaryColorDark;
                 border-radius: 3px;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.267125);

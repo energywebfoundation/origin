@@ -1,13 +1,13 @@
 import { PurchasableCertificate } from '@energyweb/market';
 import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 
 export interface ICertificatesState {
     certificates: PurchasableCertificate.Entity[];
     requestCertificatesModal: {
         visible: boolean;
-        producingAsset: ProducingAsset.Entity;
+        producingDevice: ProducingDevice.Entity;
     };
     fetcher: ICertificateFetcher;
 }
@@ -26,7 +26,7 @@ const defaultState: ICertificatesState = {
     certificates: [],
     requestCertificatesModal: {
         visible: false,
-        producingAsset: null
+        producingDevice: null
     },
     fetcher
 };
@@ -73,7 +73,7 @@ export default function reducer(
                 ...state,
                 requestCertificatesModal: {
                     ...state.requestCertificatesModal,
-                    producingAsset: action.payload.producingAsset
+                    producingDevice: action.payload.producingDevice
                 }
             };
 
@@ -91,7 +91,7 @@ export default function reducer(
                 ...state,
                 requestCertificatesModal: {
                     visible: false,
-                    producingAsset: null
+                    producingDevice: null
                 }
             };
 

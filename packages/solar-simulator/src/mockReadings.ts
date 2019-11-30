@@ -22,10 +22,10 @@ function getMockReadingsWorkerLocation() {
 (async () => {
     const location = getMockReadingsWorkerLocation();
 
-    for (const asset of CONFIG.assets) {
+    for (const device of CONFIG.devices) {
         const worker = new Worker(location, {
             workerData: {
-                asset,
+                device,
                 DATA
             }
         });

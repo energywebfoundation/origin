@@ -2,7 +2,7 @@ import React from 'react';
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import { DatePicker } from '@material-ui/pickers';
-import { IRECAssetService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import {
     InputLabel,
     FormControl,
@@ -22,7 +22,7 @@ interface IProps {
 }
 
 export function IndividualFilter(props: IProps) {
-    const irecAssetService = new IRECAssetService();
+    const irecDeviceService = new IRECDeviceService();
 
     const { filter } = props;
 
@@ -86,24 +86,24 @@ export function IndividualFilter(props: IProps) {
                     </Select>
                 </FormControl>
             );
-        case CustomFilterInputType.assetType:
+        case CustomFilterInputType.deviceType:
             return (
                 <HierarchicalMultiSelect
                     selectedValue={filter.selectedValue ? filter.selectedValue : []}
                     onChange={e => props.changeFilterValue(filter, e)}
-                    allValues={irecAssetService.AssetTypes}
+                    allValues={irecDeviceService.DeviceTypes}
                     selectOptions={[
                         {
-                            label: 'Asset type',
-                            placeholder: 'Select asset type'
+                            label: 'Device type',
+                            placeholder: 'Select device type'
                         },
                         {
-                            label: 'Asset type',
-                            placeholder: 'Select asset type'
+                            label: 'Device type',
+                            placeholder: 'Select device type'
                         },
                         {
-                            label: 'Asset type',
-                            placeholder: 'Select asset type'
+                            label: 'Device type',
+                            placeholder: 'Select device type'
                         }
                     ]}
                 />

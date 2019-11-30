@@ -22,12 +22,12 @@ import Web3 from 'web3';
 import {
     configurationUpdated,
     demandDeleted,
-    consumingAssetCreatedOrUpdated,
+    consumingDeviceCreatedOrUpdated,
     demandCreated
 } from '../actions';
-import { ProducingAsset, ConsumingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice, ConsumingDevice } from '@energyweb/device-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
-import { producingAssetCreatedOrUpdated } from '../producingAssets/actions';
+import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import {
@@ -321,24 +321,24 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         }
 
         try {
-            const producingAssets: ProducingAsset.Entity[] = yield apply(
-                ProducingAsset,
-                ProducingAsset.getAllAssets,
+            const producingDevices: ProducingDevice.Entity[] = yield apply(
+                ProducingDevice,
+                ProducingDevice.getAllDevices,
                 [configuration]
             );
 
-            for (const asset of producingAssets) {
-                yield put(producingAssetCreatedOrUpdated(asset));
+            for (const device of producingDevices) {
+                yield put(producingDeviceCreatedOrUpdated(device));
             }
 
-            const consumingAssets: ConsumingAsset.Entity[] = yield apply(
-                ConsumingAsset,
-                ConsumingAsset.getAllAssets,
+            const consumingDevices: ConsumingDevice.Entity[] = yield apply(
+                ConsumingDevice,
+                ConsumingDevice.getAllDevices,
                 [configuration]
             );
 
-            for (const asset of consumingAssets) {
-                yield put(consumingAssetCreatedOrUpdated(asset));
+            for (const device of consumingDevices) {
+                yield put(consumingDeviceCreatedOrUpdated(device));
             }
 
             const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [

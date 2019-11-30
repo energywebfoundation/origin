@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Contracts as MarketContracts, PurchasableCertificate } from '@energyweb/market';
 import { Currency } from '@energyweb/utils-general';
 
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import {
     Button,
     Dialog,
@@ -24,7 +24,7 @@ import { setLoading } from '../../features/general/actions';
 
 interface IProps {
     certificate: PurchasableCertificate.Entity;
-    producingAsset: ProducingAsset.Entity;
+    producingDevice: ProducingDevice.Entity;
     showModal: boolean;
     callback: () => void;
 }
@@ -42,7 +42,7 @@ function getAvailableCurrencies() {
 }
 
 export function PublishForSaleModal(props: IProps) {
-    const { certificate, callback, producingAsset, showModal } = props;
+    const { certificate, callback, producingDevice, showModal } = props;
 
     const availableCurrencies = getAvailableCurrencies();
 
@@ -168,7 +168,7 @@ export function PublishForSaleModal(props: IProps) {
     }
 
     const certificateId = certificate ? certificate.id : '';
-    const facilityName = producingAsset ? producingAsset.offChainProperties.facilityName : '';
+    const facilityName = producingDevice ? producingDevice.offChainProperties.facilityName : '';
 
     let creationTime: string;
 

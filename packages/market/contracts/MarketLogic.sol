@@ -5,14 +5,14 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
+import "@energyweb/device-registry/contracts/IDeviceLogic.sol";
 import "@energyweb/origin/contracts/ICertificateLogic.sol";
 import "@energyweb/origin/contracts/CertificateDefinitions.sol";
 
 contract MarketLogic is Initializable, RoleManagement {
 
     bool private _initialized;
-    IAssetLogic private _assetLogic;
+    IDeviceLogic private _deviceLogic;
     ICertificateLogic private _certificateLogic;
 
     enum DemandStatus { ACTIVE, PAUSED, ARCHIVED }
@@ -28,7 +28,7 @@ contract MarketLogic is Initializable, RoleManagement {
     struct Supply {
         string propertiesDocumentHash;
         string documentDBURL;
-        uint assetId;
+        uint deviceId;
     }
 
     struct Agreement {
@@ -87,12 +87,12 @@ contract MarketLogic is Initializable, RoleManagement {
         require(certificateLogicContract != address(0), "initialize: Cannot use address 0x0 as certificateLogicContract.");
 
         _certificateLogic = ICertificateLogic(certificateLogicContract);
-        require(_certificateLogic.assetLogicAddress() != address(0), "initialize: certificateLogic hasn't been initialized yet.");
+        require(_certificateLogic.deviceLogicAddress() != address(0), "initialize: certificateLogic hasn't been initialized yet.");
 
-        _assetLogic = IAssetLogic(_certificateLogic.assetLogicAddress());
-        require(_assetLogic.userLogicAddress() != address(0), "initialize: assetLogic hasn't been initialized yet.");
+        _deviceLogic = IDeviceLogic(_certificateLogic.deviceLogicAddress());
+        require(_deviceLogic.userLogicAddress() != address(0), "initialize: deviceLogic hasn't been initialized yet.");
 
-        RoleManagement.initialize(_assetLogic.userLogicAddress());
+        RoleManagement.initialize(_deviceLogic.userLogicAddress());
 
         _initialized = true;
     }
@@ -222,30 +222,30 @@ contract MarketLogic is Initializable, RoleManagement {
     function getSupply(uint _supplyId) external view returns (
         string memory _propertiesDocumentHash,
         string memory _documentDBURL,
-        uint _assetId
+        uint _deviceId
     ) {
         Supply memory supply = allSupply[_supplyId];
         _propertiesDocumentHash = supply.propertiesDocumentHash;
         _documentDBURL = supply.documentDBURL;
-        _assetId = supply.assetId;
+        _deviceId = supply.deviceId;
     }
 
     /// @notice Function to create a supply
 	/// @dev will return an event with the event-Id
 	/// @param _propertiesDocumentHash document-hash with all the properties of the demand
 	/// @param _documentDBURL url-address of the demand
-	/// @param _assetId the asset Id
+	/// @param _deviceId the device Id
     function createSupply(
         string calldata _propertiesDocumentHash,
         string calldata _documentDBURL,
-        uint _assetId
+        uint _deviceId
     ) external {
-        require(_assetLogic.getAssetOwner(_assetId) == msg.sender, "wrong msg.sender");
+        require(_deviceLogic.getDeviceOwner(_deviceId) == msg.sender, "wrong msg.sender");
 
         allSupply.push(Supply({
             propertiesDocumentHash: _propertiesDocumentHash,
             documentDBURL: _documentDBURL,
-            assetId: _assetId
+            deviceId: _deviceId
         }));
 
         uint supplyID = allSupply.length > 0 ? allSupply.length - 1 : 0;
@@ -274,7 +274,7 @@ contract MarketLogic is Initializable, RoleManagement {
         Demand memory demand = allDemands[_demandId];
         Supply memory supply = allSupply[_supplyId];
 
-        address supplyOwner = _assetLogic.getAssetOwner(supply.assetId);
+        address supplyOwner = _deviceLogic.getDeviceOwner(supply.deviceId);
 
         require(
             msg.sender == demand.demandOwner || msg.sender == supplyOwner,
@@ -380,7 +380,7 @@ contract MarketLogic is Initializable, RoleManagement {
         Supply memory supply = allSupply[agreement.supplyId];
 
         require(
-            _assetLogic.getAssetOwner(supply.assetId) == msg.sender,
+            _deviceLogic.getDeviceOwner(supply.deviceId) == msg.sender,
             "approveAgreementSupply: wrong msg.sender"
         );
 

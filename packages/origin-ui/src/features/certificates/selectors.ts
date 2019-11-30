@@ -3,8 +3,8 @@ import { ICertificatesState } from './reducer';
 
 export const getCertificates = (state: IStoreState) => state.certificates.certificates;
 
-export const getRequestCertificatesModalProducingAsset = (state: IStoreState) =>
-    state.certificates.requestCertificatesModal.producingAsset;
+export const getRequestCertificatesModalProducingDevice = (state: IStoreState) =>
+    state.certificates.requestCertificatesModal.producingDevice;
 
 export const getRequestCertificatesModalVisible = (state: IStoreState) =>
     state.certificates.requestCertificatesModal.visible;

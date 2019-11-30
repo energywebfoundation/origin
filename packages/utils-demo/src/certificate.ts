@@ -1,4 +1,4 @@
-import { ConsumingAsset, ProducingAsset } from '@energyweb/asset-registry';
+import { ConsumingDevice, ProducingDevice } from '@energyweb/device-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
@@ -52,19 +52,19 @@ export const certificateDemo = async (
             };
 
             try {
-                let asset = await new ProducingAsset.Entity(
-                    (action.data.assetId as string),
+                let device = await new ProducingDevice.Entity(
+                    (action.data.deviceId as string),
                     conf
                 ).sync();
-                await asset.saveSmartMeterRead(
+                await device.saveSmartMeterRead(
                     action.data.meterreading,
                     action.data.filehash,
                     action.data.timestamp || 0
                 );
-                asset = await asset.sync();
+                device = await device.sync();
                 conf.logger.verbose('Producing smart meter reading saved');
             } catch (e) {
-                conf.logger.error('Could not save smart meter reading for producing asset\n' + e);
+                conf.logger.error('Could not save smart meter reading for producing device\n' + e);
             }
 
             console.log('-----------------------------------------------------------\n');
@@ -79,16 +79,16 @@ export const certificateDemo = async (
             };
 
             try {
-                let asset = await new ConsumingAsset.Entity(action.data.assetId, conf).sync();
-                await asset.saveSmartMeterRead(
+                let device = await new ConsumingDevice.Entity(action.data.deviceId, conf).sync();
+                await device.saveSmartMeterRead(
                     action.data.meterreading,
                     action.data.filehash,
                     action.data.timestamp || 0
                 );
-                asset = await asset.sync();
+                device = await device.sync();
                 conf.logger.verbose('Consuming meter reading saved');
             } catch (e) {
-                conf.logger.error('Could not save smart meter reading for consuming asset\n' + e);
+                conf.logger.error('Could not save smart meter reading for consuming device\n' + e);
             }
 
             console.log('-----------------------------------------------------------\n');
@@ -99,28 +99,28 @@ export const certificateDemo = async (
             console.log('-----------------------------------------------------------');
 
             conf.blockchainProperties.activeUser = {
-                address: action.data.assetOwner,
-                privateKey: action.data.assetOwnerPK
+                address: action.data.deviceOwner,
+                privateKey: action.data.deviceOwnerPK
             };
 
             try {
                 conf.logger.verbose(
-                    'Asset Owner Balance(BEFORE): ' +
-                        (await certificateLogic.balanceOf(action.data.assetOwner))
+                    'Device Owner Balance(BEFORE): ' +
+                        (await certificateLogic.balanceOf(action.data.deviceOwner))
                 );
                 conf.logger.verbose(
-                    'Asset Owner Balance(BEFORE): ' +
+                    'Device Owner Balance(BEFORE): ' +
                         (await certificateLogic.balanceOf(action.data.addressTo))
                 );
                 const certificate = await new Certificate.Entity(action.data.certId, conf).sync();
                 await certificate.transferFrom(action.data.addressTo);
                 conf.logger.info('Certificate Transferred');
                 conf.logger.verbose(
-                    'Asset Owner Balance(AFTER): ' +
-                        (await certificateLogic.balanceOf(action.data.assetOwner))
+                    'Device Owner Balance(AFTER): ' +
+                        (await certificateLogic.balanceOf(action.data.deviceOwner))
                 );
                 conf.logger.verbose(
-                    'Asset Owner Balance(AFTER): ' +
+                    'Device Owner Balance(AFTER): ' +
                         (await certificateLogic.balanceOf(action.data.addressTo))
                 );
             } catch (e) {
@@ -134,8 +134,8 @@ export const certificateDemo = async (
             console.log('-----------------------------------------------------------');
 
             conf.blockchainProperties.activeUser = {
-                address: action.data.assetOwner,
-                privateKey: action.data.assetOwnerPK
+                address: action.data.deviceOwner,
+                privateKey: action.data.deviceOwnerPK
             };
 
             try {
@@ -199,23 +199,23 @@ export const certificateDemo = async (
         case 'REQUEST_CERTIFICATES':
             console.log('-----------------------------------------------------------');
 
-            const assetId = Number(action.data.assetId);
+            const deviceId = Number(action.data.deviceId);
 
             try {
                 await certificateLogic.requestCertificates(
-                    assetId,
+                    deviceId,
                     action.data.lastRequestedSMRead,
                     {
-                        privateKey: action.data.assetOwnerPK
+                        privateKey: action.data.deviceOwnerPK
                     }
                 );
 
                 conf.logger.info(
-                    `Requested certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}`
+                    `Requested certificates for device ${deviceId} up to SM read ${action.data.lastRequestedSMRead}`
                 );
             } catch (e) {
                 conf.logger.error(
-                    `Could not request certificates for asset ${assetId} up to SM read ${action.data.lastRequestedSMRead}\n`,
+                    `Could not request certificates for device ${deviceId} up to SM read ${action.data.lastRequestedSMRead}\n`,
                     e
                 );
             }
@@ -254,12 +254,12 @@ export const certificateDemo = async (
                 conf.blockchainProperties.web3,
                 erc20TestAddress
             );
-            await erc20TestToken.approve(action.data.assetOwner, action.data.price, {
+            await erc20TestToken.approve(action.data.deviceOwner, action.data.price, {
                 privateKey: action.data.buyerPK
             });
             conf.logger.verbose(
                 'Allowance: ' +
-                    (await erc20TestToken.allowance(action.data.buyer, action.data.assetOwner))
+                    (await erc20TestToken.allowance(action.data.buyer, action.data.deviceOwner))
             );
 
             try {

@@ -8,3 +8,4 @@ db.sqlite
 package-lock.json
 .env*
 !.env.example
+!.env.test

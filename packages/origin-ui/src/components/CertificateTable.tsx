@@ -1,4 +1,4 @@
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/origin';
 import {
     Demand,
@@ -23,7 +23,7 @@ import { Redirect } from 'react-router-dom';
 import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
 import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
-import { getBaseURL, getConfiguration, getProducingAssets } from '../features/selectors';
+import { getBaseURL, getConfiguration, getProducingDevices } from '../features/selectors';
 import { IStoreState } from '../types';
 import { formatCurrency } from '../utils/helper';
 import { NotificationType, showNotification } from '../utils/notifications';
@@ -56,7 +56,7 @@ interface IOwnProps {
 interface IStateProps {
     certificates: PurchasableCertificate.Entity[];
     configuration: Configuration.Entity;
-    producingAssets: ProducingAsset.Entity[];
+    producingDevices: ProducingDevice.Entity[];
     currentUser: MarketUser.Entity;
     users: MarketUser.Entity[];
     baseURL: string;
@@ -71,13 +71,13 @@ type Props = IOwnProps & IStateProps & IDispatchProps;
 interface IEnrichedCertificateData {
     certificate: PurchasableCertificate.Entity;
     certificateOwner: MarketUser.Entity;
-    producingAsset: ProducingAsset.Entity;
+    producingDevice: ProducingDevice.Entity;
     currency: string;
     price: string;
     isOffChainSettlement: boolean;
-    assetTypeLabel: string;
-    producingAssetProvince: string;
-    producingAssetRegion: string;
+    deviceTypeLabel: string;
+    producingDeviceProvince: string;
+    producingDeviceRegion: string;
 }
 
 interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
@@ -89,7 +89,7 @@ interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
     sellModalForCertificate: PurchasableCertificate.Entity;
     showBuyModal: boolean;
     buyModalForCertificate: PurchasableCertificate.Entity;
-    buyModalForProducingAsset: ProducingAsset.Entity;
+    buyModalForProducingDevice: ProducingDevice.Entity;
     showBuyBulkModal: boolean;
     showClaimBulkModal: boolean;
     paginatedData: IEnrichedCertificateData[];
@@ -118,7 +118,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             sellModalForCertificate: null,
             showBuyModal: false,
             buyModalForCertificate: null,
-            buyModalForProducingAsset: null,
+            buyModalForProducingDevice: null,
             showBuyBulkModal: false,
             showClaimBulkModal: false,
             currentSort: ['certificate.certificate.creationTime'],
@@ -217,32 +217,32 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const enrichedData: IEnrichedCertificateData[] = [];
 
         for (const certificate of certificates) {
-            const producingAsset =
-                typeof certificate.certificate.assetId !== 'undefined' &&
-                this.props.producingAssets.find(
-                    asset => asset.id === certificate.certificate.assetId.toString()
+            const producingDevice =
+                typeof certificate.certificate.deviceId !== 'undefined' &&
+                this.props.producingDevices.find(
+                    device => device.id === certificate.certificate.deviceId.toString()
                 );
 
-            let producingAssetRegion = '';
-            let producingAssetProvince = '';
+            let producingDeviceRegion = '';
+            let producingDeviceProvince = '';
             try {
                 const decodedLocation = this.locationService.decode([
                     this.locationService.translateAddress(
-                        producingAsset.offChainProperties?.address,
-                        producingAsset.offChainProperties?.country
+                        producingDevice.offChainProperties?.address,
+                        producingDevice.offChainProperties?.country
                     )
                 ])[0];
 
-                producingAssetRegion = decodedLocation[1];
-                producingAssetProvince = decodedLocation[2];
+                producingDeviceRegion = decodedLocation[1];
+                producingDeviceProvince = decodedLocation[2];
             } catch (error) {
                 console.error('Error while parsing location', error);
             }
 
             enrichedData.push({
                 certificate,
-                producingAsset,
-                assetTypeLabel: producingAsset?.offChainProperties?.assetType,
+                producingDevice,
+                deviceTypeLabel: producingDevice?.offChainProperties?.deviceType,
                 certificateOwner: getUserById(this.props.users, certificate.certificate.owner),
                 price: certificate.isOffChainSettlement
                     ? formatCurrency(certificate.price / 100)
@@ -251,8 +251,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     ? Currency[certificate.currency]
                     : await this.getTokenSymbol(certificate.currency),
                 isOffChainSettlement: certificate.isOffChainSettlement,
-                producingAssetProvince,
-                producingAssetRegion
+                producingDeviceProvince,
+                producingDeviceRegion
             });
         }
 
@@ -264,13 +264,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
         const matchableDemand = new MatchableDemand(demand);
         const find = async certificate => {
-            const producingAsset = await new ProducingAsset.Entity(
-                certificate.certificate.assetId.toString(),
+            const producingDevice = await new ProducingDevice.Entity(
+                certificate.certificate.deviceId.toString(),
                 configuration
             ).sync();
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
-                producingAsset
+                producingDevice
             );
             return { result, certificate };
         };
@@ -313,13 +313,13 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return;
         }
 
-        const asset: ProducingAsset.Entity = this.props.producingAssets.find(
-            (a: ProducingAsset.Entity) => a.id === certificate.certificate.assetId.toString()
+        const device: ProducingDevice.Entity = this.props.producingDevices.find(
+            (a: ProducingDevice.Entity) => a.id === certificate.certificate.deviceId.toString()
         );
 
         this.setState({
             buyModalForCertificate: certificate,
-            buyModalForProducingAsset: asset,
+            buyModalForProducingDevice: device,
             showBuyModal: true
         });
     }
@@ -484,12 +484,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         );
 
         if (certificate) {
-            let asset = this.props.producingAssets.find(
-                a => a.id === certificate.certificate.assetId.toString()
+            let device = this.props.producingDevices.find(
+                a => a.id === certificate.certificate.deviceId.toString()
             );
-            if (!asset) {
-                asset = await new ProducingAsset.Entity(
-                    certificate.certificate.assetId.toString(),
+            if (!device) {
+                device = await new ProducingDevice.Entity(
+                    certificate.certificate.deviceId.toString(),
                     this.props.configuration
                 ).sync();
             }
@@ -498,10 +498,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 timeFrame: TimeFrame.yearly,
                 maxPricePerMwh: 0,
                 currency: Currency.USD,
-                otherGreenAttributes: asset.offChainProperties.otherGreenAttributes,
-                typeOfPublicSupport: asset.offChainProperties.typeOfPublicSupport,
+                otherGreenAttributes: device.offChainProperties.otherGreenAttributes,
+                typeOfPublicSupport: device.offChainProperties.typeOfPublicSupport,
                 energyPerTimeFrame: certificate.certificate.energy,
-                registryCompliance: asset.offChainProperties.complianceRegistry,
+                registryCompliance: device.offChainProperties.complianceRegistry,
                 startTime: 0,
                 endTime: 0,
                 automaticMatching: true
@@ -536,7 +536,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const filters: ICustomFilterDefinition[] = [
             {
                 property: (record: IEnrichedCertificateData) =>
-                    `${record?.producingAssetProvince}${record?.producingAssetRegion}`,
+                    `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
                 label: 'Search',
                 input: {
                     type: CustomFilterInputType.string
@@ -545,17 +545,17 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             },
             {
                 property: (record: IEnrichedCertificateData) =>
-                    record?.producingAsset?.offChainProperties?.assetType,
-                label: 'Asset Type',
+                    record?.producingDevice?.offChainProperties?.deviceType,
+                label: 'Device Type',
                 input: {
-                    type: CustomFilterInputType.assetType,
+                    type: CustomFilterInputType.deviceType,
                     defaultOptions: []
                 }
             },
             {
                 property: (record: IEnrichedCertificateData) =>
                     moment
-                        .unix(record?.producingAsset?.offChainProperties?.operationalSince)
+                        .unix(record?.producingDevice?.offChainProperties?.operationalSince)
                         .year()
                         .toString(),
                 label: 'Commissioning Date',
@@ -569,7 +569,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             },
             {
                 property: (record: IEnrichedCertificateData) =>
-                    `${record?.producingAssetProvince}${record?.producingAssetRegion}`,
+                    `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
                 label: 'Province, Region',
                 input: {
                     type: CustomFilterInputType.string
@@ -611,7 +611,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             this.setState({
                 showBuyModal: false,
                 buyModalForCertificate: null,
-                buyModalForProducingAsset: null
+                buyModalForProducingDevice: null
             });
         }
     }
@@ -721,16 +721,16 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     get columns() {
         return ([
-            { id: 'assetType', label: 'Asset type', sortProperties: ['assetTypeLabel'] },
+            { id: 'deviceType', label: 'Device type', sortProperties: ['deviceTypeLabel'] },
             {
                 id: 'commissioningDate',
                 label: 'Commissioning date',
-                sortProperties: ['producingAsset.offChainProperties.operationalSince']
+                sortProperties: ['producingDevice.offChainProperties.operationalSince']
             },
             {
                 id: 'provinceRegion',
                 label: 'Province, region',
-                sortProperties: ['producingAssetProvince', 'producingAssetRegion']
+                sortProperties: ['producingDeviceProvince', 'producingDeviceRegion']
             },
             { id: 'compliance', label: 'Compliance' },
             { id: 'owner', label: 'Owner', sortProperties: ['certificateOwner.organization'] },
@@ -751,25 +751,25 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     get rows() {
         return this.state.paginatedData.map(enrichedData => {
-            let assetType = '';
+            let deviceType = '';
             let commissioningDate = '';
             let provinceRegion = '';
             let compliance = '';
 
-            if (enrichedData.producingAsset && enrichedData.producingAsset.offChainProperties) {
-                assetType = this.assetTypeService.getDisplayText(
-                    enrichedData.producingAsset.offChainProperties.assetType
+            if (enrichedData.producingDevice && enrichedData.producingDevice.offChainProperties) {
+                deviceType = this.deviceTypeService.getDisplayText(
+                    enrichedData.producingDevice.offChainProperties.deviceType
                 );
 
                 commissioningDate = moment(
-                    enrichedData.producingAsset.offChainProperties.operationalSince * 1000,
+                    enrichedData.producingDevice.offChainProperties.operationalSince * 1000,
                     'x'
                 ).format('MMM YY');
 
-                provinceRegion = `${enrichedData.producingAssetProvince}, ${enrichedData.producingAssetRegion}`;
+                provinceRegion = `${enrichedData.producingDeviceProvince}, ${enrichedData.producingDeviceRegion}`;
 
                 compliance =
-                    Compliance[enrichedData.producingAsset.offChainProperties.complianceRegistry];
+                    Compliance[enrichedData.producingDevice.offChainProperties.complianceRegistry];
             }
 
             let price: string | ReactNode = enrichedData.price;
@@ -781,7 +781,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             }
 
             return {
-                assetType,
+                deviceType,
                 commissioningDate,
                 provinceRegion,
                 compliance,
@@ -799,7 +799,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     render() {
         const {
             buyModalForCertificate,
-            buyModalForProducingAsset,
+            buyModalForProducingDevice,
             currentSort,
             detailViewForCertificateId,
             pageSize,
@@ -842,12 +842,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
                 <PublishForSaleModal
                     certificate={this.state.sellModalForCertificate}
-                    producingAsset={
+                    producingDevice={
                         this.state.sellModalForCertificate
-                            ? this.props.producingAssets.find(
-                                  (asset: ProducingAsset.Entity) =>
-                                      asset.id ===
-                                      sellModalForCertificate.certificate.assetId.toString()
+                            ? this.props.producingDevices.find(
+                                  (device: ProducingDevice.Entity) =>
+                                      device.id ===
+                                      sellModalForCertificate.certificate.deviceId.toString()
                               )
                             : null
                     }
@@ -857,7 +857,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
                 <BuyCertificateModal
                     certificate={buyModalForCertificate}
-                    producingAsset={buyModalForProducingAsset}
+                    producingDevice={buyModalForProducingDevice}
                     showModal={showBuyModal}
                     callback={this.hideBuyModal}
                 />
@@ -888,7 +888,7 @@ export const CertificateTable = connect(
         certificates: ownProps.certificates || getCertificates(state),
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),
-        producingAssets: getProducingAssets(state),
+        producingDevices: getProducingDevices(state),
         users: getUsers(state)
     }),
     dispatchProps

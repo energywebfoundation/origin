@@ -31,8 +31,8 @@ describe('UserLogic', () => {
         assert.equal(await userLogic.getRolesRights(accountDeployment), 1);
 
         assert.equal(await userLogic.isRole(Role.UserAdmin, accountDeployment), true);
-        assert.equal(await userLogic.isRole(Role.AssetAdmin, accountDeployment), false);
-        assert.equal(await userLogic.isRole(Role.AssetManager, accountDeployment), false);
+        assert.equal(await userLogic.isRole(Role.DeviceAdmin, accountDeployment), false);
+        assert.equal(await userLogic.isRole(Role.DeviceManager, accountDeployment), false);
         assert.equal(await userLogic.isRole(Role.Matcher, accountDeployment), false);
         assert.equal(await userLogic.isRole(Role.Trader, accountDeployment), false);
     });
@@ -171,10 +171,10 @@ describe('UserLogic', () => {
         assert.isFalse(await userLogic.doesUserExist('0x1000000000000000000000000000000000000005'));
     });
 
-    it('should correctly grant AssetManager and Trader roles when mixed together as rights', async () => {
+    it('should correctly grant DeviceManager and Trader roles when mixed together as rights', async () => {
         const TEST_ACCOUNT = '0x1000000000000000000000000000000000000006';
 
-        const rights = buildRights([Role.AssetManager, Role.Trader])
+        const rights = buildRights([Role.DeviceManager, Role.Trader])
 
         await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', TEST_ACCOUNT, 'TestOrganization', {
             privateKey: privateKeyDeployment
@@ -190,8 +190,8 @@ describe('UserLogic', () => {
         );
 
         assert.equal(await userLogic.isRole(Role.UserAdmin, TEST_ACCOUNT), false);
-        assert.equal(await userLogic.isRole(Role.AssetAdmin, TEST_ACCOUNT), false);
-        assert.equal(await userLogic.isRole(Role.AssetManager, TEST_ACCOUNT), true);
+        assert.equal(await userLogic.isRole(Role.DeviceAdmin, TEST_ACCOUNT), false);
+        assert.equal(await userLogic.isRole(Role.DeviceManager, TEST_ACCOUNT), true);
         assert.equal(await userLogic.isRole(Role.Matcher, TEST_ACCOUNT), false);
         assert.equal(await userLogic.isRole(Role.Trader, TEST_ACCOUNT), true);
     });

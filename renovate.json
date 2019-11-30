@@ -2,7 +2,7 @@
     "extends": ["config:base"],
     "schedule": ["every weekend"],
     "ignoreDeps": [
-        "@energyweb/asset-registry",
+        "@energyweb/device-registry",
         "@energyweb/market-matcher",
         "@energyweb/market",
         "@energyweb/origin",

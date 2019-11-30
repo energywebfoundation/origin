@@ -18,7 +18,7 @@ export abstract class Entity {
     id: string;
     configuration: Configuration.Entity;
     proofs: PreciseProofs.Proof[];
-    
+
     constructor(id: string, configuration: Configuration.Entity) {
         if (typeof id !== 'string' && id !== null) {
             throw new Error('An ID of an Entity should always be of type string.');
@@ -69,7 +69,7 @@ export abstract class Entity {
         }
 
         if (!hasSynced) {
-            throw new Error('createAsset: Saving off-chain data failed.');
+            throw new Error('createDevice: Saving off-chain data failed.');
         }
     }
 

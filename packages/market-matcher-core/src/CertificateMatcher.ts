@@ -1,6 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, Agreement, PurchasableCertificate } from '@energyweb/market';
 
 import { IEntityStore } from './interface/IEntityStore';
@@ -137,8 +137,8 @@ export class CertificateMatcher {
     private async findMatchingDemands(
         certificate: PurchasableCertificate.IPurchasableCertificate
     ): Promise<MatchableDemand[]> {
-        const producingAsset = await new ProducingAsset.Entity(
-            certificate.certificate.assetId.toString(),
+        const producingDevice = await new ProducingDevice.Entity(
+            certificate.certificate.deviceId.toString(),
             this.config
         ).sync();
 
@@ -151,7 +151,10 @@ export class CertificateMatcher {
         const matchingDemands: MatchableDemand[] = [];
 
         for (const demand of demands) {
-            const { result, reason } = await demand.matchesCertificate(certificate, producingAsset);
+            const { result, reason } = await demand.matchesCertificate(
+                certificate,
+                producingDevice
+            );
             this.logger.verbose(
                 `[Certificate #${certificate.id}] Result of matching with demand ${
                     demand.demand.id

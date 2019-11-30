@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import * as Market from '@energyweb/market';
 import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import { AssetLogic } from '@energyweb/asset-registry';
+import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
 import { OffChainDataClient } from '@energyweb/origin-backend-client';
@@ -35,7 +35,7 @@ export const marketDemo = async (demoFile?: string) => {
 
     // create logic instances
     const userLogic = new UserLogic(web3, contractConfig.userLogic);
-    const assetProducingRegistryLogic = new AssetLogic(web3, contractConfig.assetLogic);
+    const deviceProducingRegistryLogic = new DeviceLogic(web3, contractConfig.deviceLogic);
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
@@ -52,7 +52,7 @@ export const marketDemo = async (demoFile?: string) => {
                 address: adminAccount.address,
                 privateKey: adminPK
             },
-            assetLogicInstance: assetProducingRegistryLogic,
+            deviceLogicInstance: deviceProducingRegistryLogic,
             certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
             marketLogicInstance: marketLogic,
@@ -70,7 +70,7 @@ export const marketDemo = async (demoFile?: string) => {
         url: null,
         id: adminAccount.address,
         active: true,
-        roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
+        roles: buildRights([Role.UserAdmin, Role.DeviceAdmin]),
         organization: 'admin'
     };
 
@@ -161,11 +161,11 @@ export const marketDemo = async (demoFile?: string) => {
                     privateKey: action.data.traderPK
                 };
 
-                if (!Array.isArray(action.data.assettype)) {
-                    throw new Error('Demand assettype has to be string[]');
+                if (!Array.isArray(action.data.devicetype)) {
+                    throw new Error('Demand devicetype has to be string[]');
                 }
-                const assetTypeConfig = action.data.assettype;
-                const assetCompliance =
+                const deviceTypeConfig = action.data.devicetype;
+                const deviceCompliance =
                     Compliance[action.data.registryCompliance as keyof typeof Compliance];
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
                 currency = Currency[action.data.currency as keyof typeof Currency];
@@ -175,12 +175,12 @@ export const marketDemo = async (demoFile?: string) => {
                     maxPricePerMwh: action.data.maxPricePerMwh,
                     currency,
                     location: [action.data.location],
-                    assetType: assetTypeConfig,
+                    deviceType: deviceTypeConfig,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
                     energyPerTimeFrame: action.data.energyPerTimeFrame,
-                    registryCompliance: assetCompliance,
+                    registryCompliance: deviceCompliance,
                     startTime: action.data.startTime,
                     endTime: action.data.endTime,
                     automaticMatching: true
@@ -205,8 +205,8 @@ export const marketDemo = async (demoFile?: string) => {
                 console.log('-----------------------------------------------------------');
 
                 conf.blockchainProperties.activeUser = {
-                    address: action.data.assetOwner,
-                    privateKey: action.data.assetOwnerPK
+                    address: action.data.deviceOwner,
+                    privateKey: action.data.deviceOwnerPK
                 };
 
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
@@ -222,7 +222,7 @@ export const marketDemo = async (demoFile?: string) => {
                 const supplyProps: Supply.ISupplyOnChainProperties = {
                     url: '',
                     propertiesDocumentHash: '',
-                    assetId: action.data.assetId
+                    deviceId: action.data.deviceId
                 };
 
                 try {

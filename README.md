@@ -28,7 +28,7 @@
 
 | Package | Stable | Canary | Description |
 | --- | --- | --- | --- |
-| [`@energyweb/asset-registry`](/packages/asset-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/asset-registry.svg)](https://www.npmjs.com/package/@energyweb/asset-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/asset-registry/canary)](https://www.npmjs.com/package/@energyweb/asset-registry) | Contracts and client for the Asset Registry |
+| [`@energyweb/device-registry`](/packages/device-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry) | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry) | Contracts and client for the Device Registry |
 | [`@energyweb/market-matcher-core`](/packages/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core.svg)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | [![npm](https://img.shields.io/npm/v/@energyweb/market-matcher-core/canary)](https://www.npmjs.com/package/@energyweb/market-matcher-core) | Matching rules and logic for market-matcher |
 | [`@energyweb/market`](/packages/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market.svg)](https://www.npmjs.com/package/@energyweb/market) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contracts and client for the Origin Marketplace |
 | [`@energyweb/origin`](/packages/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/origin.svg)](https://www.npmjs.com/package/@energyweb/origin) | [![npm](https://img.shields.io/npm/v/@energyweb/market/canary)](https://www.npmjs.com/package/@energyweb/market/canary) | Contracts and client Origin Issuer of certificates |
@@ -81,7 +81,7 @@ yarn run:origin
 Visit the UI at: http://localhost:3000.
 
 ## Energy Attribute Certificates
-Energy Attribute Certificates, or EACs, is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles. 
+Energy Attribute Certificates, or EACs, is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
 The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs are mostly used to address sustainability reports regarding [Scope 2 emissions](https://en.wikipedia.org/wiki/Carbon_emissions_reporting#Scope_2:_Electricity_indirect_GHG_emissions).
 
@@ -90,16 +90,16 @@ Overview of architecture
 
 ### Key repositories
 
-This section lists key entry points to start your journey with Origin. 
+This section lists key entry points to start your journey with Origin.
 
-1. [utils-demo](https://github.com/energywebfoundation/origin/tree/master/packages/utils-demo) - demo repository with build scripts that enable easy deployment of smart contracts to Tobalaba or local blockchain. Often used to demo and get to know features and capabilities of Origin. 
-2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `utils-demo` (store data), and `origin-ui` to display stored data. 
+1. [utils-demo](https://github.com/energywebfoundation/origin/tree/master/packages/utils-demo) - demo repository with build scripts that enable easy deployment of smart contracts to Tobalaba or local blockchain. Often used to demo and get to know features and capabilities of Origin.
+2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `utils-demo` (store data), and `origin-ui` to display stored data.
 3. [origin-ui](https://github.com/energywebfoundation/origin/tree/master/packages/origin-ui) - frontend of the system needed to view data stored in smart contracts (on-chain) and in the backend (off-chain). To interact Origin frontend you'll need [MetaMask](https://metamask.io).
 
 ### Other components
 
 1. [user-registry](https://github.com/energywebfoundation/origin/tree/master/packages/user-registry) - high-level library to interact with user registry. Can be used to i. a. create new user or set user's role in the system.
-2. [asset-registry](https://github.com/energywebfoundation/origin/tree/master/packages/asset-registry) - high-level library for creating and managing electricity producing and consuming assets. Depends on [user-registry](https://github.com/energywebfoundation/origin/tree/master/packages/user-registry), because only user with Asset Manager role can be owner of asset. 
+2. [device-registry](https://github.com/energywebfoundation/origin/tree/master/packages/device-registry) - high-level library for creating and managing electricity producing and consuming devices. Depends on [user-registry](https://github.com/energywebfoundation/origin/tree/master/packages/user-registry), because only user with Device Manager role can be owner of device.
 3. [origin](https://github.com/energywebfoundation/origin/tree/master/packages/origin) - a heart of Origin systems, contains logic for storing and transferring Energy Attribute Certificates (as a form of unique [ERC721](http://erc721.org/) tokens).
 4. [market](https://github.com/energywebfoundation/origin/tree/master/packages/market) - a library that allows to create demand (for buyers), supply (for sellers) and agreements between buyers and sellers. It also extends the `Certificate` from [origin](https://github.com/energywebfoundation/origin/tree/master/packages/origin) and creates `PurchasableCertificate`s that can be sold on the marketplace.
 5. [market-matcher](https://github.com/energywebfoundation/origin/tree/master/packages/market-matcher) - the most important part of marketplace, guarantees automatic matching of supply and demand between sellers and buyers. Matching rules can be highly customized and afterwards the algorithm can be tested by running matching simulator.

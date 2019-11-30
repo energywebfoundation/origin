@@ -10,11 +10,11 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 import {
-    Asset,
-    ProducingAsset,
-    AssetLogic,
-    Contracts as AssetRegistryContracts
-} from '@energyweb/asset-registry';
+    Device,
+    ProducingDevice,
+    DeviceLogic,
+    Contracts as DeviceRegistryContracts
+} from '@energyweb/device-registry';
 import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
@@ -27,7 +27,7 @@ import { logger } from '../Logger';
 
 describe('PurchasableCertificate-Facade', () => {
     let userLogic: UserLogic;
-    let assetLogic: AssetLogic;
+    let deviceLogic: DeviceLogic;
     let certificateLogic: CertificateLogic;
     let marketLogic: MarketLogic;
 
@@ -45,14 +45,14 @@ describe('PurchasableCertificate-Facade', () => {
 
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
-    const accountAssetOwner = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
+    const deviceOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
+    const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
     const traderPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
-    const assetSmartmeterPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
-    const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
+    const deviceSmartmeterPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
+    const deviceSmartmeter = web3.eth.accounts.privateKeyToAccount(deviceSmartmeterPK).address;
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
@@ -67,21 +67,21 @@ describe('PurchasableCertificate-Facade', () => {
     }
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SM_READ_INDEX = (await assetLogic.getSmartMeterReadsForAsset(0)).length - 1;
-        const LAST_SMART_METER_READ = Number((await assetLogic.getAsset(0)).lastSmartMeterReadWh);
+        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
+        const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
         const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
             await certificateLogic.getCertificationRequestsLength({
                 privateKey: issuerPK
             })
         );
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
-        await assetLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
-            privateKey: assetSmartmeterPK
+        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
+            privateKey: deviceSmartmeterPK
         });
         await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
-            privateKey: assetOwnerPK
+            privateKey: deviceOwnerPK
         });
         await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
             privateKey: issuerPK
@@ -116,11 +116,11 @@ describe('PurchasableCertificate-Facade', () => {
 
         await userLogic.setRoles(
             accountDeployment,
-            buildRights([Role.UserAdmin, Role.AssetAdmin]),
+            buildRights([Role.UserAdmin, Role.DeviceAdmin]),
             { privateKey: privateKeyDeployment }
         );
 
-        assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+        deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment
@@ -128,7 +128,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             web3,
-            assetLogic.web3Contract.options.address,
+            deviceLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
@@ -159,7 +159,7 @@ describe('PurchasableCertificate-Facade', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                assetLogicInstance: assetLogic,
+                deviceLogicInstance: deviceLogic,
                 userLogicInstance: userLogic,
                 certificateLogicInstance: certificateLogic,
                 marketLogicInstance: marketLogic,
@@ -175,7 +175,7 @@ describe('PurchasableCertificate-Facade', () => {
 
     it('should return correct balances', async () => {
         assert.equal(await Certificate.getCertificateListLength(conf), 0);
-        assert.equal(await certificateLogic.balanceOf(accountAssetOwner), 0);
+        assert.equal(await certificateLogic.balanceOf(accountDeviceOwner), 0);
         assert.equal(await certificateLogic.balanceOf(accountTrader), 0);
     });
 
@@ -183,8 +183,8 @@ describe('PurchasableCertificate-Facade', () => {
         await userLogic.createUser(
             'propertiesDocumentHash',
             'documentDBURL',
-            accountAssetOwner,
-            'assetOwner',
+            accountDeviceOwner,
+            'deviceOwner',
             { privateKey: privateKeyDeployment }
         );
 
@@ -199,9 +199,13 @@ describe('PurchasableCertificate-Facade', () => {
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(accountAssetOwner, buildRights([Role.AssetManager, Role.Trader]), {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.setRoles(
+            accountDeviceOwner,
+            buildRights([Role.DeviceManager, Role.Trader]),
+            {
+                privateKey: privateKeyDeployment
+            }
+        );
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -216,19 +220,19 @@ describe('PurchasableCertificate-Facade', () => {
         });
     });
 
-    it('should onboard a new asset', async () => {
-        const assetProps: Asset.IOnChainProperties = {
-            smartMeter: { address: assetSmartmeter },
-            owner: { address: accountAssetOwner },
+    it('should onboard a new device', async () => {
+        const deviceProps: Device.IOnChainProperties = {
+            smartMeter: { address: deviceSmartmeter },
+            owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
             active: true,
-            usageType: Asset.UsageType.Producing,
+            usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
             url: null
         };
 
-        const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityWh: 10,
@@ -238,21 +242,21 @@ describe('PurchasableCertificate-Facade', () => {
             gpsLatitude: '14.059500',
             gpsLongitude: '99.977800',
             timezone: 'Asia/Bangkok',
-            assetType: 'Wind',
+            deviceType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: ''
         };
 
-        assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
+        assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
-        await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
     });
 
     it('should return certificate', async () => {
         const newCertificateId = await generateCertificateAndGetId();
         const pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
-        assert.equal(pCert.certificate.owner, accountAssetOwner);
+        assert.equal(pCert.certificate.owner, accountDeviceOwner);
 
         assert.deepOwnInclude(pCert, {
             id: newCertificateId,
@@ -268,7 +272,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should make certificate available for sale', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
 
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -280,7 +284,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should fail unpublish certificate from sale if not the owner', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
 
         setActiveUser(traderPK);
@@ -299,7 +303,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should unpublish certificate available from sale', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -311,7 +315,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should set erc20-token and price for a certificate', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
 
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -339,7 +343,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should fail buying a certificate when not for sale', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
 
         setActiveUser(traderPK);
@@ -358,7 +362,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should make certificate 1 available for sale', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -371,7 +375,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should fail buying a certificate when not enough erc20 tokens approved', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
 
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
@@ -396,7 +400,7 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should buy a certificate when enough erc20 tokens are approved', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
         await pCert.publishForSale(10, erc20TestTokenAddress);
@@ -453,11 +457,11 @@ describe('PurchasableCertificate-Facade', () => {
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
-        const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
-            await erc20TestToken.balanceOf(accountAssetOwner)
+        const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
+            await erc20TestToken.balanceOf(accountDeviceOwner)
         );
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let parentCertificate = await new PurchasableCertificate.Entity(
@@ -465,13 +469,13 @@ describe('PurchasableCertificate-Facade', () => {
             conf
         ).sync();
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, erc20TestTokenAddress);
 
         assert.equal(
-            await erc20TestToken.balanceOf(accountAssetOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            await erc20TestToken.balanceOf(accountDeviceOwner),
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
 
@@ -485,8 +489,8 @@ describe('PurchasableCertificate-Facade', () => {
         await parentCertificate.buyCertificate(CERTIFICATE_ENERGY / 2);
 
         assert.equal(
-            await erc20TestToken.balanceOf(accountAssetOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE + CERTIFICATE_PRICE
+            await erc20TestToken.balanceOf(accountDeviceOwner),
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE + CERTIFICATE_PRICE
         );
         assert.equal(
             await erc20TestToken.balanceOf(accountTrader),
@@ -515,14 +519,14 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(secondChildCertificate.certificate.status, Certificate.Status.Active);
         assert.equal(secondChildCertificate.forSale, true);
         assert.equal(secondChildCertificate.certificate.energy, CERTIFICATE_ENERGY / 2);
-        assert.equal(secondChildCertificate.certificate.owner, accountAssetOwner);
+        assert.equal(secondChildCertificate.certificate.owner, accountDeviceOwner);
     });
 
     it('should fail to split and buy and split certificate when trying to buy higher ENERGY than certificate has', async () => {
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let parentCertificate = await new PurchasableCertificate.Entity(
@@ -551,7 +555,7 @@ describe('PurchasableCertificate-Facade', () => {
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let parentCertificate = await new PurchasableCertificate.Entity(
@@ -579,11 +583,11 @@ describe('PurchasableCertificate-Facade', () => {
         const CERTIFICATE_PRICE = 7;
         const CERTIFICATE_CURRENCY = Currency.EUR;
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
-        const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
-            await erc20TestToken.balanceOf(accountAssetOwner)
+        const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
+            await erc20TestToken.balanceOf(accountDeviceOwner)
         );
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let parentCertificate = await new PurchasableCertificate.Entity(
@@ -603,8 +607,8 @@ describe('PurchasableCertificate-Facade', () => {
         });
 
         assert.equal(
-            await erc20TestToken.balanceOf(accountAssetOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            await erc20TestToken.balanceOf(accountDeviceOwner),
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
 
@@ -615,8 +619,8 @@ describe('PurchasableCertificate-Facade', () => {
 
         parentCertificate = await parentCertificate.sync();
         assert.equal(
-            await erc20TestToken.balanceOf(accountAssetOwner),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            await erc20TestToken.balanceOf(accountDeviceOwner),
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.equal(await erc20TestToken.balanceOf(accountTrader), TRADER_STARTING_TOKEN_BALANCE);
         assert.equal(parentCertificate.certificate.status, Certificate.Status.Split);
@@ -654,7 +658,7 @@ describe('PurchasableCertificate-Facade', () => {
     it('should setup bulk buy certificates', async () => {
         const CERTIFICATE_PRICE = 7;
 
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = await generateCertificateAndGetId();
         let firstCertificate = await new PurchasableCertificate.Entity(
@@ -673,19 +677,19 @@ describe('PurchasableCertificate-Facade', () => {
         await secondCertificate.publishForSale(CERTIFICATE_PRICE, erc20TestTokenAddress);
         secondCertificate = await secondCertificate.sync();
 
-        assert.equal(firstCertificate.certificate.owner, accountAssetOwner);
-        assert.equal(secondCertificate.certificate.owner, accountAssetOwner);
+        assert.equal(firstCertificate.certificate.owner, accountDeviceOwner);
+        assert.equal(secondCertificate.certificate.owner, accountDeviceOwner);
     });
 
     it('should not be able to bulk buy own certificates', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
         const newCertificateId = parseInt(await generateCertificateAndGetId(), 10);
         const newCertificateId2 = parseInt(await generateCertificateAndGetId(), 10);
 
         try {
             await marketLogic.buyCertificateBulk([newCertificateId, newCertificateId2], {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (error) {
             assert.include(error.message, `Can't buy your own certificates`);
@@ -700,15 +704,15 @@ describe('PurchasableCertificate-Facade', () => {
             conf
         ).sync();
 
-        assert.equal(firstCertificate.certificate.owner, accountAssetOwner);
-        assert.equal(secondCertificate.certificate.owner, accountAssetOwner);
+        assert.equal(firstCertificate.certificate.owner, accountDeviceOwner);
+        assert.equal(secondCertificate.certificate.owner, accountDeviceOwner);
     });
 
     it('should bulk buy certificates', async () => {
-        setActiveUser(assetOwnerPK);
+        setActiveUser(deviceOwnerPK);
 
-        const ASSET_OWNER_STARTING_TOKEN_BALANCE = Number(
-            await erc20TestToken.balanceOf(accountAssetOwner)
+        const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
+            await erc20TestToken.balanceOf(accountDeviceOwner)
         );
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
 
@@ -745,8 +749,8 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(secondCertificate.certificate.owner, accountTrader);
 
         assert.isAbove(
-            Number(await erc20TestToken.balanceOf(accountAssetOwner)),
-            ASSET_OWNER_STARTING_TOKEN_BALANCE
+            Number(await erc20TestToken.balanceOf(accountDeviceOwner)),
+            DEVICE_OWNER_STARTING_TOKEN_BALANCE
         );
         assert.isBelow(
             Number(await erc20TestToken.balanceOf(accountTrader)),

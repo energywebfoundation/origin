@@ -12,8 +12,8 @@ contract RoleManagement is Initializable {
     /*
     no role:        0x0...------0 = 0
     UserAdmin:      0x0...------1 = 1
-    AssetAdmin:     0x0...-----1- = 2
-    AssetManager:   0x0...----1-- = 4
+    DeviceAdmin:     0x0...-----1- = 2
+    DeviceManager:   0x0...----1-- = 4
     Trader:         0x0...---1--- = 8
     Matcher:        0x0...--1---- = 16
     Issuer:         0x0...-1----- = 32
@@ -21,8 +21,8 @@ contract RoleManagement is Initializable {
     */
     enum Role {
         UserAdmin,
-        AssetAdmin,
-        AssetManager,
+        DeviceAdmin,
+        DeviceManager,
         Trader,
         Matcher,
         Issuer,
