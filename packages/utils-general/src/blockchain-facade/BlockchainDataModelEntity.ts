@@ -68,7 +68,7 @@ export abstract class Entity implements IOnChainProperties {
         });
 
         if (!hasSynced) {
-            throw new Error('createAsset: Saving off-chain data failed.');
+            throw new Error('createDevice: Saving off-chain data failed.');
         }
 
         this.propertiesDocumentHash = offChainStorageProperties.rootHash;

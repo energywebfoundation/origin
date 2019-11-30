@@ -1,12 +1,12 @@
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import { IRECAssetService, LocationService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
 export class MatchableDemand {
-    private assetService = new IRECAssetService();
+    private deviceService = new IRECDeviceService();
 
     private locationService = new LocationService();
 
@@ -14,7 +14,7 @@ export class MatchableDemand {
 
     public async matchesCertificate(
         certificate: PurchasableCertificate.IPurchasableCertificate,
-        producingAsset: ProducingAsset.IProducingAsset
+        producingDevice: ProducingDevice.IProducingDevice
     ) {
         const { offChainProperties } = this.demand;
 
@@ -38,19 +38,22 @@ export class MatchableDemand {
                 MatchingErrorReason.NON_MATCHING_CURRENCY
             )
             .validate(
-                offChainProperties.assetType
-                    ? this.assetService.includesAssetType(
-                          producingAsset.offChainProperties.assetType,
-                          offChainProperties.assetType
+                offChainProperties.deviceType
+                    ? this.deviceService.includesDeviceType(
+                          producingDevice.offChainProperties.deviceType,
+                          offChainProperties.deviceType
                       )
                     : true,
-                MatchingErrorReason.NON_MATCHING_ASSET_TYPE
+                MatchingErrorReason.NON_MATCHING_DEVICE_TYPE
             )
             .validate(
-                this.matchesLocation(producingAsset),
+                this.matchesLocation(producingDevice),
                 MatchingErrorReason.NON_MATCHING_LOCATION
             )
-            .validate(this.matchesVintage(producingAsset), MatchingErrorReason.VINTAGE_OUT_OF_RANGE)
+            .validate(
+                this.matchesVintage(producingDevice),
+                MatchingErrorReason.VINTAGE_OUT_OF_RANGE
+            )
             .result();
     }
 
@@ -77,27 +80,27 @@ export class MatchableDemand {
         return this.demand.status === Demand.DemandStatus.ACTIVE;
     }
 
-    private matchesVintage(asset: ProducingAsset.IProducingAsset) {
+    private matchesVintage(device: ProducingDevice.IProducingDevice) {
         if (!this.demand.offChainProperties.vintage) {
             return true;
         }
 
-        const { operationalSince } = asset.offChainProperties;
+        const { operationalSince } = device.offChainProperties;
         const [vintageStart, vintageEnd] = this.demand.offChainProperties.vintage;
         const operationalSinceYear = moment.unix(operationalSince).year();
 
         return operationalSinceYear >= vintageStart && operationalSinceYear <= vintageEnd;
     }
 
-    private matchesLocation(asset: ProducingAsset.IProducingAsset) {
+    private matchesLocation(device: ProducingDevice.IProducingDevice) {
         if (!this.demand.offChainProperties.location) {
             return true;
         }
 
         try {
             const matchableLocation = this.locationService.translateAddress(
-                asset.offChainProperties.address,
-                asset.offChainProperties.country
+                device.offChainProperties.address,
+                device.offChainProperties.country
             );
 
             return this.locationService.matches(

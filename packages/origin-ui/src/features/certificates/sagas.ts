@@ -1,32 +1,57 @@
-import { put, take, all, fork, select, call, apply } from 'redux-saga/effects';
+import { put, take, all, fork, select, call, apply, delay } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import {
     CertificatesActions,
-    ICertificateCreatedOrUpdatedAction,
+    IAddCertificateAction,
     IRequestCertificatesAction,
     IShowRequestCertificatesModalAction,
     setRequestCertificatesModalVisibility,
-    hideRequestCertificatesModal
+    hideRequestCertificatesModal,
+    IRequestCertificateEntityFetchAction,
+    ICertificateFetcher,
+    addCertificate,
+    updateCertificate,
+    requestCertificateEntityFetch,
+    IUpdateCertificateAction
 } from './actions';
 import { requestUser } from '../users/actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Unit } from '@energyweb/utils-general';
+import { Unit, Currency } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
-import { MarketUser } from '@energyweb/market';
-import { Asset } from '@energyweb/asset-registry';
+import { MarketUser, PurchasableCertificate } from '@energyweb/market';
+import { Device } from '@energyweb/device-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
+import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
 
-function* requestCertificateDetailsSaga(): SagaIterator {
+function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate.Entity) {
+    return (
+        certificate.forSale &&
+        certificate.acceptedToken === '0x0000000000000000000000000000000000000000' &&
+        (!certificate.offChainProperties ||
+            (certificate.offChainProperties.currency === Currency.NONE &&
+                certificate.offChainProperties.price === 0))
+    );
+}
+
+function* fetchCertificateDetailsSaga(): SagaIterator {
     while (true) {
-        const action: ICertificateCreatedOrUpdatedAction = yield take(
-            CertificatesActions.certificateCreatedOrUpdated
-        );
+        const action: IAddCertificateAction | IUpdateCertificateAction = yield take([
+            CertificatesActions.addCertificate,
+            CertificatesActions.updateCertificate
+        ]);
 
-        yield put(requestUser(action.certificate.certificate.owner));
+        const certificate = action.payload;
+
+        yield put(requestUser(certificate.certificate.owner));
+
+        if (areOffChainSettlementOptionsMissing(certificate)) {
+            yield delay(100);
+            yield put(requestCertificateEntityFetch(certificate.id));
+        }
     }
 }
 
@@ -45,7 +70,7 @@ function* requestCertificatesSaga(): SagaIterator {
         try {
             yield call(
                 Certificate.requestCertificates,
-                action.payload.assetId,
+                action.payload.deviceId,
                 action.payload.lastReadIndex,
                 configuration
             );
@@ -70,25 +95,25 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
             CertificatesActions.showRequestCertificatesModal
         );
 
-        const asset = action.payload.producingAsset;
+        const device = action.payload.producingDevice;
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
         const currentUser: MarketUser.Entity = yield select(getCurrentUser);
 
-        const reads: Asset.ISmartMeterRead[] = yield apply(asset, asset.getSmartMeterReads, []);
+        const reads: Device.ISmartMeterRead[] = yield apply(device, device.getSmartMeterReads, []);
 
-        if (asset?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
+        if (device?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
             showNotification(
-                `You need to own the asset to request I-RECs.`,
+                `You need to own the device to request I-RECs.`,
                 NotificationType.Error
             );
-        } else if (!currentUser.isRole(Role.AssetManager)) {
+        } else if (!currentUser.isRole(Role.DeviceManager)) {
             showNotification(
-                `You need to have Asset Manager role to request I-RECs.`,
+                `You need to have Device Manager role to request I-RECs.`,
                 NotificationType.Error
             );
         } else if (reads.length === 0) {
             showNotification(
-                `There are no smart meter reads for this asset.`,
+                `There are no smart meter reads for this device.`,
                 NotificationType.Error
             );
         } else {
@@ -97,15 +122,15 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
             const requestedCertsLength = yield apply(
                 certificateLogic,
-                certificateLogic.getAssetRequestedCertsForSMReadsLength,
-                [Number(asset.id)]
+                certificateLogic.getDeviceRequestedCertsForSMReadsLength,
+                [Number(device.id)]
             );
 
             const lastRequestedSMReadIndex = Number(requestedCertsLength);
 
             if (reads.length === lastRequestedSMReadIndex) {
                 showNotification(
-                    `You have already requested certificates for all smart meter reads for this asset.`,
+                    `You have already requested certificates for all smart meter reads for this device.`,
                     NotificationType.Error
                 );
             } else {
@@ -115,10 +140,79 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
     }
 }
 
+function* fetchCertificateSaga(id: string, entitiesBeingFetched: any): SagaIterator {
+    if (entitiesBeingFetched.has(id)) {
+        return;
+    }
+
+    const entities: PurchasableCertificate.Entity[] = yield select(getCertificates);
+
+    const existingEntity: PurchasableCertificate.Entity = yield call(
+        getCertificateById,
+        entities,
+        id
+    );
+
+    const configuration: IStoreState['configuration'] = yield select(getConfiguration);
+    const fetcher: ICertificateFetcher = yield select(getCertificateFetcher);
+
+    entitiesBeingFetched.set(id, true);
+
+    try {
+        if (existingEntity) {
+            const reloadedEntity: PurchasableCertificate.Entity = yield call(
+                fetcher.reload,
+                existingEntity
+            );
+
+            if (reloadedEntity) {
+                yield put(updateCertificate(reloadedEntity));
+            }
+        } else {
+            const fetchedEntity: PurchasableCertificate.Entity = yield call(
+                fetcher.fetch,
+                id,
+                configuration
+            );
+
+            if (fetchedEntity) {
+                yield put(addCertificate(fetchedEntity));
+            }
+        }
+    } catch (error) {
+        console.error('Error while fetching certificate', error);
+    }
+
+    entitiesBeingFetched.delete(id);
+}
+
+function* requestCertificateSaga(): SagaIterator {
+    const usersBeingFetched = new Map<string, boolean>();
+
+    while (true) {
+        const action: IRequestCertificateEntityFetchAction = yield take(
+            CertificatesActions.requestCertificateEntityFetch
+        );
+
+        if (!action.payload) {
+            return;
+        }
+
+        const entityId = action.payload.toLowerCase();
+
+        try {
+            yield fork(fetchCertificateSaga, entityId, usersBeingFetched);
+        } catch (error) {
+            console.error('requestCertificateSaga: error', error);
+        }
+    }
+}
+
 export function* certificatesSaga(): SagaIterator {
     yield all([
-        fork(requestCertificateDetailsSaga),
+        fork(fetchCertificateDetailsSaga),
         fork(requestCertificatesSaga),
-        fork(openRequestCertificatesModalSaga)
+        fork(openRequestCertificatesModalSaga),
+        fork(requestCertificateSaga)
     ]);
 }

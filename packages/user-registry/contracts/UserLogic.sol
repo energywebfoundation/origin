@@ -40,7 +40,7 @@ contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {
     {
         require(
             !isRole(RoleManagement.Role.UserAdmin,_user)
-            && !isRole(RoleManagement.Role.AssetAdmin,_user),
+            && !isRole(RoleManagement.Role.DeviceAdmin,_user),
             "user has an admin role at the moment"
         );
 

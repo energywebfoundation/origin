@@ -17,7 +17,7 @@ export interface ISupplyOffChainProperties {
 }
 
 export interface ISupplyOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
-    assetId: string;
+    deviceId: string;
 }
 
 export interface ISupply extends ISupplyOnChainProperties {
@@ -27,7 +27,7 @@ export interface ISupply extends ISupplyOnChainProperties {
 export class Entity extends BlockchainDataModelEntity.Entity implements ISupply {
     offChainProperties: ISupplyOffChainProperties;
 
-    assetId: string;
+    deviceId: string;
 
     initialized: boolean;
 
@@ -52,7 +52,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ISupply 
 
             this.propertiesDocumentHash = demand._propertiesDocumentHash;
             this.url = demand._documentDBURL;
-            this.assetId = demand._assetId;
+            this.deviceId = demand._deviceId;
             this.initialized = true;
 
             this.offChainProperties = await this.getOffChainProperties();
@@ -110,7 +110,7 @@ export const createSupply = async (
     } = await configuration.blockchainProperties.marketLogicInstance.createSupply(
         propertiesDocumentHash,
         url,
-        supplyPropertiesOnChain.assetId,
+        supplyPropertiesOnChain.deviceId,
         {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey

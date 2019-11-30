@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { deepEqual } from '../../utils/helper';
 
 export enum CustomFilterInputType {
-    assetType = 'assetType',
+    deviceType = 'deviceType',
     string = 'string',
     multiselect = 'multiselect',
     dropdown = 'dropdown',
@@ -140,7 +140,7 @@ export function FiltersHeader(props: IProps) {
                                             'Filter_menu_item-fullWidth':
                                                 filter.input &&
                                                 filter.input.type ===
-                                                    CustomFilterInputType.assetType
+                                                    CustomFilterInputType.deviceType
                                         })}
                                         key={index}
                                     >

@@ -23,7 +23,7 @@ export interface IDemandOffChainProperties {
     maxPricePerMwh: number;
     currency: Currency;
     location?: string[];
-    assetType?: string[];
+    deviceType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;

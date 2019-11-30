@@ -38,7 +38,7 @@ export function BuyCertificateBulkModal(props: IProps) {
         dispatch(setLoading(true));
 
         for (const cert of certificates) {
-            const acceptedToken = (cert.acceptedToken as any) as string;
+            const acceptedToken = cert.acceptedToken;
 
             if (acceptedToken !== '0x0000000000000000000000000000000000000000') {
                 const erc20TestToken = new MarketContracts.Erc20TestToken(

@@ -6,7 +6,7 @@ import CertificateLogicJSON from '../../build/contracts/CertificateLogic.json';
 
 export async function migrateCertificateRegistryContracts(
     web3: Web3,
-    assetLogicAddress: string,
+    deviceLogicAddress: string,
     deployKey: string
 ): Promise<CertificateLogic> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : '0x' + deployKey;
@@ -16,7 +16,7 @@ export async function migrateCertificateRegistryContracts(
     })).contractAddress;
 
     const certificateLogic = new CertificateLogic(web3, certificateLogicAddress);
-    await certificateLogic.initialize(assetLogicAddress, {
+    await certificateLogic.initialize(deviceLogicAddress, {
         privateKey: privateKeyDeployment
     });
 

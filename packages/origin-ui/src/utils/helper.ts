@@ -70,3 +70,7 @@ export function reverse(array: any[]) {
 export function clone(item: any) {
     return JSON.parse(JSON.stringify(item));
 }
+
+export function wait(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

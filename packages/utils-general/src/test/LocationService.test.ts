@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { LocationService } from '../blockchain-facade/LocationService';
 
 describe('LocationService tests', () => {
-    it('should translate existing asset locations', () => {
+    it('should translate existing device locations', () => {
         const address =
             '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140';
 
@@ -44,9 +44,9 @@ describe('LocationService tests', () => {
                 [['Thailand', 'Thailand;South', 'Thailand;East'], 'Thailand', false]
             ];
 
-            for (const [assetTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
+            for (const [deviceTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
                 assert.equal(
-                    new LocationService().matches(assetTypes as string[], typeToCheck as string),
+                    new LocationService().matches(deviceTypes as string[], typeToCheck as string),
                     expectedResult
                 );
             }

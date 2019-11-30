@@ -1,30 +1,46 @@
 import { PurchasableCertificate } from '@energyweb/market';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
+import { IStoreState } from '../../types';
 
 export enum CertificatesActions {
-    certificateCreatedOrUpdated = 'CERTIFICATE_CREATED_OR_UPDATED',
+    addCertificate = 'CERTIFICATE_CREATED',
+    updateCertificate = 'CERTIFICATE_UPDATED',
     requestCertificates = 'REQUEST_CERTIFICATES',
     showRequestCertificatesModal = 'SHOW_REQUEST_CERTIFICATES_MODAL',
     setRequestCertificatesModalVisibility = 'SET_REQUEST_CERTIFICATES_MODAL_VISIBILITY',
-    hideRequestCertificatesModal = 'HIDE_REQUEST_CERTIFICATES_MODAL'
+    hideRequestCertificatesModal = 'HIDE_REQUEST_CERTIFICATES_MODAL',
+    requestCertificateEntityFetch = 'REQUEST_CERTIFICATE_ENTITY_FETCH',
+    updateFetcher = 'CERTIFICATES_UPDATE_FETCHER'
 }
 
-export interface ICertificateCreatedOrUpdatedAction {
-    type: CertificatesActions.certificateCreatedOrUpdated;
-    certificate: PurchasableCertificate.Entity;
+export interface IAddCertificateAction {
+    type: CertificatesActions.addCertificate;
+    payload: PurchasableCertificate.Entity;
 }
 
-export const certificateCreatedOrUpdated = (certificate: PurchasableCertificate.Entity) => ({
-    type: CertificatesActions.certificateCreatedOrUpdated,
-    certificate
+export const addCertificate = (payload: PurchasableCertificate.Entity) => ({
+    type: CertificatesActions.addCertificate,
+    payload
 });
 
-export type TCertificateCreatedOrUpdatedAction = typeof certificateCreatedOrUpdated;
+export type TAddCertificateAction = typeof addCertificate;
+
+export interface IUpdateCertificateAction {
+    type: CertificatesActions.updateCertificate;
+    payload: PurchasableCertificate.Entity;
+}
+
+export const updateCertificate = (payload: PurchasableCertificate.Entity) => ({
+    type: CertificatesActions.updateCertificate,
+    payload
+});
+
+export type TUpdateCertificateAction = typeof updateCertificate;
 
 export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
-        assetId: string;
+        deviceId: string;
         lastReadIndex: number;
         energy: number;
     };
@@ -40,7 +56,7 @@ export type TRequestCertificatesAction = typeof requestCertificates;
 export interface IShowRequestCertificatesModalAction {
     type: CertificatesActions.showRequestCertificatesModal;
     payload: {
-        producingAsset: ProducingAsset.Entity;
+        producingDevice: ProducingDevice.Entity;
     };
 }
 
@@ -77,9 +93,47 @@ export const setRequestCertificatesModalVisibility = (
 
 export type TSetRequestCertificatesModalVisibilityAction = typeof setRequestCertificatesModalVisibility;
 
+export interface IRequestCertificateEntityFetchAction {
+    type: CertificatesActions.requestCertificateEntityFetch;
+    payload: string;
+}
+
+export const requestCertificateEntityFetch = (
+    payload: IRequestCertificateEntityFetchAction['payload']
+) => ({
+    type: CertificatesActions.requestCertificateEntityFetch,
+    payload
+});
+
+export type TRequestUserCertificateEntityFetchAction = typeof requestCertificateEntityFetch;
+
+export interface ICertificateFetcher {
+    fetch(
+        id: string,
+        configuration: IStoreState['configuration']
+    ): Promise<PurchasableCertificate.Entity>;
+
+    reload(entity: PurchasableCertificate.Entity): Promise<PurchasableCertificate.Entity>;
+}
+
+export interface IUpdateFetcherAction {
+    type: CertificatesActions.updateFetcher;
+    payload: ICertificateFetcher;
+}
+
+export const updateFetcher = (payload: IUpdateFetcherAction['payload']) => ({
+    type: CertificatesActions.updateFetcher,
+    payload
+});
+
+export type TUpdateFetcherAction = typeof updateFetcher;
+
 export type ICertificatesAction =
-    | ICertificateCreatedOrUpdatedAction
+    | IAddCertificateAction
+    | IUpdateCertificateAction
     | IRequestCertificatesAction
     | IShowRequestCertificatesModalAction
     | ISetRequestCertificatesModalVisibilityAction
-    | IHideRequestCertificatesModalAction;
+    | IHideRequestCertificatesModalAction
+    | IRequestCertificateEntityFetchAction
+    | IUpdateFetcherAction;

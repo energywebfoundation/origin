@@ -125,13 +125,13 @@ export class MarketLogic extends GeneralFunctions {
     async createSupply(
         _propertiesDocumentHash: string,
         _documentDBURL: string,
-        _assetId: number,
+        _deviceId: number,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createSupply(
             _propertiesDocumentHash,
             _documentDBURL,
-            _assetId
+            _deviceId
         );
 
         return this.send(method, txParams);
