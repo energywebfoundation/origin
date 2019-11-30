@@ -47,7 +47,7 @@ async function extractABI(name) {
 }
 
 async function run() {
-    console.log('ASSET REGISTRY: Generate lightweight artifacts');
+    console.log('DEVICE REGISTRY: Generate lightweight artifacts');
 
     await fs.ensureDir(ARTIFACTS_DIRECTORY);
     await fs.ensureDir(`${ARTIFACTS_DIRECTORY}/lightweight`);
@@ -62,7 +62,7 @@ async function run() {
         await extractABI(filename);
     }
 
-    console.log('ASSET REGISTRY: Generating lightweight artifacts done');
+    console.log('DEVICE REGISTRY: Generating lightweight artifacts done');
 }
 
 run();

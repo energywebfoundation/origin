@@ -1,5 +1,5 @@
 import { PurchasableCertificate } from '@energyweb/market';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 
 export enum CertificatesActions {

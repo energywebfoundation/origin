@@ -1,4 +1,4 @@
-import { ConsumingDevice, DeviceLogic } from '@energyweb/asset-registry';
+import { ConsumingDevice, DeviceLogic } from '@energyweb/device-registry';
 import { UserLogic } from '@energyweb/user-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';

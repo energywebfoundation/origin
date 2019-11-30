@@ -6,8 +6,8 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.s
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721Enumerable.sol";
 
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/asset-registry/contracts/IDeviceLogic.sol";
-import "@energyweb/asset-registry/contracts/DeviceDefinitions.sol";
+import "@energyweb/device-registry/contracts/IDeviceLogic.sol";
+import "@energyweb/device-registry/contracts/DeviceDefinitions.sol";
 
 import "./CertificateDefinitions.sol";
 import "./ICertificateLogic.sol";

@@ -61,7 +61,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
     }
 
 	/// @notice Sets active to false
-	/// @param _deviceId The id belonging to an entry in the asset registry
+	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @param _active flag if the device is device or not
     function setActive(uint _deviceId, bool _active)
         external
@@ -77,7 +77,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
     }
 
 	/// @notice Logs meter read
-	/// @param _deviceId The id belonging to an entry in the asset registry
+	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @param _newMeterRead The current meter read of the device
 	/// @param _lastSmartMeterReadFileHash Last meter read file hash
     function saveSmartMeterRead(
@@ -164,7 +164,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
     }
 
     /// @notice Gets an device
-	/// @param _deviceId The id belonging to an entry in the asset registry
+	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @return Full informations of an device
     function getDeviceById(uint _deviceId) public view returns (DeviceDefinitions.Device memory) {
         return _deviceMapping[_smAddressForDeviceId(_deviceId)];

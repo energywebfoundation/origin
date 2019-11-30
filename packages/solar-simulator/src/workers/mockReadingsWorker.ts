@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
 import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';

@@ -1,4 +1,4 @@
-import { ConsumingDevice, ProducingDevice } from '@energyweb/asset-registry';
+import { ConsumingDevice, ProducingDevice } from '@energyweb/device-registry';
 import { Configuration, Currency } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';

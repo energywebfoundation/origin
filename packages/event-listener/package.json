@@ -34,7 +34,7 @@
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
-        "@energyweb/asset-registry": "1.4.0",
+        "@energyweb/device-registry": "0.9.0",
         "@energyweb/market": "2.0.0",
         "@energyweb/market-matcher-core": "1.0.1",
         "@energyweb/origin": "2.0.0",

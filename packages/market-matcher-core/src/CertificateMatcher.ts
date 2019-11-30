@@ -1,6 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, Agreement, PurchasableCertificate } from '@energyweb/market';
 
 import { IEntityStore } from './interface/IEntityStore';

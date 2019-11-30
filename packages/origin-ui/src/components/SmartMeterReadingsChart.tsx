@@ -3,7 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import 'moment/min/locales.min';
 
-import { ProducingDevice, Device } from '@energyweb/asset-registry';
+import { ProducingDevice, Device } from '@energyweb/device-registry';
 
 import './SmartMeterReadingsChart.scss';
 import { STYLE_CONFIG } from '../styles/styleConfig';

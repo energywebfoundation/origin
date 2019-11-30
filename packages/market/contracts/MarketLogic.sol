@@ -5,7 +5,7 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/asset-registry/contracts/IDeviceLogic.sol";
+import "@energyweb/device-registry/contracts/IDeviceLogic.sol";
 import "@energyweb/origin/contracts/ICertificateLogic.sol";
 import "@energyweb/origin/contracts/CertificateDefinitions.sol";
 

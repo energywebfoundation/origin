@@ -65,7 +65,7 @@ async function generateSchemaIfNew(command, location) {
 }
 
 async function run() {
-    console.log('ASSET-REGISTRY: Building schemas');
+    console.log('DEVICE-REGISTRY: Building schemas');
 
     await fs.ensureDir(`${ROOT_DIRECTORY}/schemas`);
 
@@ -79,7 +79,7 @@ async function run() {
         '/schemas/ProducingDevicePropertiesOffChain.schema.json'
     );
 
-    console.log('ASSET-REGISTRY: Building schemas done');
+    console.log('DEVICE-REGISTRY: Building schemas done');
 }
 
 run();

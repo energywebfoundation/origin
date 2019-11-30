@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/asset-registry';
+import { DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
 import {
     buildRights,
     Role,

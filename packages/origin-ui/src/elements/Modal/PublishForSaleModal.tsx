@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Contracts as MarketContracts, PurchasableCertificate } from '@energyweb/market';
 import { Currency } from '@energyweb/utils-general';
 
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import {
     Button,
     Dialog,

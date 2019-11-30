@@ -12,7 +12,7 @@ import {
     Contracts as DeviceRegistryContracts,
     Device,
     ProducingDevice
-} from '@energyweb/asset-registry';
+} from '@energyweb/device-registry';
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 

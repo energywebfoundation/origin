@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { logger } from './Logger';
 
 import * as UserRegistry from '@energyweb/user-registry';
-import * as DeviceRegistry from '@energyweb/asset-registry';
+import * as DeviceRegistry from '@energyweb/device-registry';
 import * as Origin from '@energyweb/origin';
 import * as Market from '@energyweb/market';
 

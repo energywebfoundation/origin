@@ -1,5 +1,5 @@
 import { Demand } from '@energyweb/market';
-import { ConsumingDevice } from '@energyweb/asset-registry';
+import { ConsumingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../types';
 
 export enum Actions {

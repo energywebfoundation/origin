@@ -1,4 +1,4 @@
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 
 export enum ProducingDevicesActions {
     producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED'

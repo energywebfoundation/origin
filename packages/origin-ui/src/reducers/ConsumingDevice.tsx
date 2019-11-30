@@ -1,5 +1,5 @@
 import { Actions } from '../features/actions';
-import { ConsumingDevice } from '@energyweb/asset-registry';
+import { ConsumingDevice } from '@energyweb/device-registry';
 
 const defaultState = [];
 

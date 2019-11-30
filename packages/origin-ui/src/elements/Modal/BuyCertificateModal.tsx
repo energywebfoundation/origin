@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,

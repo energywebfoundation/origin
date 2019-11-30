@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import * as Market from '@energyweb/market';
 import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
-import { DeviceLogic } from '@energyweb/asset-registry';
+import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
 import { OffChainDataClient } from '@energyweb/origin-backend-client';

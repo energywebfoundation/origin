@@ -1,4 +1,4 @@
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/origin';
 import {
     Demand,

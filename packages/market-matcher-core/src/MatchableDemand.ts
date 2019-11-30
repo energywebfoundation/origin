@@ -1,4 +1,4 @@
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
 import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import moment from 'moment';

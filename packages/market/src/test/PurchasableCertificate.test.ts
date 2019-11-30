@@ -14,7 +14,7 @@ import {
     ProducingDevice,
     DeviceLogic,
     Contracts as DeviceRegistryContracts
-} from '@energyweb/asset-registry';
+} from '@energyweb/device-registry';
 import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';

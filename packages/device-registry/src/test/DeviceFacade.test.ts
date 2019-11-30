@@ -57,7 +57,7 @@ describe('Device Facade', () => {
         );
     });
 
-    it('should deploy asset-registry contracts', async () => {
+    it('should deploy device-registry contracts', async () => {
         deviceLogic = await migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,

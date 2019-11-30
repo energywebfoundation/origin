@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 
 import { UserLogic, Role, buildRights, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
-import { Device, ProducingDevice, DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/asset-registry';
+import { Device, ProducingDevice, DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { deployERC721TestReceiver } from './deploy';
@@ -851,7 +851,7 @@ describe('CertificateLogic-Facade', () => {
         }
     });
 
-    it('should return asset registry address', async () => {
+    it('should return asset device address', async () => {
         const deviceLogicAddress = await certificateLogic.deviceLogicAddress();
 
         assert.equal(deviceLogicAddress, deviceLogic.web3Contract.options.address);

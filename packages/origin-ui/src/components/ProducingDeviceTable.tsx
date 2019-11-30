@@ -4,7 +4,7 @@ import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { Configuration, Unit, LocationService } from '@energyweb/utils-general';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,

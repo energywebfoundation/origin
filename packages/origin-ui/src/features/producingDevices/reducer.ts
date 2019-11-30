@@ -1,5 +1,5 @@
 import { ProducingDevicesActions, IProducingDevicesAction } from './actions';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 
 export interface IProducingDevicesState {
     producingDevices: ProducingDevice.Entity[];

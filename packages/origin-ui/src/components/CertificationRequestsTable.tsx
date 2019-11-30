@@ -13,7 +13,7 @@ import {
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
 import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 
 interface IProps {
     approvedOnly?: boolean;

@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import polly from 'polly-js';
 
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
 import {

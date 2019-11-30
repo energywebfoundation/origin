@@ -1,7 +1,7 @@
 import React from 'react';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { APIKEY } from './GoogleApiKey';
-import { Device } from '@energyweb/asset-registry';
+import { Device } from '@energyweb/device-registry';
 import { connect } from 'react-redux';
 import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../types';

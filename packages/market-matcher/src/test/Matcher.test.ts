@@ -1,4 +1,4 @@
-import { DeviceLogic, ProducingDevice } from '@energyweb/asset-registry';
+import { DeviceLogic, ProducingDevice } from '@energyweb/device-registry';
 import { Demand, MarketLogic, Supply, PurchasableCertificate } from '@energyweb/market';
 import { CertificateLogic } from '@energyweb/origin';
 import { UserLogic } from '@energyweb/user-registry';

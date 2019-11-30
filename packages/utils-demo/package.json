@@ -22,7 +22,7 @@
   },
   "types": "dist/js/index.d.ts",
   "dependencies": {
-    "@energyweb/asset-registry": "1.4.0",
+    "@energyweb/device-registry": "0.9.0",
     "@energyweb/market": "2.0.0",
     "@energyweb/origin": "2.0.0",
     "@energyweb/origin-backend": "1.3.4",

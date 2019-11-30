@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 

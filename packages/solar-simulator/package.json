@@ -25,7 +25,7 @@
   "author": "",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@energyweb/asset-registry": "1.4.0",
+    "@energyweb/device-registry": "0.9.0",
     "@energyweb/market": "2.0.0",
     "@energyweb/origin-backend-client": "1.1.0",
     "@energyweb/utils-general": "1.4.0",

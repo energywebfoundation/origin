@@ -9,7 +9,7 @@ import {
     Device,
     ProducingDevice,
     Contracts as DeviceRegistryContracts
-} from '@energyweb/asset-registry';
+} from '@energyweb/device-registry';
 import {
     buildRights,
     Role,
@@ -83,7 +83,7 @@ describe('Market-Facade', () => {
         assert.exists(userLogic);
     });
 
-    it('should deploy asset-registry contracts', async () => {
+    it('should deploy device-registry contracts', async () => {
         deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,

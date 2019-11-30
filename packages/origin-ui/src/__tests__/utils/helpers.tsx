@@ -15,7 +15,7 @@ import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { addCertificate } from '../../features/certificates/actions';
 import { dataTestSelector } from '../../utils/helper';

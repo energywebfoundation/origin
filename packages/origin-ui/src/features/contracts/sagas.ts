@@ -25,7 +25,7 @@ import {
     consumingDeviceCreatedOrUpdated,
     demandCreated
 } from '../actions';
-import { ProducingDevice, ConsumingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice, ConsumingDevice } from '@energyweb/device-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';

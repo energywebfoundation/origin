@@ -6,7 +6,7 @@ import {
     DeviceLogic,
     ProducingDevice,
     Contracts as DeviceRegistryContracts
-} from '@energyweb/asset-registry';
+} from '@energyweb/device-registry';
 import {
     MarketLogic,
     Demand,

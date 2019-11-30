@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
 import { Compliance, IRECDeviceService } from '@energyweb/utils-general';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceMap } from './DeviceMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';

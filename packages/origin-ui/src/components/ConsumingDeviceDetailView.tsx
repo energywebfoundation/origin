@@ -5,7 +5,7 @@ import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import { Link } from 'react-router-dom';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { ConsumingDevice } from '@energyweb/asset-registry';
+import { ConsumingDevice } from '@energyweb/device-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
 import { Configuration } from '@energyweb/utils-general';

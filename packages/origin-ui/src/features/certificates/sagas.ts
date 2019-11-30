@@ -22,7 +22,7 @@ import { Unit, Currency } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { Device } from '@energyweb/asset-registry';
+import { Device } from '@energyweb/device-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';

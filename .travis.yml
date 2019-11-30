@@ -17,9 +17,9 @@ cache:
         - packages/user-registry/dist
         - packages/origin-backend/dist
         - packages/origin-backend-client/dist
-        - packages/asset-registry/schemas
-        - packages/asset-registry/build
-        - packages/asset-registry/dist
+        - packages/device-registry/schemas
+        - packages/device-registry/build
+        - packages/device-registry/dist
         - packages/origin/build
         - packages/origin/dist
         - packages/market/schemas

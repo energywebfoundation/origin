@@ -2,7 +2,7 @@ import Web3 from 'web3';
 
 import { Configuration } from '@energyweb/utils-general';
 import { UserLogic } from '@energyweb/user-registry';
-import { DeviceLogic } from '@energyweb/asset-registry';
+import { DeviceLogic } from '@energyweb/device-registry';
 
 import { CertificateLogic } from '..';
 

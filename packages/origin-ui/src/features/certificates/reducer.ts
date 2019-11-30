@@ -1,6 +1,6 @@
 import { PurchasableCertificate } from '@energyweb/market';
 import { CertificatesActions, ICertificatesAction, ICertificateFetcher } from './actions';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../../types';
 
 export interface ICertificatesState {

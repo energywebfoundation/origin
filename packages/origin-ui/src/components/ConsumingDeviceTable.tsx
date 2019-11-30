@@ -2,7 +2,7 @@ import React from 'react';
 import { MarketUser } from '@energyweb/market';
 import { Redirect } from 'react-router-dom';
 import { Configuration } from '@energyweb/utils-general';
-import { ConsumingDevice } from '@energyweb/asset-registry';
+import { ConsumingDevice } from '@energyweb/device-registry';
 import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues

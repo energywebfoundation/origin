@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import moment from 'moment-timezone';
-import { ProducingDevice } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { TableMaterial } from './Table/TableMaterial';
 import {
     usePaginatedLoader,
