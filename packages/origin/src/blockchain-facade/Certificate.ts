@@ -133,21 +133,13 @@ export const getAllCertificateEvents = async (
 
 export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
     public assetId: number;
-
     public generationStartTime: number;
-
     public generationEndTime: number;
-
     public owner: string;
-
     public energy: number;
-
     public status: Status;
-
     public creationTime: number;
-
     public parentId: number;
-
     public children: string[];
 
     public initialized: boolean;
