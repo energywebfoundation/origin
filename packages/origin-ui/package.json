@@ -42,7 +42,7 @@
     "@material-ui/types": "4.1.1",
     "@react-google-maps/api": "1.7.12",
     "axios": "0.19.0",
-    "bootstrap": "4.3.1",
+    "bootstrap": "4.4.1",
     "chart.js": "2.9.3",
     "clsx": "1.0.4",
     "connected-react-router": "6.6.0",
