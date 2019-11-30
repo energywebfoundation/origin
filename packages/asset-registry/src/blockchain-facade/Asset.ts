@@ -34,21 +34,16 @@ export interface ISmartMeterRead {
     timestamp: number;
 }
 
-export abstract class Entity extends BlockchainDataModelEntity.Entity
-    implements IOnChainProperties {
+export abstract class Entity extends BlockchainDataModelEntity.Entity implements IOnChainProperties {
     offChainProperties: IOffChainProperties;
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     lastSmartMeterReadFileHash: string;
-    propertiesDocumentHash: string;
-    url: string;
     active: boolean;
     usageType: UsageType;
 
     initialized: boolean;
-
-    configuration: Configuration.Entity;
 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);

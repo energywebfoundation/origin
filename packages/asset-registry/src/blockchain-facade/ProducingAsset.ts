@@ -131,7 +131,7 @@ export class Entity extends Asset.Entity implements IProducingAsset {
             this.url = asset.url;
             this.initialized = true;
 
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+            this.offChainProperties = await this.getOffChainProperties();
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Producing asset ${this.id} synced`);
             }
