@@ -1,5 +1,5 @@
 import { PurchasableCertificate } from '@energyweb/market';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/asset-registry';
 import { IStoreState } from '../../types';
 
 export enum CertificatesActions {
@@ -40,7 +40,7 @@ export type TUpdateCertificateAction = typeof updateCertificate;
 export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
-        assetId: string;
+        deviceId: string;
         lastReadIndex: number;
         energy: number;
     };
@@ -56,7 +56,7 @@ export type TRequestCertificatesAction = typeof requestCertificates;
 export interface IShowRequestCertificatesModalAction {
     type: CertificatesActions.showRequestCertificatesModal;
     payload: {
-        producingAsset: ProducingAsset.Entity;
+        producingDevice: ProducingDevice.Entity;
     };
 }
 

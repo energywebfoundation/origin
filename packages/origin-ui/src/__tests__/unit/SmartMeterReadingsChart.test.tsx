@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
-import { ProducingAsset, Asset } from '@energyweb/asset-registry';
+import { ProducingDevice, Device } from '@energyweb/asset-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 
@@ -17,24 +17,24 @@ describe('SmartMeterReadingsChart', () => {
         );
         const currentDayHour = currentTime.hour();
 
-        const offChainProperties: Partial<ProducingAsset.IOffChainProperties> = {
+        const offChainProperties: Partial<ProducingDevice.IOffChainProperties> = {
             timezone: 'Asia/Bangkok'
         };
 
-        const reads: Asset.ISmartMeterRead[] = [
+        const reads: Device.ISmartMeterRead[] = [
             {
                 energy: 1000,
                 timestamp: currentTime.unix()
             }
         ];
 
-        const producingAsset: Partial<ProducingAsset.Entity> = {
-            offChainProperties: offChainProperties as ProducingAsset.IOffChainProperties,
+        const producingDevice: Partial<ProducingDevice.Entity> = {
+            offChainProperties: offChainProperties as ProducingDevice.IOffChainProperties,
             getSmartMeterReads: async () => reads
         };
 
         const rendered = await shallow(
-            <SmartMeterReadingsChart producingAsset={producingAsset as ProducingAsset.Entity} />
+            <SmartMeterReadingsChart producingDevice={producingDevice as ProducingDevice.Entity} />
         );
 
         expect(rendered.find('.btn-switcher-btn').map(a => a.text())).toStrictEqual([
@@ -74,7 +74,7 @@ describe('SmartMeterReadingsChart', () => {
 
         barProps = rendered.find(Bar).props();
 
-        expect(barProps.options.title.text).toBe(currentTime.format('DD MMM YYYY'));
+        expect(barProps.options.title.text).toBe(currentTime.format('D MMM YYYY'));
 
         expect(rendered.find('.btn-switcher-btn.selected').text()).toBe('Day');
 

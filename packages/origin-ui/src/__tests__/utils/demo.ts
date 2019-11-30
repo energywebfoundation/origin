@@ -9,9 +9,9 @@ import {
     Role
 } from '@energyweb/user-registry';
 import {
-    Contracts as AssetRegistryContracts,
-    Asset,
-    ProducingAsset
+    Contracts as DeviceRegistryContracts,
+    Device,
+    ProducingDevice
 } from '@energyweb/asset-registry';
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
@@ -79,16 +79,16 @@ export async function deployDemo() {
     const userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, adminPK);
     const userLogicAddress = userLogic.web3Contract.options.address;
 
-    const assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+    const deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
         web3,
         userLogicAddress,
         adminPK
     );
-    const assetLogicAddress = assetLogic.web3Contract.options.address;
+    const deviceLogicAddress = deviceLogic.web3Contract.options.address;
 
     const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
         web3,
-        assetLogicAddress,
+        deviceLogicAddress,
         adminPK
     );
     const certificateLogicAddress = certificateLogic.web3Contract.options.address;
@@ -101,7 +101,7 @@ export async function deployDemo() {
 
     const deployResult = {
         userLogic: '',
-        assetLogic: '',
+        deviceLogic: '',
         certificateLogic: '',
         marketLogic: ''
     };
@@ -109,7 +109,7 @@ export async function deployDemo() {
     const marketContractLookup = marketLogic.web3Contract.options.address;
 
     deployResult.userLogic = userLogicAddress;
-    deployResult.assetLogic = assetLogicAddress;
+    deployResult.deviceLogic = deviceLogicAddress;
     deployResult.certificateLogic = certificateLogicAddress;
     deployResult.marketLogic = marketContractLookup;
 
@@ -130,7 +130,7 @@ export async function deployDemo() {
                 address: ACCOUNTS.ADMIN.address,
                 privateKey: adminPK
             },
-            assetLogicInstance: assetLogic,
+            deviceLogicInstance: deviceLogic,
             certificateLogicInstance: certificateLogic,
             userLogicInstance: userLogic,
             marketLogicInstance: marketLogic,
@@ -148,7 +148,7 @@ export async function deployDemo() {
         url: null,
         id: ACCOUNTS.ADMIN.address,
         active: true,
-        roles: buildRights([Role.UserAdmin, Role.AssetAdmin]),
+        roles: buildRights([Role.UserAdmin, Role.DeviceAdmin]),
         organization: 'admin'
     };
     const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
@@ -165,18 +165,18 @@ export async function deployDemo() {
     };
     await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, conf);
 
-    const assetManagerPropsOnChain: User.IUserOnChainProperties = {
+    const deviceManagerPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
         url: null,
         id: ACCOUNTS.ASSET_MANAGER.address,
         active: true,
-        roles: buildRights([Role.AssetManager]),
-        organization: 'Asset Manager organization'
+        roles: buildRights([Role.DeviceManager]),
+        organization: 'Device Manager organization'
     };
-    const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-        firstName: 'Asset',
+    const deviceManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
+        firstName: 'Device',
         surname: 'Manager',
-        email: 'assetmanager@example.com',
+        email: 'devicemanager@example.com',
         street: '',
         number: '',
         zip: '',
@@ -185,23 +185,23 @@ export async function deployDemo() {
         state: '',
         notifications: false
     };
-    await MarketUser.createMarketUser(assetManagerPropsOnChain, assetManagerPropsOffChain, conf);
+    await MarketUser.createMarketUser(deviceManagerPropsOnChain, deviceManagerPropsOffChain, conf);
 
     await MarketUser.createMarketUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
 
-    const assetProducingProps: Asset.IOnChainProperties = {
+    const deviceProducingProps: Device.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.ASSET_MANAGER.address },
         lastSmartMeterReadWh: 0,
         active: true,
-        usageType: Asset.UsageType.Producing,
+        usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
         url: null
     };
 
-    const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
-        assetType: 'Wind;Onshore',
+    const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+        deviceType: 'Wind;Onshore',
         complianceRegistry: Compliance.IREC,
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
@@ -216,7 +216,11 @@ export async function deployDemo() {
     };
 
     try {
-        await ProducingAsset.createAsset(assetProducingProps, assetProducingPropsOffChain, conf);
+        await ProducingDevice.createDevice(
+            deviceProducingProps,
+            deviceProducingPropsOffChain,
+            conf
+        );
     } catch (error) {
         throw new Error(error);
     }

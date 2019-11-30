@@ -22,8 +22,8 @@ function generateNextAccount() {
 }
 
 program.option('-i, --input <path>', 'input I-REC csv file');
-program.option('-o, --owner <address>', 'address of the asset owner');
-program.option('-m, --matcher <address>', 'address of the asset matcher');
+program.option('-o, --owner <address>', 'address of the device owner');
+program.option('-m, --matcher <address>', 'address of the device matcher');
 
 program.parse(process.argv);
 
@@ -37,24 +37,24 @@ if (!fs.existsSync(program.input)) {
     process.exit(1);
 }
 
-const processAssets = async parsedContent => {
-    const assets = [];
+const processDevices = async parsedContent => {
+    const devices = [];
     const flow = [];
 
     let id = 0;
-    for (const asset of parsedContent) {
+    for (const device of parsedContent) {
         console.log('---');
-        console.log(`Processing ${asset['Device ID']} asset`);
+        console.log(`Processing ${device['Device ID']} device`);
 
-        const maxCapacity = parseFloat(asset['Electrical Capacity (MW)']) * 10 ** 6;
-        const country = asset.Country.split(':')[1].trim();
-        const address = asset['Address (ex. Country)'];
+        const maxCapacity = parseFloat(device['Electrical Capacity (MW)']) * 10 ** 6;
+        const country = device.Country.split(':')[1].trim();
+        const address = device['Address (ex. Country)'];
 
-        const name = asset.Name;
-        const registrationDate = asset['Registration Date'];
-        const latitude = parseFloat(asset.Latitude);
-        const longitude = parseFloat(asset.Longitude);
-        const assetType = asset.Technology.split(':')[1].trim();
+        const name = device.Name;
+        const registrationDate = device['Registration Date'];
+        const latitude = parseFloat(device.Latitude);
+        const longitude = parseFloat(device.Longitude);
+        const deviceType = device.Technology.split(':')[1].trim();
 
         geoTz.preCache();
         const timezone = geoTz(latitude, longitude)[0];
@@ -63,7 +63,7 @@ const processAssets = async parsedContent => {
 
         console.log(`Generated smart meter address ${account.address}`);
 
-        assets.push({
+        devices.push({
             id: (id++).toString(),
             maxCapacity,
             smartMeterPrivateKey: account.privateKey,
@@ -94,7 +94,7 @@ const processAssets = async parsedContent => {
                 gpsLatitude: latitude.toString(),
                 gpsLongitude: longitude.toString(),
                 timezone,
-                assetType,
+                deviceType,
                 complianceRegistry: 'IREC',
                 otherGreenAttributes: 'N.A.',
                 typeOfPublicSupport: 'N.A',
@@ -103,7 +103,7 @@ const processAssets = async parsedContent => {
         });
     }
 
-    return { assets, flow };
+    return { devices, flow };
 };
 
 const parseContent = (path: string) => {
@@ -113,18 +113,18 @@ const parseContent = (path: string) => {
 };
 
 (async () => {
-    console.log('----- Starting importing I-REC assets to local config file -----');
+    console.log('----- Starting importing I-REC devices to local config file -----');
 
     const parsedContent = parseContent(program.input);
 
-    console.log(`Found ${parsedContent.length} assets in ${program.input}`);
+    console.log(`Found ${parsedContent.length} devices in ${program.input}`);
 
-    const { assets, flow } = await processAssets(parsedContent);
-    const updatedConfig = JSON.stringify({ ...CONFIG, assets }, null, 2);
+    const { devices, flow } = await processDevices(parsedContent);
+    const updatedConfig = JSON.stringify({ ...CONFIG, devices }, null, 2);
 
     fs.writeFileSync(configLocation, updatedConfig);
 
-    console.log(`----- New assets stored in ${configLocation}`);
+    console.log(`----- New devices stored in ${configLocation}`);
 
     console.log(JSON.stringify(flow, null, 2));
 })();

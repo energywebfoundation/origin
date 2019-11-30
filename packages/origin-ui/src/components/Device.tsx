@@ -1,17 +1,17 @@
 import React from 'react';
 import { Route, NavLink, Redirect } from 'react-router-dom';
-import { ProducingAssetTable } from './ProducingAssetTable';
-import { ConsumingAssetTable } from './ConsumingAssetTable';
+import { ProducingDeviceTable } from './ProducingDeviceTable';
+import { ConsumingDeviceTable } from './ConsumingDeviceTable';
 import { PageContent } from '../elements/PageContent/PageContent';
-import { ProducingAssetDetailView } from './ProducingAssetDetailView';
-import { ConsumingAssetDetailView } from './ConsumingAssetDetailView';
-import { AssetMap } from './AssetMap';
+import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
+import { ConsumingDeviceDetailView } from './ConsumingDeviceDetailView';
+import { DeviceMap } from './DeviceMap';
 import { useLinks } from '../utils/routing';
 
-export function Asset() {
+export function Device() {
     function ProductionDetailView(id: number): JSX.Element {
         return (
-            <ProducingAssetDetailView
+            <ProducingDeviceDetailView
                 id={id}
                 addSearchField={true}
                 showCertificates={true}
@@ -21,18 +21,18 @@ export function Asset() {
     }
 
     function ConsumingDetailView(id: number): JSX.Element {
-        return <ConsumingAssetDetailView id={id} />;
+        return <ConsumingDeviceDetailView id={id} />;
     }
 
-    const { baseURL, getAssetsLink } = useLinks();
+    const { baseURL, getDevicesLink } = useLinks();
 
-    const Map = () => <AssetMap height="700px" />;
+    const Map = () => <DeviceMap height="700px" />;
 
-    const AssetsMenu = [
+    const DevicesMenu = [
         {
             key: 'production',
             label: 'Production List',
-            component: ProducingAssetTable
+            component: ProducingDeviceTable
         },
         {
             key: 'production-map',
@@ -42,7 +42,7 @@ export function Asset() {
         {
             key: 'consumption',
             label: 'Consumption List',
-            component: ConsumingAssetTable
+            component: ConsumingDeviceTable
         },
         {
             key: 'producing_detail_view',
@@ -62,14 +62,14 @@ export function Asset() {
         <div className="PageWrapper">
             <div className="PageNav">
                 <ul className="NavMenu nav">
-                    {AssetsMenu.map(menu => {
+                    {DevicesMenu.map(menu => {
                         if (menu.hide) {
                             return null;
                         }
 
                         return (
                             <li key={menu.key}>
-                                <NavLink to={`${getAssetsLink()}/${menu.key}`}>
+                                <NavLink to={`${getDevicesLink()}/${menu.key}`}>
                                     {menu.label}
                                 </NavLink>
                             </li>
@@ -79,11 +79,11 @@ export function Asset() {
             </div>
 
             <Route
-                path={`${getAssetsLink()}/:key/:id?`}
+                path={`${getDevicesLink()}/:key/:id?`}
                 render={props => {
                     const key = props.match.params.key;
                     const id = props.match.params.id;
-                    const matches = AssetsMenu.filter(item => {
+                    const matches = DevicesMenu.filter(item => {
                         return item.key === key;
                     });
                     if (matches.length > 0 && key === 'producing_detail_view') {
@@ -97,23 +97,23 @@ export function Asset() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getAssetsLink()}
+                            redirectPath={getDevicesLink()}
                         />
                     );
                 }}
             />
             <Route
                 exact={true}
-                path={getAssetsLink()}
+                path={getDevicesLink()}
                 render={() => (
-                    <Redirect to={{ pathname: `${getAssetsLink()}/${AssetsMenu[0].key}` }} />
+                    <Redirect to={{ pathname: `${getDevicesLink()}/${DevicesMenu[0].key}` }} />
                 )}
             />
             <Route
                 exact={true}
                 path={`${baseURL}/`}
                 render={() => (
-                    <Redirect to={{ pathname: `${getAssetsLink()}/${AssetsMenu[0].key}` }} />
+                    <Redirect to={{ pathname: `${getDevicesLink()}/${DevicesMenu[0].key}` }} />
                 )}
             />
         </div>

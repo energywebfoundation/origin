@@ -3,7 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import 'moment/min/locales.min';
 
-import { ProducingAsset, Asset } from '@energyweb/asset-registry';
+import { ProducingDevice, Device } from '@energyweb/asset-registry';
 
 import './SmartMeterReadingsChart.scss';
 import { STYLE_CONFIG } from '../styles/styleConfig';
@@ -25,13 +25,13 @@ interface ISelectedTimeFrame {
 }
 
 interface ISmartMeterReadingsChartProps {
-    producingAsset: ProducingAsset.Entity;
+    producingDevice: ProducingDevice.Entity;
 }
 
 interface ISmartMeterReadingsChartState {
     graphOptions: object;
     selectedTimeFrame: ISelectedTimeFrame;
-    readings: Asset.ISmartMeterRead[];
+    readings: Device.ISmartMeterRead[];
 }
 
 export class SmartMeterReadingsChart extends React.Component<
@@ -78,14 +78,14 @@ export class SmartMeterReadingsChart extends React.Component<
     }
 
     async componentDidMount() {
-        const readings: Asset.ISmartMeterRead[] = await this.props.producingAsset.getSmartMeterReads();
+        const readings: Device.ISmartMeterRead[] = await this.props.producingDevice.getSmartMeterReads();
 
         this.setState({ readings });
     }
 
     get endDateInTimezone() {
         return moment(this.state.selectedTimeFrame?.endDate)
-            .tz(this.props.producingAsset?.offChainProperties?.timezone)
+            .tz(this.props.producingDevice?.offChainProperties?.timezone)
             .clone();
     }
 
@@ -123,9 +123,9 @@ export class SmartMeterReadingsChart extends React.Component<
     }
 
     getFormattedReadings(
-        readings: Asset.ISmartMeterRead[],
+        readings: Device.ISmartMeterRead[],
         timeframe: string,
-        producingAsset: ProducingAsset.Entity
+        producingDevice: ProducingDevice.Entity
     ) {
         const formatted = [];
 
@@ -169,14 +169,14 @@ export class SmartMeterReadingsChart extends React.Component<
             const currentDate = chartEndDate
                 .clone()
                 .subtract(currentIndex, measurementUnit)
-                .tz(producingAsset.offChainProperties.timezone);
+                .tz(producingDevice.offChainProperties.timezone);
 
             let totalEnergy = 0;
 
             for (const reading of readings) {
                 const readingDate = moment
                     .unix(reading.timestamp)
-                    .tz(producingAsset.offChainProperties.timezone);
+                    .tz(producingDevice.offChainProperties.timezone);
 
                 if (readingDate.isSame(currentDate, measurementUnit)) {
                     totalEnergy += reading.energy;
@@ -220,12 +220,12 @@ export class SmartMeterReadingsChart extends React.Component<
 
     render() {
         const { selectedTimeFrame, graphOptions, readings } = this.state;
-        const { producingAsset } = this.props;
+        const { producingDevice } = this.props;
 
         const formattedReadings = this.getFormattedReadings(
             readings,
             selectedTimeFrame.timeframe,
-            producingAsset
+            producingDevice
         );
 
         const data = {

@@ -3,10 +3,10 @@ import moment from 'moment';
 import Web3 from 'web3';
 
 import {
-    Asset,
-    ProducingAsset,
-    AssetLogic,
-    Contracts as AssetRegistryContracts
+    Device,
+    ProducingDevice,
+    DeviceLogic,
+    Contracts as DeviceRegistryContracts
 } from '@energyweb/asset-registry';
 import {
     Agreement,
@@ -39,11 +39,11 @@ const deployKey: string = process.env.DEPLOY_KEY;
 const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-const assetOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
-const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
+const deviceOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
+const deviceOwnerAddress = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
-const assetSmartMeterPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
-const assetSmartMeter = web3.eth.accounts.privateKeyToAccount(assetSmartMeterPK).address;
+const deviceSmartMeterPK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
+const deviceSmartMeter = web3.eth.accounts.privateKeyToAccount(deviceSmartMeterPK).address;
 
 const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
 const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
@@ -69,8 +69,8 @@ const deployUserRegistry = async () => {
         accountDeployment,
         buildRights([
             Role.UserAdmin,
-            Role.AssetAdmin,
-            Role.AssetManager,
+            Role.DeviceAdmin,
+            Role.DeviceManager,
             Role.Trader,
             Role.Matcher
         ]),
@@ -88,11 +88,11 @@ const deployUserRegistry = async () => {
     await userLogic.createUser(
         'propertiesDocumentHash',
         'documentDBURL',
-        assetOwnerAddress,
-        'assetOwner',
+        deviceOwnerAddress,
+        'deviceOwner',
         { privateKey: privateKeyDeployment }
     );
-    await userLogic.setRoles(assetOwnerAddress, buildRights([Role.AssetManager]), {
+    await userLogic.setRoles(deviceOwnerAddress, buildRights([Role.DeviceManager]), {
         privateKey: privateKeyDeployment
     });
 
@@ -107,20 +107,20 @@ const deployUserRegistry = async () => {
     return { userLogic };
 };
 
-const deployAssetRegistry = async (userLogicAddress: string) => {
-    const assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+const deployDeviceRegistry = async (userLogicAddress: string) => {
+    const deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
         web3,
         userLogicAddress,
         privateKeyDeployment
     );
 
-    return { assetLogic };
+    return { deviceLogic };
 };
 
-const deployCertificateRegistry = async (assetLogicAddress: string) => {
+const deployCertificateRegistry = async (deviceLogicAddress: string) => {
     const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
         web3,
-        assetLogicAddress,
+        deviceLogicAddress,
         privateKeyDeployment
     );
     return { certificateLogic };
@@ -147,9 +147,9 @@ const changeUser = (
 
 const deploy = async () => {
     const { userLogic } = await deployUserRegistry();
-    const { assetLogic } = await deployAssetRegistry(userLogic.web3Contract.options.address);
+    const { deviceLogic } = await deployDeviceRegistry(userLogic.web3Contract.options.address);
     const { certificateLogic } = await deployCertificateRegistry(
-        assetLogic.web3Contract.options.address
+        deviceLogic.web3Contract.options.address
     );
     const { marketLogic } = await deployMarket(certificateLogic.web3Contract.options.address);
 
@@ -167,14 +167,14 @@ const deploy = async () => {
         privateKey: privateKeyDeployment
     });
 
-    const config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic> = {
+    const config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic> = {
         blockchainProperties: {
             activeUser: {
                 address: accountTrader,
                 privateKey: traderPK
             },
             userLogicInstance: userLogic,
-            assetLogicInstance: assetLogic,
+            deviceLogicInstance: deviceLogic,
             marketLogicInstance: marketLogic,
             certificateLogicInstance: certificateLogic,
             web3
@@ -217,7 +217,7 @@ const deployDemand = async (
         maxPricePerMwh: price,
         currency,
         location: ['Thailand;Central;Nakhon Pathom'],
-        assetType: ['Solar'],
+        deviceType: ['Solar'],
         minCO2Offset: 10,
         otherGreenAttributes: 'string',
         typeOfPublicSupport: 'string',
@@ -233,24 +233,24 @@ const deployDemand = async (
     return Demand.createDemand(demandOffChainProps, traderConfig);
 };
 
-const deployAsset = (config: Configuration.Entity) => {
+const deployDevice = (config: Configuration.Entity) => {
     const deployerConfig = changeUser(config, {
         address: accountDeployment,
         privateKey: privateKeyDeployment
     });
 
-    const assetProps: Asset.IOnChainProperties = {
-        smartMeter: { address: assetSmartMeter },
-        owner: { address: assetOwnerAddress },
+    const deviceProps: Device.IOnChainProperties = {
+        smartMeter: { address: deviceSmartMeter },
+        owner: { address: deviceOwnerAddress },
         lastSmartMeterReadWh: 0,
         active: true,
-        usageType: Asset.UsageType.Producing,
+        usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
         propertiesDocumentHash: null,
         url: null
     };
 
-    const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+    const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
         facilityName: 'MatcherTestFacility',
         operationalSince: 0,
         capacityWh: 10,
@@ -259,32 +259,32 @@ const deployAsset = (config: Configuration.Entity) => {
         gpsLatitude: '14.059500',
         gpsLongitude: '99.977800',
         timezone: 'Asia/Bangkok',
-        assetType: 'Solar',
+        deviceType: 'Solar',
         complianceRegistry: Compliance.EEC,
         otherGreenAttributes: '',
         typeOfPublicSupport: ''
     };
 
-    return ProducingAsset.createAsset(assetProps, assetPropsOffChain, deployerConfig);
+    return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
 };
 
 const deploySupply = (
     config: Configuration.Entity,
-    assetId: string,
+    deviceId: string,
     requiredEnergy: number,
     price = 150,
     currency: Currency = Currency.USD
 ) => {
-    const assetOwnerConfig = changeUser(config, {
-        address: assetOwnerAddress,
-        privateKey: assetOwnerPK
+    const deviceOwnerConfig = changeUser(config, {
+        address: deviceOwnerAddress,
+        privateKey: deviceOwnerPK
     });
 
     return Supply.createSupply(
         {
             url: null,
             propertiesDocumentHash: null,
-            assetId
+            deviceId
         },
         {
             price,
@@ -292,39 +292,39 @@ const deploySupply = (
             availableWh: requiredEnergy,
             timeFrame: TimeFrame.hourly
         },
-        assetOwnerConfig
+        deviceOwnerConfig
     );
 };
 
 const deployCertificate = async (
     config: Configuration.Entity,
-    assetId: string,
+    deviceId: string,
     requiredEnergy: number
 ) => {
     const certificateLogic: CertificateLogic = config.blockchainProperties.certificateLogicInstance;
 
     const smartMeterConfig = changeUser(config, {
-        address: assetSmartMeter,
-        privateKey: assetSmartMeterPK
+        address: deviceSmartMeter,
+        privateKey: deviceSmartMeterPK
     });
 
-    const producingAsset = await new ProducingAsset.Entity(assetId, smartMeterConfig).sync();
-    await producingAsset.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
+    const producingDevice = await new ProducingDevice.Entity(deviceId, smartMeterConfig).sync();
+    await producingDevice.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
 
     await certificateLogic.requestCertificates(0, 0, {
-        privateKey: assetOwnerPK
+        privateKey: deviceOwnerPK
     });
 
     await certificateLogic.approveCertificationRequest(0, {
         privateKey: issuerPK
     });
 
-    const assetOwnerConfig = changeUser(config, {
-        address: assetOwnerAddress,
-        privateKey: assetOwnerPK
+    const deviceOwnerConfig = changeUser(config, {
+        address: deviceOwnerAddress,
+        privateKey: deviceOwnerPK
     });
 
-    return new PurchasableCertificate.Entity('0', assetOwnerConfig).sync();
+    return new PurchasableCertificate.Entity('0', deviceOwnerConfig).sync();
 };
 
 const deployAgreement = async (
@@ -368,15 +368,15 @@ const deployAgreement = async (
         traderConfig
     );
 
-    const assetOwnerConfig = changeUser(config, {
-        address: assetOwnerAddress,
-        privateKey: assetOwnerPK
+    const deviceOwnerConfig = changeUser(config, {
+        address: deviceOwnerAddress,
+        privateKey: deviceOwnerPK
     });
 
-    const assetOwnerAgreement = await new Agreement.Entity(agreement.id, assetOwnerConfig).sync();
-    await assetOwnerAgreement.approveAgreementSupply();
+    const deviceOwnerAgreement = await new Agreement.Entity(agreement.id, deviceOwnerConfig).sync();
+    await deviceOwnerAgreement.approveAgreementSupply();
 
-    return assetOwnerAgreement.sync();
+    return deviceOwnerAgreement.sync();
 };
 
 export {
@@ -384,7 +384,7 @@ export {
     changeUser,
     deployDemand,
     deployCertificate,
-    deployAsset,
+    deployDevice,
     deploySupply,
     deployAgreement
 };

@@ -70,13 +70,13 @@ async function run() {
     await fs.ensureDir(`${ROOT_DIRECTORY}/schemas`);
 
     await generateSchemaIfNew(
-        'yarn --silent build-schema:AssetPropertiesOffChain',
-        '/schemas/AssetPropertiesOffChain.schema.json'
+        'yarn --silent build-schema:DevicePropertiesOffChain',
+        '/schemas/DevicePropertiesOffChain.schema.json'
     );
 
     await generateSchemaIfNew(
-        'yarn --silent build-schema:ProducingAssetPropertiesOffChain',
-        '/schemas/ProducingAssetPropertiesOffChain.schema.json'
+        'yarn --silent build-schema:ProducingDevicePropertiesOffChain',
+        '/schemas/ProducingDevicePropertiesOffChain.schema.json'
     );
 
     console.log('ASSET-REGISTRY: Building schemas done');

@@ -15,8 +15,8 @@ import { ReactWrapper, CommonWrapper } from 'enzyme';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
-import { ProducingAsset } from '@energyweb/asset-registry';
-import { producingAssetCreatedOrUpdated } from '../../features/producingAssets/actions';
+import { ProducingDevice } from '@energyweb/asset-registry';
+import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { addCertificate } from '../../features/certificates/actions';
 import { dataTestSelector } from '../../utils/helper';
 import moment from 'moment';
@@ -103,11 +103,11 @@ const setupStoreInternal = (
     };
 };
 
-interface ICreateProducingAssetProperties {
+interface ICreateProducingDeviceProperties {
     id: string;
     owner?: string;
     facilityName?: string;
-    assetType?: string;
+    deviceType?: string;
     address?: string;
     country?: string;
     capacityWh?: number;
@@ -118,25 +118,25 @@ interface ICreateProducingAssetProperties {
 
 export const DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES = ({
     facilityName: 'Wuthering Heights facility',
-    assetType: 'Solar;Photovoltaic;Roof mounted',
+    deviceType: 'Solar;Photovoltaic;Roof mounted',
     country: 'Thailand',
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityWh: 9876543,
     operationalSince: 1568746970,
     complianceRegistry: Compliance.IREC
-} as Partial<ProducingAsset.IOffChainProperties>) as ProducingAsset.IOffChainProperties;
+} as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
 
-export const createProducingAsset = (
-    properties: ICreateProducingAssetProperties
-): ProducingAsset.Entity => {
+export const createProducingDevice = (
+    properties: ICreateProducingDeviceProperties
+): ProducingDevice.Entity => {
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
-    const offChainProperties: ProducingAsset.IOffChainProperties = {
+    const offChainProperties: ProducingDevice.IOffChainProperties = {
         address: properties.address || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.address,
         facilityName:
             properties.facilityName || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.facilityName,
-        assetType: properties.assetType || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.assetType,
+        deviceType: properties.deviceType || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.deviceType,
         capacityWh: properties.capacityWh || DEFAULT_PRODUCING_ASSET_OFFCHAIN_PROPERTIES.capacityWh,
         operationalSince:
             properties.operationalSince ||
@@ -166,7 +166,7 @@ export const createProducingAsset = (
         },
         offChainProperties,
         lastSmartMeterReadWh
-    } as ProducingAsset.Entity;
+    } as ProducingDevice.Entity;
 };
 
 interface ICreateCertificateProperties {
@@ -250,9 +250,9 @@ export const setupStore = (
 
             store.dispatch(updateCurrentUserId(user.id));
         },
-        addProducingAsset: (properties: ICreateProducingAssetProperties) => {
-            const entity = createProducingAsset(properties);
-            store.dispatch(producingAssetCreatedOrUpdated(entity));
+        addProducingDevice: (properties: ICreateProducingDeviceProperties) => {
+            const entity = createProducingDevice(properties);
+            store.dispatch(producingDeviceCreatedOrUpdated(entity));
         },
         addCertificate: (properties: ICreateCertificateProperties) => {
             const entity = createCertificate(properties);

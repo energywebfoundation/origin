@@ -7,12 +7,12 @@ import dotenv from 'dotenv';
 import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 
-import { AssetLogic, ProducingAsset, Asset, ConsumingAsset } from '..';
+import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
 import { logger } from '../Logger';
-import { migrateAssetRegistryContracts } from '../utils/migrateContracts';
+import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
-describe('Asset Facade', () => {
+describe('Device Facade', () => {
     dotenv.config({
         path: '.env.test'
     });
@@ -25,17 +25,17 @@ describe('Asset Facade', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
     let conf: Configuration.Entity;
 
-    let assetLogic: AssetLogic;
+    let deviceLogic: DeviceLogic;
     let userLogic: UserLogic;
 
-    const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
-    const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
+    const deviceOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
+    const deviceOwnerAddress = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
-    const assetSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
-    const assetSmartmeter = web3.eth.accounts.privateKeyToAccount(assetSmartmeterPK).address;
+    const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const deviceSmartmeter = web3.eth.accounts.privateKeyToAccount(deviceSmartmeterPK).address;
 
-    const assetSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
-    const assetSmartMeter2 = web3.eth.accounts.privateKeyToAccount(assetSmartmeter2PK).address;
+    const deviceSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
+    const deviceSmartMeter2 = web3.eth.accounts.privateKeyToAccount(deviceSmartmeter2PK).address;
 
     const SM_READ_TIMESTAMP = moment().unix();
 
@@ -52,13 +52,13 @@ describe('Asset Facade', () => {
 
         await userLogic.setRoles(
             accountDeployment,
-            buildRights([Role.UserAdmin, Role.AssetAdmin]),
+            buildRights([Role.UserAdmin, Role.DeviceAdmin]),
             { privateKey: privateKeyDeployment }
         );
     });
 
     it('should deploy asset-registry contracts', async () => {
-        assetLogic = await migrateAssetRegistryContracts(
+        deviceLogic = await migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment
@@ -69,26 +69,26 @@ describe('Asset Facade', () => {
         await userLogic.createUser(
             'propertiesDocumentHash',
             'documentDBURL',
-            assetOwnerAddress,
-            'assetOwner',
+            deviceOwnerAddress,
+            'deviceOwner',
             { privateKey: privateKeyDeployment }
         );
         await userLogic.setRoles(
-            assetOwnerAddress,
-            buildRights([Role.AssetManager, Role.AssetAdmin]),
+            deviceOwnerAddress,
+            buildRights([Role.DeviceManager, Role.DeviceAdmin]),
             { privateKey: privateKeyDeployment }
         );
     });
 
-    describe('ProducingAsset', () => {
-        it('should onboard a new producing asset', async () => {
+    describe('ProducingDevice', () => {
+        it('should onboard a new producing device', async () => {
             conf = {
                 blockchainProperties: {
                     activeUser: {
                         address: accountDeployment,
                         privateKey: privateKeyDeployment
                     },
-                    assetLogicInstance: assetLogic,
+                    deviceLogicInstance: deviceLogic,
                     userLogicInstance: userLogic,
                     web3
                 },
@@ -101,18 +101,18 @@ describe('Asset Facade', () => {
 
             const FACILITY_NAME = 'Wuthering Heights Windfarm';
 
-            const assetProps: Asset.IOnChainProperties = {
-                smartMeter: { address: assetSmartmeter },
-                owner: { address: assetOwnerAddress },
+            const deviceProps: Device.IOnChainProperties = {
+                smartMeter: { address: deviceSmartmeter },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
-                usageType: Asset.UsageType.Producing,
+                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
                 url: null
             };
 
-            const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+            const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
                 operationalSince: 0,
                 capacityWh: 10,
                 country: 'Thailand',
@@ -121,46 +121,46 @@ describe('Asset Facade', () => {
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
-                assetType: 'Wind',
+                deviceType: 'Wind',
                 complianceRegistry: Compliance.EEC,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: FACILITY_NAME
             };
 
-            assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
+            assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
-            const asset = await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+            const device = await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
 
-            assert.deepOwnInclude(asset, {
+            assert.deepOwnInclude(device, {
                 id: '0',
                 initialized: true,
-                smartMeter: { address: assetSmartmeter },
-                owner: { address: assetOwnerAddress },
+                smartMeter: { address: deviceSmartmeter },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
-                usageType: Asset.UsageType.Producing,
+                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: '',
-                offChainProperties: assetPropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`
-            } as Partial<ProducingAsset.Entity>);
+                offChainProperties: devicePropsOffChain,
+                url: `${process.env.BACKEND_URL}/api/ProducingDevice/${deviceLogic.web3Contract.options.address}`
+            } as Partial<ProducingDevice.Entity>);
 
-            assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
+            assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
         });
 
-        it('should fail when trying to onboard the same asset again', async () => {
-            const assetProps: Asset.IOnChainProperties = {
-                smartMeter: { address: assetSmartmeter },
-                owner: { address: assetOwnerAddress },
+        it('should fail when trying to onboard the same device again', async () => {
+            const deviceProps: Device.IOnChainProperties = {
+                smartMeter: { address: deviceSmartmeter },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
-                usageType: Asset.UsageType.Producing,
+                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
                 url: null
             };
 
-            const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+            const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
                 operationalSince: 0,
                 capacityWh: 10,
                 country: 'Thailand',
@@ -169,44 +169,44 @@ describe('Asset Facade', () => {
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
-                assetType: 'Wind',
+                deviceType: 'Wind',
                 complianceRegistry: Compliance.EEC,
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: 'Wuthering Heights Windfarm'
             };
 
-            assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
+            assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
 
             try {
-                await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+                await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
             } catch (ex) {
                 assert.include(ex.message, 'smartmeter does already exist');
             }
-            assert.equal(await ProducingAsset.getAssetListLength(conf), 1);
+            assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
         });
 
         it('should log a new meter reading', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetSmartmeter,
-                privateKey: assetSmartmeterPK
+                address: deviceSmartmeter,
+                privateKey: deviceSmartmeterPK
             };
-            let asset = await new ProducingAsset.Entity('0', conf).sync();
+            let device = await new ProducingDevice.Entity('0', conf).sync();
 
-            await asset.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
+            await device.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
 
-            asset = await asset.sync();
+            device = await device.sync();
 
-            assert.deepOwnInclude(asset, {
+            assert.deepOwnInclude(device, {
                 id: '0',
                 initialized: true,
-                smartMeter: { address: assetSmartmeter },
-                owner: { address: assetOwnerAddress },
+                smartMeter: { address: deviceSmartmeter },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 100,
                 active: true,
-                usageType: Asset.UsageType.Producing,
+                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'newFileHash',
-                url: `${process.env.BACKEND_URL}/api/ProducingAsset/${assetLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/ProducingDevice/${deviceLogic.web3Contract.options.address}`,
                 offChainProperties: {
                     operationalSince: 0,
                     capacityWh: 10,
@@ -216,19 +216,19 @@ describe('Asset Facade', () => {
                     gpsLatitude: '0.0123123',
                     gpsLongitude: '31.1231',
                     timezone: 'Asia/Bangkok',
-                    assetType: 'Wind',
+                    deviceType: 'Wind',
                     complianceRegistry: Compliance.EEC,
                     otherGreenAttributes: '',
                     typeOfPublicSupport: '',
                     facilityName: 'Wuthering Heights Windfarm'
                 }
-            } as Partial<ProducingAsset.Entity>);
+            } as Partial<ProducingDevice.Entity>);
         });
 
         describe('getSmartMeterReads', () => {
             it('should correctly return reads', async () => {
-                const asset = await new ProducingAsset.Entity('0', conf).sync();
-                const reads = await asset.getSmartMeterReads();
+                const device = await new ProducingDevice.Entity('0', conf).sync();
+                const reads = await device.getSmartMeterReads();
 
                 assert.deepEqual(reads, [
                     {
@@ -240,27 +240,27 @@ describe('Asset Facade', () => {
         });
     });
 
-    describe('ConsumingAsset', () => {
-        it('should onboard a new consuming asset', async () => {
+    describe('ConsumingDevice', () => {
+        it('should onboard a new consuming device', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
+                address: deviceOwnerAddress,
+                privateKey: deviceOwnerPK
             };
 
             const FACILITY_NAME = 'Wuthering Heights Windfarm';
-    
-            const assetProps: Asset.IOnChainProperties = {
-                smartMeter: { address: assetSmartMeter2 },
-                owner: { address: assetOwnerAddress },
+
+            const deviceProps: Device.IOnChainProperties = {
+                smartMeter: { address: deviceSmartMeter2 },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
-                usageType: Asset.UsageType.Consuming,
+                usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
                 url: null
             };
-    
-            const assetPropsOffChain: Asset.IOffChainProperties = {
+
+            const devicePropsOffChain: Device.IOffChainProperties = {
                 operationalSince: 0,
                 capacityWh: 10,
                 country: 'Thailand',
@@ -271,48 +271,48 @@ describe('Asset Facade', () => {
                 timezone: 'Asia/Bangkok',
                 facilityName: FACILITY_NAME
             };
-    
-            assert.equal(await ConsumingAsset.getAssetListLength(conf), 0);
-    
-            const asset = await ConsumingAsset.createAsset(assetProps, assetPropsOffChain, conf);
-    
-            assert.deepOwnInclude(asset, {
+
+            assert.equal(await ConsumingDevice.getDeviceListLength(conf), 0);
+
+            const device = await ConsumingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
+
+            assert.deepOwnInclude(device, {
                 initialized: true,
-                smartMeter: { address: assetSmartMeter2 },
-                owner: { address: assetOwnerAddress },
+                smartMeter: { address: deviceSmartMeter2 },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
                 active: true,
-                usageType: Asset.UsageType.Consuming,
+                usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: '',
-                offChainProperties: assetPropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${assetLogic.web3Contract.options.address}`
-            } as Partial<ConsumingAsset.Entity>);
-    
-            assert.equal(await ConsumingAsset.getAssetListLength(conf), 1);
+                offChainProperties: devicePropsOffChain,
+                url: `${process.env.BACKEND_URL}/api/ConsumingDevice/${deviceLogic.web3Contract.options.address}`
+            } as Partial<ConsumingDevice.Entity>);
+
+            assert.equal(await ConsumingDevice.getDeviceListLength(conf), 1);
         });
-    
+
         it('should log a new meter reading', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetSmartMeter2,
-                privateKey: assetSmartmeter2PK
+                address: deviceSmartMeter2,
+                privateKey: deviceSmartmeter2PK
             };
-            let asset = (await ConsumingAsset.getAllAssets(conf))[0];
-            asset = await asset.sync();
-    
-            await asset.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
-    
-            asset = await asset.sync();
-    
-            assert.deepOwnInclude(asset, {
+            let device = (await ConsumingDevice.getAllDevices(conf))[0];
+            device = await device.sync();
+
+            await device.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
+
+            device = await device.sync();
+
+            assert.deepOwnInclude(device, {
                 id: '1',
                 initialized: true,
-                smartMeter: { address: assetSmartMeter2 },
-                owner: { address: assetOwnerAddress },
+                smartMeter: { address: deviceSmartMeter2 },
+                owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 100,
                 active: true,
-                usageType: Asset.UsageType.Consuming,
+                usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'newFileHash',
-                url: `${process.env.BACKEND_URL}/api/ConsumingAsset/${assetLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/ConsumingDevice/${deviceLogic.web3Contract.options.address}`,
                 offChainProperties: {
                     operationalSince: 0,
                     capacityWh: 10,
@@ -324,15 +324,15 @@ describe('Asset Facade', () => {
                     timezone: 'Asia/Bangkok',
                     facilityName: 'Wuthering Heights Windfarm'
                 }
-            } as Partial<ConsumingAsset.Entity>);
+            } as Partial<ConsumingDevice.Entity>);
         });
-    
-        describe('getSmartMeterReads ConsumingAsset', () => {
+
+        describe('getSmartMeterReads ConsumingDevice', () => {
             it('should correctly return reads', async () => {
-                let asset = (await ConsumingAsset.getAllAssets(conf))[0];
-                asset = await asset.sync();
-                const reads = await asset.getSmartMeterReads();
-    
+                let device = (await ConsumingDevice.getAllDevices(conf))[0];
+                device = await device.sync();
+                const reads = await device.getSmartMeterReads();
+
                 assert.deepEqual(reads, [
                     {
                         energy: 100,

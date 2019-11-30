@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
 
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/asset-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 
@@ -88,16 +88,16 @@ interface IEnergyMeasurement {
 async function startConsumerService() {
     const conf = await createBlockchainConfiguration();
 
-    async function getProducingAssetSmartMeterRead(assetId: string): Promise<number> {
-        const asset = await new ProducingAsset.Entity(assetId, conf).sync();
+    async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<number> {
+        const device = await new ProducingDevice.Entity(deviceId, conf).sync();
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return parseInt((asset.lastSmartMeterReadWh as any) as string, 10);
+        return parseInt((device.lastSmartMeterReadWh as any) as string, 10);
     }
 
-    async function saveProducingAssetSmartMeterRead(
+    async function saveProducingDeviceSmartMeterRead(
         meterReading: number,
-        assetId: string,
+        deviceId: string,
         timestamp: number,
         smartMeterPrivateKey: string
     ) {
@@ -113,25 +113,25 @@ async function startConsumerService() {
         };
 
         try {
-            let asset = await new ProducingAsset.Entity(assetId, conf).sync();
-            await asset.saveSmartMeterRead(meterReading, '', timestamp);
-            asset = await asset.sync();
+            let device = await new ProducingDevice.Entity(deviceId, conf).sync();
+            await device.saveSmartMeterRead(meterReading, '', timestamp);
+            device = await device.sync();
             conf.logger.verbose(
-                `Producing asset ${assetId} smart meter reading saved: ${meterReading}`
+                `Producing device ${deviceId} smart meter reading saved: ${meterReading}`
             );
         } catch (e) {
-            conf.logger.error(`Could not save smart meter reading for producing asset\n${e}`);
+            conf.logger.error(`Could not save smart meter reading for producing device\n${e}`);
         }
 
         console.log('-----------------------------------------------------------\n');
     }
 
     async function getEnergyMeasurements(
-        assetId: string,
+        deviceId: string,
         startTime: Moment,
         endTime: Moment
     ): Promise<IEnergyMeasurement[]> {
-        const url = `${ENERGY_API_BASE_URL}/asset/${assetId}/energy?accumulated=true&timeStart=${encodeURIComponent(
+        const url = `${ENERGY_API_BASE_URL}/device/${deviceId}/energy?accumulated=true&timeStart=${encodeURIComponent(
             startTime.unix()
         )}&timeEnd=${encodeURIComponent(endTime.unix())}`;
 
@@ -147,9 +147,9 @@ async function startConsumerService() {
     while (true) {
         const now = moment();
 
-        for (const asset of CONFIG.assets) {
+        for (const device of CONFIG.devices) {
             const energyMeasurements: IEnergyMeasurement[] = await getEnergyMeasurements(
-                asset.id,
+                device.id,
                 previousTime,
                 now
             );
@@ -161,18 +161,18 @@ async function startConsumerService() {
 
                 const roundedEnergy: number = Math.round(energyMeasurement.energy);
 
-                const previousRead: number = await getProducingAssetSmartMeterRead(asset.id);
+                const previousRead: number = await getProducingDeviceSmartMeterRead(device.id);
                 const time = moment(energyMeasurement.measurementTime);
 
-                await saveProducingAssetSmartMeterRead(
+                await saveProducingDeviceSmartMeterRead(
                     previousRead + roundedEnergy,
-                    asset.id,
+                    device.id,
                     time.unix(),
-                    asset.smartMeterPrivateKey
+                    device.smartMeterPrivateKey
                 );
 
                 console.log(
-                    `[Asset ID: ${asset.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`
+                    `[Device ID: ${device.id}]::Save Energy Read of: ${roundedEnergy}Wh - [${energyMeasurement.measurementTime}]`
                 );
             }
         }

@@ -3,10 +3,10 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
 import { MarketUser } from '@energyweb/market';
-import { ProducingAssetDetailView } from './ProducingAssetDetailView';
+import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import './DetailView.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { getConfiguration, getProducingAssets } from '../features/selectors';
+import { getConfiguration, getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { deduplicate } from '../utils/helper';
 import { useLinks } from '../utils/routing';
@@ -32,7 +32,7 @@ export function CertificateDetailView(props: IProps) {
 
     const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const producingAssets = useSelector(getProducingAssets);
+    const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
 
@@ -51,7 +51,7 @@ export function CertificateDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    const { getCertificateDetailLink, getProducingAssetDetailLink } = useLinks();
+    const { getCertificateDetailLink, getProducingDeviceDetailLink } = useLinks();
 
     const selectedCertificate =
         id !== null && id !== undefined && certificates.find(c => c.id === id);
@@ -76,7 +76,7 @@ export function CertificateDetailView(props: IProps) {
             switch (event.event) {
                 case 'LogNewMeterRead':
                     label = 'Initial logging';
-                    description = 'Logging by Asset #' + event.returnValues._assetId;
+                    description = 'Logging by Device #' + event.returnValues._deviceId;
                     break;
                 case 'LogCreatedCertificate':
                     label = 'Certified';
@@ -147,7 +147,7 @@ export function CertificateDetailView(props: IProps) {
             resolvedEvents.push({
                 txHash: certificationRequestEvents.certificationRequestCreatedEvent.transactionHash,
                 label: 'Requested certification',
-                description: 'Asset owner requested certification based on meter reads',
+                description: 'Device owner requested certification based on meter reads',
                 timestamp: (
                     await configuration.blockchainProperties.web3.eth.getBlock(
                         certificationRequestEvents.certificationRequestCreatedEvent.blockNumber
@@ -199,8 +199,8 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
-        const asset = producingAssets.find(
-            p => p.id === selectedCertificate.certificate.assetId.toString()
+        const device = producingDevices.find(
+            p => p.id === selectedCertificate.certificate.deviceId.toString()
         );
 
         data = [
@@ -221,9 +221,9 @@ export function CertificateDetailView(props: IProps) {
                             : 'no'
                 },
                 {
-                    label: 'Producing Asset Id',
-                    data: asset.id,
-                    link: getProducingAssetDetailLink(asset.id)
+                    label: 'Producing Device Id',
+                    data: device.id,
+                    link: getProducingDeviceDetailLink(device.id)
                 }
             ],
             [
@@ -255,11 +255,11 @@ export function CertificateDetailView(props: IProps) {
 
     return (
         <div className="DetailViewWrapper">
-            <div className="FindAsset">
+            <div className="FindDevice">
                 <input onChange={e => setNewId(e.target.value)} defaultValue={id} />
 
                 <Link
-                    className="btn btn-primary find-asset-button"
+                    className="btn btn-primary find-device-button"
                     to={getCertificateDetailLink(newId)}
                 >
                     Find Certificate
@@ -291,8 +291,8 @@ export function CertificateDetailView(props: IProps) {
                     )}
                 </div>
                 {selectedCertificate && (
-                    <ProducingAssetDetailView
-                        id={selectedCertificate.certificate.assetId}
+                    <ProducingDeviceDetailView
+                        id={selectedCertificate.certificate.deviceId}
                         addSearchField={false}
                         showSmartMeterReadings={false}
                         showCertificates={false}

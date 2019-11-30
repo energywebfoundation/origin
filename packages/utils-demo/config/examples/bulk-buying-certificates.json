@@ -39,7 +39,7 @@
             "data": {
                 "firstName": "John",
                 "surname": "Doe Four",
-                "organization": "AssetManager Organization",
+                "organization": "Device Manager Organization",
                 "street": "Main Street",
                 "number": "4",
                 "zip": "01234",
@@ -101,7 +101,7 @@
                 "gpsLatitude": "14.059500",
                 "gpsLongitude": "99.977800",
                 "timezone": "America/Los_Angeles",
-                "assetType": "Wind",
+                "deviceType": "Wind",
                 "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
@@ -115,7 +115,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "meterreading": 100000,
                 "smartMeter": "0x6cc53915dbec95a66deb7c709c800cac40ee55f9",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
@@ -126,10 +126,10 @@
         {
             "type": "REQUEST_CERTIFICATES",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "lastRequestedSMRead": 0,
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+                "deviceOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "deviceOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
             }
         },
         {
@@ -153,7 +153,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "meterreading": 500000,
                 "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
@@ -164,10 +164,10 @@
         {
             "type": "REQUEST_CERTIFICATES",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "lastRequestedSMRead": 1,
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+                "deviceOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "deviceOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
             }
         },
         {
@@ -191,7 +191,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "meterreading": 800000,
                 "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
@@ -201,10 +201,10 @@
         {
             "type": "REQUEST_CERTIFICATES",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "lastRequestedSMRead": 2,
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+                "deviceOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "deviceOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
             }
         },
         {
@@ -227,7 +227,7 @@
         {
             "type": "SAVE_SMARTMETER_READ_PRODUCING",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "meterreading": 900000,
                 "smartMeter": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "smartMeterPK": "0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
@@ -238,10 +238,10 @@
         {
             "type": "REQUEST_CERTIFICATES",
             "data": {
-                "assetId": 0,
+                "deviceId": 0,
                 "lastRequestedSMRead": 3,
-                "assetOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
-                "assetOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
+                "deviceOwner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
+                "deviceOwnerPK": "0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac"
             }
         },
         {

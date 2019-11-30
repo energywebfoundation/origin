@@ -1,16 +1,16 @@
-export type EncodedAssetType = string[];
-export type DecodedAssetType = string[][];
+export type EncodedDeviceType = string[];
+export type DecodedDeviceType = string[][];
 
-export interface IAssetService {
-    AssetTypes: DecodedAssetType;
-    encode(assetTypes: DecodedAssetType): EncodedAssetType;
-    decode(encodedAssetType: EncodedAssetType): DecodedAssetType;
-    includesAssetType(current: string, requested: string[]): boolean;
-    validate(assetTypes: string[]): { areValid: boolean; unknown: string[] };
+export interface IDeviceService {
+    DeviceTypes: DecodedDeviceType;
+    encode(deviceTypes: DecodedDeviceType): EncodedDeviceType;
+    decode(encodedDeviceType: EncodedDeviceType): DecodedDeviceType;
+    includesDeviceType(current: string, requested: string[]): boolean;
+    validate(deviceTypes: string[]): { areValid: boolean; unknown: string[] };
 }
 
-export class IRECAssetService implements IAssetService {
-    public get AssetTypes() {
+export class IRECDeviceService implements IDeviceService {
+    public get DeviceTypes() {
         return [
             ['Solar'],
             ['Solar', 'Photovoltaic'],
@@ -74,24 +74,24 @@ export class IRECAssetService implements IAssetService {
         ];
     }
 
-    encode(assetTypes: DecodedAssetType): EncodedAssetType {
-        const encoded = assetTypes.map(group => group.join(';'));
+    encode(deviceTypes: DecodedDeviceType): EncodedDeviceType {
+        const encoded = deviceTypes.map(group => group.join(';'));
 
         const { areValid, unknown } = this.validate(encoded);
         if (!areValid) {
-            throw new Error(`IRECAssetService::encode Unknown asset types ${unknown}`);
+            throw new Error(`IRECDeviceService::encode Unknown device types ${unknown}`);
         }
 
         return encoded;
     }
 
-    decode(encodedAssetType: EncodedAssetType): DecodedAssetType {
-        const { areValid, unknown } = this.validate(encodedAssetType);
+    decode(encodedDeviceType: EncodedDeviceType): DecodedDeviceType {
+        const { areValid, unknown } = this.validate(encodedDeviceType);
         if (!areValid) {
-            throw new Error(`IRECAssetService::decode Unknown asset types ${unknown}`);
+            throw new Error(`IRECDeviceService::decode Unknown device types ${unknown}`);
         }
 
-        return encodedAssetType.map(assetType => assetType.split(';'));
+        return encodedDeviceType.map(deviceType => deviceType.split(';'));
     }
 
     filterForHighestSpecificity(types: string[]): string[] {
@@ -107,34 +107,34 @@ export class IRECAssetService implements IAssetService {
         );
     }
 
-    includesAssetType(checkedType: string, types: string[]): boolean {
+    includesDeviceType(checkedType: string, types: string[]): boolean {
         const highestSpecificityTypes = this.filterForHighestSpecificity(types).map(type => [
             ...this.decode([type])[0]
         ]);
 
-        return highestSpecificityTypes.some(requestedAssetType =>
-            checkedType.startsWith(this.encode([requestedAssetType])[0])
+        return highestSpecificityTypes.some(requestedDeviceType =>
+            checkedType.startsWith(this.encode([requestedDeviceType])[0])
         );
     }
 
-    validate(assetTypes: string[]): { areValid: boolean; unknown: string[] } {
-        const encoded: EncodedAssetType = this.AssetTypes.map(group => group.join(';'));
+    validate(deviceTypes: string[]): { areValid: boolean; unknown: string[] } {
+        const encoded: EncodedDeviceType = this.DeviceTypes.map(group => group.join(';'));
         const unknown: string[] = [];
 
-        const areValid = assetTypes
-            .map(assetType => {
-                const valid = encoded.includes(assetType);
+        const areValid = deviceTypes
+            .map(deviceType => {
+                const valid = encoded.includes(deviceType);
                 if (!valid) {
-                    unknown.push(assetType);
+                    unknown.push(deviceType);
                 }
                 return valid;
             })
-            .every(assetType => assetType);
+            .every(deviceType => deviceType);
 
         return { areValid, unknown };
     }
 
-    getDisplayText(assetType: string) {
-        return this.decode([assetType])[0].join(' - ');
+    getDisplayText(deviceType: string) {
+        return this.decode([deviceType])[0].join(' - ');
     }
 }

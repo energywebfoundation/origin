@@ -6,7 +6,7 @@ import {
     IPaginatedLoader
 } from './PaginatedLoader';
 import moment, { Moment } from 'moment';
-import { IRECAssetService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import { clone } from '../../utils/helper';
 
 export type IPaginatedLoaderFilteredProps = {};
@@ -28,7 +28,7 @@ export abstract class PaginatedLoaderFiltered<
     Props extends IPaginatedLoaderFilteredProps,
     State extends IPaginatedLoaderFilteredState
 > extends PaginatedLoader<Props, State> implements IPaginatedLoader {
-    protected assetTypeService = new IRECAssetService();
+    protected deviceTypeService = new IRECDeviceService();
 
     async loadPage(page: number, filters?: ICustomFilter[]) {
         const { appliedFilters } = this.state;
@@ -67,11 +67,11 @@ export abstract class PaginatedLoaderFiltered<
                         break;
                     case CustomFilterInputType.multiselect:
                         return filter.selectedValue.includes(filteredPropertyResolvedValue);
-                    case CustomFilterInputType.assetType:
+                    case CustomFilterInputType.deviceType:
                         if (
                             filter.selectedValue &&
                             filter.selectedValue.length !== 0 &&
-                            !this.assetTypeService.includesAssetType(
+                            !this.deviceTypeService.includesDeviceType(
                                 filteredPropertyResolvedValue,
                                 filter.selectedValue as string[]
                             )

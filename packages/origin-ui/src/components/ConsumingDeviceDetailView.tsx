@@ -5,15 +5,15 @@ import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import { Link } from 'react-router-dom';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { ConsumingAsset } from '@energyweb/asset-registry';
+import { ConsumingDevice } from '@energyweb/asset-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
 import { Configuration } from '@energyweb/utils-general';
-import { AssetMap } from './AssetMap';
-import { getConsumingAssetDetailLink } from '../utils/routing';
+import { DeviceMap } from './DeviceMap';
+import { getConsumingDeviceDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getBaseURL, getConfiguration, getConsumingAssets } from '../features/selectors';
+import { getBaseURL, getConfiguration, getConsumingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 
 interface IOwnProps {
@@ -24,7 +24,7 @@ interface IStateProps {
     baseURL: string;
     certificates: PurchasableCertificate.Entity[];
     configuration: Configuration.Entity;
-    consumingAssets: ConsumingAsset.Entity[];
+    consumingDevices: ConsumingDevice.Entity[];
 }
 
 type Props = IOwnProps & IStateProps;
@@ -35,7 +35,7 @@ export interface IDetailViewState {
     notSoldCertificates: number;
 }
 
-class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewState> {
+class ConsumingDeviceDetailViewClass extends React.Component<Props, IDetailViewState> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -63,16 +63,16 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
             return;
         }
 
-        const selectedAsset: ConsumingAsset.Entity = props.consumingAssets.find(
-            (c: ConsumingAsset.Entity) => c.id === props.id.toString()
+        const selectedDevice: ConsumingDevice.Entity = props.consumingDevices.find(
+            (c: ConsumingDevice.Entity) => c.id === props.id.toString()
         );
-        if (selectedAsset) {
+        if (selectedDevice) {
             if (this.props.certificates.length > 0) {
                 this.setState({
                     notSoldCertificates: this.props.certificates
                         .map((certificate: PurchasableCertificate.Entity) =>
-                            certificate.certificate.owner === selectedAsset.owner.address &&
-                            certificate.certificate.assetId.toString() === selectedAsset.id
+                            certificate.certificate.owner === selectedDevice.owner.address &&
+                            certificate.certificate.deviceId.toString() === selectedDevice.id
                                 ? certificate.certificate.energy
                                 : 0
                         )
@@ -81,7 +81,7 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
             }
             this.setState({
                 owner: await new MarketUser.Entity(
-                    selectedAsset.owner.address,
+                    selectedDevice.owner.address,
                     props.configuration as any
                 ).sync()
             });
@@ -89,34 +89,35 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
     }
 
     render(): JSX.Element {
-        const selectedAsset: ConsumingAsset.Entity =
+        const selectedDevice: ConsumingDevice.Entity =
             this.props.id !== null && this.props.id !== undefined
-                ? this.props.consumingAssets.find(
-                      (p: ConsumingAsset.Entity) => p.id === this.props.id.toString()
+                ? this.props.consumingDevices.find(
+                      (p: ConsumingDevice.Entity) => p.id === this.props.id.toString()
                   )
                 : null;
 
         let data;
-        if (selectedAsset) {
+        if (selectedDevice) {
             data = [
                 [
                     {
                         label: 'Facility Name',
-                        data: selectedAsset.offChainProperties.facilityName
+                        data: selectedDevice.offChainProperties.facilityName
                     },
                     {
-                        label: 'Owner' + getOffChainText('owner', selectedAsset.offChainProperties),
+                        label:
+                            'Owner' + getOffChainText('owner', selectedDevice.offChainProperties),
                         data: this.state.owner ? this.state.owner.organization : ''
                     },
 
                     {
                         label:
                             'Geo Location' +
-                            getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
+                            getOffChainText('gpsLatitude', selectedDevice.offChainProperties),
                         data:
-                            selectedAsset.offChainProperties.gpsLatitude +
+                            selectedDevice.offChainProperties.gpsLatitude +
                             ', ' +
-                            selectedAsset.offChainProperties.gpsLongitude,
+                            selectedDevice.offChainProperties.gpsLongitude,
                         image: map,
                         type: 'map',
                         rowspan: 3,
@@ -132,18 +133,18 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
                     {
                         label:
                             'Commissioning Date' +
-                            getOffChainText('operationalSince', selectedAsset.offChainProperties),
+                            getOffChainText('operationalSince', selectedDevice.offChainProperties),
                         data: moment(
-                            selectedAsset.offChainProperties.operationalSince * 1000
+                            selectedDevice.offChainProperties.operationalSince * 1000
                         ).format('DD MMM YY')
                     },
 
                     {
                         label:
                             'Nameplate Capacity' +
-                            getOffChainText('capacityWh', selectedAsset.offChainProperties),
-                        data: selectedAsset.offChainProperties.capacityWh
-                            ? (selectedAsset.offChainProperties.capacityWh / 1000).toFixed(3)
+                            getOffChainText('capacityWh', selectedDevice.offChainProperties),
+                        data: selectedDevice.offChainProperties.capacityWh
+                            ? (selectedDevice.offChainProperties.capacityWh / 1000).toFixed(3)
                             : '-',
                         tip: 'kW'
                     }
@@ -153,7 +154,7 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
 
         return (
             <div className="DetailViewWrapper">
-                <div className="FindAsset">
+                <div className="FindDevice">
                     <input
                         onChange={this.onInputChange}
                         defaultValue={
@@ -162,17 +163,17 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
                     />
 
                     <Link
-                        className="btn btn-primary find-asset-button"
-                        to={getConsumingAssetDetailLink(this.props.baseURL, this.state.newId)}
+                        className="btn btn-primary find-device-button"
+                        to={getConsumingDeviceDetailLink(this.props.baseURL, this.state.newId)}
                     >
-                        Find Asset
+                        Find Device
                     </Link>
                 </div>
                 <div className="PageContentWrapper">
                     <div className="PageBody">
-                        {!selectedAsset ? (
+                        {!selectedDevice ? (
                             <div className="text-center">
-                                <strong>Asset not found</strong>
+                                <strong>Device not found</strong>
                             </div>
                         ) : (
                             <table>
@@ -203,8 +204,8 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
                                                             </div>
                                                         ) : (
                                                             <div className={`Image Map`}>
-                                                                <AssetMap
-                                                                    assets={[selectedAsset]}
+                                                                <DeviceMap
+                                                                    devices={[selectedDevice]}
                                                                 />
                                                             </div>
                                                         ))}
@@ -227,11 +228,11 @@ class ConsumingAssetDetailViewClass extends React.Component<Props, IDetailViewSt
     }
 }
 
-export const ConsumingAssetDetailView = connect(
+export const ConsumingDeviceDetailView = connect(
     (state: IStoreState): IStateProps => ({
         baseURL: getBaseURL(),
         certificates: getCertificates(state),
         configuration: getConfiguration(state),
-        consumingAssets: getConsumingAssets(state)
+        consumingDevices: getConsumingDevices(state)
     })
-)(ConsumingAssetDetailViewClass);
+)(ConsumingDeviceDetailViewClass);

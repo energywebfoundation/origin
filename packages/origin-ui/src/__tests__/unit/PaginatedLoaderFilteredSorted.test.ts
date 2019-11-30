@@ -32,15 +32,15 @@ describe('PaginatedLoaderFilteredSorted', () => {
         paginationFilteredLoader.state = {
             ...getInitialPaginatedLoaderFilteredSortedState(),
             currentSort: [
-                'producingAsset.offChainProperties.country',
-                'producingAsset.offChainProperties.city'
+                'producingDevice.offChainProperties.country',
+                'producingDevice.offChainProperties.city'
             ],
             sortAscending: true
         };
 
         const records = [
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Germany',
                         city: 'Berlin'
@@ -48,7 +48,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 }
             },
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Thailand',
                         city: 'Bangkok'
@@ -56,7 +56,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 }
             },
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Thailand',
                         city: 'Ang Thong'
@@ -67,7 +67,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
 
         expect(paginationFilteredLoader.sortData(records)).toEqual([
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Germany',
                         city: 'Berlin'
@@ -75,7 +75,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 }
             },
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Thailand',
                         city: 'Ang Thong'
@@ -83,7 +83,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 }
             },
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Thailand',
                         city: 'Bangkok'
@@ -95,15 +95,15 @@ describe('PaginatedLoaderFilteredSorted', () => {
         paginationFilteredLoader.state = {
             ...getInitialPaginatedLoaderFilteredSortedState(),
             currentSort: [
-                'producingAsset.offChainProperties.country',
-                'producingAsset.offChainProperties.city'
+                'producingDevice.offChainProperties.country',
+                'producingDevice.offChainProperties.city'
             ],
             sortAscending: false
         };
 
         expect(paginationFilteredLoader.sortData(records)).toEqual([
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Thailand',
                         city: 'Bangkok'
@@ -111,7 +111,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 }
             },
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Thailand',
                         city: 'Ang Thong'
@@ -119,7 +119,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
                 }
             },
             {
-                producingAsset: {
+                producingDevice: {
                     offChainProperties: {
                         country: 'Germany',
                         city: 'Berlin'

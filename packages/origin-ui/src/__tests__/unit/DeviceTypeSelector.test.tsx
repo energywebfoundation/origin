@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { mount } from 'enzyme';
-import { EncodedAssetType, IRECAssetService } from '@energyweb/utils-general';
+import { EncodedDeviceType, IRECDeviceService } from '@energyweb/utils-general';
 import { setupStore, WrapperComponent } from '../utils/helpers';
 import { dataTestSelector } from '../../utils/helper';
 import {
@@ -10,7 +10,7 @@ import {
 import { act } from '@testing-library/react';
 import { HierarchicalMultiSelect } from '../../components/HierarchicalMultiSelect';
 
-describe('AssetTypeSelector', () => {
+describe('DeviceTypeSelector', () => {
     it('correctly renders', async () => {
         const { store, history, cleanupStore } = setupStore(undefined, {
             mockUserFetcher: true,
@@ -18,26 +18,26 @@ describe('AssetTypeSelector', () => {
         });
 
         function TestWrapper() {
-            const [selectedAssetType, setSelectedAssetType] = useState<EncodedAssetType>([]);
-            const irecAssetService = new IRECAssetService();
+            const [selectedDeviceType, setSelectedDeviceType] = useState<EncodedDeviceType>([]);
+            const irecDeviceService = new IRECDeviceService();
 
             return (
                 <HierarchicalMultiSelect
-                    selectedValue={selectedAssetType}
-                    onChange={setSelectedAssetType}
-                    allValues={irecAssetService.AssetTypes}
+                    selectedValue={selectedDeviceType}
+                    onChange={setSelectedDeviceType}
+                    allValues={irecDeviceService.DeviceTypes}
                     selectOptions={[
                         {
-                            label: 'Asset type',
-                            placeholder: 'Select asset type'
+                            label: 'Device type',
+                            placeholder: 'Select device type'
                         },
                         {
-                            label: 'Asset type',
-                            placeholder: 'Select asset type'
+                            label: 'Device type',
+                            placeholder: 'Select device type'
                         },
                         {
-                            label: 'Asset type',
-                            placeholder: 'Select asset type'
+                            label: 'Device type',
+                            placeholder: 'Select device type'
                         }
                     ]}
                 />

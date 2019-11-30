@@ -5,10 +5,10 @@ import dotenv from 'dotenv';
 import moment from 'moment';
 
 import {
-    AssetLogic,
-    Asset,
-    ProducingAsset,
-    Contracts as AssetRegistryContracts
+    DeviceLogic,
+    Device,
+    ProducingDevice,
+    Contracts as DeviceRegistryContracts
 } from '@energyweb/asset-registry';
 import {
     buildRights,
@@ -43,18 +43,18 @@ describe('Market-Facade', () => {
     let conf: Configuration.Entity;
 
     let userLogic: UserLogic;
-    let assetLogic: AssetLogic;
+    let deviceLogic: DeviceLogic;
     let certificateLogic: CertificateLogic;
     let marketLogic: MarketLogic;
 
     let erc20TestToken: Erc20TestToken;
     let erc20TestTokenAddress: string;
 
-    const assetOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
-    const assetOwnerAddress = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
+    const deviceOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
+    const deviceOwnerAddress = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
-    const assetSmartMeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
-    const assetSmartMeter = web3.eth.accounts.privateKeyToAccount(assetSmartMeterPK).address;
+    const deviceSmartMeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
+    const deviceSmartMeter = web3.eth.accounts.privateKeyToAccount(deviceSmartMeterPK).address;
 
     const matcherPK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const matcherAccount = web3.eth.accounts.privateKeyToAccount(matcherPK).address;
@@ -84,18 +84,18 @@ describe('Market-Facade', () => {
     });
 
     it('should deploy asset-registry contracts', async () => {
-        assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+        deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment
         );
-        assert.exists(assetLogic);
+        assert.exists(deviceLogic);
     });
 
     it('should deploy origin contracts', async () => {
         certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             web3,
-            assetLogic.web3Contract.options.address,
+            deviceLogic.web3Contract.options.address,
             privateKeyDeployment
         );
         assert.exists(certificateLogic);
@@ -118,7 +118,7 @@ describe('Market-Facade', () => {
                     privateKey: privateKeyDeployment
                 },
                 userLogicInstance: userLogic,
-                assetLogicInstance: assetLogic,
+                deviceLogicInstance: deviceLogic,
                 marketLogicInstance: marketLogic,
                 certificateLogicInstance: certificateLogic,
                 web3
@@ -140,8 +140,8 @@ describe('Market-Facade', () => {
                 active: true,
                 roles: buildRights([
                     Role.UserAdmin,
-                    Role.AssetAdmin,
-                    Role.AssetManager,
+                    Role.DeviceAdmin,
+                    Role.DeviceManager,
                     Role.Trader,
                     Role.Matcher
                 ]),
@@ -188,14 +188,14 @@ describe('Market-Facade', () => {
             {
                 url: null,
                 propertiesDocumentHash: null,
-                id: assetOwnerAddress,
+                id: deviceOwnerAddress,
                 active: true,
-                roles: buildRights([Role.AssetManager]),
-                organization: 'assetOwner'
+                roles: buildRights([Role.DeviceManager]),
+                organization: 'deviceOwner'
             },
             {
-                firstName: 'assetOwner',
-                surname: 'assetOwner',
+                firstName: 'deviceOwner',
+                surname: 'deviceOwner',
                 email: '',
                 street: '',
                 number: '',
@@ -333,24 +333,24 @@ describe('Market-Facade', () => {
         assert.deepEqual(user.offChainProperties, oldUserProperties);
     });
 
-    it('should onboard a producing asset', async () => {
+    it('should onboard a producing device', async () => {
         conf.blockchainProperties.activeUser = {
             address: accountDeployment,
             privateKey: privateKeyDeployment
         };
 
-        const assetProps: Asset.IOnChainProperties = {
-            smartMeter: { address: assetSmartMeter },
-            owner: { address: assetOwnerAddress },
+        const deviceProps: Device.IOnChainProperties = {
+            smartMeter: { address: deviceSmartMeter },
+            owner: { address: deviceOwnerAddress },
             lastSmartMeterReadWh: 0,
             active: true,
-            usageType: Asset.UsageType.Producing,
+            usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
             url: null
         };
 
-        const assetPropsOffChain: ProducingAsset.IOffChainProperties = {
+        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
             operationalSince: 0,
             capacityWh: 10,
             country: 'Thailand',
@@ -359,16 +359,16 @@ describe('Market-Facade', () => {
             gpsLatitude: '0.0123123',
             gpsLongitude: '31.1231',
             timezone: 'Asia/Bangkok',
-            assetType: 'Wind',
+            deviceType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             facilityName: ''
         };
 
-        assert.equal(await ProducingAsset.getAssetListLength(conf), 0);
+        assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
-        await ProducingAsset.createAsset(assetProps, assetPropsOffChain, conf);
+        await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
     });
 
     describe('Demand-Facade', () => {
@@ -388,7 +388,7 @@ describe('Market-Facade', () => {
                 maxPricePerMwh: 1.5,
                 currency: Currency.USD,
                 location: ['Thailand;Central;Nakhon Pathom'],
-                assetType: ['Solar'],
+                deviceType: ['Solar'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
@@ -433,7 +433,7 @@ describe('Market-Facade', () => {
             } as Partial<Demand.Entity>);
 
             assert.deepOwnInclude(demand.offChainProperties, {
-                assetType: ['Solar'],
+                deviceType: ['Solar'],
                 currency: Currency.USD,
                 location: ['Thailand;Central;Nakhon Pathom'],
                 minCO2Offset: 10,
@@ -465,7 +465,7 @@ describe('Market-Facade', () => {
             const offChainProperties = { ...demand.offChainProperties };
             offChainProperties.procureFromSingleFacility = !demand.offChainProperties
                 .procureFromSingleFacility;
-            offChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
+            offChainProperties.deviceType = ['Hydro-electric Head', 'Mixed pumped storage head'];
 
             const updated = await demand.update(offChainProperties);
 
@@ -490,7 +490,7 @@ describe('Market-Facade', () => {
             const oldDemandProperties = demand.offChainProperties;
 
             const newOffChainProperties = { ...oldDemandProperties };
-            newOffChainProperties.assetType = ['Hydro-electric Head', 'Mixed pumped storage head'];
+            newOffChainProperties.deviceType = ['Hydro-electric Head', 'Mixed pumped storage head'];
 
             let failed = false;
 
@@ -509,17 +509,17 @@ describe('Market-Facade', () => {
         });
 
         it('should trigger DemandPartiallyFilled event after agreement demand filled', async () => {
-            const producingAsset = await new ProducingAsset.Entity('0', conf).sync();
+            const producingDevice = await new ProducingDevice.Entity('0', conf).sync();
 
             conf.blockchainProperties.activeUser = {
-                address: assetSmartMeter,
-                privateKey: assetSmartMeterPK
+                address: deviceSmartMeter,
+                privateKey: deviceSmartMeterPK
             };
 
-            await producingAsset.saveSmartMeterRead(1e6, 'newMeterRead');
+            await producingDevice.saveSmartMeterRead(1e6, 'newMeterRead');
 
             await certificateLogic.requestCertificates(0, 0, {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
 
             await certificateLogic.approveCertificationRequest(0, {
@@ -527,13 +527,13 @@ describe('Market-Facade', () => {
             });
 
             conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
+                address: deviceOwnerAddress,
+                privateKey: deviceOwnerPK
             };
 
             let certificate = await new PurchasableCertificate.Entity('0', conf).sync();
 
-            await erc20TestToken.approve(assetOwnerAddress, 2, { privateKey: traderPK });
+            await erc20TestToken.approve(deviceOwnerAddress, 2, { privateKey: traderPK });
 
             conf.blockchainProperties.activeUser = {
                 address: matcherAccount,
@@ -558,17 +558,17 @@ describe('Market-Facade', () => {
         });
 
         it('should trigger DemandPartiallyFilled event after demand filled', async () => {
-            const producingAsset = await new ProducingAsset.Entity('0', conf).sync();
+            const producingDevice = await new ProducingDevice.Entity('0', conf).sync();
 
             conf.blockchainProperties.activeUser = {
-                address: assetSmartMeter,
-                privateKey: assetSmartMeterPK
+                address: deviceSmartMeter,
+                privateKey: deviceSmartMeterPK
             };
 
-            await producingAsset.saveSmartMeterRead(2e6, 'newMeterRead');
+            await producingDevice.saveSmartMeterRead(2e6, 'newMeterRead');
 
             await certificateLogic.requestCertificates(0, 1, {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
 
             await certificateLogic.approveCertificationRequest(1, {
@@ -576,8 +576,8 @@ describe('Market-Facade', () => {
             });
 
             conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
+                address: deviceOwnerAddress,
+                privateKey: deviceOwnerPK
             };
 
             const certificate = await new PurchasableCertificate.Entity('1', conf).sync();
@@ -610,8 +610,8 @@ describe('Market-Facade', () => {
     describe('Supply-Facade', () => {
         it('should onboard an supply', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
+                address: deviceOwnerAddress,
+                privateKey: deviceOwnerPK
             };
 
             const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
@@ -624,7 +624,7 @@ describe('Market-Facade', () => {
             const supplyProps: Supply.ISupplyOnChainProperties = {
                 url: null,
                 propertiesDocumentHash: null,
-                assetId: '0'
+                deviceId: '0'
             };
 
             assert.equal(await Supply.getSupplyListLength(conf), 0);
@@ -637,7 +637,7 @@ describe('Market-Facade', () => {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
-                assetId: '0',
+                deviceId: '0',
                 offChainProperties: {
                     availableWh: 10,
                     currency: Currency.USD,
@@ -654,7 +654,7 @@ describe('Market-Facade', () => {
                 id: '0',
                 initialized: true,
                 url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
-                assetId: '0',
+                deviceId: '0',
                 offChainProperties: {
                     availableWh: 10,
                     currency: Currency.USD,
@@ -756,8 +756,8 @@ describe('Market-Facade', () => {
 
         it('should agree to an agreement as supply', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
+                address: deviceOwnerAddress,
+                privateKey: deviceOwnerPK
             };
 
             let agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
@@ -787,8 +787,8 @@ describe('Market-Facade', () => {
 
         it('should create a 2nd agreement', async () => {
             conf.blockchainProperties.activeUser = {
-                address: assetOwnerAddress,
-                privateKey: assetOwnerPK
+                address: deviceOwnerAddress,
+                privateKey: deviceOwnerPK
             };
 
             startTime = moment().unix();

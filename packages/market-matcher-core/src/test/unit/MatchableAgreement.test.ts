@@ -7,14 +7,14 @@ import { MatchableAgreement } from '../../MatchableAgreement';
 import { MatchingErrorReason } from '../../MatchingErrorReason';
 
 interface IMockOptions {
-    assetId?: string;
+    deviceId?: string;
     certificateCreationTime?: number;
     isFilledDemand?: boolean;
 }
 
 describe('MatchableAgreement tests', () => {
     describe('Certificates', () => {
-        const assetId = '11';
+        const deviceId = '11';
         const agreementStart = new Date().getTime() - 100000;
         const agreementEnd = agreementStart + 100000 + 100000;
         const certificateCreationTime = agreementStart + 100000;
@@ -32,14 +32,14 @@ describe('MatchableAgreement tests', () => {
             const certificate = Substitute.for<PurchasableCertificate.IPurchasableCertificate>();
             certificate.certificate.returns({
                 creationTime: options.certificateCreationTime || certificateCreationTime,
-                assetId: Number(options.assetId || assetId)
+                deviceId: Number(options.deviceId || deviceId)
             } as Certificate.ICertificate);
 
             const supply = Substitute.for<Supply.ISupply>();
-            supply.assetId.returns(assetId);
+            supply.deviceId.returns(deviceId);
 
             const demand = Substitute.for<Demand.IDemand>();
-            demand.id.returns(assetId);
+            demand.id.returns(deviceId);
             demand
                 .missingEnergyInCurrentPeriod()
                 .returns(Promise.resolve({ time: 0, value: options.isFilledDemand ? 0 : 1000 }));
@@ -65,9 +65,9 @@ describe('MatchableAgreement tests', () => {
             assert.isTrue(result);
         });
 
-        it('should not match certificate with wrong asset id', async () => {
+        it('should not match certificate with wrong device id', async () => {
             const { agreement, certificate, supply, demand } = createMatchingMocks({
-                assetId: '12'
+                deviceId: '12'
             });
 
             const matchableAgreement = new MatchableAgreement(agreement);

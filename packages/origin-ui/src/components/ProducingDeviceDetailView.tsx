@@ -14,15 +14,15 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
-import { Compliance, IRECAssetService } from '@energyweb/utils-general';
-import { ProducingAsset } from '@energyweb/asset-registry';
-import { AssetMap } from './AssetMap';
+import { Compliance, IRECDeviceService } from '@energyweb/utils-general';
+import { ProducingDevice } from '@energyweb/asset-registry';
+import { DeviceMap } from './DeviceMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProducingAssetDetailLink } from '../utils/routing';
-import { getBaseURL, getProducingAssets } from '../features/selectors';
+import { getProducingDeviceDetailLink } from '../utils/routing';
+import { getBaseURL, getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
@@ -36,10 +36,10 @@ interface IProps {
     showCertificates: boolean;
 }
 
-export function ProducingAssetDetailView(props: IProps) {
+export function ProducingDeviceDetailView(props: IProps) {
     const baseURL = useSelector(getBaseURL);
     const certificates = useSelector(getCertificates);
-    const producingAssets = useSelector(getProducingAssets);
+    const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
 
     const [newId, setNewId] = useState(null);
@@ -56,47 +56,47 @@ export function ProducingAssetDetailView(props: IProps) {
     const classes = useStyles(useTheme());
 
     let owner: MarketUser.Entity = null;
-    let selectedAsset: ProducingAsset.Entity = null;
+    let selectedDevice: ProducingDevice.Entity = null;
 
-    const assetTypeService = new IRECAssetService();
+    const deviceTypeService = new IRECDeviceService();
 
     if (props.id !== null && props.id !== undefined) {
-        selectedAsset = producingAssets.find(p => p.id === props.id.toString());
+        selectedDevice = producingDevices.find(p => p.id === props.id.toString());
     }
 
-    if (selectedAsset) {
-        owner = getUserById(users, selectedAsset.owner.address);
+    if (selectedDevice) {
+        owner = getUserById(users, selectedDevice.owner.address);
 
         if (!owner) {
             const dispatch = useDispatch();
-            dispatch(requestUser(selectedAsset.owner.address));
+            dispatch(requestUser(selectedDevice.owner.address));
         }
     }
 
     let data;
     let tooltip = '';
 
-    if (selectedAsset) {
-        const selectedAssetType = selectedAsset.offChainProperties.assetType;
+    if (selectedDevice) {
+        const selectedDeviceType = selectedDevice.offChainProperties.deviceType;
         let image = solar;
 
-        if (selectedAssetType.startsWith('Wind')) {
+        if (selectedDeviceType.startsWith('Wind')) {
             image = wind;
-        } else if (selectedAssetType.startsWith('Hydro-electric Head')) {
+        } else if (selectedDeviceType.startsWith('Hydro-electric Head')) {
             image = hydro;
-        } else if (selectedAssetType.startsWith('Thermal')) {
+        } else if (selectedDeviceType.startsWith('Thermal')) {
             image = iconThermal;
             tooltip = 'Created by Adam Terpening from the Noun Project';
-        } else if (selectedAssetType.startsWith('Solid')) {
+        } else if (selectedDeviceType.startsWith('Solid')) {
             image = iconSolid;
             tooltip = 'Created by ahmad from the Noun Project';
-        } else if (selectedAssetType.startsWith('Liquid')) {
+        } else if (selectedDeviceType.startsWith('Liquid')) {
             image = iconLiquid;
             tooltip = 'Created by BomSymbols from the Noun Project';
-        } else if (selectedAssetType.startsWith('Gaseous')) {
+        } else if (selectedDeviceType.startsWith('Gaseous')) {
             image = iconGaseous;
             tooltip = 'Created by Deadtype from the Noun Project';
-        } else if (selectedAssetType.startsWith('Marine')) {
+        } else if (selectedDeviceType.startsWith('Marine')) {
             image = iconMarine;
             tooltip = 'Created by Vectors Point from the Noun Project';
         }
@@ -105,30 +105,30 @@ export function ProducingAssetDetailView(props: IProps) {
             [
                 {
                     label: 'Facility Name',
-                    data: selectedAsset.offChainProperties.facilityName
+                    data: selectedDevice.offChainProperties.facilityName
                 },
                 {
-                    label: 'Asset Owner',
+                    label: 'Device Owner',
                     data: owner ? owner.organization : ''
                 },
                 {
                     label:
                         'Certified by Registry' +
-                        getOffChainText('complianceRegistry', selectedAsset.offChainProperties),
-                    data: Compliance[selectedAsset.offChainProperties.complianceRegistry]
+                        getOffChainText('complianceRegistry', selectedDevice.offChainProperties),
+                    data: Compliance[selectedDevice.offChainProperties.complianceRegistry]
                 },
                 {
                     label:
                         'Other Green Attributes' +
-                        getOffChainText('otherGreenAttributes', selectedAsset.offChainProperties),
-                    data: selectedAsset.offChainProperties.otherGreenAttributes
+                        getOffChainText('otherGreenAttributes', selectedDevice.offChainProperties),
+                    data: selectedDevice.offChainProperties.otherGreenAttributes
                 }
             ],
             [
                 {
-                    label: 'Asset Type',
-                    data: assetTypeService.getDisplayText(
-                        selectedAsset.offChainProperties.assetType
+                    label: 'Device Type',
+                    data: deviceTypeService.getDisplayText(
+                        selectedDevice.offChainProperties.deviceType
                     ),
                     image,
                     rowspan: 2
@@ -136,22 +136,22 @@ export function ProducingAssetDetailView(props: IProps) {
                 {
                     label:
                         'Meter Read' +
-                        getOffChainText('lastSmartMeterReadWh', selectedAsset.offChainProperties),
-                    data: (selectedAsset.lastSmartMeterReadWh / 1000).toLocaleString(),
+                        getOffChainText('lastSmartMeterReadWh', selectedDevice.offChainProperties),
+                    data: (selectedDevice.lastSmartMeterReadWh / 1000).toLocaleString(),
                     tip: 'kWh'
                 },
                 {
                     label:
                         'Public Support' +
-                        getOffChainText('typeOfPublicSupport', selectedAsset.offChainProperties),
-                    data: selectedAsset.offChainProperties.typeOfPublicSupport,
+                        getOffChainText('typeOfPublicSupport', selectedDevice.offChainProperties),
+                    data: selectedDevice.offChainProperties.typeOfPublicSupport,
                     description: ''
                 },
                 {
                     label:
                         'Commissioning Date' +
-                        getOffChainText('operationalSince', selectedAsset.offChainProperties),
-                    data: moment(selectedAsset.offChainProperties.operationalSince * 1000).format(
+                        getOffChainText('operationalSince', selectedDevice.offChainProperties),
+                    data: moment(selectedDevice.offChainProperties.operationalSince * 1000).format(
                         'MMM YY'
                     )
                 }
@@ -160,18 +160,18 @@ export function ProducingAssetDetailView(props: IProps) {
                 {
                     label:
                         'Nameplate Capacity' +
-                        getOffChainText('capacityWh', selectedAsset.offChainProperties),
-                    data: (selectedAsset.offChainProperties.capacityWh / 1000).toLocaleString(),
+                        getOffChainText('capacityWh', selectedDevice.offChainProperties),
+                    data: (selectedDevice.offChainProperties.capacityWh / 1000).toLocaleString(),
                     tip: 'kW'
                 },
                 {
                     label:
                         'Geo Location' +
-                        getOffChainText('gpsLatitude', selectedAsset.offChainProperties),
+                        getOffChainText('gpsLatitude', selectedDevice.offChainProperties),
                     data:
-                        selectedAsset.offChainProperties.gpsLatitude +
+                        selectedDevice.offChainProperties.gpsLatitude +
                         ', ' +
-                        selectedAsset.offChainProperties.gpsLongitude,
+                        selectedDevice.offChainProperties.gpsLongitude,
                     image: map,
                     type: 'map',
                     rowspan: 3,
@@ -183,9 +183,9 @@ export function ProducingAssetDetailView(props: IProps) {
 
     const pageBody = (
         <div className="PageBody">
-            {!selectedAsset ? (
+            {!selectedDevice ? (
                 <div className="text-center">
-                    <strong>Asset not found</strong>
+                    <strong>Device not found</strong>
                 </div>
             ) : (
                 <table>
@@ -230,7 +230,7 @@ export function ProducingAssetDetailView(props: IProps) {
                                                     </div>
                                                 ) : (
                                                     <div className={`Image Map`}>
-                                                        <AssetMap assets={[selectedAsset]} />
+                                                        <DeviceMap devices={[selectedDevice]} />
                                                     </div>
                                                 ))}
                                             {col.description && (
@@ -250,22 +250,22 @@ export function ProducingAssetDetailView(props: IProps) {
     return (
         <div className="DetailViewWrapper">
             {props.addSearchField && (
-                <div className="FindAsset">
+                <div className="FindDevice">
                     <input
                         onChange={e => setNewId(e.target.value)}
                         defaultValue={props.id || props.id === 0 ? props.id.toString() : ''}
                     />
 
                     <Link
-                        className="btn btn-primary find-asset-button"
-                        to={getProducingAssetDetailLink(baseURL, newId)}
+                        className="btn btn-primary find-device-button"
+                        to={getProducingDeviceDetailLink(baseURL, newId)}
                     >
-                        Find Asset
+                        Find Device
                     </Link>
                 </div>
             )}
 
-            {selectedAsset && (
+            {selectedDevice && (
                 <>
                     <div className="PageContentWrapper">
                         {pageBody}
@@ -278,13 +278,13 @@ export function ProducingAssetDetailView(props: IProps) {
                                     <div className="row">
                                         <div className="col-lg-4">
                                             <SmartMeterReadingsTable
-                                                producingAsset={selectedAsset}
+                                                producingDevice={selectedDevice}
                                             />
                                         </div>
 
                                         <div className="col-lg-8">
                                             <SmartMeterReadingsChart
-                                                producingAsset={selectedAsset}
+                                                producingDevice={selectedDevice}
                                             />
                                         </div>
                                     </div>
@@ -298,12 +298,12 @@ export function ProducingAssetDetailView(props: IProps) {
                             <br />
                             <CertificateTable
                                 certificates={certificates.filter(
-                                    c => c.certificate.assetId.toString() === props.id.toString()
+                                    c => c.certificate.deviceId.toString() === props.id.toString()
                                 )}
                                 selectedState={SelectedState.ForSale}
                                 demand={null}
                                 hiddenColumns={[
-                                    'Asset Type',
+                                    'Device Type',
                                     'Commissioning Date',
                                     'Town, Country'
                                 ]}

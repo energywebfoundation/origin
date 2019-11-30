@@ -3,25 +3,25 @@ import Web3 from 'web3';
 import { Configuration } from '@energyweb/utils-general';
 import { UserLogic } from '@energyweb/user-registry';
 
-import { AssetLogic } from '..';
+import { DeviceLogic } from '..';
 
 export const createBlockchainProperties = async (
     web3: Web3,
-    assetLogicAddress: string
+    deviceLogicAddress: string
 ): Promise<Configuration.BlockchainProperties> => {
     if (!web3) {
         return {
-            assetLogicInstance: null,
+            deviceLogicInstance: null,
             userLogicInstance: null,
             web3: null
         };
     }
 
-    const assetLogicInstance = new AssetLogic(web3, assetLogicAddress);
-    const userLogicInstance = new UserLogic(web3, await assetLogicInstance.userLogicAddress());
+    const deviceLogicInstance = new DeviceLogic(web3, deviceLogicAddress);
+    const userLogicInstance = new UserLogic(web3, await deviceLogicInstance.userLogicAddress());
 
     return {
-        assetLogicInstance,
+        deviceLogicInstance,
         userLogicInstance,
         web3
     };

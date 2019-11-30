@@ -17,7 +17,7 @@ export class MatchableAgreement {
 
         return new Validator<MatchingErrorReason>()
             .validate(
-                supply.assetId.toString() === certificate.certificate.assetId.toString(),
+                supply.deviceId.toString() === certificate.certificate.deviceId.toString(),
                 MatchingErrorReason.WRONG_ASSET_ID
             )
             .validate(missingEnergyInCurrentPeriod !== undefined, MatchingErrorReason.OUT_OF_RANGE)

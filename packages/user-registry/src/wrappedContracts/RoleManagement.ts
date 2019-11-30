@@ -5,8 +5,8 @@ import RoleManagementJSON from '../../build/contracts/lightweight/RoleManagement
 
 export enum Role {
     UserAdmin,
-    AssetAdmin,
-    AssetManager,
+    DeviceAdmin,
+    DeviceManager,
     Trader,
     Matcher,
     Issuer,

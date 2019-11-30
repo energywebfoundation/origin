@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import moment from 'moment-timezone';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/asset-registry';
 import { TableMaterial } from './Table/TableMaterial';
 import {
     usePaginatedLoader,
@@ -8,20 +8,20 @@ import {
 } from './Table/PaginatedLoaderHooks';
 
 interface IProps {
-    producingAsset: ProducingAsset.Entity;
+    producingDevice: ProducingDevice.Entity;
 }
 
 type TRecord = [string, number];
 
 export function SmartMeterReadingsTable(props: IProps) {
-    const { producingAsset } = props;
+    const { producingDevice } = props;
 
     async function getPaginatedData({
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        const readings = await producingAsset.getSmartMeterReads();
-        const assetTimezone = producingAsset.offChainProperties.timezone;
+        const readings = await producingDevice.getSmartMeterReads();
+        const deviceTimezone = producingDevice.offChainProperties.timezone;
 
         const data = [];
         let currentSmartMeterState = 0;
@@ -32,7 +32,7 @@ export function SmartMeterReadingsTable(props: IProps) {
             data.push([
                 moment
                     .unix(readings[i].timestamp)
-                    .tz(assetTimezone)
+                    .tz(deviceTimezone)
                     .format('DD MMM YY, HH:mm'),
                 currentSmartMeterState
             ]);
@@ -51,10 +51,10 @@ export function SmartMeterReadingsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [producingAsset]);
+    }, [producingDevice]);
 
     const columns = [
-        { id: 'time', label: `Time (${producingAsset.offChainProperties.timezone})` },
+        { id: 'time', label: `Time (${producingDevice.offChainProperties.timezone})` },
         { id: 'value', label: 'Smart Meter Value' }
     ] as const;
 

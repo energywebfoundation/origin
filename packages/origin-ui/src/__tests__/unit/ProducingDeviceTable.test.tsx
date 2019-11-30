@@ -1,21 +1,21 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { ProducingAssetTable } from '../../components/ProducingAssetTable';
+import { ProducingDeviceTable } from '../../components/ProducingDeviceTable';
 import { dataTestSelector } from '../../utils/helper';
 import { setupStore, WrapperComponent, createRenderedHelpers } from '../utils/helpers';
 
-describe('ProducingAssetTable', () => {
+describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
-        const { store, history, addProducingAsset } = setupStore();
+        const { store, history, addProducingDevice } = setupStore();
 
-        addProducingAsset({
+        addProducingDevice({
             id: '0'
         });
 
-        addProducingAsset({
+        addProducingDevice({
             id: '1',
             facilityName: 'Biomass Energy Facility',
-            assetType: 'Gaseous;Agricultural gas',
+            deviceType: 'Gaseous;Agricultural gas',
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             country: 'Thailand',
@@ -25,7 +25,7 @@ describe('ProducingAssetTable', () => {
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>
-                <ProducingAssetTable />
+                <ProducingDeviceTable />
             </WrapperComponent>
         );
 
@@ -42,7 +42,7 @@ describe('ProducingAssetTable', () => {
             'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777',
-            // next asset
+            // next device
             'Example Organization',
             'Biomass Energy Facility',
             'Nakhon Pathom, Central',

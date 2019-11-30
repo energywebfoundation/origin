@@ -3,7 +3,7 @@ import { Certificate } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProducingAssets, getConfiguration } from '../features/selectors';
+import { getProducingDevices, getConfiguration } from '../features/selectors';
 import { TableMaterial } from './Table/TableMaterial';
 import { Check } from '@material-ui/icons';
 import { getCurrentUser } from '../features/users/selectors';
@@ -12,26 +12,26 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
-import { IRECAssetService, LocationService } from '@energyweb/utils-general';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { ProducingDevice } from '@energyweb/asset-registry';
 
 interface IProps {
     approvedOnly?: boolean;
 }
 
-const assetTypeService = new IRECAssetService();
+const deviceTypeService = new IRECDeviceService();
 const locationService = new LocationService();
 
 interface IRecord {
     certificationRequestId: number;
-    asset: ProducingAsset.Entity;
+    device: ProducingDevice.Entity;
     energy: number;
 }
 
 export function CertificationRequestsTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const currentUser = useSelector(getCurrentUser);
-    const producingAssets = useSelector(getProducingAssets);
+    const producingDevices = useSelector(getProducingDevices);
 
     const dispatch = useDispatch();
 
@@ -39,7 +39,7 @@ export function CertificationRequestsTable(props: IProps) {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!currentUser || producingAssets.length === 0) {
+        if (!currentUser || producingDevices.length === 0) {
             return {
                 paginatedData: [],
                 total: 0
@@ -56,17 +56,17 @@ export function CertificationRequestsTable(props: IProps) {
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
-            const asset = producingAssets.find(a => a.id === request.assetId);
+            const device = producingDevices.find(a => a.id === request.deviceId);
 
             if (
                 (view === 'pending' && Number(request.status) !== 0) ||
                 (view === 'approved' && Number(request.status) !== 1) ||
-                (!isIssuer && currentUser.id.toLowerCase() !== asset?.owner.address.toLowerCase())
+                (!isIssuer && currentUser.id.toLowerCase() !== device?.owner.address.toLowerCase())
             ) {
                 continue;
             }
 
-            const reads = await asset.getSmartMeterReads();
+            const reads = await device.getSmartMeterReads();
 
             const energy = reads
                 .slice(request.readsStartIndex, Number(request.readsEndIndex) + 1)
@@ -74,7 +74,7 @@ export function CertificationRequestsTable(props: IProps) {
 
             newPaginatedData.push({
                 certificationRequestId: i,
-                asset,
+                device,
                 energy
             });
         }
@@ -95,7 +95,7 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.approvedOnly, currentUser, producingAssets.length]);
+    }, [props.approvedOnly, currentUser, producingDevices.length]);
 
     async function approve(rowIndex: number) {
         const certificationRequestId = paginatedData[rowIndex].certificationRequestId;
@@ -135,28 +135,29 @@ export function CertificationRequestsTable(props: IProps) {
         { id: 'meterRead', label: 'Meter Read (kWh)' }
     ] as const;
 
-    const rows = paginatedData.map(({ asset, energy }) => {
-        let assetRegion = '';
-        let assetProvince = '';
+    const rows = paginatedData.map(({ device, energy }) => {
+        let deviceRegion = '';
+        let deviceProvince = '';
         try {
             const decodedLocation = locationService.decode([
                 locationService.translateAddress(
-                    asset.offChainProperties.address,
-                    asset.offChainProperties.country
+                    device.offChainProperties.address,
+                    device.offChainProperties.country
                 )
             ])[0];
 
-            assetRegion = decodedLocation[1];
-            assetProvince = decodedLocation[2];
+            deviceRegion = decodedLocation[1];
+            deviceProvince = decodedLocation[2];
         } catch (error) {
             console.error('CertificationRequestTable: Error while parsing location', error);
         }
 
         return {
-            facility: asset.offChainProperties.facilityName,
-            provinceRegion: assetProvince && assetRegion ? `${assetProvince}, ${assetRegion}` : '',
-            type: assetTypeService.getDisplayText(asset.offChainProperties.assetType),
-            capacity: (asset.offChainProperties.capacityWh / 1000).toLocaleString(),
+            facility: device.offChainProperties.facilityName,
+            provinceRegion:
+                deviceProvince && deviceRegion ? `${deviceProvince}, ${deviceRegion}` : '',
+            type: deviceTypeService.getDisplayText(device.offChainProperties.deviceType),
+            capacity: (device.offChainProperties.capacityWh / 1000).toLocaleString(),
             meterRead: (energy / 1000).toLocaleString()
         };
     });

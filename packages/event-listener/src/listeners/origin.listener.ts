@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import polly from 'polly-js';
 
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/asset-registry';
 import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
 import {
@@ -125,8 +125,8 @@ export class OriginEventListener implements IOriginEventListener {
 
             const demands = await Demand.getAllDemands(this.conf);
 
-            const producingAsset = await new ProducingAsset.Entity(
-                publishedCertificate.certificate.assetId.toString(),
+            const producingDevice = await new ProducingDevice.Entity(
+                publishedCertificate.certificate.deviceId.toString(),
                 this.conf
             ).sync();
 
@@ -135,7 +135,7 @@ export class OriginEventListener implements IOriginEventListener {
             for (const demand of demands) {
                 const { result } = await new MatchableDemand(demand).matchesCertificate(
                     publishedCertificate,
-                    producingAsset
+                    producingDevice
                 );
                 if (result) {
                     demandsMatchCertificate.push(demand);

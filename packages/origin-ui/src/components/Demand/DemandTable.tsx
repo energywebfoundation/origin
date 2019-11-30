@@ -1,6 +1,6 @@
 import { Demand, MarketUser } from '@energyweb/market';
 
-import { Configuration, Currency, IRECAssetService, TimeFrame } from '@energyweb/utils-general';
+import { Configuration, Currency, IRECDeviceService, TimeFrame } from '@energyweb/utils-general';
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
 import React from 'react';
@@ -216,7 +216,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         { id: 'buyer', label: 'Buyer' },
         { id: 'duration', label: 'Duration' },
         { id: 'region', label: 'Region' },
-        { id: 'assetType', label: 'Asset type' },
+        { id: 'deviceType', label: 'Device type' },
         { id: 'repeatable', label: 'Repeatable' },
         { id: 'fromSingleFacility', label: 'Single facility' },
         { id: 'vintage', label: 'Vintage' },
@@ -230,17 +230,17 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return this.state.paginatedData.map(enrichedDemandData => {
             const demand = enrichedDemandData.demand;
 
-            const assetService = new IRECAssetService();
+            const deviceService = new IRECDeviceService();
 
-            const topLevelAssetTypes = demand.offChainProperties.assetType
-                ? assetService
-                      .decode(demand.offChainProperties.assetType)
+            const topLevelDeviceTypes = demand.offChainProperties.deviceType
+                ? deviceService
+                      .decode(demand.offChainProperties.deviceType)
                       .filter(type => type.length === 1)
                 : [];
 
-            const assetType =
-                topLevelAssetTypes.length > 0
-                    ? topLevelAssetTypes.map(type => type[0]).join(', ')
+            const deviceType =
+                topLevelDeviceTypes.length > 0
+                    ? topLevelDeviceTypes.map(type => type[0]).join(', ')
                     : NO_VALUE_TEXT;
 
             const overallDemand = (
@@ -267,7 +267,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     ' - ' +
                     moment.unix(demand.offChainProperties.endTime).format('DD MMM YY'),
                 region: this.getRegionText(demand),
-                assetType,
+                deviceType,
                 repeatable:
                     typeof demand.offChainProperties.timeFrame !== 'undefined'
                         ? TimeFrame[demand.offChainProperties.timeFrame]

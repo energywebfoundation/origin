@@ -1,15 +1,15 @@
 import { assert } from 'chai';
-import { IRECAssetService } from '../blockchain-facade/AssetTypeService';
+import { IRECDeviceService } from '../blockchain-facade/DeviceTypeService';
 
-describe('AssetTypeService tests', () => {
-    const assetTypeService = new IRECAssetService();
+describe('DeviceTypeService tests', () => {
+    const deviceTypeService = new IRECDeviceService();
 
-    it('should return asset type structure', () => {
-        assert.isNotNull(assetTypeService.AssetTypes);
+    it('should return device type structure', () => {
+        assert.isNotNull(deviceTypeService.DeviceTypes);
     });
 
-    it('should encode asset types', () => {
-        const encoded = assetTypeService.encode([
+    it('should encode device types', () => {
+        const encoded = deviceTypeService.encode([
             ['Solar', 'Concentration'],
             ['Wind', 'Offshore'],
             ['Marine', 'Tidal', 'Inshore']
@@ -20,8 +20,8 @@ describe('AssetTypeService tests', () => {
         assert.deepEqual(encoded, expectedResult);
     });
 
-    it('should decode asset types', () => {
-        const decoded = assetTypeService.decode([
+    it('should decode device types', () => {
+        const decoded = deviceTypeService.decode([
             'Solar;Concentration',
             'Wind;Offshore',
             'Marine;Tidal;Inshore'
@@ -36,8 +36,8 @@ describe('AssetTypeService tests', () => {
         assert.deepEqual(decoded, expectedResult);
     });
 
-    it('should decode asset types', () => {
-        const decoded = assetTypeService.decode([
+    it('should decode device types', () => {
+        const decoded = deviceTypeService.decode([
             'Solar;Concentration',
             'Wind;Offshore',
             'Marine;Tidal;Inshore'
@@ -52,27 +52,27 @@ describe('AssetTypeService tests', () => {
         assert.deepEqual(decoded, expectedResult);
     });
 
-    it('should find demanded asset types when types matches', () => {
-        const demandAssetTypes = ['Solar;Concentration'];
-        const supplyAssetTypes = 'Solar;Concentration';
+    it('should find demanded device types when types matches', () => {
+        const demandDeviceTypes = ['Solar;Concentration'];
+        const supplyDeviceTypes = 'Solar;Concentration';
 
-        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
+        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
         assert.isTrue(res);
     });
 
-    it('should find demanded asset types when current has one of matches', () => {
-        const demandAssetTypes = ['Solar;Concentration', 'Wind'];
-        const supplyAssetTypes = 'Solar;Concentration';
+    it('should find demanded device types when current has one of matches', () => {
+        const demandDeviceTypes = ['Solar;Concentration', 'Wind'];
+        const supplyDeviceTypes = 'Solar;Concentration';
 
-        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
+        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
         assert.isTrue(res);
     });
 
-    it('should not find demanded asset types when types matches', () => {
-        const demandAssetTypes = ['Solar;Concentration'];
-        const supplyAssetTypes = 'Wind;Onshore';
+    it('should not find demanded device types when types matches', () => {
+        const demandDeviceTypes = ['Solar;Concentration'];
+        const supplyDeviceTypes = 'Wind;Onshore';
 
-        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
+        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
         assert.isFalse(res);
     });
 
@@ -90,52 +90,55 @@ describe('AssetTypeService tests', () => {
             [['Marine', 'Marine;Tidal'], 'Marine', false]
         ];
 
-        for (const [assetTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
+        for (const [deviceTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
             assert.equal(
-                assetTypeService.includesAssetType(typeToCheck as string, assetTypes as string[]),
+                deviceTypeService.includesDeviceType(typeToCheck as string, deviceTypes as string[]),
                 expectedResult
             );
         }
     });
 
-    it('should find demanded asset types when demanded assets are less specific than current', () => {
-        const demandAssetTypes = ['Solar'];
-        const supplyAssetTypes = 'Solar;Photovoltaic;Roof mounted';
+    it('should find demanded device types when demanded devices are less specific than current', () => {
+        const demandDeviceTypes = ['Solar'];
+        const supplyDeviceTypes = 'Solar;Photovoltaic;Roof mounted';
 
-        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
+        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
         assert.isTrue(res);
     });
 
-    it('should not find demanded asset types when demanded assets are more specific than current', () => {
-        const demandAssetTypes = ['Marine;Tidal;Inshore'];
-        const supplyAssetTypes = 'Marine;Tidal';
+    it('should not find demanded device types when demanded devices are more specific than current', () => {
+        const demandDeviceTypes = ['Marine;Tidal;Inshore'];
+        const supplyDeviceTypes = 'Marine;Tidal';
 
-        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
+        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
         assert.isFalse(res);
     });
 
-    it('should not find demanded asset types when demanded assets are more specific than current', () => {
-        const demandAssetTypes = ['Marine;Tidal;Inshore'];
-        const supplyAssetTypes = 'Marine;Tidal';
+    it('should not find demanded device types when demanded devices are more specific than current', () => {
+        const demandDeviceTypes = ['Marine;Tidal;Inshore'];
+        const supplyDeviceTypes = 'Marine;Tidal';
 
-        const res = assetTypeService.includesAssetType(supplyAssetTypes, demandAssetTypes);
+        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
         assert.isFalse(res);
     });
 
     describe('filterForHighestSpecificity()', () => {
         it('returns an empty array when empty array passed', () => {
-            assert.deepEqual(assetTypeService.filterForHighestSpecificity([]), []);
+            assert.deepEqual(deviceTypeService.filterForHighestSpecificity([]), []);
         });
 
         it('should preserve level level 1 types if no higher specificity', () => {
             const TEST_MATRIX = [
-                [['Wind', 'Solar', 'Marine'], ['Wind', 'Solar', 'Marine']],
+                [
+                    ['Wind', 'Solar', 'Marine'],
+                    ['Wind', 'Solar', 'Marine']
+                ],
                 [['Liquid'], ['Liquid']]
             ];
 
             for (const [unfiltered, expectedFiltered] of TEST_MATRIX) {
                 assert.deepEqual(
-                    assetTypeService.filterForHighestSpecificity(unfiltered),
+                    deviceTypeService.filterForHighestSpecificity(unfiltered),
                     expectedFiltered
                 );
             }
@@ -144,7 +147,10 @@ describe('AssetTypeService tests', () => {
         it('correctly filters out level 1 types if level 2 types of the same category are present', () => {
             const TEST_MATRIX = [
                 [['Solar', 'Solar;Photovoltaic'], ['Solar;Photovoltaic']],
-                [['Solar', 'Solar;Photovoltaic', 'Wind'], ['Solar;Photovoltaic', 'Wind']],
+                [
+                    ['Solar', 'Solar;Photovoltaic', 'Wind'],
+                    ['Solar;Photovoltaic', 'Wind']
+                ],
                 [
                     ['Solar', 'Solar;Photovoltaic', 'Wind', 'Wind;Onshore'],
                     ['Solar;Photovoltaic', 'Wind;Onshore']
@@ -153,7 +159,7 @@ describe('AssetTypeService tests', () => {
 
             for (const [unfiltered, expectedFiltered] of TEST_MATRIX) {
                 assert.deepEqual(
-                    assetTypeService.filterForHighestSpecificity(unfiltered),
+                    deviceTypeService.filterForHighestSpecificity(unfiltered),
                     expectedFiltered
                 );
             }
@@ -161,7 +167,10 @@ describe('AssetTypeService tests', () => {
 
         it('should preserve level 2 types if level 1 type of the same category is not present', () => {
             const TEST_MATRIX = [
-                [['Wind;Offshore', 'Wind;Onshore'], ['Wind;Offshore', 'Wind;Onshore']],
+                [
+                    ['Wind;Offshore', 'Wind;Onshore'],
+                    ['Wind;Offshore', 'Wind;Onshore']
+                ],
                 [
                     ['Solar', 'Solar;Photovoltaic', 'Wind;Offshore', 'Wind;Onshore'],
                     ['Solar;Photovoltaic', 'Wind;Offshore', 'Wind;Onshore']
@@ -170,7 +179,7 @@ describe('AssetTypeService tests', () => {
 
             for (const [unfiltered, expectedFiltered] of TEST_MATRIX) {
                 assert.deepEqual(
-                    assetTypeService.filterForHighestSpecificity(unfiltered),
+                    deviceTypeService.filterForHighestSpecificity(unfiltered),
                     expectedFiltered
                 );
             }
@@ -197,7 +206,7 @@ describe('AssetTypeService tests', () => {
 
             for (const [unfiltered, expectedFiltered] of TEST_MATRIX) {
                 assert.deepEqual(
-                    assetTypeService.filterForHighestSpecificity(unfiltered),
+                    deviceTypeService.filterForHighestSpecificity(unfiltered),
                     expectedFiltered
                 );
             }
@@ -214,7 +223,7 @@ describe('AssetTypeService tests', () => {
 
             for (const [unfiltered, expectedFiltered] of TEST_MATRIX) {
                 assert.deepEqual(
-                    assetTypeService.filterForHighestSpecificity(unfiltered),
+                    deviceTypeService.filterForHighestSpecificity(unfiltered),
                     expectedFiltered
                 );
             }

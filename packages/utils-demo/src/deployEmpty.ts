@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { logger } from './Logger';
 
 import * as UserRegistry from '@energyweb/user-registry';
-import * as AssetRegistry from '@energyweb/asset-registry';
+import * as DeviceRegistry from '@energyweb/asset-registry';
 import * as Origin from '@energyweb/origin';
 import * as Market from '@energyweb/market';
 
@@ -14,22 +14,22 @@ export async function deployEmptyContracts() {
 
     console.log('-----------------------------------------------------------');
 
-    // deploy user, asset and market contracts and store instances of lookup contracts
+    // deploy user, device and market contracts and store instances of lookup contracts
     const userLogic = await UserRegistry.Contracts.migrateUserRegistryContracts(web3, adminPK);
     const userLogicAddress = userLogic.web3Contract.options.address;
     logger.info('UserLogic Contract Deployed: ' + userLogicAddress);
 
-    const assetLogic = await AssetRegistry.Contracts.migrateAssetRegistryContracts(
+    const deviceLogic = await DeviceRegistry.Contracts.migrateDeviceRegistryContracts(
         web3,
         userLogicAddress,
         adminPK
     );
-    const assetLogicAddress = assetLogic.web3Contract.options.address;
-    logger.info('AssetLogic Contract Deployed: ' + assetLogicAddress);
+    const deviceLogicAddress = deviceLogic.web3Contract.options.address;
+    logger.info('DeviceLogic Contract Deployed: ' + deviceLogicAddress);
 
     const certificateLogic = await Origin.Contracts.migrateCertificateRegistryContracts(
         web3,
-        assetLogicAddress,
+        deviceLogicAddress,
         adminPK
     );
     const certificateLogicAddress = certificateLogic.web3Contract.options.address;
@@ -48,7 +48,7 @@ export async function deployEmptyContracts() {
     // save addresses in a config file
     const deployResult = {
         userLogic: userLogicAddress,
-        assetLogic: assetLogicAddress,
+        deviceLogic: deviceLogicAddress,
         certificateLogic: certificateLogicAddress,
         marketLogic: marketLogicAddress
     };

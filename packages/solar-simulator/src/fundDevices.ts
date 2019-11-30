@@ -25,11 +25,11 @@ if (!hasCorrectPrivateKey) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const processAssets = async (assets: any[]) => {
+const processDevices = async (devices: any[]) => {
     const fundingAccount = web3.eth.accounts.privateKeyToAccount(program.fundingAccount);
     const value = web3.utils.toWei(program.value);
     const fundingAccountBalance = await web3.eth.getBalance(fundingAccount.address);
-    const required = new BN(value).mul(new BN(assets.length));
+    const required = new BN(value).mul(new BN(devices.length));
 
     if (required.gt(new BN(fundingAccountBalance.toString()))) {
         console.log(required.gt(new BN(fundingAccountBalance.toString())));
@@ -41,11 +41,11 @@ const processAssets = async (assets: any[]) => {
 
     console.log(`Using ${fundingAccount.address} as funding account`);
 
-    for (const asset of assets) {
+    for (const device of devices) {
         console.log('---');
-        console.log(`Processing asset with id ${asset.id}`);
+        console.log(`Processing device with id ${device.id}`);
 
-        const to = web3.eth.accounts.privateKeyToAccount(asset.smartMeterPrivateKey).address;
+        const to = web3.eth.accounts.privateKeyToAccount(device.smartMeterPrivateKey).address;
 
         const signedTx = await fundingAccount.signTransaction({
             to,
@@ -63,11 +63,11 @@ const processAssets = async (assets: any[]) => {
 };
 
 (async () => {
-    console.log('----- Starting funding process for assets in config file -----');
+    console.log('----- Starting funding process for devices in config file -----');
 
-    const { assets } = CONFIG;
+    const { devices } = CONFIG;
 
-    console.log(`Found ${assets.length} assets in CONFIG`);
+    console.log(`Found ${devices.length} devices in CONFIG`);
 
-    await processAssets(assets);
+    await processDevices(devices);
 })();

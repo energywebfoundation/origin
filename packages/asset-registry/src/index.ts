@@ -1,22 +1,22 @@
-import * as ProducingAsset from './blockchain-facade/ProducingAsset';
-import * as ConsumingAsset from './blockchain-facade/ConsumingAsset';
-import * as Asset from './blockchain-facade/Asset';
+import * as ProducingDevice from './blockchain-facade/ProducingDevice';
+import * as ConsumingDevice from './blockchain-facade/ConsumingDevice';
+import * as Device from './blockchain-facade/Device';
 import * as Contracts from './contracts';
 
-import AssetPropertiesOffChainSchema from '../schemas/AssetPropertiesOffChain.schema.json';
-import ProducingAssetPropertiesOffChainSchema from '../schemas/ProducingAssetPropertiesOffChain.schema.json';
+import DevicePropertiesOffChainSchema from '../schemas/DevicePropertiesOffChain.schema.json';
+import ProducingDevicePropertiesOffChainSchema from '../schemas/ProducingDevicePropertiesOffChain.schema.json';
 import { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 
-import { AssetLogic } from './wrappedContracts/AssetLogic';
+import { DeviceLogic } from './wrappedContracts/DeviceLogic';
 
 export {
     Contracts,
-    ProducingAsset,
-    ConsumingAsset,
-    Asset,
-    AssetLogic,
-    AssetPropertiesOffChainSchema,
-    ProducingAssetPropertiesOffChainSchema,
+    ProducingDevice,
+    ConsumingDevice,
+    Device,
+    DeviceLogic,
+    DevicePropertiesOffChainSchema,
+    ProducingDevicePropertiesOffChainSchema,
     createBlockchainProperties
 };
 

@@ -1,8 +1,8 @@
 const Migrations = artifacts.require("Migrations");
-const AssetLogic = artifacts.require("AssetLogic");
+const DeviceLogic = artifacts.require("DeviceLogic");
 
 module.exports = function(deployer) {
     deployer.deploy(Migrations);
 
-    deployer.deploy(AssetLogic);
+    deployer.deploy(DeviceLogic);
 };

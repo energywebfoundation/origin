@@ -1,4 +1,4 @@
-import { ConsumingAsset, Asset, ProducingAsset } from '@energyweb/asset-registry';
+import { ConsumingDevice, Device, ProducingDevice } from '@energyweb/asset-registry';
 import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 import { MarketUser } from '@energyweb/market';
@@ -59,21 +59,21 @@ export const onboardDemo = async (
         case 'CREATE_PRODUCING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetProducingProps: Asset.IOnChainProperties = {
+            const deviceProducingProps: Device.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
-                usageType: Asset.UsageType.Producing,
+                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
                 url: null
             };
 
-            const assetTypeConfig = action.data.assetType;
-            const assetCompliance = Compliance[action.data.complianceRegistry as keyof typeof Compliance];
+            const deviceTypeConfig = action.data.deviceType;
+            const deviceCompliance = Compliance[action.data.complianceRegistry as keyof typeof Compliance];
 
-            const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
+            const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
                 operationalSince: action.data.operationalSince,
                 capacityWh: action.data.capacityWh,
                 country: action.data.country,
@@ -81,17 +81,17 @@ export const onboardDemo = async (
                 gpsLatitude: action.data.gpsLatitude,
                 gpsLongitude: action.data.gpsLongitude,
                 timezone: action.data.timezone,
-                assetType: assetTypeConfig,
-                complianceRegistry: assetCompliance,
+                deviceType: deviceTypeConfig,
+                complianceRegistry: deviceCompliance,
                 otherGreenAttributes: action.data.otherGreenAttributes,
                 typeOfPublicSupport: action.data.typeOfPublicSupport,
                 facilityName: action.data.facilityName
             };
 
             try {
-                await ProducingAsset.createAsset(
-                    assetProducingProps,
-                    assetProducingPropsOffChain,
+                await ProducingDevice.createDevice(
+                    deviceProducingProps,
+                    deviceProducingPropsOffChain,
                     conf
                 );
             } catch (e) {
@@ -104,18 +104,18 @@ export const onboardDemo = async (
         case 'CREATE_CONSUMING_ASSET':
             console.log('-----------------------------------------------------------');
 
-            const assetConsumingProps: Asset.IOnChainProperties = {
+            const deviceConsumingProps: Device.IOnChainProperties = {
                 smartMeter: { address: action.data.smartMeter },
                 owner: { address: action.data.owner },
                 lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
                 active: action.data.active,
-                usageType: Asset.UsageType.Consuming,
+                usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
                 propertiesDocumentHash: null,
                 url: null
             };
 
-            const assetConsumingPropsOffChain: Asset.IOffChainProperties = {
+            const deviceConsumingPropsOffChain: Device.IOffChainProperties = {
                 capacityWh: action.data.capacityWh,
                 country: action.data.country,
                 address: action.data.address,
@@ -127,9 +127,9 @@ export const onboardDemo = async (
             };
 
             try {
-                await ConsumingAsset.createAsset(
-                    assetConsumingProps,
-                    assetConsumingPropsOffChain,
+                await ConsumingDevice.createDevice(
+                    deviceConsumingProps,
+                    deviceConsumingPropsOffChain,
                     conf
                 );
             } catch (e) {

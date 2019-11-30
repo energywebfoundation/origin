@@ -1,13 +1,13 @@
 pragma solidity ^0.5.2;
 
-contract AssetDefinitions {
+contract DeviceDefinitions {
 
     enum UsageType {
         Producing,
         Consuming
     }
 
-    struct Asset {
+    struct Device {
         UsageType usageType;
         address smartMeter;
         address owner;

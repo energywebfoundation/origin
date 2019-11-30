@@ -4,9 +4,9 @@ export const getConfiguration = (state: IStoreState) => state.configuration;
 
 export const getDemands = (state: IStoreState) => state.demands;
 
-export const getProducingAssets = (state: IStoreState) => state.producingAssets.producingAssets;
+export const getProducingDevices = (state: IStoreState) => state.producingDevices.producingDevices;
 
-export const getConsumingAssets = (state: IStoreState) => state.consumingAssets;
+export const getConsumingDevices = (state: IStoreState) => state.consumingDevices;
 
 export const getBaseURL = () => {
     return '';

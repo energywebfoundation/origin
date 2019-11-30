@@ -161,9 +161,9 @@ describe('Header', () => {
                     offChainProperties: {
                         firstName: 'John',
                         surname: 'Doe Four',
-                        email: 'assetmanager@mailinator.com'
+                        email: 'devicemanager@mailinator.com'
                     },
-                    organization: 'AssetManager Organization',
+                    organization: 'Device Manager Organization',
                     roles: 12
                 },
                 USER_TRADER
@@ -195,7 +195,7 @@ describe('Header', () => {
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
         ).toStrictEqual([
             'Trader Organization (MetaMask)',
-            'AssetManager Organization',
+            'Device Manager Organization',
             'Trader Organization'
         ]);
     });

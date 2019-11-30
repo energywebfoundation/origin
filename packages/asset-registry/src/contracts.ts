@@ -1,4 +1,4 @@
-import AssetLogicJSON from '../build/contracts/AssetLogic.json';
-import { migrateAssetRegistryContracts } from './utils/migrateContracts';
+import DeviceLogicJSON from '../build/contracts/DeviceLogic.json';
+import { migrateDeviceRegistryContracts } from './utils/migrateContracts';
 
-export { AssetLogicJSON, migrateAssetRegistryContracts };
+export { DeviceLogicJSON, migrateDeviceRegistryContracts };

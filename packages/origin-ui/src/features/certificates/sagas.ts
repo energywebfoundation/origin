@@ -22,7 +22,7 @@ import { Unit, Currency } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
-import { Asset } from '@energyweb/asset-registry';
+import { Device } from '@energyweb/asset-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
@@ -70,7 +70,7 @@ function* requestCertificatesSaga(): SagaIterator {
         try {
             yield call(
                 Certificate.requestCertificates,
-                action.payload.assetId,
+                action.payload.deviceId,
                 action.payload.lastReadIndex,
                 configuration
             );
@@ -95,25 +95,25 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
             CertificatesActions.showRequestCertificatesModal
         );
 
-        const asset = action.payload.producingAsset;
+        const device = action.payload.producingDevice;
         const configuration: IStoreState['configuration'] = yield select(getConfiguration);
         const currentUser: MarketUser.Entity = yield select(getCurrentUser);
 
-        const reads: Asset.ISmartMeterRead[] = yield apply(asset, asset.getSmartMeterReads, []);
+        const reads: Device.ISmartMeterRead[] = yield apply(device, device.getSmartMeterReads, []);
 
-        if (asset?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
+        if (device?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
             showNotification(
-                `You need to own the asset to request I-RECs.`,
+                `You need to own the device to request I-RECs.`,
                 NotificationType.Error
             );
-        } else if (!currentUser.isRole(Role.AssetManager)) {
+        } else if (!currentUser.isRole(Role.DeviceManager)) {
             showNotification(
-                `You need to have Asset Manager role to request I-RECs.`,
+                `You need to have Device Manager role to request I-RECs.`,
                 NotificationType.Error
             );
         } else if (reads.length === 0) {
             showNotification(
-                `There are no smart meter reads for this asset.`,
+                `There are no smart meter reads for this device.`,
                 NotificationType.Error
             );
         } else {
@@ -122,15 +122,15 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
             const requestedCertsLength = yield apply(
                 certificateLogic,
-                certificateLogic.getAssetRequestedCertsForSMReadsLength,
-                [Number(asset.id)]
+                certificateLogic.getDeviceRequestedCertsForSMReadsLength,
+                [Number(device.id)]
             );
 
             const lastRequestedSMReadIndex = Number(requestedCertsLength);
 
             if (reads.length === lastRequestedSMReadIndex) {
                 showNotification(
-                    `You have already requested certificates for all smart meter reads for this asset.`,
+                    `You have already requested certificates for all smart meter reads for this device.`,
                     NotificationType.Error
                 );
             } else {

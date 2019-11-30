@@ -51,7 +51,7 @@ export function Header() {
 
     const classes = useStyles(useTheme());
 
-    const { getAssetsLink, getCertificatesLink, getDemandsLink, getAccountLink } = useLinks();
+    const { getDevicesLink, getCertificatesLink, getDemandsLink, getAccountLink } = useLinks();
 
     const privateKeyIndicator = <VpnKeySharp className={classes.icon} />;
 
@@ -147,12 +147,12 @@ export function Header() {
     return (
         <div className="HeaderWrapper">
             <div className="Header">
-                <NavLink to={getAssetsLink()}>
+                <NavLink to={getDevicesLink()}>
                     <img src={logo} />
                 </NavLink>
                 <ul className="NavMenu nav">
                     <li>
-                        <NavLink to={getAssetsLink()}>Assets</NavLink>
+                        <NavLink to={getDevicesLink()}>Devices</NavLink>
                     </li>
                     <li>
                         <NavLink to={getCertificatesLink()}>Certificates</NavLink>

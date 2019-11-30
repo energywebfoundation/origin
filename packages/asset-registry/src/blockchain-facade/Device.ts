@@ -2,7 +2,7 @@ import moment from 'moment';
 import { TransactionReceipt } from 'web3-core';
 
 import { BlockchainDataModelEntity, Configuration, Timestamp } from '@energyweb/utils-general';
-import { AssetLogic } from '../wrappedContracts/AssetLogic';
+import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
 
 export enum UsageType {
     Producing,
@@ -62,7 +62,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         timestamp: number = moment().unix()
     ): Promise<TransactionReceipt> {
         if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
+            return this.configuration.blockchainProperties.deviceLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
@@ -70,7 +70,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
         } else {
-            return this.configuration.blockchainProperties.assetLogicInstance.saveSmartMeterRead(
+            return this.configuration.blockchainProperties.deviceLogicInstance.saveSmartMeterRead(
                 this.id,
                 meterReading,
                 filehash,
@@ -81,20 +81,20 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        const logic: AssetLogic = this.configuration.blockchainProperties
-            .assetLogicInstance;
+        const logic: DeviceLogic = this.configuration.blockchainProperties
+            .deviceLogicInstance;
 
-        return (await logic.getSmartMeterReadsForAsset(Number(this.id))).map((read: ISmartMeterRead) => ({
+        return (await logic.getSmartMeterReadsForDevice(Number(this.id))).map((read: ISmartMeterRead) => ({
             energy: Number(read.energy),
             timestamp: Number(read.timestamp)
         }));
     }
 
     async getSmartMeterReadsByIndex(indexes: number[]): Promise<ISmartMeterRead[]> {
-        const logic: AssetLogic = this.configuration.blockchainProperties
-            .assetLogicInstance;
+        const logic: DeviceLogic = this.configuration.blockchainProperties
+            .deviceLogicInstance;
 
-        return (await logic.getSmartMeterReadsForAssetByIndex(Number(this.id), indexes)).map((read: ISmartMeterRead) => ({
+        return (await logic.getSmartMeterReadsForDeviceByIndex(Number(this.id), indexes)).map((read: ISmartMeterRead) => ({
             energy: Number(read.energy),
             timestamp: Number(read.timestamp)
         }));

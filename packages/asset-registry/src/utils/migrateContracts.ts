@@ -1,24 +1,24 @@
 import Web3 from 'web3';
 import { deploy } from '@energyweb/utils-general';
 
-import { AssetLogic } from '../wrappedContracts/AssetLogic';
-import AssetLogicJSON from '../../build/contracts/AssetLogic.json';
+import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
+import DeviceLogicJSON from '../../build/contracts/DeviceLogic.json';
 
-export async function migrateAssetRegistryContracts(
+export async function migrateDeviceRegistryContracts(
     web3: Web3,
     userLogicAddress: string,
     deployKey: string
-): Promise<AssetLogic> {
+): Promise<DeviceLogic> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
-    const assetLogicAddress = (await deploy(web3, AssetLogicJSON.bytecode, {
+    const deviceLogicAddress = (await deploy(web3, DeviceLogicJSON.bytecode, {
         privateKey: privateKeyDeployment
     })).contractAddress;
 
-    const assetLogic = new AssetLogic(web3, assetLogicAddress);
-    await assetLogic.initialize(userLogicAddress, {
+    const deviceLogic = new DeviceLogic(web3, deviceLogicAddress);
+    await deviceLogic.initialize(userLogicAddress, {
         privateKey: privateKeyDeployment
     });
 
-    return assetLogic;
+    return deviceLogic;
 }

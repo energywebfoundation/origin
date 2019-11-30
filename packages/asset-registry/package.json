@@ -3,7 +3,7 @@
   "description": "",
   "license": "GPL-3.0",
   "author": "",
-  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/asset-registry#readme",
+  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/asset-registry",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -26,8 +26,8 @@
     "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build && yarn deploy-contracts",
-    "build-schema:AssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Asset.ts IOffChainProperties",
-    "build-schema:ProducingAssetPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingAsset.ts IOffChainProperties",
+    "build-schema:DevicePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Device.ts IOffChainProperties",
+    "build-schema:ProducingDevicePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingDevice.ts IOffChainProperties",
     "build-schemas": "node ./scripts/buildSchemas.js",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",

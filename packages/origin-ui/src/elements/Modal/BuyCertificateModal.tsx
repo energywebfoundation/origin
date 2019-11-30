@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/asset-registry';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Button,
@@ -16,14 +16,14 @@ import { getConfiguration } from '../../features/selectors';
 import { setLoading } from '../../features/general/actions';
 
 interface IProps {
-    producingAsset: ProducingAsset.Entity;
+    producingDevice: ProducingDevice.Entity;
     certificate: PurchasableCertificate.Entity;
     showModal: boolean;
     callback: () => void;
 }
 
 export function BuyCertificateModal(props: IProps) {
-    const { callback, certificate, producingAsset, showModal } = props;
+    const { callback, certificate, producingDevice, showModal } = props;
 
     const configuration = useSelector(getConfiguration);
     const dispatch = useDispatch();
@@ -107,7 +107,7 @@ export function BuyCertificateModal(props: IProps) {
     const date = certificate
         ? moment.unix(certificate.certificate.creationTime).format('YYYY-MM-DD')
         : '';
-    const facilityName = producingAsset?.offChainProperties?.facilityName || '';
+    const facilityName = producingDevice?.offChainProperties?.facilityName || '';
 
     return (
         <Dialog open={showModal} onClose={handleClose}>

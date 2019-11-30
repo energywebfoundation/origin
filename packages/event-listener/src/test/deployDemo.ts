@@ -2,10 +2,10 @@ import Web3 from 'web3';
 import * as Winston from 'winston';
 
 import {
-    Asset,
-    AssetLogic,
-    ProducingAsset,
-    Contracts as AssetRegistryContracts
+    Device,
+    DeviceLogic,
+    ProducingDevice,
+    Contracts as DeviceRegistryContracts
 } from '@energyweb/asset-registry';
 import {
     MarketLogic,
@@ -34,7 +34,7 @@ export class Demo {
 
     public certificateLogic: CertificateLogic;
 
-    public assetLogic: AssetLogic;
+    public deviceLogic: DeviceLogic;
 
     public userLogic: UserLogic;
 
@@ -99,16 +99,16 @@ export class Demo {
         );
         const userLogicAddress = this.userLogic.web3Contract.options.address;
 
-        this.assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+        this.deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
             this.web3,
             userLogicAddress,
             this.adminPK
         );
-        const assetLogicAddress = this.assetLogic.web3Contract.options.address;
+        const deviceLogicAddress = this.deviceLogic.web3Contract.options.address;
 
         this.certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             this.web3,
-            assetLogicAddress,
+            deviceLogicAddress,
             this.adminPK
         );
         const certificateLogicAddress = this.certificateLogic.web3Contract.options.address;
@@ -121,7 +121,7 @@ export class Demo {
 
         const deployResult = {
             userLogic: '',
-            assetLogic: '',
+            deviceLogic: '',
             certificateLogic: '',
             marketLogic: ''
         };
@@ -129,7 +129,7 @@ export class Demo {
         this.marketContractLookup = this.marketLogic.web3Contract.options.address;
 
         deployResult.userLogic = userLogicAddress;
-        deployResult.assetLogic = assetLogicAddress;
+        deployResult.deviceLogic = deviceLogicAddress;
         deployResult.certificateLogic = certificateLogicAddress;
         deployResult.marketLogic = this.marketContractLookup;
 
@@ -139,7 +139,7 @@ export class Demo {
                     address: this.ACCOUNTS.ADMIN.address,
                     privateKey: this.adminPK
                 },
-                assetLogicInstance: this.assetLogic,
+                deviceLogicInstance: this.deviceLogic,
                 certificateLogicInstance: this.certificateLogic,
                 userLogicInstance: this.userLogic,
                 marketLogicInstance: this.marketLogic,
@@ -157,7 +157,7 @@ export class Demo {
             url: null,
             id: this.ACCOUNTS.ADMIN.address,
             active: true,
-            roles: buildRights([Role.UserAdmin, Role.AssetAdmin, Role.Issuer]),
+            roles: buildRights([Role.UserAdmin, Role.DeviceAdmin, Role.Issuer]),
             organization: 'admin'
         };
         const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
@@ -173,15 +173,15 @@ export class Demo {
         };
         await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, this.conf);
 
-        const assetManagerPropsOnChain: User.IUserOnChainProperties = {
+        const deviceManagerPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
             url: null,
             id: this.ACCOUNTS.ASSET_MANAGER.address,
             active: true,
-            roles: buildRights([Role.AssetAdmin, Role.AssetManager, Role.Trader]),
-            organization: 'Asset Manager organization'
+            roles: buildRights([Role.DeviceAdmin, Role.DeviceManager, Role.Trader]),
+            organization: 'Device Manager organization'
         };
-        const assetManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
+        const deviceManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             firstName: 'Admin',
             surname: 'User',
             email: 'admin@example.com',
@@ -199,8 +199,8 @@ export class Demo {
             }
         };
         await MarketUser.createMarketUser(
-            assetManagerPropsOnChain,
-            assetManagerPropsOffChain,
+            deviceManagerPropsOnChain,
+            deviceManagerPropsOffChain,
             this.conf
         );
 
@@ -294,19 +294,19 @@ export class Demo {
         };
         await MarketUser.createMarketUser(traderOnChain, traderOffChain, this.conf);
 
-        const assetProducingProps: Asset.IOnChainProperties = {
+        const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.ASSET_MANAGER.address },
             lastSmartMeterReadWh: 0,
             active: true,
-            usageType: Asset.UsageType.Producing,
+            usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: '',
             propertiesDocumentHash: null,
             url: null
         };
 
-        const assetProducingPropsOffChain: ProducingAsset.IOffChainProperties = {
-            assetType: 'Wind',
+        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+            deviceType: 'Wind',
             complianceRegistry: Compliance.IREC,
             facilityName: 'Wuthering Heights Windfarm',
             capacityWh: 0,
@@ -322,9 +322,9 @@ export class Demo {
         };
 
         try {
-            await ProducingAsset.createAsset(
-                assetProducingProps,
-                assetProducingPropsOffChain,
+            await ProducingDevice.createDevice(
+                deviceProducingProps,
+                deviceProducingPropsOffChain,
                 this.conf
             );
         } catch (error) {
@@ -337,7 +337,7 @@ export class Demo {
     async deploySmartMeterRead(smRead: number): Promise<void> {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ASSET_MANAGER;
 
-        await this.assetLogic.saveSmartMeterRead(
+        await this.deviceLogic.saveSmartMeterRead(
             0,
             smRead,
             'newSmartMeterRead',
@@ -374,7 +374,7 @@ export class Demo {
             maxPricePerMwh: 150000,
             currency: Currency.USD,
             location: ['Thailand;Central;Nakhon Pathom'],
-            assetType: ['Wind'],
+            deviceType: ['Wind'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',

@@ -1,17 +1,17 @@
 import React from 'react';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { APIKEY } from './GoogleApiKey';
-import { Asset } from '@energyweb/asset-registry';
+import { Device } from '@energyweb/asset-registry';
 import { connect } from 'react-redux';
 import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../types';
 import { Link } from 'react-router-dom';
-import { getProducingAssetDetailLink } from '../utils/routing';
-import { getBaseURL, getProducingAssets, getConfiguration } from '../features/selectors';
+import { getProducingDeviceDetailLink } from '../utils/routing';
+import { getBaseURL, getProducingDevices, getConfiguration } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
 
 interface IOwnProps {
-    assets?: Asset.Entity[];
+    devices?: Device.Entity[];
     height?: string;
 }
 
@@ -23,40 +23,40 @@ interface IStateProps {
 type Props = IOwnProps & IStateProps;
 
 interface IState {
-    assetHighlighted: Asset.Entity;
+    deviceHighlighted: Device.Entity;
     owner: MarketUser.Entity;
 }
 
-class AssetMapClass extends React.Component<Props, IState> {
+class DeviceMapClass extends React.Component<Props, IState> {
     map: any = null;
 
     constructor(props) {
         super(props);
 
         this.state = {
-            assetHighlighted: null,
+            deviceHighlighted: null,
             owner: null
         };
     }
 
-    async showWindowForAsset(asset: Asset.Entity) {
+    async showWindowForDevice(device: Device.Entity) {
         this.setState({
-            assetHighlighted: asset,
+            deviceHighlighted: device,
             owner: await new MarketUser.Entity(
-                asset.owner.address,
+                device.owner.address,
                 this.props.configuration as any
             ).sync()
         });
     }
 
     updateBounds(map: any = this.map) {
-        const { assets } = this.props;
+        const { devices } = this.props;
 
         if (this.map !== map) {
             this.map = map;
         }
 
-        if (assets.length === 0 || !map) {
+        if (devices.length === 0 || !map) {
             return;
         }
 
@@ -67,9 +67,9 @@ class AssetMapClass extends React.Component<Props, IState> {
             west: null
         };
 
-        for (const asset of assets) {
-            const latitude = parseFloat(asset.offChainProperties.gpsLatitude);
-            const longitude = parseFloat(asset.offChainProperties.gpsLongitude);
+        for (const device of devices) {
+            const latitude = parseFloat(device.offChainProperties.gpsLatitude);
+            const longitude = parseFloat(device.offChainProperties.gpsLongitude);
 
             bounds.north =
                 latitude > bounds.north || bounds.north === null ? latitude : bounds.north;
@@ -88,13 +88,13 @@ class AssetMapClass extends React.Component<Props, IState> {
     }
 
     render() {
-        const { assets, height = '250px', baseURL } = this.props;
-        const { assetHighlighted, owner } = this.state;
+        const { devices, height = '250px', baseURL } = this.props;
+        const { deviceHighlighted, owner } = this.state;
         const defaultCenter =
-            assets.length > 0
+            devices.length > 0
                 ? {
-                      lat: parseFloat(assets[0].offChainProperties.gpsLatitude),
-                      lng: parseFloat(assets[0].offChainProperties.gpsLongitude)
+                      lat: parseFloat(devices[0].offChainProperties.gpsLatitude),
+                      lng: parseFloat(devices[0].offChainProperties.gpsLongitude)
                   }
                 : {
                       lat: 0,
@@ -112,27 +112,27 @@ class AssetMapClass extends React.Component<Props, IState> {
                     mapTypeId="hybrid"
                     onLoad={map => this.updateBounds(map)}
                 >
-                    {assets.map((asset, index) => (
+                    {devices.map((device, index) => (
                         <React.Fragment key={index}>
                             <Marker
                                 position={{
-                                    lat: parseFloat(asset.offChainProperties.gpsLatitude),
-                                    lng: parseFloat(asset.offChainProperties.gpsLongitude)
+                                    lat: parseFloat(device.offChainProperties.gpsLatitude),
+                                    lng: parseFloat(device.offChainProperties.gpsLongitude)
                                 }}
-                                onClick={() => this.showWindowForAsset(asset)}
+                                onClick={() => this.showWindowForDevice(device)}
                             />
                         </React.Fragment>
                     ))}
 
-                    {assetHighlighted && owner && (
+                    {deviceHighlighted && owner && (
                         <InfoWindow
                             position={{
-                                lat: parseFloat(assetHighlighted.offChainProperties.gpsLatitude),
-                                lng: parseFloat(assetHighlighted.offChainProperties.gpsLongitude)
+                                lat: parseFloat(deviceHighlighted.offChainProperties.gpsLatitude),
+                                lng: parseFloat(deviceHighlighted.offChainProperties.gpsLongitude)
                             }}
                             onCloseClick={() =>
                                 this.setState({
-                                    assetHighlighted: null,
+                                    deviceHighlighted: null,
                                     owner: null
                                 })
                             }
@@ -142,14 +142,14 @@ class AssetMapClass extends React.Component<Props, IState> {
                                     color: 'black'
                                 }}
                             >
-                                <b>{assetHighlighted.offChainProperties.facilityName}</b>
+                                <b>{deviceHighlighted.offChainProperties.facilityName}</b>
                                 <br />
                                 <br />
                                 Owner: {owner.organization}
                                 <br />
                                 <br />
                                 <Link
-                                    to={getProducingAssetDetailLink(baseURL, assetHighlighted.id)}
+                                    to={getProducingDeviceDetailLink(baseURL, deviceHighlighted.id)}
                                 >
                                     See more
                                 </Link>
@@ -162,8 +162,8 @@ class AssetMapClass extends React.Component<Props, IState> {
     }
 }
 
-export const AssetMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
-    assets: ownProps.assets || getProducingAssets(state),
+export const DeviceMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
+    devices: ownProps.devices || getProducingDevices(state),
     baseURL: getBaseURL(),
     configuration: getConfiguration(state)
-}))(AssetMapClass);
+}))(DeviceMapClass);

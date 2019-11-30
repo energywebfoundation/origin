@@ -1,4 +1,4 @@
-import { AssetLogic, ProducingAsset } from '@energyweb/asset-registry';
+import { DeviceLogic, ProducingDevice } from '@energyweb/asset-registry';
 import { Demand, MarketLogic, Supply, PurchasableCertificate } from '@energyweb/market';
 import { CertificateLogic } from '@energyweb/origin';
 import { UserLogic } from '@energyweb/user-registry';
@@ -16,7 +16,7 @@ import {
     deploy,
     deployDemand,
     deployCertificate,
-    deployAsset,
+    deployDevice,
     deploySupply,
     deployAgreement
 } from './TestEnvironment';
@@ -56,9 +56,9 @@ describe('Market-matcher e2e tests', async () => {
     describe('Certificate -> Demand matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
 
-        let config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
+        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
-        let asset: ProducingAsset.Entity;
+        let device: ProducingDevice.Entity;
         let certificate: PurchasableCertificate.Entity;
 
         before(async () => {
@@ -67,8 +67,8 @@ describe('Market-matcher e2e tests', async () => {
 
             config = configuration.config;
             demand = await deployDemand(config, requiredEnergy);
-            asset = await deployAsset(config);
-            certificate = await deployCertificate(config, asset.id, requiredEnergy);
+            device = await deployDevice(config);
+            certificate = await deployCertificate(config, device.id, requiredEnergy);
 
             await certificate.publishForSale(
                 demand.offChainProperties.maxPricePerMwh / 100,
@@ -88,9 +88,9 @@ describe('Market-matcher e2e tests', async () => {
         const price = 150;
         const currency = Currency.USD;
 
-        let config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
+        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
-        let asset: ProducingAsset.Entity;
+        let device: ProducingDevice.Entity;
         let certificate: PurchasableCertificate.Entity;
 
         before(async () => {
@@ -98,8 +98,8 @@ describe('Market-matcher e2e tests', async () => {
             const { matcherConfig } = configuration;
 
             config = configuration.config;
-            asset = await deployAsset(config);
-            certificate = await deployCertificate(config, asset.id, requiredEnergy);
+            device = await deployDevice(config);
+            certificate = await deployCertificate(config, device.id, requiredEnergy);
             await certificate.publishForSale(price / 100, currency);
 
             await startMatcher(matcherConfig);
@@ -117,9 +117,9 @@ describe('Market-matcher e2e tests', async () => {
         const price = 150;
         const currency = Currency.USD;
 
-        let config: Configuration.Entity<MarketLogic, AssetLogic, CertificateLogic, UserLogic>;
+        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
-        let asset: ProducingAsset.Entity;
+        let device: ProducingDevice.Entity;
         let certificate: PurchasableCertificate.Entity;
         let supply: Supply.Entity;
 
@@ -128,10 +128,10 @@ describe('Market-matcher e2e tests', async () => {
             const { matcherConfig } = configuration;
 
             config = configuration.config;
-            asset = await deployAsset(config);
-            certificate = await deployCertificate(config, asset.id, requiredEnergy);
+            device = await deployDevice(config);
+            certificate = await deployCertificate(config, device.id, requiredEnergy);
 
-            supply = await deploySupply(config, asset.id, requiredEnergy, price, currency);
+            supply = await deploySupply(config, device.id, requiredEnergy, price, currency);
             demand = await deployDemand(config, requiredEnergy, price, currency);
 
             await deployAgreement(config, demand.id, supply.id, price, currency);

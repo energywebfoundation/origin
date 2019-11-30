@@ -12,14 +12,14 @@ contract ICertificateLogic is IERC721, IERC721Enumerable {
     event LogCertificateClaimed(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
 
-    event CertificationRequestCreated(uint assetId, uint readsStartIndex, uint readsEndIndex);
-    event CertificationRequestApproved(uint assetId, uint readsStartIndex, uint readsEndIndex);
+    event CertificationRequestCreated(uint deviceId, uint readsStartIndex, uint readsEndIndex);
+    event CertificationRequestApproved(uint deviceId, uint readsStartIndex, uint readsEndIndex);
 
     /*
         Public functions
     */
 
-    function assetLogicAddress() public view returns (address);
+    function deviceLogicAddress() public view returns (address);
 
     /**
      * @dev Gets the token ID at a given index of all the tokens in this contract
@@ -55,9 +55,9 @@ contract ICertificateLogic is IERC721, IERC721Enumerable {
 
     function getCertificationRequestsLength() public view returns (uint);
 
-    function getAssetRequestedCertsForSMReadsLength(uint _assetId) public view returns (uint);
+    function getDeviceRequestedCertsForSMReadsLength(uint _deviceId) public view returns (uint);
 
-    function requestCertificates(uint _assetId, uint lastRequestedSMReadIndex) public;
+    function requestCertificates(uint _deviceId, uint lastRequestedSMReadIndex) public;
 
     function approveCertificationRequest(uint _certicationRequestIndex) public;
 }

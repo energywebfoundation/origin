@@ -6,8 +6,8 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.s
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721Enumerable.sol";
 
 import "@energyweb/user-registry/contracts/RoleManagement.sol";
-import "@energyweb/asset-registry/contracts/IAssetLogic.sol";
-import "@energyweb/asset-registry/contracts/AssetDefinitions.sol";
+import "@energyweb/asset-registry/contracts/IDeviceLogic.sol";
+import "@energyweb/asset-registry/contracts/DeviceDefinitions.sol";
 
 import "./CertificateDefinitions.sol";
 import "./ICertificateLogic.sol";
@@ -15,16 +15,16 @@ import "./ICertificateLogic.sol";
 contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManagement, ICertificateLogic {
 
     bool private _initialized;
-    IAssetLogic private assetLogic;
+    IDeviceLogic private deviceLogic;
 
     event LogCreatedCertificate(uint indexed _certificateId, uint energy, address owner);
     event LogCertificateClaimed(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
 
-    event CertificationRequestCreated(uint assetId, uint readsStartIndex, uint readsEndIndex);
-    event CertificationRequestApproved(uint assetId, uint readsStartIndex, uint readsEndIndex);
+    event CertificationRequestCreated(uint deviceId, uint readsStartIndex, uint readsEndIndex);
+    event CertificationRequestApproved(uint deviceId, uint readsStartIndex, uint readsEndIndex);
 
-    mapping(uint => uint) internal assetRequestedCertsForSMReadsLength;
+    mapping(uint => uint) internal deviceRequestedCertsForSMReadsLength;
 
     CertificateDefinitions.CertificationRequest[] private certificationRequests;
 
@@ -39,25 +39,25 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         _;
     }
 
-    function initialize(address _assetLogicAddress) public initializer {
-        require(_assetLogicAddress != address(0), "initialize: Cannot use address 0x0 as _assetLogicAddress.");
+    function initialize(address _deviceLogicAddress) public initializer {
+        require(_deviceLogicAddress != address(0), "initialize: Cannot use address 0x0 as _deviceLogicAddress.");
 
-        assetLogic = IAssetLogic(_assetLogicAddress);
+        deviceLogic = IDeviceLogic(_deviceLogicAddress);
 
-        require(assetLogic.userLogicAddress() != address(0), "initialize: assetLogic hasn't been initialized yet.");
+        require(deviceLogic.userLogicAddress() != address(0), "initialize: deviceLogic hasn't been initialized yet.");
 
         ERC721.initialize();
         ERC721Enumerable.initialize();
-        RoleManagement.initialize(assetLogic.userLogicAddress());
+        RoleManagement.initialize(deviceLogic.userLogicAddress());
 
         _initialized = true;
     }
 
-    function assetLogicAddress() public view returns (address) {
-        require(_initialized == true, "assetLogicAddress: The contract has not been initialized yet.");
-        require(address(assetLogic) != address(0), "assetLogicAddress: The asset logic address is set to 0x0 address.");
+    function deviceLogicAddress() public view returns (address) {
+        require(_initialized == true, "deviceLogicAddress: The contract has not been initialized yet.");
+        require(address(deviceLogic) != address(0), "deviceLogicAddress: The device logic address is set to 0x0 address.");
 
-        return address(assetLogic);
+        return address(deviceLogic);
     }
 
     /*
@@ -149,21 +149,21 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         return certificationRequests.length;
     }
 
-    function getAssetRequestedCertsForSMReadsLength(uint _assetId) public view returns (uint) {
-        return assetRequestedCertsForSMReadsLength[_assetId];
+    function getDeviceRequestedCertsForSMReadsLength(uint _deviceId) public view returns (uint) {
+        return deviceRequestedCertsForSMReadsLength[_deviceId];
     }
 
-    function requestCertificates(uint _assetId, uint lastRequestedSMReadIndex) public {
-        AssetDefinitions.Asset memory asset = assetLogic.getAssetById(_assetId);
+    function requestCertificates(uint _deviceId, uint lastRequestedSMReadIndex) public {
+        DeviceDefinitions.Device memory device = deviceLogic.getDeviceById(_deviceId);
 
-        require(asset.owner == msg.sender, "msg.sender must be asset owner");
+        require(device.owner == msg.sender, "msg.sender must be device owner");
 
-        AssetDefinitions.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(_assetId);
+        DeviceDefinitions.SmartMeterRead[] memory reads = deviceLogic.getSmartMeterReadsForDevice(_deviceId);
 
         require(lastRequestedSMReadIndex < reads.length, "requestCertificates: index should be lower than smart meter reads length");
 
         uint start = 0;
-        uint requestedSMReadsLength = getAssetRequestedCertsForSMReadsLength(_assetId);
+        uint requestedSMReadsLength = getDeviceRequestedCertsForSMReadsLength(_deviceId);
 
         if (requestedSMReadsLength > start) {
             start = requestedSMReadsLength;
@@ -172,15 +172,15 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         require(lastRequestedSMReadIndex >= start, "requestCertificates: index has to be higher or equal to start index");
 
         certificationRequests.push(CertificateDefinitions.CertificationRequest(
-            _assetId,
+            _deviceId,
             start,
             lastRequestedSMReadIndex,
             CertificateDefinitions.CertificationRequestStatus.Pending
         ));
 
-        _setAssetRequestedCertsForSMReadsLength(_assetId, lastRequestedSMReadIndex + 1);
+        _setDeviceRequestedCertsForSMReadsLength(_deviceId, lastRequestedSMReadIndex + 1);
 
-        emit CertificationRequestCreated(_assetId, start, lastRequestedSMReadIndex);
+        emit CertificationRequestCreated(_deviceId, start, lastRequestedSMReadIndex);
     }
 
     function approveCertificationRequest(uint _certicationRequestIndex) public onlyRole(RoleManagement.Role.Issuer) {
@@ -191,30 +191,30 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             "approveCertificationRequest: request has to be in pending state"
         );
 
-        AssetDefinitions.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(request.assetId);
+        DeviceDefinitions.SmartMeterRead[] memory reads = deviceLogic.getSmartMeterReadsForDevice(request.deviceId);
 
         uint certifyEnergy = 0;
         for (uint i = request.readsStartIndex; i <= request.readsEndIndex; i++) {
             certifyEnergy += reads[i].energy;
         }
 
-        AssetDefinitions.Asset memory asset = assetLogic.getAssetById(request.assetId);
+        DeviceDefinitions.Device memory device = deviceLogic.getDeviceById(request.deviceId);
 
-        _createNewCertificate(request.assetId, certifyEnergy, asset.owner,  request.readsStartIndex, request.readsEndIndex);
+        _createNewCertificate(request.deviceId, certifyEnergy, device.owner,  request.readsStartIndex, request.readsEndIndex);
 
         request.status = CertificateDefinitions.CertificationRequestStatus.Approved;
 
-        emit CertificationRequestApproved(request.assetId, request.readsStartIndex, request.readsEndIndex);
+        emit CertificationRequestApproved(request.deviceId, request.readsStartIndex, request.readsEndIndex);
     }
 
     /**
         internal functions
     */
-    function _createNewCertificate(uint assetId, uint energy, address owner, uint readsStartIndex, uint readsEndIndex) internal {
+    function _createNewCertificate(uint deviceId, uint energy, address owner, uint readsStartIndex, uint readsEndIndex) internal {
         uint newCertificateId = totalSupply();
 
         certificates[newCertificateId] = CertificateDefinitions.Certificate({
-            assetId: assetId,
+            deviceId: deviceId,
             energy: energy,
             status: uint(CertificateDefinitions.Status.Active),
             creationTime: block.timestamp,
@@ -288,7 +288,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @return The ids of the certificate
     function _createChildCertificates(uint parentId, uint energy) internal returns (uint childOneId, uint childTwoId) {
         CertificateDefinitions.Certificate memory parent = certificates[parentId];
-        AssetDefinitions.SmartMeterRead[] memory reads = assetLogic.getSmartMeterReadsForAsset(parent.assetId);
+        DeviceDefinitions.SmartMeterRead[] memory reads = deviceLogic.getSmartMeterReadsForDevice(parent.deviceId);
 
         uint parentEnergy = 0;
         uint index = parent.readsStartIndex;
@@ -301,7 +301,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
 
         uint childIdOne = totalSupply();
         certificates[childIdOne] = CertificateDefinitions.Certificate({
-            assetId: parent.assetId,
+            deviceId: parent.deviceId,
             energy: energy,
             status: uint(CertificateDefinitions.Status.Active),
             creationTime: parent.creationTime,
@@ -314,7 +314,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
 
         uint childIdTwo = totalSupply();
         certificates[childIdTwo] = CertificateDefinitions.Certificate({
-            assetId: parent.assetId,
+            deviceId: parent.deviceId,
             energy: parent.energy - energy,
             status: uint(CertificateDefinitions.Status.Active),
             creationTime: parent.creationTime,
@@ -328,7 +328,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         return (childIdOne, childIdTwo);
     }
 
-    function _setAssetRequestedCertsForSMReadsLength(uint assetId, uint readsLength) internal {
-        assetRequestedCertsForSMReadsLength[assetId] = readsLength;
+    function _setDeviceRequestedCertsForSMReadsLength(uint deviceId, uint readsLength) internal {
+        deviceRequestedCertsForSMReadsLength[deviceId] = readsLength;
     }
 }

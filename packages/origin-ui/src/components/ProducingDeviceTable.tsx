@@ -4,7 +4,7 @@ import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Role } from '@energyweb/user-registry';
 import { Redirect } from 'react-router-dom';
 import { Configuration, Unit, LocationService } from '@energyweb/utils-general';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/asset-registry';
 import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,
@@ -15,10 +15,10 @@ import {
     IPaginatedLoaderFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues
 } from './Table/PaginatedLoader';
-import { getProducingAssetDetailLink } from '../utils/routing';
+import { getProducingDeviceDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
-import { getConfiguration, getProducingAssets, getBaseURL } from '../features/selectors';
+import { getConfiguration, getProducingDevices, getBaseURL } from '../features/selectors';
 import { Assignment } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
@@ -31,7 +31,7 @@ import {
 interface IStateProps {
     configuration: Configuration.Entity;
     certificates: PurchasableCertificate.Entity[];
-    producingAssets: ProducingAsset.Entity[];
+    producingDevices: ProducingDevice.Entity[];
     currentUser: MarketUser.Entity;
     users: MarketUser.Entity[];
     baseURL: string;
@@ -43,20 +43,20 @@ interface IDispatchProps {
 
 type Props = IStateProps & IDispatchProps;
 
-interface IEnrichedProducingAssetData {
-    asset: ProducingAsset.Entity;
+interface IEnrichedProducingDeviceData {
+    device: ProducingDevice.Entity;
     organizationName: string;
-    assetProvince: string;
-    assetRegion: string;
+    deviceProvince: string;
+    deviceRegion: string;
 }
 
-interface IProducingAssetTableState extends IPaginatedLoaderFilteredState {
-    detailViewForAssetId: string;
+interface IProducingDeviceTableState extends IPaginatedLoaderFilteredState {
+    detailViewForDeviceId: string;
     showRequestIRECsModal: boolean;
-    paginatedData: IEnrichedProducingAssetData[];
+    paginatedData: IEnrichedProducingDeviceData[];
 }
 
-class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducingAssetTableState> {
+class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducingDeviceTableState> {
     private locationService = new LocationService();
 
     constructor(props: Props) {
@@ -64,71 +64,71 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
 
         this.state = {
             ...getInitialPaginatedLoaderFilteredState(),
-            detailViewForAssetId: null,
+            detailViewForDeviceId: null,
             showRequestIRECsModal: false
         };
     }
 
     async componentDidUpdate(newProps: Props) {
         if (
-            newProps.producingAssets !== this.props.producingAssets ||
+            newProps.producingDevices !== this.props.producingDevices ||
             newProps.users.length !== this.props.users.length
         ) {
             await this.loadPage(1);
         }
     }
 
-    async enrichProducingAssetData(
-        producingAssets: ProducingAsset.Entity[]
-    ): Promise<IEnrichedProducingAssetData[]> {
-        const promises = producingAssets.map(async asset => {
-            const user = getUserById(this.props.users, asset.owner.address);
+    async enrichProducingDeviceData(
+        producingDevices: ProducingDevice.Entity[]
+    ): Promise<IEnrichedProducingDeviceData[]> {
+        const promises = producingDevices.map(async device => {
+            const user = getUserById(this.props.users, device.owner.address);
 
-            let assetRegion = '';
-            let assetProvince = '';
+            let deviceRegion = '';
+            let deviceProvince = '';
             try {
                 const decodedLocation = this.locationService.decode([
                     this.locationService.translateAddress(
-                        asset.offChainProperties.address,
-                        asset.offChainProperties.country
+                        device.offChainProperties.address,
+                        device.offChainProperties.country
                     )
                 ])[0];
 
-                assetRegion = decodedLocation[1];
-                assetProvince = decodedLocation[2];
+                deviceRegion = decodedLocation[1];
+                deviceProvince = decodedLocation[2];
             } catch (error) {
                 console.error('Error while parsing location', error);
             }
 
             return {
-                asset,
+                device,
                 organizationName: user?.organization,
-                assetProvince,
-                assetRegion
+                deviceProvince,
+                deviceRegion
             };
         });
 
         return Promise.all(promises);
     }
 
-    viewAsset(rowIndex: number) {
-        const asset = this.state.paginatedData[rowIndex].asset;
+    viewDevice(rowIndex: number) {
+        const device = this.state.paginatedData[rowIndex].device;
 
         this.setState({
-            detailViewForAssetId: asset.id
+            detailViewForDeviceId: device.id
         });
     }
 
     async requestIRECs(rowIndex: number) {
         this.props.showRequestCertificatesModal({
-            producingAsset: this.state.paginatedData[rowIndex].asset
+            producingDevice: this.state.paginatedData[rowIndex].device
         });
     }
 
     filters: ICustomFilterDefinition[] = [
         {
-            property: (record: IEnrichedProducingAssetData) =>
-                `${record?.asset?.offChainProperties?.facilityName}${record?.organizationName}`,
+            property: (record: IEnrichedProducingDeviceData) =>
+                `${record?.device?.offChainProperties?.facilityName}${record?.organizationName}`,
             label: 'Search',
             input: {
                 type: CustomFilterInputType.string
@@ -142,16 +142,16 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
         offset,
         filters
     }: IPaginatedLoaderFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const assets = this.props.producingAssets;
-        const enrichedAssetData = await this.enrichProducingAssetData(assets);
+        const devices = this.props.producingDevices;
+        const enrichedDeviceData = await this.enrichProducingDeviceData(devices);
 
-        const filteredEnrichedAssetData = enrichedAssetData.filter(record =>
+        const filteredEnrichedDeviceData = enrichedDeviceData.filter(record =>
             this.checkRecordPassesFilters(record, filters)
         );
 
-        const total = filteredEnrichedAssetData.length;
+        const total = filteredEnrichedDeviceData.length;
 
-        const paginatedData = filteredEnrichedAssetData.slice(offset, offset + pageSize);
+        const paginatedData = filteredEnrichedDeviceData.slice(offset, offset + pageSize);
 
         return {
             paginatedData,
@@ -171,33 +171,33 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
     get rows() {
         return this.state.paginatedData.map(enrichedData => ({
             owner: enrichedData.organizationName,
-            facilityName: enrichedData.asset.offChainProperties.facilityName,
-            provinceRegion: `${enrichedData.assetProvince}, ${enrichedData.assetRegion}`,
-            type: this.assetTypeService.getDisplayText(
-                enrichedData.asset.offChainProperties.assetType
+            facilityName: enrichedData.device.offChainProperties.facilityName,
+            provinceRegion: `${enrichedData.deviceProvince}, ${enrichedData.deviceRegion}`,
+            type: this.deviceTypeService.getDisplayText(
+                enrichedData.device.offChainProperties.deviceType
             ),
             capacity: (
-                enrichedData.asset.offChainProperties.capacityWh / Unit.kWh
+                enrichedData.device.offChainProperties.capacityWh / Unit.kWh
             ).toLocaleString(),
-            read: (enrichedData.asset.lastSmartMeterReadWh / Unit.kWh).toLocaleString()
+            read: (enrichedData.device.lastSmartMeterReadWh / Unit.kWh).toLocaleString()
         }));
     }
 
     render() {
-        const { detailViewForAssetId, total, pageSize } = this.state;
+        const { detailViewForDeviceId, total, pageSize } = this.state;
 
-        if (detailViewForAssetId !== null) {
+        if (detailViewForDeviceId !== null) {
             return (
                 <Redirect
                     push={true}
-                    to={getProducingAssetDetailLink(this.props.baseURL, detailViewForAssetId)}
+                    to={getProducingDeviceDetailLink(this.props.baseURL, detailViewForDeviceId)}
                 />
             );
         }
 
         const actions = [];
 
-        if (this.props.currentUser && this.props.currentUser.isRole(Role.AssetManager)) {
+        if (this.props.currentUser && this.props.currentUser.isRole(Role.DeviceManager)) {
             actions.push({
                 icon: <Assignment />,
                 name: 'Request I-RECs',
@@ -214,7 +214,7 @@ class ProducingAssetTableClass extends PaginatedLoaderFiltered<Props, IProducing
                     total={total}
                     pageSize={pageSize}
                     filters={this.filters}
-                    handleRowClick={(row: number) => this.viewAsset(row)}
+                    handleRowClick={(row: number) => this.viewDevice(row)}
                     actions={actions}
                 />
             </div>
@@ -226,14 +226,14 @@ const mapDispatchToProps: IDispatchProps = {
     showRequestCertificatesModal
 };
 
-export const ProducingAssetTable = connect(
+export const ProducingDeviceTable = connect(
     (state: IStoreState): IStateProps => ({
         configuration: getConfiguration(state),
         certificates: getCertificates(state),
-        producingAssets: getProducingAssets(state),
+        producingDevices: getProducingDevices(state),
         users: getUsers(state),
         currentUser: getCurrentUser(state),
         baseURL: getBaseURL()
     }),
     mapDispatchToProps
-)(ProducingAssetTableClass);
+)(ProducingDeviceTableClass);
