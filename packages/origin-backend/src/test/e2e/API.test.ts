@@ -17,11 +17,13 @@ describe('API tests', async () => {
     });
     let apiServer: http.Server;
 
-    const BASE_API_URL: string = `http://localhost:${process.env.PORT}/api`;
+    const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
 
-    const marketContractLookup: string = '0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b';
-    const marketContractLookup2: string = '0x123b25e0edc2d9b5dee75c5f652f92f5b58be12b';
-    const entityOwner: string = '0x24B207fFf1a1097d3c3D69fcE461544f83c6E774';
+    const marketContractLookup = '0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b';
+    const marketContractLookup2 = '0x123b25e0edc2d9b5dee75c5f652f92f5b58be12b';
+    const entityOwner = '0x24B207fFf1a1097d3c3D69fcE461544f83c6E774';
+
+    const testHash = '1d5e7af973fe1387493b2b70e611c57fc3f354e6ec963b811cac529d8ed17288';
 
     beforeEach(async () => {
         apiServer = await startAPI();
@@ -69,7 +71,7 @@ describe('API tests', async () => {
             let failed: boolean = false;
 
             try {
-                await axios.get(`${BASE_API_URL}/Entity/${marketContractLookup}/1`);
+                await axios.get(`${BASE_API_URL}/Entity/${marketContractLookup}/1/${testHash}`);
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
@@ -82,12 +84,12 @@ describe('API tests', async () => {
 
         it('gets an Entity', async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
             const getResult: AxiosResponse = await axios.get(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`
             );
     
             assert.equal(getResult.status, STATUS_CODES.SUCCESS);
@@ -97,7 +99,7 @@ describe('API tests', async () => {
 
         xit('filters an Entity based on a property', async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
@@ -119,7 +121,7 @@ describe('API tests', async () => {
 
         xit(`returns no Entities that don't match a filter`, async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
@@ -140,12 +142,12 @@ describe('API tests', async () => {
 
         xit(`returns sorted Entities by property`, async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { startTime: 100 }
             );
 
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/1`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/1/${testHash}`,
                 { startTime: 200 }
             );
     
@@ -203,17 +205,17 @@ describe('API tests', async () => {
 
         it('creates an Entity', async () => {
             const postResult: AxiosResponse = await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
             assert.equal(postResult.status, STATUS_CODES.CREATED);
-            assert.equal(postResult.data.message, 'Resource Entity with ID 0 created');
+            assert.equal(postResult.data.message, `Resource Entity with ID 0 and hash ${testHash} created`);
         });
     
         it('fails creating the same Entity', async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
@@ -221,7 +223,7 @@ describe('API tests', async () => {
     
             try {
                 await axios.post(
-                    `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                    `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                     { entityOwner }
                 );
             } catch (error) {
@@ -241,7 +243,7 @@ describe('API tests', async () => {
     
             try {
                 await axios.put(
-                    `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                    `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                     { entityOwner }
                 );
             } catch (error) {
@@ -256,19 +258,19 @@ describe('API tests', async () => {
 
         it('Updates an existing Entity', async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
             const putResult: AxiosResponse = await axios.put(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner: 'someOtherEntityOwner' }
             );
 
             assert.equal(putResult.status, STATUS_CODES.SUCCESS);
-            assert.equal(putResult.data.message, 'Resource Entity with ID 0 updated')
+            assert.equal(putResult.data.message, `Resource Entity with ID 0 and hash ${testHash} updated`)
 
-            const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/Entity/${marketContractLookup}/0`);
+            const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`);
 
             assert.equal(getResult.data.entityOwner, 'someOtherEntityOwner');
         });
@@ -301,19 +303,19 @@ describe('API tests', async () => {
 
         it('deletes a Entity', async () => {
             await axios.post(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`,
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`,
                 { entityOwner }
             );
     
             const deleteResult = await axios.delete(
-                `${BASE_API_URL}/Entity/${marketContractLookup}/0`
+                `${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`
             );
             assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
     
             let failed: boolean = false;
     
             try {
-                await axios.get(`${BASE_API_URL}/Entity/${marketContractLookup}/0`);
+                await axios.get(`${BASE_API_URL}/Entity/${marketContractLookup}/0/${testHash}`);
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);

@@ -6,10 +6,10 @@ import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
 export async function jsonEntityPostAction(req: Request, res: Response) {
-    let { contractAddress, type, identifier } = req.params;
+    let { contractAddress, type, identifier, hash } = req.params;
     contractAddress = contractAddress.toLowerCase();
 
-    console.log(`<${contractAddress}> POST - ${type} ${identifier}`);
+    console.log(`<${contractAddress}> POST - ${type} ${identifier} ${hash}`);
 
     const jsonEntityRepository = getRepository(JsonEntity);
 
@@ -19,6 +19,7 @@ export async function jsonEntityPostAction(req: Request, res: Response) {
         newEntity.contractAddress = contractAddress;
         newEntity.identifier = identifier;
         newEntity.type = type;
+        newEntity.hash = hash;
         newEntity.value = JSON.stringify(req.body);
 
         await jsonEntityRepository.save(newEntity);
@@ -35,6 +36,6 @@ export async function jsonEntityPostAction(req: Request, res: Response) {
     }
 
     res.status(STATUS_CODES.CREATED).send({
-        message: `Resource ${type} with ID ${identifier} created`
+        message: `Resource ${type} with ID ${identifier} and hash ${hash} created`
     });
 }

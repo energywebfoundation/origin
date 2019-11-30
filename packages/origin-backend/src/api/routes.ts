@@ -34,22 +34,22 @@ export const AppRoutes: IRoute[] = [
         action: marketContractLookupDeleteAction
     },
     {
-        path: '/:type/:contractAddress/:identifier?',
+        path: '/:type/:contractAddress/:identifier?/:hash?',
         method: 'get',
         action: jsonEntityGetAction
     },
     {
-        path: '/:type/:contractAddress/:identifier',
+        path: '/:type/:contractAddress/:identifier/:hash',
         method: 'post',
         action: jsonEntityPostAction
     },
     {
-        path: '/:type/:contractAddress/:identifier',
+        path: '/:type/:contractAddress/:identifier/:hash',
         method: 'put',
         action: jsonEntityPutAction
     },
     {
-        path: '/:type/:contractAddress/:identifier',
+        path: '/:type/:contractAddress/:identifier/:hash',
         method: 'delete',
         action: jsonEntityDeleteAction
     }

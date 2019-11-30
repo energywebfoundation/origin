@@ -1,7 +1,7 @@
 import { Entity, Column, BaseEntity, Unique, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-@Unique(['type', 'contractAddress', 'identifier'])
+@Unique(['type', 'contractAddress', 'identifier', 'hash'])
 export class JsonEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
@@ -14,6 +14,9 @@ export class JsonEntity extends BaseEntity {
 
     @Column('varchar')
     identifier: string;
+
+    @Column('varchar')
+    hash: string;
 
     @Column('varchar')
     value: string;

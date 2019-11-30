@@ -6,10 +6,10 @@ import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
 export async function jsonEntityGetAction(req: Request, res: Response) {
-    let { contractAddress, type, identifier } = req.params;
+    let { contractAddress, type, identifier, hash } = req.params;
     contractAddress = contractAddress.toLowerCase();
 
-    console.log(`<${contractAddress}> GET - ${type} ${identifier}`);
+    console.log(`<${contractAddress}> GET - ${type} ${identifier} ${hash}`);
 
     const jsonEntityRepository = getRepository(JsonEntity);
 
@@ -23,11 +23,24 @@ export async function jsonEntityGetAction(req: Request, res: Response) {
 
         return;
     }
+
+    if (hash === undefined || hash === null) {
+        const entities = await jsonEntityRepository.find({
+            contractAddress,
+            type,
+            identifier
+        });
+
+        res.send(entities);
+
+        return;
+    }
     
     const existingEntity = await jsonEntityRepository.findOne({
         contractAddress,
         type,
-        identifier
+        identifier,
+        hash
     });
 
     if (!existingEntity) {
