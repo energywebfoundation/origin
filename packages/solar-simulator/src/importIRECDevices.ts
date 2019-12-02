@@ -16,7 +16,7 @@ function generateNextAccount() {
     generatedAccountIndex++;
 
     return {
-        address: wallet.publicKey,
+        address: wallet.address,
         privateKey: wallet.privateKey
     };
 }
