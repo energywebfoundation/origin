@@ -9,7 +9,7 @@ export interface IOffChainData<T> {
 export interface IOffChainDataClient {
     get<T>(path: string): Promise<IOffChainData<T>>;
     delete(path: string): Promise<boolean>;
-    insertOrUpdate<T>(path: string, entity: IOffChainData<T>): Promise<boolean>;
+    insert<T>(path: string, entity: IOffChainData<T>): Promise<boolean>;
 }
 
 export class OffChainDataClient implements IOffChainDataClient {
@@ -25,24 +25,9 @@ export class OffChainDataClient implements IOffChainDataClient {
         return result.status === 200;
     }
 
-    public async insertOrUpdate<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
-        let postOrPut;
-
+    public async insert<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
         const normalizedURL = this.normalizeURL(url);
-
-        try {
-            await axios.get(normalizedURL);
-
-            postOrPut = axios.put;
-        } catch (error) {
-            if (error.response?.status === 404) {
-                postOrPut = axios.post;
-            } else {
-                throw error;
-            }
-        }
-
-        const result = await postOrPut(normalizedURL, offChainData);
+        const result = await axios.post(normalizedURL, offChainData);
 
         return result.status >= 200 && result.status < 300;
     }
