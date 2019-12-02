@@ -61,7 +61,7 @@ export abstract class Entity implements IOnChainProperties {
     async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
         const newLocation = `${this.getUrl()}/${this.id}/${offChainStorageProperties.rootHash}`;
 
-        const hasSynced = await this.offChainDataClient.insertOrUpdate(newLocation, {
+        const hasSynced = await this.offChainDataClient.insert(newLocation, {
             properties,
             salts: offChainStorageProperties.salts,
             schema: offChainStorageProperties.schema
