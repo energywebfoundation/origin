@@ -23,7 +23,6 @@ function generateNextAccount() {
 
 program.option('-i, --input <path>', 'input I-REC csv file');
 program.option('-o, --owner <address>', 'address of the device owner');
-program.option('-m, --matcher <address>', 'address of the device matcher');
 
 program.parse(process.argv);
 
@@ -41,6 +40,8 @@ const processDevices = async parsedContent => {
     const devices = [];
     const flow = [];
 
+    geoTz.preCache();
+
     let id = 0;
     for (const device of parsedContent) {
         console.log('---');
@@ -55,8 +56,6 @@ const processDevices = async parsedContent => {
         const latitude = parseFloat(device.Latitude);
         const longitude = parseFloat(device.Longitude);
         const deviceType = device.Technology.split(':')[1].trim();
-
-        geoTz.preCache();
         const timezone = geoTz(latitude, longitude)[0];
 
         const account = generateNextAccount();
@@ -83,7 +82,6 @@ const processDevices = async parsedContent => {
                 smartMeter: account.address,
                 smartMeterPK: account.privateKey,
                 owner: program.owner || '',
-                matcher: program.matcher || '',
                 operationalSince: new Date(registrationDate).getTime() / 1000,
                 capacityWh: maxCapacity,
                 lastSmartMeterReadWh: 0,
