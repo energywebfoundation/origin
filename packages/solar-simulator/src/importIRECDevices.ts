@@ -40,6 +40,8 @@ const processDevices = async parsedContent => {
     const devices = [];
     const flow = [];
 
+    geoTz.preCache();
+
     let id = 0;
     for (const device of parsedContent) {
         console.log('---');
@@ -54,8 +56,6 @@ const processDevices = async parsedContent => {
         const latitude = parseFloat(device.Latitude);
         const longitude = parseFloat(device.Longitude);
         const deviceType = device.Technology.split(':')[1].trim();
-
-        geoTz.preCache();
         const timezone = geoTz(latitude, longitude)[0];
 
         const account = generateNextAccount();

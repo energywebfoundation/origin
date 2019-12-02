@@ -82,7 +82,7 @@ Options:
 As an outcome of running this script we will receive 2 products:
 
 1. new `config/config.json` with updated `devices` field based on input CSV file
-2. json console output with commands necessary to setup demo environement https://github.com/energywebfoundation/ew-utils-demo/blob/master/config/demo-config.json
+2. json console output with commands necessary to setup demo environment https://github.com/energywebfoundation/ew-utils-demo/blob/master/config/demo-config.json
 
 
 #### fund-devices-smart-meters script
