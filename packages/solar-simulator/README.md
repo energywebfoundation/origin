@@ -76,7 +76,6 @@ Usage: yarn import-irec-devices -- [options]
 Options:
   -i, --input <path>       input I-REC csv file
   -o, --owner <address>    address of the device owner
-  -m, --matcher <address>  address of the device matcher
   -h, --help               output usage information
 ```
 
