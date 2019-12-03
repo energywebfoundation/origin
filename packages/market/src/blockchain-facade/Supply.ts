@@ -37,13 +37,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ISupply 
         this.initialized = false;
     }
 
-    getUrl(): string {
-        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
-            .web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Supply/${marketLogicAddress}`;
-    }
-
     async sync(): Promise<Entity> {
         if (this.id != null) {
             const demand = await this.configuration.blockchainProperties.marketLogicInstance.getSupply(
@@ -92,8 +85,8 @@ export const createSupply = async (
 
     let { url, propertiesDocumentHash } = supplyPropertiesOnChain;
 
-    url = supply.getUrl();
     propertiesDocumentHash = offChainStorageProperties.rootHash;
+    url = `${supply.baseUrl}/${propertiesDocumentHash}`;
 
     await polly()
         .waitAndRetry(10)

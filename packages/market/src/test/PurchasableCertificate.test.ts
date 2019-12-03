@@ -528,13 +528,15 @@ describe('PurchasableCertificate-Facade', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        const newCertificateId = await generateCertificateAndGetId();
+        const newCertificateId = await generateCertificateAndGetId(CERTIFICATE_ENERGY);
         let parentCertificate = await new PurchasableCertificate.Entity(
             newCertificateId,
             conf
         ).sync();
 
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, Currency.EUR);
+
+        parentCertificate = await parentCertificate.sync();
 
         try {
             await parentCertificate.buyCertificate(CERTIFICATE_ENERGY * 2);
@@ -548,6 +550,7 @@ describe('PurchasableCertificate-Facade', () => {
         parentCertificate = await parentCertificate.sync();
 
         assert.equal(parentCertificate.certificate.status, Certificate.Status.Active);
+        assert.equal(parentCertificate.certificate.energy, CERTIFICATE_ENERGY);
         assert.equal(parentCertificate.forSale, true);
     });
 

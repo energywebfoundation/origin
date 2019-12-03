@@ -67,13 +67,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         this.initialized = false;
     }
 
-    getUrl(): string {
-        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
-            .web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/PurchasableCertificate/${marketLogicAddress}`;
-    }
-
     async sync(): Promise<Entity> {
         if (this.id != null) {
             const pCert = await this.configuration.blockchainProperties.marketLogicInstance.getPurchasableCertificate(
@@ -251,7 +244,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
                 saleParams.onChainPrice,
                 saleParams.tokenAddress,
                 updatedOffChainStorageProperties.rootHash,
-                this.getUrl(),
+                this.fullUrl,
                 { from: activeUser.address, privateKey: activeUser.privateKey }
             );
 
@@ -286,7 +279,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
             saleParams.onChainPrice,
             saleParams.tokenAddress,
             updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
+            this.fullUrl,
             { from: activeUser.address, privateKey: activeUser.privateKey }
         );
     }

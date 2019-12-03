@@ -27,7 +27,7 @@ export class Entity extends User.Entity {
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
             this.id,
             updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
+            this.fullUrl,
             {
                 from: this.configuration.blockchainProperties.activeUser.address,
                 privateKey: this.configuration.blockchainProperties.activeUser.privateKey
@@ -54,8 +54,8 @@ export const createMarketUser = async (
 
     let { url, propertiesDocumentHash } = userPropertiesOnChain;
 
-    url = user.getUrl();
     propertiesDocumentHash = offChainStorageProperties.rootHash;
+    url = `${user.baseUrl}/${propertiesDocumentHash}`;
 
     const accountProperties = {
         from: configuration.blockchainProperties.activeUser.address,

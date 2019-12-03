@@ -74,12 +74,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
         this.initialized = false;
     }
 
-    getUrl(): string {
-        const marketLogicAddress = this.marketLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Demand/${marketLogicAddress}`;
-    }
-
     async sync(): Promise<Entity> {
         if (this.id != null) {
             const demand = await this.marketLogicInstance.getDemand(this.id);
@@ -120,7 +114,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
         await this.marketLogicInstance.updateDemand(
             this.id,
             updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
+            this.fullUrl,
             {
                 from: this.configuration.blockchainProperties.activeUser.address,
                 privateKey: this.configuration.blockchainProperties.activeUser.privateKey
@@ -238,7 +232,7 @@ export const createDemand = async (
         logs
     } = await configuration.blockchainProperties.marketLogicInstance.createDemand(
         offChainStorageProperties.rootHash,
-        demand.getUrl(),
+        `${demand.baseUrl}/${offChainStorageProperties.rootHash}`,
         {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey

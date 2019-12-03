@@ -48,13 +48,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IAgreeme
         this.initialized = false;
     }
 
-    getUrl(): string {
-        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
-            .web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Agreement/${marketLogicAddress}`;
-    }
-
     async sync(): Promise<Entity> {
         if (this.id != null) {
             const agreement = await this.configuration.blockchainProperties.marketLogicInstance.getAgreement(
@@ -120,8 +113,8 @@ export const createAgreement = async (
 
     let { url, propertiesDocumentHash } = agreementPropertiesOnChain;
 
-    url = agreement.getUrl();
     propertiesDocumentHash = offChainStorageProperties.rootHash;
+    url = `${agreement.baseUrl}/${propertiesDocumentHash}`;
 
     await polly()
         .waitAndRetry(10)
