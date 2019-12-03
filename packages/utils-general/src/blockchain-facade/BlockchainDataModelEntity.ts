@@ -46,20 +46,22 @@ export abstract class Entity implements IOnChainProperties {
         this.proofs.push(proof);
     }
 
-    abstract getUrl(): string;
+    get baseUrl(): string {
+        return `${this.configuration.offChainDataSource.baseUrl}/Entity`;
+    }
 
-    get fullUrl() {
-        return `${this.getUrl()}/${this.id}/${this.propertiesDocumentHash}`;
+    get fullUrl(): string {
+        return `${this.baseUrl}/${this.propertiesDocumentHash}`;
     }
 
     prepareEntityCreation(offChainProperties: any, schema: any): IOffChainProperties {
-        validateJson(offChainProperties, schema, this.getUrl(), this.configuration.logger);
+        validateJson(offChainProperties, schema, this.baseUrl, this.configuration.logger);
 
         return this.generateAndAddProofs(offChainProperties);
     }
 
     async syncOffChainStorage<T>(properties: T, offChainStorageProperties: IOffChainProperties): Promise<void> {
-        const newLocation = `${this.getUrl()}/${this.id}/${offChainStorageProperties.rootHash}`;
+        const newLocation = `${this.baseUrl}/${offChainStorageProperties.rootHash}`;
 
         const hasSynced = await this.offChainDataClient.insert(newLocation, {
             properties,
