@@ -207,27 +207,18 @@ describe('API tests', async () => {
             assert.equal(postResult.data.message, `Entity ${testHash} created`);
         });
     
-        it('fails creating the same Entity', async () => {
+        it('returns 200 when creating the same Entity', async () => {
             await axios.post(
                 `${BASE_API_URL}/Entity/${testHash}`,
                 { entityOwner }
             );
     
-            let failed = false;
-    
-            try {
-                await axios.post(
-                    `${BASE_API_URL}/Entity/${testHash}`,
-                    { entityOwner }
-                );
-            } catch (error) {
-                const { status, data } = error.response;
-                assert.equal(status, STATUS_CODES.CONFLICT);
-                assert.equal(data.error, StorageErrors.ALREADY_EXISTS);
-                failed = true;
-            }
-    
-            assert.isTrue(failed);
+            const result = await axios.post(
+                `${BASE_API_URL}/Entity/${testHash}`,
+                { entityOwner }
+            );
+
+            assert.equal(result.status, STATUS_CODES.SUCCESS);
         });
     });
 
