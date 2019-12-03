@@ -151,13 +151,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.initialized = false;
     }
 
-    getUrl(): string {
-        const certificateLogicAddress = this.configuration.blockchainProperties
-            .certificateLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Certificate/${certificateLogicAddress}`;
-    }
-
     async sync(): Promise<Entity> {
         if (this.id != null) {
             const { certificateLogicInstance } = this.configuration.blockchainProperties;
