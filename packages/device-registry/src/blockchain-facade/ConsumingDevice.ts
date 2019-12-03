@@ -14,7 +14,7 @@ export const createDevice = async (
     );
 
     if (configuration.offChainDataSource) {
-        deviceProperties.url = consumingDevice.getUrl();
+        deviceProperties.url = `${consumingDevice.baseUrl}/${offChainStorageProperties.rootHash}`;
         deviceProperties.propertiesDocumentHash = offChainStorageProperties.rootHash;
     }
 
@@ -80,12 +80,6 @@ export interface IConsumingDevice extends Device.IOnChainProperties {
 
 export class Entity extends Device.Entity implements IConsumingDevice {
     offChainProperties: Device.IOffChainProperties;
-
-    getUrl(): string {
-        const consumingDeviceLogicAddress = this.configuration.blockchainProperties.deviceLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/ConsumingDevice/${consumingDeviceLogicAddress}`;
-    }
 
     async sync(): Promise<Entity> {
         const device = await this.configuration.blockchainProperties.deviceLogicInstance.getDeviceById(
