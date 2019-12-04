@@ -264,7 +264,7 @@ describe('PurchasableCertificate-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: 0,
-            offChainSettlementOptions: {
+            offChainProperties: {
                 price: 0,
                 currency: Currency.NONE
             }
@@ -333,7 +333,7 @@ describe('PurchasableCertificate-Facade', () => {
             forSale: true,
             acceptedToken: erc20TestTokenAddress,
             onChainDirectPurchasePrice: 100,
-            offChainSettlementOptions: {
+            offChainProperties: {
                 price: 0,
                 currency: Currency.NONE
             }
@@ -421,7 +421,7 @@ describe('PurchasableCertificate-Facade', () => {
             forSale: false,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: 0,
-            offChainSettlementOptions: {
+            offChainProperties: {
                 price: 0,
                 currency: Currency.NONE
             }
@@ -443,7 +443,7 @@ describe('PurchasableCertificate-Facade', () => {
             initialized: true,
             forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
-            offChainSettlementOptions: {
+            offChainProperties: {
                 price: price * 100,
                 currency: Currency.EUR
             }
@@ -528,13 +528,15 @@ describe('PurchasableCertificate-Facade', () => {
 
         setActiveUser(deviceOwnerPK);
 
-        const newCertificateId = await generateCertificateAndGetId();
+        const newCertificateId = await generateCertificateAndGetId(CERTIFICATE_ENERGY);
         let parentCertificate = await new PurchasableCertificate.Entity(
             newCertificateId,
             conf
         ).sync();
 
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, Currency.EUR);
+
+        parentCertificate = await parentCertificate.sync();
 
         try {
             await parentCertificate.buyCertificate(CERTIFICATE_ENERGY * 2);
@@ -548,6 +550,7 @@ describe('PurchasableCertificate-Facade', () => {
         parentCertificate = await parentCertificate.sync();
 
         assert.equal(parentCertificate.certificate.status, Certificate.Status.Active);
+        assert.equal(parentCertificate.certificate.energy, CERTIFICATE_ENERGY);
         assert.equal(parentCertificate.forSale, true);
     });
 
@@ -597,11 +600,10 @@ describe('PurchasableCertificate-Facade', () => {
 
         await parentCertificate.publishForSale(CERTIFICATE_PRICE, CERTIFICATE_CURRENCY);
 
-        const parentOffchainSettlementOptions = await parentCertificate.getOffChainSettlementOptions();
+        parentCertificate = await parentCertificate.sync();
 
         assert.equal(parentCertificate.onChainDirectPurchasePrice, 0);
-
-        assert.deepEqual(parentOffchainSettlementOptions, {
+        assert.deepEqual(parentCertificate.offChainProperties, {
             price: CERTIFICATE_PRICE * 100,
             currency: CERTIFICATE_CURRENCY
         });
@@ -633,25 +635,23 @@ describe('PurchasableCertificate-Facade', () => {
         assert.equal(firstChildCertificate.certificate.status, Certificate.Status.Active);
         assert.equal(firstChildCertificate.certificate.energy, CERTIFICATE_ENERGY / 2);
         assert.equal(firstChildCertificate.forSale, false);
-        assert.equal(firstChildCertificate.onChainDirectPurchasePrice, 0);
-        assert.deepEqual(
-            await firstChildCertificate.getOffChainSettlementOptions(),
-            parentOffchainSettlementOptions
-        );
 
         const secondChildCertificate = await new PurchasableCertificate.Entity(
             (STARTING_CERTIFICATE_LENGTH + 2).toString(),
             conf
         ).sync();
 
+        assert.equal(
+            firstChildCertificate.propertiesDocumentHash,
+            parentCertificate.propertiesDocumentHash
+        );
         assert.equal(secondChildCertificate.certificate.status, Certificate.Status.Active);
         assert.equal(secondChildCertificate.certificate.energy, CERTIFICATE_ENERGY / 2);
         assert.equal(secondChildCertificate.forSale, true);
         assert.equal(secondChildCertificate.onChainDirectPurchasePrice, 0);
-
         assert.deepEqual(
-            await secondChildCertificate.getOffChainSettlementOptions(),
-            parentOffchainSettlementOptions
+            secondChildCertificate.offChainProperties,
+            parentCertificate.offChainProperties
         );
     });
 

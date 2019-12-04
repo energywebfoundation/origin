@@ -27,6 +27,7 @@
     "build-schema:DemandPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Demand.ts IDemandOffChainProperties",
     "build-schema:SupplyPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Supply.ts ISupplyOffChainProperties",
     "build-schema:MarketUserPropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/MarketUser.ts IMarketUserOffChainProperties",
+    "build-schema:PurchasableCertificatePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/PurchasableCertificate.ts IPurchasableCertificateOffChainProperties",
     "build-schemas": "node ./scripts/buildSchemas.js",
     "compile": "truffle compile",
     "deploy-contracts": "truffle migrate",

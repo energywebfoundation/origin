@@ -31,9 +31,9 @@ function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate
     return (
         certificate.forSale &&
         certificate.acceptedToken === '0x0000000000000000000000000000000000000000' &&
-        (!certificate.offChainSettlementOptions ||
-            (certificate.offChainSettlementOptions.currency === Currency.NONE &&
-                certificate.offChainSettlementOptions.price === 0))
+        (!certificate.offChainProperties ||
+            (certificate.offChainProperties.currency === Currency.NONE &&
+                certificate.offChainProperties.price === 0))
     );
 }
 

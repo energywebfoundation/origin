@@ -135,19 +135,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     public deviceId: number;
 
     public generationStartTime: number;
-
     public generationEndTime: number;
-
     public owner: string;
-
     public energy: number;
-
     public status: Status;
-
     public creationTime: number;
-
     public parentId: number;
-
     public children: string[];
 
     public initialized: boolean;
@@ -156,13 +149,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         super(id, configuration);
 
         this.initialized = false;
-    }
-
-    getUrl(): string {
-        const certificateLogicAddress = this.configuration.blockchainProperties
-            .certificateLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Certificate/${certificateLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {

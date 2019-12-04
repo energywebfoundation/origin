@@ -142,7 +142,7 @@ describe('Device Facade', () => {
                 usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: devicePropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/ProducingDevice/${deviceLogic.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`
             } as Partial<ProducingDevice.Entity>);
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
@@ -206,7 +206,7 @@ describe('Device Facade', () => {
                 active: true,
                 usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'newFileHash',
-                url: `${process.env.BACKEND_URL}/api/ProducingDevice/${deviceLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
                 offChainProperties: {
                     operationalSince: 0,
                     capacityWh: 10,
@@ -285,7 +285,7 @@ describe('Device Facade', () => {
                 usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: devicePropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/ConsumingDevice/${deviceLogic.web3Contract.options.address}`
+                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`
             } as Partial<ConsumingDevice.Entity>);
 
             assert.equal(await ConsumingDevice.getDeviceListLength(conf), 1);
@@ -312,7 +312,7 @@ describe('Device Facade', () => {
                 active: true,
                 usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'newFileHash',
-                url: `${process.env.BACKEND_URL}/api/ConsumingDevice/${deviceLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
                 offChainProperties: {
                     operationalSince: 0,
                     capacityWh: 10,

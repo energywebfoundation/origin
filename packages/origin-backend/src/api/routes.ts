@@ -5,7 +5,6 @@ import { marketContractLookupPostAction } from './controller/MarketContractLooku
 import { marketContractLookupDeleteAction } from './controller/MarketContractLookupDelete';
 import { jsonEntityGetAction } from './controller/JsonEntityGet';
 import { jsonEntityPostAction } from './controller/JsonEntityPost';
-import { jsonEntityPutAction } from './controller/JsonEntityPut';
 import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
 
 export interface IRoute {
@@ -34,22 +33,17 @@ export const AppRoutes: IRoute[] = [
         action: marketContractLookupDeleteAction
     },
     {
-        path: '/:type/:contractAddress/:identifier?',
+        path: '/Entity/:hash?',
         method: 'get',
         action: jsonEntityGetAction
     },
     {
-        path: '/:type/:contractAddress/:identifier',
+        path: '/Entity/:hash',
         method: 'post',
         action: jsonEntityPostAction
     },
     {
-        path: '/:type/:contractAddress/:identifier',
-        method: 'put',
-        action: jsonEntityPutAction
-    },
-    {
-        path: '/:type/:contractAddress/:identifier',
+        path: '/Entity/:hash',
         method: 'delete',
         action: jsonEntityDeleteAction
     }

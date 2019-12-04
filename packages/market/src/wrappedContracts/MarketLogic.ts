@@ -189,13 +189,17 @@ export class MarketLogic extends GeneralFunctions {
         _energy: number,
         _price: number,
         _tokenAddress: string,
+        _propertiesDocumentHash: string,
+        _documentDBURL: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.splitAndPublishForSale(
             _certificateId,
             _energy,
             _price,
-            _tokenAddress
+            _tokenAddress,
+            _propertiesDocumentHash,
+            _documentDBURL
         );
 
         return this.send(method, txParams);
@@ -223,12 +227,16 @@ export class MarketLogic extends GeneralFunctions {
         _certificateId: number,
         _price: number,
         _tokenAddress: string,
+        _propertiesDocumentHash: string,
+        _documentDBURL: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.publishForSale(
             _certificateId,
             _price,
-            _tokenAddress
+            _tokenAddress,
+            _propertiesDocumentHash,
+            _documentDBURL
         );
 
         return this.send(method, txParams);

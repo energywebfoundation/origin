@@ -1,9 +1,16 @@
 import { TransactionReceipt, EventLog } from 'web3-core';
+import polly from 'polly-js';
 
 import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
+import PurchasableCertificateOffChainPropertiesSchema from '../../schemas/PurchasableCertificateOffChainProperties.schema.json';
+
+const DEFAULT_OFF_CHAIN_PROPERTIES = {
+    price: 0,
+    currency: Currency.NONE
+};
 
 export interface IPurchasableCertificate {
     id: string;
@@ -22,7 +29,7 @@ export interface IPurchasableCertificate {
     splitCertificate(energy: number): Promise<TransactionReceipt>;
 }
 
-export interface IOffChainSettlementOptions {
+export interface IPurchasableCertificateOffChainProperties {
     price: number;
     currency: Currency;
 }
@@ -52,19 +59,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
 
     public initialized: boolean;
 
-    public offChainSettlementOptions: IOffChainSettlementOptions;
+    public offChainProperties: IPurchasableCertificateOffChainProperties;
 
     constructor(id: string, configuration: Configuration.Entity) {
         super(id, configuration);
 
         this.initialized = false;
-    }
-
-    getUrl(): string {
-        const marketLogicAddress = this.configuration.blockchainProperties.marketLogicInstance
-            .web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/PurchasableCertificate/${marketLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
@@ -73,12 +73,16 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
                 this.id
             );
 
+            this.propertiesDocumentHash = pCert.propertiesDocumentHash;
+            this.url = pCert.documentDBURL;
             this.certificate = await new Certificate.Entity(this.id, this.configuration).sync();
             this.forSale = pCert.forSale;
             this.acceptedToken = pCert.acceptedToken;
             this.onChainDirectPurchasePrice = Number(pCert.onChainDirectPurchasePrice); // TODO: should be BN
-
-            this.offChainSettlementOptions = await this.getOffChainSettlementOptions();
+            this.offChainProperties =
+                this.forSale && this.isOffChainSettlement
+                    ? await this.getOffChainProperties()
+                    : DEFAULT_OFF_CHAIN_PROPERTIES;
 
             this.initialized = true;
 
@@ -92,45 +96,80 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
 
     async buyCertificate(wh?: number): Promise<TransactionReceipt> {
         const logic: MarketLogic = this.configuration.blockchainProperties.marketLogicInstance;
+        const { activeUser } = this.configuration.blockchainProperties;
+
         const id = Number(this.id);
 
         if (wh) {
-            let splitAndBuyCertificateCall;
-            if (this.configuration.blockchainProperties.activeUser.privateKey) {
-                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(id, wh, {
-                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-                });
-            } else {
-                splitAndBuyCertificateCall = logic.splitAndBuyCertificate(id, wh, {
-                    from: this.configuration.blockchainProperties.activeUser.address,
-                    privateKey: ''
-                });
-            }
+            const parentOffChainData = await this.getOffChainDump();
 
-            const txResult = await splitAndBuyCertificateCall;
+            const firstChildCertificate = new Entity(null, this.configuration);
+            await polly()
+                .waitAndRetry(10)
+                .executeForPromise(async () => {
+                    firstChildCertificate.id = (
+                        await getCertificateListLength(this.configuration)
+                    ).toString();
+                    await firstChildCertificate.throwIfExists();
+                });
+
+            await firstChildCertificate.syncOffChainStorage(this.offChainProperties, {
+                rootHash: this.propertiesDocumentHash,
+                salts: parentOffChainData.salts,
+                schema: parentOffChainData.schema
+            });
+
+            const secondChildId = Number(firstChildCertificate.id) + 1;
+            const secondChildCertificate = new Entity(secondChildId.toString(), this.configuration);
+
+            await secondChildCertificate.syncOffChainStorage(this.offChainProperties, {
+                rootHash: this.propertiesDocumentHash,
+                salts: parentOffChainData.salts,
+                schema: parentOffChainData.schema
+            });
+
+            const txResult = await logic.splitAndBuyCertificate(id, wh, {
+                from: activeUser.address,
+                privateKey: activeUser.privateKey
+            });
 
             await this.sync();
-            const offChainSettlementOptions = await this.getOffChainSettlementOptions();
 
             if (Number(this.certificate.status) === Certificate.Status.Split) {
-                for (const certificateId of this.certificate.children) {
-                    const certificate = new Entity(certificateId.toString(), this.configuration);
+                if (
+                    firstChildCertificate.propertiesDocumentHash !== this.propertiesDocumentHash ||
+                    secondChildCertificate.propertiesDocumentHash !== this.propertiesDocumentHash
+                ) {
+                    throw new Error('publishForSale: Non-matching hashes.');
+                }
 
-                    await certificate.setOffChainSettlementOptions(offChainSettlementOptions);
+                const [childOneId, childTwoId] = this.certificate.children;
+
+                if (firstChildCertificate.id !== childOneId) {
+                    firstChildCertificate.id = childOneId;
+                    await firstChildCertificate.syncOffChainStorage(this.offChainProperties, {
+                        rootHash: this.propertiesDocumentHash,
+                        salts: parentOffChainData.salts,
+                        schema: parentOffChainData.schema
+                    });
+                }
+
+                if (secondChildCertificate.id !== childTwoId) {
+                    secondChildCertificate.id = childTwoId;
+                    await secondChildCertificate.syncOffChainStorage(this.offChainProperties, {
+                        rootHash: this.propertiesDocumentHash,
+                        salts: parentOffChainData.salts,
+                        schema: parentOffChainData.schema
+                    });
                 }
             }
 
             return txResult;
         }
 
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return logic.buyCertificate(id, {
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            });
-        }
         return logic.buyCertificate(id, {
-            from: this.configuration.blockchainProperties.activeUser.address,
-            privateKey: ''
+            from: activeUser.address,
+            privateKey: activeUser.privateKey
         });
     }
 
@@ -147,12 +186,11 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         tokenAddressOrCurrency: string | Currency,
         wh?: number
     ): Promise<void> {
+        const { activeUser } = this.configuration.blockchainProperties;
         const isErc20Sale: boolean = this.configuration.blockchainProperties.web3.utils.isAddress(
             tokenAddressOrCurrency.toString()
         );
         const isFiatSale: boolean = typeof tokenAddressOrCurrency !== 'string';
-
-        let certificate;
 
         if (!isErc20Sale && !isFiatSale) {
             throw Error('Please specify either an ERC20 token address or a currency.');
@@ -174,37 +212,76 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
             );
         }
 
-        if (wh === undefined || wh === certificateEnergy) {
-            await this.configuration.blockchainProperties.marketLogicInstance.publishForSale(
-                this.id,
-                saleParams.onChainPrice,
-                saleParams.tokenAddress,
-                this.configuration.blockchainProperties.activeUser.privateKey
-                    ? { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-                    : { from: this.configuration.blockchainProperties.activeUser.address }
+        const newOffChainProperties = {
+            price: saleParams.offChainPrice,
+            currency: saleParams.offChainCurrency
+        };
+        const updatedOffChainStorageProperties = this.prepareEntityCreation(
+            newOffChainProperties,
+            PurchasableCertificateOffChainPropertiesSchema
+        );
+
+        if (wh !== undefined && wh !== certificateEnergy) {
+            const firstChildCertificate = new Entity(null, this.configuration);
+
+            await polly()
+                .waitAndRetry(10)
+                .executeForPromise(async () => {
+                    firstChildCertificate.id = (
+                        await getCertificateListLength(this.configuration)
+                    ).toString();
+                    await firstChildCertificate.throwIfExists();
+                });
+
+            await firstChildCertificate.syncOffChainStorage(
+                newOffChainProperties,
+                updatedOffChainStorageProperties
             );
 
-            certificate = await new Entity(this.id, this.configuration).sync();
-        } else {
             await this.configuration.blockchainProperties.marketLogicInstance.splitAndPublishForSale(
                 this.id,
                 wh,
                 saleParams.onChainPrice,
                 saleParams.tokenAddress,
-                this.configuration.blockchainProperties.activeUser.privateKey
-                    ? { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-                    : { from: this.configuration.blockchainProperties.activeUser.address }
+                updatedOffChainStorageProperties.rootHash,
+                this.fullUrl,
+                { from: activeUser.address, privateKey: activeUser.privateKey }
             );
 
             await this.sync();
 
-            certificate = await new Entity(this.certificate.children[0], this.configuration).sync();
+            if (
+                firstChildCertificate.propertiesDocumentHash !==
+                updatedOffChainStorageProperties.rootHash
+            ) {
+                throw new Error('publishForSale: Non-matching hashes.');
+            }
+
+            const [childOneId] = this.certificate.children;
+
+            if (firstChildCertificate.id !== childOneId) {
+                firstChildCertificate.id = childOneId;
+                await firstChildCertificate.syncOffChainStorage(
+                    newOffChainProperties,
+                    updatedOffChainStorageProperties
+                );
+            }
+
+            await firstChildCertificate.sync();
+
+            return;
         }
 
-        await certificate.setOffChainSettlementOptions({
-            price: saleParams.offChainPrice,
-            currency: saleParams.offChainCurrency as Currency
-        });
+        await this.syncOffChainStorage(newOffChainProperties, updatedOffChainStorageProperties);
+
+        await this.configuration.blockchainProperties.marketLogicInstance.publishForSale(
+            this.id,
+            saleParams.onChainPrice,
+            saleParams.tokenAddress,
+            updatedOffChainStorageProperties.rootHash,
+            this.fullUrl,
+            { from: activeUser.address, privateKey: activeUser.privateKey }
+        );
     }
 
     get isOffChainSettlement(): boolean {
@@ -217,14 +294,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         }
 
         return this.isOffChainSettlement
-            ? this.offChainSettlementOptions.price
+            ? this.offChainProperties.price
             : this.onChainDirectPurchasePrice;
     }
 
     get currency() {
-        return this.isOffChainSettlement
-            ? this.offChainSettlementOptions.currency
-            : this.acceptedToken;
+        return this.isOffChainSettlement ? this.offChainProperties.currency : this.acceptedToken;
     }
 
     async getCertificateOwner(): Promise<string> {
@@ -260,55 +335,13 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
     }
 
     async unpublishForSale(): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.marketLogicInstance.unpublishForSale(
-                this.id,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        }
         return this.configuration.blockchainProperties.marketLogicInstance.unpublishForSale(
             this.id,
-            { from: this.configuration.blockchainProperties.activeUser.address }
-        );
-    }
-
-    async setOffChainSettlementOptions(options: IOffChainSettlementOptions): Promise<void> {
-        if (!this.configuration.offChainDataSource) {
-            throw Error('No off chain data source set in the configuration');
-        }
-
-        await this.offChainDataClient.insertOrUpdate(`${this.getUrl()}/${this.id}`, {
-            properties: options,
-            salts: [],
-            schema: []
-        }); // TODO: anchor those options on the smart contract
-    }
-
-    async getOffChainSettlementOptions(): Promise<IOffChainSettlementOptions> {
-        if (!this.configuration.offChainDataSource) {
-            throw Error('No off chain data source set in the configuration');
-        }
-
-        const defaultValues: IOffChainSettlementOptions = {
-            price: 0,
-            currency: Currency.NONE
-        };
-
-        try {
-            const { properties } = await this.offChainDataClient.get<IOffChainSettlementOptions>(
-                `${this.getUrl()}/${this.id}`
-            );
-
-            return properties;
-        } catch (error) {
-            if (error.response?.status === 404) {
-                await this.setOffChainSettlementOptions(defaultValues);
-
-                return defaultValues;
+            {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
             }
-
-            throw error;
-        }
+        );
     }
 
     async getCertificationRequestEvents() {

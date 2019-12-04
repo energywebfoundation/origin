@@ -41,6 +41,8 @@ contract MarketLogic is Initializable, RoleManagement {
     }
 
     struct PurchasableCertificate {
+        string propertiesDocumentHash;
+        string documentDBURL;
         bool forSale;
         address acceptedToken;
         uint onChainDirectPurchasePrice;
@@ -403,16 +405,22 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @param _certificateId The id of the certificate
     /// @param _price the purchase price
     /// @param _tokenAddress the address of the ERC20 token address
-    function publishForSale(uint _certificateId, uint _price, address _tokenAddress) public onlyCertificateOwner(_certificateId) {
-        _publishForSale(_certificateId, _price, _tokenAddress);
+    function publishForSale(
+        uint _certificateId,
+        uint _price,
+        address _tokenAddress,
+        string memory _propertiesDocumentHash,
+        string memory _documentDBURL
+    ) public onlyCertificateOwner(_certificateId) {
+        _publishForSale(_certificateId, _price, _tokenAddress, _propertiesDocumentHash, _documentDBURL);
+
+        emit LogPublishForSale(_certificateId, _price, _tokenAddress);
     }
 
     /// @notice makes the certificate not available for sale
     /// @param _certificateId The id of the certificate
     function unpublishForSale(uint _certificateId) public onlyCertificateOwner(_certificateId) {
-        PurchasableCertificate storage pCert = purchasableCertificates[_certificateId];
-
-        pCert.forSale = false;
+        _setForSale(_certificateId, false);
         emit LogUnpublishForSale(_certificateId);
     }
 
@@ -460,8 +468,20 @@ contract MarketLogic is Initializable, RoleManagement {
         } else {
             (uint childOneId, uint childTwoId) = _certificateLogic.splitCertificate(_certificateId, _energy);
 
-            _publishForSale(childOneId, pCert.onChainDirectPurchasePrice, pCert.acceptedToken);
-            _publishForSale(childTwoId, pCert.onChainDirectPurchasePrice, pCert.acceptedToken);
+            _publishForSale(
+                childOneId,
+                pCert.onChainDirectPurchasePrice,
+                pCert.acceptedToken,
+                pCert.propertiesDocumentHash,
+                pCert.documentDBURL
+            );
+            _publishForSale(
+                childTwoId,
+                pCert.onChainDirectPurchasePrice,
+                pCert.acceptedToken,
+                pCert.propertiesDocumentHash,
+                pCert.documentDBURL
+            );
 
             _buyCertificate(childOneId, msg.sender);
         }
@@ -472,11 +492,18 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @param _energy The amount of energy in W for the 1st certificate
     /// @param _price the purchase price
     /// @param _tokenAddress the address of the ERC20 token address
-    function splitAndPublishForSale(uint _certificateId, uint _energy, uint _price, address _tokenAddress)
-        public onlyCertificateOwner(_certificateId)
-    {
+    function splitAndPublishForSale(
+        uint _certificateId,
+        uint _energy,
+        uint _price,
+        address _tokenAddress,
+        string memory _propertiesDocumentHash,
+        string memory _documentDBURL
+    ) public onlyCertificateOwner(_certificateId) {
         (uint childOneId, ) = _certificateLogic.splitCertificate(_certificateId, _energy);
-        _publishForSale(childOneId, _price, _tokenAddress);
+
+        _publishForSale(childOneId, _price, _tokenAddress, _propertiesDocumentHash, _documentDBURL);
+        emit LogPublishForSale(childOneId, _price, _tokenAddress);
     }
 
     /// @notice gets the price for a direct purchase onchain
@@ -526,16 +553,14 @@ contract MarketLogic is Initializable, RoleManagement {
     /// @param _certificateId the id of the certificate
     /// @param _price the new price (as ERC20 tokens)
     function _setOnChainDirectPurchasePrice(uint _certificateId, uint _price) internal {
-        PurchasableCertificate storage pCert = purchasableCertificates[_certificateId];
-        pCert.onChainDirectPurchasePrice = _price;
+        purchasableCertificates[_certificateId].onChainDirectPurchasePrice = _price;
     }
 
     /// @notice sets the tradable token (ERC20 contracts) of a certificate
     /// @param _certificateId the certificate ID
     /// @param _token the ERC20-tokenaddress
     function _setTradableToken(uint _certificateId, address _token) internal {
-        PurchasableCertificate storage pCert = purchasableCertificates[_certificateId];
-        pCert.acceptedToken = _token;
+        purchasableCertificates[_certificateId].acceptedToken = _token;
     }
 
     /// @notice removes accepted token and the price for an certificate
@@ -546,11 +571,29 @@ contract MarketLogic is Initializable, RoleManagement {
         _setOnChainDirectPurchasePrice(_certificateId, 0);
     }
 
-    function _publishForSale(uint _certificateId, uint _price, address _tokenAddress) internal {
+    function _setForSale(uint _certificateId, bool _forSale) internal {
+        purchasableCertificates[_certificateId].forSale = _forSale;
+    }
+
+    function _updateOffChainProperties(
+        uint _certificateId,
+        string memory _propertiesDocumentHash,
+        string memory _documentDBURL
+    ) internal {
+        purchasableCertificates[_certificateId].propertiesDocumentHash = _propertiesDocumentHash;
+        purchasableCertificates[_certificateId].documentDBURL = _documentDBURL;
+    }
+
+    function _publishForSale(
+        uint _certificateId,
+        uint _price,
+        address _tokenAddress,
+        string memory _propertiesDocumentHash,
+        string memory _documentDBURL
+    ) internal {
+        _setForSale(_certificateId, true);
         _setOnChainDirectPurchasePrice(_certificateId, _price);
         _setTradableToken(_certificateId, _tokenAddress);
-        purchasableCertificates[_certificateId].forSale = true;
-
-        emit LogPublishForSale(_certificateId, _price, _tokenAddress);
+        _updateOffChainProperties(_certificateId, _propertiesDocumentHash, _documentDBURL);
     }
 }

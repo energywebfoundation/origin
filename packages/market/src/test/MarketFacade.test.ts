@@ -408,7 +408,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Demand/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${demand.propertiesDocumentHash}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Demand.Entity>);
@@ -427,7 +427,7 @@ describe('Market-Facade', () => {
             assert.ownInclude(demand, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Demand/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${demand.propertiesDocumentHash}`,
                 demandOwner: accountTrader,
                 status: 0
             } as Partial<Demand.Entity>);
@@ -454,13 +454,16 @@ describe('Market-Facade', () => {
 
             assert.notEqual(clone.id, demand.id);
             assert.notEqual(clone.propertiesDocumentHash, demand.propertiesDocumentHash);
+            assert.notEqual(clone.url, demand.url);
 
-            assert.equal(clone.url, demand.url);
             assert.deepEqual(clone.offChainProperties, demand.offChainProperties);
         });
 
         it('should update demand off chain properties', async () => {
             const demand = await new Demand.Entity('0', conf).clone();
+
+            const oldPropertiesHash = demand.propertiesDocumentHash;
+            const oldOffChainProperties = demand.offChainProperties;
 
             const offChainProperties = { ...demand.offChainProperties };
             offChainProperties.procureFromSingleFacility = !demand.offChainProperties
@@ -471,8 +474,8 @@ describe('Market-Facade', () => {
 
             assert.equal(updated.id, demand.id);
             assert.equal(updated.status, demand.status);
-            assert.notEqual(updated.propertiesDocumentHash, demand.propertiesDocumentHash);
-            assert.notDeepEqual(updated.offChainProperties, demand.offChainProperties);
+            assert.notEqual(updated.propertiesDocumentHash, oldPropertiesHash);
+            assert.notDeepEqual(updated.offChainProperties, oldOffChainProperties);
         });
 
         it('should not update demand properties when blockchain tx fails', async () => {
@@ -636,7 +639,7 @@ describe('Market-Facade', () => {
             assert.deepOwnInclude(supply, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${supply.propertiesDocumentHash}`,
                 deviceId: '0',
                 offChainProperties: {
                     availableWh: 10,
@@ -653,7 +656,7 @@ describe('Market-Facade', () => {
             assert.deepOwnInclude(supply, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Supply/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${supply.propertiesDocumentHash}`,
                 deviceId: '0',
                 offChainProperties: {
                     availableWh: 10,
@@ -707,12 +710,11 @@ describe('Market-Facade', () => {
 
             delete agreement.proofs;
             delete agreement.configuration;
-            delete agreement.propertiesDocumentHash;
 
             assert.deepOwnInclude(agreement, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: false,
@@ -733,12 +735,11 @@ describe('Market-Facade', () => {
 
             delete agreement.proofs;
             delete agreement.configuration;
-            delete agreement.propertiesDocumentHash;
 
             assert.deepOwnInclude(agreement, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: false,
@@ -769,7 +770,7 @@ describe('Market-Facade', () => {
             assert.deepOwnInclude(agreement, {
                 id: '0',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
@@ -820,7 +821,7 @@ describe('Market-Facade', () => {
             assert.deepOwnInclude(agreement, {
                 id: '1',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
@@ -851,7 +852,7 @@ describe('Market-Facade', () => {
             assert.deepOwnInclude(agreement, {
                 id: '1',
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Agreement/${marketLogic.web3Contract.options.address}`,
+                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
                 demandId: '0',
                 supplyId: '0',
                 approvedBySupplyOwner: true,
