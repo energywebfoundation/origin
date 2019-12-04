@@ -8,12 +8,12 @@ Accepted
 
 ## Context
 
-The issue motivating this decision, and any context that influences or constrains the decision.
+There has been confusion on why we call generating and consuming devices Assets in Origin. We have noticed that most Origin users would refer to Assets as Devices and not Assets.
 
 ## Decision
 
-The change that we're proposing or have agreed to implement.
+We decided to change our terminology to refer to Assets as Devices, to keep in line with the prevailing terminology in the industry.
 
 ## Consequences
 
-What becomes easier or more difficult to do and any risks introduced by the change that will need to be mitigated.
+Our package `asset-registry` has now been renamed to `device-registry`.
