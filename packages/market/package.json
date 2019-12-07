@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@energyweb/origin-backend-client": "1.1.0",
-    "@fluffy-spoon/substitute": "1.104.0",
+    "@fluffy-spoon/substitute": "1.107.0",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.5.1",
