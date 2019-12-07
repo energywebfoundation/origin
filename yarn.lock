@@ -1746,24 +1746,24 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@react-google-maps/api@1.7.14":
-  version "1.7.14"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.7.14.tgz#1b558118cac422c45ec9732d2e06d9f370ba3db2"
-  integrity sha512-YYYM1FDqOKZY8PpjbFsNU3XWUfvmBVPS688PYonpJJ4ujZv258VvcSxGpZfaU8MxA9bs/9DpNhgItNe4jo+aEQ==
+"@react-google-maps/api@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/api/-/api-1.8.0.tgz#89de921a58f03fa6522ee39305076a6f518da8c8"
+  integrity sha512-QhCBGwEUpkwEYMS4zF11NsX5KGfxig3RQQ3Dh5//dQIYUtU0xxlZeHo2P0dJ08w7MpTyn63EXBTyNz4NczJuww==
   dependencies:
-    "@react-google-maps/infobox" "1.7.11"
-    "@react-google-maps/marker-clusterer" "1.7.8"
+    "@react-google-maps/infobox" "1.8.0"
+    "@react-google-maps/marker-clusterer" "1.8.0"
     invariant "2.2.4"
 
-"@react-google-maps/infobox@1.7.11":
-  version "1.7.11"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.7.11.tgz#127e51a2bc0ead742f3443c22f6458fb43fd734a"
-  integrity sha512-o7PET703DIprxeS0fWy69RUuCfu6YFze6D9plIIhumE8T4SukYAv3UVZbxHUgmXRqz6I5CtXCW0zl5fGgYhVwA==
+"@react-google-maps/infobox@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/infobox/-/infobox-1.8.0.tgz#07d4007b0bc3501ca959a1fa259d4bb529e251e5"
+  integrity sha512-3khE652GuOenRxN5yDrXoivf3Zly681qvP2FoxNYhtzXyidcZ51Vln6astPFd0anOYYFNniVeo7xeMVJ+Bw11g==
 
-"@react-google-maps/marker-clusterer@1.7.8":
-  version "1.7.8"
-  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.7.8.tgz#e09a28824d3c7c32bb86e45dd30f5fd7238e63df"
-  integrity sha512-i3GVDMusP/BErRP9WuEka1mYEWQdBcpPNo9LyAaP0GGOmKxPczJrdzMFBqSSGJk+lefywZXGoTi52D2O7KWeyw==
+"@react-google-maps/marker-clusterer@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-1.8.0.tgz#02b9e9ca7d3f197eda2b0489eb54cfff656a09ef"
+  integrity sha512-1iAWgDKFfKmlKjInsGKEbuoleaOCUB6avnFk5+zLLXeJVWNUb/PZYVdYj8v9YgoV24GInrqHbMwhJwNPdjqwlg==
 
 "@redux-saga/core@^1.1.3":
   version "1.1.3"
@@ -2291,10 +2291,10 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@16.9.13":
-  version "16.9.13"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.13.tgz#b3ea5dd443f4a680599e2abba8cc66f5e1ce0059"
-  integrity sha512-LikzRslbiufJYHyzbHSW0GrAiff8QYLMBFeZmSxzCYGXKxi8m/1PHX+rsVOwhr7mJNq+VIu2Dhf7U6mjFERK6w==
+"@types/react@16.9.15":
+  version "16.9.15"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.15.tgz#aeabb7a50f96c9e31a16079ada20ede9ed602977"
+  integrity sha512-WsmM1b6xQn1tG3X2Hx4F3bZwc2E82pJXt5OPs2YJgg71IzvUoKOSSSYOvLXYCg1ttipM+UuA4Lj3sfvqjVxyZw==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
