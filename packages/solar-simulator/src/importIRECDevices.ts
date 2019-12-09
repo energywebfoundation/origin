@@ -55,7 +55,10 @@ const processDevices = async parsedContent => {
         const registrationDate = device['Registration Date'];
         const latitude = parseFloat(device.Latitude);
         const longitude = parseFloat(device.Longitude);
-        const deviceType = device.Technology.split(':')[1].trim();
+
+        const [, ...types] = device.Technology.split(':');
+        const deviceType = types.map(t => t.trim()).join(';');
+
         const timezone = geoTz(latitude, longitude)[0];
 
         const account = generateNextAccount();
