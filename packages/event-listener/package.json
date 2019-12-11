@@ -43,6 +43,7 @@
         "@energyweb/utils-general": "1.4.0",
         "@types/mandrill-api": "^1.0.30",
         "@types/nodemailer": "^6.2.1",
+        "commander": "^4.0.1",
         "dotenv": "^8.2.0",
         "mandrill-api": "1.0.45",
         "moment": "2.24.0",
