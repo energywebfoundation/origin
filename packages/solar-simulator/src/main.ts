@@ -1,19 +1,32 @@
 import dotenv from 'dotenv';
+import program from 'commander';
+import path from 'path';
 
 import { startAPI } from './simulatorService';
 import { startConsumerService } from './consumerService';
 import { mockData } from './mockReadings';
 
-dotenv.config({
-    path: '../../.env'
-});
+const absolutePath = relativePath => path.resolve(__dirname, relativePath);
 
-const configFilePath = `${__dirname}/${
-    process.argv[2] ? process.argv[2] : '../config/config.json'
-}`;
-const dataFilePath = `${__dirname}/${process.argv[3] ? process.argv[3] : '../config/data.csv'}`;
+program.option('-e, --env <env_file_path>', 'path to the .env file');
+program.option('-c, --config <config_file_path>', 'path to the config file');
+program.option('-d, --data <data_file_path>', 'path to the data file');
+
+program.parse(process.argv);
+
+const envFile = program.env ? absolutePath(program.env) : '../../.env';
+const configFilePath = absolutePath(program.config ?? '../config/config.json');
+const dataFilePath = absolutePath(program.data ?? '../config/data.csv');
 
 (async () => {
+    dotenv.config({
+        path: envFile
+    });
+
+    console.log(
+        `Running the simulator with:\n.env file: ${envFile}\nconfig file: ${configFilePath}\ndata file: ${dataFilePath}`
+    );
+
     if (process.env.SOLAR_SIMULATOR_DEPLOY_PAST_READINGS === 'true') {
         await mockData(configFilePath, dataFilePath);
         console.log('Finished deploying past energy readings');
