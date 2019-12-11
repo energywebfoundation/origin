@@ -1,6 +1,5 @@
 import { parentPort, workerData } from 'worker_threads';
 
-import dotenv from 'dotenv';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
 import * as Winston from 'winston';
@@ -9,10 +8,6 @@ import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
 import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
-
-dotenv.config({
-    path: '../../.env'
-});
 
 const web3 = new Web3(process.env.WEB3);
 const baseUrl = `${process.env.BACKEND_URL}/api`;

@@ -4,13 +4,12 @@ import moment from 'moment-timezone';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-
 import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
-import CONFIG from '../config/config.json';
 
 export function wait(milliseconds: number) {
     return new Promise(resolve => {
@@ -18,15 +17,7 @@ export function wait(milliseconds: number) {
     });
 }
 
-dotenv.config({
-    path: '../../.env'
-});
-
-const CHECK_INTERVAL: number = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
-
 const WEB3 = process.env.WEB3 || 'http://localhost:8545';
-
-const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
 
 async function createBlockchainConfiguration() {
     const web3 = new Web3(WEB3);
@@ -85,7 +76,10 @@ interface IEnergyMeasurement {
     measurementTime: string;
 }
 
-async function startConsumerService() {
+export async function startConsumerService(configFilePath: string) {
+    const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
+    const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
+    const CHECK_INTERVAL = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
     const conf = await createBlockchainConfiguration();
 
     async function getProducingDeviceSmartMeterRead(deviceId: string): Promise<number> {
@@ -183,4 +177,9 @@ async function startConsumerService() {
     }
 }
 
-startConsumerService();
+if (require.main === module) {
+    dotenv.config({
+        path: '../../.env'
+    });
+    startConsumerService(`${__dirname}/../config/config.json`);
+}

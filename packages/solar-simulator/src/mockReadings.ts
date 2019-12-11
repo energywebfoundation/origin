@@ -1,12 +1,9 @@
+/* eslint no-loop-func: 1 */
 import * as fs from 'fs';
 import parse from 'csv-parse/lib/sync';
 import { Worker } from 'worker_threads';
 import path from 'path';
-
-import CONFIG from '../config/config.json';
-
-const fileContent = fs.readFileSync(`${__dirname}/../config/data.csv`);
-const DATA = parse(fileContent, { columns: false, trim: true });
+import dotenv from 'dotenv';
 
 function getMockReadingsWorkerLocation() {
     let location = './dist/js/src/workers/mockReadingsWorker.js';
@@ -19,19 +16,42 @@ function getMockReadingsWorkerLocation() {
     return location;
 }
 
-(async () => {
+export async function mockData(configFilePath: string, dataFilePath: string): Promise<any> {
+    const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
+    const DATA = parse(fs.readFileSync(dataFilePath), { columns: false, trim: true });
+
     const location = getMockReadingsWorkerLocation();
 
-    for (const device of CONFIG.devices) {
-        const worker = new Worker(location, {
-            workerData: {
-                device,
-                DATA
-            }
-        });
+    return new Promise(resolve => {
+        let counter = 0;
 
-        worker.on('message', result => {
-            console.log(result);
-        });
-    }
-})();
+        for (const device of CONFIG.devices) {
+            const worker = new Worker(location, {
+                workerData: {
+                    device,
+                    DATA
+                }
+            });
+
+            worker.on('message', message => console.log(message));
+
+            worker.on('exit', () => {
+                counter++;
+
+                if (counter >= CONFIG.devices.length) {
+                    resolve('done');
+                }
+            });
+        }
+    });
+}
+
+if (require.main === module) {
+    dotenv.config({
+        path: '../../.env'
+    });
+
+    (async () => {
+        await mockData(`${__dirname}/../config/config.json`, `${__dirname}/../config/data.csv`);
+    })();
+}
