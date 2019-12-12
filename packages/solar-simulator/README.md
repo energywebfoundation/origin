@@ -96,4 +96,4 @@ Options:
   -h, --help                     output usage information
 ```
 
-Before we can setup the demo environement, newly generated smart meters wallets have to be funded with EWF token. Script is using monorepo root's `.env` `WEB3` variable to connect to given web3 endpoint.
+Before we can setup the demo environement, newly generated smart meters wallets have to be funded with the EWF token. Script is using monorepo root's `.env` `WEB3` variable to connect to given web3 endpoint.
