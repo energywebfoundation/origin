@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.2.0 (2019-12-12)
+
+
+### Bug Fixes
+
+* **migrations:** fix wrong config url in tests ([d067704](https://github.com/energywebfoundation/origin/commit/d067704ff4da60c7ec29fab028b4bebc75d94ea6))
+
+
+### Features
+
+* **migrations:** Rename the "utils-demo" package to "migrations" ([#362](https://github.com/energywebfoundation/origin/issues/362)) ([168c7dd](https://github.com/energywebfoundation/origin/commit/168c7dda0a0a963f279385518ebe42525525368d))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-demo@1.2.3...@energyweb/utils-demo@1.3.0) (2019-11-26)
 
 

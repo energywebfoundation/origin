@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.0...@energyweb/market-matcher@2.0.1) (2019-12-12)
+
+
+### Bug Fixes
+
+* retry yarn add when building dockerfiles ([#366](https://github.com/energywebfoundation/origin/issues/366)) ([551c1f5](https://github.com/energywebfoundation/origin/commit/551c1f526c4f04c79cf2d5e363feb7340d01e6f0))
+* **market-matcher:** observe update event ([bf4ba4a](https://github.com/energywebfoundation/origin/commit/bf4ba4a183741791018b779cadeaeb8275377af6))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.3...@energyweb/market-matcher@2.0.0) (2019-11-26)
 
 
