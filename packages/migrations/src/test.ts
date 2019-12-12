@@ -12,7 +12,7 @@ import { ConfigurationClient } from '@energyweb/origin-backend-client';
 
     const contractConfig = await deployEmptyContracts();
 
-    await marketDemo('../config/demo-config.json', contractConfig);
+    await marketDemo(path.resolve(__dirname, '../config/demo-config.json'), contractConfig);
 
     if (contractConfig && contractConfig.marketLogic) {
         await new ConfigurationClient().add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketLogic.toLowerCase());
