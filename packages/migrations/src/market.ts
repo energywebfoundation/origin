@@ -11,23 +11,15 @@ import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
+import { DeployedContractAddresses } from './deployEmpty';
 
-export const marketDemo = async (demoFile?: string) => {
+export const marketDemo = async (demoConfigPath: string, contractConfig: DeployedContractAddresses) => {
     const startTime = Date.now();
 
     const web3: Web3 = new Web3(process.env.WEB3);
     const deployKey: string = process.env.DEPLOY_KEY;
 
-    let demoConfig;
-    if (!demoFile) {
-        demoConfig = JSON.parse(fs.readFileSync('./config/demo-config.json', 'utf8').toString());
-    } else {
-        demoConfig = JSON.parse(demoFile);
-    }
-
-    const contractConfig = JSON.parse(
-        fs.readFileSync('./config/contractConfig.json', 'utf8').toString()
-    );
+    const demoConfig = JSON.parse(fs.readFileSync(demoConfigPath ?? './config/demo-config.json', 'utf8').toString());
 
     const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 

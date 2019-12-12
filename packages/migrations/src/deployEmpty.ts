@@ -1,10 +1,17 @@
 import Web3 from 'web3';
 import { logger } from './Logger';
 
-import * as UserRegistry from '@energyweb/user-registry';
-import * as DeviceRegistry from '@energyweb/device-registry';
-import * as Origin from '@energyweb/origin';
-import * as Market from '@energyweb/market';
+import { Contracts as UserContracts } from '@energyweb/user-registry';
+import { Contracts as DeviceContracts } from '@energyweb/device-registry';
+import { Contracts as OriginContracts } from '@energyweb/origin';
+import { Contracts as MarketContracts } from '@energyweb/market';
+
+export interface DeployedContractAddresses {
+    userLogic: string;
+    deviceLogic: string;
+    certificateLogic: string;
+    marketLogic: string;
+}
 
 export async function deployEmptyContracts() {
     const web3: Web3 = new Web3(process.env.WEB3);
@@ -15,11 +22,11 @@ export async function deployEmptyContracts() {
     console.log('-----------------------------------------------------------');
 
     // deploy user, device and market contracts and store instances of lookup contracts
-    const userLogic = await UserRegistry.Contracts.migrateUserRegistryContracts(web3, adminPK);
+    const userLogic = await UserContracts.migrateUserRegistryContracts(web3, adminPK);
     const userLogicAddress = userLogic.web3Contract.options.address;
     logger.info('UserLogic Contract Deployed: ' + userLogicAddress);
 
-    const deviceLogic = await DeviceRegistry.Contracts.migrateDeviceRegistryContracts(
+    const deviceLogic = await DeviceContracts.migrateDeviceRegistryContracts(
         web3,
         userLogicAddress,
         adminPK
@@ -27,7 +34,7 @@ export async function deployEmptyContracts() {
     const deviceLogicAddress = deviceLogic.web3Contract.options.address;
     logger.info('DeviceLogic Contract Deployed: ' + deviceLogicAddress);
 
-    const certificateLogic = await Origin.Contracts.migrateCertificateRegistryContracts(
+    const certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
         web3,
         deviceLogicAddress,
         adminPK
@@ -35,7 +42,7 @@ export async function deployEmptyContracts() {
     const certificateLogicAddress = certificateLogic.web3Contract.options.address;
     logger.info('CertificateLogic Contract Deployed: ' + certificateLogicAddress);
 
-    const marketLogic = await Market.Contracts.migrateMarketRegistryContracts(
+    const marketLogic = await MarketContracts.migrateMarketRegistryContracts(
         web3,
         certificateLogicAddress,
         adminPK
@@ -46,7 +53,7 @@ export async function deployEmptyContracts() {
     console.log('-----------------------------------------------------------\n');
 
     // save addresses in a config file
-    const deployResult = {
+    const deployResult: DeployedContractAddresses = {
         userLogic: userLogicAddress,
         deviceLogic: deviceLogicAddress,
         certificateLogic: certificateLogicAddress,

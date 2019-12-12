@@ -45,7 +45,7 @@
 | [`@energyweb/market-matcher`](/packages/market-matcher) | Off-chain agent for demand and supply matching |
 | [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
 | [`@energyweb/event-listener`](/packages/event-listener) | Listens to Origin events, triggers actions on-chain and sends notifications |
-| [`@energyweb/utils-demo`](/packages/utils-demo) | Demo deployment and configuration utilities |
+| [`@energyweb/migrations`](/packages/migrations) | Deployment and configuration utilities |
 
 ## Installation
 
@@ -92,8 +92,8 @@ Overview of architecture
 
 This section lists key entry points to start your journey with Origin.
 
-1. [utils-demo](https://github.com/energywebfoundation/origin/tree/master/packages/utils-demo) - demo repository with build scripts that enable easy deployment of smart contracts to Tobalaba or local blockchain. Often used to demo and get to know features and capabilities of Origin.
-2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `utils-demo` (store data), and `origin-ui` to display stored data.
+1. [migrations](https://github.com/energywebfoundation/origin/tree/master/packages/migrations) - repository with build scripts that enable easy deployment of smart contracts to EWC, Volta or a local blockchain. Often used to demo and get to know features and capabilities of Origin.
+2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - Origin combines on and off-chain data storage. This repository is used to act as a backend service for off-chain data storage. You'll need this to run `migrations` (store data), and `origin-ui` to display stored data.
 3. [origin-ui](https://github.com/energywebfoundation/origin/tree/master/packages/origin-ui) - frontend of the system needed to view data stored in smart contracts (on-chain) and in the backend (off-chain). To interact Origin frontend you'll need [MetaMask](https://metamask.io).
 
 ### Other components
