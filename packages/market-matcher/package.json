@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "2.0.0",
+    "version": "2.0.1",
     "main": "dist/js/src/index.js",
     "bin": {
         "market-matcher": "./bin/market-matcher"
@@ -36,13 +36,13 @@
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
-        "@energyweb/device-registry": "0.9.0",
-        "@energyweb/market": "2.0.0",
-        "@energyweb/market-matcher-core": "1.0.1",
-        "@energyweb/origin": "2.0.0",
-        "@energyweb/origin-backend-client": "1.1.0",
-        "@energyweb/user-registry": "1.4.0",
-        "@energyweb/utils-general": "1.4.0",
+        "@energyweb/device-registry": "1.0.0",
+        "@energyweb/market": "3.0.0",
+        "@energyweb/market-matcher-core": "1.1.0",
+        "@energyweb/origin": "3.0.0",
+        "@energyweb/origin-backend-client": "2.0.0",
+        "@energyweb/user-registry": "2.0.0",
+        "@energyweb/utils-general": "2.0.0",
         "commander": "^4.0.1",
         "dotenv": "^8.2.0",
         "moment": "^2.24.0",
