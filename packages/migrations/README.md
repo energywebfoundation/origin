@@ -1,4 +1,4 @@
-# ew-utils-demo
+# Origin Migrations
 
 This repository is used to deploy all the contracts for the Origin project of the Energy Web Foundation.
 
