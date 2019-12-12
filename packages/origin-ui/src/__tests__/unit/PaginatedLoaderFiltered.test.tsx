@@ -28,16 +28,16 @@ describe('PaginatedLoaderFiltered', () => {
             const paginationFilteredLoader = new TestClass({});
 
             const record = {
-                assetType: 'Solar;Photovoltaic;Roof mounted',
+                deviceType: 'Solar;Photovoltaic;Roof mounted',
                 owner: 'A'
             };
 
             const filters: ICustomFilter[] = [
                 {
-                    property: (r: typeof record) => r.assetType,
-                    label: 'Asset Type',
+                    property: (r: typeof record) => r.deviceType,
+                    label: 'Device Type',
                     input: {
-                        type: CustomFilterInputType.assetType,
+                        type: CustomFilterInputType.deviceType,
                         defaultOptions: []
                     },
                     selectedValue: null

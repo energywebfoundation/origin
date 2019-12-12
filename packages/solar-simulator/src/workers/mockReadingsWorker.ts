@@ -1,18 +1,13 @@
 import { parentPort, workerData } from 'worker_threads';
 
-import dotenv from 'dotenv';
 import moment from 'moment-timezone';
 import Web3 from 'web3';
 import * as Winston from 'winston';
 
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
 import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
-
-dotenv.config({
-    path: '../../.env'
-});
 
 const web3 = new Web3(process.env.WEB3);
 const baseUrl = `${process.env.BACKEND_URL}/api`;
@@ -38,7 +33,7 @@ async function getMarketContractLookupAddress() {
     return process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
 }
 
-async function getAssetConf(marketContractLookupAddress: string) {
+async function getDeviceConf(marketContractLookupAddress: string) {
     const conf: Configuration.Entity = {
         blockchainProperties: {
             web3
@@ -62,19 +57,19 @@ async function getAssetConf(marketContractLookupAddress: string) {
     return conf;
 }
 
-async function getProducingAssetSmartMeterRead(
-    assetId: string,
+async function getProducingDeviceSmartMeterRead(
+    deviceId: string,
     conf: Configuration.Entity
 ): Promise<number> {
-    const asset = await new ProducingAsset.Entity(assetId, conf).sync();
+    const device = await new ProducingDevice.Entity(deviceId, conf).sync();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return parseInt((asset.lastSmartMeterReadWh as any) as string, 10);
+    return parseInt((device.lastSmartMeterReadWh as any) as string, 10);
 }
 
-async function saveProducingAssetSmartMeterRead(
+async function saveProducingDeviceSmartMeterRead(
     meterReading: number,
-    assetId: string,
+    deviceId: string,
     timestamp: number,
     smartMeterPrivateKey: string,
     conf: Configuration.Entity
@@ -91,20 +86,20 @@ async function saveProducingAssetSmartMeterRead(
         privateKey: smartMeterPrivateKey
     };
 
-    let asset;
+    let device;
 
     try {
-        asset = await new ProducingAsset.Entity(assetId, conf).sync();
-        await asset.saveSmartMeterRead(meterReading, '', timestamp);
-        asset = await asset.sync();
+        device = await new ProducingDevice.Entity(deviceId, conf).sync();
+        await device.saveSmartMeterRead(meterReading, '', timestamp);
+        device = await device.sync();
         conf.logger.verbose(
-            `Producing asset ${assetId} smart meter reading saved: ${meterReading}`
+            `Producing device ${deviceId} smart meter reading saved: ${meterReading}`
         );
     } catch (e) {
-        conf.logger.error(`Could not save smart meter reading for producing asset\n${e}`);
+        conf.logger.error(`Could not save smart meter reading for producing device\n${e}`);
 
         console.error({
-            assetId: asset.id,
+            deviceId: device.id,
             meterReading,
             time: moment.unix(timestamp).format(),
             smpk: smartMeterPrivateKey
@@ -114,9 +109,9 @@ async function saveProducingAssetSmartMeterRead(
     console.log('-----------------------------------------------------------\n');
 }
 
-const { asset } = workerData;
+const { device } = workerData;
 
-const currentTime = moment.tz(asset.timezone);
+const currentTime = moment.tz(device.timezone);
 const measurementTime = currentTime
     .clone()
     .subtract(1, 'day')
@@ -124,7 +119,7 @@ const measurementTime = currentTime
 
 (async () => {
     const marketContractLookupAddress = await getMarketContractLookupAddress();
-    const conf = await getAssetConf(marketContractLookupAddress);
+    const conf = await getDeviceConf(marketContractLookupAddress);
 
     while (measurementTime.isSameOrBefore(currentTime)) {
         const generateReadingsTimeData = workerData.DATA.find(
@@ -137,28 +132,31 @@ const measurementTime = currentTime
         );
 
         const multiplier = parseFloat(generateReadingsTimeData[1]);
-        const energyGenerated = Math.round(asset.maxCapacity * multiplier);
+        const energyGenerated = Math.round(device.maxCapacity * multiplier);
 
         const isValidMeterReading = energyGenerated > 0;
 
         if (isValidMeterReading) {
             try {
-                const previousRead: number = await getProducingAssetSmartMeterRead(asset.id, conf);
+                const previousRead: number = await getProducingDeviceSmartMeterRead(
+                    device.id,
+                    conf
+                );
 
-                await saveProducingAssetSmartMeterRead(
+                await saveProducingDeviceSmartMeterRead(
                     previousRead + energyGenerated,
-                    asset.id,
+                    device.id,
                     measurementTime.unix(),
-                    asset.smartMeterPrivateKey,
+                    device.smartMeterPrivateKey,
                     conf
                 );
             } catch (error) {
-                console.error(`Error while trying to save meter read for asset ${asset.id}`);
+                console.error(`Error while trying to save meter read for device ${device.id}`);
             }
         }
 
         parentPort.postMessage(
-            `[Asset ID: ${asset.id}]:${
+            `[Device ID: ${device.id}]:${
                 isValidMeterReading ? 'Saved' : 'Skipped'
             } Energy Read of: ${energyGenerated} Wh - [${measurementTime.format()}]`
         );

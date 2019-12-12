@@ -1,13 +1,13 @@
 import { Demand } from '@energyweb/market';
-import { ConsumingAsset } from '@energyweb/asset-registry';
+import { ConsumingDevice } from '@energyweb/device-registry';
 import { IStoreState } from '../types';
 
 export enum Actions {
     demandCreated = 'DEMAND_CREATED',
     demandUpdated = 'DEMAND_UPDATED',
     demandDeleted = 'DEMAND_DELETED',
-    producingAssetCreatedOrUpdated = 'PRODUCING_ASSET_CREATED_OR_UPDATED',
-    consumingAssetCreatedOrUpdated = 'CONSUMING_ASSET_CREATED_OR_UPDATED',
+    producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED',
+    consumingDeviceCreatedOrUpdated = 'CONSUMING_DEVICE_CREATED_OR_UPDATED',
     configurationUpdated = 'CONFIGURATION_UPDATED'
 }
 
@@ -26,9 +26,9 @@ export const demandDeleted = (demand: Demand.Entity) => ({
     demand
 });
 
-export const consumingAssetCreatedOrUpdated = (consumingAsset: ConsumingAsset.Entity) => ({
-    type: Actions.consumingAssetCreatedOrUpdated,
-    consumingAsset
+export const consumingDeviceCreatedOrUpdated = (consumingDevice: ConsumingDevice.Entity) => ({
+    type: Actions.consumingDeviceCreatedOrUpdated,
+    consumingDevice
 });
 
 export interface IConfigurationUpdatedAction {

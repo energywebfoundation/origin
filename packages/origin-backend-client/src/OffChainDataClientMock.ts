@@ -25,7 +25,7 @@ export class OffChainDataClientMock implements IOffChainDataClient {
         return this.storage.delete(url.toLocaleLowerCase());
     }
 
-    public async insertOrUpdate<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
+    public async insert<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
         this.storage.set(url.toLocaleLowerCase(), this.clone(offChainData));
 
         return true;

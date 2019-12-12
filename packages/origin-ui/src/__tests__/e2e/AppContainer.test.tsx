@@ -18,11 +18,11 @@ import moment from 'moment';
 jest.setTimeout(100000);
 
 describe('Application[E2E]', () => {
-    it('correctly navigates to producing asset details', async () => {
+    it('correctly navigates to producing device details', async () => {
         const ganacheServer = await startGanache();
         const { configurationClient, offChainDataClient } = await deployDemo();
 
-        const { store, history } = setupStore([`/assets/production?rpc=ws://localhost:8545`], {
+        const { store, history } = setupStore([`/devices/production?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
             logActions: false,
             configurationClient,
@@ -158,9 +158,9 @@ describe('Application[E2E]', () => {
             );
         }
 
-        async function testProducingAssets() {
+        async function testProducingDevices() {
             assertMainTableContent([
-                'Asset Manager organization',
+                'Device Manager organization',
                 'Wuthering Heights Windfarm',
                 'Nakhon Pathom, Central',
                 'Wind - Onshore',
@@ -170,7 +170,7 @@ describe('Application[E2E]', () => {
 
             assertPagination(1, 1, 1);
 
-            // Go to asset details
+            // Go to device details
             rendered
                 .find('table tbody tr td')
                 .first()
@@ -181,13 +181,13 @@ describe('Application[E2E]', () => {
             expect(rendered.find('table tbody tr td div').map(el => el.text())).toEqual([
                 'Facility Name',
                 'Wuthering Heights Windfarm ',
-                'Asset Owner',
-                'Asset Manager organization ',
+                'Device Owner',
+                'Device Manager organization ',
                 'Certified by Registry (private)',
                 'IREC ',
                 'Other Green Attributes (private)',
                 ' ',
-                'Asset Type',
+                'Device Type',
                 'Wind - Onshore ',
                 '',
                 'Meter Read',
@@ -209,7 +209,7 @@ describe('Application[E2E]', () => {
 
         rendered.update();
 
-        await testProducingAssets();
+        await testProducingDevices();
         await importTraderAccount();
         await testDemands();
 

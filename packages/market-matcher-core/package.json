@@ -30,7 +30,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/asset-registry": "1.4.0",
+        "@energyweb/device-registry": "0.9.0",
         "@energyweb/market": "2.0.0",
         "@energyweb/origin": "2.0.0",
         "@energyweb/origin-backend-client": "1.1.0",
@@ -42,7 +42,7 @@
         "winston": "3.2.1"
     },
     "devDependencies": {
-        "@fluffy-spoon/substitute": "1.104.0",
+        "@fluffy-spoon/substitute": "1.107.0",
         "@types/lolex": "5.1.0",
         "@types/web3": "1.0.20",
         "lolex": "5.1.1"

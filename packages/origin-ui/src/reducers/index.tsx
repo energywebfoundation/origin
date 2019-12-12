@@ -1,6 +1,6 @@
 import certificates from '../features/certificates/reducer';
-import producingAssets from '../features/producingAssets/reducer';
-import consumingAssets from './ConsumingAsset';
+import producingDevices from '../features/producingDevices/reducer';
+import consumingDevices from './ConsumingDevice';
 import demands from './Demand';
 import configuration from './Configuration';
 import general from '../features/general/reducer';
@@ -15,8 +15,8 @@ export const createRootReducer = history =>
     combineReducers<IStoreState>({
         authentication,
         certificates,
-        producingAssets,
-        consumingAssets,
+        producingDevices,
+        consumingDevices,
         demands,
         general,
         configuration,

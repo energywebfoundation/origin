@@ -2,7 +2,7 @@ import React from 'react';
 import { Certificates } from './Certificates';
 import { Route, Switch } from 'react-router-dom';
 import { Header } from './Header';
-import { Asset } from './Asset';
+import { Device } from './Device';
 import './AppContainer.scss';
 import { Demands } from './Demand/Demands';
 import { Account } from './Account/Account';
@@ -23,7 +23,7 @@ export function AppContainer() {
         baseURL,
         getAccountLink,
         getDemandsLink,
-        getAssetsLink,
+        getDevicesLink,
         getCertificatesLink
     } = useLinks();
 
@@ -56,12 +56,12 @@ export function AppContainer() {
             )}
             <Header />
             <Switch>
-                <Route path={getAssetsLink()} component={Asset} />
+                <Route path={getDevicesLink()} component={Device} />
                 <Route path={getCertificatesLink()} component={Certificates} />
                 <Route path={getDemandsLink()} component={Demands} />
                 <Route path={getAccountLink()} component={Account} />
 
-                <Route path={baseURL} component={Asset} />
+                <Route path={baseURL} component={Device} />
             </Switch>
             <AccountChangedModal />
             <RequestPasswordModal />

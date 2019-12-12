@@ -1,7 +1,8 @@
-import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
+import { Agreement, Demand, PurchasableCertificate, Supply } from '@energyweb/market';
+import { EntityListener, IEntityStore, Listener } from '@energyweb/market-matcher-core';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import { IEntityStore, EntityListener, Listener } from '@energyweb/market-matcher-core';
+
 import { IEntityFetcher } from './EntityFetcher';
 
 export class EntityStore implements IEntityStore {
@@ -19,6 +20,10 @@ export class EntityStore implements IEntityStore {
     private certificateListeners: EntityListener<PurchasableCertificate.Entity>;
 
     private demandListeners: EntityListener<Demand.Entity>;
+
+    private demandEvents = ['createdNewDemand', 'DemandStatusChanged', 'DemandUpdated'];
+
+    private certificateEvents = ['LogPublishForSale', 'LogUnpublishForSale'];
 
     constructor(
         private config: Configuration.Entity,
@@ -170,7 +175,7 @@ export class EntityStore implements IEntityStore {
             );
 
             await this.registerAgreement(id);
-        }); // TODO: agreement should be signed before can be respected
+        });
     }
 
     private registerToSupplyEvents(marketContractEventHandler: ContractEventHandler) {
@@ -186,27 +191,24 @@ export class EntityStore implements IEntityStore {
     private registerToPurchasableCertificateEvents(
         marketContractEventHandler: ContractEventHandler
     ) {
-        marketContractEventHandler.onEvent('LogPublishForSale', async (event: any) => {
-            const { _certificateId: id } = event.returnValues;
-            this.logger.verbose(`Event: LogPublishForSale certificate #${id}`);
+        this.certificateEvents.forEach(eventName => {
+            marketContractEventHandler.onEvent(eventName, async (event: any) => {
+                const { _certificateId: id } = event.returnValues;
+                this.logger.verbose(`Event: ${eventName} certificate #${id}`);
 
-            await this.handleCertificate(id);
+                await this.handleCertificate(id);
+            });
         });
     }
 
     private registerToDemandEvents(marketContractEventHandler: ContractEventHandler) {
-        marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
-            this.logger.verbose(`Event: createdNewDemand demand: ${event.returnValues._demandId}`);
+        this.demandEvents.forEach(eventName => {
+            marketContractEventHandler.onEvent(eventName, async (event: any) => {
+                const { _demandId: id } = event.returnValues;
+                this.logger.verbose(`Event: ${eventName} demand: ${id}`);
 
-            await this.handleDemand(event.returnValues._demandId);
-        });
-
-        marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-            this.logger.verbose(
-                `Event: DemandStatusChanged demand: ${event.returnValues._demandId}`
-            );
-
-            await this.handleDemand(event.returnValues._demandId);
+                await this.handleDemand(id);
+            });
         });
     }
 

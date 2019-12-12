@@ -14,14 +14,14 @@ contract CertificateDefinitions {
     }
 
     struct CertificationRequest {
-        uint assetId;
+        uint deviceId;
         uint readsStartIndex;
         uint readsEndIndex;
         CertificationRequestStatus status;
     }
 
     struct Certificate {
-        uint assetId;
+        uint deviceId;
         uint energy;
         uint status;
         uint creationTime;

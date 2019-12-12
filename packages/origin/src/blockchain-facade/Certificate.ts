@@ -1,7 +1,7 @@
 import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { ProducingAsset } from '@energyweb/asset-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 
 import { CertificateLogic } from '..';
 
@@ -14,7 +14,7 @@ export enum Status {
 export interface ICertificate {
     id: string;
 
-    assetId: number;
+    deviceId: number;
     generationStartTime: number;
     generationEndTime: number;
 
@@ -132,22 +132,15 @@ export const getAllCertificateEvents = async (
 };
 
 export class Entity extends BlockchainDataModelEntity.Entity implements ICertificate {
-    public assetId: number;
+    public deviceId: number;
 
     public generationStartTime: number;
-
     public generationEndTime: number;
-
     public owner: string;
-
     public energy: number;
-
     public status: Status;
-
     public creationTime: number;
-
     public parentId: number;
-
     public children: string[];
 
     public initialized: boolean;
@@ -158,20 +151,13 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         this.initialized = false;
     }
 
-    getUrl(): string {
-        const certificateLogicAddress = this.configuration.blockchainProperties
-            .certificateLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Certificate/${certificateLogicAddress}`;
-    }
-
     async sync(): Promise<Entity> {
         if (this.id != null) {
             const { certificateLogicInstance } = this.configuration.blockchainProperties;
 
             const cert = await certificateLogicInstance.getCertificate(Number(this.id));
 
-            this.assetId = Number(cert.assetId);
+            this.deviceId = Number(cert.deviceId);
             this.owner = await this.configuration.blockchainProperties.certificateLogicInstance.ownerOf(
                 this.id
             );
@@ -182,8 +168,8 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.creationTime = Number(cert.creationTime);
             this.parentId = Number(cert.parentId);
 
-            const reads = await new ProducingAsset.Entity(
-                this.assetId.toString(),
+            const reads = await new ProducingDevice.Entity(
+                this.deviceId.toString(),
                 this.configuration
             ).getSmartMeterReadsByIndex([Number(cert.readsStartIndex), Number(cert.readsEndIndex)]);
             this.generationStartTime = reads[0].timestamp;
@@ -293,7 +279,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         const certificationRequestsApprovedEvents = await certificateLogicInstance.getAllCertificationApprovedEvents(
             {
                 filter: {
-                    assetId: this.assetId
+                    deviceId: this.deviceId
                 },
                 fromBlock: logCreatedEvent.blockNumber,
                 toBlock: logCreatedEvent.blockNumber
@@ -308,7 +294,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         }
 
         const allReads = await (
-            await new ProducingAsset.Entity(this.assetId.toString(), this.configuration).sync()
+            await new ProducingDevice.Entity(this.deviceId.toString(), this.configuration).sync()
         ).getSmartMeterReads();
 
         const approvedCertificationRequestEvent = certificationRequestsApprovedEvents.filter(
@@ -329,7 +315,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
                 filter: {
                     readsStartIndex: approvedCertificationRequestEvent.returnValues.readsStartIndex,
                     readsEndIndex: approvedCertificationRequestEvent.returnValues.readsEndIndex,
-                    assetId: this.assetId
+                    deviceId: this.deviceId
                 },
                 fromBlock: 0
             }
@@ -452,12 +438,12 @@ export async function claimCertificates(
 }
 
 export async function requestCertificates(
-    assetId: string,
+    deviceId: string,
     limitingSmartMeterReadIndex: number,
     configuration: Configuration.Entity
 ) {
     return configuration.blockchainProperties.certificateLogicInstance.requestCertificates(
-        parseInt(assetId, 10),
+        parseInt(deviceId, 10),
         limitingSmartMeterReadIndex,
         getAccountFromConfiguration(configuration)
     );

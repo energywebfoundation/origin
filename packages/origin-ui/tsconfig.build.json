@@ -16,7 +16,7 @@
             "path": "../utils-general/tsconfig.build.json"
         },
         {
-            "path": "../asset-registry/tsconfig.build.shakeable.json"
+            "path": "../device-registry/tsconfig.build.json"
         },
         {
             "path": "../market/tsconfig.build.shakeable.json"

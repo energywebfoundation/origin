@@ -11,8 +11,8 @@ import { Demo } from '../deployDemo';
 import { TestEmailAdapter } from '../TestAdapter';
 import EmailTypes from '../../email/EmailTypes';
 
-const SCAN_INTERVAL = 1000;
-const APPROX_EMAIL_SENDING_TIME = 3000;
+const SCAN_INTERVAL = 500;
+const APPROX_EMAIL_SENDING_TIME = 10000;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -93,11 +93,8 @@ describe('Origin Listener Tests', async () => {
 
         await waitForConditionAndAssert(
             async () => demo.isForSale(certificateId),
-            async () => {
-                const isForSale = await demo.isForSale(certificateId);
-                assert.isTrue(isForSale);
-            },
-            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+            async () => assert.isTrue(await demo.isForSale(certificateId)),
+            SCAN_INTERVAL
         );
     });
 
@@ -108,11 +105,8 @@ describe('Origin Listener Tests', async () => {
         await demo.deploySmartMeterRead(currentSmRead);
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length > 0,
-            () => {
-                assert.equal(emailService.sentEmails.length, 1);
-                assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
-            },
+            () => emailService.sentEmails.length >= 1,
+            () => assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED)),
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });
@@ -128,17 +122,13 @@ describe('Origin Listener Tests', async () => {
 
         await waitForConditionAndAssert(
             async () => demo.isForSale(certificateId),
-            async () => {
-                const isForSale = await demo.isForSale(certificateId);
-                assert.isTrue(isForSale);
-            },
-            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+            async () => assert.isTrue(await demo.isForSale(certificateId)),
+            SCAN_INTERVAL
         );
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length > 1,
+            () => emailService.sentEmails.length >= 2,
             () => {
-                assert.equal(emailService.sentEmails.length, 2);
                 assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
             },
@@ -157,20 +147,15 @@ describe('Origin Listener Tests', async () => {
 
         await waitForConditionAndAssert(
             async () => demo.isForSale(certificateId),
-            async () => {
-                const isForSale = await demo.isForSale(certificateId);
-                assert.isTrue(isForSale);
-            },
-            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+            async () => assert.isTrue(await demo.isForSale(certificateId)),
+            SCAN_INTERVAL
         );
 
         await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length > 2,
+            () => emailService.sentEmails.length >= 3,
             () => {
-                assert.equal(emailService.sentEmails.length, 3);
-
                 assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
                 assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));
@@ -190,20 +175,15 @@ describe('Origin Listener Tests', async () => {
 
         await waitForConditionAndAssert(
             async () => demo.isForSale(certificateId),
-            async () => {
-                const isForSale = await demo.isForSale(certificateId);
-                assert.isTrue(isForSale);
-            },
-            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+            async () => assert.isTrue(await demo.isForSale(certificateId)),
+            SCAN_INTERVAL
         );
 
         await demo.fillDemand(demand.id, demo.latestDeployedSmReadIndex.toString());
 
         await waitForConditionAndAssert(
-            () => emailService.sentEmails.length > 3,
+            () => emailService.sentEmails.length >= 4,
             () => {
-                assert.equal(emailService.sentEmails.length, 4);
-
                 assert.isTrue(notificationSent(emailService, EmailTypes.CERTS_APPROVED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.FOUND_MATCHING_SUPPLY));
                 assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));

@@ -5,12 +5,8 @@ import express from 'express';
 import fs from 'fs-extra';
 import moment from 'moment-timezone';
 import dotenv from 'dotenv';
-
-import CONFIG from '../config/config.json';
-
-dotenv.config({
-    path: '../../.env'
-});
+import { Server } from 'http';
+import { AddressInfo } from 'net';
 
 type TableRowType = string[3];
 
@@ -22,7 +18,7 @@ enum ENERGY_UNIT {
     gigawattHour = 'gigawattHour'
 }
 
-interface IAssetGetResponse {
+interface IDeviceGetResponse {
     id: string;
     role: string;
     manufacturer: string;
@@ -55,7 +51,7 @@ function extractPort(url: string): number {
 function processRows(
     rows: TableRowType[],
     maxCapacity: number,
-    assetTimezone: string,
+    deviceTimezone: string,
     timeStart: moment.Moment,
     timeEnd: moment.Moment,
     accumulated: boolean,
@@ -65,9 +61,9 @@ function processRows(
     const currentYear = moment().year();
 
     function calculateRowEnergy(ratio: string) {
-        const maxCapacityInAssetUnit = maxCapacity * ENERGY_UNIT_TO_RATIO_MAPPING[energyUnit];
+        const maxCapacityInDeviceUnit = maxCapacity * ENERGY_UNIT_TO_RATIO_MAPPING[energyUnit];
 
-        return parseFloat(ratio) * maxCapacityInAssetUnit;
+        return parseFloat(ratio) * maxCapacityInDeviceUnit;
     }
 
     function checkTimeInBounds(time: moment.Moment) {
@@ -85,7 +81,7 @@ function processRows(
     }
 
     function parseRowTime(row: TableRowType): moment.Moment {
-        return moment.tz(row[0], 'DD.MM.YYYY HH:mm', assetTimezone).year(currentYear);
+        return moment.tz(row[0], 'DD.MM.YYYY HH:mm', deviceTimezone).year(currentYear);
     }
 
     if (accumulated) {
@@ -124,42 +120,28 @@ function processRows(
     return parsedRows;
 }
 
-let DATA: any;
-
-async function getData() {
-    if (DATA) {
-        return DATA;
-    }
-
-    const fileContent = await fs.readFile(`${__dirname}/../config/data.csv`);
-    DATA = parse(fileContent, { columns: false, trim: true });
-
-    return DATA;
-}
-
-const PORT: number = extractPort(process.env.ENERGY_API_BASE_URL) || 3031;
 const DEFAULT_ENERGY_ROWS_LIMIT = 5;
 
-export async function startAPI() {
+export async function startAPI(configFilePath: string, dataFilePath: string): Promise<Server> {
+    const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
+    const PORT = extractPort(process.env.ENERGY_API_BASE_URL) || 3031;
+    const DATA = parse(fs.readFileSync(dataFilePath), { columns: false, trim: true });
+
     const app = express();
 
     app.use(cors());
-
     app.use(bodyParser.json());
-
-    app.use(cors());
-
     app.options('*', cors());
 
-    app.get('/asset/:id/energy', async (req, res) => {
-        console.log(`GET - /asset/${req.params.id}/energy`);
+    app.get('/device/:id/energy', async (req, res) => {
+        console.log(`GET - /device/${req.params.id}/energy`);
 
-        const asset = CONFIG.assets.find(a => a.id === req.params.id);
+        const device = CONFIG.devices.find(a => a.id === req.params.id);
 
-        if (!asset) {
+        if (!device) {
             return res.status(404).json({
-                error: 'ASSET_NOT_FOUND',
-                message: `Asset not found.`
+                error: 'DEVICE_NOT_FOUND',
+                message: `Device not found.`
             });
         }
 
@@ -169,16 +151,16 @@ export async function startAPI() {
         const timeEnd = req.query.timeEnd ? moment.unix(req.query.timeEnd) : null;
         const accumulated = req.query.accumulated === 'true';
 
-        const rows = await getData();
+        const rows = DATA;
 
         let filteredReads = processRows(
             rows,
-            asset.maxCapacity,
-            asset.timezone,
+            device.maxCapacity,
+            device.timezone,
             timeStart,
             timeEnd,
             accumulated,
-            (ENERGY_UNIT as any)[asset.energy_unit]
+            (ENERGY_UNIT as any)[device.energy_unit]
         );
 
         if (LIMIT !== -1) {
@@ -188,36 +170,49 @@ export async function startAPI() {
         return res.json(filteredReads);
     });
 
-    app.get('/asset/:id', async (req, res) => {
-        console.log(`GET - /asset/${req.params.id}`);
+    app.get('/device/:id', async (req, res) => {
+        console.log(`GET - /device/${req.params.id}`);
 
-        const asset = CONFIG.assets.find(a => a.id === req.params.id);
+        const device = CONFIG.devices.find(a => a.id === req.params.id);
 
-        if (!asset) {
+        if (!device) {
             return res.status(404).json({
-                error: 'ASSET_NOT_FOUND',
-                message: `Asset not found.`
+                error: 'DEVICE_NOT_FOUND',
+                message: `Device not found.`
             });
         }
 
-        const response: IAssetGetResponse = {
-            id: asset.id.toString(),
-            role: asset.role,
-            manufacturer: asset.manufacturer,
-            model: asset.model,
-            serial_number: asset.serial_number,
-            latitude: asset.latitude,
-            longitude: asset.longitude,
-            energy_unit: (ENERGY_UNIT as any)[asset.energy_unit]
+        const response: IDeviceGetResponse = {
+            id: device.id.toString(),
+            role: device.role,
+            manufacturer: device.manufacturer,
+            model: device.model,
+            serial_number: device.serial_number,
+            latitude: device.latitude,
+            longitude: device.longitude,
+            energy_unit: (ENERGY_UNIT as any)[device.energy_unit]
         };
 
         return res.json(response);
     });
 
-    return app.listen(PORT);
+    const appInstance = app.listen(PORT, () => {
+        console.log(
+            `Simulate Energy Generation API running on port: ${
+                (appInstance.address() as AddressInfo).port
+            }`
+        );
+    });
+
+    return appInstance;
 }
 
-(async () => {
-    await startAPI();
-    console.log(`Simulate Energy Generation API running on port: ${PORT}`);
-})();
+if (require.main === module) {
+    dotenv.config({
+        path: '../../.env'
+    });
+
+    (async () => {
+        await startAPI(`${__dirname}/../config/config.json`, `${__dirname}/../config/data.csv`);
+    })();
+}

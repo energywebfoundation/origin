@@ -1,40 +1,34 @@
-import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { Request, Response } from 'express';
+import { getRepository } from 'typeorm';
 
-import { JsonEntity } from "../../entity/JsonEntity";
+import { JsonEntity } from '../../entity/JsonEntity';
 import { STATUS_CODES } from '../../enums/StatusCodes';
-import { StorageErrors } from '../../enums/StorageErrors';
 
 export async function jsonEntityPostAction(req: Request, res: Response) {
-    let { contractAddress, type, identifier } = req.params;
-    contractAddress = contractAddress.toLowerCase();
+    let { hash } = req.params;
 
-    console.log(`<${contractAddress}> POST - ${type} ${identifier}`);
+    console.log(`<POST> ${hash}`);
 
     const jsonEntityRepository = getRepository(JsonEntity);
 
-    try {
-        const newEntity = new JsonEntity();
+    const exists = await jsonEntityRepository.count({ hash }) > 0;
 
-        newEntity.contractAddress = contractAddress;
-        newEntity.identifier = identifier;
-        newEntity.type = type;
-        newEntity.value = JSON.stringify(req.body);
+    if (exists) {
+        res.status(STATUS_CODES.SUCCESS).send({
+            message: "The entity already exists"
+        });
 
-        await jsonEntityRepository.save(newEntity);
-    } catch (e) {
-        if (e.message.includes('UNIQUE constraint failed')) {
-            res.status(STATUS_CODES.CONFLICT).send({
-                error: StorageErrors.ALREADY_EXISTS
-            });
-
-            return;
-        }
-
-        throw e;
+        return;
     }
 
+    const newEntity = new JsonEntity();
+
+    newEntity.hash = hash;
+    newEntity.value = JSON.stringify(req.body);
+
+    await jsonEntityRepository.save(newEntity);
+
     res.status(STATUS_CODES.CREATED).send({
-        message: `Resource ${type} with ID ${identifier} created`
+        message: `Entity ${hash} created`
     });
 }

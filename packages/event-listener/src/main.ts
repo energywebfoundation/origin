@@ -1,11 +1,16 @@
 import dotenv from 'dotenv';
+import path from 'path';
+import program from 'commander';
 import { OffChainDataClient } from '@energyweb/origin-backend-client';
 
 import { startEventListener } from './index';
 
+program.option('-e, --env <env_file_path>', 'path to the .env file');
+program.parse(process.argv);
+
 (async () => {
     dotenv.config({
-        path: '../../.env'
+        path: program.env ? path.resolve(__dirname, program.env) : '../../.env'
     });
 
     await startEventListener({

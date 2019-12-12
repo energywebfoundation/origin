@@ -1,63 +1,37 @@
-import concurrently from 'concurrently';
-import path from 'path';
 import dotenv from 'dotenv';
-import fs from 'fs';
+import program from 'commander';
+import path from 'path';
 
-dotenv.config({
-    path: '../../.env'
-});
+import { startAPI } from './simulatorService';
+import { startConsumerService } from './consumerService';
+import { mockData } from './mockReadings';
 
-function getServiceCommand(name: string) {
-    const jsPath = path.join(__dirname, `${name}.js`);
-    const tsPath = path.join(__dirname, `${name}.ts`);
+const absolutePath = relativePath => path.resolve(__dirname, relativePath);
 
-    let servicePath = tsPath;
-    let processor = 'ts-node';
+program.option('-e, --env <env_file_path>', 'path to the .env file');
+program.option('-c, --config <config_file_path>', 'path to the config file');
+program.option('-d, --data <data_file_path>', 'path to the data file');
 
-    if (fs.existsSync(jsPath)) {
-        servicePath = jsPath;
-        processor = 'node';
-    }
+program.parse(process.argv);
 
-    return `${processor} ${servicePath}`;
-}
-
-function runSimulatorAndConsumer() {
-    concurrently(
-        [
-            { command: getServiceCommand('simulatorService'), name: 'server' },
-            {
-                command: `npx wait-on ${
-                    process.env.ENERGY_API_BASE_URL
-                }/asset/0/energy && ${getServiceCommand('consumerService')}`,
-                name: 'client'
-            }
-        ],
-        {
-            prefix: 'name',
-            killOthers: ['failure', 'success'],
-            restartTries: 2,
-            restartDelay: 1500
-        }
-    );
-}
+const envFile = program.env ? absolutePath(program.env) : '../../.env';
+const configFilePath = absolutePath(program.config ?? '../config/config.json');
+const dataFilePath = absolutePath(program.data ?? '../config/data.csv');
 
 (async () => {
-    if (process.env.SOLAR_SIMULATOR_DEPLOY_PAST_READINGS === 'true') {
-        try {
-            await concurrently([{ command: getServiceCommand('mockReadings'), name: 'mock' }], {
-                prefix: 'name',
-                killOthers: ['failure', 'success'],
-                restartTries: 2,
-                restartAfter: 1500,
-                successCondition: 'last'
-            });
-        } catch (error) {
-            console.error('Error while running simulator mock service', error);
-        }
+    dotenv.config({
+        path: envFile
+    });
 
+    console.log(
+        `Running the simulator with:\n.env file: ${envFile}\nconfig file: ${configFilePath}\ndata file: ${dataFilePath}`
+    );
+
+    if (process.env.SOLAR_SIMULATOR_DEPLOY_PAST_READINGS === 'true') {
+        await mockData(configFilePath, dataFilePath);
         console.log('Finished deploying past energy readings');
     }
 
-    runSimulatorAndConsumer();
+    await startAPI(configFilePath, dataFilePath);
+    await startConsumerService(configFilePath);
 })();

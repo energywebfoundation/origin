@@ -33,7 +33,7 @@ describe('User Facade', () => {
     const user2PK = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
     const user2 = web3.eth.accounts.privateKeyToAccount(user2PK).address;
 
-    const RIGHTS = buildRights([Role.Trader, Role.AssetManager]);
+    const RIGHTS = buildRights([Role.Trader, Role.DeviceManager]);
 
     it('should deploy the contracts', async () => {
         userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
@@ -97,10 +97,10 @@ describe('User Facade', () => {
     it('isRole should work correctly', async () => {
         const user = await new User.Entity(user1, conf).sync();
 
-        assert.ok(user.isRole(Role.AssetManager));
+        assert.ok(user.isRole(Role.DeviceManager));
         assert.ok(user.isRole(Role.Trader));
         assert.notOk(user.isRole(Role.Issuer));
-        assert.notOk(user.isRole(Role.AssetAdmin));
+        assert.notOk(user.isRole(Role.DeviceAdmin));
         assert.notOk(user.isRole(Role.Matcher));
         assert.notOk(user.isRole(Role.UserAdmin));
     });

@@ -4,7 +4,7 @@ import {
     Currency,
     TimeFrame,
     THAILAND_REGIONS_PROVINCES_MAP,
-    IRECAssetService
+    IRECDeviceService
 } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
@@ -96,10 +96,10 @@ export function DemandForm(props: IProps) {
     const dispatch = useDispatch();
     const { getDemandViewLink } = useLinks();
 
-    const irecAssetService = new IRECAssetService();
+    const irecDeviceService = new IRECDeviceService();
 
     const [selectedLocation, setSelectedLocation] = useState([]);
-    const [selectedAssetType, setSelectedAssetType] = useState([]);
+    const [selectedDeviceType, setSelectedDeviceType] = useState([]);
     const [initialFormValuesFromDemand, setInitialFormValuesFromDemand] = useState(null);
     const [vintage, setVintage] = useState(null);
     const history = useHistory();
@@ -134,10 +134,10 @@ export function DemandForm(props: IProps) {
             }
 
             if (
-                demand.offChainProperties.assetType &&
-                demand.offChainProperties.assetType.length > 0
+                demand.offChainProperties.deviceType &&
+                demand.offChainProperties.deviceType.length > 0
             ) {
-                setSelectedAssetType(demand.offChainProperties.assetType);
+                setSelectedDeviceType(demand.offChainProperties.deviceType);
             }
 
             if (
@@ -204,8 +204,8 @@ export function DemandForm(props: IProps) {
             offChainProps.procureFromSingleFacility = values.procureFromSingleFacility;
         }
 
-        if (selectedAssetType && selectedAssetType.length > 0) {
-            offChainProps.assetType = selectedAssetType;
+        if (selectedDeviceType && selectedDeviceType.length > 0) {
+            offChainProps.deviceType = selectedDeviceType;
         }
 
         if (selectedLocation && selectedLocation.length > 0) {
@@ -409,24 +409,24 @@ export function DemandForm(props: IProps) {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">
-                                        Producing Asset Criteria
+                                        Producing Device Criteria
                                     </Typography>
                                     <HierarchicalMultiSelect
-                                        selectedValue={selectedAssetType}
-                                        onChange={(value: string[]) => setSelectedAssetType(value)}
-                                        allValues={irecAssetService.AssetTypes}
+                                        selectedValue={selectedDeviceType}
+                                        onChange={(value: string[]) => setSelectedDeviceType(value)}
+                                        allValues={irecDeviceService.DeviceTypes}
                                         selectOptions={[
                                             {
-                                                label: 'Asset type',
-                                                placeholder: 'Select asset type'
+                                                label: 'Device type',
+                                                placeholder: 'Select device type'
                                             },
                                             {
-                                                label: 'Asset type',
-                                                placeholder: 'Select asset type'
+                                                label: 'Device type',
+                                                placeholder: 'Select device type'
                                             },
                                             {
-                                                label: 'Asset type',
-                                                placeholder: 'Select asset type'
+                                                label: 'Device type',
+                                                placeholder: 'Select device type'
                                             }
                                         ]}
                                         readOnly={readOnly}
@@ -434,7 +434,7 @@ export function DemandForm(props: IProps) {
                                     />
                                     <div className="Filter_menu_item_sliderWrapper mt-3">
                                         <InputLabel shrink={true}>
-                                            Vintage (year of asset construction)
+                                            Vintage (year of device construction)
                                         </InputLabel>
                                         <CustomSlider
                                             valueLabelDisplay="on"
@@ -523,7 +523,7 @@ export function DemandForm(props: IProps) {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography className="mt-3">
-                                        Producing Asset Location
+                                        Producing Device Location
                                     </Typography>
                                     <HierarchicalMultiSelect
                                         selectedValue={selectedLocation}

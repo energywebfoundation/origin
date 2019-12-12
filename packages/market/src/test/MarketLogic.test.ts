@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { AssetLogic, Contracts as AssetRegistryContracts } from '@energyweb/asset-registry';
+import { DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
 import {
     buildRights,
     Role,
@@ -29,14 +29,14 @@ describe('MarketLogic', () => {
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     let userLogic: UserLogic;
-    let assetLogic: AssetLogic;
+    let deviceLogic: DeviceLogic;
     let certificateLogic: CertificateLogic;
     let marketLogic: MarketLogic;
 
     let isGanache: boolean;
 
-    const assetOwnerPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
-    const accountAssetOwner = web3.eth.accounts.privateKeyToAccount(assetOwnerPK).address;
+    const deviceOwnerPK = '0xc118b0425221384fe0cbbd093b2a81b1b65d0330810e0792c7059e518cea5383';
+    const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
     const traderPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
@@ -84,7 +84,7 @@ describe('MarketLogic', () => {
 
         await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
 
-        assetLogic = await AssetRegistryContracts.migrateAssetRegistryContracts(
+        deviceLogic = await DeviceRegistryContracts.migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
             privateKeyDeployment
@@ -92,7 +92,7 @@ describe('MarketLogic', () => {
 
         certificateLogic = await OriginContracts.migrateCertificateRegistryContracts(
             web3,
-            assetLogic.web3Contract.options.address,
+            deviceLogic.web3Contract.options.address,
             privateKeyDeployment
         );
 
@@ -166,8 +166,8 @@ describe('MarketLogic', () => {
         await userLogic.createUser(
             'propertiesDocumentHash',
             'documentDBURL',
-            accountAssetOwner,
-            'assetOwner',
+            accountDeviceOwner,
+            'deviceOwner',
             { privateKey: privateKeyDeployment }
         );
 
@@ -177,16 +177,16 @@ describe('MarketLogic', () => {
         await userLogic.setRoles(accountTrader2, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(accountAssetOwner, buildRights([Role.AssetManager]), {
+        await userLogic.setRoles(accountDeviceOwner, buildRights([Role.DeviceManager]), {
             privateKey: privateKeyDeployment
         });
     });
 
-    it('should fail when trying to create a demand as assetOwner', async () => {
+    it('should fail when trying to create a demand as deviceOwner', async () => {
         let failed = false;
         try {
             await marketLogic.createDemand('propertiesDocumentHash', 'documentDBURL', {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (ex) {
             failed = true;
@@ -239,11 +239,11 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllDemandListLength(), 1);
     });
 
-    it('should fail when trying to create a supply with an non-existing asset as assetOwner', async () => {
+    it('should fail when trying to create a supply with an non-existing device as deviceOwner', async () => {
         let failed = false;
         try {
             await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (ex) {
             failed = true;
@@ -252,7 +252,7 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create a supply with an non-existing asset as trader', async () => {
+    it('should fail when trying to create a supply with an non-existing device as trader', async () => {
         let failed = false;
         try {
             await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
@@ -265,7 +265,7 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create a supply with an non-existing asset as admin', async () => {
+    it('should fail when trying to create a supply with an non-existing device as admin', async () => {
         let failed = false;
         try {
             await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
@@ -278,10 +278,10 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should onboard an asset', async () => {
-        await assetLogic.createAsset(
+    it('should onboard an device', async () => {
+        await deviceLogic.createDevice(
             '0x1000000000000000000000000000000000000005',
-            accountAssetOwner,
+            accountDeviceOwner,
             true,
             0,
             'propertiesDocumentHash',
@@ -292,7 +292,7 @@ describe('MarketLogic', () => {
         );
     });
 
-    it('should fail when trying to create a supply with an non-existing asset as trader', async () => {
+    it('should fail when trying to create a supply with an non-existing device as trader', async () => {
         let failed = false;
         try {
             await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 0, {
@@ -305,7 +305,7 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create a supply with an non-existing asset as admin', async () => {
+    it('should fail when trying to create a supply with an non-existing device as admin', async () => {
         let failed = false;
         try {
             await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 0, {
@@ -322,9 +322,9 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllSupplyListLength(), 0);
     });
 
-    it('should create a supply as assetOwner', async () => {
+    it('should create a supply as deviceOwner', async () => {
         const tx = await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 0, {
-            privateKey: assetOwnerPK
+            privateKey: deviceOwnerPK
         });
 
         const allEvents = await marketLogic.getEvents('createdNewSupply', {
@@ -337,9 +337,9 @@ describe('MarketLogic', () => {
 
         assert.equal(createEvent.event, 'createdNewSupply');
         assert.deepEqual(createEvent.returnValues, {
-            0: accountAssetOwner,
+            0: accountDeviceOwner,
             1: '0',
-            _sender: accountAssetOwner,
+            _sender: accountDeviceOwner,
             _supplyId: '0'
         });
     });
@@ -361,11 +361,11 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an agreement with a non-existing supply as assetOwner', async () => {
+    it('should fail when trying to create an agreement with a non-existing supply as deviceOwner', async () => {
         let failed = false;
         try {
             await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 0, 1, {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (ex) {
             failed = true;
@@ -400,11 +400,11 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an agreement with a non-existing demand as assetOwner', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand as deviceOwner', async () => {
         let failed = false;
         try {
             await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 0, {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (ex) {
             failed = true;
@@ -439,11 +439,11 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as assetOwner', async () => {
+    it('should fail when trying to create an agreement with a non-existing demand and non-existing supply as deviceOwner', async () => {
         let failed = false;
         try {
             await marketLogic.createAgreement('propertiesDocumentHash', 'documentDBURL', 1, 1, {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (ex) {
             failed = true;
@@ -494,13 +494,13 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllAgreementListLength(), 0);
     });
 
-    it('should create an agreement as assetOwner', async () => {
+    it('should create an agreement as deviceOwner', async () => {
         const tx = await marketLogic.createAgreement(
             'propertiesDocumentHash',
             'documentDBURL',
             0,
             0,
-            { privateKey: assetOwnerPK }
+            { privateKey: deviceOwnerPK }
         );
 
         if (isGanache) {
@@ -524,17 +524,17 @@ describe('MarketLogic', () => {
     });
 
     it('should be able to approve agreement again as supplyOwner', async () => {
-        await marketLogic.approveAgreementSupply(0, { privateKey: assetOwnerPK });
+        await marketLogic.approveAgreementSupply(0, { privateKey: deviceOwnerPK });
     });
 
     it('should have 1 agreements in list', async () => {
         assert.equal(await marketLogic.getAllAgreementListLength(), 1);
     });
 
-    it('should fail when trying to call approveAgreementDemand as assetOwner', async () => {
+    it('should fail when trying to call approveAgreementDemand as deviceOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.approveAgreementDemand(0, { privateKey: assetOwnerPK });
+            await marketLogic.approveAgreementDemand(0, { privateKey: deviceOwnerPK });
         } catch (ex) {
             failed = true;
             assert.include(ex.message, 'approveAgreementDemand: wrong msg.sender');
@@ -618,12 +618,12 @@ describe('MarketLogic', () => {
         });
     });
 
-    it('should create a 2nd supply as assetOwner', async () => {
+    it('should create a 2nd supply as deviceOwner', async () => {
         const tx = await marketLogic.createSupply(
             'propertiesDocumentHash_2',
             'documentDBURL_2',
             0,
-            { privateKey: assetOwnerPK }
+            { privateKey: deviceOwnerPK }
         );
 
         const allEvents = await marketLogic.getEvents('createdNewSupply', {
@@ -636,9 +636,9 @@ describe('MarketLogic', () => {
 
         assert.equal(createEvent.event, 'createdNewSupply');
         assert.deepEqual(createEvent.returnValues, {
-            0: accountAssetOwner,
+            0: accountDeviceOwner,
             1: '1',
-            _sender: accountAssetOwner,
+            _sender: accountDeviceOwner,
             _supplyId: '1'
         });
     });
@@ -745,8 +745,8 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should be able to call approveAgreementSupply as assetOwner', async () => {
-        const tx = await marketLogic.approveAgreementSupply(1, { privateKey: assetOwnerPK });
+    it('should be able to call approveAgreementSupply as deviceOwner', async () => {
+        const tx = await marketLogic.approveAgreementSupply(1, { privateKey: deviceOwnerPK });
 
         if (isGanache) {
             const allEvents = await marketLogic.getEvents('LogAgreementFullySigned', {
@@ -819,16 +819,16 @@ describe('MarketLogic', () => {
     });
 
     it('should create 3rd agreement', async () => {
-        await marketLogic.approveAgreementSupply(2, { privateKey: assetOwnerPK });
+        await marketLogic.approveAgreementSupply(2, { privateKey: deviceOwnerPK });
     });
 
-    it('should create a 4th agreement as assetOwner', async () => {
+    it('should create a 4th agreement as deviceOwner', async () => {
         const tx = await marketLogic.createAgreement(
             'propertiesDocumentHash_4',
             'documentDBURL_4',
             1,
             1,
-            { privateKey: assetOwnerPK }
+            { privateKey: deviceOwnerPK }
         );
 
         const allEvents = await marketLogic.getEvents('LogAgreementCreated', {
@@ -860,7 +860,7 @@ describe('MarketLogic', () => {
         let failed = false;
         try {
             await marketLogic.deleteDemand('1', {
-                privateKey: assetOwnerPK
+                privateKey: deviceOwnerPK
             });
         } catch (ex) {
             failed = true;

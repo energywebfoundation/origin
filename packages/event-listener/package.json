@@ -34,7 +34,7 @@
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
-        "@energyweb/asset-registry": "1.4.0",
+        "@energyweb/device-registry": "0.9.0",
         "@energyweb/market": "2.0.0",
         "@energyweb/market-matcher-core": "1.0.1",
         "@energyweb/origin": "2.0.0",
@@ -43,10 +43,11 @@
         "@energyweb/utils-general": "1.4.0",
         "@types/mandrill-api": "^1.0.30",
         "@types/nodemailer": "^6.2.1",
+        "commander": "^4.0.1",
         "dotenv": "^8.2.0",
         "mandrill-api": "1.0.45",
         "moment": "2.24.0",
-        "nodemailer": "6.3.1",
+        "nodemailer": "6.4.1",
         "polly-js": "1.6.5",
         "web3": "1.2.4",
         "winston": "3.2.1"

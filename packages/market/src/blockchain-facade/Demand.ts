@@ -1,18 +1,19 @@
-import polly from 'polly-js';
-import { TransactionReceipt } from 'web3-core';
-import moment from 'moment';
-
 import {
     BlockchainDataModelEntity,
     Compliance,
     Configuration,
     Currency,
     extendArray,
-    TimeFrame,
     Resolution,
+    TimeFrame,
+    TimeSeriesElement,
+    Timestamp,
     TS,
-    TimeSeriesElement
+    Year
 } from '@energyweb/utils-general';
+import moment from 'moment';
+import polly from 'polly-js';
+import { TransactionReceipt } from 'web3-core';
 
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
@@ -22,16 +23,16 @@ export interface IDemandOffChainProperties {
     maxPricePerMwh: number;
     currency: Currency;
     location?: string[];
-    assetType?: string[];
+    deviceType?: string[];
     minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;
     energyPerTimeFrame: number;
     registryCompliance?: Compliance;
-    startTime: number;
-    endTime: number;
+    startTime: Timestamp;
+    endTime: Timestamp;
     procureFromSingleFacility?: boolean;
-    vintage?: [number, number];
+    vintage?: [Year, Year];
     automaticMatching: boolean;
 }
 
@@ -58,17 +59,11 @@ export interface IDemand extends IDemandOnChainProperties {
 export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
     offChainProperties: IDemandOffChainProperties;
 
-    propertiesDocumentHash: string;
-
-    url: string;
-
     status: DemandStatus;
 
     demandOwner: string;
 
     initialized: boolean;
-
-    configuration: Configuration.Entity;
 
     marketLogicInstance: MarketLogic;
 
@@ -77,12 +72,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
 
         this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance;
         this.initialized = false;
-    }
-
-    getUrl(): string {
-        const marketLogicAddress = this.marketLogicInstance.web3Contract.options.address;
-
-        return `${this.configuration.offChainDataSource.baseUrl}/Demand/${marketLogicAddress}`;
     }
 
     async sync(): Promise<Entity> {
@@ -98,7 +87,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             this.demandOwner = demand._owner;
             this.status = Number(demand._status);
             this.initialized = true;
-            this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+            this.offChainProperties = await this.getOffChainProperties();
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Demand ${this.id} synced`);
@@ -120,33 +109,17 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             DemandOffChainPropertiesSchema
         );
 
-        const oldOffChainData = await this.getOffChainDump();
-        const oldHash = this.propertiesDocumentHash;
-
         await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
 
-        try {
-            await this.marketLogicInstance.updateDemand(
-                this.id,
-                updatedOffChainStorageProperties.rootHash,
-                this.getUrl(),
-                {
-                    from: this.configuration.blockchainProperties.activeUser.address,
-                    privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-                }
-            );
-        } catch (e) {
-            this.configuration.logger.error(
-                `Demand::update: Failed to write to the chain. Reverting off-chain properties...`
-            );
-            this.syncOffChainStorage(oldOffChainData.properties, {
-                rootHash: oldHash,
-                salts: oldOffChainData.salts,
-                schema: oldOffChainData.schema
-            });
-
-            throw e;
-        }
+        await this.marketLogicInstance.updateDemand(
+            this.id,
+            updatedOffChainStorageProperties.rootHash,
+            this.fullUrl,
+            {
+                from: this.configuration.blockchainProperties.activeUser.address,
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            }
+        );
 
         return new Entity(this.id, this.configuration).sync();
     }
@@ -259,7 +232,7 @@ export const createDemand = async (
         logs
     } = await configuration.blockchainProperties.marketLogicInstance.createDemand(
         offChainStorageProperties.rootHash,
-        demand.getUrl(),
+        `${demand.baseUrl}/${offChainStorageProperties.rootHash}`,
         {
             from: configuration.blockchainProperties.activeUser.address,
             privateKey: configuration.blockchainProperties.activeUser.privateKey

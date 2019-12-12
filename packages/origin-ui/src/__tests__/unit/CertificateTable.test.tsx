@@ -11,7 +11,7 @@ describe('CertificateTable', () => {
             store,
             history,
             setCurrentUser,
-            addProducingAsset,
+            addProducingDevice,
             addCertificate,
             cleanupStore
         } = setupStore();
@@ -20,7 +20,7 @@ describe('CertificateTable', () => {
             id: '0x123'
         });
 
-        addProducingAsset({
+        addProducingDevice({
             id: '0',
             owner: '0x123'
         });
@@ -31,7 +31,7 @@ describe('CertificateTable', () => {
                 owner: '0x123',
                 energy: 1 * Unit.MWh,
                 creationTime: 1569436970,
-                assetId: 0,
+                deviceId: 0,
                 status: Certificate.Status.Active
             } as Certificate.ICertificate
         });
@@ -42,7 +42,7 @@ describe('CertificateTable', () => {
                 owner: '0x123',
                 energy: 2.5 * Unit.kWh,
                 creationTime: 1569746970,
-                assetId: 0
+                deviceId: 0
             } as Certificate.ICertificate
         });
 

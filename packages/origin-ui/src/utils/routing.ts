@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 import { getBaseURL } from '../features/selectors';
 
-export function getAssetsLink(baseURL: string) {
-    return `${baseURL}/assets`;
+export function getDevicesLink(baseURL: string) {
+    return `${baseURL}/devices`;
 }
 
 export function getCertificatesLink(baseURL: string) {
@@ -45,20 +45,20 @@ export function getCertificatesForDemandLink(baseURL: string, demandId: string |
     return `${getCertificatesLink(baseURL)}/for_demand/${demandId}`;
 }
 
-export function getProducingAssetDetailLink(baseURL: string, assetId: string | number) {
-    if (typeof assetId === 'number') {
-        assetId = assetId.toString();
+export function getProducingDeviceDetailLink(baseURL: string, deviceId: string | number) {
+    if (typeof deviceId === 'number') {
+        deviceId = deviceId.toString();
     }
 
-    return `${getAssetsLink(baseURL)}/producing_detail_view/${assetId}`;
+    return `${getDevicesLink(baseURL)}/producing_detail_view/${deviceId}`;
 }
 
-export function getConsumingAssetDetailLink(baseURL: string, assetId: string | number) {
-    if (typeof assetId === 'number') {
-        assetId = assetId.toString();
+export function getConsumingDeviceDetailLink(baseURL: string, deviceId: string | number) {
+    if (typeof deviceId === 'number') {
+        deviceId = deviceId.toString();
     }
 
-    return `${getAssetsLink(baseURL)}/consuming_detail_view/${assetId}`;
+    return `${getDevicesLink(baseURL)}/consuming_detail_view/${deviceId}`;
 }
 
 export function useLinks() {
@@ -66,10 +66,10 @@ export function useLinks() {
 
     return {
         baseURL,
-        getAssetsLink: () => getAssetsLink(baseURL),
+        getDevicesLink: () => getDevicesLink(baseURL),
         getAccountLink: () => getAccountLink(baseURL),
-        getConsumingAssetDetailLink: (assetId: string | number) =>
-            getConsumingAssetDetailLink(baseURL, assetId),
+        getConsumingDeviceDetailLink: (deviceId: string | number) =>
+            getConsumingDeviceDetailLink(baseURL, deviceId),
         getCertificatesLink: () => getCertificatesLink(baseURL),
         getDemandsLink: () => getDemandsLink(baseURL),
         getDemandEditLink: (id: string) => getDemandEditLink(baseURL, id),
@@ -79,7 +79,7 @@ export function useLinks() {
             getCertificateDetailLink(baseURL, certificateId),
         getCertificatesForDemandLink: (demandId: string | number) =>
             getCertificatesForDemandLink(baseURL, demandId),
-        getProducingAssetDetailLink: (assetId: string | number) =>
-            getProducingAssetDetailLink(baseURL, assetId)
+        getProducingDeviceDetailLink: (deviceId: string | number) =>
+            getProducingDeviceDetailLink(baseURL, deviceId)
     };
 }

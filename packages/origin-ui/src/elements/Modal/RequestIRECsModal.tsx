@@ -17,7 +17,7 @@ import {
     hideRequestCertificatesModal
 } from '../../features/certificates/actions';
 import {
-    getRequestCertificatesModalProducingAsset,
+    getRequestCertificatesModalProducingDevice,
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
 
@@ -40,7 +40,7 @@ export function RequestIRECsModal() {
     const [reads, setReads] = useState([]);
 
     const configuration = useSelector(getConfiguration);
-    const producingAsset = useSelector(getRequestCertificatesModalProducingAsset);
+    const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
     const showModal = useSelector(getRequestCertificatesModalVisible);
 
     const dispatch = useDispatch();
@@ -52,26 +52,26 @@ export function RequestIRECsModal() {
         read => Number(read.timestamp) <= toTimestamp && Number(read.timestamp) >= fromTimestamp
     );
 
-    const energy = producingAsset ? readsInTimeRange.reduce((a, b) => a + Number(b.energy), 0) : 0;
+    const energy = producingDevice ? readsInTimeRange.reduce((a, b) => a + Number(b.energy), 0) : 0;
     const isFormValid = fromDate && toDate && fromDate <= toDate.toDate();
 
     useEffect(() => {
         (async () => {
-            if (!producingAsset) {
+            if (!producingDevice) {
                 return;
             }
 
             setFromDate(DEFAULTS.fromDate);
             setToDate(DEFAULTS.toDate);
 
-            const newReads = await producingAsset.getSmartMeterReads();
+            const newReads = await producingDevice.getSmartMeterReads();
 
             const certificateLogic: CertificateLogic =
                 configuration.blockchainProperties.certificateLogicInstance;
 
             const requestedSMReadsLength = Number(
-                await certificateLogic.getAssetRequestedCertsForSMReadsLength(
-                    Number(producingAsset.id)
+                await certificateLogic.getDeviceRequestedCertsForSMReadsLength(
+                    Number(producingDevice.id)
                 )
             );
 
@@ -82,7 +82,7 @@ export function RequestIRECsModal() {
                 setReads(newReads);
             }
         })();
-    }, [producingAsset]);
+    }, [producingDevice]);
 
     function handleClose() {
         dispatch(hideRequestCertificatesModal());
@@ -93,7 +93,7 @@ export function RequestIRECsModal() {
 
         dispatch(
             requestCertificates({
-                assetId: producingAsset.id,
+                deviceId: producingDevice.id,
                 lastReadIndex,
                 energy
             })
@@ -106,7 +106,7 @@ export function RequestIRECsModal() {
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Request I-RECs for ${producingAsset?.offChainProperties?.facilityName ||
+            <DialogTitle>{`Request I-RECs for ${producingDevice?.offChainProperties?.facilityName ||
                 ''}`}</DialogTitle>
             <DialogContent>
                 <TextField

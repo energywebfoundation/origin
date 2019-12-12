@@ -1,19 +1,10 @@
-import { Entity, Column, BaseEntity, Unique, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, BaseEntity, PrimaryColumn, Unique } from 'typeorm';
 
 @Entity()
-@Unique(['type', 'contractAddress', 'identifier'])
+@Unique(['hash'])
 export class JsonEntity extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column('varchar')
-    type: string;
-
-    @Column('varchar', { length: 42 })
-    contractAddress: string;
-
-    @Column('varchar')
-    identifier: string;
+    @PrimaryColumn()
+    hash: string;
 
     @Column('varchar')
     value: string;

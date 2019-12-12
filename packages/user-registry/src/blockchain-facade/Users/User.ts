@@ -24,19 +24,11 @@ export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnCha
 export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnChainProperties {
     offChainProperties: IUserOffChainProperties;
 
-    propertiesDocumentHash: string;
-
-    url: string;
-
-    id: string;
-
     organization: string;
 
     roles: number;
 
     active: boolean;
-
-    configuration: Configuration.Entity;
 
     initialized: boolean;
 
@@ -48,12 +40,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
         super(accountAddress, configuration);
 
         this.initialized = false;
-    }
-
-    getUrl(): string {
-        const userLogicInstanceAddress = this.configuration.blockchainProperties.userLogicInstance.web3Contract.options.address.toLowerCase();
-
-        return `${this.configuration.offChainDataSource.baseUrl}/User/${userLogicInstanceAddress}`;
     }
 
     async sync(): Promise<Entity> {
@@ -79,7 +65,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
         this.roles = parseInt(userData._roles, 10);
         this.active = userData._active;
 
-        this.offChainProperties = await this.getOffChainProperties(this.propertiesDocumentHash);
+        this.offChainProperties = await this.getOffChainProperties();
 
         this.initialized = true;
 
@@ -109,7 +95,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
         await this.configuration.blockchainProperties.userLogicInstance.updateUser(
             this.id,
             updatedOffChainStorageProperties.rootHash,
-            this.getUrl(),
+            this.fullUrl,
             {
                 from: this.configuration.blockchainProperties.activeUser.address,
                 privateKey: this.configuration.blockchainProperties.activeUser.privateKey
@@ -133,7 +119,7 @@ export const createUser = async (
     );
 
     user.id = userPropertiesOnChain.id;
-    userPropertiesOnChain.url = user.getUrl();
+    userPropertiesOnChain.url = `${user.baseUrl}/${offChainStorageProperties.rootHash}`;
     userPropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
 
     const accountProperties = {

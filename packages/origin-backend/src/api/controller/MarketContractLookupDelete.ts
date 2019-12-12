@@ -26,6 +26,6 @@ export async function marketContractLookupDeleteAction(req: Request, res: Respon
     await marketContractLookupRepository.remove(marketContractLookup);
 
     res.status(STATUS_CODES.NO_CONTENT).send({
-        message: `MarketContractLookup with address ${address} successfully deleted`
+        message: `MarketContractLookup ${address} successfully deleted`
     });
 }
