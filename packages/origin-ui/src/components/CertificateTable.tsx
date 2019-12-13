@@ -537,7 +537,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
-                label: 'Search',
+                label: 'Search by province and region',
                 input: {
                     type: CustomFilterInputType.string
                 },
