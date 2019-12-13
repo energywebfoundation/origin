@@ -5,6 +5,7 @@ import moment from 'moment';
 import Web3 from 'web3';
 import { Eth, BlockTransactionObject } from 'web3-eth';
 import { EventLog } from 'web3-core';
+import * as Winston from 'winston';
 
 import {
     calculateMissingEnergyDemand,
@@ -55,6 +56,8 @@ describe('Demand unit tests', () => {
             return config;
         };
 
+        let demandNonce = 0;
+
         const createDemand = (
             start: moment.Moment,
             end: moment.Moment,
@@ -69,6 +72,7 @@ describe('Demand unit tests', () => {
             offChainProperties.timeFrame.returns(timeFrame);
             offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
 
+            demand.id.returns((demandNonce++).toString());
             demand.offChainProperties.returns(offChainProperties);
 
             return demand;
