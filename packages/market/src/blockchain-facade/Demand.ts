@@ -378,10 +378,12 @@ export const calculateMissingEnergyDemand = async (
     });
 
     config.logger.debug(
-        `[Demand #${demand.id}] filledEvents ${JSON.stringify(filledEvents.map(e => ({
-            block: e.blockNumber,
-            value: e.returnValues._amount
-        })))}`
+        `[Demand #${demand.id}] filledEvents ${JSON.stringify(
+            filledEvents.map(e => ({
+                block: e.blockNumber,
+                value: e.returnValues._amount
+            }))
+        )}`
     );
 
     const filledDemandsTimeSeries = await Promise.all(

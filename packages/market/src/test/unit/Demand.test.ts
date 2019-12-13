@@ -5,7 +5,6 @@ import moment from 'moment';
 import Web3 from 'web3';
 import { Eth, BlockTransactionObject } from 'web3-eth';
 import { EventLog } from 'web3-core';
-import * as Winston from 'winston';
 
 import {
     calculateMissingEnergyDemand,
