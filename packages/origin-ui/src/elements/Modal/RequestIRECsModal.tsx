@@ -20,6 +20,7 @@ import {
     getRequestCertificatesModalProducingDevice,
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
+import { formatDate, DATE_FORMAT_DMY } from '../../utils/helper';
 
 function setMaxTimeInDay(date: Moment): Moment {
     return date
@@ -109,12 +110,7 @@ export function RequestIRECsModal() {
             <DialogTitle>{`Request I-RECs for ${producingDevice?.offChainProperties?.facilityName ||
                 ''}`}</DialogTitle>
             <DialogContent>
-                <TextField
-                    label="From"
-                    value={moment(fromDate).format('YYYY-MM-DD')}
-                    fullWidth
-                    disabled
-                />
+                <TextField label="From" value={formatDate(moment(fromDate))} fullWidth disabled />
 
                 <DatePicker
                     label={'To'}
@@ -124,6 +120,7 @@ export function RequestIRECsModal() {
                     inputVariant="filled"
                     className="mt-4"
                     fullWidth
+                    format={DATE_FORMAT_DMY}
                 />
 
                 <TextField label="kWh" value={energy / 1000} className="mt-4" fullWidth disabled />
