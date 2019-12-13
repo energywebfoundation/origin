@@ -293,7 +293,6 @@ export function CertificateDetailView(props: IProps) {
                 {selectedCertificate && (
                     <ProducingDeviceDetailView
                         id={selectedCertificate.certificate.deviceId}
-                        addSearchField={false}
                         showSmartMeterReadings={false}
                         showCertificates={false}
                     />
