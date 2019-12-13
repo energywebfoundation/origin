@@ -22,7 +22,7 @@
   },
   "scripts": {
       "build": "yarn build:ts",
-      "build:static": "yarn compile && yarn extractABI",
+      "build:static": "yarn compile",
       "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
       "clean": "shx rm -rf dist dist-shakeable build db.sqlite",
       "compile": "truffle compile",
