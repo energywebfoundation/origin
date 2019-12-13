@@ -18,7 +18,7 @@ import { Certificate } from '@energyweb/origin';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { addCertificate } from '../../features/certificates/actions';
-import { dataTestSelector } from '../../utils/helper';
+import { dataTestSelector, DATE_FORMAT_DMY } from '../../utils/helper';
 import moment from 'moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
@@ -352,7 +352,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                 now
                     .clone()
                     .set('date', dayOfMonth)
-                    .format('MMMM Do')
+                    .format(DATE_FORMAT_DMY)
             );
 
             // Close Datepicker (click outside)

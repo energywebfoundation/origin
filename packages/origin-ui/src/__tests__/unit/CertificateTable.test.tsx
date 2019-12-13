@@ -80,7 +80,7 @@ describe('CertificateTable', () => {
             `Nakhon Pathom, Central`,
             'IREC',
             'Example Organization',
-            'Sun Sep 29 2019',
+            'September 29th, 2019',
             '2.5',
             'ClaimPublish for sale',
             '',
@@ -89,7 +89,7 @@ describe('CertificateTable', () => {
             `Nakhon Pathom, Central`,
             'IREC',
             'Example Organization',
-            'Wed Sep 25 2019',
+            'September 25th, 2019',
             '1,000',
             'ClaimPublish for sale'
         ]);
