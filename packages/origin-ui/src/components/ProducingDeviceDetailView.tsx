@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
@@ -11,7 +10,6 @@ import iconGaseous from '../../assets/icon_gaseous.svg';
 import iconMarine from '../../assets/icon_marine.svg';
 import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
 import { Compliance, IRECDeviceService } from '@energyweb/utils-general';
@@ -21,8 +19,7 @@ import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProducingDeviceDetailLink } from '../utils/routing';
-import { getBaseURL, getProducingDevices } from '../features/selectors';
+import { getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
@@ -31,18 +28,14 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 
 interface IProps {
     id: number;
-    addSearchField: boolean;
     showSmartMeterReadings: boolean;
     showCertificates: boolean;
 }
 
 export function ProducingDeviceDetailView(props: IProps) {
-    const baseURL = useSelector(getBaseURL);
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
-
-    const [newId, setNewId] = useState(null);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -193,10 +186,6 @@ export function ProducingDeviceDetailView(props: IProps) {
                         {data.map((row, rowIndex) => (
                             <tr key={rowIndex}>
                                 {row.map((col, colIndex) => {
-                                    if (col.isAdditionalInformation && !props.addSearchField) {
-                                        return null;
-                                    }
-
                                     return (
                                         <td
                                             key={colIndex}
@@ -249,22 +238,6 @@ export function ProducingDeviceDetailView(props: IProps) {
 
     return (
         <div className="DetailViewWrapper">
-            {props.addSearchField && (
-                <div className="FindDevice">
-                    <input
-                        onChange={e => setNewId(e.target.value)}
-                        defaultValue={props.id || props.id === 0 ? props.id.toString() : ''}
-                    />
-
-                    <Link
-                        className="btn btn-primary find-device-button"
-                        to={getProducingDeviceDetailLink(baseURL, newId)}
-                    >
-                        Find Device
-                    </Link>
-                </div>
-            )}
-
             {selectedDevice && (
                 <>
                     <div className="PageContentWrapper">
