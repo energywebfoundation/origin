@@ -5,7 +5,7 @@
         "@openzeppelin/cli": "2.6.0",
         "@openzeppelin/contracts-ethereum-package": "2.4.0",
         "@openzeppelin/upgrades": "2.6.0",
-        "@types/chai": "4.2.6",
+        "@types/chai": "4.2.7",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "5.2.7",
         "@types/node": "10.14.18",
