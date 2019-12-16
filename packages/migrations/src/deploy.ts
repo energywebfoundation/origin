@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import program from 'commander';
 import path from 'path';
+import fs from 'fs';
 
 import { marketDemo } from './market';
 import { deployEmptyContracts } from './deployEmpty';
@@ -21,11 +22,19 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         path: envFile
     });
 
+    const client = new ConfigurationClient();
+
+    const demoConfig = JSON.parse(fs.readFileSync(configFilePath ?? './config/demo-config.json', 'utf8').toString());
+    
+    for (const currency of demoConfig.currencies) {
+        await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
+    }
+
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo(configFilePath, contractConfig);
 
     if (contractConfig && contractConfig.marketLogic) {
-        await new ConfigurationClient().add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketLogic.toLowerCase());
+        await client.add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketLogic.toLowerCase());
     }
 })();
