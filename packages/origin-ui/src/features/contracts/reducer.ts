@@ -15,6 +15,9 @@ export default function reducer(state = defaultState, action: IContractsAction):
         case ContractsActions.setMarketContractLookupAddress:
             return { ...state, marketContractLookupAddress: action.payload.address };
 
+        case ContractsActions.setCurrencies:
+            return { ...state, currencies: action.payload.currencies };
+
         default:
             return state;
     }

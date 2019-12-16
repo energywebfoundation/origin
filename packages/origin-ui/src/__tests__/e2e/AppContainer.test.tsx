@@ -90,7 +90,7 @@ describe('Application[E2E]', () => {
 
             fillInputField('maxPricePerMWh', '1');
 
-            await fillSelect('currency', 'EUR', ['EUR', 'USD', 'SGD', 'THB']);
+            await fillSelect('currency', 'USD', ['USD']);
 
             await fillSelect('timeframe', TimeFrame.daily.toString(), [
                 'Day',
@@ -150,7 +150,7 @@ describe('Application[E2E]', () => {
                     'no',
                     'any',
                     '1',
-                    '1.00 EUR',
+                    '1.00 USD',
                     'Active',
                     expect.stringMatching(/9|10/gm),
                     'EditCloneDeleteShow supplies'

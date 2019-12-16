@@ -36,4 +36,4 @@ export type TSetCurrencies = typeof setCurrencies;
 export const MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY =
     'CONTRACTS_MARKET_CONTRACT_LOOKUP_ADDRESS';
 
-export type IContractsAction = ISetMarketContractLookupAddressAction;
+export type IContractsAction = ISetMarketContractLookupAddressAction | ISetCurrenciesAction;

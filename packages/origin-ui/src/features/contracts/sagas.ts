@@ -281,9 +281,6 @@ function* fillCurrency(): SagaIterator {
         const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
         const currencies = yield call(getCurrenciesFromAPI, configurationClient, baseURL);
-        console.log({
-            currencies
-        });
 
         yield put(
             setCurrencies({

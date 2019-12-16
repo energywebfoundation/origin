@@ -36,9 +36,6 @@ export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
 
     const availableCurrencies = useSelector(getCurrencies);
-    console.log({
-        availableCurrencies
-    });
 
     const configuration = useSelector(getConfiguration);
 
