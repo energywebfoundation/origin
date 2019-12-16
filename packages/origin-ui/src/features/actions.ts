@@ -5,7 +5,6 @@ import { IStoreState } from '../types';
 export enum Actions {
     demandCreated = 'DEMAND_CREATED',
     demandUpdated = 'DEMAND_UPDATED',
-    demandDeleted = 'DEMAND_DELETED',
     producingDeviceCreatedOrUpdated = 'PRODUCING_DEVICE_CREATED_OR_UPDATED',
     consumingDeviceCreatedOrUpdated = 'CONSUMING_DEVICE_CREATED_OR_UPDATED',
     configurationUpdated = 'CONFIGURATION_UPDATED'
@@ -18,11 +17,6 @@ export const demandCreated = (demand: Demand.Entity) => ({
 
 export const demandUpdated = (demand: Demand.Entity) => ({
     type: Actions.demandUpdated,
-    demand
-});
-
-export const demandDeleted = (demand: Demand.Entity) => ({
-    type: Actions.demandDeleted,
     demand
 });
 

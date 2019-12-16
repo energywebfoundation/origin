@@ -22,9 +22,9 @@ import Web3 from 'web3';
 
 import {
     configurationUpdated,
-    demandDeleted,
     consumingDeviceCreatedOrUpdated,
-    demandCreated
+    demandCreated,
+    demandUpdated
 } from '../actions';
 import { ProducingDevice, ConsumingDevice } from '@energyweb/device-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
@@ -157,9 +157,12 @@ function* initEventHandler() {
             });
 
             marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
+                if (
+                    parseInt(event.returnValues._status as string, 10) ===
+                    Demand.DemandStatus.ARCHIVED
+                ) {
                     emitter({
-                        action: demandDeleted(
+                        action: demandUpdated(
                             await new Demand.Entity(
                                 event.returnValues._demandId.toString(),
                                 configuration
