@@ -27,7 +27,13 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
     const demoConfig = JSON.parse(fs.readFileSync(configFilePath ?? './config/demo-config.json', 'utf8').toString());
     
     for (const currency of demoConfig.currencies) {
-        await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
+        try {
+            await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
+        } catch (e) {
+            if (e.response.status !== 409) {
+                throw e;
+            }
+        }
     }
 
     const contractConfig = await deployEmptyContracts();
