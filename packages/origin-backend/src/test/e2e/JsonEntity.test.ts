@@ -11,16 +11,13 @@ import { StorageErrors }  from '../../enums/StorageErrors';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-describe('API tests', async () => {
+describe('JsonEntity API tests', async () => {
     dotenv.config({
         path: '.env.test'
     });
     let apiServer: http.Server;
 
     const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
-
-    const marketContractLookup = '0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b';
-    const marketContractLookup2 = '0x123b25e0edc2d9b5dee75c5f652f92f5b58be12b';
     const entityOwner = '0x24B207fFf1a1097d3c3D69fcE461544f83c6E774';
 
     const testHash = '1d5e7af973fe1387493b2b70e611c57fc3f354e6ec963b811cac529d8ed17288';
@@ -41,25 +38,6 @@ describe('API tests', async () => {
     });
 
     describe('GET', () => {
-        it('gets empty array when no contract addresses were set', async () => {
-            const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/MarketContractLookup`);
-
-            assert.isEmpty(getResult.data);
-            assert.deepEqual(getResult.data, []);
-        });
-
-        it('returns all contract addresses', async () => {
-            await axios.post(`${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`);
-            await axios.post(`${BASE_API_URL}/MarketContractLookup/${marketContractLookup2}`);
-
-            const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/MarketContractLookup`);
-
-            assert.deepEqual(
-                getResult.data,
-                [marketContractLookup, marketContractLookup2]
-            );
-        });
-
         it('returns empty array when no entities have been created', async () => {
             const result = await axios.get(`${BASE_API_URL}/Entity`);
 
@@ -75,7 +53,7 @@ describe('API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT_ENTITY);
+                assert.equal(data.error, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
 
@@ -166,37 +144,6 @@ describe('API tests', async () => {
     });
 
     describe('POST', () => {
-        it('creates a MarketContractLookup', async () => {
-            const postResult: AxiosResponse = await axios.post(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
-            );
-    
-            assert.equal(postResult.status, STATUS_CODES.CREATED);
-            assert.equal(postResult.data.message, `MarketContractLookup ${marketContractLookup} created`);
-        });
-
-        it('fails creating the same MarketContractLookup', async () => {
-            await axios.post(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
-            );
-    
-            let failed = false;
-    
-            try {
-                await axios.post(
-                    `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
-                );
-            } catch (error) {
-                const { status, data } = error.response;
-
-                assert.equal(status, STATUS_CODES.CONFLICT);
-                assert.equal(data.error, StorageErrors.ALREADY_EXISTS);
-                failed = true;
-            }
-    
-            assert.isTrue(failed);
-        });
-
         it('creates an Entity', async () => {
             const postResult: AxiosResponse = await axios.post(
                 `${BASE_API_URL}/Entity/${testHash}`,
@@ -223,30 +170,6 @@ describe('API tests', async () => {
     });
 
     describe('DELETE', () => {
-        it('deletes a marketContractLookup', async () => {
-            await axios.post(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
-            );
-    
-            const deleteResult = await axios.delete(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
-            );
-            assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
-    
-            let failed: boolean = false;
-    
-            try {
-                await axios.delete(`${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`);
-            } catch (error) {
-                const { status, data } = error.response;
-                assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT_ENTITY);
-                failed = true;
-            }
-    
-            assert.isTrue(failed);
-        });
-
         it('deletes a Entity', async () => {
             await axios.post(
                 `${BASE_API_URL}/Entity/${testHash}`,
@@ -265,7 +188,7 @@ describe('API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT_ENTITY);
+                assert.equal(data.error, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
     

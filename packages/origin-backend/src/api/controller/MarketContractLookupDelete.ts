@@ -17,7 +17,7 @@ export async function marketContractLookupDeleteAction(req: Request, res: Respon
 
     if (!marketContractLookup) {
         res.status(STATUS_CODES.NOT_FOUND).send({
-            error: StorageErrors.NON_EXISTENT_ENTITY
+            error: StorageErrors.NON_EXISTENT
         });
 
         return;
