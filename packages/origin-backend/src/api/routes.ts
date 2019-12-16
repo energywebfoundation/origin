@@ -6,6 +6,9 @@ import { marketContractLookupDeleteAction } from './controller/MarketContractLoo
 import { jsonEntityGetAction } from './controller/JsonEntityGet';
 import { jsonEntityPostAction } from './controller/JsonEntityPost';
 import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
+import { currencyGetAction } from './controller/CurrencyGet';
+import { currencyPostAction } from './controller/CurrencyPost';
+import { currencyDeleteAction } from './controller/CurrencyDelete';
 
 export interface IRoute {
     path: string;
@@ -46,5 +49,20 @@ export const AppRoutes: IRoute[] = [
         path: '/Entity/:hash',
         method: 'delete',
         action: jsonEntityDeleteAction
+    },
+    {
+        path: '/Currency/:code?',
+        method: 'get',
+        action: currencyGetAction
+    },
+    {
+        path: '/Currency/:code',
+        method: 'post',
+        action: currencyPostAction
+    },
+    {
+        path: '/Currency/:code',
+        method: 'delete',
+        action: currencyDeleteAction
     }
 ];

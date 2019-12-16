@@ -24,7 +24,7 @@ export async function jsonEntityGetAction(req: Request, res: Response) {
 
     if (!existingEntity) {
         res.status(STATUS_CODES.NOT_FOUND).send({
-            error: StorageErrors.NON_EXISTENT_ENTITY
+            error: StorageErrors.NON_EXISTENT
         });
 
         return;

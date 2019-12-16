@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Contracts as MarketContracts, PurchasableCertificate } from '@energyweb/market';
-import { Currency } from '@energyweb/utils-general';
 
 import { ProducingDevice } from '@energyweb/device-registry';
 import {
@@ -20,6 +19,7 @@ import {
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
+import { getCurrencies } from '../../features/contracts/selectors';
 import { setLoading } from '../../features/general/actions';
 
 interface IProps {
@@ -32,19 +32,10 @@ interface IProps {
 const ERC20CURRENCY = 'ERC20 Token';
 const minKwh = 0.001;
 
-function getAvailableCurrencies() {
-    let currencies = Object.keys(Currency);
-    currencies = currencies.splice(Math.ceil(currencies.length / 2), currencies.length - 1);
-    currencies = currencies.filter(curr => Currency[curr] !== Currency.NONE);
-    currencies.push(ERC20CURRENCY);
-
-    return currencies;
-}
-
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
 
-    const availableCurrencies = getAvailableCurrencies();
+    const availableCurrencies = useSelector(getCurrencies);
 
     const configuration = useSelector(getConfiguration);
 
@@ -94,7 +85,7 @@ export function PublishForSaleModal(props: IProps) {
         dispatch(setLoading(true));
         await certificate.publishForSale(
             price,
-            isErc20Sale ? erc20TokenAddress : Currency[currency],
+            isErc20Sale ? erc20TokenAddress : currency,
             kwh * 1000
         );
 

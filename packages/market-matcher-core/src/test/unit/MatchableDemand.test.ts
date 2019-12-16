@@ -1,7 +1,7 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Demand, PurchasableCertificate, Supply } from '@energyweb/market';
+import { Demand, PurchasableCertificate, Supply, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, Year } from '@energyweb/utils-general';
+import { Year } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -27,7 +27,7 @@ describe('MatchableDemand tests', () => {
         const missingDemand = 1000;
         const certificateEnergy = 1000;
         const energyPrice = 2;
-        const currency = Currency.USD;
+        const currency = 'USD';
         const deviceType = 'Solar';
         const location = ['Thailand;Central;Nakhon Pathom'];
         const country = 'Thailand';
@@ -140,7 +140,7 @@ describe('MatchableDemand tests', () => {
 
         it('should not match demand with difference currency', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                currency: Currency.EUR
+                currency: 'EUR'
             });
 
             const matchableDemand = new MatchableDemand(demand);
@@ -232,7 +232,7 @@ describe('MatchableDemand tests', () => {
     describe('Supply', () => {
         const supplyEnergy = 1000;
         const energyPrice = 100;
-        const currency = Currency.USD;
+        const currency = 'USD';
         const deviceType = 'Solar';
 
         const createMatchingMocks = (options: IMockOptions) => {

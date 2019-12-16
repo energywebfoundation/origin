@@ -2,7 +2,6 @@ import {
     BlockchainDataModelEntity,
     Compliance,
     Configuration,
-    Currency,
     extendArray,
     Resolution,
     TimeFrame,
@@ -17,6 +16,7 @@ import { TransactionReceipt } from 'web3-core';
 
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
+import { Currency } from '../types';
 
 export interface IDemandOffChainProperties {
     timeFrame: TimeFrame;

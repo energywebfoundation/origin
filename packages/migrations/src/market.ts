@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import Web3 from 'web3';
 
 import * as Market from '@energyweb/market';
-import { Configuration, TimeFrame, Compliance, Currency } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Compliance } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
@@ -115,7 +115,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
     const symbol = await token.web3Contract.methods.symbol().call();
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
-
+    
     for (const action of actionsArray) {
         switch (action.type) {
             case 'SEND_ERC20_TOKENS_TO':
@@ -160,7 +160,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 const deviceCompliance =
                     Compliance[action.data.registryCompliance as keyof typeof Compliance];
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
-                currency = Currency[action.data.currency as keyof typeof Currency];
+                currency = action.data.currency;
 
                 const demandOffchainProps: Demand.IDemandOffChainProperties = {
                     timeFrame: timeFrame,
@@ -202,7 +202,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 };
 
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
-                currency = Currency[action.data.currency as keyof typeof Currency];
+                currency = action.data.currency;
 
                 const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
                     price: action.data.price,
@@ -243,7 +243,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 };
 
                 timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
-                currency = Currency[action.data.currency as keyof typeof Currency];
+                currency = action.data.currency;
 
                 if (action.data.startTime === -1) {
                     action.data.startTime = Math.floor(Date.now() / 1000);

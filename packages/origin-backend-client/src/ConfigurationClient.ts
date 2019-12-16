@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export type ConfigurationItem = 'MarketContractLookup';
+export type ConfigurationItem = 'MarketContractLookup' | 'Currency';
 
 export interface IConfigurationClient {
     get(baseUrl: string, item: ConfigurationItem): Promise<string[]>;

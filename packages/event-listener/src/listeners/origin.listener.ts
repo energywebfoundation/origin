@@ -2,14 +2,9 @@ import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
+import { Demand, MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    Currency
-} from '@energyweb/utils-general';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 
 import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { initOriginConfig } from '../config/origin.config';
@@ -106,7 +101,7 @@ export class OriginEventListener implements IOriginEventListener {
                 if (
                     certificate.forSale &&
                     certificate.isOffChainSettlement &&
-                    certificate.currency === Currency.NONE &&
+                    certificate.currency === NoneCurrency &&
                     certificate.price === 0
                 ) {
                     throw new Error(`[Certificate #${certificateId}] Missing settlement options`);

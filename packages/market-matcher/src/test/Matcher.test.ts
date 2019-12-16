@@ -5,7 +5,6 @@ import { UserLogic } from '@energyweb/user-registry';
 import {
     Configuration,
     ContractEventHandler,
-    Currency,
     EventHandlerManager,
     Unit
 } from '@energyweb/utils-general';
@@ -86,7 +85,7 @@ describe('Market-matcher e2e tests', async () => {
     describe('Demand -> Certificate matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
         const price = 150;
-        const currency = Currency.USD;
+        const currency = 'USD';
 
         let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;
@@ -115,7 +114,7 @@ describe('Market-matcher e2e tests', async () => {
     describe('Agreement -> Certificate matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
         const price = 150;
-        const currency = Currency.USD;
+        const currency = 'USD';
 
         let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
         let demand: Demand.Entity;

@@ -1,13 +1,13 @@
 import polly from 'polly-js';
 import { TransactionReceipt } from 'web3-core';
-
 import {
     BlockchainDataModelEntity,
     Timestamp,
-    Currency,
     TimeFrame,
     Configuration
 } from '@energyweb/utils-general';
+import { Currency } from '../types';
+
 import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainProperties.schema.json';
 
 export interface IAgreementOffChainProperties {

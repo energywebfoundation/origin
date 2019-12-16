@@ -23,7 +23,7 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 
-import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Compliance, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
 import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 
@@ -195,7 +195,7 @@ export class Demo {
             autoPublish: {
                 enabled: true,
                 price: 1000,
-                currency: Currency.USD
+                currency: 'USD'
             }
         };
         await MarketUser.createMarketUser(
@@ -363,7 +363,7 @@ export class Demo {
             certificateId.toString(),
             this.conf
         ).sync();
-        await deployedCertificate.publishForSale(1000, Currency.USD);
+        await deployedCertificate.publishForSale(1000, 'USD');
     }
 
     async deployDemand() {
@@ -372,7 +372,7 @@ export class Demo {
         const demandOffChainProps: Demand.IDemandOffChainProperties = {
             timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150000,
-            currency: Currency.USD,
+            currency: 'USD',
             location: ['Thailand;Central;Nakhon Pathom'],
             deviceType: ['Wind'],
             minCO2Offset: 10,

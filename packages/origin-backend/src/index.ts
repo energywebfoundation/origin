@@ -7,8 +7,10 @@ import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 
 import ormConfig from '../ormconfig.json';
 
+import { Currency } from './entity/Currency';
 import { JsonEntity } from './entity/JsonEntity';
 import { MarketContractLookup } from './entity/MarketContractLookup';
+
 import api from './api';
 
 function extractPort(url: string): number {
@@ -44,7 +46,7 @@ export async function startAPI(): Promise<http.Server> {
     }
 
     let connectionOptions: ConnectionOptions = Object.assign(ormConfig as ConnectionOptions, {
-        entities: [JsonEntity, MarketContractLookup]
+        entities: [JsonEntity, MarketContractLookup, Currency]
     });
 
     const connection: Connection = await createConnection(connectionOptions);

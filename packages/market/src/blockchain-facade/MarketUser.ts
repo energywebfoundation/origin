@@ -1,5 +1,6 @@
 import { User } from '@energyweb/user-registry';
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
+import { Currency } from '../types';
 import MarketUserOffChainPropertiesSchema from '../../schemas/MarketUserOffChainProperties.schema.json';
 
 export interface IAutoPublishConfig {

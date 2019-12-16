@@ -14,7 +14,8 @@ import {
     MarketLogic,
     Supply,
     PurchasableCertificate,
-    Contracts as MarketContracts
+    Contracts as MarketContracts,
+    Currency
 } from '@energyweb/market';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import {
@@ -23,7 +24,7 @@ import {
     UserLogic,
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
-import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
+import { Compliance, Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 import { IMatcherConfig } from '..';
@@ -205,7 +206,7 @@ const deployDemand = async (
     config: Configuration.Entity,
     requiredEnergy: number,
     price = 150,
-    currency: Currency = Currency.USD
+    currency: Currency = 'USD'
 ) => {
     const traderConfig = changeUser(config, {
         address: accountTrader,
@@ -273,7 +274,7 @@ const deploySupply = (
     deviceId: string,
     requiredEnergy: number,
     price = 150,
-    currency: Currency = Currency.USD
+    currency: Currency = 'USD'
 ) => {
     const deviceOwnerConfig = changeUser(config, {
         address: deviceOwnerAddress,
@@ -332,7 +333,7 @@ const deployAgreement = async (
     demandId: string,
     supplyId: string,
     price = 150,
-    currency: Currency = Currency.USD
+    currency: Currency = 'USD'
 ) => {
     const traderConfig = changeUser(config, {
         address: accountTrader,

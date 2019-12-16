@@ -1,5 +1,5 @@
 import { ConsumingDevice, ProducingDevice } from '@energyweb/device-registry';
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
 
@@ -186,7 +186,7 @@ export const certificateDemo = async (
             try {
                 let certificate = await new PurchasableCertificate.Entity(action.data.certId, conf).sync();
 
-                await certificate.publishForSale(action.data.price, Currency[action.data.currency]);
+                await certificate.publishForSale(action.data.price, action.data.currency);
                 certificate = await certificate.sync();
 
                 conf.logger.info(`Certificate ${action.data.certId} published for sale`);

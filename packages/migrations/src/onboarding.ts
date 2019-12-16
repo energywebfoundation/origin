@@ -1,7 +1,8 @@
 import { ConsumingDevice, Device, ProducingDevice } from '@energyweb/device-registry';
-import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 import { MarketUser } from '@energyweb/market';
+import { ConfigurationClient } from '@energyweb/origin-backend-client';
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -20,6 +21,8 @@ export const onboardDemo = async (
 
     switch (action.type) {
         case 'CREATE_ACCOUNT':
+            const currencies = await new ConfigurationClient().get(conf.offChainDataSource.baseUrl, 'Currency');
+
             const userPropsOnChain: User.IUserOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
@@ -43,7 +46,7 @@ export const onboardDemo = async (
                 autoPublish: action.data.autoPublish || {
                     enabled: false,
                     price: 1.5,
-                    currency: Currency.USD
+                    currency: currencies[0]
                 }
             };
 

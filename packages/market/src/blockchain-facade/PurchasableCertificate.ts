@@ -1,15 +1,17 @@
 import { TransactionReceipt, EventLog } from 'web3-core';
 import polly from 'polly-js';
 
-import { Currency, Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
+import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
 import PurchasableCertificateOffChainPropertiesSchema from '../../schemas/PurchasableCertificateOffChainProperties.schema.json';
+import { Currency } from '../types';
+import { NoneCurrency } from '../const';
 
 const DEFAULT_OFF_CHAIN_PROPERTIES = {
     price: 0,
-    currency: Currency.NONE
+    currency: NoneCurrency
 };
 
 export interface IPurchasableCertificate {
@@ -190,7 +192,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         const isErc20Sale: boolean = this.configuration.blockchainProperties.web3.utils.isAddress(
             tokenAddressOrCurrency.toString()
         );
-        const isFiatSale: boolean = typeof tokenAddressOrCurrency !== 'string';
+        const isFiatSale: boolean = tokenAddressOrCurrency.length <= 3;
 
         if (!isErc20Sale && !isFiatSale) {
             throw Error('Please specify either an ERC20 token address or a currency.');
@@ -203,7 +205,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
                 ? tokenAddressOrCurrency
                 : '0x0000000000000000000000000000000000000000',
             offChainPrice: isFiatSale ? Math.floor(price * 100) : 0,
-            offChainCurrency: isFiatSale ? tokenAddressOrCurrency : Currency.NONE
+            offChainCurrency: isFiatSale ? tokenAddressOrCurrency : NoneCurrency
         };
 
         if (wh > certificateEnergy || wh <= 0) {
