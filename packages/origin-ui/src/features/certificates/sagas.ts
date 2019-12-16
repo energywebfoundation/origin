@@ -18,10 +18,10 @@ import { requestUser } from '../users/actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Unit, Currency } from '@energyweb/utils-general';
+import { Unit } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
-import { MarketUser, PurchasableCertificate } from '@energyweb/market';
+import { MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
 import { Device } from '@energyweb/device-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
@@ -32,7 +32,7 @@ function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate
         certificate.forSale &&
         certificate.acceptedToken === '0x0000000000000000000000000000000000000000' &&
         (!certificate.offChainProperties ||
-            (certificate.offChainProperties.currency === Currency.NONE &&
+            (certificate.offChainProperties.currency === NoneCurrency &&
                 certificate.offChainProperties.price === 0))
     );
 }

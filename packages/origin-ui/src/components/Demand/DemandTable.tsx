@@ -1,6 +1,6 @@
 import { Demand, MarketUser } from '@energyweb/market';
 
-import { Configuration, Currency, IRECDeviceService, TimeFrame } from '@energyweb/utils-general';
+import { Configuration, IRECDeviceService, TimeFrame } from '@energyweb/utils-general';
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
 import React from 'react';
@@ -282,7 +282,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                         : NO_VALUE_TEXT,
                 demand: (demand.offChainProperties.energyPerTimeFrame / 1000000).toLocaleString(),
                 max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
-                    Currency[demand.offChainProperties.currency]
+                    demand.offChainProperties.currency
                 }`,
                 status: demandStatus,
                 energy: overallDemand

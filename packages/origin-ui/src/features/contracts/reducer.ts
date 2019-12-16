@@ -2,10 +2,12 @@ import { ContractsActions, IContractsAction } from './actions';
 
 export interface IContractsState {
     marketContractLookupAddress: string;
+    currencies: string[];
 }
 
 const defaultState: IContractsState = {
-    marketContractLookupAddress: ''
+    marketContractLookupAddress: '',
+    currencies: []
 };
 
 export default function reducer(state = defaultState, action: IContractsAction): IContractsState {
