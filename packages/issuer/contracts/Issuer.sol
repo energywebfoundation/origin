@@ -56,20 +56,20 @@ contract Issuer is ERC1155, ERC1888 {
     return abi.decode(_data, (uint, uint, string, uint, bytes32));
   }
 
-  function encodeRequest(uint _from, uint _to, string memory _deviceId) public pure returns (bytes memory) {
+  function encodeRequestIssue(uint _from, uint _to, string memory _deviceId) public pure returns (bytes memory) {
     return abi.encode(_from, _to, _deviceId);
   }
 
-  function decodeRequest(bytes memory _data) public pure returns (uint, uint, string memory) {
+  function decodeRequestIssue(bytes memory _data) public pure returns (uint, uint, string memory) {
     return abi.decode(_data, (uint, uint, string));
   }
 
-  function encodeClaim(string memory _salt, Proof[] memory _proof) public pure returns (bytes memory) {
-    return abi.encode(_salt, _proof);
+  function encodeClaim(uint _requestId, string memory _salt, Proof[] memory _proof) public pure returns (bytes memory) {
+    return abi.encode(_requestId, _salt, _proof);
   }
 
-  function decodeClaim(bytes memory _data) public pure returns (string memory, Proof[] memory) {
-    return abi.decode(_data, (string, Proof[]));
+  function decodeClaim(bytes memory _data) public pure returns (uint, string memory, Proof[] memory) {
+    return abi.decode(_data, (uint, string, Proof[]));
   }
 
   //onlyIssuer
@@ -128,9 +128,9 @@ contract Issuer is ERC1155, ERC1888 {
 
     (,,,uint _requestId, bytes32 _commitment) = decodeIssue(_data);
 
-    require(!requestClaimStorage[_requestId].approved, "Already issued"); //consider checking topic and other params from request
+    require(!requestIssueStorage[_requestId].approved, "Already issued"); //consider checking topic and other params from request
 
-    requestClaimStorage[_requestId].approved = true;
+    requestIssueStorage[_requestId].approved = true;
 
     certificateStorage[id] = Certificate({
       topic: _topic,
@@ -156,9 +156,12 @@ contract Issuer is ERC1155, ERC1888 {
   //using bytes -> instead of bytes32 for claimdata
   function safeTransferAndClaimFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data, bytes calldata _claimData) external {
     //validate proof
-    (string memory _salt, Proof[] memory _proof) = decodeClaim(_claimData);
+    (uint _requestId, string memory _salt, Proof[] memory _proof) = decodeClaim(_claimData);
+    
+    require(!requestClaimStorage[_requestId].approved, "Claim request already approved");
+    require(requestClaimStorage[_requestId].inputHash == keccak256(abi.encodePacked(_from, _value, _salt)), "Requested hash does not match");
+    
     (,,,, bytes32 _commitment) = decodeIssue(certificateStorage[_id].data);
-
     require(validateProof(_from, _value, _salt, _commitment, _proof), "Invalid proof");
 
     //mint
