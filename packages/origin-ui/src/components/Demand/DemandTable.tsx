@@ -119,6 +119,18 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return text || NO_VALUE_TEXT;
     }
 
+    viewDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id));
+    }
+
+    cloneDemand(rowIndex: number) {
+        const demand = this.state.paginatedData[rowIndex].demand;
+
+        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id));
+    }
+
     async editDemand(rowIndex: number) {
         const demand = this.state.paginatedData[rowIndex].demand;
 
@@ -142,21 +154,29 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id));
     }
 
-    viewDemand(rowIndex: number) {
-        const demand = this.state.paginatedData[rowIndex].demand;
-
-        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id));
-    }
-
-    cloneDemand(rowIndex: number) {
-        const demand = this.state.paginatedData[rowIndex].demand;
-
-        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id));
-    }
-
     async deleteDemand(rowIndex: number) {
         try {
             const demand = this.state.paginatedData[rowIndex].demand;
+
+            if (
+                !this.props.currentUser ||
+                !this.props.currentUser.id ||
+                demand.demandOwner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
+            ) {
+                showNotification(
+                    `You need to be owner of the demand to delete it.`,
+                    NotificationType.Error
+                );
+                return;
+            }
+
+            if (demand.status === Demand.DemandStatus.ARCHIVED) {
+                showNotification(
+                    `You can't delete a demand that has been already archived.`,
+                    NotificationType.Error
+                );
+                return;
+            }
 
             await Demand.deleteDemand(demand.id, this.props.configuration);
 
@@ -196,8 +216,8 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
     }
 
     async componentDidUpdate(prevProps: Props) {
-        if (prevProps.demands.length !== this.props.demands.length) {
-            this.loadPage(1);
+        if (prevProps.demands !== this.props.demands) {
+            await this.loadPage(1);
         }
     }
 
