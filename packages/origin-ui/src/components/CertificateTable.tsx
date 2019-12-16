@@ -19,7 +19,7 @@ import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { getBaseURL, getConfiguration, getProducingDevices } from '../features/selectors';
 import { IStoreState } from '../types';
-import { formatCurrency } from '../utils/helper';
+import { formatCurrency, formatDate } from '../utils/helper';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';
@@ -534,7 +534,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
-                label: 'Search',
+                label: 'Search by province and region',
                 input: {
                     type: CustomFilterInputType.string
                 },
@@ -783,9 +783,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 provinceRegion,
                 compliance,
                 owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
-                certificationDate: new Date(
-                    enrichedData.certificate.certificate.creationTime * 1000
-                ).toDateString(),
+                certificationDate: formatDate(
+                    moment.unix(enrichedData.certificate.certificate.creationTime)
+                ),
                 price,
                 currency,
                 energy: (enrichedData.certificate.certificate.energy / 1000).toLocaleString()

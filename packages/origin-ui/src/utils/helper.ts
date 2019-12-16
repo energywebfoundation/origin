@@ -1,3 +1,5 @@
+import { Moment } from 'moment';
+
 export const isOffChainProperty = (name: string, offChainProps: any): boolean => {
     for (const offChainPropName of Object.keys(offChainProps)) {
         if (offChainPropName === name) {
@@ -73,4 +75,10 @@ export function clone(item: any) {
 
 export function wait(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const DATE_FORMAT_DMY = 'MMMM Do, YYYY';
+
+export function formatDate(date: Moment) {
+    return date.format(DATE_FORMAT_DMY);
 }

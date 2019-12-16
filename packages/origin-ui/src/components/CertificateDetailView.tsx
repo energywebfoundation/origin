@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import { Certificate } from '@energyweb/origin';
 import { MarketUser } from '@energyweb/market';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
@@ -36,7 +35,6 @@ export function CertificateDetailView(props: IProps) {
     const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
 
-    const [newId, setNewId] = useState<string>(null);
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
 
     const dispatch = useDispatch();
@@ -51,7 +49,7 @@ export function CertificateDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    const { getCertificateDetailLink, getProducingDeviceDetailLink } = useLinks();
+    const { getProducingDeviceDetailLink } = useLinks();
 
     const selectedCertificate =
         id !== null && id !== undefined && certificates.find(c => c.id === id);
@@ -255,16 +253,6 @@ export function CertificateDetailView(props: IProps) {
 
     return (
         <div className="DetailViewWrapper">
-            <div className="FindDevice">
-                <input onChange={e => setNewId(e.target.value)} defaultValue={id} />
-
-                <Link
-                    className="btn btn-primary find-device-button"
-                    to={getCertificateDetailLink(newId)}
-                >
-                    Find Certificate
-                </Link>
-            </div>
             <div className="PageContentWrapper">
                 <div className="PageBody">
                     {selectedCertificate ? (
@@ -293,7 +281,6 @@ export function CertificateDetailView(props: IProps) {
                 {selectedCertificate && (
                     <ProducingDeviceDetailView
                         id={selectedCertificate.certificate.deviceId}
-                        addSearchField={false}
                         showSmartMeterReadings={false}
                         showCertificates={false}
                     />
