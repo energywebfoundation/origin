@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 import { UserLogic, Role, buildRights, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Device, ProducingDevice, DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { deployERC721TestReceiver } from './deploy';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
@@ -195,7 +195,7 @@ describe('CertificateLogic-Facade', () => {
             gpsLongitude: '99.977800',
             timezone: 'Asia/Bangkok',
             deviceType: 'Wind',
-            complianceRegistry: Compliance.EEC,
+            complianceRegistry: 'I-REC',
             otherGreenAttributes: '',
             typeOfPublicSupport: ''
         };
