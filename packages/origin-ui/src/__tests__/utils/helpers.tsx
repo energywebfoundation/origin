@@ -123,7 +123,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityWh: 9876543,
     operationalSince: 1568746970,
-    complianceRegistry: Compliance.IREC
+    complianceRegistry: 'I-REC'
 } as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
 
 export const createProducingDevice = (

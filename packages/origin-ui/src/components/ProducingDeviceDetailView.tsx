@@ -12,7 +12,7 @@ import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
-import { Compliance, IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceMap } from './DeviceMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
@@ -108,7 +108,7 @@ export function ProducingDeviceDetailView(props: IProps) {
                     label:
                         'Certified by Registry' +
                         getOffChainText('complianceRegistry', selectedDevice.offChainProperties),
-                    data: Compliance[selectedDevice.offChainProperties.complianceRegistry]
+                    data: selectedDevice.offChainProperties.complianceRegistry
                 },
                 {
                     label:

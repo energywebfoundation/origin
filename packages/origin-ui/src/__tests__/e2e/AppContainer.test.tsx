@@ -184,7 +184,7 @@ describe('Application[E2E]', () => {
                 'Device Owner',
                 'Device Manager organization ',
                 'Certified by Registry (private)',
-                'IREC ',
+                'I-REC ',
                 'Other Green Attributes (private)',
                 ' ',
                 'Device Type',
