@@ -9,6 +9,7 @@ contract Issuer is ERC1155, ERC1888 {
 
   event IssueRequest(address indexed _owner, uint256 indexed _id);
   event ClaimRequest(address indexed _owner, uint256 indexed _id);
+  event VolumeExposeRequest(address indexed _owner, uint256 indexed _id);
 
   struct Certificate {
     int256 topic;
@@ -32,6 +33,13 @@ contract Issuer is ERC1155, ERC1888 {
     bool approved;
   }
 
+  struct RequestVolumeExpose {
+    address owner;
+    uint certificateId;
+    uint volume;
+    bool approved;
+  }
+
   struct Proof {
     bool left;
     bytes32 hash;
@@ -40,10 +48,12 @@ contract Issuer is ERC1155, ERC1888 {
   uint public nonce;
   uint public requestIssueNonce;
   uint public requestClaimNonce;
+  uint public requestVolumeExposeNonce;
 
   mapping(uint256 => Certificate) public certificateStorage;
   mapping(uint256 => Request) public requestIssueStorage;
   mapping(uint256 => RequestClaim) public requestClaimStorage;
+  mapping(uint256 => RequestVolumeExpose) public requestVolumeExposeStorage;
 
   mapping(uint256 => bytes32) public commitments;
   mapping(uint256 => mapping(address => uint256)) public claimedBalances;
@@ -73,10 +83,14 @@ contract Issuer is ERC1155, ERC1888 {
   }
 
   //onlyIssuer
-  function updateCommitment(uint _id, bytes32 _commitment) external {
+  function updateCommitment(uint _id, bytes32 _commitment) public {
     commitments[_id] = _commitment;
 
     emit CommitmentUpdated(msg.sender, _id, _commitment);
+  }
+
+  function getRequestIssue(uint _id) public returns (Request memory) {
+    return requestIssueStorage[_id];
   }
 
   //everyone
@@ -93,6 +107,10 @@ contract Issuer is ERC1155, ERC1888 {
     emit IssueRequest(msg.sender, id);
   }
 
+  function getRequestClaim(uint _id) public returns (RequestClaim memory) {
+    return requestClaimStorage[_id];
+  }
+
   //everyone
   function requestClaim(uint _certificateId, bytes32 _inputHash) external {
     uint id = ++requestClaimNonce;
@@ -105,6 +123,23 @@ contract Issuer is ERC1155, ERC1888 {
     });
 
     emit ClaimRequest(msg.sender, id); //add cert if
+  }
+
+  function getRequestVolumeExpose(uint _id) public returns (RequestVolumeExpose memory) {
+    return requestVolumeExposeStorage[_id];
+  }
+
+  function requestVolumeExpose(uint _certificateId, uint _volume) external {
+    uint id = ++requestVolumeExposeNonce;
+
+    requestVolumeExposeStorage[id] = RequestVolumeExpose({
+      owner: msg.sender,
+      volume: _volume,
+      certificateId: _certificateId,
+      approved: false
+    });
+
+    emit VolumeExposeRequest(msg.sender, id);
   }
 
   function validateProof(address _key, uint _value, string memory _salt, bytes32 _rootHash, Proof[] memory _proof) private returns(bool) {
@@ -139,17 +174,31 @@ contract Issuer is ERC1155, ERC1888 {
       data: _data
     });
 
-    commitments[id] = _commitment; //todo: use _data to keep latest 
+    updateCommitment(id, _commitment);
 
     ERC1155.safeTransferFrom(address(0x0), _to, id, 0, new bytes(0));
 
     emit IssuanceSingle(msg.sender, _topic, id);
-    emit CommitmentUpdated(msg.sender, id, _commitment);
 
     // MUST check the validity of the certificate before continuing with the token minting
     // (i.e. issuer.staticcall(validityData) should return (true, ))
 
     return id;
+  }
+
+  //onlyIssuer
+  function exposeVolume(address _from, uint256 _id, uint256 _value, bytes calldata _data, uint _requestId, bytes32 _commitment) external {
+    require(!requestVolumeExposeStorage[_requestId].approved, "Reqiest request already approved");
+
+    //TODO: zero knowledge proof of _value < real balance
+
+    //mint
+    balances[_id][_from] = _value.add(balances[_id][_from]);
+    
+    //transfer to self
+    ERC1155.safeTransferFrom(_from, _from, _id, _value, _data); //TODO: decide wheter mint or transfer from self
+
+    updateCommitment(_id, _commitment);
   }
 
   //onlyIssuer
