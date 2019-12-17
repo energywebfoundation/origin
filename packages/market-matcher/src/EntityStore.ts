@@ -257,6 +257,11 @@ export class EntityStore implements IEntityStore {
     private async handleCertificate(id: string, trigger = true) {
         const certificate = await this.fetcher.getCertificate(id);
 
+        if (certificate.certificate.children.length) {
+            this.logger.verbose(`[Certificate ${certificate.id}] Is parent certificate, skipping.`);
+            return;
+        }
+
         this.certificates.set(certificate.id, certificate);
         this.logger.verbose(`[Certificate ${certificate.id}] Registered`);
 
