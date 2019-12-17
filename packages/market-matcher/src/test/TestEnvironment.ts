@@ -24,7 +24,7 @@ import {
     UserLogic,
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
-import { Compliance, Configuration, TimeFrame } from '@energyweb/utils-general';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 import { IMatcherConfig } from '..';
@@ -223,7 +223,7 @@ const deployDemand = async (
         otherGreenAttributes: 'string',
         typeOfPublicSupport: 'string',
         energyPerTimeFrame: requiredEnergy,
-        registryCompliance: Compliance.EEC,
+        registryCompliance: 'I-REC',
         startTime: moment().unix(),
         endTime: moment()
             .add(1, 'hour')
@@ -261,7 +261,7 @@ const deployDevice = (config: Configuration.Entity) => {
         gpsLongitude: '99.977800',
         timezone: 'Asia/Bangkok',
         deviceType: 'Solar',
-        complianceRegistry: Compliance.EEC,
+        complianceRegistry: 'I-REC',
         otherGreenAttributes: '',
         typeOfPublicSupport: ''
     };
