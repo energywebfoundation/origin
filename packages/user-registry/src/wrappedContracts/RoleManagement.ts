@@ -40,27 +40,11 @@ export class RoleManagement extends GeneralFunctions {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
-        let filterParams: any;
-        if (eventFilter) {
-            filterParams = {
-                fromBlock: eventFilter.fromBlock ? eventFilter.fromBlock : 0,
-                toBlock: eventFilter.toBlock ? eventFilter.toBlock : 'latest'
-            };
-            if (eventFilter.topics) {
-                filterParams.topics = eventFilter.topics;
-            }
-        } else {
-            filterParams = {
-                fromBlock: 0,
-                toBlock: 'latest'
-            };
-        }
-
-        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
+        return this.web3Contract.getPastEvents('LogChangeOwner', this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('allEvents', eventFilter);
+        return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async owner(txParams?: ISpecialTx) {

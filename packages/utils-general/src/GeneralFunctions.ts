@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { TransactionConfig, TransactionReceipt } from 'web3-core';
-import { Contract } from 'web3-eth-contract';
+import { Contract, PastEventOptions } from 'web3-eth-contract';
 
 export declare interface ISpecialTx extends TransactionConfig {
     privateKey?: string;
@@ -170,5 +170,9 @@ export class GeneralFunctions {
             to: this.web3Contract.options.address,
             privateKey: parameters.privateKey ? parameters.privateKey : ''
         };
+    }
+
+    createFilter(eventFilter?: PastEventOptions) {
+        return Object.assign({ fromBlock: 0, toBlock: 'latest' }, eventFilter || {});
     }
 }
