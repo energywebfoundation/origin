@@ -123,6 +123,7 @@ export async function deployDemo() {
         'MarketContractLookup',
         marketContractLookup.toLowerCase()
     );
+    await configurationClient.add(BACKEND_URL, 'Currency', 'USD');
 
     const conf: IStoreState['configuration'] = {
         blockchainProperties: {

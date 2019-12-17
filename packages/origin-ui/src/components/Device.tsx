@@ -13,7 +13,6 @@ export function Device() {
         return (
             <ProducingDeviceDetailView
                 id={id}
-                addSearchField={true}
                 showCertificates={true}
                 showSmartMeterReadings={true}
             />

@@ -7,5 +7,7 @@ import * as Contracts from './contracts';
 
 export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 export { MarketLogic } from './wrappedContracts/MarketLogic';
+export { Currency } from './types';
+export { NoneCurrency } from './const';
 
 export { Demand, Supply, Agreement, MarketUser, PurchasableCertificate, Contracts };

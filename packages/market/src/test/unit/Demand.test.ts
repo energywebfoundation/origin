@@ -55,6 +55,8 @@ describe('Demand unit tests', () => {
             return config;
         };
 
+        let demandNonce = 0;
+
         const createDemand = (
             start: moment.Moment,
             end: moment.Moment,
@@ -69,6 +71,7 @@ describe('Demand unit tests', () => {
             offChainProperties.timeFrame.returns(timeFrame);
             offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
 
+            demand.id.returns((demandNonce++).toString());
             demand.offChainProperties.returns(offChainProperties);
 
             return demand;

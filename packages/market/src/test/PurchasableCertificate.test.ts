@@ -15,13 +15,13 @@ import {
     DeviceLogic,
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
-import { Configuration, Compliance, Currency } from '@energyweb/utils-general';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
-import { PurchasableCertificate, MarketLogic } from '..';
+import { PurchasableCertificate, MarketLogic, NoneCurrency } from '..';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { logger } from '../Logger';
 
@@ -266,7 +266,7 @@ describe('PurchasableCertificate-Facade', () => {
             onChainDirectPurchasePrice: 0,
             offChainProperties: {
                 price: 0,
-                currency: Currency.NONE
+                currency: NoneCurrency
             }
         } as Partial<PurchasableCertificate.Entity>);
     });
@@ -335,7 +335,7 @@ describe('PurchasableCertificate-Facade', () => {
             onChainDirectPurchasePrice: 100,
             offChainProperties: {
                 price: 0,
-                currency: Currency.NONE
+                currency: NoneCurrency
             }
         } as Partial<PurchasableCertificate.Entity>);
 
@@ -423,7 +423,7 @@ describe('PurchasableCertificate-Facade', () => {
             onChainDirectPurchasePrice: 0,
             offChainProperties: {
                 price: 0,
-                currency: Currency.NONE
+                currency: NoneCurrency
             }
         } as Partial<PurchasableCertificate.Entity>);
     });
@@ -434,7 +434,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         const price = 10.5;
 
-        await pCert.publishForSale(price, Currency.EUR);
+        await pCert.publishForSale(price, 'USD');
 
         pCert = await pCert.sync();
 
@@ -445,7 +445,7 @@ describe('PurchasableCertificate-Facade', () => {
             acceptedToken: '0x0000000000000000000000000000000000000000',
             offChainProperties: {
                 price: price * 100,
-                currency: Currency.EUR
+                currency: 'USD'
             }
         } as Partial<PurchasableCertificate.Entity>);
     });
@@ -534,7 +534,7 @@ describe('PurchasableCertificate-Facade', () => {
             conf
         ).sync();
 
-        await parentCertificate.publishForSale(CERTIFICATE_PRICE, Currency.EUR);
+        await parentCertificate.publishForSale(CERTIFICATE_PRICE, 'USD');
 
         parentCertificate = await parentCertificate.sync();
 
@@ -565,7 +565,7 @@ describe('PurchasableCertificate-Facade', () => {
             newCertificateId,
             conf
         ).sync();
-        await parentCertificate.publishForSale(CERTIFICATE_PRICE, Currency.EUR);
+        await parentCertificate.publishForSale(CERTIFICATE_PRICE, 'USD');
 
         setActiveUser(traderPK);
 
@@ -584,7 +584,7 @@ describe('PurchasableCertificate-Facade', () => {
         );
         const CERTIFICATE_ENERGY = 100;
         const CERTIFICATE_PRICE = 7;
-        const CERTIFICATE_CURRENCY = Currency.EUR;
+        const CERTIFICATE_CURRENCY = 'USD';
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
         const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
             await erc20TestToken.balanceOf(accountDeviceOwner)

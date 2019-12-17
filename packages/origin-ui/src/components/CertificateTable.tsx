@@ -7,17 +7,11 @@ import {
     Contracts as MarketContracts
 } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import {
-    Compliance,
-    Configuration,
-    Currency,
-    TimeFrame,
-    LocationService
-} from '@energyweb/utils-general';
+import { Compliance, Configuration, TimeFrame, LocationService } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { ReactNode } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import { BuyCertificateBulkModal } from '../elements/Modal/BuyCertificateBulkModal';
@@ -25,7 +19,7 @@ import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { getBaseURL, getConfiguration, getProducingDevices } from '../features/selectors';
 import { IStoreState } from '../types';
-import { formatCurrency } from '../utils/helper';
+import { formatCurrency, formatDate } from '../utils/helper';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';
@@ -43,6 +37,7 @@ import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
+import { getCurrencies } from '../features/contracts/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 import { CircularProgress } from '@material-ui/core';
 
@@ -248,7 +243,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     ? formatCurrency(certificate.price / 100)
                     : certificate.price?.toString(),
                 currency: certificate.isOffChainSettlement
-                    ? Currency[certificate.currency]
+                    ? certificate.currency
                     : await this.getTokenSymbol(certificate.currency),
                 isOffChainSettlement: certificate.isOffChainSettlement,
                 producingDeviceProvince,
@@ -282,7 +277,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         this.setState({ matchedCertificates });
     }
 
-    async getTokenSymbol(tokenAddress: string | Currency) {
+    async getTokenSymbol(tokenAddress: string) {
         if (
             typeof tokenAddress === 'string' &&
             tokenAddress !== '0x0000000000000000000000000000000000000000'
@@ -494,10 +489,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 ).sync();
             }
 
+            const currencies = useSelector(getCurrencies);
+
             const offChainProperties: Demand.IDemandOffChainProperties = {
                 timeFrame: TimeFrame.yearly,
                 maxPricePerMwh: 0,
-                currency: Currency.USD,
+                currency: currencies[0],
                 otherGreenAttributes: device.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: device.offChainProperties.typeOfPublicSupport,
                 energyPerTimeFrame: certificate.certificate.energy,
@@ -537,7 +534,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
-                label: 'Search',
+                label: 'Search by province and region',
                 input: {
                     type: CustomFilterInputType.string
                 },
@@ -786,9 +783,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 provinceRegion,
                 compliance,
                 owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
-                certificationDate: new Date(
-                    enrichedData.certificate.certificate.creationTime * 1000
-                ).toDateString(),
+                certificationDate: formatDate(
+                    moment.unix(enrichedData.certificate.certificate.creationTime)
+                ),
                 price,
                 currency,
                 energy: (enrichedData.certificate.certificate.energy / 1000).toLocaleString()

@@ -2,6 +2,7 @@ import { call, put, select, take, all, fork, apply, cancel, takeEvery } from 're
 import { SagaIterator, eventChannel } from 'redux-saga';
 import {
     setMarketContractLookupAddress,
+    setCurrencies,
     ContractsActions,
     ISetMarketContractLookupAddressAction,
     MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
@@ -21,9 +22,9 @@ import Web3 from 'web3';
 
 import {
     configurationUpdated,
-    demandDeleted,
     consumingDeviceCreatedOrUpdated,
-    demandCreated
+    demandCreated,
+    demandUpdated
 } from '../actions';
 import { ProducingDevice, ConsumingDevice } from '@energyweb/device-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
@@ -156,9 +157,12 @@ function* initEventHandler() {
             });
 
             marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
+                if (
+                    parseInt(event.returnValues._status as string, 10) ===
+                    Demand.DemandStatus.ARCHIVED
+                ) {
                     emitter({
-                        action: demandDeleted(
+                        action: demandUpdated(
                             await new Demand.Entity(
                                 event.returnValues._demandId.toString(),
                                 configuration
@@ -248,6 +252,44 @@ async function getMarketContractLookupAddressFromAPI(
         return null;
     } catch {
         return null;
+    }
+}
+
+async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+    try {
+        const currencies: string[] = await configurationClient.get(baseURL, 'Currency');
+
+        if (currencies.length > 0) {
+            return currencies;
+        }
+
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+function* fillCurrency(): SagaIterator {
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        if (!environment) {
+            return;
+        }
+
+        const baseURL = `${environment.BACKEND_URL}/api`;
+
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+        const currencies = yield call(getCurrenciesFromAPI, configurationClient, baseURL);
+
+        yield put(
+            setCurrencies({
+                currencies
+            })
+        );
     }
 }
 
@@ -383,6 +425,7 @@ function* persistUserDefinedMarketLookupContract(): SagaIterator {
 export function* contractsSaga(): SagaIterator {
     yield all([
         fork(fillMarketContractLookupAddressIfMissing),
-        fork(persistUserDefinedMarketLookupContract)
+        fork(persistUserDefinedMarketLookupContract),
+        fork(fillCurrency)
     ]);
 }

@@ -38,12 +38,11 @@ export class MarketLogic extends GeneralFunctions {
         if (!SUPPORTED_EVENTS.includes(event)) {
             throw new Error('This event does not exist.');
         }
-
-        return this.web3Contract.getPastEvents(event, eventFilter);
+        return this.web3Contract.getPastEvents(event, this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.getEvents('allEvents', eventFilter);
+        return this.getEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async initialize(certificateContractAddress: string, txParams: ISpecialTx) {

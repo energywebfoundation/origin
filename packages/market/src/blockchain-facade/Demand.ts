@@ -2,7 +2,6 @@ import {
     BlockchainDataModelEntity,
     Compliance,
     Configuration,
-    Currency,
     extendArray,
     Resolution,
     TimeFrame,
@@ -17,6 +16,7 @@ import { TransactionReceipt } from 'web3-core';
 
 import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
 import { MarketLogic } from '../wrappedContracts/MarketLogic';
+import { Currency } from '../types';
 
 export interface IDemandOffChainProperties {
     timeFrame: TimeFrame;
@@ -347,9 +347,9 @@ export const calculateTotalEnergyDemand = (
     return energyPerTimeFrame * durationInTimeFrame;
 };
 
-export const alignToResolution = (timeStamp: number, resolution: Resolution) =>
+export const alignToResolution = (timestamp: number, resolution: Resolution) =>
     moment
-        .unix(timeStamp)
+        .unix(timestamp)
         .startOf(resolution as moment.unitOfTime.StartOf)
         .unix();
 
@@ -377,13 +377,20 @@ export const calculateMissingEnergyDemand = async (
         filter: { _demandId: demand.id }
     });
 
+    config.logger.debug(
+        `[Demand #${demand.id}] filledEvents ${JSON.stringify(
+            filledEvents.map(e => ({
+                block: e.blockNumber,
+                value: e.returnValues._amount
+            }))
+        )}`
+    );
+
     const filledDemandsTimeSeries = await Promise.all(
         filledEvents.map(async log => {
             const block = await config.blockchainProperties.web3.eth.getBlock(log.blockNumber);
-            const nearestTime = moment
-                .unix(parseInt(block.timestamp.toString(), 10))
-                .startOf(resolution as moment.unitOfTime.StartOf)
-                .unix();
+            const timestamp = parseInt(block.timestamp.toString(), 10);
+            const nearestTime = alignToResolution(timestamp, resolution);
 
             return { time: nearestTime, value: Number(log.returnValues._amount) * -1 };
         })

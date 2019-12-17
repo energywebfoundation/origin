@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 
 import { JsonEntity } from '../../entity/JsonEntity';
 import { STATUS_CODES } from '../../enums/StatusCodes';
+import { StorageErrors } from '../../enums/StorageErrors';
 
 export async function jsonEntityPostAction(req: Request, res: Response) {
     let { hash } = req.params;
@@ -15,7 +16,7 @@ export async function jsonEntityPostAction(req: Request, res: Response) {
 
     if (exists) {
         res.status(STATUS_CODES.SUCCESS).send({
-            message: "The entity already exists"
+            message: StorageErrors.ALREADY_EXISTS
         });
 
         return;

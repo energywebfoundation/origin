@@ -1,16 +1,13 @@
 import React from 'react';
-
 import moment from 'moment';
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
-import { Link } from 'react-router-dom';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { ConsumingDevice } from '@energyweb/device-registry';
 import './DetailView.scss';
 import { getOffChainText } from '../utils/helper';
 import { Configuration } from '@energyweb/utils-general';
 import { DeviceMap } from './DeviceMap';
-import { getConsumingDeviceDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getBaseURL, getConfiguration, getConsumingDevices } from '../features/selectors';
@@ -30,7 +27,6 @@ interface IStateProps {
 type Props = IOwnProps & IStateProps;
 
 export interface IDetailViewState {
-    newId: number;
     owner: MarketUser.Entity;
     notSoldCertificates: number;
 }
@@ -39,15 +35,9 @@ class ConsumingDeviceDetailViewClass extends React.Component<Props, IDetailViewS
     constructor(props: Props) {
         super(props);
         this.state = {
-            newId: null,
             owner: null,
             notSoldCertificates: 0
         };
-        this.onInputChange = this.onInputChange.bind(this);
-    }
-
-    onInputChange(e: any): void {
-        this.setState({ newId: e.target.value });
     }
 
     async componentDidMount(): Promise<void> {
@@ -154,21 +144,6 @@ class ConsumingDeviceDetailViewClass extends React.Component<Props, IDetailViewS
 
         return (
             <div className="DetailViewWrapper">
-                <div className="FindDevice">
-                    <input
-                        onChange={this.onInputChange}
-                        defaultValue={
-                            this.props.id || this.props.id === 0 ? this.props.id.toString() : ''
-                        }
-                    />
-
-                    <Link
-                        className="btn btn-primary find-device-button"
-                        to={getConsumingDeviceDetailLink(this.props.baseURL, this.state.newId)}
-                    >
-                        Find Device
-                    </Link>
-                </div>
                 <div className="PageContentWrapper">
                     <div className="PageBody">
                         {!selectedDevice ? (

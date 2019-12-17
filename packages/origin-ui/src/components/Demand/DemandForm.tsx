@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Role } from '@energyweb/user-registry';
 import {
-    Currency,
     TimeFrame,
     THAILAND_REGIONS_PROVINCES_MAP,
     IRECDeviceService
@@ -18,7 +17,7 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { getEnumValues, dataTest } from '../../utils/helper';
+import { dataTest } from '../../utils/helper';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import './DemandForm.scss';
@@ -33,6 +32,7 @@ import { useLinks } from '../../utils/routing';
 import { FormikDatePicker } from '../FormikDatePicker';
 import { getCurrentUser } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
+import { getCurrencies } from '../../features/contracts/selectors';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
 
@@ -58,7 +58,7 @@ const REPEATABLE_TIMEFRAMES = [
 interface IFormValues {
     demandNeedsInMWh: string;
     maxPricePerMWh: string;
-    currency: keyof typeof Currency | '';
+    currency: string | '';
     timeframe: TimeFrame | '';
     startDate: Moment;
     endDate: Moment;
@@ -109,7 +109,7 @@ export function DemandForm(props: IProps) {
     useEffect(() => {
         function setupFormBasedOnDemand() {
             const newInitialFormValuesFromDemand: IFormValues = {
-                currency: Currency[demand.offChainProperties.currency] as IFormValues['currency'],
+                currency: demand.offChainProperties.currency as IFormValues['currency'],
                 startDate: moment.unix(demand.offChainProperties.startTime),
                 endDate: moment.unix(demand.offChainProperties.endTime),
                 activeUntilDate: moment.unix(demand.offChainProperties.endTime),
@@ -175,7 +175,7 @@ export function DemandForm(props: IProps) {
         );
     }
 
-    const currencies = getEnumValues(Currency).filter(curr => Currency[curr] !== Currency.NONE);
+    const currencies = useSelector(getCurrencies);
 
     const isUserTraderRole = currentUser && currentUser.isRole(Role.Trader);
 
@@ -191,7 +191,7 @@ export function DemandForm(props: IProps) {
         dispatch(setLoading(true));
 
         const offChainProps: Demand.IDemandOffChainProperties = {
-            currency: Currency[values.currency as keyof typeof Currency],
+            currency: values.currency as string,
             startTime: values.startDate.unix(),
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,

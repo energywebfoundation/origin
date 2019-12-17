@@ -1,13 +1,9 @@
 import polly from 'polly-js';
 
-import {
-    Configuration,
-    Currency,
-    TimeFrame,
-    BlockchainDataModelEntity
-} from '@energyweb/utils-general';
+import { Configuration, TimeFrame, BlockchainDataModelEntity } from '@energyweb/utils-general';
 
 import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperties.schema.json';
+import { Currency } from '../types';
 
 export interface ISupplyOffChainProperties {
     price: number;

@@ -1,4 +1,7 @@
 {
+    "currencies": [
+        "USD"
+    ],
     "flow": [
         {
             "type": "CREATE_ACCOUNT",
