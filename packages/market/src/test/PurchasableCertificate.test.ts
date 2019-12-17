@@ -15,7 +15,7 @@ import {
     DeviceLogic,
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
@@ -243,7 +243,7 @@ describe('PurchasableCertificate-Facade', () => {
             gpsLongitude: '99.977800',
             timezone: 'Asia/Bangkok',
             deviceType: 'Wind',
-            complianceRegistry: Compliance.EEC,
+            complianceRegistry: 'I-REC',
             otherGreenAttributes: '',
             typeOfPublicSupport: ''
         };

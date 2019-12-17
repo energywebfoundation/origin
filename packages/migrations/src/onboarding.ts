@@ -19,10 +19,12 @@ export const onboardDemo = async (
 
     const adminAccount = conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(adminPK);
 
+    const client = new ConfigurationClient();
+    const currencies = await client.get(conf.offChainDataSource.baseUrl, 'Currency');
+    const complianceRegistry = await client.get(conf.offChainDataSource.baseUrl, 'Compliance');
+
     switch (action.type) {
         case 'CREATE_ACCOUNT':
-            const currencies = await new ConfigurationClient().get(conf.offChainDataSource.baseUrl, 'Currency');
-
             const userPropsOnChain: User.IUserOnChainProperties = {
                 propertiesDocumentHash: null,
                 url: null,
@@ -74,7 +76,6 @@ export const onboardDemo = async (
             };
 
             const deviceTypeConfig = action.data.deviceType;
-            const deviceCompliance = Compliance[action.data.complianceRegistry as keyof typeof Compliance];
 
             const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
                 operationalSince: action.data.operationalSince,
@@ -85,7 +86,7 @@ export const onboardDemo = async (
                 gpsLongitude: action.data.gpsLongitude,
                 timezone: action.data.timezone,
                 deviceType: deviceTypeConfig,
-                complianceRegistry: deviceCompliance,
+                complianceRegistry,
                 otherGreenAttributes: action.data.otherGreenAttributes,
                 typeOfPublicSupport: action.data.typeOfPublicSupport,
                 facilityName: action.data.facilityName

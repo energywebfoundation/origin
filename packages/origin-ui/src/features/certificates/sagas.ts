@@ -103,12 +103,12 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
 
         if (device?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
             showNotification(
-                `You need to own the device to request I-RECs.`,
+                `You need to own the device to request certificates.`,
                 NotificationType.Error
             );
         } else if (!currentUser.isRole(Role.DeviceManager)) {
             showNotification(
-                `You need to have Device Manager role to request I-RECs.`,
+                `You need to have Device Manager role to request certificates.`,
                 NotificationType.Error
             );
         } else if (reads.length === 0) {

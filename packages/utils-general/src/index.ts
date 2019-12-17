@@ -6,7 +6,7 @@ export { EventHandlerManager } from './blockchain-facade/EventHandlerManager';
 export { BlockchainDataModelEntity };
 export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
-export { TimeFrame, Compliance, Unit } from './blockchain-facade/EnumExports';
+export { TimeFrame, Unit } from './blockchain-facade/EnumExports';
 export { deploy } from './deployment/deploy';
 export {
     IDeviceService,
@@ -20,3 +20,4 @@ export { LocationService } from './blockchain-facade/LocationService';
 export { TimeSeries, Resolution, TimeSeriesElement, TS } from './TimeSeries';
 export { GeneralFunctions, ISpecialTx, getClientVersion } from './GeneralFunctions';
 export { Year, Timestamp } from './common-types/CommonTypes';
+export { Compliance } from './types';

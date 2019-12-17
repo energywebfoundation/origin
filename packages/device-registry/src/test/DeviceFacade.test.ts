@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import dotenv from 'dotenv';
 
 import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 
 import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
 import { logger } from '../Logger';
@@ -122,7 +122,7 @@ describe('Device Facade', () => {
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
                 deviceType: 'Wind',
-                complianceRegistry: Compliance.EEC,
+                complianceRegistry: 'I-REC',
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: FACILITY_NAME
@@ -170,7 +170,7 @@ describe('Device Facade', () => {
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
                 deviceType: 'Wind',
-                complianceRegistry: Compliance.EEC,
+                complianceRegistry: 'I-REC',
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: 'Wuthering Heights Windfarm'
@@ -217,7 +217,7 @@ describe('Device Facade', () => {
                     gpsLongitude: '31.1231',
                     timezone: 'Asia/Bangkok',
                     deviceType: 'Wind',
-                    complianceRegistry: Compliance.EEC,
+                    complianceRegistry: 'I-REC',
                     otherGreenAttributes: '',
                     typeOfPublicSupport: '',
                     facilityName: 'Wuthering Heights Windfarm'

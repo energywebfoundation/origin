@@ -23,7 +23,7 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 
-import { Configuration, TimeFrame, Compliance, Unit } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
 import { IOffChainDataClient } from '@energyweb/origin-backend-client';
 
@@ -307,7 +307,7 @@ export class Demo {
 
         const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
             deviceType: 'Wind',
-            complianceRegistry: Compliance.IREC,
+            complianceRegistry: 'I-REC',
             facilityName: 'Wuthering Heights Windfarm',
             capacityWh: 0,
             country: 'Thailand',
@@ -379,7 +379,7 @@ export class Demo {
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
             energyPerTimeFrame: 1 * Unit.MWh,
-            registryCompliance: Compliance.EEC,
+            registryCompliance: 'I-REC',
             startTime: moment().unix(),
             endTime: moment()
                 .add(1, 'hour')

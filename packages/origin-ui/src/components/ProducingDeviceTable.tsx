@@ -52,7 +52,7 @@ interface IEnrichedProducingDeviceData {
 
 interface IProducingDeviceTableState extends IPaginatedLoaderFilteredState {
     detailViewForDeviceId: string;
-    showRequestIRECsModal: boolean;
+    showRequestCertificatesModal: boolean;
     paginatedData: IEnrichedProducingDeviceData[];
 }
 
@@ -65,7 +65,7 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         this.state = {
             ...getInitialPaginatedLoaderFilteredState(),
             detailViewForDeviceId: null,
-            showRequestIRECsModal: false
+            showRequestCertificatesModal: false
         };
     }
 
@@ -119,7 +119,7 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         });
     }
 
-    async requestIRECs(rowIndex: number) {
+    async requestCerts(rowIndex: number) {
         this.props.showRequestCertificatesModal({
             producingDevice: this.state.paginatedData[rowIndex].device
         });
@@ -200,8 +200,8 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         if (this.props.currentUser && this.props.currentUser.isRole(Role.DeviceManager)) {
             actions.push({
                 icon: <Assignment />,
-                name: 'Request I-RECs',
-                onClick: (row: number) => this.requestIRECs(row)
+                name: 'Request Certificates',
+                onClick: (row: number) => this.requestCerts(row)
             });
         }
 

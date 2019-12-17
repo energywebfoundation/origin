@@ -7,7 +7,7 @@ import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
-import { OffChainDataClient } from '@energyweb/origin-backend-client';
+import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
@@ -30,10 +30,6 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
     const deviceProducingRegistryLogic = new DeviceLogic(web3, contractConfig.deviceLogic);
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
-
-    // initialize variables for storing timeframe and currency
-    let timeFrame;
-    let currency;
 
     // blockchain configuration
     let conf: Configuration.Entity;
@@ -115,7 +111,11 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
     const symbol = await token.web3Contract.methods.symbol().call();
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
-    
+
+    const client = new ConfigurationClient();
+    const currencies = await client.get(conf.offChainDataSource.baseUrl, 'Currency');
+    const complianceRegistry = await client.get(conf.offChainDataSource.baseUrl, 'Compliance');
+
     for (const action of actionsArray) {
         switch (action.type) {
             case 'SEND_ERC20_TOKENS_TO':
@@ -156,23 +156,23 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 if (!Array.isArray(action.data.devicetype)) {
                     throw new Error('Demand devicetype has to be string[]');
                 }
-                const deviceTypeConfig = action.data.devicetype;
-                const deviceCompliance =
-                    Compliance[action.data.registryCompliance as keyof typeof Compliance];
-                timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
-                currency = action.data.currency;
+
+                if (!currencies.includes(action.data.currency)) {
+                    conf.logger.error('Demand could not be created\nUnknown currency');
+                    break;
+                }
 
                 const demandOffchainProps: Demand.IDemandOffChainProperties = {
-                    timeFrame: timeFrame,
+                    timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame],
                     maxPricePerMwh: action.data.maxPricePerMwh,
-                    currency,
+                    currency: action.data.currency,
                     location: [action.data.location],
-                    deviceType: deviceTypeConfig,
+                    deviceType: action.data.devicetype,
                     minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
                     energyPerTimeFrame: action.data.energyPerTimeFrame,
-                    registryCompliance: deviceCompliance,
+                    registryCompliance: complianceRegistry,
                     startTime: action.data.startTime,
                     endTime: action.data.endTime,
                     automaticMatching: true
@@ -201,14 +201,11 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                     privateKey: action.data.deviceOwnerPK
                 };
 
-                timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
-                currency = action.data.currency;
-
                 const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
                     price: action.data.price,
-                    currency,
+                    currency: action.data.currency,
                     availableWh: action.data.availableWh,
-                    timeFrame: timeFrame
+                    timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame]
                 };
 
                 const supplyProps: Supply.ISupplyOnChainProperties = {
@@ -242,9 +239,6 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                     privateKey: action.data.creatorPK
                 };
 
-                timeFrame = TimeFrame[action.data.timeframe as keyof typeof TimeFrame];
-                currency = action.data.currency;
-
                 if (action.data.startTime === -1) {
                     action.data.startTime = Math.floor(Date.now() / 1000);
                     action.data.endTime += action.data.startTime;
@@ -260,9 +254,9 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                     start: action.data.startTime,
                     end: action.data.endTime,
                     price: action.data.price,
-                    currency,
+                    currency: action.data.currency,
                     period: action.data.period,
-                    timeFrame: timeFrame
+                    timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame]
                 };
 
                 const agreementProps: Agreement.IAgreementOnChainProperties = {

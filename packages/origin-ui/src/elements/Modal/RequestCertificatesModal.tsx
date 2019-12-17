@@ -35,7 +35,7 @@ const DEFAULTS = {
     toDate: setMaxTimeInDay(moment())
 };
 
-export function RequestIRECsModal() {
+export function RequestCertificatesModal() {
     const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
     const [toDate, setToDate] = useState(DEFAULTS.toDate);
     const [reads, setReads] = useState([]);
@@ -89,7 +89,7 @@ export function RequestIRECsModal() {
         dispatch(hideRequestCertificatesModal());
     }
 
-    async function requestIRECs() {
+    async function requestCerts() {
         const lastReadIndex = reads.indexOf(readsInTimeRange[readsInTimeRange.length - 1]);
 
         dispatch(
@@ -107,8 +107,8 @@ export function RequestIRECsModal() {
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Request I-RECs for ${producingDevice?.offChainProperties?.facilityName ||
-                ''}`}</DialogTitle>
+            <DialogTitle>{`Request Certificates for ${producingDevice?.offChainProperties
+                ?.facilityName || ''}`}</DialogTitle>
             <DialogContent>
                 <TextField label="From" value={formatDate(moment(fromDate))} fullWidth disabled />
 
@@ -129,7 +129,7 @@ export function RequestIRECsModal() {
                 <Button onClick={handleClose} color="secondary">
                     Cancel
                 </Button>
-                <Button onClick={requestIRECs} color="primary" disabled={!isFormValid}>
+                <Button onClick={requestCerts} color="primary" disabled={!isFormValid}>
                     Request
                 </Button>
             </DialogActions>

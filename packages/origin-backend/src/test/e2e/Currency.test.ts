@@ -46,8 +46,8 @@ describe('Currency API tests', async () => {
         });
 
         it('returns all currencies', async () => {
-            await axios.post(`${BASE_API_URL}/Currency/${currency}`);
-            await axios.post(`${BASE_API_URL}/Currency/${currency2}`);
+            await axios.post(`${BASE_API_URL}/Currency`, { value: currency });
+            await axios.post(`${BASE_API_URL}/Currency`, { value: currency2 });
 
             const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/Currency`);
 
@@ -60,34 +60,22 @@ describe('Currency API tests', async () => {
 
     describe('POST', () => {
         it('creates a Currency', async () => {
-            const postResult: AxiosResponse = await axios.post(
-                `${BASE_API_URL}/Currency/${currency}`
+            const postResult = await axios.post(
+                `${BASE_API_URL}/Currency`, { value: currency }
             );
     
             assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, `Currency ${currency} created`);
         });
 
-        it('fails creating the same Currency', async () => {
-            await axios.post(
-                `${BASE_API_URL}/Currency/${currency}`
+        it('succeeds creating the same Currency', async () => {
+            await axios.post(`${BASE_API_URL}/Currency`, { value: currency });
+            const postResult = await axios.post(
+                `${BASE_API_URL}/Currency`, { value: currency }
             );
-    
-            let failed = false;
-    
-            try {
-                await axios.post(
-                    `${BASE_API_URL}/Currency/${currency}`
-                );
-            } catch (error) {
-                const { status, data } = error.response;
 
-                assert.equal(status, STATUS_CODES.CONFLICT);
-                assert.equal(data.error, StorageErrors.ALREADY_EXISTS);
-                failed = true;
-            }
-    
-            assert.isTrue(failed);
+            assert.equal(postResult.status, STATUS_CODES.SUCCESS);
+            assert.equal(postResult.data.message, StorageErrors.ALREADY_EXISTS);
         });
 
     });
@@ -95,18 +83,18 @@ describe('Currency API tests', async () => {
     describe('DELETE', () => {
         it('deletes a currency', async () => {
             await axios.post(
-                `${BASE_API_URL}/Currency/${currency}`
+                `${BASE_API_URL}/Currency`, { value: currency }
             );
     
             const deleteResult = await axios.delete(
-                `${BASE_API_URL}/Currency/${currency}`
+                `${BASE_API_URL}/Currency`, { data: { value: currency } }
             );
             assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
     
             let failed: boolean = false;
     
             try {
-                await axios.delete(`${BASE_API_URL}/Currency/${currency}`);
+                await axios.delete(`${BASE_API_URL}/Currency`, { data: { value: currency } });
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
