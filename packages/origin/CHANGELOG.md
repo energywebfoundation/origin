@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin@3.0.0...@energyweb/origin@3.0.1) (2019-12-17)
+
+
+### Bug Fixes
+
+* **origin:** use default block range when fetching events ([bffafbc](https://github.com/energywebfoundation/origin/commit/bffafbc3886ab4e845a5bc0356c7862e805475ab))
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin@2.0.0...@energyweb/origin@3.0.0) (2019-12-12)
 
 

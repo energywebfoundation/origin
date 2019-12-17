@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/user-registry@2.0.0...@energyweb/user-registry@2.0.1) (2019-12-17)
+
+
+### Bug Fixes
+
+* **user-registry:** use default block range when fetching events ([f5d83bc](https://github.com/energywebfoundation/origin/commit/f5d83bcaa3864d0a43bf0fd45c145f6b08aaaded))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/user-registry@1.4.0...@energyweb/user-registry@2.0.0) (2019-12-12)
 
 

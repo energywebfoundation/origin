@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.0.0...@energyweb/market@3.1.0) (2019-12-17)
+
+
+### Bug Fixes
+
+* **market:** use default block range when fetching events ([ffeae78](https://github.com/energywebfoundation/origin/commit/ffeae7880bbd228725ce76baf3ef948ac23ba02c))
+
+
+### Features
+
+* **market:** Define Currency in market instead of utils-general ([f3a5332](https://github.com/energywebfoundation/origin/commit/f3a53329b4d6083a01833e89be2f11d3296bbb92))
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@2.0.0...@energyweb/market@3.0.0) (2019-12-12)
 
 
