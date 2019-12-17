@@ -46,8 +46,8 @@ describe('MarketContractLookup API tests', async () => {
         });
 
         it('returns all contract addresses', async () => {
-            await axios.post(`${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`);
-            await axios.post(`${BASE_API_URL}/MarketContractLookup/${marketContractLookup2}`);
+            await axios.post(`${BASE_API_URL}/MarketContractLookup`, { value: marketContractLookup });
+            await axios.post(`${BASE_API_URL}/MarketContractLookup`, { value: marketContractLookup2 });
 
             const getResult: AxiosResponse = await axios.get(`${BASE_API_URL}/MarketContractLookup`);
 
@@ -60,34 +60,22 @@ describe('MarketContractLookup API tests', async () => {
 
     describe('POST', () => {
         it('creates a MarketContractLookup', async () => {
-            const postResult: AxiosResponse = await axios.post(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
+            const postResult = await axios.post(
+                `${BASE_API_URL}/MarketContractLookup`, { value: marketContractLookup }
             );
     
             assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, `MarketContractLookup ${marketContractLookup} created`);
         });
 
-        it('fails creating the same MarketContractLookup', async () => {
-            await axios.post(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
+        it('succeeds creating the same MarketContractLookup', async () => {
+            await axios.post(`${BASE_API_URL}/MarketContractLookup`, { value: marketContractLookup });
+            const postResult = await axios.post(
+                `${BASE_API_URL}/MarketContractLookup`, { value: marketContractLookup }
             );
     
-            let failed = false;
-    
-            try {
-                await axios.post(
-                    `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
-                );
-            } catch (error) {
-                const { status, data } = error.response;
-
-                assert.equal(status, STATUS_CODES.CONFLICT);
-                assert.equal(data.error, StorageErrors.ALREADY_EXISTS);
-                failed = true;
-            }
-    
-            assert.isTrue(failed);
+            assert.equal(postResult.status, STATUS_CODES.SUCCESS);
+            assert.equal(postResult.data.message, StorageErrors.ALREADY_EXISTS);
         });
 
     });
@@ -95,18 +83,18 @@ describe('MarketContractLookup API tests', async () => {
     describe('DELETE', () => {
         it('deletes a marketContractLookup', async () => {
             await axios.post(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
+                `${BASE_API_URL}/MarketContractLookup`, { value: marketContractLookup }
             );
     
             const deleteResult = await axios.delete(
-                `${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`
+                `${BASE_API_URL}/MarketContractLookup`, { data: { value: marketContractLookup } }
             );
             assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
     
             let failed: boolean = false;
     
             try {
-                await axios.delete(`${BASE_API_URL}/MarketContractLookup/${marketContractLookup}`);
+                await axios.delete(`${BASE_API_URL}/MarketContractLookup`, { data: { value: marketContractLookup } });
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);

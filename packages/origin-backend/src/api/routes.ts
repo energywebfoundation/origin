@@ -1,14 +1,9 @@
 import { Request, Response } from 'express';
 
-import { marketContractLookupGetAction } from './controller/MarketContractLookupGet';
-import { marketContractLookupPostAction } from './controller/MarketContractLookupPost';
-import { marketContractLookupDeleteAction } from './controller/MarketContractLookupDelete';
-import { jsonEntityGetAction } from './controller/JsonEntityGet';
-import { jsonEntityPostAction } from './controller/JsonEntityPost';
-import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
-import { currencyGetAction } from './controller/CurrencyGet';
-import { currencyPostAction } from './controller/CurrencyPost';
-import { currencyDeleteAction } from './controller/CurrencyDelete';
+import { MarketContractLookupActions } from './controller/MarketContractLookupActions';
+import { JsonEntityActions } from './controller/JsonEntityActions';
+import { CurrencyActions } from './controller/CurrencyActions';
+import { ComplianceActions } from './controller/ComplianceActions';
 
 export interface IRoute {
     path: string;
@@ -23,46 +18,61 @@ export const AppRoutes: IRoute[] = [
     {
         path: '/MarketContractLookup',
         method: 'get',
-        action: marketContractLookupGetAction
+        action: MarketContractLookupActions.get
     },
     {
-        path: '/MarketContractLookup/:address',
+        path: '/MarketContractLookup',
         method: 'post',
-        action: marketContractLookupPostAction
+        action: MarketContractLookupActions.post
     },
     {
-        path: '/MarketContractLookup/:address',
+        path: '/MarketContractLookup',
         method: 'delete',
-        action: marketContractLookupDeleteAction
+        action: MarketContractLookupActions.delete
     },
     {
         path: '/Entity/:hash?',
         method: 'get',
-        action: jsonEntityGetAction
+        action: JsonEntityActions.get
     },
     {
         path: '/Entity/:hash',
         method: 'post',
-        action: jsonEntityPostAction
+        action: JsonEntityActions.post
     },
     {
         path: '/Entity/:hash',
         method: 'delete',
-        action: jsonEntityDeleteAction
+        action: JsonEntityActions.delete
     },
     {
-        path: '/Currency/:code?',
+        path: '/Currency',
         method: 'get',
-        action: currencyGetAction
+        action: CurrencyActions.get
     },
     {
-        path: '/Currency/:code',
+        path: '/Currency',
         method: 'post',
-        action: currencyPostAction
+        action: CurrencyActions.post
     },
     {
-        path: '/Currency/:code',
+        path: '/Currency',
         method: 'delete',
-        action: currencyDeleteAction
+        action: CurrencyActions.delete
+    },
+    {
+        path: '/Compliance',
+        method: 'get',
+        action: ComplianceActions.get
+    },
+    {
+        path: '/Compliance',
+        method: 'post',
+        action: ComplianceActions.post
+    },
+    {
+        path: '/Compliance',
+        method: 'delete',
+        action: ComplianceActions.delete
     }
 ];
