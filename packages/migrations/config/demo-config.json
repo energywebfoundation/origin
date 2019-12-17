@@ -1,4 +1,5 @@
 {
+    "complianceRegistry": "TIGR",
     "currencies": [
         "USD"
     ],
@@ -165,7 +166,6 @@
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
                 "deviceType": "Wind;Onshore",
-                "complianceRegistry": "none",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
                 "facilityName": "Wuthering Heights Windfarm"
@@ -192,7 +192,6 @@
                 "gpsLongitude": "101.4928",
                 "timezone": "Asia/Bangkok",
                 "deviceType": "Solar;Photovoltaic;Roof mounted",
-                "complianceRegistry": "IREC",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
                 "facilityName": "Solar Facility A"
@@ -215,7 +214,6 @@
                 "gpsLongitude": "99.977800",
                 "timezone": "Asia/Bangkok",
                 "deviceType": "Solid;Biomass from agriculture;Agricultural products",
-                "complianceRegistry": "TIGR",
                 "otherGreenAttributes": "N.A.",
                 "typeOfPublicSupport": "N.A",
                 "facilityName": "Biomass Facility"
