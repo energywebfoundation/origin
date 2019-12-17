@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@2.0.0...@energyweb/utils-general@2.1.0) (2019-12-17)
+
+
+### Features
+
+* **utils-general:** added createFilter method ([90d72f8](https://github.com/energywebfoundation/origin/commit/90d72f823c25d96f58c713a49a2050532d66a8c5))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@1.4.0...@energyweb/utils-general@2.0.0) (2019-12-12)
 
 

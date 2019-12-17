@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.2.0...@energyweb/migrations@0.3.0) (2019-12-17)
+
+
+### Features
+
+* **migrations:** Define Currency in migrations ([c17e821](https://github.com/energywebfoundation/origin/commit/c17e821fdd93fcc5f050ffc9c8467358267b188f))
+
+
+
+
+
 # 0.2.0 (2019-12-12)
 
 

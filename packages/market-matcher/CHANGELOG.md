@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.1...@energyweb/market-matcher@2.0.2) (2019-12-17)
+
+
+### Bug Fixes
+
+* **market-matcher:** skip parent certificates when loading certificates ([4fef14d](https://github.com/energywebfoundation/origin/commit/4fef14d1b1d30e4d891016eab59a8d0e46735702))
+
+
+
+
+
 ## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.0...@energyweb/market-matcher@2.0.1) (2019-12-12)
 
 

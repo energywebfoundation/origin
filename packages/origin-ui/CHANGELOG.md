@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.0.0...@energyweb/origin-ui@1.1.0) (2019-12-17)
+
+
+### Bug Fixes
+
+* **origin-ui:** buyer cannot delete his demand ([35bc742](https://github.com/energywebfoundation/origin/commit/35bc7426e9625656f900a45ec538d299a6a3cad9))
+
+
+### Features
+
+* **origin-ui:** remove searching by certificate id and consuming device id ([#369](https://github.com/energywebfoundation/origin/issues/369)) ([76ef3e0](https://github.com/energywebfoundation/origin/commit/76ef3e039bdea77a9d4738961f4ab1a27f61b30a))
+* **origin-ui:** remove searching device by id ([#368](https://github.com/energywebfoundation/origin/issues/368)) ([60ec558](https://github.com/energywebfoundation/origin/commit/60ec5586a1eaafa8bbe1ad6ce5520cafddfc502a))
+* **origin-ui:** unify date display in datepickers ([#371](https://github.com/energywebfoundation/origin/issues/371)) ([ac9da78](https://github.com/energywebfoundation/origin/commit/ac9da78a21d0dfc7d16928351f48a5d834dbce4a))
+
+
+
+
+
 # [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.4.0...@energyweb/origin-ui@1.0.0) (2019-12-12)
 
 
