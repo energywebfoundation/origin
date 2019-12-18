@@ -82,6 +82,37 @@ describe('Market-matcher e2e tests', async () => {
         }).timeout(20000);
     });
 
+    describe('Certificate -> Demand splitting + matching tests', () => {
+        const requiredEnergy = 1 * Unit.MWh;
+        const certificateEnergy = 2 * requiredEnergy;
+
+        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
+        let demand: Demand.Entity;
+        let device: ProducingDevice.Entity;
+        let certificate: PurchasableCertificate.Entity;
+
+        before(async () => {
+            const configuration = await deploy();
+            const { matcherConfig } = configuration;
+
+            config = configuration.config;
+            demand = await deployDemand(config, requiredEnergy);
+            device = await deployDevice(config);
+            certificate = await deployCertificate(config, device.id, certificateEnergy);
+
+            await certificate.publishForSale(
+                demand.offChainProperties.maxPricePerMwh / 100,
+                demand.offChainProperties.currency
+            );
+
+            await startMatcher(matcherConfig);
+        });
+
+        it('certificate should be matched with existing demand', done => {
+            assertMatched(config, demand, certificate, requiredEnergy, done);
+        }).timeout(20000);
+    });
+
     describe('Demand -> Certificate matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
         const price = 150;
