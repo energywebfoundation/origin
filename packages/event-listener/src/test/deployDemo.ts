@@ -298,7 +298,7 @@ export class Demo {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: '',
             propertiesDocumentHash: null,
@@ -318,7 +318,9 @@ export class Demo {
             timezone: 'Asia/Bangkok',
             operationalSince: 0,
             otherGreenAttributes: '',
-            typeOfPublicSupport: ''
+            typeOfPublicSupport: '',
+            description: '',
+            images: ''
         };
 
         try {

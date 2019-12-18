@@ -3,7 +3,11 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
+import {
+    DeviceLogic,
+    Device,
+    Contracts as DeviceRegistryContracts
+} from '@energyweb/device-registry';
 import {
     buildRights,
     Role,
@@ -278,11 +282,11 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should onboard an device', async () => {
+    it('should onboard a device', async () => {
         await deviceLogic.createDevice(
             '0x1000000000000000000000000000000000000005',
             accountDeviceOwner,
-            true,
+            Device.DeviceStatus.Active,
             0,
             'propertiesDocumentHash',
             'url',

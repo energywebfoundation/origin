@@ -343,7 +343,7 @@ describe('Market-Facade', () => {
             smartMeter: { address: deviceSmartMeter },
             owner: { address: deviceOwnerAddress },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
@@ -363,7 +363,9 @@ describe('Market-Facade', () => {
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
-            facilityName: ''
+            facilityName: '',
+            description: '',
+            images: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

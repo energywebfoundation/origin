@@ -225,7 +225,7 @@ describe('PurchasableCertificate-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
@@ -245,7 +245,9 @@ describe('PurchasableCertificate-Facade', () => {
             deviceType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
-            typeOfPublicSupport: ''
+            typeOfPublicSupport: '',
+            description: '',
+            images: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

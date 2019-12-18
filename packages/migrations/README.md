@@ -200,7 +200,7 @@ usage: command to onboard a new producing device
 * <code>operationalSince</code>: UNIX-timestamp when the device entered service
 * <code>capacityWh</code>: capacity of the device
 * <code>lastSmartMeterReadWh</code>: last meterreading in Wh
-* <code>active</code>: flag if the device is enabled
+* <code>status</code>: device status (Submitted, Denied, Active)
 * <code>lastSmartMeterReadFileHash</code>: last filehash
 * <code>country</code>: country where the device is located
 * <code>region</code>: region where the device is located

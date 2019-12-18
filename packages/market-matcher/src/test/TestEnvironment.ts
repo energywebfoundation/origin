@@ -244,7 +244,7 @@ const deployDevice = (config: Configuration.Entity) => {
         smartMeter: { address: deviceSmartMeter },
         owner: { address: deviceOwnerAddress },
         lastSmartMeterReadWh: 0,
-        active: true,
+        status: Device.DeviceStatus.Active,
         usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
         propertiesDocumentHash: null,
@@ -263,7 +263,9 @@ const deployDevice = (config: Configuration.Entity) => {
         deviceType: 'Solar',
         complianceRegistry: Compliance.EEC,
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: ''
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
