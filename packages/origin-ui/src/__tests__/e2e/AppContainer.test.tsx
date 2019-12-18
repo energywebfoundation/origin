@@ -162,7 +162,7 @@ describe('Application[E2E]', () => {
             assertMainTableContent([
                 'Device Manager organization',
                 'Wuthering Heights Windfarm',
-                'Nakhon Pathom, Central',
+                'Central, Nakhon Pathom',
                 'Wind - Onshore',
                 '0',
                 '0'

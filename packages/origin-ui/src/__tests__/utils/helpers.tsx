@@ -151,7 +151,9 @@ export const createProducingDevice = (
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: ''
     };
 
     return {

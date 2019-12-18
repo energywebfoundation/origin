@@ -17,6 +17,14 @@ export function getAccountLink(baseURL: string) {
     return `${baseURL}/account`;
 }
 
+export function getDevicesAddLink(baseURL: string) {
+    return `${getDevicesLink(baseURL)}/add`;
+}
+
+export function getDevicesOwnedLink(baseURL: string) {
+    return `${getDevicesLink(baseURL)}/owned`;
+}
+
 export function getDemandEditLink(baseURL: string, id: string) {
     return `${getDemandsLink(baseURL)}/edit/${id}`;
 }
@@ -67,6 +75,8 @@ export function useLinks() {
     return {
         baseURL,
         getDevicesLink: () => getDevicesLink(baseURL),
+        getDevicesAddLink: () => getDevicesAddLink(baseURL),
+        getDevicesOwnedLink: () => getDevicesOwnedLink(baseURL),
         getAccountLink: () => getAccountLink(baseURL),
         getConsumingDeviceDetailLink: (deviceId: string | number) =>
             getConsumingDeviceDetailLink(baseURL, deviceId),

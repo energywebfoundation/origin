@@ -12,15 +12,15 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
+import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
 
 interface IProps {
     approvedOnly?: boolean;
 }
 
 const deviceTypeService = new IRECDeviceService();
-const locationService = new LocationService();
 
 interface IRecord {
     certificationRequestId: number;
@@ -129,33 +129,16 @@ export function CertificationRequestsTable(props: IProps) {
 
     const columns = [
         { id: 'facility', label: 'Facility' },
-        { id: 'provinceRegion', label: 'Province, Region' },
+        { id: 'locationText', label: LOCATION_TITLE },
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: 'Capacity (kW)' },
         { id: 'meterRead', label: 'Meter Read (kWh)' }
     ] as const;
 
     const rows = paginatedData.map(({ device, energy }) => {
-        let deviceRegion = '';
-        let deviceProvince = '';
-        try {
-            const decodedLocation = locationService.decode([
-                locationService.translateAddress(
-                    device.offChainProperties.address,
-                    device.offChainProperties.country
-                )
-            ])[0];
-
-            deviceRegion = decodedLocation[1];
-            deviceProvince = decodedLocation[2];
-        } catch (error) {
-            console.error('CertificationRequestTable: Error while parsing location', error);
-        }
-
         return {
             facility: device.offChainProperties.facilityName,
-            provinceRegion:
-                deviceProvince && deviceRegion ? `${deviceProvince}, ${deviceRegion}` : '',
+            locationText: getDeviceLocationText(device),
             type: deviceTypeService.getDisplayText(device.offChainProperties.deviceType),
             capacity: (device.offChainProperties.capacityWh / 1000).toLocaleString(),
             meterRead: (energy / 1000).toLocaleString()

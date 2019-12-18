@@ -1,4 +1,6 @@
 import { Moment } from 'moment';
+import { LocationService } from '@energyweb/utils-general';
+import { Device } from '@energyweb/device-registry';
 
 export const isOffChainProperty = (name: string, offChainProps: any): boolean => {
     for (const offChainPropName of Object.keys(offChainProps)) {
@@ -81,4 +83,31 @@ export const DATE_FORMAT_DMY = 'MMMM Do, YYYY';
 
 export function formatDate(date: Moment) {
     return date.format(DATE_FORMAT_DMY);
+}
+
+const locationService = new LocationService();
+
+export const LOCATION_TITLE = 'Region, province';
+
+export function getDeviceLocationText(device: Device.Entity) {
+    try {
+        const decodedLocation = locationService.decode([
+            locationService.translateAddress(
+                device.offChainProperties.address,
+                device.offChainProperties.country
+            )
+        ])[0];
+
+        return decodedLocation.slice(1, 3).join(', ');
+    } catch (error) {
+        console.warn(
+            `Can't parse location of device with id: ${device.id}.`,
+            {
+                address: device?.offChainProperties?.address
+            },
+            error
+        );
+
+        return 'Unknown';
+    }
 }

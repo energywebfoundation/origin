@@ -194,7 +194,7 @@ export async function deployDemo() {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
-        active: true,
+        status: Device.DeviceStatus.Active,
         usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
@@ -213,7 +213,9 @@ export async function deployDemo() {
         timezone: 'Asia/Bangkok',
         operationalSince: 0,
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: ''
     };
 
     try {

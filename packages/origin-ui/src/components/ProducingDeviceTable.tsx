@@ -2,9 +2,9 @@ import React from 'react';
 
 import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Role } from '@energyweb/user-registry';
-import { Redirect } from 'react-router-dom';
-import { Configuration, Unit, LocationService } from '@energyweb/utils-general';
-import { ProducingDevice } from '@energyweb/device-registry';
+import { Link, Redirect } from 'react-router-dom';
+import { Configuration, Unit } from '@energyweb/utils-general';
+import { ProducingDevice, Device } from '@energyweb/device-registry';
 import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,
@@ -19,7 +19,7 @@ import { getProducingDeviceDetailLink } from '../utils/routing';
 import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getConfiguration, getProducingDevices, getBaseURL } from '../features/selectors';
-import { Assignment } from '@material-ui/icons';
+import { Add, Assignment, Check } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
 import { getCertificates } from '../features/certificates/selectors';
@@ -27,6 +27,25 @@ import {
     showRequestCertificatesModal,
     TShowRequestCertificatesModalAction
 } from '../features/certificates/actions';
+import { Fab } from '@material-ui/core';
+import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
+import { showNotification, NotificationType } from '../utils/notifications';
+import { setLoading, TSetLoading } from '../features/general/actions';
+import {
+    producingDeviceCreatedOrUpdated,
+    TProducingDeviceCreatedOrUpdated
+} from '../features/producingDevices/actions';
+
+interface IOwnProps {
+    actions: {
+        requestCertificates?: boolean;
+        approve?: boolean;
+    };
+    owner?: string;
+    showAddDeviceButton?: boolean;
+    hiddenColumns?: string[];
+    includedStatuses?: Device.DeviceStatus[];
+}
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -39,15 +58,16 @@ interface IStateProps {
 
 interface IDispatchProps {
     showRequestCertificatesModal: TShowRequestCertificatesModalAction;
+    setLoading: TSetLoading;
+    producingDeviceCreatedOrUpdated: TProducingDeviceCreatedOrUpdated;
 }
 
-type Props = IStateProps & IDispatchProps;
+type Props = IOwnProps & IStateProps & IDispatchProps;
 
 interface IEnrichedProducingDeviceData {
     device: ProducingDevice.Entity;
     organizationName: string;
-    deviceProvince: string;
-    deviceRegion: string;
+    locationText: string;
 }
 
 interface IProducingDeviceTableState extends IPaginatedLoaderFilteredState {
@@ -57,8 +77,6 @@ interface IProducingDeviceTableState extends IPaginatedLoaderFilteredState {
 }
 
 class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducingDeviceTableState> {
-    private locationService = new LocationService();
-
     constructor(props: Props) {
         super(props);
 
@@ -84,27 +102,10 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         const promises = producingDevices.map(async device => {
             const user = getUserById(this.props.users, device.owner.address);
 
-            let deviceRegion = '';
-            let deviceProvince = '';
-            try {
-                const decodedLocation = this.locationService.decode([
-                    this.locationService.translateAddress(
-                        device.offChainProperties.address,
-                        device.offChainProperties.country
-                    )
-                ])[0];
-
-                deviceRegion = decodedLocation[1];
-                deviceProvince = decodedLocation[2];
-            } catch (error) {
-                console.error('Error while parsing location', error);
-            }
-
             return {
                 device,
                 organizationName: user?.organization,
-                deviceProvince,
-                deviceRegion
+                locationText: getDeviceLocationText(device)
             };
         });
 
@@ -125,11 +126,34 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         });
     }
 
+    async approve(rowIndex: number) {
+        const producingDevice: ProducingDevice.Entity = this.state.paginatedData[rowIndex].device;
+
+        this.props.setLoading(true);
+
+        try {
+            await producingDevice.setStatus(Device.DeviceStatus.Active);
+            await this.props.producingDeviceCreatedOrUpdated(await producingDevice.sync());
+
+            showNotification(`Device has been approved.`, NotificationType.Success);
+
+            await this.loadPage(1);
+        } catch (error) {
+            showNotification(
+                `Unexpected error occurred when approving device.`,
+                NotificationType.Error
+            );
+            console.error(error);
+        }
+
+        this.props.setLoading(false);
+    }
+
     filters: ICustomFilterDefinition[] = [
         {
             property: (record: IEnrichedProducingDeviceData) =>
                 `${record?.device?.offChainProperties?.facilityName}${record?.organizationName}`,
-            label: 'Search',
+            label: 'Search by facility name and organization',
             input: {
                 type: CustomFilterInputType.string
             },
@@ -145,8 +169,15 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         const devices = this.props.producingDevices;
         const enrichedDeviceData = await this.enrichProducingDeviceData(devices);
 
-        const filteredEnrichedDeviceData = enrichedDeviceData.filter(record =>
-            this.checkRecordPassesFilters(record, filters)
+        const includedStatuses = this.props.includedStatuses || [];
+
+        const filteredEnrichedDeviceData = enrichedDeviceData.filter(
+            record =>
+                this.checkRecordPassesFilters(record, filters) &&
+                (!this.props.owner ||
+                    record?.device?.owner?.address?.toLowerCase() ===
+                        this.props.currentUser?.id?.toLowerCase()) &&
+                (includedStatuses.length === 0 || includedStatuses.includes(record.device.status))
         );
 
         const total = filteredEnrichedDeviceData.length;
@@ -159,27 +190,33 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         };
     }
 
-    columns = [
-        { id: 'owner', label: 'Owner' },
-        { id: 'facilityName', label: 'Facility name' },
-        { id: 'provinceRegion', label: 'Province, region' },
-        { id: 'type', label: 'Type' },
-        { id: 'capacity', label: 'Nameplate capacity (kW)' },
-        { id: 'read', label: 'Meter read (kWh)' }
-    ] as const;
+    get columns() {
+        const hiddenColumns = this.props.hiddenColumns || [];
+
+        return ([
+            { id: 'owner', label: 'Owner' },
+            { id: 'facilityName', label: 'Facility name' },
+            { id: 'provinceRegion', label: LOCATION_TITLE },
+            { id: 'type', label: 'Type' },
+            { id: 'capacity', label: 'Nameplate capacity (kW)' },
+            { id: 'status', label: 'Status' },
+            { id: 'read', label: 'Meter read (kWh)' }
+        ] as const).filter(column => !hiddenColumns.includes(column.id));
+    }
 
     get rows() {
         return this.state.paginatedData.map(enrichedData => ({
             owner: enrichedData.organizationName,
             facilityName: enrichedData.device.offChainProperties.facilityName,
-            provinceRegion: `${enrichedData.deviceProvince}, ${enrichedData.deviceRegion}`,
+            provinceRegion: enrichedData.locationText,
             type: this.deviceTypeService.getDisplayText(
                 enrichedData.device.offChainProperties.deviceType
             ),
             capacity: (
                 enrichedData.device.offChainProperties.capacityWh / Unit.kWh
             ).toLocaleString(),
-            read: (enrichedData.device.lastSmartMeterReadWh / Unit.kWh).toLocaleString()
+            read: (enrichedData.device.lastSmartMeterReadWh / Unit.kWh).toLocaleString(),
+            status: Device.DeviceStatus[enrichedData.device.status]
         }));
     }
 
@@ -197,7 +234,10 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
 
         const actions = [];
 
-        if (this.props.currentUser && this.props.currentUser.isRole(Role.DeviceManager)) {
+        if (
+            this.props.actions.requestCertificates &&
+            this.props.currentUser?.isRole(Role.DeviceManager)
+        ) {
             actions.push({
                 icon: <Assignment />,
                 name: 'Request I-RECs',
@@ -205,25 +245,48 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
             });
         }
 
+        if (this.props.actions.approve && this.props.currentUser?.isRole(Role.Issuer)) {
+            actions.push({
+                icon: <Check />,
+                name: 'Approve',
+                onClick: (row: number) => this.approve(row)
+            });
+        }
+
         return (
-            <div className="ProductionWrapper">
-                <TableMaterial
-                    columns={this.columns}
-                    rows={this.rows}
-                    loadPage={this.loadPage}
-                    total={total}
-                    pageSize={pageSize}
-                    filters={this.filters}
-                    handleRowClick={(row: number) => this.viewDevice(row)}
-                    actions={actions}
-                />
-            </div>
+            <>
+                <div className="ProductionWrapper">
+                    <TableMaterial
+                        columns={this.columns}
+                        rows={this.rows}
+                        loadPage={this.loadPage}
+                        total={total}
+                        pageSize={pageSize}
+                        filters={this.filters}
+                        handleRowClick={(row: number) => this.viewDevice(row)}
+                        actions={actions}
+                    />
+                </div>
+                {this.props.showAddDeviceButton && (
+                    <Link to={'/devices/add'}>
+                        <Fab
+                            color="primary"
+                            aria-label="add"
+                            style={{ float: 'right', marginTop: '20px' }}
+                        >
+                            <Add />
+                        </Fab>
+                    </Link>
+                )}
+            </>
         );
     }
 }
 
 const mapDispatchToProps: IDispatchProps = {
-    showRequestCertificatesModal
+    showRequestCertificatesModal,
+    setLoading,
+    producingDeviceCreatedOrUpdated
 };
 
 export const ProducingDeviceTable = connect(

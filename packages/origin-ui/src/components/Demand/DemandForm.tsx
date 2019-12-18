@@ -88,7 +88,7 @@ interface IProps {
 
 const DEFAULT_VINTAGE_RANGE: [number, number] = [1970, moment().year()];
 
-const DEFAULT_COUNTRY = 'Thailand';
+export const DEFAULT_COUNTRY = 'Thailand';
 
 export function DemandForm(props: IProps) {
     const currentUser = useSelector(getCurrentUser);
