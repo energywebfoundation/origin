@@ -33,18 +33,21 @@ export class CertificateService {
                 ? this.matchDemandFromAgreement(certificate, demand)
                 : this.matchDemand(certificate, demand);
         }
-        return this.splitCertificate(certificate, requiredEnergy);
+        return this.splitAndMatchDemand(certificate, demand, requiredEnergy); // TODO: this does not support agreements
     }
 
-    private async splitCertificate(
+    private async splitAndMatchDemand(
         certificate: PurchasableCertificate.IPurchasableCertificate,
+        demand: Demand.IDemand,
         requiredEnergy: number
-    ): Promise<boolean> {
-        this.logger.info(`[Certificate #${certificate.id}] Splitting at ${requiredEnergy}`);
-
-        const splitTx = await certificate.splitCertificate(requiredEnergy);
-
-        return splitTx.status;
+    ) {
+        this.logger.verbose(
+            `[Certificate #${certificate.id}] Requesting split and match at ${requiredEnergy /
+                Unit.kWh}kWh`
+        );
+        return this.match(certificate, demand, (entityId: string) =>
+            demand.fillAt(entityId, requiredEnergy)
+        );
     }
 
     private async matchDemand(
