@@ -110,7 +110,17 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         string calldata _propertiesDocumentHash,
         string calldata _url
     ) external returns (uint deviceId) {
-        _checkBeforeCreation(_owner);
+        require(isRole(RoleManagement.Role.DeviceManager, _owner), "device owner has to have device manager role");
+        require(
+            _owner == msg.sender ||
+            isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
+            isRole(RoleManagement.Role.Issuer, msg.sender),
+            "only device admin and issuer can create a device for different owner"
+        );
+        require(_status == DeviceDefinitions.DeviceStatus.Submitted ||
+            isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
+            isRole(RoleManagement.Role.Issuer, msg.sender), "only admin and issuer can add devices with status other than submitted"
+        );
 
         DeviceDefinitions.Device memory _device = DeviceDefinitions.Device({
             smartMeter: _smartMeter,
@@ -217,11 +227,5 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         );
 
         return (_newMeterRead-oldMeterRead);
-    }
-
-	/// @notice runs some checks before creating an device
-	/// @param _owner the address of the device-owner
-    function _checkBeforeCreation(address _owner) internal view {
-        require(isRole(RoleManagement.Role.DeviceManager, _owner), "user does not have the required role");
     }
 }

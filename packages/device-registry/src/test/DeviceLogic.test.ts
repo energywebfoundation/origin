@@ -38,6 +38,9 @@ describe('DeviceLogic', () => {
     const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
+    const traderAndDeviceManagerPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
+    const traderAndDeviceManagerAddress = web3.eth.accounts.privateKeyToAccount(traderAndDeviceManagerPK).address;
+
     it('should deploy the contracts', async () => {
         userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
 
@@ -69,6 +72,20 @@ describe('DeviceLogic', () => {
             { privateKey: privateKeyDeployment }
         );
 
+        await userLogic.createUser(
+            'propertiesDocumentHash',
+            'documentDBURL',
+            traderAndDeviceManagerAddress,
+            'trader',
+            { privateKey: privateKeyDeployment }
+        );
+
+        await userLogic.setRoles(
+            traderAndDeviceManagerAddress,
+            buildRights([Role.Trader, Role.DeviceManager]),
+            { privateKey: privateKeyDeployment }
+        );
+
         deviceLogic = await migrateDeviceRegistryContracts(
             web3,
             userLogic.web3Contract.options.address,
@@ -97,7 +114,7 @@ describe('DeviceLogic', () => {
         } catch (ex) {
             failed = true;
 
-            assert.include(ex.message, 'user does not have the required role');
+            assert.include(ex.message, 'revert device owner has to have device manager role');
         }
         assert.isTrue(failed);
     });
@@ -118,7 +135,7 @@ describe('DeviceLogic', () => {
             );
         } catch (ex) {
             failed = true;
-            assert.include(ex.message, 'user does not have the required role');
+            assert.include(ex.message, 'revert device owner has to have device manager role');
         }
         assert.isTrue(failed);
     });
@@ -138,6 +155,30 @@ describe('DeviceLogic', () => {
                 privateKey: privateKeyDeployment
             }
         );
+    });
+
+    it('should not create active device when the user does not have the device admin rights as user', async () => {
+        let failed = false;
+        try {
+            await deviceLogic.createDevice(
+                deviceSmartmeter,
+                traderAndDeviceManagerAddress,
+                DeviceStatus.Active,
+                0,
+                'propertiesDocumentHash',
+                'url',
+                {
+                    privateKey: traderAndDeviceManagerPK
+                }
+            );
+        } catch (ex) {
+            failed = true;
+            assert.include(
+                ex.message,
+                'only admin and issuer can add devices with status other than submitted'
+            );
+        }
+        assert.isTrue(failed);
     });
 
     it('should onboard a new device', async () => {
