@@ -51,6 +51,7 @@ export interface IDemand extends IDemandOnChainProperties {
     id: string;
     offChainProperties: IDemandOffChainProperties;
     fill: (entityId: string) => Promise<TransactionReceipt>;
+    fillAt: (entityId: string, energy: number) => Promise<TransactionReceipt>;
     fillAgreement: (entityId: string) => Promise<TransactionReceipt>;
     missingEnergyInPeriod: (timeStamp: number) => Promise<TimeSeriesElement>;
     missingEnergyInCurrentPeriod: () => Promise<TimeSeriesElement>;
@@ -126,6 +127,13 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
 
     async fill(entityId: string): Promise<TransactionReceipt> {
         return this.marketLogicInstance.fillDemand(this.id, entityId, {
+            from: this.configuration.blockchainProperties.activeUser.address,
+            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+        });
+    }
+
+    async fillAt(entityId: string, energy: number): Promise<TransactionReceipt> {
+        return this.marketLogicInstance.fillDemandAt(this.id, entityId, energy, {
             from: this.configuration.blockchainProperties.activeUser.address,
             privateKey: this.configuration.blockchainProperties.activeUser.privateKey
         });

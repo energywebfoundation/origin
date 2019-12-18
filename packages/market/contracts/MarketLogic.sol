@@ -184,6 +184,21 @@ contract MarketLogic is Initializable, RoleManagement {
         emit DemandPartiallyFilled(_demandId, _certificateId, certificate.energy);
     }
 
+    /// @notice Matches a certificate to a demand
+	/// @dev will return an event with the event-Id
+	/// @param _demandId index of the demand in the allDemands-array
+    /// @param _certificateId ID of the certificate
+    /// @param _energy amount of energy to be used from the certificate
+    function fillDemandAt(uint _demandId, uint _certificateId, uint _energy) external onlyRole(RoleManagement.Role.Matcher) {
+        Demand memory demand = allDemands[_demandId];
+        require(demand.status == DemandStatus.ACTIVE, "demand should be in ACTIVE state");
+
+        CertificateDefinitions.Certificate memory certificate = _certificateLogic.getCertificate(_certificateId);
+        (uint childOneId,) = _splitAndBuyCertificateFor(demand.demandOwner, _certificateId, _energy);
+
+        emit DemandPartiallyFilled(_demandId, childOneId, _energy);
+    }
+
     function changeDemandStatus(uint _demandId, DemandStatus _status)
         public
         onlyDemandOwner(_demandId)
@@ -456,7 +471,7 @@ contract MarketLogic is Initializable, RoleManagement {
         }
     }
 
-    function splitAndBuyCertificate(uint _certificateId, uint _energy) public onlyRole(RoleManagement.Role.Trader) {
+    function _splitAndBuyCertificateFor(address _newOwner, uint _certificateId, uint _energy) internal returns (uint, uint) {
         CertificateDefinitions.Certificate memory cert = _certificateLogic.getCertificate(_certificateId);
         PurchasableCertificate memory pCert = getPurchasableCertificate(_certificateId);
 
@@ -464,7 +479,8 @@ contract MarketLogic is Initializable, RoleManagement {
         require(pCert.forSale == true, "Unable to split and buy a certificate that is not for sale.");
 
         if (_energy == cert.energy) {
-            _buyCertificate(_certificateId, msg.sender);
+            _buyCertificate(_certificateId, _newOwner);
+            return (_certificateId, _certificateId);
         } else {
             (uint childOneId, uint childTwoId) = _certificateLogic.splitCertificate(_certificateId, _energy);
 
@@ -483,8 +499,13 @@ contract MarketLogic is Initializable, RoleManagement {
                 pCert.documentDBURL
             );
 
-            _buyCertificate(childOneId, msg.sender);
+            _buyCertificate(childOneId, _newOwner);
+            return (childOneId, childTwoId);
         }
+    }
+
+    function splitAndBuyCertificate(uint _certificateId, uint _energy) public onlyRole(RoleManagement.Role.Trader) {
+        _splitAndBuyCertificateFor(msg.sender, _certificateId, _energy);
     }
 
     /// @notice Splits a certificate and publishes the first split certificate for sale
