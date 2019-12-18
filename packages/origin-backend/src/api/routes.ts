@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
 import { marketContractLookupGetAction } from './controller/MarketContractLookupGet';
 import { marketContractLookupPostAction } from './controller/MarketContractLookupPost';
@@ -9,11 +9,12 @@ import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
 import { currencyGetAction } from './controller/CurrencyGet';
 import { currencyPostAction } from './controller/CurrencyPost';
 import { currencyDeleteAction } from './controller/CurrencyDelete';
+import { imagePostActions } from './controller/ImagePost';
 
 export interface IRoute {
     path: string;
     method: string;
-    action: (req: Request, res: Response) => Promise<void>;
+    actions: Array<RequestHandler>;
 }
 
 /**
@@ -23,46 +24,51 @@ export const AppRoutes: IRoute[] = [
     {
         path: '/MarketContractLookup',
         method: 'get',
-        action: marketContractLookupGetAction
+        actions: [marketContractLookupGetAction]
     },
     {
         path: '/MarketContractLookup/:address',
         method: 'post',
-        action: marketContractLookupPostAction
+        actions: [marketContractLookupPostAction]
     },
     {
         path: '/MarketContractLookup/:address',
         method: 'delete',
-        action: marketContractLookupDeleteAction
+        actions: [marketContractLookupDeleteAction]
     },
     {
         path: '/Entity/:hash?',
         method: 'get',
-        action: jsonEntityGetAction
+        actions: [jsonEntityGetAction]
     },
     {
         path: '/Entity/:hash',
         method: 'post',
-        action: jsonEntityPostAction
+        actions: [jsonEntityPostAction]
     },
     {
         path: '/Entity/:hash',
         method: 'delete',
-        action: jsonEntityDeleteAction
+        actions: [jsonEntityDeleteAction]
     },
     {
         path: '/Currency/:code?',
         method: 'get',
-        action: currencyGetAction
+        actions: [currencyGetAction]
     },
     {
         path: '/Currency/:code',
         method: 'post',
-        action: currencyPostAction
+        actions: [currencyPostAction]
     },
     {
         path: '/Currency/:code',
         method: 'delete',
-        action: currencyDeleteAction
+        actions: [currencyDeleteAction]
+    },
+    {
+        path: '/Image',
+        method: 'post',
+        actions: imagePostActions
     }
 ];
