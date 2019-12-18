@@ -1,6 +1,11 @@
 pragma solidity ^0.5.2;
 
 contract DeviceDefinitions {
+    enum DeviceStatus {
+        Submitted,
+        Denied,
+        Active
+    }
 
     enum UsageType {
         Producing,
@@ -12,7 +17,7 @@ contract DeviceDefinitions {
         address smartMeter;
         address owner;
         uint lastSmartMeterReadWh;
-        bool active;
+        DeviceStatus status;
         string lastSmartMeterReadFileHash;
         string propertiesDocumentHash;
         string url;

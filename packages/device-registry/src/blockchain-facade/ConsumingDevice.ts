@@ -21,7 +21,7 @@ export const createDevice = async (
     const tx = await configuration.blockchainProperties.deviceLogicInstance.createDevice(
         deviceProperties.smartMeter.address,
         deviceProperties.owner.address,
-        deviceProperties.active,
+        deviceProperties.status,
         Device.UsageType.Consuming,
         deviceProperties.propertiesDocumentHash,
         deviceProperties.url,
@@ -45,20 +45,26 @@ export const createDevice = async (
 };
 
 export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
-    const deviceLogicInstance = configuration.blockchainProperties.deviceLogicInstance;
+    const { deviceLogicInstance } = configuration.blockchainProperties;
     const deviceListLength = parseInt(await deviceLogicInstance.getDeviceListLength(), 10);
 
-    const devicesPromises = Array(deviceListLength).fill(null).map(async (item, index) => {
-        return {
-            id: index,
-            device: await deviceLogicInstance.getDevice(index)
-        };
-    });
+    const devicesPromises = Array(deviceListLength)
+        .fill(null)
+        .map(async (item, index) => {
+            return {
+                id: index,
+                device: await deviceLogicInstance.getDevice(index)
+            };
+        });
 
     const allDevices = await Promise.all(devicesPromises);
 
-    const consumingDevices = allDevices.filter((device, index) => Number(device.device.usageType) === Device.UsageType.Consuming);
-    const consumingDevicesSynced = consumingDevices.map(device => new Entity(device.id.toString(), configuration).sync());
+    const consumingDevices = allDevices.filter(
+        (device, index) => Number(device.device.usageType) === Device.UsageType.Consuming
+    );
+    const consumingDevicesSynced = consumingDevices.map(device =>
+        new Entity(device.id.toString(), configuration).sync()
+    );
 
     return Promise.all(consumingDevicesSynced);
 };
@@ -75,7 +81,7 @@ export const getAllDevicesOwnedBy = async (owner: string, configuration: Configu
 };
 
 export interface IConsumingDevice extends Device.IOnChainProperties {
-    offChainProperties: Device.IOffChainProperties
+    offChainProperties: Device.IOffChainProperties;
 }
 
 export class Entity extends Device.Entity implements IConsumingDevice {
@@ -90,7 +96,7 @@ export class Entity extends Device.Entity implements IConsumingDevice {
             this.smartMeter = { address: device.smartMeter };
             this.owner = { address: device.owner };
             this.lastSmartMeterReadWh = Number(device.lastSmartMeterReadWh);
-            this.active = device.active;
+            this.status = Number(device.status);
             this.usageType = Number(device.usageType);
             this.lastSmartMeterReadFileHash = device.lastSmartMeterReadFileHash;
             this.propertiesDocumentHash = device.propertiesDocumentHash;

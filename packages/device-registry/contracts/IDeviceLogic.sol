@@ -7,8 +7,7 @@ contract IDeviceLogic {
 
     event LogDeviceCreated(address _sender, uint indexed _deviceId);
     event LogDeviceFullyInitialized(uint indexed _deviceId);
-    event LogDeviceSetActive(uint indexed _deviceId);
-    event LogDeviceSetInactive(uint indexed _deviceId);
+    event DeviceStatusChanged(uint indexed _deviceId, DeviceDefinitions.DeviceStatus _status);
     event LogNewMeterRead(
         uint indexed _deviceId,
         uint _oldMeterRead,
@@ -27,10 +26,10 @@ contract IDeviceLogic {
     /// @return the Device-struct as memory
     function getDevice(uint _deviceId) external view returns (DeviceDefinitions.Device memory device);
 
-	/// @notice Sets active to false
+	/// @notice Sets status
 	/// @param _deviceId The id belonging to an entry in the device registry
-	/// @param _active flag if the device is device or not
-    function setActive(uint _deviceId, bool _active) external;
+	/// @param _status device status
+    function setStatus(uint _deviceId, DeviceDefinitions.DeviceStatus _status) external;
 
 	/// @notice Logs meter read
 	/// @param _deviceId The id belonging to an entry in the device registry
@@ -45,7 +44,7 @@ contract IDeviceLogic {
     /// @notice creates an device with the provided parameters
 	/// @param _smartMeter smartmeter of the device
 	/// @param _owner device-owner
-	/// @param _active flag if the device is already active
+	/// @param _status device status
 	/// @param _usageType consuming or producing device
 	/// @param _propertiesDocumentHash hash of the document with the properties of an device
 	/// @param _url where to find the documentHash
@@ -53,7 +52,7 @@ contract IDeviceLogic {
     function createDevice(
         address _smartMeter,
         address _owner,
-        bool _active,
+        DeviceDefinitions.DeviceStatus _status,
         DeviceDefinitions.UsageType _usageType,
         string calldata _propertiesDocumentHash,
         string calldata _url) external returns (uint deviceId);
@@ -65,16 +64,6 @@ contract IDeviceLogic {
 	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @return Full informations of an device
     function getDeviceById(uint _deviceId) public view returns (DeviceDefinitions.Device memory);
-
-    /// @notice gets an device by its smartmeter
-	/// @param _smartMeter smartmeter used for by the device
-	/// @return Device-Struct
-    function getDeviceBySmartMeter(address _smartMeter) public view returns (DeviceDefinitions.Device memory);
-
-    /// @notice checks whether an devices with the provided smartmeter already exists
-	/// @param _smartMeter smart meter address of an device
-	/// @return whether there is already an device with that smartmeter
-    function checkDeviceExist(address _smartMeter) public view returns (bool);
 
 	/// @notice gets the owner-address of an device
 	/// @param _deviceId the id of an device
