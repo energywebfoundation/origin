@@ -117,7 +117,8 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
             isRole(RoleManagement.Role.Issuer, msg.sender),
             "only device admin and issuer can create a device for different owner"
         );
-        require(_status == DeviceDefinitions.DeviceStatus.Submitted ||
+        require(
+            _status == DeviceDefinitions.DeviceStatus.Submitted ||
             isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
             isRole(RoleManagement.Role.Issuer, msg.sender), "only admin and issuer can add devices with status other than submitted"
         );
