@@ -307,7 +307,7 @@ describe('MarketLogic', () => {
         await deviceLogic.createDevice(
             '0x1000000000000000000000000000000000000005',
             accountDeviceOwner,
-            Device.DeviceStatus.Active,
+            Device.DeviceStatus.Submitted,
             0,
             'propertiesDocumentHash',
             'url',
