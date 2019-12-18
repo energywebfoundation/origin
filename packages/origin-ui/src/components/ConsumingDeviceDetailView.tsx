@@ -5,7 +5,6 @@ import map from '../../assets/map.svg';
 import { MarketUser, PurchasableCertificate } from '@energyweb/market';
 import { ConsumingDevice } from '@energyweb/device-registry';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/helper';
 import { Configuration } from '@energyweb/utils-general';
 import { DeviceMap } from './DeviceMap';
 import { connect } from 'react-redux';
@@ -95,15 +94,12 @@ class ConsumingDeviceDetailViewClass extends React.Component<Props, IDetailViewS
                         data: selectedDevice.offChainProperties.facilityName
                     },
                     {
-                        label:
-                            'Owner' + getOffChainText('owner', selectedDevice.offChainProperties),
+                        label: 'Owner',
                         data: this.state.owner ? this.state.owner.organization : ''
                     },
 
                     {
-                        label:
-                            'Geo Location' +
-                            getOffChainText('gpsLatitude', selectedDevice.offChainProperties),
+                        label: 'Geo Location',
                         data:
                             selectedDevice.offChainProperties.gpsLatitude +
                             ', ' +
@@ -121,18 +117,14 @@ class ConsumingDeviceDetailViewClass extends React.Component<Props, IDetailViewS
                 ],
                 [
                     {
-                        label:
-                            'Commissioning Date' +
-                            getOffChainText('operationalSince', selectedDevice.offChainProperties),
+                        label: 'Commissioning Date',
                         data: moment(
                             selectedDevice.offChainProperties.operationalSince * 1000
                         ).format('DD MMM YY')
                     },
 
                     {
-                        label:
-                            'Nameplate Capacity' +
-                            getOffChainText('capacityWh', selectedDevice.offChainProperties),
+                        label: 'Nameplate Capacity',
                         data: selectedDevice.offChainProperties.capacityWh
                             ? (selectedDevice.offChainProperties.capacityWh / 1000).toFixed(3)
                             : '-',

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@1.0.0...@energyweb/device-registry@1.0.1) (2019-12-17)
+
+
+### Bug Fixes
+
+* **device-registry:** use default block range when fetching events ([64f49c3](https://github.com/energywebfoundation/origin/commit/64f49c3d315269a1325d495423a692c40269ef1f))
+
+
+
+
+
 # 1.0.0 (2019-12-12)
 
 

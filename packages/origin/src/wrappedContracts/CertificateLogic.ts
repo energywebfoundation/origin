@@ -26,43 +26,43 @@ export class CertificateLogic extends GeneralFunctions {
     }
 
     async getAllCertificationApprovedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('CertificationRequestApproved', eventFilter);
+        return this.web3Contract.getPastEvents('CertificationRequestApproved', this.createFilter(eventFilter));
     }
 
     async getAllCertificationCreatedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('CertificationRequestCreated', eventFilter);
+        return this.web3Contract.getPastEvents('CertificationRequestCreated', this.createFilter(eventFilter));
     }
 
     async getAllLogCreatedCertificateEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogCreatedCertificate', eventFilter);
+        return this.web3Contract.getPastEvents('LogCreatedCertificate', this.createFilter(eventFilter));
     }
 
     async getAllLogCertificateClaimedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogCertificateClaimed', eventFilter);
+        return this.web3Contract.getPastEvents('LogCertificateClaimed', this.createFilter(eventFilter));
     }
 
     async getAllLogCertificateSplitEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogCertificateSplit', eventFilter);
+        return this.web3Contract.getPastEvents('LogCertificateSplit', this.createFilter(eventFilter));
     }
 
     async getAllTransferEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('Transfer', eventFilter);
+        return this.web3Contract.getPastEvents('Transfer', this.createFilter(eventFilter));
     }
 
     async getAllApprovalEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('Approval', eventFilter);
+        return this.web3Contract.getPastEvents('Approval', this.createFilter(eventFilter));
     }
 
     async getAllApprovalForAllEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('ApprovalForAll', eventFilter);
+        return this.web3Contract.getPastEvents('ApprovalForAll', this.createFilter(eventFilter));
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
+        return this.web3Contract.getPastEvents('LogChangeOwner', this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('allEvents', eventFilter);
+        return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async getApproved(_tokenId: number, txParams?: ISpecialTx) {

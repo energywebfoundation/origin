@@ -7,7 +7,7 @@ import {
     Contracts as MarketContracts
 } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import { Compliance, Configuration, TimeFrame, LocationService } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, LocationService } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { ReactNode } from 'react';
@@ -37,7 +37,7 @@ import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
-import { getCurrencies } from '../features/contracts/selectors';
+import { getCurrencies } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 import { CircularProgress } from '@material-ui/core';
 
@@ -742,8 +742,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     'x'
                 ).format('MMM YY');
 
-                compliance =
-                    Compliance[enrichedData.producingDevice.offChainProperties.complianceRegistry];
+                compliance = enrichedData.producingDevice.offChainProperties.complianceRegistry;
             }
 
             let price: string | ReactNode = enrichedData.price;

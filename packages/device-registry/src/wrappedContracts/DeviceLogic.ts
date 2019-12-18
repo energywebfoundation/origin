@@ -28,19 +28,20 @@ export class DeviceLogic extends GeneralFunctions {
     }
 
     async getAllLogNewMeterReadEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogNewMeterRead', eventFilter);
+
+        return this.web3Contract.getPastEvents('LogNewMeterRead', this.createFilter(eventFilter));
     }
 
     async getAllLogDeviceCreatedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceCreated', eventFilter);
+        return this.web3Contract.getPastEvents('LogDeviceCreated', this.createFilter(eventFilter));
     }
 
     async getAllLogDeviceFullyInitializedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', eventFilter);
+        return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', this.createFilter(eventFilter));
     }
 
     async getAllLogDeviceStatusChangedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('DeviceStatusChanged', eventFilter);
+        return this.web3Contract.getPastEvents('DeviceStatusChanged', this.createFilter(eventFilter));
     }
 
     async getSmartMeterReadsForDeviceByIndex(
@@ -58,11 +59,11 @@ export class DeviceLogic extends GeneralFunctions {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
+        return this.web3Contract.getPastEvents('LogChangeOwner', this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('allEvents', eventFilter);
+        return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async getLastMeterReadingAndHash(_deviceId: number, txParams?: ISpecialTx) {

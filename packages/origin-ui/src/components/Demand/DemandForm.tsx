@@ -32,7 +32,7 @@ import { useLinks } from '../../utils/routing';
 import { FormikDatePicker } from '../FormikDatePicker';
 import { getCurrentUser } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
-import { getCurrencies } from '../../features/contracts/selectors';
+import { getCurrencies } from '../../features/general/selectors';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
 

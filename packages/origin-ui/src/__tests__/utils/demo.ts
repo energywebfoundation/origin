@@ -16,8 +16,6 @@ import {
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 
-import { Compliance } from '@energyweb/utils-general';
-
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { IStoreState } from '../../types';
@@ -203,7 +201,7 @@ export async function deployDemo() {
 
     const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
         deviceType: 'Wind;Onshore',
-        complianceRegistry: Compliance.IREC,
+        complianceRegistry: 'I-REC',
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
         country: 'Thailand',

@@ -2,7 +2,6 @@ import { call, put, select, take, all, fork, apply, cancel, takeEvery } from 're
 import { SagaIterator, eventChannel } from 'redux-saga';
 import {
     setMarketContractLookupAddress,
-    setCurrencies,
     ContractsActions,
     ISetMarketContractLookupAddressAction,
     MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
@@ -240,10 +239,7 @@ async function getMarketContractLookupAddressFromAPI(
     baseURL: string
 ) {
     try {
-        const marketContracts: string[] = await configurationClient.get(
-            baseURL,
-            'MarketContractLookup'
-        );
+        const marketContracts = await configurationClient.get(baseURL, 'MarketContractLookup');
 
         if (marketContracts.length > 0) {
             return marketContracts[marketContracts.length - 1];
@@ -252,44 +248,6 @@ async function getMarketContractLookupAddressFromAPI(
         return null;
     } catch {
         return null;
-    }
-}
-
-async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
-    try {
-        const currencies: string[] = await configurationClient.get(baseURL, 'Currency');
-
-        if (currencies.length > 0) {
-            return currencies;
-        }
-
-        return null;
-    } catch {
-        return null;
-    }
-}
-
-function* fillCurrency(): SagaIterator {
-    while (true) {
-        yield take(GeneralActions.setEnvironment);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-
-        if (!environment) {
-            return;
-        }
-
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-
-        const currencies = yield call(getCurrenciesFromAPI, configurationClient, baseURL);
-
-        yield put(
-            setCurrencies({
-                currencies
-            })
-        );
     }
 }
 
@@ -425,7 +383,6 @@ function* persistUserDefinedMarketLookupContract(): SagaIterator {
 export function* contractsSaga(): SagaIterator {
     yield all([
         fork(fillMarketContractLookupAddressIfMissing),
-        fork(persistUserDefinedMarketLookupContract),
-        fork(fillCurrency)
+        fork(persistUserDefinedMarketLookupContract)
     ]);
 }

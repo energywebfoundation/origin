@@ -27,15 +27,10 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
     const demoConfig = JSON.parse(fs.readFileSync(configFilePath ?? './config/demo-config.json', 'utf8').toString());
     
     for (const currency of demoConfig.currencies) {
-        try {
-            await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
-        } catch (e) {
-            if (e.response.status !== 409) {
-                throw e;
-            }
-        }
+        await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
     }
 
+    await client.add(`${process.env.BACKEND_URL}/api`, 'Compliance', demoConfig.complianceRegistry ?? 'none');
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo(configFilePath, contractConfig);

@@ -10,7 +10,7 @@ import {
     UserLogic,
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
@@ -132,7 +132,7 @@ describe('Device Facade', () => {
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
                 deviceType: 'Wind',
-                complianceRegistry: Compliance.EEC,
+                complianceRegistry: 'I-REC',
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
                 facilityName: FACILITY_NAME,
@@ -195,7 +195,7 @@ describe('Device Facade', () => {
                     gpsLongitude: '31.1231',
                     timezone: 'Asia/Bangkok',
                     deviceType: 'Wind',
-                    complianceRegistry: Compliance.EEC,
+                    complianceRegistry: 'I-REC',
                     otherGreenAttributes: '',
                     typeOfPublicSupport: '',
                     facilityName: 'Wuthering Heights Windfarm',

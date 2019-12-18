@@ -216,10 +216,6 @@ usage: command to onboard a new producing device
     RunRiverHydro,
     BiomassGas)
 * <code>cO2UsedForCertificate</code>: amount of CO2 already used for certificates
-* <code>complianceRegistry</code>: complaince as string (none,
-    IREC,
-    EEC,
-    TIGR)
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
 
@@ -252,7 +248,6 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
         "timezone": "America/Los_Angeles",
         "deviceType": "Biomass from agriculture",
         "cO2UsedForCertificate": 0,
-        "complianceRegistry": "TIGR",
         "otherGreenAttributes": "N.A.",
         "typeOfPublicSupport": "N.A"
     }

@@ -10,7 +10,9 @@ export enum GeneralActions {
     hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
     setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
     setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
-    setEnvironment = 'GENERAL_SET_ENVIRONMENT'
+    setEnvironment = 'GENERAL_SET_ENVIRONMENT',
+    setCurrencies = 'GENERAL_SET_CURRENCIES',
+    setCompliance = 'GENERAL_SET_COMPLIANCE'
 }
 
 export interface IEnvironment {
@@ -135,6 +137,32 @@ export const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
 
 export type TSetEnvironmentAction = typeof setEnvironment;
 
+export interface ISetCurrenciesAction {
+    type: GeneralActions.setCurrencies;
+    payload: {
+        currencies: string[];
+    };
+}
+
+export const setCurrencies = (payload: ISetCurrenciesAction['payload']) => ({
+    type: GeneralActions.setCurrencies,
+    payload
+});
+
+export type TSetCurrencies = typeof setCurrencies;
+
+export interface ISetComplianceAction {
+    type: GeneralActions.setCompliance;
+    payload: string;
+}
+
+export const setCompliance = (payload: ISetComplianceAction['payload']) => ({
+    type: GeneralActions.setCompliance,
+    payload
+});
+
+export type TSetCompliance = typeof setCompliance;
+
 export type IGeneralAction =
     | IShowAccountChangedModalAction
     | IHideAccountChangedModalAction
@@ -145,4 +173,6 @@ export type IGeneralAction =
     | IHideRequestPasswordModalAction
     | ISetOffChainDataClientAction
     | ISetConfigurationClientAction
-    | ISetEnvironmentAction;
+    | ISetEnvironmentAction
+    | ISetCurrenciesAction
+    | ISetComplianceAction;

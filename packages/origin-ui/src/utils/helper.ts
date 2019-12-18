@@ -2,20 +2,6 @@ import { Moment } from 'moment';
 import { LocationService } from '@energyweb/utils-general';
 import { Device } from '@energyweb/device-registry';
 
-export const isOffChainProperty = (name: string, offChainProps: any): boolean => {
-    for (const offChainPropName of Object.keys(offChainProps)) {
-        if (offChainPropName === name) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-export const getOffChainText = (name: string, offChainProps: any): string => {
-    return isOffChainProperty(name, offChainProps) ? ' (private)' : '';
-};
-
 export function dataTest(value, name = 'data-test') {
     return {
         [name]: value

@@ -23,7 +23,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { STYLE_CONFIG } from '../../styles/styleConfig';
 
-import { getMarketContractLookupAddress, getCurrencies } from '../../features/contracts/selectors';
+import { getMarketContractLookupAddress } from '../../features/contracts/selectors';
+import { getCurrencies } from '../../features/general/selectors';
 import { getCurrentUser } from '../../features/users/selectors';
 import { setMarketContractLookupAddress } from '../../features/contracts/actions';
 

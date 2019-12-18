@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@3.0.0...@energyweb/event-listener@3.0.1) (2019-12-17)
+
+**Note:** Version bump only for package @energyweb/event-listener
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@2.0.0...@energyweb/event-listener@3.0.0) (2019-12-12)
 
 

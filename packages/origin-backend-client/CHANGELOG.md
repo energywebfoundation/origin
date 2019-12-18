@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.0.0...@energyweb/origin-backend-client@2.1.0) (2019-12-17)
+
+
+### Features
+
+* **origin-backend-client:** allow storing and getting Currency ([d7b8006](https://github.com/energywebfoundation/origin/commit/d7b8006eb4425f76a2493bf0a92d92be0876bb00))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@1.1.0...@energyweb/origin-backend-client@2.0.0) (2019-12-12)
 
 

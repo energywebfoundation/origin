@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IRECDeviceService, Compliance, Unit } from '@energyweb/utils-general';
+import { IRECDeviceService, Unit } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -22,6 +22,7 @@ import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
+import { getCompliance } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
 import { CloudUpload } from '@material-ui/icons';
@@ -96,6 +97,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 export function AddDevice() {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
+    const compliance = useSelector(getCompliance);
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
 
@@ -142,7 +144,7 @@ export function AddDevice() {
 
         const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
             deviceType,
-            complianceRegistry: Compliance.IREC,
+            complianceRegistry: compliance,
             facilityName: values.facilityName,
             capacityWh: parseFloat(values.capacity) * Unit.kW,
             country: DEFAULT_COUNTRY,

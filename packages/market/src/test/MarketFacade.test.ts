@@ -17,7 +17,7 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import { Configuration, Compliance, TimeFrame } from '@energyweb/utils-general';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
@@ -360,7 +360,7 @@ describe('Market-Facade', () => {
             gpsLongitude: '31.1231',
             timezone: 'Asia/Bangkok',
             deviceType: 'Wind',
-            complianceRegistry: Compliance.EEC,
+            complianceRegistry: 'I-REC',
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             facilityName: '',
@@ -395,7 +395,7 @@ describe('Market-Facade', () => {
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
                 energyPerTimeFrame: 10,
-                registryCompliance: Compliance.EEC,
+                registryCompliance: 'I-REC',
                 startTime: START_TIME,
                 endTime: END_TIME,
                 automaticMatching: true
@@ -441,7 +441,7 @@ describe('Market-Facade', () => {
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
-                registryCompliance: 2,
+                registryCompliance: 'I-REC',
                 energyPerTimeFrame: 10,
                 timeFrame: TimeFrame.hourly,
                 typeOfPublicSupport: 'string',
