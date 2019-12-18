@@ -188,6 +188,7 @@ contract MarketLogic is Initializable, RoleManagement {
 	/// @dev will return an event with the event-Id
 	/// @param _demandId index of the demand in the allDemands-array
     /// @param _certificateId ID of the certificate
+    /// @param _energy amount of energy to be used from the certificate
     function fillDemandAt(uint _demandId, uint _certificateId, uint _energy) external onlyRole(RoleManagement.Role.Matcher) {
         Demand memory demand = allDemands[_demandId];
         require(demand.status == DemandStatus.ACTIVE, "demand should be in ACTIVE state");
