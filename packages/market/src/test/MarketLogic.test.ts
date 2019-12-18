@@ -243,12 +243,19 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllDemandListLength(), 1);
     });
 
-    it('should fail when trying to create a supply with an non-existing device as deviceOwner', async () => {
+    it('should fail when trying to create a supply with a non-existing device as deviceOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: deviceOwnerPK
-            });
+            await marketLogic.createSupply(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                1,
+                {
+                    gas: 1000000,
+                    privateKey: deviceOwnerPK
+                },
+                true
+            );
         } catch (ex) {
             failed = true;
         }
@@ -259,9 +266,16 @@ describe('MarketLogic', () => {
     it('should fail when trying to create a supply with an non-existing device as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: traderPK
-            });
+            await marketLogic.createSupply(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                1,
+                {
+                    privateKey: traderPK,
+                    gas: 1000000
+                },
+                true
+            );
         } catch (ex) {
             failed = true;
         }
@@ -272,9 +286,16 @@ describe('MarketLogic', () => {
     it('should fail when trying to create a supply with an non-existing device as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: privateKeyDeployment
-            });
+            await marketLogic.createSupply(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                1,
+                {
+                    privateKey: privateKeyDeployment,
+                    gas: 1000000
+                },
+                true
+            );
         } catch (ex) {
             failed = true;
         }
@@ -291,7 +312,7 @@ describe('MarketLogic', () => {
             'propertiesDocumentHash',
             'url',
             {
-                privateKey: privateKeyDeployment
+                privateKey: deviceOwnerPK
             }
         );
     });
