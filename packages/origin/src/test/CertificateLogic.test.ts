@@ -3,8 +3,18 @@ import 'mocha';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { UserLogic, Role, buildRights, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
-import { Device, ProducingDevice, DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
+import {
+    UserLogic,
+    Role,
+    buildRights,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
+import {
+    Device,
+    ProducingDevice,
+    DeviceLogic,
+    Contracts as DeviceRegistryContracts
+} from '@energyweb/device-registry';
 import { Configuration, Compliance } from '@energyweb/utils-general';
 import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { deployERC721TestReceiver } from './deploy';
@@ -82,7 +92,10 @@ describe('CertificateLogic-Facade', () => {
     }
 
     it('should deploy the contracts', async () => {
-        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            web3,
+            privateKeyDeployment
+        );
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -155,9 +168,13 @@ describe('CertificateLogic-Facade', () => {
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
         });
-        await userLogic.setRoles(accountDeviceOwner, buildRights([Role.DeviceManager, Role.Trader]), {
-            privateKey: privateKeyDeployment
-        });
+        await userLogic.setRoles(
+            accountDeviceOwner,
+            buildRights([Role.DeviceManager, Role.Trader]),
+            {
+                privateKey: privateKeyDeployment
+            }
+        );
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -177,7 +194,7 @@ describe('CertificateLogic-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
@@ -197,7 +214,9 @@ describe('CertificateLogic-Facade', () => {
             deviceType: 'Wind',
             complianceRegistry: Compliance.EEC,
             otherGreenAttributes: '',
-            typeOfPublicSupport: ''
+            typeOfPublicSupport: '',
+            description: '',
+            images: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
