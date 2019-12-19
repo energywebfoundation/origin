@@ -1,5 +1,3 @@
-import { ConfigurationClient } from '@energyweb/origin-backend-client';
-
 import { EmailServiceProvider } from './services/email.service';
 import { MandrillEmailAdapter } from './email/mandrill.adapter';
 import { OriginEventListener } from './listeners/origin.listener';
@@ -15,7 +13,7 @@ const startEventListener = async (config: IEventListenerConfig) => {
     console.log(`[EVENT-LISTENER] Trying to get Market contract address`);
 
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await new ConfigurationClient().get(
+        storedMarketContractAddresses = await config.configurationClient.get(
             baseUrl,
             'MarketContractLookup'
         );
