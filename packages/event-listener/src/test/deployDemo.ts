@@ -321,8 +321,8 @@ export class Demo {
             typeOfPublicSupport: '',
             description: '',
             images: '',
-            region: '',
-            province: ''
+            region: 'Central',
+            province: 'Nakhon Pathom'
         };
 
         try {
