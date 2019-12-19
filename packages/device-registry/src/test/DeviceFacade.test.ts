@@ -12,7 +12,7 @@ import {
 } from '@energyweb/user-registry';
 import { Configuration } from '@energyweb/utils-general';
 
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
 import { logger } from '../Logger';
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
@@ -104,7 +104,8 @@ describe('Device Facade', () => {
                 },
                 offChainDataSource: {
                     baseUrl: `${process.env.BACKEND_URL}/api`,
-                    client: new OffChainDataClientMock()
+                    client: new OffChainDataClientMock(),
+                    configurationClient: new ConfigurationClientMock()
                 },
                 logger
             };

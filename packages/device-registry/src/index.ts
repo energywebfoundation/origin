@@ -5,18 +5,16 @@ import * as Contracts from './contracts';
 
 import DevicePropertiesOffChainSchema from '../schemas/DevicePropertiesOffChain.schema.json';
 import ProducingDevicePropertiesOffChainSchema from '../schemas/ProducingDevicePropertiesOffChain.schema.json';
-import { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 
-import { DeviceLogic } from './wrappedContracts/DeviceLogic';
-
+export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
+export { DeviceLogic } from './wrappedContracts/DeviceLogic';
+export { LocationService } from './utils/LocationService';
 export {
     Contracts,
     ProducingDevice,
     ConsumingDevice,
     Device,
-    DeviceLogic,
     DevicePropertiesOffChainSchema,
-    ProducingDevicePropertiesOffChainSchema,
-    createBlockchainProperties
+    ProducingDevicePropertiesOffChainSchema
 };
 
