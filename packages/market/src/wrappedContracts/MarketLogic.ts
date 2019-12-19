@@ -105,6 +105,17 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async fillDemandAt(
+        _demandId: string,
+        _certificateId: string,
+        _energy: number,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.fillDemandAt(_demandId, _certificateId, _energy);
+
+        return this.send(method, txParams);
+    }
+
     async fillAgreement(_demandId: string, _certificateId: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.fillAgreement(_demandId, _certificateId);
 

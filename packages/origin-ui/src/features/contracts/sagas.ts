@@ -240,10 +240,7 @@ async function getMarketContractLookupAddressFromAPI(
     baseURL: string
 ) {
     try {
-        const marketContracts: string[] = await configurationClient.get(
-            baseURL,
-            'MarketContractLookup'
-        );
+        const marketContracts = await configurationClient.get(baseURL, 'MarketContractLookup');
 
         if (marketContracts.length > 0) {
             return marketContracts[marketContracts.length - 1];
@@ -257,7 +254,7 @@ async function getMarketContractLookupAddressFromAPI(
 
 async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
     try {
-        const currencies: string[] = await configurationClient.get(baseURL, 'Currency');
+        const currencies = await configurationClient.get(baseURL, 'Currency');
 
         if (currencies.length > 0) {
             return currencies;
