@@ -52,6 +52,9 @@ describe('JsonEntity API tests', async () => {
                 await axios.get(`${BASE_API_URL}/Entity/${testHash}`);
             } catch (error) {
                 const { status, data } = error.response;
+                console.log(
+                    {errorLol: error}
+                )
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
                 assert.equal(data.error, StorageErrors.NON_EXISTENT);
                 failed = true;

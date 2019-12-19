@@ -5,27 +5,28 @@ import { Currency } from "../../entity/Currency";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export class CurrencyActions {
-    static async get(req: Request, res: Response) {
+import { IActions } from './IActions';
+
+export const CurrencyActions: IActions = {
+    get: async (req: Request, res: Response) => {
         console.log(`GET - Currency`);
         const currencyRepository = getRepository(Currency);
     
-        const currencies: Currency[] = await currencyRepository.find();
+        const currencies = await currencyRepository.find();
     
         res.send(
             currencies.map(currency => currency.code)
         );
-    }
-
-    static async post(req: Request, res: Response) {
+    },
+    post: async (req: Request, res: Response) => {
         let { value } = req.body;
         value = value.toUpperCase();
     
         console.log(`POST - Currency: ${value}`);
     
         const currencyRepository = getRepository(Currency);
-        const currencies: Currency[] = await currencyRepository.find();
-        const currencyCodes: string[] = currencies.map(currency => currency.code);
+        const currencies = await currencyRepository.find();
+        const currencyCodes = currencies.map(currency => currency.code);
     
         if (currencyCodes.includes(value)) {
             res.status(STATUS_CODES.SUCCESS).send({
@@ -43,16 +44,15 @@ export class CurrencyActions {
         res.status(STATUS_CODES.CREATED).send({
             message: `Currency ${value} created`
         });
-    }
-    
-    static async delete(req: Request, res: Response) {
+    },
+    delete: async (req: Request, res: Response) => {
         let { value } = req.body;
         value = value.toUpperCase();
     
         console.log(`DELETE - Currency ${value}`);
     
         const currencyRepository = getRepository(Currency);
-        const currency: Currency = await currencyRepository.findOne(value);
+        const currency = await currencyRepository.findOne(value);
     
         if (!currency) {
             res.status(STATUS_CODES.NOT_FOUND).send({

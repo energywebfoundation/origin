@@ -7,6 +7,7 @@ import { createConnection, Connection, ConnectionOptions } from 'typeorm';
 
 import ormConfig from '../ormconfig.json';
 
+import { Country } from './entity/Country';
 import { Currency } from './entity/Currency';
 import { Compliance } from './entity/Compliance';
 import { JsonEntity } from './entity/JsonEntity';
@@ -47,7 +48,7 @@ export async function startAPI(): Promise<http.Server> {
     }
 
     let connectionOptions: ConnectionOptions = Object.assign(ormConfig as ConnectionOptions, {
-        entities: [JsonEntity, MarketContractLookup, Currency, Compliance]
+        entities: [JsonEntity, MarketContractLookup, Currency, Compliance, Country]
     });
 
     const connection: Connection = await createConnection(connectionOptions);

@@ -5,27 +5,28 @@ import { MarketContractLookup } from "../../entity/MarketContractLookup";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export class MarketContractLookupActions {
-    static async get(req: Request, res: Response) {
+import { IActions } from './IActions';
+
+export const MarketContractLookupActions: IActions = {
+    get: async (req: Request, res: Response) => {
         console.log(`GET - MarketContractLookup`);
         const marketContractLookupRepository = getRepository(MarketContractLookup);
     
-        const contracts: MarketContractLookup[] = await marketContractLookupRepository.find();
+        const contracts = await marketContractLookupRepository.find();
     
         res.send(
             contracts.map(contract => contract.address)
         );
-    }
-
-    static async post(req: Request, res: Response) {
+    },
+    post: async (req: Request, res: Response) => {
         let { value } = req.body;
         value = value.toLowerCase();
     
         console.log(`POST - MarketContractLookup: ${value}`);
     
         const marketContractLookupRepository = getRepository(MarketContractLookup);
-        const marketContracts: MarketContractLookup[] = await marketContractLookupRepository.find();
-        const marketAddresses: string[] = marketContracts.map(contract => contract.address);
+        const marketContracts = await marketContractLookupRepository.find();
+        const marketAddresses = marketContracts.map(contract => contract.address);
     
         if (marketAddresses.includes(value)) {
             res.status(STATUS_CODES.SUCCESS).send({
@@ -43,16 +44,15 @@ export class MarketContractLookupActions {
         res.status(STATUS_CODES.CREATED).send({
             message: `MarketContractLookup ${value} created`
         });
-    }
-
-    static async delete(req: Request, res: Response) {
+    },
+    delete: async (req: Request, res: Response) => {
         let { value } = req.body;
         value = value.toLowerCase();
     
         console.log(`DELETE - MarketContractLookup ${value}`);
     
         const marketContractLookupRepository = getRepository(MarketContractLookup);
-        const marketContractLookup: MarketContractLookup = await marketContractLookupRepository.findOne(value);
+        const marketContractLookup = await marketContractLookupRepository.findOne(value);
     
         if (!marketContractLookup) {
             res.status(STATUS_CODES.NOT_FOUND).send({
