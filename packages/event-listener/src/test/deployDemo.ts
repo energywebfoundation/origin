@@ -320,7 +320,9 @@ export class Demo {
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             description: '',
-            images: ''
+            images: '',
+            region: '',
+            province: ''
         };
 
         try {

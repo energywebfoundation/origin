@@ -1,5 +1,5 @@
 import { ConsumingDevice, Device, ProducingDevice } from '@energyweb/device-registry';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 import { MarketUser } from '@energyweb/market';
 import { ConfigurationClient } from '@energyweb/origin-backend-client';
@@ -93,7 +93,9 @@ export const onboardDemo = async (
             typeOfPublicSupport: action.data.typeOfPublicSupport,
             facilityName: action.data.facilityName,
             description: '',
-            images: ''
+            images: '',
+            region: action.data.region,
+            province: action.data.province
         };
 
         try {
@@ -131,7 +133,9 @@ export const onboardDemo = async (
             operationalSince: action.data.operationalSince,
             facilityName: action.data.facilityName,
             description: '',
-            images: ''
+            images: '',
+            region: action.data.region,
+            province: action.data.province
         };
 
         try {

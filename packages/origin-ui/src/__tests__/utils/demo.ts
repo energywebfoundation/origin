@@ -213,7 +213,9 @@ export async function deployDemo() {
         otherGreenAttributes: '',
         typeOfPublicSupport: '',
         description: '',
-        images: ''
+        images: '',
+        region: 'Central',
+        province: 'Nakhon Pathom'
     };
 
     try {

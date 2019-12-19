@@ -1,5 +1,4 @@
 import { Moment } from 'moment';
-import { LocationService } from '@energyweb/utils-general';
 import { Device } from '@energyweb/device-registry';
 
 export function dataTest(value, name = 'data-test') {
@@ -71,29 +70,10 @@ export function formatDate(date: Moment) {
     return date.format(DATE_FORMAT_DMY);
 }
 
-const locationService = new LocationService();
-
 export const LOCATION_TITLE = 'Region, province';
 
 export function getDeviceLocationText(device: Device.Entity) {
-    try {
-        const decodedLocation = locationService.decode([
-            locationService.translateAddress(
-                device.offChainProperties.address,
-                device.offChainProperties.country
-            )
-        ])[0];
-
-        return decodedLocation.slice(1, 3).join(', ');
-    } catch (error) {
-        console.warn(
-            `Can't parse location of device with id: ${device.id}.`,
-            {
-                address: device?.offChainProperties?.address
-            },
-            error
-        );
-
-        return 'Unknown';
-    }
+    return [device?.offChainProperties?.region, device?.offChainProperties?.province]
+        .filter(i => i)
+        .join(', ');
 }

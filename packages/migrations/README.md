@@ -151,11 +151,9 @@ usage: command to onboard a new consuming device
 * <code>active</code>: flag if the the device is active
 * <code>lastSmartMeterReadFileHash</code>: the last filehash
 * <code>country</code>: the country where the device is located
+* <code>address</code>: the address where the device is located
 * <code>region</code>: the region where the device is located
-* <code>zip</code>: the zipcode of the city where the device is located
-* <code>city</code>: the city where the device is located
-* <code>street</code>: the street where the device is located
-* <code>houseNumber</code>: the housenumber of the device as string
+* <code>province</code>: the province where the device is located
 * <code>gpsLatitude</code>: the latitude of the device as string
 * <code>gpsLongitude</code>: the longitude of the device as string
 * <code>timezone</code>: the timezone of the device as string
@@ -202,20 +200,14 @@ usage: command to onboard a new producing device
 * <code>lastSmartMeterReadWh</code>: last meterreading in Wh
 * <code>status</code>: device status (Submitted, Denied, Active)
 * <code>lastSmartMeterReadFileHash</code>: last filehash
-* <code>country</code>: country where the device is located
-* <code>region</code>: region where the device is located
-* <code>zip</code>: zipcode of the city where the device is located
-* <code>city</code>: city where the device is located
-* <code>street</code>: street where the device is located
-* <code>houseNumber</code>: housenumber where the device is located as string
+* <code>country</code>: the country where the device is located
+* <code>address</code>: the address where the device is located
+* <code>region</code>: the region where the device is located
+* <code>province</code>: the province where the device is located
 * <code>gpsLatitude</code>: latitude of the device as string
 * <code>gpsLongitude</code>: longitude of the device as string
 * <code>timezone</code>: timezone of the device as string
-* <code>deviceType</code>: Type of device as string (Wind,
-    Solar,
-    RunRiverHydro,
-    BiomassGas)
-* <code>cO2UsedForCertificate</code>: amount of CO2 already used for certificates
+* <code>deviceType</code>: Type of device as string, eg. "Solar;Photovoltaic;Roof mounted"
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
 

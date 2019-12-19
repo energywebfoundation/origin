@@ -20,7 +20,9 @@ describe('ProducingDeviceTable', () => {
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             country: 'Thailand',
             capacityWh: 736123,
-            lastSmartMeterReadWh: 312
+            lastSmartMeterReadWh: 312,
+            region: 'Central',
+            province: 'Nakhon Pathom'
         });
 
         const rendered = mount(

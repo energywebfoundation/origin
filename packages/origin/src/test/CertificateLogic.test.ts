@@ -216,7 +216,9 @@ describe('CertificateLogic-Facade', () => {
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
             description: '',
-            images: ''
+            images: '',
+            region: '',
+            province: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

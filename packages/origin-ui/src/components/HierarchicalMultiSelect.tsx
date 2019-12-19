@@ -79,7 +79,7 @@ function filterSelected(
         return [];
     }
 
-    return types.filter(t => t.startsWith(currentType));
+    return types.filter(t => t.startsWith(`${currentType};`));
 }
 
 function valuesToSelectionOptions(types: EncodedValueType) {

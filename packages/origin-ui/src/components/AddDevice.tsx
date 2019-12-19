@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IRECDeviceService, Unit } from '@energyweb/utils-general';
+import { IRECDeviceService, Unit, THAILAND_REGIONS_PROVINCES_MAP } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -22,7 +22,7 @@ import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
-import { getCompliance } from '../features/general/selectors';
+import { getCompliance, getEnvironment } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
 import { CloudUpload } from '@material-ui/icons';
@@ -98,12 +98,15 @@ export function AddDevice() {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
+    const environment = useSelector(getEnvironment);
+
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
 
     const irecDeviceService = new IRECDeviceService();
 
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
     const [imagesUploadedList, setImagesUploadedList] = useState([]);
 
@@ -113,6 +116,9 @@ export function AddDevice() {
         createStyles({
             container: {
                 padding: '10px'
+            },
+            selectContainer: {
+                paddingTop: '10px'
             },
             fileUploadInput: {
                 display: 'none'
@@ -142,6 +148,8 @@ export function AddDevice() {
             url: null
         };
 
+        const [region, province] = selectedLocation;
+
         const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
             deviceType,
             complianceRegistry: compliance,
@@ -149,6 +157,8 @@ export function AddDevice() {
             capacityWh: parseFloat(values.capacity) * Unit.kW,
             country: DEFAULT_COUNTRY,
             address: values.address,
+            region,
+            province: province.split(';')[1],
             gpsLatitude: values.latitude,
             gpsLongitude: values.longitude,
             timezone: 'Asia/Bangkok',
@@ -195,7 +205,7 @@ export function AddDevice() {
         }
 
         try {
-            const response = await axios.post(`http://localhost:3030/api/Image`, formData, {
+            const response = await axios.post(`${environment.BACKEND_URL}/api/Image`, formData, {
                 headers: { 'Content-type': 'multipart/form-data' }
             });
 
@@ -228,7 +238,10 @@ export function AddDevice() {
 
                     const fieldDisabled = isSubmitting;
                     const buttonDisabled =
-                        isSubmitting || !isValid || selectedDeviceType.length === 0;
+                        isSubmitting ||
+                        !isValid ||
+                        selectedDeviceType.length === 0 ||
+                        selectedLocation.length < 2;
 
                     return (
                         <Form>
@@ -256,27 +269,31 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
-                                    <HierarchicalMultiSelect
-                                        selectedValue={selectedDeviceType}
-                                        onChange={(value: string[]) => setSelectedDeviceType(value)}
-                                        allValues={irecDeviceService.DeviceTypes}
-                                        selectOptions={[
-                                            {
-                                                label: 'Device type',
-                                                placeholder: 'Select device type'
-                                            },
-                                            {
-                                                label: 'Device type',
-                                                placeholder: 'Select device type'
-                                            },
-                                            {
-                                                label: 'Device type',
-                                                placeholder: 'Select device type'
+                                    <div className={classes.selectContainer}>
+                                        <HierarchicalMultiSelect
+                                            selectedValue={selectedDeviceType}
+                                            onChange={(value: string[]) =>
+                                                setSelectedDeviceType(value)
                                             }
-                                        ]}
-                                        disabled={fieldDisabled}
-                                        singleChoice={true}
-                                    />
+                                            allValues={irecDeviceService.DeviceTypes}
+                                            selectOptions={[
+                                                {
+                                                    label: 'Device type',
+                                                    placeholder: 'Select device type'
+                                                },
+                                                {
+                                                    label: 'Device type',
+                                                    placeholder: 'Select device type'
+                                                },
+                                                {
+                                                    label: 'Device type',
+                                                    placeholder: 'Select device type'
+                                                }
+                                            ]}
+                                            disabled={fieldDisabled}
+                                            singleChoice={true}
+                                        />
+                                    </div>
 
                                     <Field
                                         name="comissioningDate"
@@ -327,6 +344,27 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
+                                    <div className={classes.selectContainer}>
+                                        <HierarchicalMultiSelect
+                                            selectedValue={selectedLocation}
+                                            onChange={(value: string[]) =>
+                                                setSelectedLocation(value)
+                                            }
+                                            options={THAILAND_REGIONS_PROVINCES_MAP}
+                                            selectOptions={[
+                                                {
+                                                    label: 'Regions',
+                                                    placeholder: 'Select region'
+                                                },
+                                                {
+                                                    label: 'Provinces',
+                                                    placeholder: 'Select province'
+                                                }
+                                            ]}
+                                            singleChoice={true}
+                                            disabled={fieldDisabled}
+                                        />
+                                    </div>
                                     <FormControl
                                         fullWidth
                                         variant="filled"

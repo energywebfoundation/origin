@@ -265,7 +265,9 @@ const deployDevice = (config: Configuration.Entity) => {
         otherGreenAttributes: '',
         typeOfPublicSupport: '',
         description: '',
-        images: ''
+        images: '',
+        region: '',
+        province: ''
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);

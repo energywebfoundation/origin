@@ -365,7 +365,9 @@ describe('Market-Facade', () => {
             typeOfPublicSupport: '',
             facilityName: '',
             description: '',
-            images: ''
+            images: '',
+            region: '',
+            province: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

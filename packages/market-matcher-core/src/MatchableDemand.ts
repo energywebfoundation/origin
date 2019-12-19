@@ -98,10 +98,7 @@ export class MatchableDemand {
         }
 
         try {
-            const matchableLocation = this.locationService.translateAddress(
-                device.offChainProperties.address,
-                device.offChainProperties.country
-            );
+            const matchableLocation = `${device.offChainProperties.country};${device.offChainProperties.region};${device.offChainProperties.province}`;
 
             return this.locationService.matches(
                 this.demand.offChainProperties.location,
