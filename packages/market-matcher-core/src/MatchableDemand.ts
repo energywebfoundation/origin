@@ -1,6 +1,6 @@
-import { ProducingDevice } from '@energyweb/device-registry';
+import { ProducingDevice, LocationService } from '@energyweb/device-registry';
 import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
@@ -8,9 +8,7 @@ import { MatchingErrorReason } from './MatchingErrorReason';
 export class MatchableDemand {
     private deviceService = new IRECDeviceService();
 
-    private locationService = new LocationService();
-
-    constructor(public demand: Demand.IDemand) {}
+    constructor(public demand: Demand.IDemand, private locationService: LocationService) {}
 
     public async matchesCertificate(
         certificate: PurchasableCertificate.IPurchasableCertificate,

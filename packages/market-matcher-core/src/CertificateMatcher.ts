@@ -1,6 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import * as Winston from 'winston';
-import { ProducingDevice } from '@energyweb/device-registry';
+import { ProducingDevice, LocationService } from '@energyweb/device-registry';
 import { Demand, Agreement, PurchasableCertificate } from '@energyweb/market';
 
 import { IEntityStore } from './interface/IEntityStore';
@@ -15,6 +15,7 @@ export class CertificateMatcher {
         private config: Configuration.Entity,
         private entityStore: IEntityStore,
         private certificateService: CertificateService,
+        private locationService: LocationService,
         private strategy: IStrategy,
         private logger: Winston.Logger
     ) {}
@@ -142,7 +143,9 @@ export class CertificateMatcher {
             this.config
         ).sync();
 
-        const demands = this.entityStore.getDemands().map(demand => new MatchableDemand(demand));
+        const demands = this.entityStore
+            .getDemands()
+            .map(demand => new MatchableDemand(demand, this.locationService));
 
         this.logger.verbose(
             `[Certificate #${certificate.id}] Found ${(demands || []).length} demands`
