@@ -25,7 +25,7 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
@@ -182,15 +182,26 @@ const deploy = async () => {
         },
         offChainDataSource: {
             baseUrl: `${process.env.BACKEND_URL}/api`,
-            client: new OffChainDataClientMock()
+            client: new OffChainDataClientMock(),
+            configurationClient: new ConfigurationClientMock()
         },
         logger
     };
+
+    await config.offChainDataSource.configurationClient.add(
+        config.offChainDataSource.baseUrl,
+        'Country',
+        {
+            name: 'Thailand',
+            regions: { Central: ['Nakhon Pathom'] }
+        }
+    );
 
     const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
         offChainDataSourceClient: config.offChainDataSource.client,
+        configurationClient: config.offChainDataSource.configurationClient,
         marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,
