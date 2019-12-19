@@ -122,6 +122,10 @@ export async function deployDemo() {
         marketContractLookup.toLowerCase()
     );
     await configurationClient.add(BACKEND_URL, 'Currency', 'USD');
+    await configurationClient.add(BACKEND_URL, 'Country', {
+        name: 'Thailand',
+        regions: { Central: ['Nakhon Pathom'] }
+    });
 
     const conf: IStoreState['configuration'] = {
         blockchainProperties: {
@@ -137,7 +141,8 @@ export async function deployDemo() {
         },
         offChainDataSource: {
             baseUrl: `${BACKEND_URL}/api`,
-            client: offChainDataClient
+            client: offChainDataClient,
+            configurationClient
         },
         logger
     };

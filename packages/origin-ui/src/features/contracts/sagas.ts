@@ -45,6 +45,7 @@ async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
     offChainDataClient: IOffChainDataClient,
+    configurationClient: IConfigurationClient,
     baseURL: string,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
@@ -78,7 +79,8 @@ async function initConf(
         blockchainProperties,
         offChainDataSource: {
             baseUrl: baseURL,
-            client: offChainDataClient
+            client: offChainDataClient,
+            configurationClient
         },
         logger: Winston.createLogger({
             level: 'verbose',
@@ -299,12 +301,14 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         let configuration: IStoreState['configuration'];
         try {
             const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
+            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
             configuration = yield call(
                 initConf,
                 marketContractLookupAddress,
                 routerSearch,
                 offChainDataClient,
+                configurationClient,
                 baseURL,
                 environment.WEB3
             );

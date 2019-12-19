@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IRECDeviceService, Unit, THAILAND_REGIONS_PROVINCES_MAP } from '@energyweb/utils-general';
+import { IRECDeviceService, Unit } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -22,7 +22,7 @@ import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
-import { getCompliance, getEnvironment } from '../features/general/selectors';
+import { getCompliance, getEnvironment, getRegions } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
 import { CloudUpload } from '@material-ui/icons';
@@ -225,6 +225,8 @@ export function AddDevice() {
         return <Skeleton variant="rect" height={200} />;
     }
 
+    const regions = useSelector(getRegions);
+
     return (
         <Paper className={classes.container}>
             <Formik
@@ -350,7 +352,7 @@ export function AddDevice() {
                                             onChange={(value: string[]) =>
                                                 setSelectedLocation(value)
                                             }
-                                            options={THAILAND_REGIONS_PROVINCES_MAP}
+                                            options={regions}
                                             selectOptions={[
                                                 {
                                                     label: 'Regions',

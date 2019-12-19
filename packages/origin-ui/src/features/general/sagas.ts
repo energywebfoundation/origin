@@ -8,7 +8,9 @@ import {
     IEnvironment,
     GeneralActions,
     setCurrencies,
-    setCompliance
+    setCompliance,
+    setCountry,
+    setRegions
 } from './actions';
 import { getConfiguration } from '../selectors';
 import {
@@ -108,6 +110,14 @@ async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, b
     }
 }
 
+async function getCountryFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+    try {
+        return configurationClient.get(baseURL, 'Country');
+    } catch {
+        return null;
+    }
+}
+
 function* setupEnvironment(): SagaIterator {
     const environment: IEnvironment = yield call(getENV);
 
@@ -158,11 +168,33 @@ function* fillCompliance(): SagaIterator {
     }
 }
 
+function* fillCountryAndRegions(): SagaIterator {
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        if (!environment) {
+            return;
+        }
+
+        const baseURL = `${environment.BACKEND_URL}/api`;
+
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+        const { name, regions } = yield call(getCountryFromAPI, configurationClient, baseURL);
+
+        yield put(setCountry(name));
+        yield put(setRegions(regions));
+    }
+}
+
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
         fork(setupEnvironment),
         fork(fillCurrency),
-        fork(fillCompliance)
+        fork(fillCompliance),
+        fork(fillCountryAndRegions)
     ]);
 }

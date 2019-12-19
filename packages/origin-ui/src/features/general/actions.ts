@@ -12,7 +12,9 @@ export enum GeneralActions {
     setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setCurrencies = 'GENERAL_SET_CURRENCIES',
-    setCompliance = 'GENERAL_SET_COMPLIANCE'
+    setCompliance = 'GENERAL_SET_COMPLIANCE',
+    setCountry = 'GENERAL_SET_COUNTRY',
+    setRegions = 'GENERAL_SET_REGIONS'
 }
 
 export interface IEnvironment {
@@ -163,6 +165,30 @@ export const setCompliance = (payload: ISetComplianceAction['payload']) => ({
 
 export type TSetCompliance = typeof setCompliance;
 
+export interface ISetCountryAction {
+    type: GeneralActions.setCountry;
+    payload: string;
+}
+
+export const setCountry = (payload: ISetCountryAction['payload']) => ({
+    type: GeneralActions.setCountry,
+    payload
+});
+
+export type TSetCountry = typeof setCountry;
+
+export interface ISetRegionsAction {
+    type: GeneralActions.setRegions;
+    payload: object;
+}
+
+export const setRegions = (payload: ISetRegionsAction['payload']) => ({
+    type: GeneralActions.setRegions,
+    payload
+});
+
+export type TSetRegions = typeof setRegions;
+
 export type IGeneralAction =
     | IShowAccountChangedModalAction
     | IHideAccountChangedModalAction
@@ -175,4 +201,6 @@ export type IGeneralAction =
     | ISetConfigurationClientAction
     | ISetEnvironmentAction
     | ISetCurrenciesAction
-    | ISetComplianceAction;
+    | ISetComplianceAction
+    | ISetCountryAction
+    | ISetRegionsAction;

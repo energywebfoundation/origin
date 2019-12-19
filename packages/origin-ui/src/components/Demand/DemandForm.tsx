@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Role } from '@energyweb/user-registry';
-import {
-    TimeFrame,
-    THAILAND_REGIONS_PROVINCES_MAP,
-    IRECDeviceService
-} from '@energyweb/utils-general';
+import { TimeFrame, IRECDeviceService } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Paper,
@@ -20,6 +16,7 @@ import {
 import { dataTest } from '../../utils/helper';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
+import { getRegions, getCurrencies } from '../../features/general/selectors';
 import './DemandForm.scss';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import moment, { Moment } from 'moment';
@@ -32,7 +29,7 @@ import { useLinks } from '../../utils/routing';
 import { FormikDatePicker } from '../FormikDatePicker';
 import { getCurrentUser } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
-import { getCurrencies } from '../../features/general/selectors';
+
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
 
@@ -262,6 +259,8 @@ export function DemandForm(props: IProps) {
     } else if (!readOnly) {
         submitButtonText = 'Create demand';
     }
+
+    const regions = useSelector(getRegions);
 
     return (
         <Paper className="DemandForm">
@@ -528,7 +527,7 @@ export function DemandForm(props: IProps) {
                                     <HierarchicalMultiSelect
                                         selectedValue={selectedLocation}
                                         onChange={(value: string[]) => setSelectedLocation(value)}
-                                        options={THAILAND_REGIONS_PROVINCES_MAP}
+                                        options={regions}
                                         selectOptions={[
                                             {
                                                 label: 'Regions',

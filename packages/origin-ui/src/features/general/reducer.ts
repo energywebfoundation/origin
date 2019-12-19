@@ -19,6 +19,8 @@ export interface IGeneralState {
     environment: IEnvironment;
     currencies: string[];
     compliance: string;
+    country: string;
+    regions: object;
 }
 
 const defaultState: IGeneralState = {
@@ -33,7 +35,9 @@ const defaultState: IGeneralState = {
     configurationClient: new ConfigurationClient(),
     environment: null,
     currencies: [],
-    compliance: null
+    compliance: null,
+    country: null,
+    regions: {}
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -102,6 +106,12 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
 
         case GeneralActions.setCompliance:
             return { ...state, compliance: action.payload };
+
+        case GeneralActions.setCountry:
+            return { ...state, country: action.payload };
+
+        case GeneralActions.setRegions:
+            return { ...state, regions: action.payload };
 
         default:
             return state;

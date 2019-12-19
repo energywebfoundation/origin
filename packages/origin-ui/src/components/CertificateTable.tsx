@@ -1,4 +1,4 @@
-import { ProducingDevice } from '@energyweb/device-registry';
+import { ProducingDevice, LocationService } from '@energyweb/device-registry';
 import { Certificate } from '@energyweb/origin';
 import {
     Demand,
@@ -7,7 +7,7 @@ import {
     Contracts as MarketContracts
 } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import { Configuration, TimeFrame, LocationService } from '@energyweb/utils-general';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { ReactNode } from 'react';
@@ -97,7 +97,7 @@ export enum SelectedState {
 }
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
-    private locationService = new LocationService();
+    private locationService: LocationService;
 
     constructor(props: Props) {
         super(props);
@@ -130,6 +130,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     }
 
     async componentDidMount() {
+        const { configurationClient, baseUrl } = this.props.configuration.offChainDataSource;
+        const { name, regions } = await configurationClient.get(baseUrl, 'Country');
+        this.locationService = new LocationService(name, regions);
+
         if (this.props.selectedState === SelectedState.ForDemand && this.props.demand) {
             await this.initMatchingCertificates(this.props.demand);
         }
@@ -239,7 +243,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     async initMatchingCertificates(demand: Demand.Entity) {
         const { certificates, configuration } = this.props;
 
-        const matchableDemand = new MatchableDemand(demand);
+        const matchableDemand = new MatchableDemand(demand, this.locationService);
         const find = async certificate => {
             const producingDevice = await new ProducingDevice.Entity(
                 certificate.certificate.deviceId.toString(),
