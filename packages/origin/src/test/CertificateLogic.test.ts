@@ -16,7 +16,7 @@ import {
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 import { deployERC721TestReceiver } from './deploy';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
 
@@ -136,7 +136,8 @@ describe('CertificateLogic-Facade', () => {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock()
+                client: new OffChainDataClientMock(),
+                configurationClient: new ConfigurationClientMock()
             },
             logger
         };
