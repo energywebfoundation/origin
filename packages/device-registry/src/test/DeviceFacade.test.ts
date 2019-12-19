@@ -137,7 +137,9 @@ describe('Device Facade', () => {
                 typeOfPublicSupport: '',
                 facilityName: FACILITY_NAME,
                 description: '',
-                images: ''
+                images: '',
+                region: '',
+                province: ''
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
@@ -200,7 +202,9 @@ describe('Device Facade', () => {
                     typeOfPublicSupport: '',
                     facilityName: 'Wuthering Heights Windfarm',
                     description: '',
-                    images: ''
+                    images: '',
+                    region: '',
+                    province: ''
                 }
             } as Partial<ProducingDevice.Entity>);
         });
@@ -251,7 +255,9 @@ describe('Device Facade', () => {
                 timezone: 'Asia/Bangkok',
                 facilityName: FACILITY_NAME,
                 description: '',
-                images: ''
+                images: '',
+                region: '',
+                province: ''
             };
 
             assert.equal(await ConsumingDevice.getDeviceListLength(conf), 0);
@@ -310,7 +316,9 @@ describe('Device Facade', () => {
                     timezone: 'Asia/Bangkok',
                     facilityName: 'Wuthering Heights Windfarm',
                     description: '',
-                    images: ''
+                    images: '',
+                    region: '',
+                    province: ''
                 }
             } as Partial<ConsumingDevice.Entity>);
         });
