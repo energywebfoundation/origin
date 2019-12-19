@@ -18,7 +18,7 @@ import {
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -125,7 +125,8 @@ describe('Market-Facade', () => {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock()
+                client: new OffChainDataClientMock(),
+                configurationClient: new ConfigurationClientMock()
             },
             logger
         };
