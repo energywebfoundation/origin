@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.2...@energyweb/market-matcher@2.1.0) (2019-12-19)
+
+
+### Bug Fixes
+
+* **market-matcher:** use fillAt ([4f57770](https://github.com/energywebfoundation/origin/commit/4f577702b3ab68f20e8c0a7ad46a083aaf74f57b))
+
+
+### Features
+
+* **market-matcher:** startup account check ([5c9364c](https://github.com/energywebfoundation/origin/commit/5c9364c40f2b95f63489f315abb6bfc2d4ae54de))
+
+
+
+
+
 ## [2.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.1...@energyweb/market-matcher@2.0.2) (2019-12-17)
 
 

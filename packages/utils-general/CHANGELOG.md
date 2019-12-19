@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@2.1.0...@energyweb/utils-general@3.0.0) (2019-12-19)
+
+
+### chore
+
+* **utils-general:** replace Compliance enums with a type ([603502c](https://github.com/energywebfoundation/origin/commit/603502c40bf4b7fa467fb7e51495365af0a4923a))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** The Compliance enum has been replaced with a simple string-based compliance definition
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@2.0.0...@energyweb/utils-general@2.1.0) (2019-12-17)
 
 

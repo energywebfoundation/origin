@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.1.0...@energyweb/origin-backend-client@2.2.0) (2019-12-19)
+
+
+### Features
+
+* **origin-backend-client:** add Compliance support ([cfdea37](https://github.com/energywebfoundation/origin/commit/cfdea373dcc7181e7665bb9dfcdb961b314513ca))
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.0.0...@energyweb/origin-backend-client@2.1.0) (2019-12-17)
 
 

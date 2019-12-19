@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.1.0...@energyweb/market@3.2.0) (2019-12-19)
+
+
+### Features
+
+* **market:** fill demand at given energy amount ([37e7083](https://github.com/energywebfoundation/origin/commit/37e70835109b88703d916c665846ea8aaa0f8b39))
+
+
+
+
+
 # [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.0.0...@energyweb/market@3.1.0) (2019-12-17)
 
 

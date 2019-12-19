@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@2.1.0...@energyweb/origin-backend@3.0.0) (2019-12-19)
+
+
+### Features
+
+* **origin-backend:** Change the way we approach POST methods + add a Compliance endpoint ([f7da2d5](https://github.com/energywebfoundation/origin/commit/f7da2d5c118a9169a123201375a254e5a203bedf))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** Changed the way we approach POST methods. Use request body parameters instead of in-URL parameters
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@2.0.0...@energyweb/origin-backend@2.1.0) (2019-12-17)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.1...@energyweb/solar-simulator@1.0.2) (2019-12-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency concurrently to v5.0.2 ([2886174](https://github.com/energywebfoundation/origin/commit/28861748bcac8d8008ddcd9f0f7d3436a1c0f8ed))
+
+
+
+
+
 ## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.0...@energyweb/solar-simulator@1.0.1) (2019-12-17)
 
 **Note:** Version bump only for package @energyweb/solar-simulator
