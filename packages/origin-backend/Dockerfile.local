@@ -1,7 +1,7 @@
 FROM node:12-alpine
 
 RUN apk --no-cache add make gcc g++ python
-RUN npm i -g yarn
+RUN npm i -g yarn --force
 
 WORKDIR /repo
 
