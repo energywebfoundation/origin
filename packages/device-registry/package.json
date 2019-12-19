@@ -22,7 +22,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn build:ts",
+    "build": "yarn build:static && yarn build:ts",
     "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build && yarn deploy-contracts",

@@ -20,12 +20,19 @@ describe('ProducingDeviceTable', () => {
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             country: 'Thailand',
             capacityWh: 736123,
-            lastSmartMeterReadWh: 312
+            lastSmartMeterReadWh: 312,
+            region: 'Central',
+            province: 'Nakhon Pathom'
         });
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>
-                <ProducingDeviceTable />
+                <ProducingDeviceTable
+                    hiddenColumns={['status']}
+                    actions={{
+                        requestCertificates: true
+                    }}
+                />
             </WrapperComponent>
         );
 
@@ -38,14 +45,14 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             'Example Organization',
             'Wuthering Heights facility',
-            'Nakhon Pathom, Central',
+            'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777',
             // next device
             'Example Organization',
             'Biomass Energy Facility',
-            'Nakhon Pathom, Central',
+            'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
             '736.123',
             '0.312'
@@ -53,7 +60,9 @@ describe('ProducingDeviceTable', () => {
 
         assertPagination(1, 2, 2);
 
-        const searchInput = rendered.find(`${dataTestSelector('Search-textfield')} input`);
+        const searchInput = rendered.find(
+            `${dataTestSelector(`Search by facility name and organization-textfield`)} input`
+        );
 
         searchInput.simulate('change', { target: { value: 'Biomass' } });
 
@@ -62,7 +71,7 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             'Example Organization',
             'Biomass Energy Facility',
-            'Nakhon Pathom, Central',
+            'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
             '736.123',
             '0.312'
@@ -77,7 +86,7 @@ describe('ProducingDeviceTable', () => {
         assertMainTableContent([
             'Example Organization',
             'Wuthering Heights facility',
-            'Nakhon Pathom, Central',
+            'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
             '9,876.543',
             '7.777'

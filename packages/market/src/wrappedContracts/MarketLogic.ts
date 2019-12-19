@@ -136,7 +136,8 @@ export class MarketLogic extends GeneralFunctions {
         _propertiesDocumentHash: string,
         _documentDBURL: string,
         _deviceId: number,
-        txParams?: ISpecialTx
+        txParams?: ISpecialTx,
+        skipGasEstimation = false
     ) {
         const method = this.web3Contract.methods.createSupply(
             _propertiesDocumentHash,
@@ -144,7 +145,7 @@ export class MarketLogic extends GeneralFunctions {
             _deviceId
         );
 
-        return this.send(method, txParams);
+        return this.send(method, txParams, skipGasEstimation);
     }
 
     async getAgreement(_agreementId: number, txParams?: ISpecialTx) {

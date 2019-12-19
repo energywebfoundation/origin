@@ -30,7 +30,11 @@ export function usePaginatedLoader<T>({
     const [total, setTotal] = useState(PAGINATED_LOADER_INITIAL_STATE.total);
     const [pageSize, setPageSize] = useState(initialPageSize);
 
-    async function loadPage(page: number, filters?: ICustomFilter[]) {
+    async function loadPage(
+        page: number,
+        filters?: ICustomFilter[],
+        checkIsMounted?: () => boolean
+    ) {
         const offset = (page - 1) * pageSize;
 
         const { paginatedData: newPaginatedData, total: newTotal } = await getPaginatedData({
@@ -39,8 +43,10 @@ export function usePaginatedLoader<T>({
             filters
         });
 
-        setPaginatedData(newPaginatedData);
-        setTotal(newTotal);
+        if (!checkIsMounted || checkIsMounted()) {
+            setPaginatedData(newPaginatedData);
+            setTotal(newTotal);
+        }
     }
 
     return {

@@ -5,13 +5,22 @@ import {
     hideAccountChangedModal,
     showAccountChangedModal,
     setEnvironment,
-    IEnvironment
+    IEnvironment,
+    GeneralActions,
+    setCurrencies,
+    setCompliance
 } from './actions';
 import { getConfiguration } from '../selectors';
-import { getAccountChangedModalVisible, getAccountChangedModalEnabled } from './selectors';
+import {
+    getAccountChangedModalVisible,
+    getAccountChangedModalEnabled,
+    getEnvironment,
+    getConfigurationClient
+} from './selectors';
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
 import axios from 'axios';
+import { IConfigurationClient } from '@energyweb/origin-backend-client';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -77,12 +86,83 @@ async function getENV(): Promise<IEnvironment> {
     };
 }
 
+async function getComplianceFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+    try {
+        return configurationClient.get(baseURL, 'Compliance');
+    } catch {
+        return null;
+    }
+}
+
+async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+    try {
+        const currencies = await configurationClient.get(baseURL, 'Currency');
+
+        if (currencies.length > 0) {
+            return currencies;
+        }
+
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 function* setupEnvironment(): SagaIterator {
     const environment: IEnvironment = yield call(getENV);
 
     yield put(setEnvironment(environment));
 }
 
+function* fillCurrency(): SagaIterator {
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        if (!environment) {
+            return;
+        }
+
+        const baseURL = `${environment.BACKEND_URL}/api`;
+
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+        const currencies = yield call(getCurrenciesFromAPI, configurationClient, baseURL);
+
+        yield put(
+            setCurrencies({
+                currencies
+            })
+        );
+    }
+}
+
+function* fillCompliance(): SagaIterator {
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        if (!environment) {
+            return;
+        }
+
+        const baseURL = `${environment.BACKEND_URL}/api`;
+
+        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+
+        const compliance = yield call(getComplianceFromAPI, configurationClient, baseURL);
+
+        yield put(setCompliance(compliance));
+    }
+}
+
 export function* generalSaga(): SagaIterator {
-    yield all([fork(showAccountChangedModalOnChange), fork(setupEnvironment)]);
+    yield all([
+        fork(showAccountChangedModalOnChange),
+        fork(setupEnvironment),
+        fork(fillCurrency),
+        fork(fillCompliance)
+    ]);
 }

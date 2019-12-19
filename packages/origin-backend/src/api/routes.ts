@@ -1,14 +1,15 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
 import { MarketContractLookupActions } from './controller/MarketContractLookupActions';
 import { JsonEntityActions } from './controller/JsonEntityActions';
 import { CurrencyActions } from './controller/CurrencyActions';
 import { ComplianceActions } from './controller/ComplianceActions';
+import { imagePostActions } from './controller/ImagePost';
 
 export interface IRoute {
     path: string;
     method: string;
-    action: (req: Request, res: Response) => Promise<void>;
+    actions: Array<RequestHandler>;
 }
 
 /**
@@ -18,61 +19,66 @@ export const AppRoutes: IRoute[] = [
     {
         path: '/MarketContractLookup',
         method: 'get',
-        action: MarketContractLookupActions.get
+        actions: [MarketContractLookupActions.get]
     },
     {
         path: '/MarketContractLookup',
         method: 'post',
-        action: MarketContractLookupActions.post
+        actions: [MarketContractLookupActions.post]
     },
     {
         path: '/MarketContractLookup',
         method: 'delete',
-        action: MarketContractLookupActions.delete
+        actions: [MarketContractLookupActions.delete]
     },
     {
         path: '/Entity/:hash?',
         method: 'get',
-        action: JsonEntityActions.get
+        actions: [JsonEntityActions.get]
     },
     {
         path: '/Entity/:hash',
         method: 'post',
-        action: JsonEntityActions.post
+        actions: [JsonEntityActions.post]
     },
     {
         path: '/Entity/:hash',
         method: 'delete',
-        action: JsonEntityActions.delete
+        actions: [JsonEntityActions.delete]
     },
     {
         path: '/Currency',
         method: 'get',
-        action: CurrencyActions.get
+        actions: [CurrencyActions.get]
     },
     {
         path: '/Currency',
         method: 'post',
-        action: CurrencyActions.post
+        actions: [CurrencyActions.post]
     },
     {
         path: '/Currency',
         method: 'delete',
-        action: CurrencyActions.delete
+        actions: [CurrencyActions.delete]
     },
     {
         path: '/Compliance',
         method: 'get',
-        action: ComplianceActions.get
+        actions: [ComplianceActions.get]
     },
     {
         path: '/Compliance',
         method: 'post',
-        action: ComplianceActions.post
+        actions: [ComplianceActions.post]
     },
     {
         path: '/Compliance',
         method: 'delete',
-        action: ComplianceActions.delete
+        actions: [ComplianceActions.delete]
+    },
+    {
+        path: '/Image',
+        method: 'post',
+        actions: imagePostActions
     }
 ];

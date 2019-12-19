@@ -1,45 +1,4 @@
-import { THAILAND_REGIONS_PROVINCES_MAP } from './Location';
-
 export class LocationService {
-    public translateAddress(address: string, country: string) {
-        if (country !== 'Thailand') {
-            throw new Error('Not implemented');
-        }
-
-        const clean = this.clear(address);
-
-        const zipRegex = /[0-9]{5}/;
-        const split = clean.split(',').reverse();
-        const provinceWithZip = (split[0] || '').trim();
-
-        const matchZipResult = provinceWithZip.match(zipRegex);
-        const zip = matchZipResult ? matchZipResult[0].trim() : '';
-
-        const splitResult = provinceWithZip.split(zipRegex);
-
-        const province = zip
-            ? (splitResult[0]?.trim() || splitResult[1]?.trim() || '').trim()
-            : provinceWithZip || '';
-
-        for (const [region, provinces] of Object.entries(THAILAND_REGIONS_PROVINCES_MAP)) {
-            const included = provinces.some(p => p === province);
-
-            if (included) {
-                return `${country};${region};${province}`;
-            }
-
-            const alternativeProvince =
-                provinces.find(p => province.includes(p)) ||
-                provinces.find(p => p.includes(province));
-
-            if (alternativeProvince) {
-                return `${country};${region};${alternativeProvince}`;
-            }
-        }
-
-        throw new Error('unable to translate address');
-    }
-
     public matches(currentLocation: string[], checkedLocation: string) {
         const highestSpecificityTypes = this.filterForHighestSpecificity(
             currentLocation
@@ -56,12 +15,6 @@ export class LocationService {
 
     public decode(encoded: string[]): string[][] {
         return encoded.map(item => item.split(';'));
-    }
-
-    private clear(input: string) {
-        const terms = [['Nakhon Province', 'Nakhon Pathom']];
-
-        return terms.reduce((res, term) => `${res}`.replace(term[0], term[1] || ''), input);
     }
 
     private filterForHighestSpecificity(types: string[]): string[] {

@@ -19,7 +19,7 @@ import {
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
-import { getCurrencies } from '../../features/contracts/selectors';
+import { getCurrencies } from '../../features/general/selectors';
 import { setLoading } from '../../features/general/actions';
 
 interface IProps {
