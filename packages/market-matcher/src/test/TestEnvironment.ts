@@ -266,8 +266,8 @@ const deployDevice = (config: Configuration.Entity) => {
         typeOfPublicSupport: '',
         description: '',
         images: '',
-        region: '',
-        province: ''
+        region: 'Central',
+        province: 'Nakhon Pathom'
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
