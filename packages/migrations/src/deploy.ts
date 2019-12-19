@@ -22,15 +22,22 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         path: envFile
     });
 
+    const { currencies, country, complianceRegistry } = JSON.parse(fs.readFileSync(configFilePath, 'utf8').toString());
+
+    if (!country) {
+        throw new Error('Please specify a country in the format: { name: "countryName", regions: {} }')
+    } else if (currencies.length < 1) {
+        throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
+    }
+    
     const client = new ConfigurationClient();
 
-    const demoConfig = JSON.parse(fs.readFileSync(configFilePath ?? './config/demo-config.json', 'utf8').toString());
-    
-    for (const currency of demoConfig.currencies) {
+    await client.add(`${process.env.BACKEND_URL}/api`, 'Compliance', complianceRegistry ?? 'none');
+    await client.add(`${process.env.BACKEND_URL}/api`, 'Country', country);
+    for (const currency of currencies) {
         await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
     }
 
-    await client.add(`${process.env.BACKEND_URL}/api`, 'Compliance', demoConfig.complianceRegistry ?? 'none');
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo(configFilePath, contractConfig);
