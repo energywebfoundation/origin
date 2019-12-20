@@ -11,7 +11,6 @@ import iconMarine from '../../assets/icon_marine.svg';
 import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/helper';
 import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceMap } from './DeviceMap';
@@ -105,15 +104,11 @@ export function ProducingDeviceDetailView(props: IProps) {
                     data: owner ? owner.organization : ''
                 },
                 {
-                    label:
-                        'Certified by Registry' +
-                        getOffChainText('complianceRegistry', selectedDevice.offChainProperties),
+                    label: 'Certified by Registry',
                     data: selectedDevice.offChainProperties.complianceRegistry
                 },
                 {
-                    label:
-                        'Other Green Attributes' +
-                        getOffChainText('otherGreenAttributes', selectedDevice.offChainProperties),
+                    label: 'Other Green Attributes',
                     data: selectedDevice.offChainProperties.otherGreenAttributes
                 }
             ],
@@ -127,23 +122,17 @@ export function ProducingDeviceDetailView(props: IProps) {
                     rowspan: 2
                 },
                 {
-                    label:
-                        'Meter Read' +
-                        getOffChainText('lastSmartMeterReadWh', selectedDevice.offChainProperties),
+                    label: 'Meter Read',
                     data: (selectedDevice.lastSmartMeterReadWh / 1000).toLocaleString(),
                     tip: 'kWh'
                 },
                 {
-                    label:
-                        'Public Support' +
-                        getOffChainText('typeOfPublicSupport', selectedDevice.offChainProperties),
+                    label: 'Public Support',
                     data: selectedDevice.offChainProperties.typeOfPublicSupport,
                     description: ''
                 },
                 {
-                    label:
-                        'Commissioning Date' +
-                        getOffChainText('operationalSince', selectedDevice.offChainProperties),
+                    label: 'Commissioning Date',
                     data: moment(selectedDevice.offChainProperties.operationalSince * 1000).format(
                         'MMM YY'
                     )
@@ -151,16 +140,12 @@ export function ProducingDeviceDetailView(props: IProps) {
             ],
             [
                 {
-                    label:
-                        'Nameplate Capacity' +
-                        getOffChainText('capacityWh', selectedDevice.offChainProperties),
+                    label: 'Nameplate Capacity',
                     data: (selectedDevice.offChainProperties.capacityWh / 1000).toLocaleString(),
                     tip: 'kW'
                 },
                 {
-                    label:
-                        'Geo Location' +
-                        getOffChainText('gpsLatitude', selectedDevice.offChainProperties),
+                    label: 'Geo Location',
                     data:
                         selectedDevice.offChainProperties.gpsLatitude +
                         ', ' +

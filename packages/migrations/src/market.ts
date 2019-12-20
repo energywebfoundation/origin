@@ -48,7 +48,8 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
         },
         offChainDataSource: {
             baseUrl: `${process.env.BACKEND_URL}/api`,
-            client: new OffChainDataClient()
+            client: new OffChainDataClient(),
+            configurationClient: new ConfigurationClient()
         },
         logger
     };
@@ -112,9 +113,8 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
 
-    const client = new ConfigurationClient();
-    const currencies = await client.get(conf.offChainDataSource.baseUrl, 'Currency');
-    const complianceRegistry = await client.get(conf.offChainDataSource.baseUrl, 'Compliance');
+    const currencies = await conf.offChainDataSource.configurationClient.get(conf.offChainDataSource.baseUrl, 'Currency');
+    const complianceRegistry = await conf.offChainDataSource.configurationClient.get(conf.offChainDataSource.baseUrl, 'Compliance');
 
     for (const action of actionsArray) {
         switch (action.type) {

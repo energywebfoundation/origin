@@ -1,6 +1,5 @@
 export enum ContractsActions {
-    setMarketContractLookupAddress = 'CONTRACTS_SET_MARKET_CONTRACT_LOOKUP_ADDRESS',
-    setCurrencies = 'MARKET_CURRENCIES'
+    setMarketContractLookupAddress = 'CONTRACTS_SET_MARKET_CONTRACT_LOOKUP_ADDRESS'
 }
 
 export interface ISetMarketContractLookupAddressAction {
@@ -11,13 +10,6 @@ export interface ISetMarketContractLookupAddressAction {
     };
 }
 
-export interface ISetCurrenciesAction {
-    type: ContractsActions.setCurrencies;
-    payload: {
-        currencies: string[];
-    };
-}
-
 export const setMarketContractLookupAddress = (
     payload: ISetMarketContractLookupAddressAction['payload']
 ) => ({
@@ -25,15 +17,9 @@ export const setMarketContractLookupAddress = (
     payload
 });
 
-export const setCurrencies = (payload: ISetCurrenciesAction['payload']) => ({
-    type: ContractsActions.setCurrencies,
-    payload
-});
-
 export type TSetMarketContractLookupAddress = typeof setMarketContractLookupAddress;
-export type TSetCurrencies = typeof setCurrencies;
 
 export const MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY =
     'CONTRACTS_MARKET_CONTRACT_LOOKUP_ADDRESS';
 
-export type IContractsAction = ISetMarketContractLookupAddressAction | ISetCurrenciesAction;
+export type IContractsAction = ISetMarketContractLookupAddressAction;

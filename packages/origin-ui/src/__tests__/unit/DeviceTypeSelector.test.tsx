@@ -1,56 +1,67 @@
 import React, { useState } from 'react';
-import { mount } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import { EncodedDeviceType, IRECDeviceService } from '@energyweb/utils-general';
 import { setupStore, WrapperComponent } from '../utils/helpers';
 import { dataTestSelector } from '../../utils/helper';
-import {
-    MultiSelectAutocomplete,
-    IAutocompleteMultiSelectOptionType
-} from '../../components/MultiSelectAutocomplete';
+import { MultiSelectAutocomplete } from '../../components/MultiSelectAutocomplete';
 import { act } from '@testing-library/react';
 import { HierarchicalMultiSelect } from '../../components/HierarchicalMultiSelect';
 
-describe('DeviceTypeSelector', () => {
-    it('correctly renders', async () => {
-        const { store, history, cleanupStore } = setupStore(undefined, {
-            mockUserFetcher: true,
-            logActions: false
-        });
+let cleanupStore: () => void;
 
-        function TestWrapper() {
-            const [selectedDeviceType, setSelectedDeviceType] = useState<EncodedDeviceType>([]);
-            const irecDeviceService = new IRECDeviceService();
+function renderComponent(singleChoice = false) {
+    function TestWrapper() {
+        const [selectedDeviceType, setSelectedDeviceType] = useState<EncodedDeviceType>([]);
+        const irecDeviceService = new IRECDeviceService();
 
-            return (
-                <HierarchicalMultiSelect
-                    selectedValue={selectedDeviceType}
-                    onChange={setSelectedDeviceType}
-                    allValues={irecDeviceService.DeviceTypes}
-                    selectOptions={[
-                        {
-                            label: 'Device type',
-                            placeholder: 'Select device type'
-                        },
-                        {
-                            label: 'Device type',
-                            placeholder: 'Select device type'
-                        },
-                        {
-                            label: 'Device type',
-                            placeholder: 'Select device type'
-                        }
-                    ]}
-                />
-            );
-        }
-
-        const rendered = mount(
-            <WrapperComponent store={store} history={history}>
-                <TestWrapper />
-            </WrapperComponent>
+        return (
+            <HierarchicalMultiSelect
+                selectedValue={selectedDeviceType}
+                onChange={setSelectedDeviceType}
+                allValues={irecDeviceService.DeviceTypes}
+                selectOptions={[
+                    {
+                        label: 'Device type',
+                        placeholder: 'Select device type'
+                    },
+                    {
+                        label: 'Device type',
+                        placeholder: 'Select device type'
+                    },
+                    {
+                        label: 'Device type',
+                        placeholder: 'Select device type'
+                    }
+                ]}
+                singleChoice={singleChoice}
+            />
         );
+    }
 
-        function assertTypesLevel(level: number, expectedTypes: string[]) {
+    const setupStoreResult = setupStore(undefined, {
+        mockUserFetcher: true,
+        logActions: false
+    });
+
+    cleanupStore = setupStoreResult.cleanupStore;
+
+    return mount(
+        <WrapperComponent store={setupStoreResult.store} history={setupStoreResult.history}>
+            <TestWrapper />
+        </WrapperComponent>
+    );
+}
+
+function option(text: string) {
+    return {
+        label: text,
+        value: text.split(' - ').join(';')
+    };
+}
+
+function createHelperFunctions(rendered: ReactWrapper) {
+    return {
+        assertTypesLevel: (level: number, expectedTypes: string[]) => {
             expect(
                 rendered
                     .find(
@@ -60,31 +71,39 @@ describe('DeviceTypeSelector', () => {
                     )
                     .map(e => e.text())
             ).toStrictEqual(expectedTypes);
-        }
+        },
 
-        function changeTypesLevel(level: number, types: IAutocompleteMultiSelectOptionType[]) {
+        changeTypesLevel: (level: number, types: string[]) => {
             act(() => {
                 rendered
                     .find(dataTestSelector(`hierarchical-multi-select-level-${level}`))
                     .find(MultiSelectAutocomplete)
                     .props()
-                    .onChange(types);
+                    .onChange(types.map(option));
             });
 
             rendered.update();
         }
+    };
+}
+
+describe('HierarchicalMultiSelect', () => {
+    afterEach(() => {
+        if (cleanupStore) {
+            cleanupStore();
+        }
+    });
+
+    it('multi choice variant works', async () => {
+        const rendered = renderComponent();
+
+        const { assertTypesLevel, changeTypesLevel } = createHelperFunctions(rendered);
 
         assertTypesLevel(1, []);
         assertTypesLevel(2, []);
         assertTypesLevel(3, []);
 
-        changeTypesLevel(1, [
-            {
-                label: 'Solar',
-                value: 'Solar'
-            }
-        ]);
-
+        changeTypesLevel(1, ['Solar']);
         assertTypesLevel(1, ['Solar']);
         assertTypesLevel(2, ['Solar - Photovoltaic', 'Solar - Concentration']);
         assertTypesLevel(3, [
@@ -94,33 +113,16 @@ describe('DeviceTypeSelector', () => {
         ]);
 
         changeTypesLevel(1, []);
-
         assertTypesLevel(1, []);
         assertTypesLevel(2, []);
         assertTypesLevel(3, []);
 
-        changeTypesLevel(1, [
-            {
-                label: 'Wind',
-                value: 'Wind'
-            }
-        ]);
-
+        changeTypesLevel(1, ['Wind']);
         assertTypesLevel(1, ['Wind']);
         assertTypesLevel(2, ['Wind - Onshore', 'Wind - Offshore']);
         assertTypesLevel(3, []);
 
-        changeTypesLevel(1, [
-            {
-                label: 'Wind',
-                value: 'Wind'
-            },
-            {
-                label: 'Solar',
-                value: 'Solar'
-            }
-        ]);
-
+        changeTypesLevel(1, ['Wind', 'Solar']);
         assertTypesLevel(1, ['Wind', 'Solar']);
         assertTypesLevel(2, [
             'Wind - Onshore',
@@ -134,6 +136,95 @@ describe('DeviceTypeSelector', () => {
             'Solar - Photovoltaic - Classic silicon'
         ]);
 
-        cleanupStore();
+        // check if correctly removes types from child types, when parent type is removed
+
+        changeTypesLevel(1, []);
+        assertTypesLevel(1, []);
+        assertTypesLevel(2, []);
+        assertTypesLevel(3, []);
+
+        changeTypesLevel(1, ['Solid']);
+        assertTypesLevel(1, ['Solid']);
+        assertTypesLevel(2, [
+            'Solid - Muncipal waste',
+            'Solid - Industrial and commercial waste',
+            'Solid - Wood',
+            'Solid - Animal fats',
+            'Solid - Biomass from agriculture'
+        ]);
+        assertTypesLevel(3, [
+            'Solid - Muncipal waste - Biogenic',
+            'Solid - Industrial and commercial waste - Biogenic',
+            'Solid - Wood - Forestry products',
+            'Solid - Wood - Forestry by-products & waste',
+            'Solid - Biomass from agriculture - Agricultural products',
+            'Solid - Biomass from agriculture - Agricultural by-products & waste'
+        ]);
+
+        changeTypesLevel(2, ['Solid - Muncipal waste']);
+        assertTypesLevel(1, ['Solid']);
+        assertTypesLevel(2, ['Solid - Muncipal waste']);
+        assertTypesLevel(3, ['Solid - Muncipal waste - Biogenic']);
+    });
+
+    it('single choice variant works', async () => {
+        const rendered = renderComponent(true);
+
+        const { assertTypesLevel, changeTypesLevel } = createHelperFunctions(rendered);
+
+        assertTypesLevel(1, []);
+        assertTypesLevel(2, []);
+        assertTypesLevel(3, []);
+
+        changeTypesLevel(1, ['Solar']);
+        assertTypesLevel(1, ['Solar']);
+        assertTypesLevel(2, []);
+        assertTypesLevel(3, []);
+
+        changeTypesLevel(1, ['Solar', 'Wind']);
+        assertTypesLevel(1, ['Solar']);
+
+        changeTypesLevel(1, []);
+        assertTypesLevel(1, []);
+
+        changeTypesLevel(1, ['Wind']);
+        assertTypesLevel(1, ['Wind']);
+
+        changeTypesLevel(1, ['Solar']);
+        assertTypesLevel(1, ['Solar']);
+
+        changeTypesLevel(2, ['Solar - Photovoltaic']);
+        assertTypesLevel(2, ['Solar - Photovoltaic']);
+        assertTypesLevel(3, []);
+
+        changeTypesLevel(2, ['Solar - Photovoltaic', 'Solar - Concentration']);
+        assertTypesLevel(2, ['Solar - Photovoltaic']);
+
+        changeTypesLevel(2, []);
+        assertTypesLevel(2, []);
+
+        changeTypesLevel(2, ['Solar - Photovoltaic']);
+        assertTypesLevel(2, ['Solar - Photovoltaic']);
+        assertTypesLevel(3, []);
+
+        changeTypesLevel(3, ['Solar - Photovoltaic - Classic silicon']);
+        assertTypesLevel(3, ['Solar - Photovoltaic - Classic silicon']);
+
+        changeTypesLevel(3, [
+            'Solar - Photovoltaic - Classic silicon',
+            'Solar - Photovoltaic - Roof mounted'
+        ]);
+        assertTypesLevel(3, ['Solar - Photovoltaic - Classic silicon']);
+
+        changeTypesLevel(3, []);
+        assertTypesLevel(3, []);
+
+        changeTypesLevel(3, ['Solar - Photovoltaic - Classic silicon']);
+        assertTypesLevel(3, ['Solar - Photovoltaic - Classic silicon']);
+
+        changeTypesLevel(1, []);
+        assertTypesLevel(1, []);
+        assertTypesLevel(2, []);
+        assertTypesLevel(3, []);
     });
 });

@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 
+import { IActions } from './IActions';
+
 import { Compliance } from "../../entity/Compliance";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export class ComplianceActions {
-    static async get(req: Request, res: Response) {
+export const ComplianceActions: IActions = {
+    get: async (req: Request, res: Response) => {
         console.log(`GET - Compliance`);
         const complianceRepository = getRepository(Compliance);
-        const compliance: Compliance = (await complianceRepository.find())[0];
+        const [ compliance ] = await complianceRepository.find();
     
         if (!compliance) {
             res.status(STATUS_CODES.NOT_FOUND).send({
@@ -20,15 +22,14 @@ export class ComplianceActions {
         }
     
         res.send(compliance.standard);
-    }
-
-    static async post(req: Request, res: Response) {
+    },
+    post: async (req: Request, res: Response) => {
         const { value } = req.body;
     
         console.log(`POST - Compliance: ${value}`);
     
         const complianceRepository = getRepository(Compliance);
-        const compliances: Compliance[] = await complianceRepository.find();
+        const compliances = await complianceRepository.find();
 
         if (compliances.length > 0) {
             const currentCompliance = compliances[0];
@@ -53,13 +54,12 @@ export class ComplianceActions {
         res.status(STATUS_CODES.CREATED).send({
             message: `Compliance ${value} created`
         });
-    }
-    
-    static async delete(req: Request, res: Response) {    
+    },
+    delete: async (req: Request, res: Response) => {
         console.log(`DELETE - Compliance`);
     
         const complianceRepository = getRepository(Compliance);
-        const compliance: Compliance = (await complianceRepository.find())[0];
+        const [ compliance ] = await complianceRepository.find();
     
         if (!compliance) {
             res.status(STATUS_CODES.NOT_FOUND).send({

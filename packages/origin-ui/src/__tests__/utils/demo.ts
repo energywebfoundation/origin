@@ -115,13 +115,18 @@ export async function deployDemo() {
     const offChainDataClient = new OffChainDataClientMock();
 
     const BACKEND_URL = 'http://localhost:3030';
+    const baseUrl = `${BACKEND_URL}/api`;
 
     await configurationClient.add(
-        BACKEND_URL,
+        baseUrl,
         'MarketContractLookup',
         marketContractLookup.toLowerCase()
     );
-    await configurationClient.add(BACKEND_URL, 'Currency', 'USD');
+    await configurationClient.add(baseUrl, 'Currency', 'USD');
+    await configurationClient.add(baseUrl, 'Country', {
+        name: 'Thailand',
+        regions: { Central: ['Nakhon Pathom'] }
+    });
 
     const conf: IStoreState['configuration'] = {
         blockchainProperties: {
@@ -137,7 +142,8 @@ export async function deployDemo() {
         },
         offChainDataSource: {
             baseUrl: `${BACKEND_URL}/api`,
-            client: offChainDataClient
+            client: offChainDataClient,
+            configurationClient
         },
         logger
     };
@@ -192,7 +198,7 @@ export async function deployDemo() {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
-        active: true,
+        status: Device.DeviceStatus.Active,
         usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
@@ -211,7 +217,11 @@ export async function deployDemo() {
         timezone: 'Asia/Bangkok',
         operationalSince: 0,
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: '',
+        region: 'Central',
+        province: 'Nakhon Pathom'
     };
 
     try {

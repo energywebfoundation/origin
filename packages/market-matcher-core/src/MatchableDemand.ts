@@ -1,6 +1,6 @@
-import { ProducingDevice } from '@energyweb/device-registry';
+import { ProducingDevice, LocationService } from '@energyweb/device-registry';
 import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
@@ -98,10 +98,7 @@ export class MatchableDemand {
         }
 
         try {
-            const matchableLocation = this.locationService.translateAddress(
-                device.offChainProperties.address,
-                device.offChainProperties.country
-            );
+            const matchableLocation = `${device.offChainProperties.country};${device.offChainProperties.region};${device.offChainProperties.province}`;
 
             return this.locationService.matches(
                 this.demand.offChainProperties.location,

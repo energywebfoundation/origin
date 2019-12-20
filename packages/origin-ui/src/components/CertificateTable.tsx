@@ -7,7 +7,7 @@ import {
     Contracts as MarketContracts
 } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import { Configuration, TimeFrame, LocationService } from '@energyweb/utils-general';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { ReactNode } from 'react';
@@ -19,7 +19,7 @@ import { BuyCertificateModal } from '../elements/Modal/BuyCertificateModal';
 import { PublishForSaleModal } from '../elements/Modal/PublishForSaleModal';
 import { getBaseURL, getConfiguration, getProducingDevices } from '../features/selectors';
 import { IStoreState } from '../types';
-import { formatCurrency, formatDate } from '../utils/helper';
+import { formatCurrency, formatDate, getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
 import { NotificationType, showNotification } from '../utils/notifications';
 import { getCertificateDetailLink } from '../utils/routing';
 import { IBatchableAction } from './Table/ColumnBatchActions';
@@ -37,7 +37,7 @@ import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
-import { getCurrencies } from '../features/contracts/selectors';
+import { getCurrencies } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 import { CircularProgress } from '@material-ui/core';
 
@@ -71,8 +71,7 @@ interface IEnrichedCertificateData {
     price: string;
     isOffChainSettlement: boolean;
     deviceTypeLabel: string;
-    producingDeviceProvince: string;
-    producingDeviceRegion: string;
+    locationText: string;
 }
 
 interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
@@ -98,8 +97,6 @@ export enum SelectedState {
 }
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
-    private locationService = new LocationService();
-
     constructor(props: Props) {
         super(props);
 
@@ -218,22 +215,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     device => device.id === certificate.certificate.deviceId.toString()
                 );
 
-            let producingDeviceRegion = '';
-            let producingDeviceProvince = '';
-            try {
-                const decodedLocation = this.locationService.decode([
-                    this.locationService.translateAddress(
-                        producingDevice.offChainProperties?.address,
-                        producingDevice.offChainProperties?.country
-                    )
-                ])[0];
-
-                producingDeviceRegion = decodedLocation[1];
-                producingDeviceProvince = decodedLocation[2];
-            } catch (error) {
-                console.error('Error while parsing location', error);
-            }
-
             enrichedData.push({
                 certificate,
                 producingDevice,
@@ -246,8 +227,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     ? certificate.currency
                     : await this.getTokenSymbol(certificate.currency),
                 isOffChainSettlement: certificate.isOffChainSettlement,
-                producingDeviceProvince,
-                producingDeviceRegion
+                locationText: getDeviceLocationText(producingDevice)
             });
         }
 
@@ -532,9 +512,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
         const filters: ICustomFilterDefinition[] = [
             {
-                property: (record: IEnrichedCertificateData) =>
-                    `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
-                label: 'Search by province and region',
+                property: (record: IEnrichedCertificateData) => `${record?.locationText}`,
+                label: `Search by ${LOCATION_TITLE.toLowerCase()}`,
                 input: {
                     type: CustomFilterInputType.string
                 },
@@ -565,9 +544,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: (record: IEnrichedCertificateData) =>
-                    `${record?.producingDeviceProvince}${record?.producingDeviceRegion}`,
-                label: 'Province, Region',
+                property: (record: IEnrichedCertificateData) => record?.locationText,
+                label: LOCATION_TITLE,
                 input: {
                     type: CustomFilterInputType.string
                 }
@@ -725,9 +703,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 sortProperties: ['producingDevice.offChainProperties.operationalSince']
             },
             {
-                id: 'provinceRegion',
-                label: 'Province, region',
-                sortProperties: ['producingDeviceProvince', 'producingDeviceRegion']
+                id: 'locationText',
+                label: LOCATION_TITLE,
+                sortProperties: ['locationText']
             },
             { id: 'compliance', label: 'Compliance' },
             { id: 'owner', label: 'Owner', sortProperties: ['certificateOwner.organization'] },
@@ -750,7 +728,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         return this.state.paginatedData.map(enrichedData => {
             let deviceType = '';
             let commissioningDate = '';
-            let provinceRegion = '';
             let compliance = '';
 
             if (enrichedData.producingDevice && enrichedData.producingDevice.offChainProperties) {
@@ -762,8 +739,6 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     enrichedData.producingDevice.offChainProperties.operationalSince * 1000,
                     'x'
                 ).format('MMM YY');
-
-                provinceRegion = `${enrichedData.producingDeviceProvince}, ${enrichedData.producingDeviceRegion}`;
 
                 compliance = enrichedData.producingDevice.offChainProperties.complianceRegistry;
             }
@@ -779,7 +754,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return {
                 deviceType,
                 commissioningDate,
-                provinceRegion,
+                locationText: getDeviceLocationText(enrichedData.producingDevice),
                 compliance,
                 owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
                 certificationDate: formatDate(

@@ -18,7 +18,7 @@ import {
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -125,7 +125,8 @@ describe('Market-Facade', () => {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock()
+                client: new OffChainDataClientMock(),
+                configurationClient: new ConfigurationClientMock()
             },
             logger
         };
@@ -343,7 +344,7 @@ describe('Market-Facade', () => {
             smartMeter: { address: deviceSmartMeter },
             owner: { address: deviceOwnerAddress },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
@@ -363,7 +364,11 @@ describe('Market-Facade', () => {
             complianceRegistry: 'I-REC',
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
-            facilityName: ''
+            facilityName: '',
+            description: '',
+            images: '',
+            region: '',
+            province: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

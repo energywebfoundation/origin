@@ -2,7 +2,6 @@ import { call, put, select, take, all, fork, apply, cancel, takeEvery } from 're
 import { SagaIterator, eventChannel } from 'redux-saga';
 import {
     setMarketContractLookupAddress,
-    setCurrencies,
     ContractsActions,
     ISetMarketContractLookupAddressAction,
     MARKET_CONTRACT_LOOKUP_ADDRESS_STORAGE_KEY
@@ -46,6 +45,7 @@ async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
     offChainDataClient: IOffChainDataClient,
+    configurationClient: IConfigurationClient,
     baseURL: string,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
@@ -79,7 +79,8 @@ async function initConf(
         blockchainProperties,
         offChainDataSource: {
             baseUrl: baseURL,
-            client: offChainDataClient
+            client: offChainDataClient,
+            configurationClient
         },
         logger: Winston.createLogger({
             level: 'verbose',
@@ -252,44 +253,6 @@ async function getMarketContractLookupAddressFromAPI(
     }
 }
 
-async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
-    try {
-        const currencies = await configurationClient.get(baseURL, 'Currency');
-
-        if (currencies.length > 0) {
-            return currencies;
-        }
-
-        return null;
-    } catch {
-        return null;
-    }
-}
-
-function* fillCurrency(): SagaIterator {
-    while (true) {
-        yield take(GeneralActions.setEnvironment);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-
-        if (!environment) {
-            return;
-        }
-
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-
-        const currencies = yield call(getCurrenciesFromAPI, configurationClient, baseURL);
-
-        yield put(
-            setCurrencies({
-                currencies
-            })
-        );
-    }
-}
-
 function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
     while (true) {
         yield take(GeneralActions.setEnvironment);
@@ -338,12 +301,14 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         let configuration: IStoreState['configuration'];
         try {
             const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
+            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
             configuration = yield call(
                 initConf,
                 marketContractLookupAddress,
                 routerSearch,
                 offChainDataClient,
+                configurationClient,
                 baseURL,
                 environment.WEB3
             );
@@ -422,7 +387,6 @@ function* persistUserDefinedMarketLookupContract(): SagaIterator {
 export function* contractsSaga(): SagaIterator {
     yield all([
         fork(fillMarketContractLookupAddressIfMissing),
-        fork(persistUserDefinedMarketLookupContract),
-        fork(fillCurrency)
+        fork(persistUserDefinedMarketLookupContract)
     ]);
 }

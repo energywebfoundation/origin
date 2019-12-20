@@ -10,7 +10,11 @@ export enum GeneralActions {
     hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
     setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
     setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
-    setEnvironment = 'GENERAL_SET_ENVIRONMENT'
+    setEnvironment = 'GENERAL_SET_ENVIRONMENT',
+    setCurrencies = 'GENERAL_SET_CURRENCIES',
+    setCompliance = 'GENERAL_SET_COMPLIANCE',
+    setCountry = 'GENERAL_SET_COUNTRY',
+    setRegions = 'GENERAL_SET_REGIONS'
 }
 
 export interface IEnvironment {
@@ -135,6 +139,56 @@ export const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
 
 export type TSetEnvironmentAction = typeof setEnvironment;
 
+export interface ISetCurrenciesAction {
+    type: GeneralActions.setCurrencies;
+    payload: {
+        currencies: string[];
+    };
+}
+
+export const setCurrencies = (payload: ISetCurrenciesAction['payload']) => ({
+    type: GeneralActions.setCurrencies,
+    payload
+});
+
+export type TSetCurrencies = typeof setCurrencies;
+
+export interface ISetComplianceAction {
+    type: GeneralActions.setCompliance;
+    payload: string;
+}
+
+export const setCompliance = (payload: ISetComplianceAction['payload']) => ({
+    type: GeneralActions.setCompliance,
+    payload
+});
+
+export type TSetCompliance = typeof setCompliance;
+
+export interface ISetCountryAction {
+    type: GeneralActions.setCountry;
+    payload: string;
+}
+
+export const setCountry = (payload: ISetCountryAction['payload']) => ({
+    type: GeneralActions.setCountry,
+    payload
+});
+
+export type TSetCountry = typeof setCountry;
+
+export interface ISetRegionsAction {
+    type: GeneralActions.setRegions;
+    payload: object;
+}
+
+export const setRegions = (payload: ISetRegionsAction['payload']) => ({
+    type: GeneralActions.setRegions,
+    payload
+});
+
+export type TSetRegions = typeof setRegions;
+
 export type IGeneralAction =
     | IShowAccountChangedModalAction
     | IHideAccountChangedModalAction
@@ -145,4 +199,8 @@ export type IGeneralAction =
     | IHideRequestPasswordModalAction
     | ISetOffChainDataClientAction
     | ISetConfigurationClientAction
-    | ISetEnvironmentAction;
+    | ISetEnvironmentAction
+    | ISetCurrenciesAction
+    | ISetComplianceAction
+    | ISetCountryAction
+    | ISetRegionsAction;

@@ -4,13 +4,19 @@ import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
+import {
+    buildRights,
+    Role,
+    UserLogic,
+    Contracts as UserRegistryContracts
+} from '@energyweb/user-registry';
 import { Configuration } from '@energyweb/utils-general';
 
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
 import { logger } from '../Logger';
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { DeviceStatus } from '../blockchain-facade/Device';
 
 describe('Device Facade', () => {
     dotenv.config({
@@ -34,13 +40,17 @@ describe('Device Facade', () => {
     const deviceSmartmeterPK = '0x2dc5120c26df339dbd9861a0f39a79d87e0638d30fdedc938861beac77bbd3f5';
     const deviceSmartmeter = web3.eth.accounts.privateKeyToAccount(deviceSmartmeterPK).address;
 
-    const deviceSmartmeter2PK = '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
+    const deviceSmartmeter2PK =
+        '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed';
     const deviceSmartMeter2 = web3.eth.accounts.privateKeyToAccount(deviceSmartmeter2PK).address;
 
     const SM_READ_TIMESTAMP = moment().unix();
 
     it('should deploy user-registry contracts', async () => {
-        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(web3, privateKeyDeployment);
+        userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
+            web3,
+            privateKeyDeployment
+        );
 
         await userLogic.createUser(
             'propertiesDocumentHash',
@@ -94,7 +104,8 @@ describe('Device Facade', () => {
                 },
                 offChainDataSource: {
                     baseUrl: `${process.env.BACKEND_URL}/api`,
-                    client: new OffChainDataClientMock()
+                    client: new OffChainDataClientMock(),
+                    configurationClient: new ConfigurationClientMock()
                 },
                 logger
             };
@@ -105,7 +116,7 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                active: true,
+                status: DeviceStatus.Active,
                 usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
@@ -125,12 +136,20 @@ describe('Device Facade', () => {
                 complianceRegistry: 'I-REC',
                 otherGreenAttributes: '',
                 typeOfPublicSupport: '',
-                facilityName: FACILITY_NAME
+                facilityName: FACILITY_NAME,
+                description: '',
+                images: '',
+                region: '',
+                province: ''
             };
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
-            const device = await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
+            const device = await ProducingDevice.createDevice(
+                deviceProps,
+                devicePropsOffChain,
+                conf
+            );
 
             assert.deepOwnInclude(device, {
                 id: '0',
@@ -138,51 +157,13 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                active: true,
+                status: DeviceStatus.Active,
                 usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: devicePropsOffChain,
                 url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`
             } as Partial<ProducingDevice.Entity>);
 
-            assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
-        });
-
-        it('should fail when trying to onboard the same device again', async () => {
-            const deviceProps: Device.IOnChainProperties = {
-                smartMeter: { address: deviceSmartmeter },
-                owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 0,
-                active: true,
-                usageType: Device.UsageType.Producing,
-                lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-                propertiesDocumentHash: null,
-                url: null
-            };
-
-            const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
-                operationalSince: 0,
-                capacityWh: 10,
-                country: 'Thailand',
-                address:
-                    '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
-                gpsLatitude: '0.0123123',
-                gpsLongitude: '31.1231',
-                timezone: 'Asia/Bangkok',
-                deviceType: 'Wind',
-                complianceRegistry: 'I-REC',
-                otherGreenAttributes: '',
-                typeOfPublicSupport: '',
-                facilityName: 'Wuthering Heights Windfarm'
-            };
-
-            assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
-
-            try {
-                await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
-            } catch (ex) {
-                assert.include(ex.message, 'smartmeter does already exist');
-            }
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
         });
 
@@ -203,7 +184,7 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 100,
-                active: true,
+                status: DeviceStatus.Active,
                 usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'newFileHash',
                 url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
@@ -220,7 +201,11 @@ describe('Device Facade', () => {
                     complianceRegistry: 'I-REC',
                     otherGreenAttributes: '',
                     typeOfPublicSupport: '',
-                    facilityName: 'Wuthering Heights Windfarm'
+                    facilityName: 'Wuthering Heights Windfarm',
+                    description: '',
+                    images: '',
+                    region: '',
+                    province: ''
                 }
             } as Partial<ProducingDevice.Entity>);
         });
@@ -253,7 +238,7 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartMeter2 },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                active: true,
+                status: DeviceStatus.Active,
                 usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
                 propertiesDocumentHash: null,
@@ -269,19 +254,27 @@ describe('Device Facade', () => {
                 gpsLatitude: '0.0123123',
                 gpsLongitude: '31.1231',
                 timezone: 'Asia/Bangkok',
-                facilityName: FACILITY_NAME
+                facilityName: FACILITY_NAME,
+                description: '',
+                images: '',
+                region: '',
+                province: ''
             };
 
             assert.equal(await ConsumingDevice.getDeviceListLength(conf), 0);
 
-            const device = await ConsumingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
+            const device = await ConsumingDevice.createDevice(
+                deviceProps,
+                devicePropsOffChain,
+                conf
+            );
 
             assert.deepOwnInclude(device, {
                 initialized: true,
                 smartMeter: { address: deviceSmartMeter2 },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                active: true,
+                status: DeviceStatus.Active,
                 usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: devicePropsOffChain,
@@ -309,7 +302,7 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartMeter2 },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 100,
-                active: true,
+                status: DeviceStatus.Active,
                 usageType: Device.UsageType.Consuming,
                 lastSmartMeterReadFileHash: 'newFileHash',
                 url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
@@ -322,7 +315,11 @@ describe('Device Facade', () => {
                     gpsLatitude: '0.0123123',
                     gpsLongitude: '31.1231',
                     timezone: 'Asia/Bangkok',
-                    facilityName: 'Wuthering Heights Windfarm'
+                    facilityName: 'Wuthering Heights Windfarm',
+                    description: '',
+                    images: '',
+                    region: '',
+                    province: ''
                 }
             } as Partial<ConsumingDevice.Entity>);
         });
@@ -342,5 +339,4 @@ describe('Device Facade', () => {
             });
         });
     });
-
 });

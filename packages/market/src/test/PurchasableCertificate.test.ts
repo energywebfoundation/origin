@@ -17,7 +17,7 @@ import {
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -167,7 +167,8 @@ describe('PurchasableCertificate-Facade', () => {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock()
+                client: new OffChainDataClientMock(),
+                configurationClient: new ConfigurationClientMock()
             },
             logger
         };
@@ -225,7 +226,7 @@ describe('PurchasableCertificate-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
@@ -245,7 +246,11 @@ describe('PurchasableCertificate-Facade', () => {
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             otherGreenAttributes: '',
-            typeOfPublicSupport: ''
+            typeOfPublicSupport: '',
+            description: '',
+            images: '',
+            region: '',
+            province: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);

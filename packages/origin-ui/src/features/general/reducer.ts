@@ -17,6 +17,10 @@ export interface IGeneralState {
     offChainDataClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
     environment: IEnvironment;
+    currencies: string[];
+    compliance: string;
+    country: string;
+    regions: object;
 }
 
 const defaultState: IGeneralState = {
@@ -29,7 +33,11 @@ const defaultState: IGeneralState = {
     requestPasswordModalTitle: null,
     offChainDataClient: new OffChainDataClient(),
     configurationClient: new ConfigurationClient(),
-    environment: null
+    environment: null,
+    currencies: [],
+    compliance: null,
+    country: null,
+    regions: {}
 };
 
 export default function reducer(state = defaultState, action: IGeneralAction): IGeneralState {
@@ -92,6 +100,18 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
                 ...state,
                 environment: action.payload
             };
+
+        case GeneralActions.setCurrencies:
+            return { ...state, currencies: action.payload.currencies };
+
+        case GeneralActions.setCompliance:
+            return { ...state, compliance: action.payload };
+
+        case GeneralActions.setCountry:
+            return { ...state, country: action.payload };
+
+        case GeneralActions.setRegions:
+            return { ...state, regions: action.payload };
 
         default:
             return state;

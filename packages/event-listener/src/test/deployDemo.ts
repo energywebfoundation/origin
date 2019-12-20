@@ -25,7 +25,7 @@ import {
 
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 
 export class Demo {
     public marketContractLookup: string;
@@ -92,7 +92,10 @@ export class Demo {
         return this.nextDeployedSmReadIndex - 1;
     }
 
-    async deploy(offChainDataClient: IOffChainDataClient) {
+    async deploy(
+        offChainDataClient: IOffChainDataClient,
+        configurationClient: IConfigurationClient
+    ) {
         this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
             this.web3,
             this.adminPK
@@ -147,7 +150,8 @@ export class Demo {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: offChainDataClient
+                client: offChainDataClient,
+                configurationClient
             },
             logger: this.logger
         };
@@ -298,7 +302,7 @@ export class Demo {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: '',
             propertiesDocumentHash: null,
@@ -318,7 +322,11 @@ export class Demo {
             timezone: 'Asia/Bangkok',
             operationalSince: 0,
             otherGreenAttributes: '',
-            typeOfPublicSupport: ''
+            typeOfPublicSupport: '',
+            description: '',
+            images: '',
+            region: 'Central',
+            province: 'Nakhon Pathom'
         };
 
         try {

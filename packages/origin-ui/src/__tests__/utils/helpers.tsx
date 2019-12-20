@@ -114,6 +114,8 @@ interface ICreateProducingDeviceProperties {
     lastSmartMeterReadWh?: number;
     operationalSince?: number;
     complianceRegistry?: Compliance;
+    region?: string;
+    province?: string;
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
@@ -123,7 +125,9 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityWh: 9876543,
     operationalSince: 1568746970,
-    complianceRegistry: 'I-REC'
+    complianceRegistry: 'I-REC',
+    region: 'Central',
+    province: 'Nakhon Pathom'
 } as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
 
 export const createProducingDevice = (
@@ -151,7 +155,11 @@ export const createProducingDevice = (
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: '',
+        region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
     return {

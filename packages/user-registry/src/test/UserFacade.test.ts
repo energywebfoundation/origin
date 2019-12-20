@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { UserLogic } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
@@ -74,7 +74,8 @@ describe('User Facade', () => {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock()
+                client: new OffChainDataClientMock(),
+                configurationClient: new ConfigurationClientMock()
             },
             logger
         };

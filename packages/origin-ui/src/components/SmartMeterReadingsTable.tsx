@@ -50,7 +50,15 @@ export function SmartMeterReadingsTable(props: IProps) {
     });
 
     useEffect(() => {
-        loadPage(1);
+        let isMounted = true;
+
+        const checkIsMounted = () => isMounted;
+
+        loadPage(1, null, checkIsMounted);
+
+        return () => {
+            isMounted = false;
+        };
     }, [producingDevice]);
 
     const columns = [
