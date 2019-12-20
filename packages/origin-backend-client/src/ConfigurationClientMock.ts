@@ -4,13 +4,13 @@ export class ConfigurationClientMock implements IConfigurationClient {
     private storage = new Map<string, any>();
 
     public async get(baseUrl: string, item: ConfigurationItem) {
-        const url = `${baseUrl}/${item.toLowerCase()}`;
+        const url = `${baseUrl}/${item}`;
 
         return this.storage.get(url);
     }
 
     public async add(baseUrl: string, item: ConfigurationItem, value: string | object) {
-        const url = `${baseUrl}/${item.toLowerCase()}`;
+        const url = `${baseUrl}/${item}`;
 
         if (typeof value === 'string') {
             const values = this.storage.get(url) || [];
