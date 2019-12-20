@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.1.1...@energyweb/origin-ui@1.2.0) (2019-12-20)
+
+
+### Bug Fixes
+
+* **origin-ui:** destructure country ([091d98f](https://github.com/energywebfoundation/origin/commit/091d98ff5bfe8531c3938aa081b1e1ba42edf5b9))
+* **origin-ui:** fix tests: useSelector order + add /api to backend url ([a5bb9cf](https://github.com/energywebfoundation/origin/commit/a5bb9cf653540dd303eab4df8b5a61087fb7e318))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+* input form for device registration ([d253e8c](https://github.com/energywebfoundation/origin/commit/d253e8c052e82a4ec380ca1c5862f66e30d5d1f8))
+
+
+
+
+
 ## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.1.0...@energyweb/origin-ui@1.1.1) (2019-12-19)
 
 **Note:** Version bump only for package @energyweb/origin-ui

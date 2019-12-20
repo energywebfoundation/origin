@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.1.0...@energyweb/market-matcher@2.2.0) (2019-12-20)
+
+
+### Bug Fixes
+
+* **market-matcher:** adjust matcher to device-registry region, province changes ([73ee915](https://github.com/energywebfoundation/origin/commit/73ee91517123cf46806833b81be9f8b8da84b620))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+
+
+
+
+
 # [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.2...@energyweb/market-matcher@2.1.0) (2019-12-19)
 
 

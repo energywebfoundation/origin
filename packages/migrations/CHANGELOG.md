@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.4.0...@energyweb/migrations@0.5.0) (2019-12-20)
+
+
+### Features
+
+* **migrations:** require "country" in demo-config.json ([83a24e2](https://github.com/energywebfoundation/origin/commit/83a24e25894b3294e038d4826a19206b418ad210))
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+
+
+
+
+
 # [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.3.0...@energyweb/migrations@0.4.0) (2019-12-19)
 
 

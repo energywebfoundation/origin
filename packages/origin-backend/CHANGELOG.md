@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.0.0...@energyweb/origin-backend@3.1.0) (2019-12-20)
+
+
+### Features
+
+* **origin-backend:** add possibility to store images ([faf0e74](https://github.com/energywebfoundation/origin/commit/faf0e748b1980a4502764fbe78dc555927b9b398))
+* **origin-backend:** add support for storing Country ([99e754e](https://github.com/energywebfoundation/origin/commit/99e754e0f46fa4aae24379ba463513df94e9081a))
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@2.1.0...@energyweb/origin-backend@3.0.0) (2019-12-19)
 
 
