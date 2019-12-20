@@ -37,7 +37,8 @@ async function createBlockchainConfiguration() {
         logger,
         offChainDataSource: {
             baseUrl,
-            client: new OffChainDataClient()
+            client: new OffChainDataClient(),
+            configurationClient: new ConfigurationClient()
         }
     };
 
@@ -46,7 +47,7 @@ async function createBlockchainConfiguration() {
     console.log(`[SIMULATOR-CONSUMER] Trying to get Market contract address`);
 
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await new ConfigurationClient().get(
+        storedMarketContractAddresses = await conf.offChainDataSource.configurationClient.get(
             baseUrl,
             'MarketContractLookup'
         );

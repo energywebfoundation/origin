@@ -26,8 +26,9 @@ program.parse(process.argv);
 
     console.log(`[MARKET-MATCHER] Trying to get Market contract address`);
 
+    const configurationClient = new ConfigurationClient();
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await new ConfigurationClient().get(
+        storedMarketContractAddresses = await configurationClient.get(
             baseUrl,
             'MarketContractLookup'
         );
@@ -53,6 +54,7 @@ program.parse(process.argv);
         },
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
         offChainDataSourceClient: new OffChainDataClient(),
+        configurationClient,
         matcherInterval
     };
 

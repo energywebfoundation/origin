@@ -28,3 +28,7 @@ export const getEnvironment = (state: IStoreState) => state.general.environment;
 export const getCurrencies = (state: IStoreState): string[] => state.general.currencies;
 
 export const getCompliance = (state: IStoreState): string => state.general.compliance;
+
+export const getRegions = (state: IStoreState): object => state.general.regions;
+
+export const getCountry = (state: IStoreState): string => state.general.country;

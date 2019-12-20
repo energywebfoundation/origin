@@ -7,7 +7,7 @@ import {
     Contracts as MarketContracts
 } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import { Configuration, TimeFrame, LocationService } from '@energyweb/utils-general';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { ReactNode } from 'react';
@@ -97,8 +97,6 @@ export enum SelectedState {
 }
 
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
-    private locationService = new LocationService();
-
     constructor(props: Props) {
         super(props);
 

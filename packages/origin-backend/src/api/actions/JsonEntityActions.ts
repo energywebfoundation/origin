@@ -5,9 +5,10 @@ import { JsonEntity } from "../../entity/JsonEntity";
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors } from '../../enums/StorageErrors';
 
-export class JsonEntityActions {
+import { IActions } from './IActions';
 
-    static async get(req: Request, res: Response) {
+export const JsonEntityActions: IActions = {
+    get: async (req: Request, res: Response) => {
         let { hash } = req.params;
     
         console.log(`<GET> ${hash}`);
@@ -33,9 +34,8 @@ export class JsonEntityActions {
         }
     
         res.send(JSON.parse(existingEntity.value));
-    }
-    
-    static async post(req: Request, res: Response) {
+    },
+    post: async (req: Request, res: Response) => {
         let { hash } = req.params;
     
         console.log(`<POST> ${hash}`);
@@ -62,9 +62,8 @@ export class JsonEntityActions {
         res.status(STATUS_CODES.CREATED).send({
             message: `Entity ${hash} created`
         });
-    }
-    
-    static async delete(req: Request, res: Response) {
+    },
+    delete: async (req: Request, res: Response) => {
         let { hash } = req.params;
     
         console.log(`<DELETE> ${hash}`);

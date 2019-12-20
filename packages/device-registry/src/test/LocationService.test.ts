@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { LocationService } from '../blockchain-facade/LocationService';
+import { LocationService } from '../utils/LocationService';
 
 describe('LocationService tests', () => {
     describe('matches()', () => {

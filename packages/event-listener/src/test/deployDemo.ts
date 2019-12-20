@@ -25,7 +25,7 @@ import {
 
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 
 export class Demo {
     public marketContractLookup: string;
@@ -92,7 +92,10 @@ export class Demo {
         return this.nextDeployedSmReadIndex - 1;
     }
 
-    async deploy(offChainDataClient: IOffChainDataClient) {
+    async deploy(
+        offChainDataClient: IOffChainDataClient,
+        configurationClient: IConfigurationClient
+    ) {
         this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
             this.web3,
             this.adminPK
@@ -147,7 +150,8 @@ export class Demo {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: offChainDataClient
+                client: offChainDataClient,
+                configurationClient
             },
             logger: this.logger
         };
