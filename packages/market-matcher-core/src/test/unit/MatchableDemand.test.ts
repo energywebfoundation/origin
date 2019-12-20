@@ -1,4 +1,4 @@
-import { ProducingDevice, LocationService } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, PurchasableCertificate, Supply, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { Year } from '@energyweb/utils-general';
@@ -26,10 +26,6 @@ interface IMockOptions {
 
 describe('MatchableDemand tests', () => {
     const country = 'Thailand';
-
-    const locationService = new LocationService(country, {
-        Central: ['Nakhon Pathom']
-    });
 
     describe('Certificates', () => {
         const missingDemand = 1000;
@@ -95,7 +91,7 @@ describe('MatchableDemand tests', () => {
         it('should match certificate', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({});
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -109,7 +105,7 @@ describe('MatchableDemand tests', () => {
                 status: Demand.DemandStatus.ARCHIVED
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -124,7 +120,7 @@ describe('MatchableDemand tests', () => {
                 isFilledDemand: true
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -139,7 +135,7 @@ describe('MatchableDemand tests', () => {
                 price: energyPrice + 1
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -154,7 +150,7 @@ describe('MatchableDemand tests', () => {
                 currency: 'EUR'
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -169,7 +165,7 @@ describe('MatchableDemand tests', () => {
                 producingDeviceDeviceType: 'Wind'
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -186,7 +182,7 @@ describe('MatchableDemand tests', () => {
                 province: 'Warsaw'
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -201,7 +197,7 @@ describe('MatchableDemand tests', () => {
                 location: ['Thailand;Central']
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -215,7 +211,7 @@ describe('MatchableDemand tests', () => {
                 location: ['Thailand;Central', 'Thailand;Central;Nonthaburi']
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -232,7 +228,7 @@ describe('MatchableDemand tests', () => {
                 vintage: [2000, 2005]
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -277,7 +273,7 @@ describe('MatchableDemand tests', () => {
         it('should match supply', () => {
             const { demand, supply } = createMatchingMocks({});
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result } = matchableDemand.matchesSupply(supply);
 
             assert.isTrue(result);
@@ -288,7 +284,7 @@ describe('MatchableDemand tests', () => {
                 status: Demand.DemandStatus.ARCHIVED
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = matchableDemand.matchesSupply(supply);
 
             assert.isFalse(result);
@@ -300,7 +296,7 @@ describe('MatchableDemand tests', () => {
                 energy: supplyEnergy - 1
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = matchableDemand.matchesSupply(supply);
 
             assert.isFalse(result);
@@ -312,7 +308,7 @@ describe('MatchableDemand tests', () => {
                 price: energyPrice * 1e6
             });
 
-            const matchableDemand = new MatchableDemand(demand, locationService);
+            const matchableDemand = new MatchableDemand(demand);
             const { result, reason } = matchableDemand.matchesSupply(supply);
 
             assert.isFalse(result);

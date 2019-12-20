@@ -1,6 +1,6 @@
 import * as Winston from 'winston';
 
-import { ProducingDevice, LocationService } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
 
@@ -15,7 +15,6 @@ export class DemandMatcher {
         private config: Configuration.Entity,
         private entityStore: IEntityStore,
         private certificateService: CertificateService,
-        private locationService: LocationService,
         private strategy: IStrategy,
         private logger: Winston.Logger
     ) {}
@@ -52,7 +51,7 @@ export class DemandMatcher {
     }
 
     private async findMatchingCertificates(demand: Demand.Entity) {
-        const matchableDemand = new MatchableDemand(demand, this.locationService);
+        const matchableDemand = new MatchableDemand(demand);
 
         const certificates = await Promise.all(
             this.entityStore

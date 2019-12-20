@@ -8,7 +8,9 @@ import { MatchingErrorReason } from './MatchingErrorReason';
 export class MatchableDemand {
     private deviceService = new IRECDeviceService();
 
-    constructor(public demand: Demand.IDemand, private locationService: LocationService) {}
+    private locationService = new LocationService();
+
+    constructor(public demand: Demand.IDemand) {}
 
     public async matchesCertificate(
         certificate: PurchasableCertificate.IPurchasableCertificate,
