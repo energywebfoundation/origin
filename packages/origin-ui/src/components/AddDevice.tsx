@@ -24,7 +24,6 @@ import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import { getCompliance, getEnvironment, getRegions } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
-import { Skeleton } from '@material-ui/lab';
 import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import axios from 'axios';
@@ -45,19 +44,7 @@ interface IFormValues {
     projectStory: string;
 }
 
-const INITIAL_FORM_VALUES_TEST: IFormValues = {
-    facilityName: '',
-    capacity: '',
-    comissioningDate: null,
-    registrationDate: null,
-    address: '',
-    latitude: '',
-    longitude: '',
-    supported: false,
-    projectStory: ''
-};
-
-const INITIAL_FORM_VALUES: IFormValues = INITIAL_FORM_VALUES_TEST || {
+const INITIAL_FORM_VALUES: IFormValues = {
     facilityName: '',
     capacity: '',
     comissioningDate: null,
@@ -220,10 +207,6 @@ export function AddDevice() {
     }
 
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
-
-    if (!initialFormValues) {
-        return <Skeleton variant="rect" height={200} />;
-    }
 
     const regions = useSelector(getRegions);
 
