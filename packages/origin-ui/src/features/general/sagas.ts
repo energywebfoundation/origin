@@ -182,10 +182,10 @@ function* fillCountryAndRegions(): SagaIterator {
 
         const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
-        const { name, regions } = yield call(getCountryFromAPI, configurationClient, baseURL);
+        const country = yield call(getCountryFromAPI, configurationClient, baseURL);
 
-        yield put(setCountry(name));
-        yield put(setRegions(regions));
+        yield put(setCountry(country ? country.name : null));
+        yield put(setRegions(country ? country.regions : null));
     }
 }
 
