@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import path from 'path';
 
 const storage = multer.diskStorage({
-    destination: './uploads/',
+    destination: path.join(__dirname, '/../../../uploads'),
 
     filename(req, file, cb) {
         crypto.pseudoRandomBytes(10, (err, raw) => {

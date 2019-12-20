@@ -13,7 +13,7 @@
     "test:e2e": "rm -rf db.sqlite && mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
     "test": "yarn test:e2e",
     "test:concurrent": "yarn test",
-    "clean": "shx rm -rf dist db.sqlite"
+    "clean": "shx rm -rf dist db.sqlite uploads"
   },
   "bin": {
     "origin-backend": "./bin/origin-backend"
