@@ -90,6 +90,9 @@ export const DEFAULT_COUNTRY = 'Thailand';
 export function DemandForm(props: IProps) {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
+    const currencies = useSelector(getCurrencies);
+    const regions = useSelector(getRegions);
+
     const dispatch = useDispatch();
     const { getDemandViewLink } = useLinks();
 
@@ -171,8 +174,6 @@ export function DemandForm(props: IProps) {
             timeframe
         );
     }
-
-    const currencies = useSelector(getCurrencies);
 
     const isUserTraderRole = currentUser && currentUser.isRole(Role.Trader);
 
@@ -259,8 +260,6 @@ export function DemandForm(props: IProps) {
     } else if (!readOnly) {
         submitButtonText = 'Create demand';
     }
-
-    const regions = useSelector(getRegions);
 
     return (
         <Paper className="DemandForm">
