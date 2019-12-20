@@ -7,7 +7,6 @@ import {
 } from '@energyweb/market-matcher-core';
 import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration } from '@energyweb/utils-general';
-import { LocationService } from '@energyweb/device-registry';
 import Web3 from 'web3';
 
 import { Role } from '@energyweb/user-registry';
@@ -87,12 +86,6 @@ export async function startMatcher(matcherConfig: IMatcherConfig) {
         const entityFetcher = new EntityFetcher(config);
         const entityStore = new EntityStore(config, logger, entityFetcher);
 
-        const country = await config.offChainDataSource.configurationClient.get(
-            config.offChainDataSource.baseUrl,
-            'Country'
-        );
-        const locationService = new LocationService(country.name, country.regions);
-
         const certificationService = new CertificateService(config, logger);
 
         const strategy = new LowestPriceStrategy();
@@ -100,7 +93,6 @@ export async function startMatcher(matcherConfig: IMatcherConfig) {
             config,
             entityStore,
             certificationService,
-            locationService,
             strategy,
             logger
         );
@@ -108,7 +100,6 @@ export async function startMatcher(matcherConfig: IMatcherConfig) {
             config,
             entityStore,
             certificationService,
-            locationService,
             strategy,
             logger
         );
