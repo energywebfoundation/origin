@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin@3.0.2...@energyweb/origin@3.1.0) (2019-12-20)
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+* **origin:** adjust tests for device registry changes ([8692920](https://github.com/energywebfoundation/origin/commit/8692920e865eb01d02c3c3bbd0e1a97d80415306))
+
+
+
+
+
 ## [3.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin@3.0.1...@energyweb/origin@3.0.2) (2019-12-19)
 
 **Note:** Version bump only for package @energyweb/origin

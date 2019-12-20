@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@1.0.2...@energyweb/device-registry@2.0.0) (2019-12-20)
+
+
+### Features
+
+* **device-registry:** add region and province offchain properties ([a98ceb2](https://github.com/energywebfoundation/origin/commit/a98ceb28fd7a7ff7da6253a0d4474846c30f04c4))
+* **device-registry:** change device primary key to number instead of smart meter address ([dec7af9](https://github.com/energywebfoundation/origin/commit/dec7af9a6740c4641d87c50c01d4b501bec8fab4))
+* **device-registry:** move LocationService to device-registry from utils-general ([5d7984b](https://github.com/energywebfoundation/origin/commit/5d7984b0897cfcd704947f0df6f5586f0b3a3685))
+* **device-registry:** restrict device creation ([fc4cdb7](https://github.com/energywebfoundation/origin/commit/fc4cdb78858958af0ab73b1503da898db355a1b4))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** add region and province offchain properties
+* **device-registry:** change device primary key to number instead of smart meter address
+
+
+
+
+
 ## [1.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@1.0.1...@energyweb/device-registry@1.0.2) (2019-12-19)
 
 **Note:** Version bump only for package @energyweb/device-registry

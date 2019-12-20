@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@3.0.0...@energyweb/utils-general@4.0.0) (2019-12-20)
+
+
+### chore
+
+* **utils-general:** move LocationService to device-registry, add configurationClient to Configuration.Entity ([38f7a91](https://github.com/energywebfoundation/origin/commit/38f7a91ddf71faaf3e50c7990692b66277f90cfa))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+* **utils-general:** export more units for convenience ([9335302](https://github.com/energywebfoundation/origin/commit/9335302c36b92d9c771f656c91c9157efa2273c0))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** Use the @energyweb/device-registry package if you need LocationService
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@2.1.0...@energyweb/utils-general@3.0.0) (2019-12-19)
 
 

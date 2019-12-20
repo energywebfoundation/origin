@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.2.0...@energyweb/market@3.3.0) (2019-12-20)
+
+
+### Bug Fixes
+
+* **market:** fix market tests ([c7d98aa](https://github.com/energywebfoundation/origin/commit/c7d98aad097f32b7b3dac96b99edb7c5cabe0124))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+
+
+
+
+
 # [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.1.0...@energyweb/market@3.2.0) (2019-12-19)
 
 

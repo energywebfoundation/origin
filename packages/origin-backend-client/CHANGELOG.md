@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.2.0...@energyweb/origin-backend-client@2.2.1) (2019-12-20)
+
+
+### Bug Fixes
+
+* **origin-backend-client:** make IConfigurationClient more general to support Country/Regions ([b42c0af](https://github.com/energywebfoundation/origin/commit/b42c0af75c526685b19c9951b6d467e42a7794cc))
+
+
+
+
+
 # [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.1.0...@energyweb/origin-backend-client@2.2.0) (2019-12-19)
 
 
