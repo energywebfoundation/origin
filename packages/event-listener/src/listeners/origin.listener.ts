@@ -1,11 +1,10 @@
 import Web3 from 'web3';
 import polly from 'polly-js';
 
-import { ProducingDevice, LocationService } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
-import { ConfigurationClient } from '@energyweb/origin-backend-client';
 
 import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { initOriginConfig } from '../config/origin.config';
@@ -47,10 +46,6 @@ export class OriginEventListener implements IOriginEventListener {
 
     public async start(): Promise<void> {
         this.conf = await initOriginConfig(this.marketLookupAddress, this.web3, this.config);
-
-        const client = new ConfigurationClient();
-        const { name, regions } = await client.get(this.conf.offChainDataSource.baseUrl, 'Country');
-        const locationService = new LocationService(name, regions);
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
         const certificateContractEventHandler = new ContractEventHandler(
@@ -133,10 +128,10 @@ export class OriginEventListener implements IOriginEventListener {
             const demandsMatchCertificate: Demand.Entity[] = [];
 
             for (const demand of demands) {
-                const { result } = await new MatchableDemand(
-                    demand,
-                    locationService
-                ).matchesCertificate(publishedCertificate, producingDevice);
+                const { result } = await new MatchableDemand(demand).matchesCertificate(
+                    publishedCertificate,
+                    producingDevice
+                );
                 if (result) {
                     demandsMatchCertificate.push(demand);
                 }
