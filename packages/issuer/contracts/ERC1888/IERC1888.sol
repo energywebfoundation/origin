@@ -1,10 +1,17 @@
 pragma solidity ^0.5.6;
 
 interface ERC1888 /* is ERC1155 */{
+   struct Certificate {
+    int256 topic;
+    address issuer; // msg.sender
+    bytes validityData; // call data
+    bytes data;
+  }
+
    event IssuanceSingle(address indexed _issuer, int256 indexed _topic, uint256 _id);
    //event IssuanceBatch(address indexed _issuer, int256[] indexed _topics, uint256[] _ids);
    
-   event ClaimSingle(address indexed _claimIssuer, address indexed _claimSubject, int256 indexed _topic, uint256 _id, uint256 _value, bytes _claimData);
+   event ClaimSingle(address indexed _claimIssuer, address indexed _claimSubject, int256 indexed _topic, uint256 _id, uint256 _value, bytes32 _claimData);
    event ClaimBatch(address indexed _claimIssuer, address indexed _claimSubject, int256[] indexed _topics, uint256[] _ids, uint256[] _values, bytes32[] _claimData);
    
    function issue(address _to, bytes calldata _validityData, int256 _topic, uint256 _value, bytes calldata _data) external returns (uint256);
