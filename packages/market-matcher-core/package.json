@@ -45,7 +45,7 @@
         "@fluffy-spoon/substitute": "1.107.0",
         "@types/lolex": "5.1.0",
         "@types/web3": "1.0.20",
-        "lolex": "5.1.1"
+        "lolex": "5.1.2"
     },
     "postinstall": "rm -f node_modules/web3/index.d.ts",
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
