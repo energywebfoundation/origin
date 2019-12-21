@@ -30,7 +30,7 @@
         "solc": "0.6.0",
         "truffle": "5.1.4",
         "ts-node": "8.5.4",
-        "typescript": "3.7.3",
+        "typescript": "3.7.4",
         "typescript-json-schema": "0.41.0",
         "wait-on": "3.3.0"
     },
