@@ -56,7 +56,7 @@
         "@fluffy-spoon/substitute": "1.107.0",
         "@types/lolex": "5.1.0",
         "ganache-cli": "6.7.0",
-        "lolex": "5.1.1"
+        "lolex": "5.1.2"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {
