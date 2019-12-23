@@ -1,6 +1,5 @@
 import certificates from '../features/certificates/reducer';
 import producingDevices from '../features/producingDevices/reducer';
-import consumingDevices from './ConsumingDevice';
 import demands from './Demand';
 import configuration from './Configuration';
 import general from '../features/general/reducer';
@@ -16,7 +15,6 @@ export const createRootReducer = history =>
         authentication,
         certificates,
         producingDevices,
-        consumingDevices,
         demands,
         general,
         configuration,
