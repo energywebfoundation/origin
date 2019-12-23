@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "./ERC1888/IERC1888.sol";
+import "./Registry.sol";
 
 contract PrivateIssuer {
   event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
@@ -9,7 +9,7 @@ contract PrivateIssuer {
   event IssueRequest(address indexed _owner, uint256 indexed _id);
   event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
 
-  ERC1888 public registry;
+  Registry public registry;
   int public privateCertificateTopic = 1234; 
   int public publicCertificateTopic = 1235; 
 
@@ -39,7 +39,7 @@ contract PrivateIssuer {
   mapping(uint256 => bytes32) public commitments;
   mapping(uint256 => bool) public migrations;
 
-  constructor(ERC1888 _registry) public {
+  constructor(Registry _registry) public {
     registry = _registry;
   }
 
@@ -53,12 +53,12 @@ contract PrivateIssuer {
     Private Issue
   */
 
-  function encodeIssue(uint _from, uint _to, string memory _deviceId, uint _requestId) public pure returns (bytes memory) {
-    return abi.encode(_from, _to, _deviceId, _requestId);
+  function encodeIssue(uint _from, uint _to, string memory _deviceId) public pure returns (bytes memory) {
+    return abi.encode(_from, _to, _deviceId);
   }
 
-  function decodeIssue(bytes memory _data) public pure returns (uint, uint, string memory, uint) {
-    return abi.decode(_data, (uint, uint, string, uint));
+  function decodeIssue(bytes memory _data) public pure returns (uint, uint, string memory) {
+    return abi.decode(_data, (uint, uint, string));
   }
 
   function requestIssue(bytes calldata _data) external {
@@ -117,6 +117,25 @@ contract PrivateIssuer {
     (,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
     
     registry.issue(request.owner, validityData, publicCertificateTopic, _value, data);
+  }
+
+  /*
+    Transfer volume to public
+  */
+  function transferToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof) external {
+    RequestMigrateToPublic storage request = requestMigrateToPublicStorage[_requestId];
+
+    require(!request.approved, "Request already approved");
+    //require(!migrations[request.certificateId], "Certificate already exposed");
+    require(request.volumeHash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
+    require(validateProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+
+    request.approved = true;
+    //migrations[request.certificateId] = true;
+
+    (,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
+    
+    registry.safeTransferFrom(address(this), request.owner, request.certificateId, _value, new bytes(0)); //TODO: do we need a data here?
   }
 
   /*

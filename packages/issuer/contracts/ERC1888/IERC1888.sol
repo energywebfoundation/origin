@@ -1,6 +1,6 @@
 pragma solidity ^0.5.6;
 
-interface ERC1888 /* is ERC1155 */{
+interface ERC1888 {
    struct Certificate {
     int256 topic;
     address issuer; // msg.sender
