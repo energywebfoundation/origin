@@ -41,6 +41,17 @@ contract Registry is ERC1155, ERC1888 {
     emit ClaimSingle(cert.issuer, address(0x0), cert.topic, _id, _value, _claimData); //_claimSubject address ??
   }
 
+  function getCertificate(uint256 _id) external view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
+    Certificate memory certificate = certificateStorage[_id];
+    return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
+  }
+
+  function mint(address _to, uint256 _id, uint256 _value) external {
+    require(certificateStorage[_id].issuer == msg.sender); // this also implicity checks if certificate has been issued before mint
+    
+    ERC1155.safeTransferFrom(address(0x0), _to, _id, _value, new bytes(0));
+  }
+
   function claimedBalanceOf(address _owner, uint256 _id) external view returns (uint256) {
     return claimedBalances[_id][_owner];
   }
