@@ -250,7 +250,7 @@ export async function startGanache(): Promise<IGanacheServer> {
         total_accounts: 20
     }) as IGanacheServer;
 
-    ganacheServer.listen(8545, () => {});
+    ganacheServer.listen(8545, () => {}); // eslint-disable-line @typescript-eslint/no-empty-function
 
     return ganacheServer;
 }
