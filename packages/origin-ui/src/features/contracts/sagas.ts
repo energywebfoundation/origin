@@ -19,13 +19,8 @@ import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-bac
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
-import {
-    configurationUpdated,
-    consumingDeviceCreatedOrUpdated,
-    demandCreated,
-    demandUpdated
-} from '../actions';
-import { ProducingDevice, ConsumingDevice } from '@energyweb/device-registry';
+import { configurationUpdated, demandCreated, demandUpdated } from '../actions';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
@@ -333,16 +328,6 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
             for (const device of producingDevices) {
                 yield put(producingDeviceCreatedOrUpdated(device));
-            }
-
-            const consumingDevices: ConsumingDevice.Entity[] = yield apply(
-                ConsumingDevice,
-                ConsumingDevice.getAllDevices,
-                [configuration]
-            );
-
-            for (const device of consumingDevices) {
-                yield put(consumingDeviceCreatedOrUpdated(device));
             }
 
             const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [

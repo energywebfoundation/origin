@@ -61,14 +61,6 @@ export function getProducingDeviceDetailLink(baseURL: string, deviceId: string |
     return `${getDevicesLink(baseURL)}/producing_detail_view/${deviceId}`;
 }
 
-export function getConsumingDeviceDetailLink(baseURL: string, deviceId: string | number) {
-    if (typeof deviceId === 'number') {
-        deviceId = deviceId.toString();
-    }
-
-    return `${getDevicesLink(baseURL)}/consuming_detail_view/${deviceId}`;
-}
-
 export function useLinks() {
     const baseURL = useSelector(getBaseURL);
 
@@ -78,8 +70,6 @@ export function useLinks() {
         getDevicesAddLink: () => getDevicesAddLink(baseURL),
         getDevicesOwnedLink: () => getDevicesOwnedLink(baseURL),
         getAccountLink: () => getAccountLink(baseURL),
-        getConsumingDeviceDetailLink: (deviceId: string | number) =>
-            getConsumingDeviceDetailLink(baseURL, deviceId),
         getCertificatesLink: () => getCertificatesLink(baseURL),
         getDemandsLink: () => getDemandsLink(baseURL),
         getDemandEditLink: (id: string) => getDemandEditLink(baseURL, id),
