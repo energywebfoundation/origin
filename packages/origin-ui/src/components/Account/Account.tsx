@@ -6,6 +6,7 @@ import { getBaseURL } from '../../features/selectors';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
+import { UserRegister } from './UserRegister';
 import { dataTest } from '../../utils/helper';
 
 export function Account() {
@@ -21,6 +22,11 @@ export function Account() {
             key: 'import',
             label: 'Import',
             component: AccountImport
+        },
+        {
+            key: 'register',
+            label: 'Register',
+            component: UserRegister
         }
     ];
 
