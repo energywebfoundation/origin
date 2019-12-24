@@ -27,6 +27,8 @@ import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
 import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 export class Demo {
     public marketContractLookup: string;
 
@@ -66,6 +68,10 @@ export class Demo {
             SMART_METER: {
                 address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
                 privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
+            },
+            SMART_METER_2: {
+                address: '0x4Db81bEfaF6B82553898739B788963d20Be8068a',
+                privateKey: '0x968cc146af9c9d3ac08cca0dd3f915ed5a0966c118e26fd5e99066b0ff8bc060'
             },
             MATCHER: {
                 address: '0x3409c66069b3C4933C654beEAA136cc5ce6D7BD0'.toLowerCase(),
@@ -340,6 +346,73 @@ export class Demo {
         }
 
         return { conf: this.conf, deployResult };
+    }
+
+    async deployNewDevice() {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.DEVICE_MANAGER;
+
+        const deviceProducingProps: Device.IOnChainProperties = {
+            smartMeter: { address: NULL_ADDRESS },
+            owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
+            lastSmartMeterReadWh: 0,
+            status: Device.DeviceStatus.Submitted,
+            usageType: Device.UsageType.Producing,
+            lastSmartMeterReadFileHash: '',
+            propertiesDocumentHash: null,
+            url: null
+        };
+
+        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+            deviceType: 'Wind',
+            complianceRegistry: 'I-REC',
+            facilityName: 'Test Device',
+            capacityWh: 0,
+            country: 'Thailand',
+            address:
+                '96 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+            gpsLatitude: '',
+            gpsLongitude: '',
+            timezone: 'Asia/Bangkok',
+            operationalSince: 0,
+            otherGreenAttributes: '',
+            typeOfPublicSupport: '',
+            description: '',
+            images: '',
+            region: 'Central',
+            province: 'Nakhon Pathom'
+        };
+
+        let newDevice: ProducingDevice.Entity;
+
+        try {
+            newDevice = await ProducingDevice.createDevice(
+                deviceProducingProps,
+                deviceProducingPropsOffChain,
+                this.conf
+            );
+        } catch (error) {
+            throw new Error(error);
+        }
+
+        return newDevice.id;
+    }
+
+    async approveDevice(deviceId: string) {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ADMIN;
+
+        const device = await new ProducingDevice.Entity(deviceId, this.conf).sync();
+
+        try {
+            await device.setStatus(Device.DeviceStatus.Active);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getDeviceStatus(deviceId: string) {
+        const { status } = await new ProducingDevice.Entity(deviceId, this.conf).sync();
+
+        return status;
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
