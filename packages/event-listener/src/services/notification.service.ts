@@ -2,12 +2,7 @@ import { Device } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { MarketUser } from '@energyweb/market';
 
-import {
-    IOriginEventsStore,
-    IPartiallyFilledDemand,
-    ICertificateMatchesDemand,
-    IDeviceStatusChange
-} from '../stores/OriginEventsStore';
+import { IOriginEventsStore } from '../stores/OriginEventsStore';
 
 import EmailTypes from '../email/EmailTypes';
 import { IEmailServiceProvider } from './email.service';
@@ -44,47 +39,43 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyFulfilledDemand(user: MarketUser.Entity) {
-        const emailAddress: string = user.offChainProperties.email;
-        const fulfilledDemands: number[] = this.originEventsStore.getFulfilledDemands(user.id);
+        const emailAddress = user.offChainProperties.email;
+        const fulfilledDemands = this.originEventsStore.getFulfilledDemands(user.id);
 
         if (fulfilledDemands.length > 0) {
             await this.sendNotificationEmail(
                 EmailTypes.DEMAND_FULFILLED,
                 emailAddress,
-                `Your following demand(s) have been fulfilled:\n${fulfilledDemands
+                `Your following demand(s) have been fulfilled:<br />${fulfilledDemands
                     .map(demandId => `Demand #${demandId}.`)
-                    .join('\n')}`,
+                    .join('<br />')}`,
                 () => this.originEventsStore.resetFulfilledDemands(user.id)
             );
         }
     }
 
     private async notifyPartiallyFilledDemand(user: MarketUser.Entity) {
-        const emailAddress: string = user.offChainProperties.email;
-        const partiallyFilledDemands: IPartiallyFilledDemand[] = this.originEventsStore.getPartiallyFilledDemands(
-            user.id
-        );
+        const emailAddress = user.offChainProperties.email;
+        const partiallyFilledDemands = this.originEventsStore.getPartiallyFilledDemands(user.id);
 
         if (partiallyFilledDemands.length > 0) {
             await this.sendNotificationEmail(
                 EmailTypes.DEMAND_PARTIALLY_FILLED,
                 emailAddress,
-                `Matched the following certificates to your demands:\n${partiallyFilledDemands
+                `Matched the following certificates to your demands:<br />${partiallyFilledDemands
                     .map(
                         match =>
                             `Matched certificate ${match.certificateId} with amount ${match.amount} Wh to demand ${match.demandId}.`
                     )
-                    .join('\n')}`,
+                    .join('<br />')}`,
                 () => this.originEventsStore.resetPartiallyFilledDemands(user.id)
             );
         }
     }
 
     private async notifyMatchingCertificates(user: MarketUser.Entity) {
-        const emailAddress: string = user.offChainProperties.email;
-        const matchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getMatchingCertificates(
-            user.id
-        );
+        const emailAddress = user.offChainProperties.email;
+        const matchingCertificates = this.originEventsStore.getMatchingCertificates(user.id);
 
         if (matchingCertificates.length > 0) {
             let urls = matchingCertificates.map(
@@ -110,7 +101,7 @@ export class NotificationService implements INotificationService {
         const issuedCertificates = this.originEventsStore.getIssuedCertificates(user.id);
 
         if (issuedCertificates > 0) {
-            const url = `${this.conf.offChainDataSource.baseUrl}/certificates/inbox`;
+            const url = `${process.env.UI_BASE_URL}/certificates/inbox`;
 
             await this.sendNotificationEmail(
                 EmailTypes.CERTS_APPROVED,
@@ -122,23 +113,23 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyDeviceStatusChange(user: MarketUser.Entity) {
-        const emailAddress: string = user.offChainProperties.email;
-        const deviceStatusChanges: IDeviceStatusChange[] = this.originEventsStore.getDeviceStatusChanges(
-            user.id
-        );
+        const emailAddress = user.offChainProperties.email;
+        const deviceStatusChanges = this.originEventsStore.getDeviceStatusChanges(user.id);
 
         if (deviceStatusChanges.length > 0) {
+            const url = `${process.env.UI_BASE_URL}/devices/owned`;
+
             await this.sendNotificationEmail(
                 EmailTypes.DEVICE_STATUS_CHANGED,
                 emailAddress,
-                `Your following devices have had their status changed:\n${deviceStatusChanges
+                `Your following devices have had their status changed:<br />${deviceStatusChanges
                     .map(
                         deviceStatusChange =>
                             `Device #${deviceStatusChange.deviceId}: ${
                                 Device.DeviceStatus[parseInt(deviceStatusChange.status, 10)]
-                            }.`
+                            }`
                     )
-                    .join('\n')}`,
+                    .join('<br />')}<br /><a href="${url}">${url}</a>`,
                 () => this.originEventsStore.resetDeviceStatusChanges(user.id)
             );
         }
