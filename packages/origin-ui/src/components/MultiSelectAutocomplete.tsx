@@ -11,8 +11,8 @@ interface IOwnProps {
     label: string;
     placeholder: string;
     options: IAutocompleteMultiSelectOptionType[];
-    onChange: (value: IAutocompleteMultiSelectOptionType) => void;
-    selectedValues: IAutocompleteMultiSelectOptionType;
+    onChange: (value: IAutocompleteMultiSelectOptionType[]) => void;
+    selectedValues: IAutocompleteMultiSelectOptionType[];
     disabled?: boolean;
     className?: string;
 }
