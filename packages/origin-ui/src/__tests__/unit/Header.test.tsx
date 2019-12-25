@@ -87,7 +87,7 @@ describe('Header', () => {
         expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(true);
 
-        rendered.find(`.MuiSelect-root`).simulate('click');
+        rendered.find(`.MuiSelect-root`).simulate('mousedown');
 
         expect(document.querySelectorAll(`#menu- ul li`).length).toEqual(0);
     });
@@ -118,7 +118,7 @@ describe('Header', () => {
         expect(rendered.find('.MuiSelect-root').text()).toBe('Trader Organization');
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(true);
 
-        rendered.find(`.MuiSelect-root`).simulate('click');
+        rendered.find(`.MuiSelect-root`).simulate('mousedown');
 
         expect(document.querySelectorAll(`#menu- ul li`).length).toEqual(0);
     });
@@ -189,7 +189,7 @@ describe('Header', () => {
         expect(rendered.find('.MuiSelect-root').text()).toBe('Trader Organization');
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
 
-        rendered.find(`.MuiSelect-root`).simulate('click');
+        rendered.find(`.MuiSelect-root`).simulate('mousedown');
 
         expect(
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
@@ -224,7 +224,7 @@ describe('Header', () => {
         expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
 
-        rendered.find(`.MuiSelect-root`).simulate('click');
+        rendered.find(`.MuiSelect-root`).simulate('mousedown');
 
         expect(
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
@@ -257,7 +257,7 @@ describe('Header', () => {
         expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
 
-        rendered.find(`.MuiSelect-root`).simulate('click');
+        rendered.find(`.MuiSelect-root`).simulate('mousedown');
 
         expect(
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
