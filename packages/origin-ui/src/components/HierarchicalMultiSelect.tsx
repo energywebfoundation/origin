@@ -264,7 +264,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 options={allValuesLevelOne}
                 onChange={value => setValueByLevel(value, 1)}
                 selectedValues={selectedValuesLevelOne}
-                classes={{ root: 'mt-3' }}
+                className="mt-3"
                 disabled={disabled}
                 {...dataTest('hierarchical-multi-select-level-1')}
             />
@@ -275,7 +275,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                     options={levelTwoValues}
                     onChange={value => setValueByLevel(value, 2)}
                     selectedValues={selectedValuesLevelTwo}
-                    classes={{ root: 'mt-3' }}
+                    className="mt-3"
                     disabled={disabled}
                     {...dataTest('hierarchical-multi-select-level-2')}
                 />
@@ -287,7 +287,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                     options={levelThreeValues}
                     onChange={value => setValueByLevel(value, 3)}
                     selectedValues={selectedValuesLevelThree}
-                    classes={{ root: 'mt-3' }}
+                    className="mt-3"
                     disabled={disabled}
                     {...dataTest('hierarchical-multi-select-level-3')}
                 />

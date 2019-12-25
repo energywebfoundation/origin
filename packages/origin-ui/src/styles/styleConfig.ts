@@ -1,6 +1,5 @@
-import { createMuiTheme, Theme, createStyles } from '@material-ui/core';
+import { createMuiTheme } from '@material-ui/core';
 import variables from './variables.scss';
-import { CSSProperties } from 'react';
 
 export const STYLE_CONFIG = {
     PRIMARY_COLOR: variables.primaryColor,
@@ -139,60 +138,4 @@ export const CUSTOM_SLIDER_STYLE = {
     markActive: {
         backgroundColor: 'currentColor'
     }
-};
-
-export const createInputAutocompleteStyle = (theme: Theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-            minWidth: 290
-        },
-        input: {
-            display: 'flex',
-            padding: 0,
-            height: 'auto'
-        },
-        valueContainer: {
-            display: 'flex',
-            flexWrap: 'wrap',
-            flex: 1,
-            alignItems: 'center',
-            overflow: 'hidden'
-        },
-        chip: {
-            margin: theme.spacing(0.5, 0.25)
-        },
-        chipFocused: {},
-        noOptionsMessage: {
-            padding: theme.spacing(1, 2)
-        },
-        singleValue: {
-            fontSize: 16
-        },
-        placeholder: {
-            position: 'absolute',
-            left: 2,
-            bottom: 6,
-            fontSize: 16
-        },
-        paper: {
-            position: 'absolute',
-            zIndex: 2,
-            marginTop: theme.spacing(1),
-            left: 0,
-            right: 0
-        },
-        divider: {
-            height: theme.spacing(2)
-        }
-    });
-
-export const INPUT_AUTOCOMPLETE_SELECT_STYLE = {
-    input: (base: CSSProperties) => ({
-        ...base,
-        color: STYLE_CONFIG.PRIMARY_COLOR,
-        '& input': {
-            font: 'inherit'
-        }
-    })
 };
