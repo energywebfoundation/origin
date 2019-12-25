@@ -7,6 +7,7 @@ import { NavLink, Route, Redirect } from 'react-router-dom';
 import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
+import { OrganizationRegister } from './OrganizationRegister';
 import { dataTest } from '../../utils/helper';
 
 export function Account() {
@@ -24,9 +25,14 @@ export function Account() {
             component: AccountImport
         },
         {
-            key: 'register',
-            label: 'Register',
+            key: 'user-register',
+            label: 'Register User',
             component: UserRegister
+        },
+        {
+            key: 'organization-register',
+            label: 'Register Organization',
+            component: OrganizationRegister
         }
     ];
 

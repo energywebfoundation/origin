@@ -17,6 +17,7 @@ import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Select } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
+import { FormInput } from '../Form/FormInput';
 
 interface IFormValues {
     titleSelect: string;
@@ -158,74 +159,38 @@ export function UserRegister() {
                                         </FormControl>
                                     )}
 
-                                    <FormControl
-                                        fullWidth
-                                        variant="filled"
+                                    <FormInput
+                                        label="First name"
+                                        property="firstName"
+                                        disabled={fieldDisabled}
                                         className="mt-3"
                                         required
-                                    >
-                                        <Field
-                                            label="First name"
-                                            name="firstName"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            required
-                                            disabled={fieldDisabled}
-                                        />
-                                    </FormControl>
+                                    />
 
-                                    <FormControl
-                                        fullWidth
-                                        variant="filled"
+                                    <FormInput
+                                        label="Last name"
+                                        property="lastName"
+                                        disabled={fieldDisabled}
                                         className="mt-3"
                                         required
-                                    >
-                                        <Field
-                                            label="Last name"
-                                            name="lastName"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            required
-                                            disabled={fieldDisabled}
-                                        />
-                                    </FormControl>
+                                    />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormControl
-                                        fullWidth
-                                        variant="filled"
+                                    <FormInput
+                                        label="Email"
+                                        property="email"
+                                        disabled={fieldDisabled}
                                         className="mt-3"
                                         required
-                                    >
-                                        <Field
-                                            label="Email"
-                                            name="email"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            required
-                                            disabled={fieldDisabled}
-                                        />
-                                    </FormControl>
+                                    />
 
-                                    <FormControl
-                                        fullWidth
-                                        variant="filled"
+                                    <FormInput
+                                        label="Telephone"
+                                        property="telephone"
+                                        disabled={fieldDisabled}
                                         className="mt-3"
                                         required
-                                    >
-                                        <Field
-                                            label="Telephone"
-                                            name="telephone"
-                                            component={TextField}
-                                            variant="filled"
-                                            fullWidth
-                                            required
-                                            disabled={fieldDisabled}
-                                        />
-                                    </FormControl>
+                                    />
 
                                     <FormControl
                                         fullWidth
