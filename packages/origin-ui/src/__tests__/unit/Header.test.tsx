@@ -42,7 +42,8 @@ const USER_TRADER = {
         email: 'trader@mailinator.com'
     },
     organization: 'Trader Organization',
-    roles: 8
+    roles: 8,
+    isRole: (role: number) => !!role
 };
 
 describe('Header', () => {
