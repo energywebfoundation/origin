@@ -2,6 +2,7 @@ pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
 import "./Registry.sol";
+import "./PublicIssuer.sol";
 
 contract PrivateIssuer {
   event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
@@ -9,9 +10,11 @@ contract PrivateIssuer {
   event IssueRequest(address indexed _owner, uint256 indexed _id);
   event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
   event PrivateTransferRequest(address indexed _owner, uint256 indexed _id);
-  event PublicCertitifaceCreated(uint indexed _from, uint indexed _to);
+  event PublicCertificateCreated(uint indexed _from, uint indexed _to);
 
   Registry public registry;
+  PublicIssuer public publicIssuer;
+
   int public privateCertificateTopic = 1234; 
   int public publicCertificateTopic = 1235; 
 
@@ -44,8 +47,9 @@ contract PrivateIssuer {
   mapping(uint256 => bytes32) public commitments;
   mapping(uint256 => bool) public migrations;
 
-  constructor(Registry _registry) public {
+  constructor(Registry _registry, PublicIssuer _publicIssuer) public {
     registry = _registry;
+    publicIssuer = _publicIssuer;
   }
 
   function updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) public {
@@ -110,7 +114,7 @@ contract PrivateIssuer {
     emit MigrateToPublicRequest(msg.sender, id);
   }
 
-  function migrateToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof) external {
+  function migrateToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof, bytes32 _newCommitment) external {
     RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
 
     require(!request.approved, "Request already approved");
@@ -119,15 +123,18 @@ contract PrivateIssuer {
 
     request.approved = true;
 
+    //here delegate noth to public issuer
+    //or even better move the logic to separate contract that keeps track of public to private and opposite direction
     if (migrations[request.certificateId]) {
       registry.mint(request.owner, request.certificateId, _value);
     } else {
       migrations[request.certificateId] = true;
       (,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
     
-      uint id = registry.issue(request.owner, validityData, publicCertificateTopic, _value, data);
+      uint requestId = publicIssuer.requestIssueFor(request.owner, data);
+      uint id = publicIssuer.approveIssue(request.owner, requestId, _value, validityData);
 
-      emit PublicCertitifaceCreated(request.certificateId, id);
+      emit PublicCertificateCreated(request.certificateId, id);
     }
   }
 
@@ -195,11 +202,5 @@ contract PrivateIssuer {
     }
 
     return _rootHash == hash;
-  }
-
-  modifier onlyIssuer(uint id) {
-    (address issuer,,,) = registry.getCertificate(id);
-    if (msg.sender != issuer) throw;
-    _;
   }
 }

@@ -6,7 +6,7 @@
 
 ## Issuers
 
-`PrivateIssuer.sol` is an implementation of privacy focused issuer which hides the volume for newly created certificates until the `ERC1888` claiming event.
+1) `PrivateIssuer.sol` is an implementation of privacy focused issuer which hides the volume for newly created certificates until the `ERC1888` claiming event.
 
 Migration process equals to a swap from private certificate to public certificate and is (currently) a one-way process. For certificate owner 
 
@@ -14,6 +14,7 @@ Issuer uses specific topic to issue:
 - private certificates
 - public certificates (used when migrating from private to public certificate)
 
+2) `PublicIssuer.sol` is an implementation of public I-REC compliant issuer
 
 ### Examples
 
@@ -69,7 +70,8 @@ graph TD;
 sequenceDiagram
   participant U as Device/Certificate Owner
   participant IS as Issuer
-  participant I as Issuer Contract
+  participant PUB as Public Issuer Contract
+  participant I as Private Issuer Contract
   participant R as Registry Contract
   participant A as I-REC API
   participant DB as Database
@@ -86,10 +88,14 @@ sequenceDiagram
 
   IS->>+I: migrateToPublic(id, value, salt, proof, newCommitment)
   Note over IS,I: newCommitment = private balance update
-  I->>+R: mint or issue(owner, validityData, publicTopic, value, data)
-  R-->-I: emit IssueSingle, emit CommitmentUpdated
-  I-->-IS: (boolean)result
+  I->>+PUB: requestIssueFor(request.owner, data)
+  PUB->>-I: returns requestId
+  I->>+PUB: approveIssue()
+  PUB->>-I: returns id
+  I-->-IS: emit PublicCertificateCreated(privateId, id)
 ```
+
+Note: alternatively we define a request / approve migration from private to public. So instead of private issuer calling `mint or issue` we call public issuer "issue" function, this also means that public issuer becomes a issuer address for public certificates.
 
 3) Claiming
 
