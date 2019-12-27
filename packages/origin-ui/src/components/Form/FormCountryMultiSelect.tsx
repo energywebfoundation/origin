@@ -45,7 +45,7 @@ export function FormCountryMultiSelect(props: IProps) {
                     ...i,
                     value: i.value.toString()
                 }))}
-                classes={{ root: 'mt-3' }}
+                className="mt-3"
                 disabled={disabled}
             />
         </div>
