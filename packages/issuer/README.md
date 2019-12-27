@@ -16,9 +16,25 @@ Issuer uses specific topic to issue:
 
 2) `PublicIssuer.sol` is an implementation of public I-REC compliant issuer
 
-### Examples
+### Recipes
 
-1) Requesting and issuance
+1) Private issuance and private trading
+  - issue using PrivateIssuer.requestIssue / PrivateIssuer.approveIssue
+  - transfer using  PrivateIssuer.privateTransfer
+
+2) Private issuance and public trading
+  - issue using PrivateIssuer.requestIssue / PrivateIssuer.approveIssue
+  - migrate to public using PrivateIssuer.migrateToPublic
+  - transfer / trade public volumes
+
+3) Public issuance and private trading
+  - issue using PublicIssuer
+  - deposit volume to PrivateIssuer
+  - transfer using  PrivateIssuer.privateTransfer
+
+### Technical documentation
+
+1) Private requesting and issuance
 ```mermaid
 graph TD;
     A(Device Owner) -->|1. Request Issue| P(PrivateIssuer.sol)
