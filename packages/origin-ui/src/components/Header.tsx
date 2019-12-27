@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { Role } from '@energyweb/user-registry';
 import logo from '../../assets/logo.svg';
 import { AccountCircle, VpnKeySharp, Lock, Settings } from '@material-ui/icons';
 import './Header.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks } from '../utils/routing';
-import { getUserById, getUsers } from '../features/users/selectors';
+import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import {
     isUsingInBrowserPK,
     getAccounts,
@@ -45,6 +46,10 @@ export function Header() {
     const accounts = useSelector(getAccounts);
     const users = useSelector(getUsers);
     const encryptedAccounts = useSelector(getEncryptedAccounts);
+    const currentUser = useSelector(getCurrentUser);
+
+    const isIssuer = currentUser?.isRole(Role.Issuer);
+
     let activeAccount = useSelector(getActiveAccount);
 
     const dispatch = useDispatch();
@@ -157,11 +162,13 @@ export function Header() {
                     <li>
                         <NavLink to={getCertificatesLink()}>Certificates</NavLink>
                     </li>
-                    <li>
-                        <NavLink to={getDemandsLink()} {...dataTest('header-link-demands')}>
-                            Demands
-                        </NavLink>
-                    </li>
+                    {!isIssuer && (
+                        <li>
+                            <NavLink to={getDemandsLink()} {...dataTest('header-link-demands')}>
+                                Demands
+                            </NavLink>
+                        </li>
+                    )}
                 </ul>
 
                 <div className="ViewProfile">
