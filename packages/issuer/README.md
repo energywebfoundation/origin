@@ -25,6 +25,36 @@ graph TD;
     P-->|3. Issue with private topic| R(Registry.sol)
 ```
 
+```mermaid
+sequenceDiagram
+  participant U as Device Owner
+  participant IS as Issuer
+  participant I as Issuer Contract
+  participant R as Registry Contract
+  participant A as I-REC API
+  participant DB as Database
+
+  U->>+I: encodeIssue(from, to, deviceId)
+  I-->>-U: (bytes)data
+
+  U->>+I: requestIssue(data)
+  I-->-U: emit IssueRequest(msg.sender, id)
+
+  IS->>+I: getRequest(id)
+  I-->-IS: RequestIssue
+
+  IS->>+A: validate(relevant request data)
+  A-->-IS: (boolean)result
+  IS->>+IS: createProof(to, balance)
+  IS->>+DB: storeProof()
+  DB-->-IS: ok
+  IS->>+I: approveIssue(to, requestId, commitment, validityData)
+  Note over IS,I: commitment = rootHash of the proof
+  I->>+R: issue(to, validityData, privateTopic,0, data)
+  R-->-I: (uint)id
+  I-->-IS: emit IssueSingle, emit CommitmentUpdated
+```
+
 2) Migrating certificate to public certificate
 ```mermaid
 graph TD;
@@ -33,6 +63,32 @@ graph TD;
     P-->|3. Was partially issued?|P
     P-->|4. NO: Issue with public topic and volume| R(Registry)
     P-->|5. YES: Mint volume| R(Registry)
+```
+
+```mermaid
+sequenceDiagram
+  participant U as Device/Certificate Owner
+  participant IS as Issuer
+  participant I as Issuer Contract
+  participant R as Registry Contract
+  participant A as I-REC API
+  participant DB as Database
+
+  U->>+IS: requestProofForBalance()
+  IS-->>-U: (address, value, salt, proof)
+  U->>U: hash = sha3(address, value, salt)
+
+  U->>+I: requestMigrateToPublic(id, hash)
+  I-->-U: emit MigrateToPublicRequest(msg.sender, id)
+
+  IS->>+I: getRequestMigrateToPublic(id)
+  I-->-IS: RequestStateChange
+
+  IS->>+I: migrateToPublic(id, value, salt, proof, newCommitment)
+  Note over IS,I: newCommitment = private balance update
+  I->>+R: mint or issue(owner, validityData, publicTopic, value, data)
+  R-->-I: emit IssueSingle, emit CommitmentUpdated
+  I-->-IS: (boolean)result
 ```
 
 3) Claiming
@@ -68,6 +124,8 @@ graph TD;
     P-->|4. Update commitment|P
 ```
 
+Note: alternatively we can implement it as burn/mint flow. Tokens deposited to PrivateIssuer contract will be burnt immediately. Then transfer from private to public will use `Migrating certificate to public certificate` flow.
+
 6) Private transfers
 
 This is a case where volume can be transferred privately inside the private registry. 
@@ -82,6 +140,36 @@ graph TD;
     P-->|3. Validate new commitment| P
     P-->|4. Update commitment|P
 ```
+
+```mermaid
+sequenceDiagram
+  participant U as Device/Certificate Owner
+  participant IS as Issuer
+  participant I as Issuer Contract
+  participant R as Registry Contract
+  participant A as I-REC API
+  participant DB as Database
+
+  U->>+IS: requestPrivateTransfer(id, value, newOwner)
+  IS->>DB: store updated proof tree, linked to requested 
+  IS-->>-U: (address, value, salt, proof)
+  Note over IS,U: address = sender address, value = remaining balance
+  U->>U: hash = sha3(address, value, salt)
+
+  U->>+I: requestPrivateTransfer(id, hash)
+  I-->-U: emit PrivateTransferRequest(msg.sender, id)
+
+  IS->>+I: getRequestPrivateTransfer(id)
+  I-->-IS: RequestStateChange
+
+  IS->>+I: privateTransfer(requestId, proof, prevCommitment, newCommitment)
+  Note over IS,I: newCommitment = private balance update
+  I->>I: updateCommitment(id, prevCommitment, newCommitment)
+  I-->-IS: emit CommitmentUpdated
+```
+
+Notes:
+`prevCommitment` is required to prevent state corruption, transition to new commitment based on other state that's currently on-chain will result in error.
 
 Implementation:
 - Certificate owner A has 1000kWh of energy on certificate id = 1 (C1)

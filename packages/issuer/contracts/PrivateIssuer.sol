@@ -9,6 +9,7 @@ contract PrivateIssuer {
   event IssueRequest(address indexed _owner, uint256 indexed _id);
   event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
   event PrivateTransferRequest(address indexed _owner, uint256 indexed _id);
+  event PublicCertitifaceCreated(uint indexed _from, uint indexed _to);
 
   Registry public registry;
   int public privateCertificateTopic = 1234; 
@@ -80,7 +81,7 @@ contract PrivateIssuer {
   }
 
   //onlyOwner (issuer)
-  function approveIssue(address _to, uint _requestId, bytes32 _previousCommitment, bytes32 _commitment, bytes calldata _validityData) external returns (uint256) {
+  function approveIssue(address _to, uint _requestId, bytes32 _commitment, bytes calldata _validityData) external returns (uint256) {
     RequestIssue storage request = requestIssueStorage[_requestId];
     require(!request.approved, "Already issued"); //consider checking topic and other params from request
 
@@ -88,7 +89,7 @@ contract PrivateIssuer {
 
     uint id = registry.issue(_to, _validityData, privateCertificateTopic, 0, request.data);
 
-    updateCommitment(id, _previousCommitment, _commitment);
+    updateCommitment(id, 0x0, _commitment);
 
     return id;
   }
@@ -124,7 +125,9 @@ contract PrivateIssuer {
       migrations[request.certificateId] = true;
       (,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
     
-      registry.issue(request.owner, validityData, publicCertificateTopic, _value, data);
+      uint id = registry.issue(request.owner, validityData, publicCertificateTopic, _value, data);
+
+      emit PublicCertitifaceCreated(request.certificateId, id);
     }
   }
 
@@ -192,5 +195,11 @@ contract PrivateIssuer {
     }
 
     return _rootHash == hash;
+  }
+
+  modifier onlyIssuer(uint id) {
+    (address issuer,,,) = registry.getCertificate(id);
+    if (msg.sender != issuer) throw;
+    _;
   }
 }
