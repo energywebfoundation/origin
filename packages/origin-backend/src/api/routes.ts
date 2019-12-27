@@ -8,6 +8,7 @@ import { CurrencyActions } from './actions/CurrencyActions';
 import { ComplianceActions } from './actions/ComplianceActions';
 import { CountryActions } from './actions/CountryActions';
 import { imagePostActions } from './actions/ImagePost';
+import { OrganizationActions } from './actions/OrganizationActions';
 
 export interface IRoute {
     path: string;
@@ -20,7 +21,7 @@ const routeGenerator = (endpointName: string, actions: IActions, paramName?: str
 
     return [
         {
-            path: path + '?',
+            path: `${path}?`,
             method: 'get',
             actions: [actions.get]
         },
@@ -37,11 +38,15 @@ const routeGenerator = (endpointName: string, actions: IActions, paramName?: str
     ];
 };
 
-const marketContractLookupRoutes = routeGenerator('MarketContractLookup', MarketContractLookupActions);
+const marketContractLookupRoutes = routeGenerator(
+    'MarketContractLookup',
+    MarketContractLookupActions
+);
 const jsonEntityRoutes = routeGenerator('Entity', JsonEntityActions, 'hash');
 const currencyRoutes = routeGenerator('Currency', CurrencyActions);
 const complianceRoutes = routeGenerator('Compliance', ComplianceActions);
 const countryRoutes = routeGenerator('Country', CountryActions);
+const organizationRoutes = routeGenerator('Organization', OrganizationActions);
 
 /**
  * All application routes.
@@ -51,9 +56,12 @@ export const AppRoutes: IRoute[] = marketContractLookupRoutes.concat(
     currencyRoutes,
     complianceRoutes,
     countryRoutes,
-    [{
-        path: '/Image',
-        method: 'post',
-        actions: imagePostActions
-    }]
+    organizationRoutes,
+    [
+        {
+            path: '/Image',
+            method: 'post',
+            actions: imagePostActions
+        }
+    ]
 );

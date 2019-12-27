@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { Paper, Grid, Button, useTheme, makeStyles, createStyles } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { setLoading } from '../../features/general/actions';
@@ -12,6 +12,8 @@ import {
     FormCountryMultiSelect,
     IFormCountryMultiSelectOption
 } from '../Form/FormCountryMultiSelect';
+import { getEnvironment } from '../../features/general/selectors';
+import axios from 'axios';
 
 interface IFormValues {
     code: string;
@@ -129,6 +131,7 @@ const VALIDATION_SCHEMA = Yup.object({
 });
 
 export function OrganizationRegister() {
+    const environment = useSelector(getEnvironment);
     const [activeCountries, setActiveCountries] = useState<IFormCountryMultiSelectOption[]>([]);
 
     const dispatch = useDispatch();
@@ -150,7 +153,14 @@ export function OrganizationRegister() {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        showNotification('Organization registered.', NotificationType.Success);
+        try {
+            await axios.post(`${environment.BACKEND_URL}/api/Organization`, values);
+
+            showNotification('Organization registered.', NotificationType.Success);
+        } catch (error) {
+            console.warn('Error while registering an organization', error);
+            showNotification('Organization could not be created.', NotificationType.Error);
+        }
 
         dispatch(setLoading(false));
         formikActions.setSubmitting(false);

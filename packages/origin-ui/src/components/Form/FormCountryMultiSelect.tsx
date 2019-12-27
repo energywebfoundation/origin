@@ -35,10 +35,10 @@ export function FormCountryMultiSelect(props: IProps) {
                 options={COUNTRY_OPTIONS}
                 onChange={(value: IAutocompleteMultiSelectOptionType[]) =>
                     onChange(
-                        value.map(i => ({
+                        value?.map(i => ({
                             ...i,
                             value: Number(i.value)
-                        }))
+                        })) || []
                     )
                 }
                 selectedValues={selectedValues.map(i => ({
