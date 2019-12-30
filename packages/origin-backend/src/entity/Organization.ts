@@ -1,10 +1,14 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-validator';
+import { IOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
 
 @Entity()
-export class Organization extends BaseEntity {
+export class Organization extends BaseEntity implements IOrganization {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    activeCountries: string;
 
     @Column()
     code: string;
@@ -82,4 +86,7 @@ export class Organization extends BaseEntity {
     @Column()
     @IsUrl()
     website: string;
+
+    @Column()
+    status: OrganizationStatus;
 }

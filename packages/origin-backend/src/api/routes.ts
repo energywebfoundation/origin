@@ -16,17 +16,24 @@ export interface IRoute {
     actions: Array<RequestHandler>;
 }
 
-const routeGenerator = (endpointName: string, actions: IActions, paramName?: string): IRoute[] => {
-    const path = `/${endpointName}${paramName ? `/:${paramName}` : ''}`;
+const routeGenerator = (
+    endpointName: string,
+    actions: IActions,
+    paramName?: string,
+    omitPostParam?: boolean
+): IRoute[] => {
+    const basePath = `/${endpointName}`;
+    const path = `${basePath}${paramName ? `/:${paramName}` : ''}`;
+    const postPath = omitPostParam ? basePath : path;
 
-    return [
+    const routes = [
         {
             path: `${path}?`,
             method: 'get',
             actions: [actions.get]
         },
         {
-            path,
+            path: postPath,
             method: 'post',
             actions: [actions.post]
         },
@@ -36,6 +43,16 @@ const routeGenerator = (endpointName: string, actions: IActions, paramName?: str
             actions: [actions.delete]
         }
     ];
+
+    if (actions.put) {
+        routes.push({
+            path,
+            method: 'put',
+            actions: [actions.put]
+        });
+    }
+
+    return routes;
 };
 
 const marketContractLookupRoutes = routeGenerator(
@@ -46,7 +63,7 @@ const jsonEntityRoutes = routeGenerator('Entity', JsonEntityActions, 'hash');
 const currencyRoutes = routeGenerator('Currency', CurrencyActions);
 const complianceRoutes = routeGenerator('Compliance', ComplianceActions);
 const countryRoutes = routeGenerator('Country', CountryActions);
-const organizationRoutes = routeGenerator('Organization', OrganizationActions);
+const organizationRoutes = routeGenerator('Organization', OrganizationActions, 'id', true);
 
 /**
  * All application routes.

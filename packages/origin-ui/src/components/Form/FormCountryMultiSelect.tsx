@@ -5,18 +5,14 @@ import {
 } from '../MultiSelectAutocomplete';
 import { Countries } from '@energyweb/utils-general';
 
-export interface IFormCountryMultiSelectOption {
-    label: string;
-    value: number;
-}
-
 interface IProps {
     label: string;
-    selectedValues: IFormCountryMultiSelectOption[];
-    onChange: (value: IFormCountryMultiSelectOption[]) => void;
+    selectedValues: IAutocompleteMultiSelectOptionType[];
+    onChange: (value: IAutocompleteMultiSelectOptionType[]) => void;
     placeholder?: string;
     className?: string;
     disabled?: boolean;
+    max?: number;
 }
 
 const COUNTRY_OPTIONS = Countries.map(country => ({
@@ -25,7 +21,7 @@ const COUNTRY_OPTIONS = Countries.map(country => ({
 }));
 
 export function FormCountryMultiSelect(props: IProps) {
-    const { className, label, placeholder, onChange, selectedValues, disabled } = props;
+    const { className, label, placeholder, onChange, selectedValues, disabled, max } = props;
 
     return (
         <div className={className}>
@@ -33,20 +29,11 @@ export function FormCountryMultiSelect(props: IProps) {
                 label={label}
                 placeholder={placeholder}
                 options={COUNTRY_OPTIONS}
-                onChange={(value: IAutocompleteMultiSelectOptionType[]) =>
-                    onChange(
-                        value?.map(i => ({
-                            ...i,
-                            value: Number(i.value)
-                        })) || []
-                    )
-                }
-                selectedValues={selectedValues.map(i => ({
-                    ...i,
-                    value: i.value.toString()
-                }))}
+                onChange={(value: IAutocompleteMultiSelectOptionType[]) => onChange(value || [])}
+                selectedValues={selectedValues}
                 className="mt-3"
                 disabled={disabled}
+                max={max}
             />
         </div>
     );
