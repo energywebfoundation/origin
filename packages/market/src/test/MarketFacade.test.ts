@@ -17,8 +17,8 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import { Configuration, Compliance, TimeFrame, Currency } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -125,7 +125,8 @@ describe('Market-Facade', () => {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock()
+                client: new OffChainDataClientMock(),
+                configurationClient: new ConfigurationClientMock()
             },
             logger
         };
@@ -343,7 +344,7 @@ describe('Market-Facade', () => {
             smartMeter: { address: deviceSmartMeter },
             owner: { address: deviceOwnerAddress },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
             propertiesDocumentHash: null,
@@ -360,10 +361,14 @@ describe('Market-Facade', () => {
             gpsLongitude: '31.1231',
             timezone: 'Asia/Bangkok',
             deviceType: 'Wind',
-            complianceRegistry: Compliance.EEC,
+            complianceRegistry: 'I-REC',
             otherGreenAttributes: '',
             typeOfPublicSupport: '',
-            facilityName: ''
+            facilityName: '',
+            description: '',
+            images: '',
+            region: '',
+            province: ''
         };
 
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
@@ -386,14 +391,14 @@ describe('Market-Facade', () => {
             const demandOffChainProps: Demand.IDemandOffChainProperties = {
                 timeFrame: TimeFrame.hourly,
                 maxPricePerMwh: 1.5,
-                currency: Currency.USD,
+                currency: 'USD',
                 location: ['Thailand;Central;Nakhon Pathom'],
                 deviceType: ['Solar'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
                 energyPerTimeFrame: 10,
-                registryCompliance: Compliance.EEC,
+                registryCompliance: 'I-REC',
                 startTime: START_TIME,
                 endTime: END_TIME,
                 automaticMatching: true
@@ -434,12 +439,12 @@ describe('Market-Facade', () => {
 
             assert.deepOwnInclude(demand.offChainProperties, {
                 deviceType: ['Solar'],
-                currency: Currency.USD,
+                currency: 'USD',
                 location: ['Thailand;Central;Nakhon Pathom'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPricePerMwh: 1.5,
-                registryCompliance: 2,
+                registryCompliance: 'I-REC',
                 energyPerTimeFrame: 10,
                 timeFrame: TimeFrame.hourly,
                 typeOfPublicSupport: 'string',
@@ -585,7 +590,7 @@ describe('Market-Facade', () => {
 
             const certificate = await new PurchasableCertificate.Entity('1', conf).sync();
 
-            await certificate.publishForSale(1000, Currency.USD);
+            await certificate.publishForSale(1000, 'USD');
 
             conf.blockchainProperties.activeUser = {
                 address: matcherAccount,
@@ -619,7 +624,7 @@ describe('Market-Facade', () => {
 
             const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
                 price: 10,
-                currency: Currency.USD,
+                currency: 'USD',
                 availableWh: 10,
                 timeFrame: TimeFrame.hourly
             };
@@ -643,7 +648,7 @@ describe('Market-Facade', () => {
                 deviceId: '0',
                 offChainProperties: {
                     availableWh: 10,
-                    currency: Currency.USD,
+                    currency: 'USD',
                     price: 10,
                     timeFrame: TimeFrame.hourly
                 }
@@ -660,7 +665,7 @@ describe('Market-Facade', () => {
                 deviceId: '0',
                 offChainProperties: {
                     availableWh: 10,
-                    currency: Currency.USD,
+                    currency: 'USD',
                     price: 10,
                     timeFrame: TimeFrame.hourly
                 }
@@ -688,7 +693,7 @@ describe('Market-Facade', () => {
                 start: startTime,
                 end: startTime + 1000,
                 price: 10,
-                currency: Currency.USD,
+                currency: 'USD',
                 period: 10,
                 timeFrame: TimeFrame.hourly
             };
@@ -720,7 +725,7 @@ describe('Market-Facade', () => {
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
                 offChainProperties: {
-                    currency: Currency.USD,
+                    currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -745,7 +750,7 @@ describe('Market-Facade', () => {
                 approvedBySupplyOwner: false,
                 approvedByDemandOwner: true,
                 offChainProperties: {
-                    currency: Currency.USD,
+                    currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -776,7 +781,7 @@ describe('Market-Facade', () => {
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
                 offChainProperties: {
-                    currency: Currency.USD,
+                    currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -798,7 +803,7 @@ describe('Market-Facade', () => {
                 start: startTime,
                 end: startTime + 1000,
                 price: 10,
-                currency: Currency.USD,
+                currency: 'USD',
                 period: 10,
                 timeFrame: TimeFrame.hourly
             };
@@ -827,7 +832,7 @@ describe('Market-Facade', () => {
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: false,
                 offChainProperties: {
-                    currency: Currency.USD,
+                    currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
                     price: 10,
@@ -858,7 +863,7 @@ describe('Market-Facade', () => {
                 approvedBySupplyOwner: true,
                 approvedByDemandOwner: true,
                 offChainProperties: {
-                    currency: Currency.USD,
+                    currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
                     price: 10,

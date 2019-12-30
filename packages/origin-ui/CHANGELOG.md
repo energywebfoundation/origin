@@ -3,6 +3,118 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.1.1...@energyweb/origin-ui@1.2.0) (2019-12-20)
+
+
+### Bug Fixes
+
+* **origin-ui:** destructure country ([091d98f](https://github.com/energywebfoundation/origin/commit/091d98ff5bfe8531c3938aa081b1e1ba42edf5b9))
+* **origin-ui:** fix tests: useSelector order + add /api to backend url ([a5bb9cf](https://github.com/energywebfoundation/origin/commit/a5bb9cf653540dd303eab4df8b5a61087fb7e318))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+* input form for device registration ([d253e8c](https://github.com/energywebfoundation/origin/commit/d253e8c052e82a4ec380ca1c5862f66e30d5d1f8))
+
+
+
+
+
+## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.1.0...@energyweb/origin-ui@1.1.1) (2019-12-19)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.0.0...@energyweb/origin-ui@1.1.0) (2019-12-17)
+
+
+### Bug Fixes
+
+* **origin-ui:** buyer cannot delete his demand ([35bc742](https://github.com/energywebfoundation/origin/commit/35bc7426e9625656f900a45ec538d299a6a3cad9))
+
+
+### Features
+
+* **origin-ui:** remove searching by certificate id and consuming device id ([#369](https://github.com/energywebfoundation/origin/issues/369)) ([76ef3e0](https://github.com/energywebfoundation/origin/commit/76ef3e039bdea77a9d4738961f4ab1a27f61b30a))
+* **origin-ui:** remove searching device by id ([#368](https://github.com/energywebfoundation/origin/issues/368)) ([60ec558](https://github.com/energywebfoundation/origin/commit/60ec5586a1eaafa8bbe1ad6ce5520cafddfc502a))
+* **origin-ui:** unify date display in datepickers ([#371](https://github.com/energywebfoundation/origin/issues/371)) ([ac9da78](https://github.com/energywebfoundation/origin/commit/ac9da78a21d0dfc7d16928351f48a5d834dbce4a))
+
+
+
+
+
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.4.0...@energyweb/origin-ui@1.0.0) (2019-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @date-io/moment to v1.3.13 ([67e85cb](https://github.com/energywebfoundation/origin/commit/67e85cb6385ef5f78e4b6e27579f6b768c824bde))
+* **deps:** update dependency bootstrap to v4.4.1 ([#335](https://github.com/energywebfoundation/origin/issues/335)) ([8096fa9](https://github.com/energywebfoundation/origin/commit/8096fa987494d0d19fb7e7a22de5af88a1aecabf))
+* **deps:** update react ([4624aa4](https://github.com/energywebfoundation/origin/commit/4624aa4730e3d621818f4c375e24699cf7b3de42))
+* **deps:** update react ([#337](https://github.com/energywebfoundation/origin/issues/337)) ([5b5540b](https://github.com/energywebfoundation/origin/commit/5b5540bc77b07fb9e8ce2ca02217ee8b31d6223b))
+* **deps:** update webpack ([#338](https://github.com/energywebfoundation/origin/issues/338)) ([e8b68e4](https://github.com/energywebfoundation/origin/commit/e8b68e41a3d8e062ac682481b2191f1c2a9a784b))
+* **origin-ui:** fix price and currency undefined in some cases ([#326](https://github.com/energywebfoundation/origin/issues/326)) ([0f2e248](https://github.com/energywebfoundation/origin/commit/0f2e248f9cfa200562b001d0b5bf925dec892cb9))
+
+
+* [FIX] Backend hash storing (#341) ([b239101](https://github.com/energywebfoundation/origin/commit/b239101f51cffd7e37c9ea51654a75804cf502ed)), closes [#341](https://github.com/energywebfoundation/origin/issues/341)
+
+
+### BREAKING CHANGES
+
+* Changed the API endpoints from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* feat(utils-general): use the new URL structure when fetching off-chain data
+* Changed the API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(user-registry): adjust to breaking changes
+* Updated User API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(asset-registry): adjust to breaking changes
+* Updated Asset API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(origin): fix constructor weird formatting
+
+* fix(market): storing off-chain data references on-chain
+* New contracts for PurchasableCertificate + Updated Market API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(event-listener): more understandable tests
+
+* fix(event-listener): make scan interval faster for tests
+
+* feat(origin-backend): use a simpler URL structure
+* The URL structure of the API changed to only store hashes, omitting IDs, entity types and market lookup contracts used previously
+
+* chore(origin-backend-client): use only POST methods instead of POST and PUT
+* Use the .insert() method instead of .insertOrUpdate()
+
+* chore(utils-general): use .insert instead of .insertOrUpdate
+
+* fix(origin-backend): return 200 on POSTing the same entity
+
+* chore(utils-general): remove abstract getUrl()
+
+* chore(user-registry): remove specific getUrl()
+
+* chore(device-registry): remove specific getUrl()
+
+* chore(origin): remove specific getUrl()
+
+* chore(market): remove specific getUrl()
+
+* chore(monorepo): reorder test:serial
+
+* fix(origin-backend): adjust tests to new POST behaviour
+
+* chore(monorepo): Add an ADR for simplifying off-chain data storage
+
+
+
+
+
 # [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@0.3.1...@energyweb/origin-ui@0.4.0) (2019-11-26)
 
 

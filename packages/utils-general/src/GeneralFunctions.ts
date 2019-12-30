@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { TransactionConfig, TransactionReceipt } from 'web3-core';
-import { Contract } from 'web3-eth-contract';
+import { Contract, PastEventOptions } from 'web3-eth-contract';
 
 export declare interface ISpecialTx extends TransactionConfig {
     privateKey?: string;
@@ -46,6 +46,16 @@ export async function replayTransaction(web3: Web3, txHash: string) {
     });
 }
 
+interface IBuildTransactionParams {
+    privateKey?: string;
+    from?: string;
+    data?: string;
+    gas?: string;
+    gasPrice?: string;
+    nonce?: number;
+    skipGasEstimation?: boolean;
+}
+
 export class GeneralFunctions {
     web3Contract: Contract;
 
@@ -78,8 +88,16 @@ export class GeneralFunctions {
         return web3.eth.sendSignedTransaction(txObject.rawTransaction);
     }
 
-    async send(method: any, txParams: ISpecialTx): Promise<TransactionReceipt> {
-        const transactionParams: ISpecialTx = await this.buildTransactionParams(method, txParams);
+    async send(
+        method: any,
+        txParams: ISpecialTx,
+        skipGasEstimation = false
+    ): Promise<TransactionReceipt> {
+        const transactionParams: ISpecialTx = await this.buildTransactionParams(
+            method,
+            txParams,
+            skipGasEstimation
+        );
 
         if (transactionParams.privateKey === '') {
             return this.web3.eth.sendTransaction(transactionParams);
@@ -121,7 +139,11 @@ export class GeneralFunctions {
         });
     }
 
-    async buildTransactionParams(method: any, params: any): Promise<ISpecialTx> {
+    async buildTransactionParams(
+        method: any,
+        params: ISpecialTx,
+        skipGasEstimation = false
+    ): Promise<ISpecialTx> {
         const parameters = params || {};
         const networkGasPrice = await this.web3.eth.getGasPrice();
 
@@ -137,25 +159,27 @@ export class GeneralFunctions {
 
         parameters.from = parameters.from || (await this.web3.eth.getAccounts())[0];
 
-        try {
-            methodGas = await method.estimateGas({
-                from: parameters.from
-            });
-        } catch (ex) {
-            if (!(await getClientVersion(this.web3)).includes('Parity')) {
-                throw ex;
-            }
-
+        if (!skipGasEstimation) {
             try {
-                const errorResult = await this.getErrorMessage(this.web3, {
-                    from: parameters.from,
-                    to: this.web3Contract.options.address,
-                    data: parameters ? parameters.data : '',
-                    gas: this.web3.utils.toHex(7000000)
+                methodGas = await method.estimateGas({
+                    from: parameters.from
                 });
-                throw new Error(errorResult);
-            } catch (e) {
-                throw ex;
+            } catch (ex) {
+                if (!(await getClientVersion(this.web3)).includes('Parity')) {
+                    throw ex;
+                }
+
+                try {
+                    const errorResult = await this.getErrorMessage(this.web3, {
+                        from: parameters.from,
+                        to: this.web3Contract.options.address,
+                        data: parameters ? parameters.data : '',
+                        gas: this.web3.utils.toHex(7000000)
+                    });
+                    throw new Error(errorResult);
+                } catch (e) {
+                    throw ex;
+                }
             }
         }
 
@@ -165,10 +189,14 @@ export class GeneralFunctions {
             gasPrice: parameters.gasPrice ? parameters.gasPrice : networkGasPrice.toString(),
             nonce: parameters.nonce
                 ? parameters.nonce
-                : await this.web3.eth.getTransactionCount(parameters.from),
+                : await this.web3.eth.getTransactionCount(parameters.from.toString()),
             data: parameters.data ? parameters.data : await method.encodeABI(),
             to: this.web3Contract.options.address,
             privateKey: parameters.privateKey ? parameters.privateKey : ''
         };
+    }
+
+    createFilter(eventFilter?: PastEventOptions) {
+        return Object.assign({ fromBlock: 0, toBlock: 'latest' }, eventFilter || {});
     }
 }

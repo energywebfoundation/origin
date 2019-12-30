@@ -8,7 +8,7 @@ import { Demands } from './Demand/Demands';
 import { Account } from './Account/Account';
 import { AccountChangedModal } from '../elements/Modal/AccountChangedModal';
 import { RequestPasswordModal } from '../elements/Modal/RequestPasswordModal';
-import { RequestIRECsModal } from '../elements/Modal/RequestIRECsModal';
+import { RequestCertificatesModal } from '../elements/Modal/RequestCertificatesModal';
 import { useSelector } from 'react-redux';
 import { ErrorComponent } from './ErrorComponent';
 import { useLinks } from '../utils/routing';
@@ -65,7 +65,7 @@ export function AppContainer() {
             </Switch>
             <AccountChangedModal />
             <RequestPasswordModal />
-            <RequestIRECsModal />
+            <RequestCertificatesModal />
         </div>
     );
 }

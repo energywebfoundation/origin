@@ -1,16 +1,5 @@
-export const isOffChainProperty = (name: string, offChainProps: any): boolean => {
-    for (const offChainPropName of Object.keys(offChainProps)) {
-        if (offChainPropName === name) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-export const getOffChainText = (name: string, offChainProps: any): string => {
-    return isOffChainProperty(name, offChainProps) ? ' (private)' : '';
-};
+import { Moment } from 'moment';
+import { Device } from '@energyweb/device-registry';
 
 export function dataTest(value, name = 'data-test') {
     return {
@@ -73,4 +62,18 @@ export function clone(item: any) {
 
 export function wait(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const DATE_FORMAT_DMY = 'MMMM Do, YYYY';
+
+export function formatDate(date: Moment) {
+    return date.format(DATE_FORMAT_DMY);
+}
+
+export const LOCATION_TITLE = 'Region, province';
+
+export function getDeviceLocationText(device: Device.Entity) {
+    return [device?.offChainProperties?.region, device?.offChainProperties?.province]
+        .filter(i => i)
+        .join(', ');
 }

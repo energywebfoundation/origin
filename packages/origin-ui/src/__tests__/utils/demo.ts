@@ -16,8 +16,6 @@ import {
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 
-import { Compliance } from '@energyweb/utils-general';
-
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { IStoreState } from '../../types';
@@ -117,12 +115,18 @@ export async function deployDemo() {
     const offChainDataClient = new OffChainDataClientMock();
 
     const BACKEND_URL = 'http://localhost:3030';
+    const baseUrl = `${BACKEND_URL}/api`;
 
     await configurationClient.add(
-        BACKEND_URL,
+        baseUrl,
         'MarketContractLookup',
         marketContractLookup.toLowerCase()
     );
+    await configurationClient.add(baseUrl, 'Currency', 'USD');
+    await configurationClient.add(baseUrl, 'Country', {
+        name: 'Thailand',
+        regions: { Central: ['Nakhon Pathom'] }
+    });
 
     const conf: IStoreState['configuration'] = {
         blockchainProperties: {
@@ -138,7 +142,8 @@ export async function deployDemo() {
         },
         offChainDataSource: {
             baseUrl: `${BACKEND_URL}/api`,
-            client: offChainDataClient
+            client: offChainDataClient,
+            configurationClient
         },
         logger
     };
@@ -193,7 +198,7 @@ export async function deployDemo() {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
-        active: true,
+        status: Device.DeviceStatus.Active,
         usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: '',
         propertiesDocumentHash: null,
@@ -202,7 +207,7 @@ export async function deployDemo() {
 
     const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
         deviceType: 'Wind;Onshore',
-        complianceRegistry: Compliance.IREC,
+        complianceRegistry: 'I-REC',
         facilityName: 'Wuthering Heights Windfarm',
         capacityWh: 0,
         country: 'Thailand',
@@ -212,7 +217,11 @@ export async function deployDemo() {
         timezone: 'Asia/Bangkok',
         operationalSince: 0,
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: '',
+        region: 'Central',
+        province: 'Nakhon Pathom'
     };
 
     try {
@@ -241,7 +250,7 @@ export async function startGanache(): Promise<IGanacheServer> {
         total_accounts: 20
     }) as IGanacheServer;
 
-    ganacheServer.listen(8545, () => {});
+    ganacheServer.listen(8545, () => {}); // eslint-disable-line @typescript-eslint/no-empty-function
 
     return ganacheServer;
 }

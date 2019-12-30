@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.1.0...@energyweb/market-matcher@2.2.0) (2019-12-20)
+
+
+### Bug Fixes
+
+* **market-matcher:** adjust matcher to device-registry region, province changes ([73ee915](https://github.com/energywebfoundation/origin/commit/73ee91517123cf46806833b81be9f8b8da84b620))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+
+
+
+
+
+# [2.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.2...@energyweb/market-matcher@2.1.0) (2019-12-19)
+
+
+### Bug Fixes
+
+* **market-matcher:** use fillAt ([4f57770](https://github.com/energywebfoundation/origin/commit/4f577702b3ab68f20e8c0a7ad46a083aaf74f57b))
+
+
+### Features
+
+* **market-matcher:** startup account check ([5c9364c](https://github.com/energywebfoundation/origin/commit/5c9364c40f2b95f63489f315abb6bfc2d4ae54de))
+
+
+
+
+
+## [2.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.1...@energyweb/market-matcher@2.0.2) (2019-12-17)
+
+
+### Bug Fixes
+
+* **market-matcher:** skip parent certificates when loading certificates ([4fef14d](https://github.com/energywebfoundation/origin/commit/4fef14d1b1d30e4d891016eab59a8d0e46735702))
+
+
+
+
+
+## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.0.0...@energyweb/market-matcher@2.0.1) (2019-12-12)
+
+
+### Bug Fixes
+
+* retry yarn add when building dockerfiles ([#366](https://github.com/energywebfoundation/origin/issues/366)) ([551c1f5](https://github.com/energywebfoundation/origin/commit/551c1f526c4f04c79cf2d5e363feb7340d01e6f0))
+* **market-matcher:** observe update event ([bf4ba4a](https://github.com/energywebfoundation/origin/commit/bf4ba4a183741791018b779cadeaeb8275377af6))
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@1.3.3...@energyweb/market-matcher@2.0.0) (2019-11-26)
 
 

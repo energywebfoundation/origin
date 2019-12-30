@@ -1,9 +1,10 @@
 import { assert } from 'chai';
 import dotenv from 'dotenv';
 
+import { Device } from '@energyweb/device-registry';
 import { Unit } from '@energyweb/utils-general';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
 import { OriginEventsStore } from '../../stores/OriginEventsStore';
@@ -54,6 +55,7 @@ describe('Origin Listener Tests', async () => {
 
     let currentSmRead = 0;
     const offChainDataClient = new OffChainDataClientMock();
+    const configurationClient = new ConfigurationClientMock();
 
     before(async () => {
         demo = new Demo(
@@ -61,7 +63,7 @@ describe('Origin Listener Tests', async () => {
             process.env.DEPLOY_KEY,
             process.env.EVENT_LISTENER_PRIV_KEY
         );
-        await demo.deploy(offChainDataClient);
+        await demo.deploy(offChainDataClient, configurationClient);
     });
 
     beforeEach(async () => {
@@ -72,6 +74,7 @@ describe('Origin Listener Tests', async () => {
             web3Url: process.env.WEB3,
             offChainDataSourceUrl: process.env.BACKEND_URL,
             offChainDataSourceClient: offChainDataClient,
+            configurationClient,
             accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
             scanInterval: SCAN_INTERVAL,
             notificationInterval: SCAN_INTERVAL
@@ -189,6 +192,24 @@ describe('Origin Listener Tests', async () => {
                 assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_PARTIALLY_FILLED));
                 assert.isTrue(notificationSent(emailService, EmailTypes.DEMAND_FULFILLED));
             },
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when a device status is changed', async () => {
+        await listener.start();
+
+        const newDeviceId = await demo.deployNewDevice();
+
+        assert.equal(await demo.getDeviceStatus(newDeviceId), Device.DeviceStatus.Submitted);
+        assert.isAbove(parseInt(newDeviceId, 10), 0);
+
+        await demo.approveDevice(newDeviceId);
+        assert.equal(await demo.getDeviceStatus(newDeviceId), Device.DeviceStatus.Active);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 1,
+            () => assert.isTrue(notificationSent(emailService, EmailTypes.DEVICE_STATUS_CHANGED)),
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });

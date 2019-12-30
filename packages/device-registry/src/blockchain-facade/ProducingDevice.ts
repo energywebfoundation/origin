@@ -13,20 +13,26 @@ export interface IOffChainProperties extends Device.IOffChainProperties {
 }
 
 export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
-    const deviceLogicInstance = configuration.blockchainProperties.deviceLogicInstance;
+    const { deviceLogicInstance } = configuration.blockchainProperties;
     const deviceListLength = parseInt(await deviceLogicInstance.getDeviceListLength(), 10);
 
-    const devicesPromises = Array(deviceListLength).fill(null).map(async (item, index) => {
-        return {
-            id: index,
-            device: await deviceLogicInstance.getDevice(index)
-        };
-    });
+    const devicesPromises = Array(deviceListLength)
+        .fill(null)
+        .map(async (item, index) => {
+            return {
+                id: index,
+                device: await deviceLogicInstance.getDevice(index)
+            };
+        });
 
     const allDevices = await Promise.all(devicesPromises);
 
-    const producingDevices = allDevices.filter((device, index) => Number(device.device.usageType) === Device.UsageType.Producing);
-    const producingDevicesSynced = producingDevices.map(device => new Entity(device.id.toString(), configuration).sync());
+    const producingDevices = allDevices.filter(
+        (device, index) => Number(device.device.usageType) === Device.UsageType.Producing
+    );
+    const producingDevicesSynced = producingDevices.map(device =>
+        new Entity(device.id.toString(), configuration).sync()
+    );
 
     return Promise.all(producingDevicesSynced);
 };
@@ -71,7 +77,7 @@ export const createDevice = async (
     } = await configuration.blockchainProperties.deviceLogicInstance.createDevice(
         devicePropertiesOnChain.smartMeter.address,
         devicePropertiesOnChain.owner.address,
-        devicePropertiesOnChain.active,
+        devicePropertiesOnChain.status,
         Device.UsageType.Producing,
         devicePropertiesOnChain.propertiesDocumentHash,
         devicePropertiesOnChain.url,
@@ -92,7 +98,10 @@ export const createDevice = async (
 
     if (producingDevice.id !== idFromTx) {
         producingDevice.id = idFromTx;
-        await producingDevice.syncOffChainStorage(devicePropertiesOffChain, offChainStorageProperties)
+        await producingDevice.syncOffChainStorage(
+            devicePropertiesOffChain,
+            offChainStorageProperties
+        );
     }
 
     if (configuration.logger) {
@@ -102,7 +111,7 @@ export const createDevice = async (
     return producingDevice.sync();
 };
 export interface IProducingDevice extends Device.IOnChainProperties {
-    offChainProperties: IOffChainProperties
+    offChainProperties: IOffChainProperties;
 }
 
 export class Entity extends Device.Entity implements IProducingDevice {
@@ -117,7 +126,7 @@ export class Entity extends Device.Entity implements IProducingDevice {
             this.smartMeter = { address: device.smartMeter };
             this.owner = { address: device.owner };
             this.lastSmartMeterReadWh = Number(device.lastSmartMeterReadWh);
-            this.active = device.active;
+            this.status = Number(device.status);
             this.usageType = Number(device.usageType);
             this.lastSmartMeterReadFileHash = device.lastSmartMeterReadFileHash;
             this.propertiesDocumentHash = device.propertiesDocumentHash;

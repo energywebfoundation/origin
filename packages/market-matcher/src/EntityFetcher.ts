@@ -1,5 +1,5 @@
-import { Agreement, Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import { Configuration, Currency } from '@energyweb/utils-general';
+import { Agreement, Demand, Supply, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
+import { Configuration } from '@energyweb/utils-general';
 import polly from 'polly-js';
 
 export interface IEntityFetcher {
@@ -63,7 +63,7 @@ export class EntityFetcher implements IEntityFetcher {
         if (
             certificate.forSale &&
             certificate.isOffChainSettlement &&
-            certificate.currency === Currency.NONE &&
+            certificate.currency === NoneCurrency &&
             certificate.price === 0
         ) {
             throw new Error(`[Certificate #${id}] Missing settlement options`);

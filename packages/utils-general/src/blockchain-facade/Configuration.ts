@@ -1,6 +1,6 @@
 import * as Winston from 'winston';
 import Web3 from 'web3';
-import { IOffChainDataClient } from "@energyweb/origin-backend-client"
+import { IOffChainDataClient, IConfigurationClient } from "@energyweb/origin-backend-client"
 
 
 export interface Entity<TMarketLogic = any, TDeviceLogic = any, TCertificateLogic = any, TUserLogic = any> {
@@ -12,6 +12,7 @@ export interface Entity<TMarketLogic = any, TDeviceLogic = any, TCertificateLogi
 export interface OffChainDataSource {
     baseUrl: string;
     client: IOffChainDataClient;
+    configurationClient: IConfigurationClient;
 }
 export interface BlockchainProperties<TMarketLogic = any, TDeviceLogic = any, TCertificateLogic = any, TUserLogic = any> {
     web3: Web3;

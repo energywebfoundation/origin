@@ -3,7 +3,7 @@ import { PastEventOptions } from 'web3-eth-contract';
 import Web3 from 'web3';
 import moment from 'moment';
 import DeviceLogicJSON from '../../build/contracts/lightweight/DeviceLogic.json';
-import { UsageType } from '../blockchain-facade/Device';
+import { UsageType, DeviceStatus } from '../blockchain-facade/Device';
 
 export class DeviceLogic extends GeneralFunctions {
     web3: Web3;
@@ -28,23 +28,20 @@ export class DeviceLogic extends GeneralFunctions {
     }
 
     async getAllLogNewMeterReadEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogNewMeterRead', eventFilter);
+
+        return this.web3Contract.getPastEvents('LogNewMeterRead', this.createFilter(eventFilter));
     }
 
     async getAllLogDeviceCreatedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceCreated', eventFilter);
+        return this.web3Contract.getPastEvents('LogDeviceCreated', this.createFilter(eventFilter));
     }
 
     async getAllLogDeviceFullyInitializedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', eventFilter);
+        return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', this.createFilter(eventFilter));
     }
 
-    async getAllLogDeviceSetActiveEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceSetActive', eventFilter);
-    }
-
-    async getAllLogDeviceSetInactiveEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogDeviceSetInactive', eventFilter);
+    async getAllLogDeviceStatusChangedEvents(eventFilter?: PastEventOptions) {
+        return this.web3Contract.getPastEvents('DeviceStatusChanged', this.createFilter(eventFilter));
     }
 
     async getSmartMeterReadsForDeviceByIndex(
@@ -62,29 +59,21 @@ export class DeviceLogic extends GeneralFunctions {
     }
 
     async getAllLogChangeOwnerEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogChangeOwner', eventFilter);
+        return this.web3Contract.getPastEvents('LogChangeOwner', this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('allEvents', eventFilter);
+        return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async getLastMeterReadingAndHash(_deviceId: number, txParams?: ISpecialTx) {
         return this.web3Contract.methods.getLastMeterReadingAndHash(_deviceId).call(txParams);
     }
 
-    async getDeviceBySmartMeter(_smartMeter: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getDeviceBySmartMeter(_smartMeter).call(txParams);
-    }
-
-    async checkDeviceExist(_smartMeter: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.checkDeviceExist(_smartMeter).call(txParams);
-    }
-
     async createDevice(
         _smartMeter: string,
         _owner: string,
-        _active: boolean,
+        _status: DeviceStatus,
         _usageType: UsageType,
         _propertiesDocumentHash: string,
         _url: string,
@@ -93,7 +82,7 @@ export class DeviceLogic extends GeneralFunctions {
         const method = this.web3Contract.methods.createDevice(
             _smartMeter,
             _owner,
-            _active,
+            _status,
             _usageType,
             _propertiesDocumentHash,
             _url
@@ -139,8 +128,8 @@ export class DeviceLogic extends GeneralFunctions {
         return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
     }
 
-    async setActive(_deviceId: number, _active: boolean, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setActive(_deviceId, _active);
+    async setStatus(_deviceId: number, _status: DeviceStatus, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.setStatus(_deviceId, _status);
 
         return this.send(method, txParams);
     }

@@ -7,23 +7,11 @@ export enum TimeFrame {
     halfHourly
 }
 
-export enum Currency {
-    NONE,
-    EUR,
-    USD,
-    SGD,
-    THB
-}
-
-export enum Compliance {
-    none,
-    IREC,
-    EEC,
-    TIGR
-}
-
 export enum Unit {
+    kW = 1e3,
     kWh = 1e3,
+    MW = 1e6,
     MWh = 1e6,
+    GW = 1e9,
     GWh = 1e9
 }

@@ -2,25 +2,16 @@ import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Demand, MarketUser, PurchasableCertificate } from '@energyweb/market';
+import { Demand, MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    Currency
-} from '@energyweb/utils-general';
+import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 
 import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { initOriginConfig } from '../config/origin.config';
-import EmailTypes from '../email/EmailTypes';
-import { IEmailServiceProvider } from '../services/email.service';
 import { IEventListener } from './IEventListener';
-import {
-    IOriginEventsStore,
-    IPartiallyFilledDemand,
-    ICertificateMatchesDemand
-} from '../stores/OriginEventsStore';
+import { IOriginEventsStore } from '../stores/OriginEventsStore';
+import { IEmailServiceProvider } from '../services/email.service';
+import { INotificationService, NotificationService } from '../services/notification.service';
 
 export interface IOriginEventListener extends IEventListener {
     marketLookupAddress: string;
@@ -35,6 +26,8 @@ export class OriginEventListener implements IOriginEventListener {
     public conf: Configuration.Entity;
 
     public manager: EventHandlerManager;
+
+    private notificationService: INotificationService;
 
     private interval: any;
 
@@ -51,23 +44,45 @@ export class OriginEventListener implements IOriginEventListener {
 
     public async start(): Promise<void> {
         this.conf = await initOriginConfig(this.marketLookupAddress, this.web3, this.config);
+        this.notificationService = new NotificationService(
+            this.conf,
+            this.emailService,
+            this.originEventsStore
+        );
 
         const currentBlockNumber: number = await this.conf.blockchainProperties.web3.eth.getBlockNumber();
+
         const certificateContractEventHandler = new ContractEventHandler(
             this.conf.blockchainProperties.certificateLogicInstance,
             currentBlockNumber
         );
-
         const marketContractEventHandler = new ContractEventHandler(
             this.conf.blockchainProperties.marketLogicInstance,
             currentBlockNumber
         );
+        const deviceContractEventHandler = new ContractEventHandler(
+            this.conf.blockchainProperties.deviceLogicInstance,
+            currentBlockNumber
+        );
+
+        deviceContractEventHandler.onEvent('DeviceStatusChanged', async (event: any) => {
+            const { _deviceId, _status } = event.returnValues;
+            this.conf.logger.info(`Event: DeviceStatusChanged #${_deviceId} to status ${_status}`);
+
+            const device = await new ProducingDevice.Entity(_deviceId, this.conf).sync();
+
+            this.originEventsStore.registerDeviceStatusChange(
+                device.owner.address,
+                _deviceId,
+                _status
+            );
+        });
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const certId = event.returnValues._certificateId;
             this.conf.logger.info(`Event: LogCreatedCertificate certificate #${certId}`);
 
-            const newCertificate: PurchasableCertificate.Entity = await new PurchasableCertificate.Entity(
+            const newCertificate = await new PurchasableCertificate.Entity(
                 certId,
                 this.conf
             ).sync();
@@ -106,7 +121,7 @@ export class OriginEventListener implements IOriginEventListener {
                 if (
                     certificate.forSale &&
                     certificate.isOffChainSettlement &&
-                    certificate.currency === Currency.NONE &&
+                    certificate.currency === NoneCurrency &&
                     certificate.price === 0
                 ) {
                     throw new Error(`[Certificate #${certificateId}] Missing settlement options`);
@@ -172,11 +187,15 @@ export class OriginEventListener implements IOriginEventListener {
         });
 
         this.manager = new EventHandlerManager(this.config.scanInterval, this.conf);
+        this.manager.registerEventHandler(deviceContractEventHandler);
         this.manager.registerEventHandler(certificateContractEventHandler);
         this.manager.registerEventHandler(marketContractEventHandler);
 
         this.manager.start();
-        this.interval = setInterval(this.notify.bind(this), this.config.notificationInterval);
+        this.interval = setInterval(
+            this.notificationService.notify.bind(this.notificationService),
+            this.config.notificationInterval
+        );
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);
@@ -184,106 +203,6 @@ export class OriginEventListener implements IOriginEventListener {
             `Running the listener with account ${
                 this.web3.eth.accounts.privateKeyToAccount(this.config.accountPrivKey).address
             }`
-        );
-    }
-
-    private async notify() {
-        const allUsers: Promise<
-            MarketUser.Entity
-        >[] = this.originEventsStore
-            .getAllUsers()
-            .map(async userId => new MarketUser.Entity(userId, this.conf).sync());
-        const notifyUsers: MarketUser.Entity[] = (await Promise.all(allUsers)).filter(
-            user => user.offChainProperties.notifications
-        );
-
-        for (const user of notifyUsers) {
-            const emailAddress: string = user.offChainProperties.email;
-            const issuedCertificates: number = this.originEventsStore.getIssuedCertificates(
-                user.id
-            );
-            const matchingCertificates: ICertificateMatchesDemand[] = this.originEventsStore.getMatchingCertificates(
-                user.id
-            );
-            const partiallyFilledDemands: IPartiallyFilledDemand[] = this.originEventsStore.getPartiallyFilledDemands(
-                user.id
-            );
-            const fulfilledDemands: number[] = this.originEventsStore.getFulfilledDemands(user.id);
-
-            if (issuedCertificates > 0) {
-                const url = `${process.env.UI_BASE_URL}/certificates/inbox`;
-
-                await this.sendNotificationEmail(
-                    EmailTypes.CERTS_APPROVED,
-                    emailAddress,
-                    `Local issuer approved your certificates.<br />There are ${issuedCertificates} new certificates in your inbox:<br /><a href="${url}">${url}</a>`,
-                    () => this.originEventsStore.resetIssuedCertificates(user.id)
-                );
-            }
-
-            if (matchingCertificates.length > 0) {
-                let urls = matchingCertificates.map(
-                    match => `${process.env.UI_BASE_URL}/certificates/for_demand/${match.demandId}`
-                );
-                urls = urls.filter((url, index) => urls.indexOf(url) === index); // Remove duplicate urls
-
-                await this.sendNotificationEmail(
-                    EmailTypes.FOUND_MATCHING_SUPPLY,
-                    emailAddress,
-                    `We found ${
-                        matchingCertificates.length
-                    } certificates matching your demands. Open Origin and check it out:${urls.map(
-                        url => `<br /><a href="${url}">${url}</a>`
-                    )}`,
-                    () => this.originEventsStore.resetMatchingCertificates(user.id)
-                );
-            }
-
-            if (partiallyFilledDemands.length > 0) {
-                await this.sendNotificationEmail(
-                    EmailTypes.DEMAND_PARTIALLY_FILLED,
-                    emailAddress,
-                    `Matched the following certificates to your demands:\n${partiallyFilledDemands
-                        .map(
-                            match =>
-                                `Matched certificate ${match.certificateId} with amount ${match.amount} Wh to demand ${match.demandId}.`
-                        )
-                        .join('\n')}`,
-                    () => this.originEventsStore.resetPartiallyFilledDemands(user.id)
-                );
-            }
-
-            if (fulfilledDemands.length > 0) {
-                await this.sendNotificationEmail(
-                    EmailTypes.DEMAND_FULFILLED,
-                    emailAddress,
-                    `Your following demand(s) have been fulfilled:\n${fulfilledDemands
-                        .map(demandId => `Demand #${demandId}.`)
-                        .join('\n')}`,
-                    () => this.originEventsStore.resetFulfilledDemands(user.id)
-                );
-            }
-        }
-    }
-
-    private async sendNotificationEmail(
-        notificationType: EmailTypes,
-        emailAddress: string,
-        html: string,
-        callback: () => void
-    ) {
-        this.conf.logger.info(`Sending "${notificationType}" email to ${emailAddress}...`);
-
-        await this.emailService.send(
-            {
-                to: [emailAddress],
-                subject: `[Origin] ${notificationType}`,
-                html
-            },
-            () => {
-                callback();
-                this.conf.logger.info(`Sent "${notificationType}" email to ${emailAddress}.`);
-            }
         );
     }
 

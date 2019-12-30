@@ -18,7 +18,7 @@ import { Certificate } from '@energyweb/origin';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { producingDeviceCreatedOrUpdated } from '../../features/producingDevices/actions';
 import { addCertificate } from '../../features/certificates/actions';
-import { dataTestSelector } from '../../utils/helper';
+import { dataTestSelector, DATE_FORMAT_DMY } from '../../utils/helper';
 import moment from 'moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React from 'react';
@@ -114,6 +114,8 @@ interface ICreateProducingDeviceProperties {
     lastSmartMeterReadWh?: number;
     operationalSince?: number;
     complianceRegistry?: Compliance;
+    region?: string;
+    province?: string;
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
@@ -123,7 +125,9 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityWh: 9876543,
     operationalSince: 1568746970,
-    complianceRegistry: Compliance.IREC
+    complianceRegistry: 'I-REC',
+    region: 'Central',
+    province: 'Nakhon Pathom'
 } as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
 
 export const createProducingDevice = (
@@ -151,7 +155,11 @@ export const createProducingDevice = (
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: '',
+        region: properties.region || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.region,
+        province: properties.province || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.province
     };
 
     return {
@@ -352,7 +360,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                 now
                     .clone()
                     .set('date', dayOfMonth)
-                    .format('MMMM Do')
+                    .format(DATE_FORMAT_DMY)
             );
 
             // Close Datepicker (click outside)
@@ -375,7 +383,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                     .value
             ).toBe('');
 
-            rendered.find(`#mui-component-select-${name}`).simulate('click');
+            rendered.find(`#mui-component-select-${name}`).simulate('mousedown');
 
             expect(
                 Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(i => i.textContent)

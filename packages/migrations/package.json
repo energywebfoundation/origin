@@ -1,0 +1,58 @@
+{
+  "name": "@energyweb/migrations",
+  "description": "Migrations for deploying the Origin SDK smart contracts.",
+  "license": "GPL-3.0-only",
+  "author": "",
+  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/migrations#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "version": "0.5.0",
+  "main": "dist/js/src/index.js",
+  "bin": {
+    "migrations": "./bin/migrations"
+  },
+  "scripts": {
+    "build": "yarn build:ts",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "deploy-empty": "yarn build:ts && node dist/js/deployEmpty",
+    "start": "ts-node src/deploy",
+    "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,backend,deploy \"yarn start-ganache\" \"yarn start-backend\" \"wait-on tcp:8545 && yarn start\"",
+    "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
+    "start-backend": "npx @energyweb/origin-backend",
+    "test": "ts-node src/test",
+    "test:all": "concurrently --success first --kill-others -n eth,backend,test \"yarn start-ganache -p 8553\" \"PORT=3038 yarn start-backend\" \"wait-on tcp:8553 && yarn test\"",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "clean": "shx rm -rf dist db.sqlite"
+  },
+  "types": "dist/js/index.d.ts",
+  "dependencies": {
+    "@energyweb/device-registry": "2.0.0",
+    "@energyweb/market": "3.3.0",
+    "@energyweb/origin": "3.1.0",
+    "@energyweb/origin-backend": "3.1.0",
+    "@energyweb/origin-backend-client": "2.2.1",
+    "@energyweb/user-registry": "2.0.3",
+    "@energyweb/utils-general": "4.0.0",
+    "dotenv": "8.2.0",
+    "web3": "1.2.4",
+    "winston": "3.2.1",
+    "write-json-file": "4.2.1",
+    "yaeti": "1.0.2"
+  },
+  "devDependencies": {
+    "ganache-cli": "6.7.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "files": [
+    "bin",
+    "dist/js/src"
+  ]
+}

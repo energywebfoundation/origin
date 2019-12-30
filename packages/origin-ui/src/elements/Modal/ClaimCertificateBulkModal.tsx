@@ -60,7 +60,7 @@ class ClaimCertificateBulkModalClass extends React.Component<Props> {
                 <DialogTitle>Claim certificates</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        You selected a total of {totalWh / 1e6} MWh worth of I-REC certificates.
+                        You selected a total of {totalWh / 1e6} MWh worth of certificates.
                     </DialogContentText>
                     <DialogContentText>
                         Would you like to proceed with claiming them?

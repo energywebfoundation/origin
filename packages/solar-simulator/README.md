@@ -51,7 +51,7 @@ Edit `.env` in the root of the monorepo and configure:
 
 Edit device configuration in `config/config.json`. Properties:
 - `maxCapacity` - maximum device capacity in Wh
-- `smartMeterPrivateKey` - private key of smart meter device to save reads on-chain
+- `smartMeterPrivateKey` - private key of a smart meter device to save reads on-chain
 
 Place example energy generation data in `config/data.csv` in the following format:
 
@@ -96,4 +96,4 @@ Options:
   -h, --help                     output usage information
 ```
 
-Before we can setup the demo environement, newly generated smart meters wallets have to be funded with EWF token. Script is using monorepo root's `.env` `WEB3` variable to connect to given web3 endpoint.
+Before we can setup the demo environement, newly generated smart meters wallets have to be funded with the EWF token. Script is using monorepo root's `.env` `WEB3` variable to connect to given web3 endpoint.

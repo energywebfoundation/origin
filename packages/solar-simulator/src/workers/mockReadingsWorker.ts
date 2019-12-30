@@ -40,7 +40,8 @@ async function getDeviceConf(marketContractLookupAddress: string) {
         },
         offChainDataSource: {
             baseUrl,
-            client: new OffChainDataClient()
+            client: new OffChainDataClient(),
+            configurationClient: new ConfigurationClient()
         },
         logger: Winston.createLogger({
             level: 'verbose',

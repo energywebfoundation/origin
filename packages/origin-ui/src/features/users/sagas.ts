@@ -34,7 +34,7 @@ function* fetchUserSaga(userId: string, usersBeingFetched: any): SagaIterator {
             yield put(addUser(fetchedUser));
         }
     } catch (error) {
-        console.error('Error while fetching user', error);
+        console.warn('Error while fetching user', error);
     }
 
     usersBeingFetched.delete(userId);

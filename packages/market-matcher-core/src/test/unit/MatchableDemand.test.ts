@@ -1,7 +1,7 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Demand, PurchasableCertificate, Supply } from '@energyweb/market';
+import { Demand, PurchasableCertificate, Supply, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Currency, Year } from '@energyweb/utils-general';
+import { Year } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -20,19 +20,24 @@ interface IMockOptions {
     isFilledDemand?: boolean;
     location?: string[];
     vintage?: [Year, Year];
+    region?: string;
+    province?: string;
 }
 
 describe('MatchableDemand tests', () => {
+    const country = 'Thailand';
+
     describe('Certificates', () => {
         const missingDemand = 1000;
         const certificateEnergy = 1000;
         const energyPrice = 2;
-        const currency = Currency.USD;
+        const currency = 'USD';
         const deviceType = 'Solar';
-        const location = ['Thailand;Central;Nakhon Pathom'];
-        const country = 'Thailand';
+        const location = [`${country};Central;Nakhon Pathom`];
         const address =
             '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140';
+        const region = 'Central';
+        const province = 'Nakhon Pathom';
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
@@ -67,6 +72,8 @@ describe('MatchableDemand tests', () => {
             );
             producingDeviceOffChainProperties.country.returns(country);
             producingDeviceOffChainProperties.address.returns(options.address || address);
+            producingDeviceOffChainProperties.region.returns(options.region || region);
+            producingDeviceOffChainProperties.province.returns(options.province || province);
             producingDeviceOffChainProperties.operationalSince.returns(
                 options.producingDeviceOperationalSince || 0
             );
@@ -140,7 +147,7 @@ describe('MatchableDemand tests', () => {
 
         it('should not match demand with difference currency', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                currency: Currency.EUR
+                currency: 'EUR'
             });
 
             const matchableDemand = new MatchableDemand(demand);
@@ -170,7 +177,9 @@ describe('MatchableDemand tests', () => {
 
         it('should not match demand with from different location', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                address: 'Warsaw, Poland'
+                address: 'Warsaw, Poland',
+                region: 'Mazovian',
+                province: 'Warsaw'
             });
 
             const matchableDemand = new MatchableDemand(demand);
@@ -232,7 +241,7 @@ describe('MatchableDemand tests', () => {
     describe('Supply', () => {
         const supplyEnergy = 1000;
         const energyPrice = 100;
-        const currency = Currency.USD;
+        const currency = 'USD';
         const deviceType = 'Solar';
 
         const createMatchingMocks = (options: IMockOptions) => {

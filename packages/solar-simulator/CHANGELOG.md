@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.2...@energyweb/solar-simulator@1.0.3) (2019-12-20)
+
+**Note:** Version bump only for package @energyweb/solar-simulator
+
+
+
+
+
+## [1.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.1...@energyweb/solar-simulator@1.0.2) (2019-12-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency concurrently to v5.0.2 ([2886174](https://github.com/energywebfoundation/origin/commit/28861748bcac8d8008ddcd9f0f7d3436a1c0f8ed))
+
+
+
+
+
+## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.0...@energyweb/solar-simulator@1.0.1) (2019-12-17)
+
+**Note:** Version bump only for package @energyweb/solar-simulator
+
+
+
+
+
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@0.3.0...@energyweb/solar-simulator@1.0.0) (2019-12-12)
+
+
+### Bug Fixes
+
+* retry yarn add when building dockerfiles ([#366](https://github.com/energywebfoundation/origin/issues/366)) ([551c1f5](https://github.com/energywebfoundation/origin/commit/551c1f526c4f04c79cf2d5e363feb7340d01e6f0))
+* **solar-simulator:** correctly reflect breaking change renaming asset to device ([#364](https://github.com/energywebfoundation/origin/issues/364)) ([60f60df](https://github.com/energywebfoundation/origin/commit/60f60df9bb6793ffb6daf4830381df071ea0760f))
+* **solar-simulator:** get pubkey instead of extended pubkey ([30034b7](https://github.com/energywebfoundation/origin/commit/30034b701dceb0831694c8bd9659ce4afa0a77b3))
+
+
+### Features
+
+* **solar-simulator:** reflect renaming asset to devices in config change ([#363](https://github.com/energywebfoundation/origin/issues/363)) ([22de1b8](https://github.com/energywebfoundation/origin/commit/22de1b87f1d61abd2a805cb35084454a633e7b07))
+
+
+### BREAKING CHANGES
+
+* **solar-simulator:** reflect assets renamed to devices in config
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@0.2.3...@energyweb/solar-simulator@0.3.0) (2019-11-26)
 
 

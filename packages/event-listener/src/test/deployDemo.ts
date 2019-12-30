@@ -23,9 +23,11 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 
-import { Configuration, TimeFrame, Currency, Compliance, Unit } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export class Demo {
     public marketContractLookup: string;
@@ -67,6 +69,10 @@ export class Demo {
                 address: '0x6cc53915dbec95a66deb7c709c800cac40ee55f9',
                 privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
             },
+            SMART_METER_2: {
+                address: '0x4Db81bEfaF6B82553898739B788963d20Be8068a',
+                privateKey: '0x968cc146af9c9d3ac08cca0dd3f915ed5a0966c118e26fd5e99066b0ff8bc060'
+            },
             MATCHER: {
                 address: '0x3409c66069b3C4933C654beEAA136cc5ce6D7BD0'.toLowerCase(),
                 privateKey: '0x554f3c1470e9f66ed2cf1dc260d2f4de77a816af2883679b1dc68c551e8fa5ed'
@@ -92,7 +98,10 @@ export class Demo {
         return this.nextDeployedSmReadIndex - 1;
     }
 
-    async deploy(offChainDataClient: IOffChainDataClient) {
+    async deploy(
+        offChainDataClient: IOffChainDataClient,
+        configurationClient: IConfigurationClient
+    ) {
         this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
             this.web3,
             this.adminPK
@@ -147,7 +156,8 @@ export class Demo {
             },
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: offChainDataClient
+                client: offChainDataClient,
+                configurationClient
             },
             logger: this.logger
         };
@@ -195,7 +205,7 @@ export class Demo {
             autoPublish: {
                 enabled: true,
                 price: 1000,
-                currency: Currency.USD
+                currency: 'USD'
             }
         };
         await MarketUser.createMarketUser(
@@ -298,7 +308,7 @@ export class Demo {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
-            active: true,
+            status: Device.DeviceStatus.Active,
             usageType: Device.UsageType.Producing,
             lastSmartMeterReadFileHash: '',
             propertiesDocumentHash: null,
@@ -307,7 +317,7 @@ export class Demo {
 
         const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
             deviceType: 'Wind',
-            complianceRegistry: Compliance.IREC,
+            complianceRegistry: 'I-REC',
             facilityName: 'Wuthering Heights Windfarm',
             capacityWh: 0,
             country: 'Thailand',
@@ -318,7 +328,11 @@ export class Demo {
             timezone: 'Asia/Bangkok',
             operationalSince: 0,
             otherGreenAttributes: '',
-            typeOfPublicSupport: ''
+            typeOfPublicSupport: '',
+            description: '',
+            images: '',
+            region: 'Central',
+            province: 'Nakhon Pathom'
         };
 
         try {
@@ -332,6 +346,73 @@ export class Demo {
         }
 
         return { conf: this.conf, deployResult };
+    }
+
+    async deployNewDevice() {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.DEVICE_MANAGER;
+
+        const deviceProducingProps: Device.IOnChainProperties = {
+            smartMeter: { address: NULL_ADDRESS },
+            owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
+            lastSmartMeterReadWh: 0,
+            status: Device.DeviceStatus.Submitted,
+            usageType: Device.UsageType.Producing,
+            lastSmartMeterReadFileHash: '',
+            propertiesDocumentHash: null,
+            url: null
+        };
+
+        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+            deviceType: 'Wind',
+            complianceRegistry: 'I-REC',
+            facilityName: 'Test Device',
+            capacityWh: 0,
+            country: 'Thailand',
+            address:
+                '96 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
+            gpsLatitude: '',
+            gpsLongitude: '',
+            timezone: 'Asia/Bangkok',
+            operationalSince: 0,
+            otherGreenAttributes: '',
+            typeOfPublicSupport: '',
+            description: '',
+            images: '',
+            region: 'Central',
+            province: 'Nakhon Pathom'
+        };
+
+        let newDevice: ProducingDevice.Entity;
+
+        try {
+            newDevice = await ProducingDevice.createDevice(
+                deviceProducingProps,
+                deviceProducingPropsOffChain,
+                this.conf
+            );
+        } catch (error) {
+            throw new Error(error);
+        }
+
+        return newDevice.id;
+    }
+
+    async approveDevice(deviceId: string) {
+        this.conf.blockchainProperties.activeUser = this.ACCOUNTS.ADMIN;
+
+        const device = await new ProducingDevice.Entity(deviceId, this.conf).sync();
+
+        try {
+            await device.setStatus(Device.DeviceStatus.Active);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async getDeviceStatus(deviceId: string) {
+        const { status } = await new ProducingDevice.Entity(deviceId, this.conf).sync();
+
+        return status;
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
@@ -363,7 +444,7 @@ export class Demo {
             certificateId.toString(),
             this.conf
         ).sync();
-        await deployedCertificate.publishForSale(1000, Currency.USD);
+        await deployedCertificate.publishForSale(1000, 'USD');
     }
 
     async deployDemand() {
@@ -372,14 +453,14 @@ export class Demo {
         const demandOffChainProps: Demand.IDemandOffChainProperties = {
             timeFrame: TimeFrame.hourly,
             maxPricePerMwh: 150000,
-            currency: Currency.USD,
+            currency: 'USD',
             location: ['Thailand;Central;Nakhon Pathom'],
             deviceType: ['Wind'],
             minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
             energyPerTimeFrame: 1 * Unit.MWh,
-            registryCompliance: Compliance.EEC,
+            registryCompliance: 'I-REC',
             startTime: moment().unix(),
             endTime: moment()
                 .add(1, 'hour')

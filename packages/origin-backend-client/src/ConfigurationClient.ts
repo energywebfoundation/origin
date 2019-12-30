@@ -1,26 +1,24 @@
 import axios from 'axios';
 
-export type ConfigurationItem = 'MarketContractLookup';
+export type ConfigurationItem = 'MarketContractLookup' | 'Currency' | 'Compliance' | 'Country';
 
 export interface IConfigurationClient {
-    get(baseUrl: string, item: ConfigurationItem): Promise<string[]>;
-    add(baseUrl: string, item: ConfigurationItem, value: string): Promise<boolean>;
+    get(baseUrl: string, item: ConfigurationItem): Promise<any>;
+    add(baseUrl: string, item: ConfigurationItem, value: string | object): Promise<boolean>;
 }
 
 export class ConfigurationClient implements IConfigurationClient {
     public async get(baseUrl: string, item: ConfigurationItem) {
-        const url = `${baseUrl}/${item.toLowerCase()}`;
+        const url = `${baseUrl}/${item}`;
+        const { data } = await axios.get(url);
 
-        const result = await axios.get(url);
-
-        return result.data as string[];
+        return data;
     }
 
-    public async add(baseUrl: string, item: ConfigurationItem, value: string) {
-        const url = `${baseUrl}/${item.toLowerCase()}/${value}`;
+    public async add(baseUrl: string, item: ConfigurationItem, value: string | object) {
+        const url = `${baseUrl}/${item}`;
+        const { status } = await axios.post(url, { value });
 
-        const result = await axios.post(url);
-
-        return result.status === 200;
+        return status >= 200 && status < 300;
     }
 }

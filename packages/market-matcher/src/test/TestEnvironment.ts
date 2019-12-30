@@ -14,7 +14,8 @@ import {
     MarketLogic,
     Supply,
     PurchasableCertificate,
-    Contracts as MarketContracts
+    Contracts as MarketContracts,
+    Currency
 } from '@energyweb/market';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import {
@@ -23,8 +24,8 @@ import {
     UserLogic,
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
-import { Compliance, Configuration, Currency, TimeFrame } from '@energyweb/utils-general';
-import { OffChainDataClientMock } from '@energyweb/origin-backend-client';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
@@ -181,15 +182,26 @@ const deploy = async () => {
         },
         offChainDataSource: {
             baseUrl: `${process.env.BACKEND_URL}/api`,
-            client: new OffChainDataClientMock()
+            client: new OffChainDataClientMock(),
+            configurationClient: new ConfigurationClientMock()
         },
         logger
     };
+
+    await config.offChainDataSource.configurationClient.add(
+        config.offChainDataSource.baseUrl,
+        'Country',
+        {
+            name: 'Thailand',
+            regions: { Central: ['Nakhon Pathom'] }
+        }
+    );
 
     const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
         offChainDataSourceClient: config.offChainDataSource.client,
+        configurationClient: config.offChainDataSource.configurationClient,
         marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,
@@ -205,7 +217,7 @@ const deployDemand = async (
     config: Configuration.Entity,
     requiredEnergy: number,
     price = 150,
-    currency: Currency = Currency.USD
+    currency: Currency = 'USD'
 ) => {
     const traderConfig = changeUser(config, {
         address: accountTrader,
@@ -222,7 +234,7 @@ const deployDemand = async (
         otherGreenAttributes: 'string',
         typeOfPublicSupport: 'string',
         energyPerTimeFrame: requiredEnergy,
-        registryCompliance: Compliance.EEC,
+        registryCompliance: 'I-REC',
         startTime: moment().unix(),
         endTime: moment()
             .add(1, 'hour')
@@ -243,7 +255,7 @@ const deployDevice = (config: Configuration.Entity) => {
         smartMeter: { address: deviceSmartMeter },
         owner: { address: deviceOwnerAddress },
         lastSmartMeterReadWh: 0,
-        active: true,
+        status: Device.DeviceStatus.Active,
         usageType: Device.UsageType.Producing,
         lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
         propertiesDocumentHash: null,
@@ -260,9 +272,13 @@ const deployDevice = (config: Configuration.Entity) => {
         gpsLongitude: '99.977800',
         timezone: 'Asia/Bangkok',
         deviceType: 'Solar',
-        complianceRegistry: Compliance.EEC,
+        complianceRegistry: 'I-REC',
         otherGreenAttributes: '',
-        typeOfPublicSupport: ''
+        typeOfPublicSupport: '',
+        description: '',
+        images: '',
+        region: 'Central',
+        province: 'Nakhon Pathom'
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
@@ -273,7 +289,7 @@ const deploySupply = (
     deviceId: string,
     requiredEnergy: number,
     price = 150,
-    currency: Currency = Currency.USD
+    currency: Currency = 'USD'
 ) => {
     const deviceOwnerConfig = changeUser(config, {
         address: deviceOwnerAddress,
@@ -332,7 +348,7 @@ const deployAgreement = async (
     demandId: string,
     supplyId: string,
     price = 150,
-    currency: Currency = Currency.USD
+    currency: Currency = 'USD'
 ) => {
     const traderConfig = changeUser(config, {
         address: accountTrader,

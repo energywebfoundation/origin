@@ -18,13 +18,13 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { MarketUser } from '@energyweb/market';
-import { Currency } from '@energyweb/utils-general';
 
 import { withStyles } from '@material-ui/core/styles';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { STYLE_CONFIG } from '../../styles/styleConfig';
 
 import { getMarketContractLookupAddress } from '../../features/contracts/selectors';
+import { getCurrencies } from '../../features/general/selectors';
 import { getCurrentUser } from '../../features/users/selectors';
 import { setMarketContractLookupAddress } from '../../features/contracts/actions';
 
@@ -41,14 +41,6 @@ const PurpleSwitch = withStyles({
     checked: {},
     track: {}
 })(Switch);
-
-const availableCurrencies = () => {
-    let currencies = Object.keys(Currency);
-    currencies = currencies.splice(Math.ceil(currencies.length / 2), currencies.length - 1);
-    currencies = currencies.filter(curr => Currency[curr] !== Currency.NONE);
-
-    return currencies;
-};
 
 export function AccountSettings() {
     const dispatch = useDispatch();
@@ -144,6 +136,8 @@ export function AccountSettings() {
         showNotification(`User settings have been updated.`, NotificationType.Success);
     }
 
+    const currencies = useSelector(getCurrencies);
+
     return (
         <Paper>
             <Grid container spacing={3} className={classes.container}>
@@ -213,19 +207,18 @@ export function AccountSettings() {
                                             <FormControl fullWidth={true} variant="filled">
                                                 <InputLabel>Currency</InputLabel>
                                                 <Select
-                                                    value={Currency[autoPublishCandidate.currency]}
+                                                    value={autoPublishCandidate.currency}
                                                     onChange={e =>
                                                         setAutoPublish({
                                                             ...autoPublishCandidate,
-                                                            currency:
-                                                                Currency[e.target.value as string]
+                                                            currency: e.target.value as string
                                                         })
                                                     }
                                                     fullWidth
                                                     variant="filled"
                                                     input={<FilledInput />}
                                                 >
-                                                    {availableCurrencies().map(currency => (
+                                                    {currencies.map(currency => (
                                                         <MenuItem key={currency} value={currency}>
                                                             {currency}
                                                         </MenuItem>

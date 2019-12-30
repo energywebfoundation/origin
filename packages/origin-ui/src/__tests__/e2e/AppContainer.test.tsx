@@ -90,7 +90,7 @@ describe('Application[E2E]', () => {
 
             fillInputField('maxPricePerMWh', '1');
 
-            await fillSelect('currency', 'EUR', ['EUR', 'USD', 'SGD', 'THB']);
+            await fillSelect('currency', 'USD', ['USD']);
 
             await fillSelect('timeframe', TimeFrame.daily.toString(), [
                 'Day',
@@ -150,7 +150,7 @@ describe('Application[E2E]', () => {
                     'no',
                     'any',
                     '1',
-                    '1.00 EUR',
+                    '1.00 USD',
                     'Active',
                     expect.stringMatching(/9|10/gm),
                     'EditCloneDeleteShow supplies'
@@ -162,7 +162,7 @@ describe('Application[E2E]', () => {
             assertMainTableContent([
                 'Device Manager organization',
                 'Wuthering Heights Windfarm',
-                'Nakhon Pathom, Central',
+                'Central, Nakhon Pathom',
                 'Wind - Onshore',
                 '0',
                 '0'
@@ -183,22 +183,22 @@ describe('Application[E2E]', () => {
                 'Wuthering Heights Windfarm ',
                 'Device Owner',
                 'Device Manager organization ',
-                'Certified by Registry (private)',
-                'IREC ',
-                'Other Green Attributes (private)',
+                'Certified by Registry',
+                'I-REC ',
+                'Other Green Attributes',
                 ' ',
                 'Device Type',
                 'Wind - Onshore ',
                 '',
                 'Meter Read',
                 '0 kWh',
-                'Public Support (private)',
+                'Public Support',
                 ' ',
-                'Commissioning Date (private)',
+                'Commissioning Date',
                 'Jan 70 ',
-                'Nameplate Capacity (private)',
+                'Nameplate Capacity',
                 '0 kW',
-                'Geo Location (private)',
+                'Geo Location',
                 ',  ',
                 '',
                 ''

@@ -6,7 +6,7 @@ export { EventHandlerManager } from './blockchain-facade/EventHandlerManager';
 export { BlockchainDataModelEntity };
 export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
-export { TimeFrame, Currency, Compliance, Unit } from './blockchain-facade/EnumExports';
+export { TimeFrame, Unit } from './blockchain-facade/EnumExports';
 export { deploy } from './deployment/deploy';
 export {
     IDeviceService,
@@ -15,8 +15,12 @@ export {
     EncodedDeviceType
 } from './blockchain-facade/DeviceTypeService';
 export { extendArray } from './extensions/array.extensions';
-export { THAILAND_REGIONS_PROVINCES_MAP } from './blockchain-facade/Location';
-export { LocationService } from './blockchain-facade/LocationService';
 export { TimeSeries, Resolution, TimeSeriesElement, TS } from './TimeSeries';
 export { GeneralFunctions, ISpecialTx, getClientVersion } from './GeneralFunctions';
 export { Year, Timestamp } from './common-types/CommonTypes';
+export { Compliance } from './types';
+export { Countries } from './Countries';
+export {
+    IRECBusinessLegalStatus,
+    IRECBusinessLegalStatusLabelsMap
+} from './irec/BusinessLegalStatus';

@@ -1,4 +1,4 @@
-import { ConsumingDevice, DeviceLogic } from '@energyweb/device-registry';
+import { DeviceLogic } from '@energyweb/device-registry';
 import { UserLogic } from '@energyweb/user-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Configuration } from '@energyweb/utils-general';
@@ -15,7 +15,6 @@ export interface IStoreState {
     authentication: IAuthenticationState;
     configuration: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
     producingDevices: IProducingDevicesState;
-    consumingDevices: ConsumingDevice.Entity[];
     certificates: ICertificatesState;
     demands: Demand.Entity[];
     general: IGeneralState;

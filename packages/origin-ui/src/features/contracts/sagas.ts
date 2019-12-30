@@ -19,13 +19,8 @@ import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-bac
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
-import {
-    configurationUpdated,
-    demandDeleted,
-    consumingDeviceCreatedOrUpdated,
-    demandCreated
-} from '../actions';
-import { ProducingDevice, ConsumingDevice } from '@energyweb/device-registry';
+import { configurationUpdated, demandCreated, demandUpdated } from '../actions';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
@@ -45,6 +40,7 @@ async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
     offChainDataClient: IOffChainDataClient,
+    configurationClient: IConfigurationClient,
     baseURL: string,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
@@ -78,7 +74,8 @@ async function initConf(
         blockchainProperties,
         offChainDataSource: {
             baseUrl: baseURL,
-            client: offChainDataClient
+            client: offChainDataClient,
+            configurationClient
         },
         logger: Winston.createLogger({
             level: 'verbose',
@@ -156,9 +153,12 @@ function* initEventHandler() {
             });
 
             marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-                if (event.returnValues._status === Demand.DemandStatus.ARCHIVED) {
+                if (
+                    parseInt(event.returnValues._status as string, 10) ===
+                    Demand.DemandStatus.ARCHIVED
+                ) {
                     emitter({
-                        action: demandDeleted(
+                        action: demandUpdated(
                             await new Demand.Entity(
                                 event.returnValues._demandId.toString(),
                                 configuration
@@ -236,10 +236,7 @@ async function getMarketContractLookupAddressFromAPI(
     baseURL: string
 ) {
     try {
-        const marketContracts: string[] = await configurationClient.get(
-            baseURL,
-            'MarketContractLookup'
-        );
+        const marketContracts = await configurationClient.get(baseURL, 'MarketContractLookup');
 
         if (marketContracts.length > 0) {
             return marketContracts[marketContracts.length - 1];
@@ -299,12 +296,14 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         let configuration: IStoreState['configuration'];
         try {
             const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
+            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
             configuration = yield call(
                 initConf,
                 marketContractLookupAddress,
                 routerSearch,
                 offChainDataClient,
+                configurationClient,
                 baseURL,
                 environment.WEB3
             );
@@ -329,16 +328,6 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
             for (const device of producingDevices) {
                 yield put(producingDeviceCreatedOrUpdated(device));
-            }
-
-            const consumingDevices: ConsumingDevice.Entity[] = yield apply(
-                ConsumingDevice,
-                ConsumingDevice.getAllDevices,
-                [configuration]
-            );
-
-            for (const device of consumingDevices) {
-                yield put(consumingDeviceCreatedOrUpdated(device));
             }
 
             const demands: Demand.Entity[] = yield apply(Demand, Demand.getAllDemands, [

@@ -4,6 +4,12 @@ import { TransactionReceipt } from 'web3-core';
 import { BlockchainDataModelEntity, Configuration, Timestamp } from '@energyweb/utils-general';
 import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
 
+export enum DeviceStatus {
+    Submitted,
+    Denied,
+    Active
+}
+
 export enum UsageType {
     Producing,
     Consuming
@@ -13,7 +19,7 @@ export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainPr
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
-    active: boolean;
+    status: DeviceStatus;
     usageType: UsageType;
     lastSmartMeterReadFileHash: string;
 }
@@ -27,6 +33,10 @@ export interface IOffChainProperties {
     gpsLongitude: string;
     timezone: string;
     facilityName: string;
+    description: string;
+    images: string;
+    region: string;
+    province: string;
 }
 
 export interface ISmartMeterRead {
@@ -34,13 +44,20 @@ export interface ISmartMeterRead {
     timestamp: number;
 }
 
-export abstract class Entity extends BlockchainDataModelEntity.Entity implements IOnChainProperties {
+export abstract class Entity extends BlockchainDataModelEntity.Entity
+    implements IOnChainProperties {
     offChainProperties: IOffChainProperties;
+
     smartMeter: Configuration.EthAccount;
+
     owner: Configuration.EthAccount;
+
     lastSmartMeterReadWh: number;
+
     lastSmartMeterReadFileHash: string;
-    active: boolean;
+
+    status: DeviceStatus;
+
     usageType: UsageType;
 
     initialized: boolean;
@@ -64,34 +81,52 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity implements
                 timestamp,
                 { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
             );
-        } else {
-            return this.configuration.blockchainProperties.deviceLogicInstance.saveSmartMeterRead(
-                this.id,
-                meterReading,
-                filehash,
-                timestamp,
-                { from: this.configuration.blockchainProperties.activeUser.address }
-            );
         }
+        return this.configuration.blockchainProperties.deviceLogicInstance.saveSmartMeterRead(
+            this.id,
+            meterReading,
+            filehash,
+            timestamp,
+            { from: this.configuration.blockchainProperties.activeUser.address }
+        );
     }
 
     async getSmartMeterReads(): Promise<ISmartMeterRead[]> {
-        const logic: DeviceLogic = this.configuration.blockchainProperties
-            .deviceLogicInstance;
+        const logic: DeviceLogic = this.configuration.blockchainProperties.deviceLogicInstance;
 
-        return (await logic.getSmartMeterReadsForDevice(Number(this.id))).map((read: ISmartMeterRead) => ({
-            energy: Number(read.energy),
-            timestamp: Number(read.timestamp)
-        }));
+        return (await logic.getSmartMeterReadsForDevice(Number(this.id))).map(
+            (read: ISmartMeterRead) => ({
+                energy: Number(read.energy),
+                timestamp: Number(read.timestamp)
+            })
+        );
     }
 
     async getSmartMeterReadsByIndex(indexes: number[]): Promise<ISmartMeterRead[]> {
-        const logic: DeviceLogic = this.configuration.blockchainProperties
-            .deviceLogicInstance;
+        const logic: DeviceLogic = this.configuration.blockchainProperties.deviceLogicInstance;
 
-        return (await logic.getSmartMeterReadsForDeviceByIndex(Number(this.id), indexes)).map((read: ISmartMeterRead) => ({
-            energy: Number(read.energy),
-            timestamp: Number(read.timestamp)
-        }));
+        return (await logic.getSmartMeterReadsForDeviceByIndex(Number(this.id), indexes)).map(
+            (read: ISmartMeterRead) => ({
+                energy: Number(read.energy),
+                timestamp: Number(read.timestamp)
+            })
+        );
+    }
+
+    async setStatus(status: DeviceStatus): Promise<TransactionReceipt> {
+        const {
+            deviceLogicInstance
+        }: { deviceLogicInstance?: DeviceLogic } = this.configuration.blockchainProperties;
+        const id = parseInt(this.id, 10);
+
+        if (this.configuration.blockchainProperties.activeUser.privateKey) {
+            return deviceLogicInstance.setStatus(id, status, {
+                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
+            });
+        }
+
+        return deviceLogicInstance.setStatus(id, status, {
+            from: this.configuration.blockchainProperties.activeUser.address
+        });
     }
 }

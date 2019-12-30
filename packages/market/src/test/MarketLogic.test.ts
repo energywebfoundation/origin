@@ -3,7 +3,11 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { DeviceLogic, Contracts as DeviceRegistryContracts } from '@energyweb/device-registry';
+import {
+    DeviceLogic,
+    Device,
+    Contracts as DeviceRegistryContracts
+} from '@energyweb/device-registry';
 import {
     buildRights,
     Role,
@@ -239,12 +243,19 @@ describe('MarketLogic', () => {
         assert.equal(await marketLogic.getAllDemandListLength(), 1);
     });
 
-    it('should fail when trying to create a supply with an non-existing device as deviceOwner', async () => {
+    it('should fail when trying to create a supply with a non-existing device as deviceOwner', async () => {
         let failed = false;
         try {
-            await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: deviceOwnerPK
-            });
+            await marketLogic.createSupply(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                1,
+                {
+                    gas: 1000000,
+                    privateKey: deviceOwnerPK
+                },
+                true
+            );
         } catch (ex) {
             failed = true;
         }
@@ -255,9 +266,16 @@ describe('MarketLogic', () => {
     it('should fail when trying to create a supply with an non-existing device as trader', async () => {
         let failed = false;
         try {
-            await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: traderPK
-            });
+            await marketLogic.createSupply(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                1,
+                {
+                    privateKey: traderPK,
+                    gas: 1000000
+                },
+                true
+            );
         } catch (ex) {
             failed = true;
         }
@@ -268,9 +286,16 @@ describe('MarketLogic', () => {
     it('should fail when trying to create a supply with an non-existing device as admin', async () => {
         let failed = false;
         try {
-            await marketLogic.createSupply('propertiesDocumentHash', 'documentDBURL', 1, {
-                privateKey: privateKeyDeployment
-            });
+            await marketLogic.createSupply(
+                'propertiesDocumentHash',
+                'documentDBURL',
+                1,
+                {
+                    privateKey: privateKeyDeployment,
+                    gas: 1000000
+                },
+                true
+            );
         } catch (ex) {
             failed = true;
         }
@@ -278,16 +303,16 @@ describe('MarketLogic', () => {
         assert.isTrue(failed);
     });
 
-    it('should onboard an device', async () => {
+    it('should onboard a device', async () => {
         await deviceLogic.createDevice(
             '0x1000000000000000000000000000000000000005',
             accountDeviceOwner,
-            true,
+            Device.DeviceStatus.Submitted,
             0,
             'propertiesDocumentHash',
             'url',
             {
-                privateKey: privateKeyDeployment
+                privateKey: deviceOwnerPK
             }
         );
     });

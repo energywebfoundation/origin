@@ -4,14 +4,14 @@
   "license": "GPL-3.0-only",
   "author": "",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/user-registry#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/energywebfoundation/origin.git"
-    },
-    "bugs": {
-        "url": "https://github.com/energywebfoundation/origin/issues"
-    },
-  "version": "1.4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "version": "2.0.3",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/schemas",
@@ -43,7 +43,7 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/utils-general": "1.4.0",
+    "@energyweb/utils-general": "4.0.0",
     "typedarray-to-buffer": "3.1.5",
     "web3": "1.2.4",
     "web3-core": "1.2.4",
@@ -52,7 +52,7 @@
     "yaeti": "1.0.2"
   },
   "devDependencies": {
-    "@energyweb/origin-backend-client": "1.1.0",
+    "@energyweb/origin-backend-client": "2.2.1",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.5.1"

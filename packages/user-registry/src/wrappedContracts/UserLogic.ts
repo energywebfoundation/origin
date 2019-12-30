@@ -20,7 +20,7 @@ export class UserLogic extends GeneralFunctions {
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('allEvents', eventFilter);
+        return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async initialize(txParams: ISpecialTx) {

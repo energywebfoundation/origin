@@ -1,50 +1,59 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
-import { marketContractLookupGetAction } from './controller/MarketContractLookupGet';
-import { marketContractLookupPostAction } from './controller/MarketContractLookupPost';
-import { marketContractLookupDeleteAction } from './controller/MarketContractLookupDelete';
-import { jsonEntityGetAction } from './controller/JsonEntityGet';
-import { jsonEntityPostAction } from './controller/JsonEntityPost';
-import { jsonEntityDeleteAction } from './controller/JsonEntityDelete';
+import { IActions } from './actions/IActions';
+
+import { MarketContractLookupActions } from './actions/MarketContractLookupActions';
+import { JsonEntityActions } from './actions/JsonEntityActions';
+import { CurrencyActions } from './actions/CurrencyActions';
+import { ComplianceActions } from './actions/ComplianceActions';
+import { CountryActions } from './actions/CountryActions';
+import { imagePostActions } from './actions/ImagePost';
 
 export interface IRoute {
     path: string;
     method: string;
-    action: (req: Request, res: Response) => Promise<void>;
+    actions: Array<RequestHandler>;
 }
+
+const routeGenerator = (endpointName: string, actions: IActions, paramName?: string): IRoute[] => {
+    const path = `/${endpointName}${paramName ? `/:${paramName}` : ''}`;
+
+    return [
+        {
+            path: path + '?',
+            method: 'get',
+            actions: [actions.get]
+        },
+        {
+            path,
+            method: 'post',
+            actions: [actions.post]
+        },
+        {
+            path,
+            method: 'delete',
+            actions: [actions.delete]
+        }
+    ];
+};
+
+const marketContractLookupRoutes = routeGenerator('MarketContractLookup', MarketContractLookupActions);
+const jsonEntityRoutes = routeGenerator('Entity', JsonEntityActions, 'hash');
+const currencyRoutes = routeGenerator('Currency', CurrencyActions);
+const complianceRoutes = routeGenerator('Compliance', ComplianceActions);
+const countryRoutes = routeGenerator('Country', CountryActions);
 
 /**
  * All application routes.
  */
-export const AppRoutes: IRoute[] = [
-    {
-        path: '/MarketContractLookup',
-        method: 'get',
-        action: marketContractLookupGetAction
-    },
-    {
-        path: '/MarketContractLookup/:address',
+export const AppRoutes: IRoute[] = marketContractLookupRoutes.concat(
+    jsonEntityRoutes,
+    currencyRoutes,
+    complianceRoutes,
+    countryRoutes,
+    [{
+        path: '/Image',
         method: 'post',
-        action: marketContractLookupPostAction
-    },
-    {
-        path: '/MarketContractLookup/:address',
-        method: 'delete',
-        action: marketContractLookupDeleteAction
-    },
-    {
-        path: '/Entity/:hash?',
-        method: 'get',
-        action: jsonEntityGetAction
-    },
-    {
-        path: '/Entity/:hash',
-        method: 'post',
-        action: jsonEntityPostAction
-    },
-    {
-        path: '/Entity/:hash',
-        method: 'delete',
-        action: jsonEntityDeleteAction
-    }
-];
+        actions: imagePostActions
+    }]
+);

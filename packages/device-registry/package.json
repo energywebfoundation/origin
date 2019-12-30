@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "0.9.0",
+  "version": "2.0.0",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/build",
@@ -22,7 +22,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn build:ts",
+    "build": "yarn build:static && yarn build:ts",
     "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build && yarn deploy-contracts",
@@ -44,8 +44,8 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/user-registry": "1.4.0",
-    "@energyweb/utils-general": "1.4.0",
+    "@energyweb/user-registry": "2.0.3",
+    "@energyweb/utils-general": "4.0.0",
     "moment": "2.24.0",
     "polly-js": "^1.6.5",
     "web3": "1.2.4",
@@ -54,7 +54,7 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/origin-backend-client": "1.1.0",
+    "@energyweb/origin-backend-client": "2.2.1",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.5.1"

@@ -5,10 +5,11 @@ import {
     DemandMatcher,
     TimeTrigger
 } from '@energyweb/market-matcher-core';
-import { IOffChainDataClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
+import { Role } from '@energyweb/user-registry';
 import { EntityFetcher } from './EntityFetcher';
 import { EntityStore } from './EntityStore';
 import { logger } from './Logger';
@@ -21,28 +22,53 @@ export interface IMatcherConfig {
     matcherAccount: Configuration.EthAccount;
     offChainDataSourceUrl: string;
     offChainDataSourceClient: IOffChainDataClient;
+    configurationClient: IConfigurationClient;
     matcherInterval: number;
 }
 
-const createBlockchainConf = async (
+const createBlockchainConfig = async (
     matcherConfig: IMatcherConfig
 ): Promise<Configuration.Entity> => {
     const web3 = new Web3(matcherConfig.web3Url);
 
-    const marketConf = await marketCreateBlockchainProperties(
+    const blockchainProperties = await marketCreateBlockchainProperties(
         web3,
         matcherConfig.marketLogicAddress
     );
-    marketConf.activeUser = matcherConfig.matcherAccount;
+    blockchainProperties.activeUser = matcherConfig.matcherAccount;
 
     return {
-        blockchainProperties: marketConf,
+        blockchainProperties,
         logger,
         offChainDataSource: {
             baseUrl: matcherConfig.offChainDataSourceUrl,
-            client: matcherConfig.offChainDataSourceClient
+            client: matcherConfig.offChainDataSourceClient,
+            configurationClient: matcherConfig.configurationClient
         }
     };
+};
+
+const testMatcherAccount = async (config: Configuration.Entity) => {
+    const { userLogicInstance, web3, activeUser } = config.blockchainProperties;
+
+    const { address } = web3.eth.accounts.privateKeyToAccount(activeUser.privateKey);
+    const hasMatcherRole = await userLogicInstance.isRole(Role.Matcher, address);
+    const balance = web3.utils.fromWei(await web3.eth.getBalance(address));
+
+    if (!hasMatcherRole) {
+        logger.error(`Matcher account: ${address} does not have Matcher role set in User Registry`);
+        throw new Error('Missing Matcher role');
+    }
+    if (parseFloat(balance) < 0.5) {
+        logger.error(
+            `Matcher account: ${address} should have at least 0.5EWT tokens. Current balance is ${parseFloat(
+                balance
+            )}EWT`
+        );
+        throw new Error('Insufficient balance');
+    }
+    logger.info(`Matcher account: ${address} - Matcher role: OK`);
+    logger.info(`Matcher account: ${address} - Matcher balance ${balance}EWT: OK`);
 };
 
 export async function startMatcher(matcherConfig: IMatcherConfig) {
@@ -53,7 +79,10 @@ export async function startMatcher(matcherConfig: IMatcherConfig) {
     }
 
     try {
-        const config = await createBlockchainConf(matcherConfig);
+        const config = await createBlockchainConfig(matcherConfig);
+
+        await testMatcherAccount(config);
+
         const entityFetcher = new EntityFetcher(config);
         const entityStore = new EntityStore(config, logger, entityFetcher);
 

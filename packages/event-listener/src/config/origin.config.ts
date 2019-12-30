@@ -25,7 +25,8 @@ export const initOriginConfig = async (
         blockchainProperties,
         offChainDataSource: {
             baseUrl: `${process.env.BACKEND_URL}/api`,
-            client: config.offChainDataSourceClient
+            client: config.offChainDataSourceClient,
+            configurationClient: config.configurationClient
         },
         logger: Winston.createLogger({
             level: 'verbose',

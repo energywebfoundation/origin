@@ -3,6 +3,117 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.2.0...@energyweb/market@3.3.0) (2019-12-20)
+
+
+### Bug Fixes
+
+* **market:** fix market tests ([c7d98aa](https://github.com/energywebfoundation/origin/commit/c7d98aad097f32b7b3dac96b99edb7c5cabe0124))
+
+
+### Features
+
+* add region and province form fields to device registration ([f71feff](https://github.com/energywebfoundation/origin/commit/f71feff224a087459d4d36f938feae82c8f7ff48))
+
+
+
+
+
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.1.0...@energyweb/market@3.2.0) (2019-12-19)
+
+
+### Features
+
+* **market:** fill demand at given energy amount ([37e7083](https://github.com/energywebfoundation/origin/commit/37e70835109b88703d916c665846ea8aaa0f8b39))
+
+
+
+
+
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.0.0...@energyweb/market@3.1.0) (2019-12-17)
+
+
+### Bug Fixes
+
+* **market:** use default block range when fetching events ([ffeae78](https://github.com/energywebfoundation/origin/commit/ffeae7880bbd228725ce76baf3ef948ac23ba02c))
+
+
+### Features
+
+* **market:** Define Currency in market instead of utils-general ([f3a5332](https://github.com/energywebfoundation/origin/commit/f3a53329b4d6083a01833e89be2f11d3296bbb92))
+
+
+
+
+
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@2.0.0...@energyweb/market@3.0.0) (2019-12-12)
+
+
+* [FIX] Backend hash storing (#341) ([b239101](https://github.com/energywebfoundation/origin/commit/b239101f51cffd7e37c9ea51654a75804cf502ed)), closes [#341](https://github.com/energywebfoundation/origin/issues/341)
+
+
+### Bug Fixes
+
+* **origin-ui:** fix price and currency undefined in some cases ([#326](https://github.com/energywebfoundation/origin/issues/326)) ([0f2e248](https://github.com/energywebfoundation/origin/commit/0f2e248f9cfa200562b001d0b5bf925dec892cb9))
+
+
+### Features
+
+* **market:** use common type ([598a199](https://github.com/energywebfoundation/origin/commit/598a1990cea59618d1122c59b8e958bc00b9496e))
+
+
+### BREAKING CHANGES
+
+* Changed the API endpoints from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* feat(utils-general): use the new URL structure when fetching off-chain data
+* Changed the API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(user-registry): adjust to breaking changes
+* Updated User API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(asset-registry): adjust to breaking changes
+* Updated Asset API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(origin): fix constructor weird formatting
+
+* fix(market): storing off-chain data references on-chain
+* New contracts for PurchasableCertificate + Updated Market API endpoints of the backend from http://example.url/<marketLogicAddress>/<entity>/<id> to http://example.url/<marketLogicAddress>/<entity>/<id>/<offChainDataHash>
+
+* chore(event-listener): more understandable tests
+
+* fix(event-listener): make scan interval faster for tests
+
+* feat(origin-backend): use a simpler URL structure
+* The URL structure of the API changed to only store hashes, omitting IDs, entity types and market lookup contracts used previously
+
+* chore(origin-backend-client): use only POST methods instead of POST and PUT
+* Use the .insert() method instead of .insertOrUpdate()
+
+* chore(utils-general): use .insert instead of .insertOrUpdate
+
+* fix(origin-backend): return 200 on POSTing the same entity
+
+* chore(utils-general): remove abstract getUrl()
+
+* chore(user-registry): remove specific getUrl()
+
+* chore(device-registry): remove specific getUrl()
+
+* chore(origin): remove specific getUrl()
+
+* chore(market): remove specific getUrl()
+
+* chore(monorepo): reorder test:serial
+
+* fix(origin-backend): adjust tests to new POST behaviour
+
+* chore(monorepo): Add an ADR for simplifying off-chain data storage
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@1.3.3...@energyweb/market@2.0.0) (2019-11-26)
 
 

@@ -38,12 +38,11 @@ export class MarketLogic extends GeneralFunctions {
         if (!SUPPORTED_EVENTS.includes(event)) {
             throw new Error('This event does not exist.');
         }
-
-        return this.web3Contract.getPastEvents(event, eventFilter);
+        return this.web3Contract.getPastEvents(event, this.createFilter(eventFilter));
     }
 
     async getAllEvents(eventFilter?: PastEventOptions) {
-        return this.getEvents('allEvents', eventFilter);
+        return this.getEvents('allEvents', this.createFilter(eventFilter));
     }
 
     async initialize(certificateContractAddress: string, txParams: ISpecialTx) {
@@ -106,6 +105,17 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async fillDemandAt(
+        _demandId: string,
+        _certificateId: string,
+        _energy: number,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.fillDemandAt(_demandId, _certificateId, _energy);
+
+        return this.send(method, txParams);
+    }
+
     async fillAgreement(_demandId: string, _certificateId: string, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.fillAgreement(_demandId, _certificateId);
 
@@ -126,7 +136,8 @@ export class MarketLogic extends GeneralFunctions {
         _propertiesDocumentHash: string,
         _documentDBURL: string,
         _deviceId: number,
-        txParams?: ISpecialTx
+        txParams?: ISpecialTx,
+        skipGasEstimation = false
     ) {
         const method = this.web3Contract.methods.createSupply(
             _propertiesDocumentHash,
@@ -134,7 +145,7 @@ export class MarketLogic extends GeneralFunctions {
             _deviceId
         );
 
-        return this.send(method, txParams);
+        return this.send(method, txParams, skipGasEstimation);
     }
 
     async getAgreement(_agreementId: number, txParams?: ISpecialTx) {

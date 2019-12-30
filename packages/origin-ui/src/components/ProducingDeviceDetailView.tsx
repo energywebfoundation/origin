@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
@@ -11,18 +10,15 @@ import iconGaseous from '../../assets/icon_gaseous.svg';
 import iconMarine from '../../assets/icon_marine.svg';
 import solar from '../../assets/icon_solar.svg';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import './DetailView.scss';
-import { getOffChainText } from '../utils/helper';
-import { Compliance, IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { DeviceMap } from './DeviceMap';
 import { SmartMeterReadingsTable } from './SmartMeterReadingsTable';
 import { SmartMeterReadingsChart } from './SmartMeterReadingsChart';
 import { CertificateTable, SelectedState } from './CertificateTable';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProducingDeviceDetailLink } from '../utils/routing';
-import { getBaseURL, getProducingDevices } from '../features/selectors';
+import { getProducingDevices } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
 import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
@@ -31,18 +27,14 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 
 interface IProps {
     id: number;
-    addSearchField: boolean;
     showSmartMeterReadings: boolean;
     showCertificates: boolean;
 }
 
 export function ProducingDeviceDetailView(props: IProps) {
-    const baseURL = useSelector(getBaseURL);
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
-
-    const [newId, setNewId] = useState(null);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -112,15 +104,11 @@ export function ProducingDeviceDetailView(props: IProps) {
                     data: owner ? owner.organization : ''
                 },
                 {
-                    label:
-                        'Certified by Registry' +
-                        getOffChainText('complianceRegistry', selectedDevice.offChainProperties),
-                    data: Compliance[selectedDevice.offChainProperties.complianceRegistry]
+                    label: 'Certified by Registry',
+                    data: selectedDevice.offChainProperties.complianceRegistry
                 },
                 {
-                    label:
-                        'Other Green Attributes' +
-                        getOffChainText('otherGreenAttributes', selectedDevice.offChainProperties),
+                    label: 'Other Green Attributes',
                     data: selectedDevice.offChainProperties.otherGreenAttributes
                 }
             ],
@@ -134,23 +122,17 @@ export function ProducingDeviceDetailView(props: IProps) {
                     rowspan: 2
                 },
                 {
-                    label:
-                        'Meter Read' +
-                        getOffChainText('lastSmartMeterReadWh', selectedDevice.offChainProperties),
+                    label: 'Meter Read',
                     data: (selectedDevice.lastSmartMeterReadWh / 1000).toLocaleString(),
                     tip: 'kWh'
                 },
                 {
-                    label:
-                        'Public Support' +
-                        getOffChainText('typeOfPublicSupport', selectedDevice.offChainProperties),
+                    label: 'Public Support',
                     data: selectedDevice.offChainProperties.typeOfPublicSupport,
                     description: ''
                 },
                 {
-                    label:
-                        'Commissioning Date' +
-                        getOffChainText('operationalSince', selectedDevice.offChainProperties),
+                    label: 'Commissioning Date',
                     data: moment(selectedDevice.offChainProperties.operationalSince * 1000).format(
                         'MMM YY'
                     )
@@ -158,16 +140,12 @@ export function ProducingDeviceDetailView(props: IProps) {
             ],
             [
                 {
-                    label:
-                        'Nameplate Capacity' +
-                        getOffChainText('capacityWh', selectedDevice.offChainProperties),
+                    label: 'Nameplate Capacity',
                     data: (selectedDevice.offChainProperties.capacityWh / 1000).toLocaleString(),
                     tip: 'kW'
                 },
                 {
-                    label:
-                        'Geo Location' +
-                        getOffChainText('gpsLatitude', selectedDevice.offChainProperties),
+                    label: 'Geo Location',
                     data:
                         selectedDevice.offChainProperties.gpsLatitude +
                         ', ' +
@@ -193,10 +171,6 @@ export function ProducingDeviceDetailView(props: IProps) {
                         {data.map((row, rowIndex) => (
                             <tr key={rowIndex}>
                                 {row.map((col, colIndex) => {
-                                    if (col.isAdditionalInformation && !props.addSearchField) {
-                                        return null;
-                                    }
-
                                     return (
                                         <td
                                             key={colIndex}
@@ -249,22 +223,6 @@ export function ProducingDeviceDetailView(props: IProps) {
 
     return (
         <div className="DetailViewWrapper">
-            {props.addSearchField && (
-                <div className="FindDevice">
-                    <input
-                        onChange={e => setNewId(e.target.value)}
-                        defaultValue={props.id || props.id === 0 ? props.id.toString() : ''}
-                    />
-
-                    <Link
-                        className="btn btn-primary find-device-button"
-                        to={getProducingDeviceDetailLink(baseURL, newId)}
-                    >
-                        Find Device
-                    </Link>
-                </div>
-            )}
-
             {selectedDevice && (
                 <>
                     <div className="PageContentWrapper">

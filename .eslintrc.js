@@ -39,7 +39,17 @@ module.exports = {
         "class-methods-use-this": "off",
         "no-underscore-dangle": "off",
         "no-bitwise": "off",
-        "no-restricted-properties": "off"
+        "no-restricted-properties": "off",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+              "js": "never",
+              "jsx": "never",
+              "ts": "never",
+              "tsx": "never"
+            }
+         ]
     },
     "settings": {
         "import/resolver": {
