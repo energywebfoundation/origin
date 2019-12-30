@@ -123,10 +123,11 @@ contract PrivateIssuer {
 
     request.approved = true;
 
-    //here delegate noth to public issuer
+    //here delegate both to public issuer
     //or even better move the logic to separate contract that keeps track of public to private and opposite direction
     if (migrations[request.certificateId]) {
-      registry.mint(request.owner, request.certificateId, _value);
+      // registry.mint(request.owner, request.certificateId, _value);
+      // publicIssuer.mint()
     } else {
       migrations[request.certificateId] = true;
       (,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
