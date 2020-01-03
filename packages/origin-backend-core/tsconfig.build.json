@@ -8,10 +8,5 @@
     },
     "include": [
         "src/**/*"
-    ],
-    "references": [
-        {
-            "path": "../origin-backend-core/tsconfig.build.json"
-        }
     ]
 }

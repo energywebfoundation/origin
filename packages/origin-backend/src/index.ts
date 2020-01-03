@@ -11,6 +11,7 @@ import { Country } from './entity/Country';
 import { Currency } from './entity/Currency';
 import { Compliance } from './entity/Compliance';
 import { JsonEntity } from './entity/JsonEntity';
+import { Organization } from './entity/Organization';
 import { MarketContractLookup } from './entity/MarketContractLookup';
 
 import api from './api';
@@ -47,8 +48,8 @@ export async function startAPI(): Promise<http.Server> {
         ormConfig.database = '/var/db/db.sqlite';
     }
 
-    let connectionOptions: ConnectionOptions = Object.assign(ormConfig as ConnectionOptions, {
-        entities: [JsonEntity, MarketContractLookup, Currency, Compliance, Country]
+    const connectionOptions: ConnectionOptions = Object.assign(ormConfig as ConnectionOptions, {
+        entities: [JsonEntity, MarketContractLookup, Currency, Compliance, Country, Organization]
     });
 
     const connection: Connection = await createConnection(connectionOptions);

@@ -29,7 +29,9 @@
   "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
   "license": "GPL-3.0",
   "dependencies": {
+    "@energyweb/origin-backend-core": "0.0.1",
     "body-parser": "1.19.0",
+    "class-validator": "0.11.0",
     "commander": "^4.0.1",
     "cors": "2.8.5",
     "express": "4.17.1",

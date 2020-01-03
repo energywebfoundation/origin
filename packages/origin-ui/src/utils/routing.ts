@@ -61,6 +61,10 @@ export function getProducingDeviceDetailLink(baseURL: string, deviceId: string |
     return `${getDevicesLink(baseURL)}/producing_detail_view/${deviceId}`;
 }
 
+export function getOrganizationViewLink(baseURL: string, id: string) {
+    return `${getAccountLink(baseURL)}/organization-view/${id}`;
+}
+
 export function useLinks() {
     const baseURL = useSelector(getBaseURL);
 
@@ -80,6 +84,7 @@ export function useLinks() {
         getCertificatesForDemandLink: (demandId: string | number) =>
             getCertificatesForDemandLink(baseURL, demandId),
         getProducingDeviceDetailLink: (deviceId: string | number) =>
-            getProducingDeviceDetailLink(baseURL, deviceId)
+            getProducingDeviceDetailLink(baseURL, deviceId),
+        getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id)
     };
 }

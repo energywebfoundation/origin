@@ -7,8 +7,10 @@ import { NavLink, Route, Redirect } from 'react-router-dom';
 import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
-import { OrganizationRegister } from './OrganizationRegister';
+import { OrganizationForm } from './OrganizationForm';
+import { OrganizationTable } from './OrganizationTable';
 import { dataTest } from '../../utils/helper';
+import { OrganizationView } from './OrganizationView';
 
 export function Account() {
     const baseURL = useSelector(getBaseURL);
@@ -32,7 +34,18 @@ export function Account() {
         {
             key: 'organization-register',
             label: 'Register Organization',
-            component: OrganizationRegister
+            component: OrganizationForm
+        },
+        {
+            key: 'organization-table',
+            label: 'Organizations',
+            component: OrganizationTable
+        },
+        {
+            key: 'organization-view',
+            label: 'View Organization',
+            component: OrganizationView,
+            hide: true
         }
     ];
 
@@ -41,6 +54,10 @@ export function Account() {
             <div className="PageNav">
                 <ul className="NavMenu nav">
                     {Menu.map(menu => {
+                        if (menu.hide) {
+                            return null;
+                        }
+
                         return (
                             <li key={menu.key}>
                                 <NavLink

@@ -1,6 +1,6 @@
 {
-  "name": "@energyweb/origin-backend-client",
-  "version": "2.2.1",
+  "name": "@energyweb/origin-backend-core",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/js/src/index.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "clean": "shx rm -rf dist"
   },
-  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-client#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -17,12 +16,8 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
+  "author": "EnergyWeb DevHub GmbH",
   "license": "GPL-3.0",
-  "dependencies": {
-    "@energyweb/origin-backend-core": "0.0.1",
-    "axios": "0.19.0"
-  },
   "files": [
     "dist"
   ],

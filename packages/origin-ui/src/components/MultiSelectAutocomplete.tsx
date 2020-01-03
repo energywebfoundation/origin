@@ -15,10 +15,11 @@ interface IOwnProps {
     selectedValues: IAutocompleteMultiSelectOptionType[];
     disabled?: boolean;
     className?: string;
+    max?: number;
 }
 
 export function MultiSelectAutocomplete(props: IOwnProps) {
-    const { label, placeholder, options, selectedValues, disabled, className } = props;
+    const { label, placeholder, options, selectedValues, disabled, className, max } = props;
 
     return (
         <div className={className}>
@@ -27,7 +28,9 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 filterSelectedOptions
                 options={options}
                 getOptionLabel={option => option.label}
-                onChange={(event, value) => props.onChange(value)}
+                onChange={(event, value: IAutocompleteMultiSelectOptionType[]) => {
+                    props.onChange(value ? value.slice(0, max ?? value.length) : value);
+                }}
                 value={selectedValues}
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
