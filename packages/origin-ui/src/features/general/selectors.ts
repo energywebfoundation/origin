@@ -23,6 +23,8 @@ export const getOffChainDataClient = (state: IStoreState) => state.general.offCh
 
 export const getConfigurationClient = (state: IStoreState) => state.general.configurationClient;
 
+export const getOrganizationClient = (state: IStoreState) => state.general.organizationClient;
+
 export const getEnvironment = (state: IStoreState) => state.general.environment;
 
 export const getCurrencies = (state: IStoreState): string[] => state.general.currencies;

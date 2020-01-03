@@ -10,8 +10,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { getEnvironment } from '../../features/general/selectors';
-import axios from 'axios';
+import { getOrganizationClient } from '../../features/general/selectors';
 import { Countries } from '@energyweb/utils-general';
 import { IOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { useLinks } from '../../utils/routing';
@@ -35,7 +34,7 @@ function getOrganizationText(status: OrganizationStatus) {
 
 export function OrganizationTable() {
     const currentUser = useSelector(getCurrentUser);
-    const environment = useSelector(getEnvironment);
+    const organizationClient = useSelector(getOrganizationClient);
 
     const { getOrganizationViewLink } = useLinks();
 
@@ -49,15 +48,14 @@ export function OrganizationTable() {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!environment) {
+        if (!organizationClient) {
             return {
                 paginatedData: [],
                 total: 0
             };
         }
 
-        const response = await axios.get(`${environment.BACKEND_URL}/api/Organization`);
-        const entities: IOrganization[] = response.data;
+        const entities = await organizationClient.getAll();
 
         let newPaginatedData: IRecord[] = entities.map(i => ({
             organization: i
@@ -79,7 +77,7 @@ export function OrganizationTable() {
 
     useEffect(() => {
         loadPage(1);
-    }, [currentUser, environment]);
+    }, [currentUser, organizationClient]);
 
     function viewEntity(rowIndex: number) {
         const organizationId = paginatedData[rowIndex]?.organization?.id;
@@ -102,7 +100,7 @@ export function OrganizationTable() {
         dispatch(setLoading(true));
 
         try {
-            await axios.put(`${environment.BACKEND_URL}/api/Organization/${organization.id}`, {
+            await organizationClient.update(organization.id, {
                 status: OrganizationStatus.Active
             });
 

@@ -3,7 +3,8 @@ import {
     IOffChainDataClient,
     OffChainDataClient,
     ConfigurationClient,
-    IConfigurationClient
+    IConfigurationClient,
+    IOrganizationClient
 } from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
@@ -16,6 +17,7 @@ export interface IGeneralState {
     requestPasswordModalCallback: (password: string) => void;
     offChainDataClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
+    organizationClient: IOrganizationClient;
     environment: IEnvironment;
     currencies: string[];
     compliance: string;
@@ -33,6 +35,7 @@ const defaultState: IGeneralState = {
     requestPasswordModalTitle: null,
     offChainDataClient: new OffChainDataClient(),
     configurationClient: new ConfigurationClient(),
+    organizationClient: null,
     environment: null,
     currencies: [],
     compliance: null,
@@ -93,6 +96,12 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
             return {
                 ...state,
                 configurationClient: action.payload
+            };
+
+        case GeneralActions.setOrganizationClient:
+            return {
+                ...state,
+                organizationClient: action.payload
             };
 
         case GeneralActions.setEnvironment:

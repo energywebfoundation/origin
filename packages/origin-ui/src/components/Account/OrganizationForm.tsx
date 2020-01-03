@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Formik, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { IOrganization, OrganizationPostData } from '@energyweb/origin-backend-core';
 import { Countries } from '@energyweb/utils-general';
 
@@ -16,7 +15,7 @@ import { FormInput } from '../Form/FormInput';
 import { FormCountrySelect } from '../Form/FormCountrySelect';
 import { FormBusinessTypeSelect } from '../Form/FormBusinessTypeSelect';
 import { FormCountryMultiSelect } from '../Form/FormCountryMultiSelect';
-import { getEnvironment } from '../../features/general/selectors';
+import { getOrganizationClient } from '../../features/general/selectors';
 import { useLinks } from '../../utils/routing';
 import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
 
@@ -142,7 +141,7 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export function OrganizationForm(props: IProps) {
     const { entity, readOnly } = props;
-    const environment = useSelector(getEnvironment);
+    const organizationClient = useSelector(getOrganizationClient);
     const [activeCountries, setActiveCountries] = useState<IAutocompleteMultiSelectOptionType[]>(
         []
     );
@@ -206,12 +205,7 @@ export function OrganizationForm(props: IProps) {
                 country: values.country
             };
 
-            const response = await axios.post(
-                `${environment.BACKEND_URL}/api/Organization`,
-                formData
-            );
-
-            const organization: IOrganization = response?.data;
+            const organization = await organizationClient.add(formData);
 
             history.push(getOrganizationViewLink(organization?.id?.toString()));
 

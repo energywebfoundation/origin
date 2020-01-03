@@ -51,3 +51,5 @@ export interface IOrganization {
 }
 
 export type OrganizationPostData = Omit<IOrganization, 'id' | 'status'>;
+
+export type OrganizationUpdateData = Pick<IOrganization, 'status'>;

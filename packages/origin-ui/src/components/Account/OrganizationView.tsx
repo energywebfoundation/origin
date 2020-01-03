@@ -2,8 +2,7 @@ import { useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { OrganizationForm } from './OrganizationForm';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
-import { getEnvironment } from '../../features/general/selectors';
+import { getOrganizationClient } from '../../features/general/selectors';
 import { IOrganization } from '@energyweb/origin-backend-core';
 
 interface IMatchParams {
@@ -12,27 +11,23 @@ interface IMatchParams {
 }
 
 export function OrganizationView() {
-    const environment = useSelector(getEnvironment);
+    const organizationClient = useSelector(getOrganizationClient);
 
     const [entity, setEntity] = useState<IOrganization>(null);
 
     const params: IMatchParams = useParams();
 
     async function fetchEntity(id: string) {
-        if (!environment) {
+        if (!organizationClient) {
             return setEntity(null);
         }
 
-        const response = await axios.get(`${environment.BACKEND_URL}/api/Organization/${id}`);
-
-        const data: IOrganization = response?.data;
-
-        setEntity(data);
+        setEntity(await organizationClient.getById(Number(id)));
     }
 
     useEffect(() => {
         fetchEntity(params?.id);
-    }, [params, environment]);
+    }, [params, organizationClient]);
 
     return <OrganizationForm entity={entity} readOnly={true} />;
 }
