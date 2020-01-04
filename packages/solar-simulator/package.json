@@ -38,7 +38,7 @@
     "cors": "2.8.5",
     "csv-parse": "4.8.3",
     "dotenv": "8.2.0",
-    "ethers": "4.0.41",
+    "ethers": "4.0.42",
     "express": "4.17.1",
     "fs-extra": "8.1.0",
     "ganache-cli": "6.5.0",
