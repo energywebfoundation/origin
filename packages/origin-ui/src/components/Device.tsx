@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
 import { AddDevice } from './AddDevice';
-import { ConsumingDeviceTable } from './ConsumingDeviceTable';
 import { PageContent } from '../elements/PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
-import { ConsumingDeviceDetailView } from './ConsumingDeviceDetailView';
 import { DeviceMap } from './DeviceMap';
 import { useLinks } from '../utils/routing';
 import { getCurrentUser } from '../features/users/selectors';
@@ -25,10 +23,6 @@ export function Device() {
                 showSmartMeterReadings={true}
             />
         );
-    }
-
-    function ConsumingDetailView(id: number): JSX.Element {
-        return <ConsumingDeviceDetailView id={id} />;
     }
 
     function MyDevices() {
@@ -80,11 +74,6 @@ export function Device() {
             component: Map
         },
         {
-            key: 'consumption',
-            label: 'Consumption List',
-            component: ConsumingDeviceTable
-        },
-        {
             key: 'owned',
             label: 'My Devices',
             component: MyDevices,
@@ -105,12 +94,6 @@ export function Device() {
         {
             key: 'producing_detail_view',
             label: 'Production Detail',
-            component: null,
-            hide: true
-        },
-        {
-            key: 'consuming_detail_view',
-            label: 'Consumption Detail',
             component: null,
             hide: true
         }
@@ -151,12 +134,10 @@ export function Device() {
                     const matches = DevicesMenu.filter(item => {
                         return item.key === key;
                     });
+
                     if (matches.length > 0 && key === 'producing_detail_view') {
                         matches[0].component = () =>
                             ProductionDetailView(id ? parseInt(id, 10) : id);
-                    } else if (matches.length > 0 && key === 'consuming_detail_view') {
-                        matches[0].component = () =>
-                            ConsumingDetailView(id ? parseInt(id, 10) : id);
                     }
 
                     return (

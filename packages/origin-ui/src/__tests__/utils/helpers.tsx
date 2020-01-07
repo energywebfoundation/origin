@@ -383,7 +383,7 @@ export const createRenderedHelpers = (rendered: ReactWrapper) => {
                     .value
             ).toBe('');
 
-            rendered.find(`#mui-component-select-${name}`).simulate('click');
+            rendered.find(`#mui-component-select-${name}`).simulate('mousedown');
 
             expect(
                 Array.from(document.querySelectorAll(`#menu-${name} ul li`)).map(i => i.textContent)

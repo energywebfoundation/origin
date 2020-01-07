@@ -61,12 +61,8 @@ export function getProducingDeviceDetailLink(baseURL: string, deviceId: string |
     return `${getDevicesLink(baseURL)}/producing_detail_view/${deviceId}`;
 }
 
-export function getConsumingDeviceDetailLink(baseURL: string, deviceId: string | number) {
-    if (typeof deviceId === 'number') {
-        deviceId = deviceId.toString();
-    }
-
-    return `${getDevicesLink(baseURL)}/consuming_detail_view/${deviceId}`;
+export function getOrganizationViewLink(baseURL: string, id: string) {
+    return `${getAccountLink(baseURL)}/organization-view/${id}`;
 }
 
 export function useLinks() {
@@ -78,8 +74,6 @@ export function useLinks() {
         getDevicesAddLink: () => getDevicesAddLink(baseURL),
         getDevicesOwnedLink: () => getDevicesOwnedLink(baseURL),
         getAccountLink: () => getAccountLink(baseURL),
-        getConsumingDeviceDetailLink: (deviceId: string | number) =>
-            getConsumingDeviceDetailLink(baseURL, deviceId),
         getCertificatesLink: () => getCertificatesLink(baseURL),
         getDemandsLink: () => getDemandsLink(baseURL),
         getDemandEditLink: (id: string) => getDemandEditLink(baseURL, id),
@@ -90,6 +84,7 @@ export function useLinks() {
         getCertificatesForDemandLink: (demandId: string | number) =>
             getCertificatesForDemandLink(baseURL, demandId),
         getProducingDeviceDetailLink: (deviceId: string | number) =>
-            getProducingDeviceDetailLink(baseURL, deviceId)
+            getProducingDeviceDetailLink(baseURL, deviceId),
+        getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id)
     };
 }

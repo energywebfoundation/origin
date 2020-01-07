@@ -11,12 +11,18 @@ export interface ICertificateMatchesDemand {
     certificateId: string;
 }
 
+export interface IDeviceStatusChange {
+    deviceId: string;
+    status: string;
+}
+
 interface IUserTempStorage {
     userId: string;
     issuedCertificates: number;
     matchingCertificates: ICertificateMatchesDemand[];
     partiallyFilledDemands: IPartiallyFilledDemand[];
     fulfilledDemands: number[];
+    deviceStatusChanges: IDeviceStatusChange[];
 }
 
 export interface IOriginEventsStore {
@@ -26,16 +32,19 @@ export interface IOriginEventsStore {
     getMatchingCertificates(userId: string): ICertificateMatchesDemand[];
     getPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[];
     getFulfilledDemands(userId: string): number[];
+    getDeviceStatusChanges(userId: string): IDeviceStatusChange[];
 
     registerIssuedCertificate(certOwnerId: string): void;
     registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void;
     registerPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
-    registerFulfilledDemand(demandOwner: string, demandId: number): void;
+    registerFulfilledDemand(demandOwnerId: string, demandId: number): void;
+    registerDeviceStatusChange(deviceOwnerId: string, deviceId: string, deviceStatus: string): void;
 
     resetIssuedCertificates(userId: string): void;
     resetMatchingCertificates(userId: string): void;
     resetPartiallyFilledDemands(userId: string): void;
     resetFulfilledDemands(userId: string): void;
+    resetDeviceStatusChanges(userId: string): void;
 }
 
 export class OriginEventsStore implements IOriginEventsStore {
@@ -60,16 +69,28 @@ export class OriginEventsStore implements IOriginEventsStore {
     }
 
     public registerPartiallyFilledDemand(
-        demandOwner: string,
+        demandOwnerId: string,
         demand: IPartiallyFilledDemand
     ): void {
-        const userStorage: IUserTempStorage = this.userStorage(demandOwner);
+        const userStorage: IUserTempStorage = this.userStorage(demandOwnerId);
         userStorage.partiallyFilledDemands.push(demand);
     }
 
-    public registerFulfilledDemand(demandOwner: string, demandId: number): void {
-        const userStorage: IUserTempStorage = this.userStorage(demandOwner);
+    public registerFulfilledDemand(demandOwnerId: string, demandId: number): void {
+        const userStorage: IUserTempStorage = this.userStorage(demandOwnerId);
         userStorage.fulfilledDemands.push(demandId);
+    }
+
+    public registerDeviceStatusChange(
+        deviceOwnerId: string,
+        deviceId: string,
+        deviceStatus: string
+    ): void {
+        const userStorage: IUserTempStorage = this.userStorage(deviceOwnerId);
+        userStorage.deviceStatusChanges.push({
+            deviceId,
+            status: deviceStatus
+        });
     }
 
     public getIssuedCertificates(userId: string): number {
@@ -86,6 +107,10 @@ export class OriginEventsStore implements IOriginEventsStore {
 
     public getFulfilledDemands(userId: string): number[] {
         return this.userStorage(userId).fulfilledDemands;
+    }
+
+    public getDeviceStatusChanges(userId: string): IDeviceStatusChange[] {
+        return this.userStorage(userId).deviceStatusChanges;
     }
 
     public getAllUsers(): string[] {
@@ -108,13 +133,18 @@ export class OriginEventsStore implements IOriginEventsStore {
         this.userStorage(userId).fulfilledDemands = [];
     }
 
+    public resetDeviceStatusChanges(userId: string): void {
+        this.userStorage(userId).deviceStatusChanges = [];
+    }
+
     private initStorageForUser(userId: string): void {
         this.tempStorage.push({
             userId,
             issuedCertificates: 0,
             matchingCertificates: [],
             partiallyFilledDemands: [],
-            fulfilledDemands: []
+            fulfilledDemands: [],
+            deviceStatusChanges: []
         });
     }
 

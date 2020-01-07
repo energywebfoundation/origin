@@ -19,3 +19,8 @@ export { TimeSeries, Resolution, TimeSeriesElement, TS } from './TimeSeries';
 export { GeneralFunctions, ISpecialTx, getClientVersion } from './GeneralFunctions';
 export { Year, Timestamp } from './common-types/CommonTypes';
 export { Compliance } from './types';
+export { Countries } from './Countries';
+export {
+    IRECBusinessLegalStatus,
+    IRECBusinessLegalStatusLabelsMap
+} from './irec/BusinessLegalStatus';

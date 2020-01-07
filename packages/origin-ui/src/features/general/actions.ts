@@ -1,4 +1,8 @@
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    IOffChainDataClient,
+    IConfigurationClient,
+    IOrganizationClient
+} from '@energyweb/origin-backend-client';
 
 export enum GeneralActions {
     showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
@@ -10,6 +14,7 @@ export enum GeneralActions {
     hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
     setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
     setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
+    setOrganizationClient = 'GENERAL_SET_ORGANIZATION_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setCurrencies = 'GENERAL_SET_CURRENCIES',
     setCompliance = 'GENERAL_SET_COMPLIANCE',
@@ -127,6 +132,18 @@ export const setConfigurationClient = (payload: ISetConfigurationClientAction['p
 
 export type TSetConfigurationClientAction = typeof setConfigurationClient;
 
+export interface ISetOrganizationClientAction {
+    type: GeneralActions.setOrganizationClient;
+    payload: IOrganizationClient;
+}
+
+export const setOrganizationClient = (payload: ISetOrganizationClientAction['payload']) => ({
+    type: GeneralActions.setOrganizationClient,
+    payload
+});
+
+export type TSetOrganizationClientAction = typeof setOrganizationClient;
+
 export interface ISetEnvironmentAction {
     type: GeneralActions.setEnvironment;
     payload: IEnvironment;
@@ -203,4 +220,5 @@ export type IGeneralAction =
     | ISetCurrenciesAction
     | ISetComplianceAction
     | ISetCountryAction
-    | ISetRegionsAction;
+    | ISetRegionsAction
+    | ISetOrganizationClientAction;

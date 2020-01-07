@@ -1,0 +1,28 @@
+{
+  "name": "@energyweb/origin-backend-core",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/js/src/index.js",
+  "scripts": {
+    "build": "yarn build:ts",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "clean": "shx rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "author": "EnergyWeb DevHub GmbH",
+  "license": "GPL-3.0",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}
