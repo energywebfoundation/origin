@@ -27,7 +27,7 @@
         "mocha": "7.0.0",
         "prettier": "1.19.1",
         "shx": "0.3.2",
-        "solc": "0.6.1",
+        "solc": "0.5.16",
         "truffle": "5.1.7",
         "ts-node": "8.5.4",
         "typescript": "3.7.4",
