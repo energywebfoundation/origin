@@ -68,4 +68,5 @@ deploy:
     on:
       node: "12"
       branch: release
+      if: commit_message !~ /(skip-deploy)/
 
