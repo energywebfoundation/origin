@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-backend",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "",
   "main": "dist/js/src/index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
   "license": "GPL-3.0",
   "dependencies": {
-    "@energyweb/origin-backend-core": "0.0.1",
+    "@energyweb/origin-backend-core": "0.1.0",
     "body-parser": "1.19.0",
     "class-validator": "0.11.0",
     "commander": "^4.0.1",
