@@ -68,5 +68,5 @@ deploy:
     on:
       node: "12"
       branch: release
-      condition: $TRAVIS_COMMIT_MESSAGE !~ /(skip-deploy)/
+      condition: $TRAVIS_COMMIT_MESSAGE !~ skip-deploy
 
