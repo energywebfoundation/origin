@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.1.0...@energyweb/origin-backend@3.2.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* **origin-backend:** fix uploads directory location ([82ddef3](https://github.com/energywebfoundation/origin/commit/82ddef36f673406d808200a0117f41f32ba295eb))
+
+
+### Features
+
+* complete backend for registering organization ([b0dd715](https://github.com/energywebfoundation/origin/commit/b0dd71550011b97765362aeea87285a75f8119c1))
+* **origin-backend:** add endpoint to save organizations ([7382725](https://github.com/energywebfoundation/origin/commit/738272579d8214315323e79d163fe51e14676155))
+
+
+
+
+
 # [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.0.0...@energyweb/origin-backend@3.1.0) (2019-12-20)
 
 
