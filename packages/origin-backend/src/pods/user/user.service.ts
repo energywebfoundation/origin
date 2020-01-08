@@ -24,6 +24,10 @@ export class UserService {
             .save();
     }
 
+    async findByEmail(email: string): Promise<User> {
+        return this.repository.findOne({ email });
+    }
+
     hashPassword(password: string) {
         return bcrypt.hashSync(password, this.config.get<number>('PASSWORD_HASH_COST'));
     }

@@ -8,8 +8,7 @@
     "experimentalDecorators": true,
     "removeComments": true,
     "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true
+    "baseUrl": "./"
   },
   "exclude": ["node_modules", "dist"]
 }

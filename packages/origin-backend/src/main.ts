@@ -1,0 +1,3 @@
+import { startAPI } from '.';
+
+startAPI();

@@ -2,7 +2,7 @@ import { ConnectionOptions } from 'typeorm';
 
 interface IApplicationConfig {
     JWT_SECRET: string;
-    JWT_EXPIRY_TIME_MS: number;
+    JWT_EXPIRY_TIME: string;
     PASSWORD_HASH_COST: number;
     ORM: ConnectionOptions;
 }
@@ -10,7 +10,7 @@ interface IApplicationConfig {
 export default function createConfig(): IApplicationConfig {
     return {
         JWT_SECRET: process.env.JWT_SECRET,
-        JWT_EXPIRY_TIME_MS: parseInt(process.env.JWT_EXPIRY_TIME_MS, 10),
+        JWT_EXPIRY_TIME: process.env.JWT_EXPIRY_TIME || '7 days',
         PASSWORD_HASH_COST: 8,
         ORM: {
             type: process.env.ORM_TYPE || 'sqlite',

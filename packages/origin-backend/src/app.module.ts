@@ -19,6 +19,8 @@ import { ImageModule } from './pods/image/image.module';
 import { JsonEntityModule } from './pods/json-entity/json-entity.module';
 import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
 import { OrganizationModule } from './pods/organization/organization.module';
+import { AuthModule } from './auth/auth.module';
+import { AppController } from './app.controller';
 
 // @TODO implement
 // program.option('-e, --env <env_file_path>', 'path to the .env file');
@@ -57,9 +59,10 @@ import { OrganizationModule } from './pods/organization/organization.module';
         CurrencyModule,
         JsonEntityModule,
         ContractsStorageModule,
-        OrganizationModule
+        OrganizationModule,
+        AuthModule
     ],
-    controllers: [],
+    controllers: [AppController],
     providers: []
 })
 export class AppModule {}

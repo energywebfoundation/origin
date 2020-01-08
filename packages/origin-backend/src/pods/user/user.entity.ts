@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
-import bcrypt from 'bcryptjs';
 import { IUser } from '@energyweb/origin-backend-core';
 
 @Entity()
@@ -28,8 +27,4 @@ export class User extends BaseEntity implements IUser {
     @Column()
     @Length(4, 100)
     password: string;
-
-    checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
-        return bcrypt.compareSync(unencryptedPassword, this.password);
-    }
 }
