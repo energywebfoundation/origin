@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { Paper, Grid, Button, useTheme, makeStyles, createStyles } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Formik, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
+import { IOrganization, OrganizationPostData } from '@energyweb/origin-backend-core';
+import { Countries } from '@energyweb/utils-general';
+
+import { Paper, Grid, Button, useTheme, makeStyles, createStyles } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
+
+import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
 import { FormCountrySelect } from '../Form/FormCountrySelect';
 import { FormBusinessTypeSelect } from '../Form/FormBusinessTypeSelect';
-import {
-    FormCountryMultiSelect,
-    IFormCountryMultiSelectOption
-} from '../Form/FormCountryMultiSelect';
+import { FormCountryMultiSelect } from '../Form/FormCountryMultiSelect';
+import { getOrganizationClient } from '../../features/general/selectors';
+import { useLinks } from '../../utils/routing';
+import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
+
+interface IProps {
+    entity: IOrganization;
+    readOnly: boolean;
+}
 
 interface IFormValues {
     code: string;
@@ -102,7 +113,7 @@ const VALIDATION_SCHEMA = Yup.object({
         .required()
         .label('Country'),
     yearOfRegistration: Yup.number()
-        .positive()
+        .min(1900)
         .label('Year of registration')
         .required(),
     numberOfEmployees: Yup.number()
@@ -128,8 +139,17 @@ const VALIDATION_SCHEMA = Yup.object({
     test: value => !!(value.companyNumber || value.ceoPassportNumber)
 });
 
-export function OrganizationRegister() {
-    const [activeCountries, setActiveCountries] = useState<IFormCountryMultiSelectOption[]>([]);
+export function OrganizationForm(props: IProps) {
+    const { entity, readOnly } = props;
+    const organizationClient = useSelector(getOrganizationClient);
+    const [activeCountries, setActiveCountries] = useState<IAutocompleteMultiSelectOptionType[]>(
+        []
+    );
+    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
+        IFormValues
+    >(null);
+    const { getOrganizationViewLink } = useLinks();
+    const history = useHistory();
 
     const dispatch = useDispatch();
 
@@ -143,20 +163,73 @@ export function OrganizationRegister() {
 
     const classes = useStyles(useTheme());
 
+    useEffect(() => {
+        function setupFormBasedOnExistingEntity() {
+            setInitialFormValuesFromExistingEntity(entity);
+
+            const activeCountriesParsed: string[] = JSON.parse(entity.activeCountries);
+
+            setActiveCountries(
+                Countries.filter(c => activeCountriesParsed.includes(c.id.toString())).map(
+                    country => ({
+                        value: country.id.toString(),
+                        label: country.name
+                    })
+                )
+            );
+        }
+
+        if (entity) {
+            setupFormBasedOnExistingEntity();
+        }
+    }, [entity]);
+
     async function submitForm(
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
+        if (values.headquartersCountry === '' || values.country === '') {
+            return;
+        }
+
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        showNotification('Organization registered.', NotificationType.Success);
+        try {
+            const formData: OrganizationPostData = {
+                ...values,
+                activeCountries: JSON.stringify(activeCountries.map(i => i.value)),
+                numberOfEmployees: Number(values.numberOfEmployees),
+                yearOfRegistration: Number(values.yearOfRegistration),
+                headquartersCountry: values.headquartersCountry,
+                country: values.country
+            };
+
+            const organization = await organizationClient.add(formData);
+
+            history.push(getOrganizationViewLink(organization?.id?.toString()));
+
+            showNotification('Organization registered.', NotificationType.Success);
+        } catch (error) {
+            console.warn('Error while registering an organization', error);
+            showNotification('Organization could not be created.', NotificationType.Error);
+        }
 
         dispatch(setLoading(false));
         formikActions.setSubmitting(false);
     }
 
-    const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
+    let initialFormValues: IFormValues = null;
+
+    if (entity && readOnly) {
+        initialFormValues = initialFormValuesFromExistingEntity;
+    } else {
+        initialFormValues = INITIAL_FORM_VALUES;
+    }
+
+    if (!initialFormValues) {
+        return <Skeleton variant="rect" height={200} />;
+    }
 
     return (
         <Paper className={classes.container}>
@@ -171,7 +244,7 @@ export function OrganizationRegister() {
 
                     const undefinedErrors = (errors as any).undefined;
 
-                    const fieldDisabled = isSubmitting;
+                    const fieldDisabled = isSubmitting || readOnly;
                     const buttonDisabled = isSubmitting || !isValid || activeCountries.length === 0;
 
                     return (
@@ -307,6 +380,7 @@ export function OrganizationRegister() {
                                         selectedValues={activeCountries}
                                         disabled={fieldDisabled}
                                         className="mt-3"
+                                        max={3}
                                     />
 
                                     <FormInput
@@ -338,15 +412,17 @@ export function OrganizationRegister() {
 
                             {undefinedErrors && <div className="mt-3">{undefinedErrors}</div>}
 
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                className="mt-3 right"
-                                disabled={buttonDisabled}
-                            >
-                                Register
-                            </Button>
+                            {!readOnly && (
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    className="mt-3 right"
+                                    disabled={buttonDisabled}
+                                >
+                                    Register
+                                </Button>
+                            )}
                         </Form>
                     );
                 }}

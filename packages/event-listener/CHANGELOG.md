@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@3.1.0...@energyweb/event-listener@3.2.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency nodemailer to v6.4.2 ([f1b9044](https://github.com/energywebfoundation/origin/commit/f1b90448726de8b2001bd7e363ab37a85b91cd23))
+
+
+### Features
+
+* **event-listener:** listen to changes in device status and notify the user ([c704188](https://github.com/energywebfoundation/origin/commit/c704188c710f27bbc101c981465866740f346894))
+
+
+
+
+
 # [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@3.0.2...@energyweb/event-listener@3.1.0) (2019-12-20)
 
 

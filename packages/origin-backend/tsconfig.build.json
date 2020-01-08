@@ -9,5 +9,10 @@
     "include": [
         "src/**/*",
         "ormconfig.json"
+    ],
+    "references": [
+        {
+            "path": "../origin-backend-core/tsconfig.build.json"
+        }
     ]
 }
