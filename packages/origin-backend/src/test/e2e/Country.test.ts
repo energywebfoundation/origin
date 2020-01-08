@@ -3,11 +3,11 @@ import 'mocha';
 import dotenv from 'dotenv';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import * as http from 'http';
 
+import { INestApplication } from '@nestjs/common';
 import { startAPI } from '../..';
 import { STATUS_CODES } from '../../enums/StatusCodes';
-import { StorageErrors }  from '../../enums/StorageErrors';
+import { StorageErrors } from '../../enums/StorageErrors';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -15,7 +15,7 @@ describe('Country API tests', async () => {
     dotenv.config({
         path: '.env.test'
     });
-    let apiServer: http.Server;
+    let apiServer: INestApplication;
 
     const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
 
@@ -40,9 +40,7 @@ describe('Country API tests', async () => {
 
         try {
             fs.unlinkSync('db.sqlite');
-        } catch (err) {
-            return;
-        }
+        } catch (err) {}
     });
 
     describe('GET', () => {
@@ -72,7 +70,7 @@ describe('Country API tests', async () => {
     describe('POST', () => {
         it('creates a Country', async () => {
             const postResult = await axios.post(`${BASE_API_URL}/Country`, { value: country });
-    
+
             assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, `Country ${country.name} created`);
         });
@@ -98,12 +96,12 @@ describe('Country API tests', async () => {
     describe('DELETE', () => {
         it('deletes a country', async () => {
             await axios.post(`${BASE_API_URL}/Country`, { value: country });
-    
+
             const deleteResult = await axios.delete(`${BASE_API_URL}/Country`);
             assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
-    
+
             let failed = false;
-    
+
             try {
                 await axios.delete(`${BASE_API_URL}/Country`);
             } catch (error) {
@@ -112,9 +110,8 @@ describe('Country API tests', async () => {
                 assert.equal(data.error, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
-    
+
             assert.isTrue(failed);
         });
     });
-
 });

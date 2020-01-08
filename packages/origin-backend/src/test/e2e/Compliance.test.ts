@@ -8,6 +8,7 @@ import * as http from 'http';
 import { startAPI } from '../..';
 import { STATUS_CODES } from '../../enums/StatusCodes';
 import { StorageErrors }  from '../../enums/StorageErrors';
+import { INestApplication } from '@nestjs/common';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -15,7 +16,7 @@ describe('Compliance API tests', async () => {
     dotenv.config({
         path: '.env.test'
     });
-    let apiServer: http.Server;
+    let apiServer: INestApplication;
 
     const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
 
@@ -64,7 +65,7 @@ describe('Compliance API tests', async () => {
     describe('POST', () => {
         it('creates a Compliance', async () => {
             const postResult = await axios.post(`${BASE_API_URL}/Compliance`, { value: standard });
-    
+
             assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, `Compliance ${standard} created`);
         });
@@ -91,12 +92,12 @@ describe('Compliance API tests', async () => {
     describe('DELETE', () => {
         it('deletes a compliance', async () => {
             await axios.post(`${BASE_API_URL}/Compliance`, { value: standard });
-    
+
             const deleteResult = await axios.delete(`${BASE_API_URL}/Compliance`);
             assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
-    
+
             let failed = false;
-    
+
             try {
                 await axios.delete(`${BASE_API_URL}/Compliance`);
             } catch (error) {
@@ -105,7 +106,7 @@ describe('Compliance API tests', async () => {
                 assert.equal(data.error, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
-    
+
             assert.isTrue(failed);
         });
     });

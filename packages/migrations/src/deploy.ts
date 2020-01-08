@@ -29,7 +29,7 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
     } else if (currencies.length < 1) {
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
     }
-    
+
     const client = new ConfigurationClient();
 
     await client.add(`${process.env.BACKEND_URL}/api`, 'Compliance', complianceRegistry ?? 'none');
