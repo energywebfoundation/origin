@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConnectionOptions } from 'typeorm';
+import fs from 'fs';
+import path from 'path';
 
 import { JsonEntity } from './pods/json-entity/json-entity.entity';
 import { MarketContractLookup } from './pods/contracts-storage/market-contract-lookup.entity';
@@ -22,18 +24,12 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 
-// @TODO implement
-// program.option('-e, --env <env_file_path>', 'path to the .env file');
-// program.parse(process.argv);
-
-// dotenv.config({
-//     path: program.env ? path.resolve(__dirname, program.env) : '../../.env'
-// });
+const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: '../../.env',
+            envFilePath: fs.existsSync(ENV_FILE_PATH) ? ENV_FILE_PATH : null,
             load: [createConfig],
             isGlobal: true
         }),
