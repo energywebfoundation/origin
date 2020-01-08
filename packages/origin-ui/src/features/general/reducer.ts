@@ -4,7 +4,8 @@ import {
     OffChainDataClient,
     ConfigurationClient,
     IConfigurationClient,
-    IOrganizationClient
+    IOrganizationClient,
+    IUserClient
 } from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
@@ -18,6 +19,7 @@ export interface IGeneralState {
     offChainDataClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
     organizationClient: IOrganizationClient;
+    userClient: IUserClient;
     environment: IEnvironment;
     currencies: string[];
     compliance: string;
@@ -36,6 +38,7 @@ const defaultState: IGeneralState = {
     offChainDataClient: new OffChainDataClient(),
     configurationClient: new ConfigurationClient(),
     organizationClient: null,
+    userClient: null,
     environment: null,
     currencies: [],
     compliance: null,
@@ -102,6 +105,12 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
             return {
                 ...state,
                 organizationClient: action.payload
+            };
+
+        case GeneralActions.setUserClient:
+            return {
+                ...state,
+                userClient: action.payload
             };
 
         case GeneralActions.setEnvironment:

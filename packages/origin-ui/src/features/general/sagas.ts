@@ -11,7 +11,8 @@ import {
     setCompliance,
     setCountry,
     setRegions,
-    setOrganizationClient
+    setOrganizationClient,
+    setUserClient
 } from './actions';
 import { getConfiguration } from '../selectors';
 import {
@@ -23,7 +24,11 @@ import {
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
 import axios from 'axios';
-import { IConfigurationClient, OrganizationClient } from '@energyweb/origin-backend-client';
+import {
+    IConfigurationClient,
+    OrganizationClient,
+    UserClient
+} from '@energyweb/origin-backend-client';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -208,6 +213,24 @@ function* initializeOrganizationClient(): SagaIterator {
     }
 }
 
+function* initializeUserClient(): SagaIterator {
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+
+        if (!environment) {
+            return;
+        }
+
+        const baseURL = `${environment.BACKEND_URL}/api`;
+
+        const userClient = new UserClient(baseURL);
+
+        yield put(setUserClient(userClient));
+    }
+}
+
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
@@ -215,6 +238,7 @@ export function* generalSaga(): SagaIterator {
         fork(fillCurrency),
         fork(fillCompliance),
         fork(fillCountryAndRegions),
-        fork(initializeOrganizationClient)
+        fork(initializeOrganizationClient),
+        fork(initializeUserClient)
     ]);
 }
