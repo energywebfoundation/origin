@@ -5,12 +5,22 @@ import { assert } from 'chai';
 import * as fs from 'fs';
 import * as http from 'http';
 
+import { INestApplication, LoggerService } from '@nestjs/common';
 import { startAPI } from '../..';
 import { STATUS_CODES } from '../../enums/StatusCodes';
-import { StorageErrors }  from '../../enums/StorageErrors';
-import { INestApplication } from '@nestjs/common';
+import { StorageErrors } from '../../enums/StorageErrors';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const mockLogger: LoggerService = {
+    error: () => {},
+    log: () => {},
+    warn: () => {},
+    debug: () => {},
+    verbose: () => {}
+};
+
+const startServer = () => startAPI(mockLogger);
 
 describe('Compliance API tests', async () => {
     dotenv.config({
@@ -24,7 +34,7 @@ describe('Compliance API tests', async () => {
     const standard2 = 'TIGR';
 
     beforeEach(async () => {
-        apiServer = await startAPI();
+        apiServer = await startServer();
     });
 
     afterEach(async () => {
@@ -33,9 +43,7 @@ describe('Compliance API tests', async () => {
 
         try {
             fs.unlinkSync('db.sqlite');
-        } catch (err) {
-            return;
-        }
+        } catch (err) {}
     });
 
     describe('GET', () => {
@@ -47,7 +55,8 @@ describe('Compliance API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
             assert.isTrue(failed);
@@ -74,7 +83,7 @@ describe('Compliance API tests', async () => {
             await axios.post(`${BASE_API_URL}/Compliance`, { value: standard });
             const postResult = await axios.post(`${BASE_API_URL}/Compliance`, { value: standard });
 
-            assert.equal(postResult.status, STATUS_CODES.SUCCESS);
+            assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, StorageErrors.ALREADY_EXISTS);
         });
 
@@ -86,7 +95,6 @@ describe('Compliance API tests', async () => {
 
             assert.deepEqual(getResult.data, standard2);
         });
-
     });
 
     describe('DELETE', () => {
@@ -94,7 +102,7 @@ describe('Compliance API tests', async () => {
             await axios.post(`${BASE_API_URL}/Compliance`, { value: standard });
 
             const deleteResult = await axios.delete(`${BASE_API_URL}/Compliance`);
-            assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
+            assert.equal(deleteResult.status, STATUS_CODES.SUCCESS);
 
             let failed = false;
 
@@ -103,12 +111,11 @@ describe('Compliance API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
 
             assert.isTrue(failed);
         });
     });
-
 });

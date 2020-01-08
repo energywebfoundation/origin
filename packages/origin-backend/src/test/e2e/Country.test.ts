@@ -52,7 +52,7 @@ describe('Country API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
             assert.isTrue(failed);
@@ -79,7 +79,7 @@ describe('Country API tests', async () => {
             await axios.post(`${BASE_API_URL}/Country`, { value: country });
             const postResult = await axios.post(`${BASE_API_URL}/Country`, { value: country });
 
-            assert.equal(postResult.status, STATUS_CODES.SUCCESS);
+            assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, StorageErrors.ALREADY_EXISTS);
         });
 
@@ -98,7 +98,7 @@ describe('Country API tests', async () => {
             await axios.post(`${BASE_API_URL}/Country`, { value: country });
 
             const deleteResult = await axios.delete(`${BASE_API_URL}/Country`);
-            assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
+            assert.equal(deleteResult.status, STATUS_CODES.SUCCESS);
 
             let failed = false;
 
@@ -107,7 +107,7 @@ describe('Country API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
 

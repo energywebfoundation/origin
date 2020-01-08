@@ -66,7 +66,7 @@ describe('Currency API tests', async () => {
             await axios.post(`${BASE_API_URL}/Currency`, { value: currency });
             const postResult = await axios.post(`${BASE_API_URL}/Currency`, { value: currency });
 
-            assert.equal(postResult.status, STATUS_CODES.SUCCESS);
+            assert.equal(postResult.status, STATUS_CODES.CREATED);
             assert.equal(postResult.data.message, StorageErrors.ALREADY_EXISTS);
         });
     });
@@ -78,7 +78,7 @@ describe('Currency API tests', async () => {
             const deleteResult = await axios.delete(`${BASE_API_URL}/Currency`, {
                 data: { value: currency }
             });
-            assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
+            assert.equal(deleteResult.status, STATUS_CODES.SUCCESS);
 
             let failed = false;
 
@@ -87,7 +87,7 @@ describe('Currency API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
 

@@ -36,13 +36,6 @@ describe('JsonEntity API tests', async () => {
     });
 
     describe('GET', () => {
-        it('returns empty array when no entities have been created', async () => {
-            const result = await axios.get(`${BASE_API_URL}/Entity`);
-
-            assert.equal(result.status, STATUS_CODES.SUCCESS);
-            assert.isEmpty(result.data);
-        });
-
         it('fails to get a single Entity when no entities have been created', async () => {
             let failed = false;
 
@@ -51,7 +44,7 @@ describe('JsonEntity API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
 
@@ -132,12 +125,12 @@ describe('JsonEntity API tests', async () => {
             assert.equal(postResult.data.message, `Entity ${testHash} created`);
         });
 
-        it('returns 200 when creating the same Entity', async () => {
+        it('returns 201 when creating the same Entity', async () => {
             await axios.post(`${BASE_API_URL}/Entity/${testHash}`, { entityOwner });
 
             const result = await axios.post(`${BASE_API_URL}/Entity/${testHash}`, { entityOwner });
 
-            assert.equal(result.status, STATUS_CODES.SUCCESS);
+            assert.equal(result.status, STATUS_CODES.CREATED);
         });
     });
 
@@ -146,7 +139,7 @@ describe('JsonEntity API tests', async () => {
             await axios.post(`${BASE_API_URL}/Entity/${testHash}`, { entityOwner });
 
             const deleteResult = await axios.delete(`${BASE_API_URL}/Entity/${testHash}`);
-            assert.equal(deleteResult.status, STATUS_CODES.NO_CONTENT);
+            assert.equal(deleteResult.status, STATUS_CODES.SUCCESS);
 
             let failed = false;
 
@@ -155,7 +148,7 @@ describe('JsonEntity API tests', async () => {
             } catch (error) {
                 const { status, data } = error.response;
                 assert.equal(status, STATUS_CODES.NOT_FOUND);
-                assert.equal(data.error, StorageErrors.NON_EXISTENT);
+                assert.equal(data.message, StorageErrors.NON_EXISTENT);
                 failed = true;
             }
 
