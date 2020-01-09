@@ -18,6 +18,8 @@ export async function startAPI(logger?: LoggerService) {
     const PORT: number =
         parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
 
+    console.log(`Backend starting on port: ${PORT}`);
+
     const app = await NestFactory.create(AppModule);
     app.enableCors();
     app.setGlobalPrefix('api');
