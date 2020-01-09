@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@4.0.0...@energyweb/utils-general@4.1.0) (2020-01-07)
+
+
+### Features
+
+* **origin-ui:** input form for registering an organization ([a6c95eb](https://github.com/energywebfoundation/origin/commit/a6c95eb17f15b571fb3f869cdc35e289471d77f7))
+
+
+
+
+
 # [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@3.0.0...@energyweb/utils-general@4.0.0) (2019-12-20)
 
 
