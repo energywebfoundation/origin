@@ -15,7 +15,7 @@
     "build:container:latest": "make build-latest push",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "test:e2e": "rm -rf db.sqlite && mocha -r ts-node/register src/test/e2e/*.test.ts --timeout 60000 --exit",
-    "test": "export $(cat ../../.env | sed 's/#.*//g' | xargs) && yarn test:e2e",
+    "test": "yarn test:e2e",
     "test:concurrent": "yarn test",
     "clean": "shx rm -rf dist db.sqlite uploads"
   },
