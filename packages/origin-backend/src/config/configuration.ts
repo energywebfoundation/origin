@@ -9,7 +9,7 @@ interface IApplicationConfig {
 
 export default function createConfig(): IApplicationConfig {
     return {
-        JWT_SECRET: process.env.JWT_SECRET,
+        JWT_SECRET: process.env.JWT_SECRET || 'thisisnotsecret',
         JWT_EXPIRY_TIME: process.env.JWT_EXPIRY_TIME || '7 days',
         PASSWORD_HASH_COST: 8,
         ORM: {
