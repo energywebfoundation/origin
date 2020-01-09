@@ -1,20 +1,7 @@
-import * as http from 'http';
-import bodyParser from 'body-parser';
-import cors from 'cors';
+import { NestFactory } from '@nestjs/core';
+import { LoggerService } from '@nestjs/common';
 
-import express, { Express } from 'express';
-import { createConnection, Connection, ConnectionOptions } from 'typeorm';
-
-import ormConfig from '../ormconfig.json';
-
-import { Country } from './entity/Country';
-import { Currency } from './entity/Currency';
-import { Compliance } from './entity/Compliance';
-import { JsonEntity } from './entity/JsonEntity';
-import { Organization } from './entity/Organization';
-import { MarketContractLookup } from './entity/MarketContractLookup';
-
-import api from './api';
+import { AppModule } from './app.module';
 
 function extractPort(url: string): number {
     if (url) {
@@ -27,40 +14,21 @@ function extractPort(url: string): number {
     return null;
 }
 
-const app: Express = express();
-
-app.use(bodyParser.json());
-app.use(cors());
-app.set('case sensitive routing', false);
-app.options('*', cors());
-
-app.use('/api', api);
-app.use('/api/v1', api);
-
-export async function startAPI(): Promise<http.Server> {
+export async function startAPI(logger?: LoggerService) {
     const PORT: number =
         parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
 
-    if (process.env.ORM_TYPE) {
-        ormConfig.type = process.env.ORM_TYPE;
+    console.log(`Backend starting on port: ${PORT}`);
+
+    const app = await NestFactory.create(AppModule);
+    app.enableCors();
+    app.setGlobalPrefix('api');
+
+    if (logger) {
+        app.useLogger(logger);
     }
-    if (process.env.ORM_DATABASE_DOCKER === 'TRUE') {
-        ormConfig.database = '/var/db/db.sqlite';
-    }
 
-    const connectionOptions: ConnectionOptions = Object.assign(ormConfig as ConnectionOptions, {
-        entities: [JsonEntity, MarketContractLookup, Currency, Compliance, Country, Organization]
-    });
+    await app.listen(PORT);
 
-    const connection: Connection = await createConnection(connectionOptions);
-    const server: http.Server = app.listen(PORT, () => {
-        console.log(`Running the test backend on port: ${PORT}`);
-
-        server.on('close', () => {
-            connection.close();
-        });
-    });
-
-    console.log(`Express application is up and running on port ${PORT}`);
-    return server;
+    return app;
 }

@@ -12,12 +12,13 @@ import {
     FilledInput,
     MenuItem
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Select } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
+import { getUserClient } from '../../features/general/selectors';
 
 interface IFormValues {
     titleSelect: string;
@@ -65,6 +66,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
 export function UserRegister() {
+    const userClient = useSelector(getUserClient);
     const dispatch = useDispatch();
 
     const useStyles = makeStyles(() =>
@@ -84,7 +86,17 @@ export function UserRegister() {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        showNotification('User registered.', NotificationType.Success);
+        try {
+            await userClient.register({
+                ...values,
+                title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect
+            });
+
+            showNotification('User registered.', NotificationType.Success);
+        } catch (error) {
+            console.warn('Error while registering user', error);
+            showNotification('Error while registering user.', NotificationType.Error);
+        }
 
         dispatch(setLoading(false));
         formikActions.setSubmitting(false);

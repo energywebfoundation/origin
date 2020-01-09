@@ -25,6 +25,8 @@ export const getConfigurationClient = (state: IStoreState) => state.general.conf
 
 export const getOrganizationClient = (state: IStoreState) => state.general.organizationClient;
 
+export const getUserClient = (state: IStoreState) => state.general.userClient;
+
 export const getEnvironment = (state: IStoreState) => state.general.environment;
 
 export const getCurrencies = (state: IStoreState): string[] => state.general.currencies;

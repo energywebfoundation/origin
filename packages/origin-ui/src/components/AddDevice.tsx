@@ -119,6 +119,10 @@ export function AddDevice() {
         values: typeof INITIAL_FORM_VALUES,
         formikActions: FormikActions<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
+        if (!currentUser) {
+            return;
+        }
+
         const deviceType = selectedDeviceType.sort((a, b) => b.length - a.length)[0];
 
         formikActions.setSubmitting(true);

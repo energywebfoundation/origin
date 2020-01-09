@@ -1,7 +1,8 @@
 import {
     IOffChainDataClient,
     IConfigurationClient,
-    IOrganizationClient
+    IOrganizationClient,
+    IUserClient
 } from '@energyweb/origin-backend-client';
 
 export enum GeneralActions {
@@ -15,6 +16,7 @@ export enum GeneralActions {
     setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
     setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
     setOrganizationClient = 'GENERAL_SET_ORGANIZATION_CLIENT',
+    setUserClient = 'GENERAL_SET_USER_CLIENT',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setCurrencies = 'GENERAL_SET_CURRENCIES',
     setCompliance = 'GENERAL_SET_COMPLIANCE',
@@ -144,6 +146,18 @@ export const setOrganizationClient = (payload: ISetOrganizationClientAction['pay
 
 export type TSetOrganizationClientAction = typeof setOrganizationClient;
 
+export interface ISetUserClientAction {
+    type: GeneralActions.setUserClient;
+    payload: IUserClient;
+}
+
+export const setUserClient = (payload: ISetUserClientAction['payload']) => ({
+    type: GeneralActions.setUserClient,
+    payload
+});
+
+export type TSetUserClientAction = typeof setUserClient;
+
 export interface ISetEnvironmentAction {
     type: GeneralActions.setEnvironment;
     payload: IEnvironment;
@@ -221,4 +235,5 @@ export type IGeneralAction =
     | ISetComplianceAction
     | ISetCountryAction
     | ISetRegionsAction
-    | ISetOrganizationClientAction;
+    | ISetOrganizationClientAction
+    | ISetUserClientAction;
