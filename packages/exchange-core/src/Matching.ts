@@ -6,7 +6,7 @@ import { Trade } from './Trade';
 
 export type Listener<T> = (entity: T) => void;
 
-type TradeExecuted = { trade: Trade; askKey: number; isPartial: boolean };
+type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: boolean };
 
 export class Matching {
     private bids: List<Order> = List<Order>();
@@ -48,19 +48,23 @@ export class Matching {
     }
 
     private match() {
-        let result: TradeExecuted[] = [];
+        let result: ExecutedTrade[] = [];
         this.cancel();
 
-        this.bids.forEach(bid => {
-            const { matched, isFilled, missing } = this.generateTrades(bid);
+        this.bids.forEach((bid, key) => {
+            const executed = this.generateTrades(bid, key);
+            if (!executed.length) {
+                return false;
+            }
 
-            this.updateAsks(matched);
-            this.updateBids(missing, isFilled);
+            this.updateOrderBook(executed);
+            result = result.concat(executed);
 
-            result = result.concat(matched);
-
-            return isFilled;
+            return true;
         });
+
+        this.cleanOrderBook();
+
         return List(result.map(m => m.trade));
     }
 
@@ -77,50 +81,32 @@ export class Matching {
         this.cancellationQueue = List<string>();
     }
 
-    private updateAsks(matched: TradeExecuted[]) {
+    private updateOrderBook(matched: ExecutedTrade[]) {
         matched.forEach(m => {
-            if (m.isPartial) {
-                const { volume } = this.asks.get(m.askKey);
-                this.asks = this.setVolume(this.asks, m.askKey, volume - m.trade.volume);
-                this.asks = this.setStatus(this.asks, m.askKey, OrderStatus.PartiallyFilled);
-            } else {
-                this.asks = this.setStatus(this.asks, m.askKey, OrderStatus.Filled);
-            }
+            this.asks = this.asks.update(m.askKey, order => order.updateVolume(m.trade.volume));
+            this.bids = this.bids.update(m.bidKey, order => order.updateVolume(m.trade.volume));
         });
+    }
 
+    private cleanOrderBook() {
         this.asks = this.asks.filterNot(ask => ask.status === OrderStatus.Filled);
+        this.bids = this.bids.filterNot(bid => bid.status === OrderStatus.Filled);
     }
 
-    private setVolume(side: List<Order>, key: number, volume: number) {
-        return side.setIn([key, 'volume'], volume);
-    }
-
-    private setStatus(side: List<Order>, key: number, status: OrderStatus) {
-        return side.setIn([key, 'status'], status);
-    }
-
-    private updateBids(missing: number, isFilled: boolean) {
-        if (isFilled) {
-            this.bids = this.bids.shift();
-        } else {
-            this.bids = this.bids.setIn([0, 'volume'], missing);
-            this.bids = this.setStatus(this.bids, 0, OrderStatus.PartiallyFilled);
-        }
-    }
-
-    private generateTrades(bid: Order) {
-        const matched: TradeExecuted[] = [];
+    private generateTrades(bid: Order, bidKey: number) {
+        const executed: ExecutedTrade[] = [];
 
         let missing = bid.volume;
         this.asks.forEach((ask, key) => {
-            if (ask.price <= bid.price && missing > 0) {
+            if (ask.volume > 0 && ask.price <= bid.price && missing > 0) {
                 const isPartial = missing < ask.volume;
                 const filled = isPartial ? ask.volume - missing : ask.volume;
                 missing -= filled;
 
-                matched.push({
+                executed.push({
                     trade: new Trade(bid, ask, filled, ask.price),
                     askKey: key,
+                    bidKey,
                     isPartial
                 });
 
@@ -130,6 +116,6 @@ export class Matching {
             return false;
         });
 
-        return { matched, isFilled: missing === 0, missing };
+        return executed;
     }
 }

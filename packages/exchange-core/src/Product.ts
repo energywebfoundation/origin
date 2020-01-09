@@ -4,8 +4,4 @@ export class Product {
     public location?: string[];
 
     public deviceVintage?: number;
-
-    public matches(product: Product) {
-        return product.assetType != null;
-    }
 }
