@@ -40,7 +40,7 @@ export class Order {
     }
 
     public matches(order: Order, deviceService: IRECDeviceService) {
-        if (!order.product.assetType || this.product.assetType) {
+        if (!order.product.assetType || !this.product.assetType) {
             return true;
         }
 

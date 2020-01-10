@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
+import { IRECDeviceService } from '@energyweb/utils-general';
 
 import { OrderSide, Order, OrderStatus } from './Order';
 import { Trade } from './Trade';
@@ -9,6 +10,8 @@ export type Listener<T> = (entity: T) => void;
 type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: boolean };
 
 export class Matching {
+    private deviceService = new IRECDeviceService();
+
     private bids: List<Order> = List<Order>();
 
     private asks: List<Order> = List<Order>();
@@ -95,10 +98,15 @@ export class Matching {
 
     private generateTrades(bid: Order, bidKey: number) {
         const executed: ExecutedTrade[] = [];
-
         let missing = bid.volume;
+
         this.asks.forEach((ask, key) => {
-            if (ask.volume > 0 && ask.price <= bid.price && missing > 0) {
+            const hasProductMatched = bid.matches(ask, this.deviceService);
+            const hasVolume = ask.volume > 0;
+            const hasPriceMatched = ask.price <= bid.price;
+            const notFilled = missing > 0;
+
+            if (hasPriceMatched && hasVolume && notFilled && hasProductMatched) {
                 const isPartial = missing < ask.volume;
                 const filled = isPartial ? ask.volume - missing : ask.volume;
                 missing -= filled;
