@@ -88,7 +88,8 @@ export function Device() {
         {
             key: 'add',
             label: 'Register device',
-            component: AddDevice
+            component: AddDevice,
+            roles: [Role.DeviceManager]
         },
         {
             key: 'producing_detail_view',
