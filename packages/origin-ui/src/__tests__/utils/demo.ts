@@ -209,7 +209,7 @@ export async function deployDemo() {
         deviceType: 'Wind;Onshore',
         complianceRegistry: 'I-REC',
         facilityName: 'Wuthering Heights Windfarm',
-        capacityWh: 0,
+        capacityInW: 0,
         country: 'Thailand',
         address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '',

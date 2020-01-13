@@ -40,6 +40,7 @@ import { getCertificates } from '../features/certificates/selectors';
 import { getCurrencies } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from '../elements/Modal/ClaimCertificateBulkModal';
 import { CircularProgress } from '@material-ui/core';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
 
 interface IOwnProps {
     certificates?: PurchasableCertificate.Entity[];
@@ -96,6 +97,14 @@ export enum SelectedState {
     ForDemand
 }
 
+const CERTIFICATION_DATE_COLUMN = {
+    id: 'certificationDate',
+    label: 'Certification date',
+    sortProperties: [
+        (record: IEnrichedCertificateData) => record?.certificate?.certificate.creationTime
+    ]
+};
+
 class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertificatesState> {
     constructor(props: Props) {
         super(props);
@@ -113,7 +122,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             buyModalForProducingDevice: null,
             showBuyBulkModal: false,
             showClaimBulkModal: false,
-            currentSort: ['certificate.certificate.creationTime'],
+            currentSort: CERTIFICATION_DATE_COLUMN,
             sortAscending: false
         };
 
@@ -165,16 +174,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         const filteredIEnrichedCertificateData = enrichedData.filter(
             (enrichedCertificateData: IEnrichedCertificateData) => {
                 const ownerOf =
-                    currentUser &&
-                    currentUser.id.toLowerCase() ===
-                        enrichedCertificateData.certificate.certificate.owner.toLowerCase();
+                    currentUser?.id.toLowerCase() ===
+                    enrichedCertificateData.certificate.certificate.owner.toLowerCase();
                 const claimed =
                     Number(enrichedCertificateData.certificate.certificate.status) ===
                     Certificate.Status.Claimed;
                 const forSale = enrichedCertificateData.certificate.forSale;
                 const forDemand =
-                    matchedCertificates &&
-                    matchedCertificates.find(
+                    matchedCertificates?.find(
                         cert => cert.id === enrichedCertificateData.certificate.id
                     ) !== undefined;
                 const isActive =
@@ -501,14 +508,12 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             return [];
         }
 
-        const maxCertificateEnergyInkWh =
+        const maxCertificateEnergyInDisplayUnit = EnergyFormatter.getValueInDisplayUnit(
             this.props.certificates.reduce(
-                (a, b) =>
-                    parseInt(b.certificate.energy.toString(), 10) > a
-                        ? parseInt(b.certificate.energy.toString(), 10)
-                        : a,
+                (a, b) => (b.certificate.energy > a ? b.certificate.energy : a),
                 0
-            ) / 1000;
+            )
+        );
 
         const filters: ICustomFilterDefinition[] = [
             {
@@ -522,7 +527,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     record?.producingDevice?.offChainProperties?.deviceType,
-                label: 'Device Type',
+                label: 'Device type',
                 input: {
                     type: CustomFilterInputType.deviceType,
                     defaultOptions: []
@@ -534,7 +539,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                         .unix(record?.producingDevice?.offChainProperties?.operationalSince)
                         .year()
                         .toString(),
-                label: 'Commissioning Date',
+                label: 'Commissioning date',
                 input: {
                     type: CustomFilterInputType.dropdown,
                     availableOptions: new Array(40).fill(moment().year()).map((item, index) => ({
@@ -561,19 +566,19 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 property: (record: IEnrichedCertificateData) =>
                     record?.certificate?.certificate?.creationTime?.toString(),
-                label: 'Certification Date',
+                label: 'Certification date',
                 input: {
                     type: CustomFilterInputType.yearMonth
                 }
             },
             {
-                property: (record: IEnrichedCertificateData) =>
-                    (record?.certificate?.certificate?.energy / 1000)?.toString(),
-                label: 'Certified Energy (kWh)',
+                property: (record: IEnrichedCertificateData): number =>
+                    EnergyFormatter.getValueInDisplayUnit(record?.certificate?.certificate?.energy),
+                label: `Certified energy (${EnergyFormatter.displayUnit})`,
                 input: {
                     type: CustomFilterInputType.slider,
                     min: 0,
-                    max: maxCertificateEnergyInkWh
+                    max: maxCertificateEnergyInDisplayUnit
                 }
             }
         ];
@@ -611,13 +616,9 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 .filter((item, index) => selectedIndexes.includes(index))
                 .map(i => i.certificate);
 
-            const energy =
-                selectedCertificates.reduce(
-                    (a, b) => a + parseInt(b.certificate.energy.toString(), 10),
-                    0
-                ) / 1000;
+            const energy = selectedCertificates.reduce((a, b) => a + b.certificate.energy, 0);
 
-            return `${selectedIndexes.length} selected (${energy} kWh)`;
+            return `${selectedIndexes.length} selected (${EnergyFormatter.format(energy, true)})`;
         }
     }
 
@@ -696,30 +697,45 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
     get columns() {
         return ([
-            { id: 'deviceType', label: 'Device type', sortProperties: ['deviceTypeLabel'] },
+            {
+                id: 'deviceType',
+                label: 'Device type',
+                sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
+            },
             {
                 id: 'commissioningDate',
                 label: 'Commissioning date',
-                sortProperties: ['producingDevice.offChainProperties.operationalSince']
+                sortProperties: [
+                    (record: IEnrichedCertificateData) =>
+                        record?.producingDevice?.offChainProperties?.operationalSince
+                ]
             },
             {
                 id: 'locationText',
                 label: LOCATION_TITLE,
-                sortProperties: ['locationText']
+                sortProperties: [(record: IEnrichedCertificateData) => record?.locationText]
             },
             { id: 'compliance', label: 'Compliance' },
-            { id: 'owner', label: 'Owner', sortProperties: ['certificateOwner.organization'] },
             {
-                id: 'certificationDate',
-                label: 'Certification date',
-                sortProperties: ['certificate.creationTime']
+                id: 'owner',
+                label: 'Owner',
+                sortProperties: [
+                    (record: IEnrichedCertificateData) => record?.certificateOwner?.organization
+                ]
             },
+            CERTIFICATION_DATE_COLUMN,
             { id: 'price', label: 'Price' },
             { id: 'currency', label: 'Currency' },
             {
                 id: 'energy',
-                label: 'Certified energy (kWh)',
-                sortProperties: [['certificate.energy', (value: string) => parseInt(value, 10)]]
+                label: `Certified energy (${EnergyFormatter.displayUnit})`,
+                sortProperties: [
+                    [
+                        (record: IEnrichedCertificateData) =>
+                            record?.certificate?.certificate?.energy,
+                        (value: number) => value
+                    ]
+                ]
             }
         ] as const).filter(column => !this.hiddenColumns.includes(column.id));
     }
@@ -730,15 +746,14 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             let commissioningDate = '';
             let compliance = '';
 
-            if (enrichedData.producingDevice && enrichedData.producingDevice.offChainProperties) {
+            if (enrichedData.producingDevice?.offChainProperties) {
                 deviceType = this.deviceTypeService.getDisplayText(
                     enrichedData.producingDevice.offChainProperties.deviceType
                 );
 
-                commissioningDate = moment(
-                    enrichedData.producingDevice.offChainProperties.operationalSince * 1000,
-                    'x'
-                ).format('MMM YY');
+                commissioningDate = formatDate(
+                    moment.unix(enrichedData.producingDevice.offChainProperties.operationalSince)
+                );
 
                 compliance = enrichedData.producingDevice.offChainProperties.complianceRegistry;
             }
@@ -762,7 +777,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 ),
                 price,
                 currency,
-                energy: (enrichedData.certificate.certificate.energy / 1000).toLocaleString()
+                energy: EnergyFormatter.format(enrichedData.certificate.certificate.energy)
             };
         });
     }

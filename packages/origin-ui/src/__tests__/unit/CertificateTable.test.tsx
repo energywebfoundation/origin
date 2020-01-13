@@ -76,21 +76,21 @@ describe('CertificateTable', () => {
         assertMainTableContent([
             '',
             'Solar - Photovoltaic - Roof mounted',
-            'Sep 19',
+            'Sep 17th, 2019',
             `Central, Nakhon Pathom`,
             'I-REC',
             'Example Organization',
-            'September 29th, 2019',
-            '2.5',
+            'Sep 29th, 2019',
+            '0.003',
             'ClaimPublish for sale',
             '',
             'Solar - Photovoltaic - Roof mounted',
-            'Sep 19',
+            'Sep 17th, 2019',
             `Central, Nakhon Pathom`,
             'I-REC',
             'Example Organization',
-            'September 25th, 2019',
-            '1,000',
+            'Sep 25th, 2019',
+            '1',
             'ClaimPublish for sale'
         ]);
 

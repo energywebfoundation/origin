@@ -14,6 +14,8 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { setLoading } from '../../features/general/actions';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { countDecimals, formatDate } from '../../utils/helper';
 
 interface IProps {
     producingDevice: ProducingDevice.Entity;
@@ -22,15 +24,24 @@ interface IProps {
     callback: () => void;
 }
 
+const DEFAULT_ENERGY_IN_BASE_UNIT = 1;
+
 export function BuyCertificateModal(props: IProps) {
     const { callback, certificate, producingDevice, showModal } = props;
 
     const configuration = useSelector(getConfiguration);
     const dispatch = useDispatch();
 
-    const [kwh, setKwh] = useState(0.001);
+    const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
+        EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
+    );
+
+    const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+        energyInDisplayUnit
+    );
+
     const [validation, setValidation] = useState({
-        kwh: false
+        energyInDisplayUnit: false
     });
 
     useEffect(() => {
@@ -38,9 +49,12 @@ export function BuyCertificateModal(props: IProps) {
             return;
         }
 
-        setKwh(certificate.certificate.energy / 1000);
+        setEnergyInDisplayUnit(
+            EnergyFormatter.getValueInDisplayUnit(certificate.certificate.energy)
+        );
+
         setValidation({
-            kwh: true
+            energyInDisplayUnit: true
         });
     }, [certificate]);
 
@@ -56,13 +70,10 @@ export function BuyCertificateModal(props: IProps) {
 
         dispatch(setLoading(true));
 
-        if (
-            ((certificate.acceptedToken as any) as string) !==
-            '0x0000000000000000000000000000000000000000'
-        ) {
+        if (certificate.acceptedToken !== '0x0000000000000000000000000000000000000000') {
             const erc20TestToken = new MarketContracts.Erc20TestToken(
                 configuration.blockchainProperties.web3,
-                (certificate.acceptedToken as any) as string
+                certificate.acceptedToken
             );
 
             await erc20TestToken.approve(
@@ -71,31 +82,36 @@ export function BuyCertificateModal(props: IProps) {
             );
         }
 
-        await certificate.buyCertificate(kwh * 1000);
+        await certificate.buyCertificate(energyInBaseUnit);
 
         dispatch(setLoading(false));
 
-        showNotification(`Certificates for ${kwh} kWh have been bought.`, NotificationType.Success);
+        showNotification(
+            `Certificates for ${EnergyFormatter.format(energyInBaseUnit, true)} have been bought.`,
+            NotificationType.Success
+        );
 
         handleClose();
     }
 
     function validateInputs(event) {
-        const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);
-
         switch (event.target.id) {
-            case 'kwhInput':
-                const newKwh = Number(event.target.value);
-                const kwhValid =
-                    !isNaN(newKwh) &&
-                    newKwh >= 0.001 &&
-                    newKwh <= certificate.certificate.energy / 1000 &&
-                    countDecimals(newKwh) <= 3;
+            case 'energyInDisplayUnitInput':
+                const newEnergyInDisplayUnit = Number(event.target.value);
+                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                    newEnergyInDisplayUnit
+                );
 
-                setKwh(event.target.value);
+                const energyInDisplayUnitValid =
+                    !isNaN(energyInDisplayUnit) &&
+                    newEnergyInBaseValueUnit >= 1 &&
+                    newEnergyInBaseValueUnit <= certificate.certificate.energy &&
+                    countDecimals(newEnergyInDisplayUnit) <= 6;
+
+                setEnergyInDisplayUnit(newEnergyInDisplayUnit);
 
                 setValidation({
-                    kwh: kwhValid
+                    energyInDisplayUnit: energyInDisplayUnitValid
                 });
                 break;
         }
@@ -104,9 +120,7 @@ export function BuyCertificateModal(props: IProps) {
     const isFormValid = Object.keys(validation).every(property => validation[property] === true);
 
     const certificateId = certificate?.id || '';
-    const date = certificate
-        ? moment.unix(certificate.certificate.creationTime).format('YYYY-MM-DD')
-        : '';
+    const date = certificate ? formatDate(moment.unix(certificate.certificate.creationTime)) : '';
     const facilityName = producingDevice?.offChainProperties?.facilityName || '';
 
     return (
@@ -115,16 +129,16 @@ export function BuyCertificateModal(props: IProps) {
             <DialogContent>
                 <TextField label="Facility" value={facilityName} fullWidth disabled />
 
-                <TextField label="Date" value={date} fullWidth disabled className="mt-4" />
+                <TextField label="Creation date" value={date} fullWidth disabled className="mt-4" />
 
                 <TextField
-                    label="kWh"
-                    value={kwh}
+                    label={EnergyFormatter.displayUnit}
+                    value={energyInDisplayUnit}
                     type="number"
                     placeholder="1"
                     onChange={e => validateInputs(e)}
                     className="mt-4"
-                    id="kwhInput"
+                    id="energyInDisplayUnitInput"
                     fullWidth
                 />
             </DialogContent>

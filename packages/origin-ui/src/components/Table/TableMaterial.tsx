@@ -17,7 +17,6 @@ import {
     TableSortLabel
 } from '@material-ui/core';
 import { Actions, ITableAction } from './Actions';
-import { deepEqual } from '../../utils/helper';
 import {
     ColumnBatchActions,
     IBatchableAction,
@@ -51,9 +50,9 @@ interface IProps<T extends readonly ITableColumn[]> {
     total?: number;
     actions?: ITableAction[];
     onSelect?: TableOnSelectFunction;
-    currentSort?: SortPropertiesType;
+    currentSort?: ITableColumn;
     sortAscending?: boolean;
-    toggleSort?: (sortProperties: SortPropertiesType) => void;
+    toggleSort?: (sortProperties: ITableColumn) => void;
     filters?: ICustomFilterDefinition[];
     handleRowClick?: (rowIndex: number) => void;
     batchableActions?: IBatchableAction[];
@@ -176,10 +175,9 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                     </TableCell>
                                 )}
                                 {columns.map(column => {
-                                    const isSortable =
-                                        column.sortProperties && column.sortProperties.length > 0;
+                                    const isSortable = column.sortProperties?.length > 0;
                                     const sortedByThisColumn =
-                                        isSortable && deepEqual(column.sortProperties, currentSort);
+                                        isSortable && column.id === currentSort.id;
 
                                     return (
                                         <TableCell
@@ -191,7 +189,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
                                             <TableSortLabel
                                                 active={sortedByThisColumn}
                                                 direction={order}
-                                                onClick={() => toggleSort(column.sortProperties)}
+                                                onClick={() => toggleSort(column)}
                                                 hideSortIcon={!isSortable}
                                                 disabled={!isSortable}
                                             >

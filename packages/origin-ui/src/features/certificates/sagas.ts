@@ -18,7 +18,6 @@ import { requestUser } from '../users/actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Unit } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
 import { MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
@@ -26,6 +25,7 @@ import { Device } from '@energyweb/device-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate.Entity) {
     return (
@@ -75,10 +75,11 @@ function* requestCertificatesSaga(): SagaIterator {
                 configuration
             );
 
-            const energyInKWh = action.payload.energy / Unit.kWh;
-
             showNotification(
-                `Certificates for ${energyInKWh} kWh requested.`,
+                `Certificates for ${EnergyFormatter.format(
+                    action.payload.energy,
+                    true
+                )} requested.`,
                 NotificationType.Success
             );
         } catch (error) {

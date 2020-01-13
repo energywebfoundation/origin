@@ -1,9 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { SmartMeterReadingsChart } from '../../components/SmartMeterReadingsChart';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
+import { formatDate } from '../../utils/helper';
 
 describe('SmartMeterReadingsChart', () => {
     it('correctly renders', async () => {
@@ -56,9 +58,9 @@ describe('SmartMeterReadingsChart', () => {
                 {
                     backgroundColor: currentMonthDates.map(() => undefined),
                     data: currentMonthDates.map((item, index) =>
-                        index === currentDay - 1 ? 1000 : 0
+                        index === currentDay - 1 ? 0.001 : 0
                     ),
-                    label: 'Energy (Wh)'
+                    label: `Energy (${EnergyFormatter.displayUnit})`
                 }
             ]
         });
@@ -74,7 +76,7 @@ describe('SmartMeterReadingsChart', () => {
 
         barProps = rendered.find(Bar).props();
 
-        expect(barProps.options.title.text).toBe(currentTime.format('D MMM YYYY'));
+        expect(barProps.options.title.text).toBe(formatDate(currentTime));
 
         expect(rendered.find('.btn-switcher-btn.selected').text()).toBe('Day');
 
@@ -110,8 +112,8 @@ describe('SmartMeterReadingsChart', () => {
                 backgroundColor: new Array(24).fill(0).map(() => undefined),
                 data: new Array(24)
                     .fill(0)
-                    .map((item, index) => (index === currentDayHour ? 1000 : 0)),
-                label: 'Energy (Wh)'
+                    .map((item, index) => (index === currentDayHour ? 0.001 : 0)),
+                label: `Energy (${EnergyFormatter.displayUnit})`
             }
         ]);
     });

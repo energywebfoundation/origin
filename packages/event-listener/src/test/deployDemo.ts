@@ -319,7 +319,7 @@ export class Demo {
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             facilityName: 'Wuthering Heights Windfarm',
-            capacityWh: 0,
+            capacityInW: 0,
             country: 'Thailand',
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
@@ -366,7 +366,7 @@ export class Demo {
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             facilityName: 'Test Device',
-            capacityWh: 0,
+            capacityInW: 0,
             country: 'Thailand',
             address:
                 '96 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',

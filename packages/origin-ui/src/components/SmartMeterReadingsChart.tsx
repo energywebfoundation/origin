@@ -8,7 +8,8 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import './SmartMeterReadingsChart.scss';
 import { STYLE_CONFIG } from '../styles/styleConfig';
 import { Button, ButtonGroup } from '@material-ui/core';
-import { reverse } from '../utils/helper';
+import { reverse, formatDate } from '../utils/helper';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
 
 enum TIMEFRAME {
     DAY = 'Day',
@@ -189,7 +190,7 @@ export class SmartMeterReadingsChart extends React.Component<
                         ? currentDate.format(keyFormat)
                         : `${currentDate.format(keyFormat)}:00`,
                 color: STYLE_CONFIG.PRIMARY_COLOR,
-                value: totalEnergy
+                value: EnergyFormatter.getValueInDisplayUnit(totalEnergy)
             });
 
             currentIndex += 1;
@@ -204,18 +205,16 @@ export class SmartMeterReadingsChart extends React.Component<
         } = this.state;
 
         if (timeframe === TIMEFRAME.WEEK) {
-            return `${this.endDateInTimezone
-                .startOf('week')
-                .format('D MMM YYYY')} - ${this.endDateInTimezone
-                .endOf('week')
-                .format('D MMM YYYY')}`;
+            return `${formatDate(this.endDateInTimezone.startOf('week'))} - ${formatDate(
+                this.endDateInTimezone.endOf('week')
+            )}`;
         } else if (timeframe === TIMEFRAME.MONTH) {
             return this.endDateInTimezone.format('MMM YYYY');
         } else if (timeframe === TIMEFRAME.YEAR) {
             return this.endDateInTimezone.format('YYYY');
         }
 
-        return this.endDateInTimezone.format('D MMM YYYY');
+        return formatDate(this.endDateInTimezone);
     }
 
     render() {
@@ -232,7 +231,7 @@ export class SmartMeterReadingsChart extends React.Component<
             labels: formattedReadings.map(entry => entry.label),
             datasets: [
                 {
-                    label: 'Energy (Wh)',
+                    label: `Energy (${EnergyFormatter.displayUnit})`,
                     backgroundColor: formattedReadings.map(entry => entry.color),
                     data: formattedReadings.map(entry => entry.value)
                 }

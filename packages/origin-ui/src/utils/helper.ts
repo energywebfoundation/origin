@@ -1,4 +1,4 @@
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import { Device } from '@energyweb/device-registry';
 
 export function dataTest(value, name = 'data-test') {
@@ -9,12 +9,6 @@ export function dataTest(value, name = 'data-test') {
 
 export function dataTestSelector(value, name = 'data-test') {
     return `[${name}="${value}"]`;
-}
-
-export function getPropertyByPath(obj, path) {
-    return path.split('.').reduce((prev, curr) => {
-        return prev ? prev[curr] : null;
-    }, obj || self);
 }
 
 export function deepEqual(a: any, b: any) {
@@ -64,10 +58,13 @@ export function wait(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export const DATE_FORMAT_DMY = 'MMMM Do, YYYY';
+export const DATE_FORMAT_DMY = 'MMM Do, YYYY';
+export const DATE_FORMAT_INCLUDING_TIME = `${DATE_FORMAT_DMY} hh:mm a`;
 
-export function formatDate(date: Moment) {
-    return date.format(DATE_FORMAT_DMY);
+export function formatDate(date: Moment | number, includeTime?: boolean) {
+    const formatToUse = includeTime ? DATE_FORMAT_INCLUDING_TIME : DATE_FORMAT_DMY;
+
+    return moment(date).format(formatToUse);
 }
 
 export const LOCATION_TITLE = 'Region, province';
@@ -77,3 +74,5 @@ export function getDeviceLocationText(device: Device.Entity) {
         .filter(i => i)
         .join(', ');
 }
+
+export const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);

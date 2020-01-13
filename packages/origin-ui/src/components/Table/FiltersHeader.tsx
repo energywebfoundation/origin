@@ -27,7 +27,7 @@ interface ICustomFilterInput {
     max?: number;
 }
 
-export type RecordPropertyGetterFunction = (record: any) => string;
+export type RecordPropertyGetterFunction = (record: any) => string | number;
 
 export interface ICustomFilterDefinition {
     property: RecordPropertyGetterFunction;

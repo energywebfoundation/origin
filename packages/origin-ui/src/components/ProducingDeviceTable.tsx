@@ -3,7 +3,7 @@ import React from 'react';
 import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Role } from '@energyweb/user-registry';
 import { Link, Redirect } from 'react-router-dom';
-import { Configuration, Unit } from '@energyweb/utils-general';
+import { Configuration } from '@energyweb/utils-general';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import {
     PaginatedLoaderFiltered,
@@ -35,6 +35,8 @@ import {
     producingDeviceCreatedOrUpdated,
     TProducingDeviceCreatedOrUpdated
 } from '../features/producingDevices/actions';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { PowerFormatter } from '../utils/PowerFormatter';
 
 interface IOwnProps {
     actions: {
@@ -198,9 +200,9 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
             { id: 'facilityName', label: 'Facility name' },
             { id: 'provinceRegion', label: LOCATION_TITLE },
             { id: 'type', label: 'Type' },
-            { id: 'capacity', label: 'Nameplate capacity (kW)' },
+            { id: 'capacity', label: `Nameplate capacity (${PowerFormatter.displayUnit})` },
             { id: 'status', label: 'Status' },
-            { id: 'read', label: 'Meter read (kWh)' }
+            { id: 'read', label: `Meter read (${EnergyFormatter.displayUnit})` }
         ] as const).filter(column => !hiddenColumns.includes(column.id));
     }
 
@@ -212,10 +214,8 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
             type: this.deviceTypeService.getDisplayText(
                 enrichedData.device.offChainProperties.deviceType
             ),
-            capacity: (
-                enrichedData.device.offChainProperties.capacityWh / Unit.kWh
-            ).toLocaleString(),
-            read: (enrichedData.device.lastSmartMeterReadWh / Unit.kWh).toLocaleString(),
+            capacity: PowerFormatter.format(enrichedData.device.offChainProperties.capacityInW),
+            read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh),
             status: Device.DeviceStatus[enrichedData.device.status]
         }));
     }

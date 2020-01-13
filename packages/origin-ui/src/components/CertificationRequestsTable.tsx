@@ -15,6 +15,8 @@ import {
 import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
+import { PowerFormatter } from '../utils/PowerFormatter';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
 
 interface IProps {
     approvedOnly?: boolean;
@@ -131,8 +133,8 @@ export function CertificationRequestsTable(props: IProps) {
         { id: 'facility', label: 'Facility' },
         { id: 'locationText', label: LOCATION_TITLE },
         { id: 'type', label: 'Type' },
-        { id: 'capacity', label: 'Capacity (kW)' },
-        { id: 'meterRead', label: 'Meter Read (kWh)' }
+        { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
+        { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` }
     ] as const;
 
     const rows = paginatedData.map(({ device, energy }) => {
@@ -140,8 +142,8 @@ export function CertificationRequestsTable(props: IProps) {
             facility: device.offChainProperties.facilityName,
             locationText: getDeviceLocationText(device),
             type: deviceTypeService.getDisplayText(device.offChainProperties.deviceType),
-            capacity: (device.offChainProperties.capacityWh / 1000).toLocaleString(),
-            meterRead: (energy / 1000).toLocaleString()
+            capacity: PowerFormatter.format(device.offChainProperties.capacityInW),
+            meterRead: EnergyFormatter.format(energy)
         };
     });
 

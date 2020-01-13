@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { setLoading } from '../../features/general/actions';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 interface IProps {
     certificates: PurchasableCertificate.Entity[];
@@ -59,7 +60,7 @@ export function BuyCertificateBulkModal(props: IProps) {
             }
         }
 
-        const certificateIds: number[] = certificates.map(cert => parseInt(cert.id, 10));
+        const certificateIds = certificates.map(cert => parseInt(cert.id, 10));
         await configuration.blockchainProperties.marketLogicInstance.buyCertificateBulk(
             certificateIds,
             account
@@ -71,14 +72,17 @@ export function BuyCertificateBulkModal(props: IProps) {
         handleClose();
     }
 
-    const totalWh = certificates.reduce((a, b) => a + Number(b.certificate.energy), 0);
+    const totalEnergy = EnergyFormatter.format(
+        certificates.reduce((a, b) => a + Number(b.certificate.energy), 0),
+        true
+    );
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
             <DialogTitle>Buy certificates</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    You selected a total of {totalWh / 1e6} MWh worth of certificates.
+                    You selected a total of {totalEnergy} worth of certificates.
                 </DialogContentText>
                 <DialogContentText>Would you like to proceed with buying them?</DialogContentText>
             </DialogContent>

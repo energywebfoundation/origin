@@ -110,7 +110,7 @@ interface ICreateProducingDeviceProperties {
     deviceType?: string;
     address?: string;
     country?: string;
-    capacityWh?: number;
+    capacityInW?: number;
     lastSmartMeterReadWh?: number;
     operationalSince?: number;
     complianceRegistry?: Compliance;
@@ -123,7 +123,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     deviceType: 'Solar;Photovoltaic;Roof mounted',
     country: 'Thailand',
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
-    capacityWh: 9876543,
+    capacityInW: 9876543,
     operationalSince: 1568746970,
     complianceRegistry: 'I-REC',
     region: 'Central',
@@ -142,8 +142,8 @@ export const createProducingDevice = (
             properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,
         deviceType:
             properties.deviceType || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.deviceType,
-        capacityWh:
-            properties.capacityWh || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.capacityWh,
+        capacityInW:
+            properties.capacityInW || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.capacityInW,
         operationalSince:
             properties.operationalSince ||
             DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.operationalSince,

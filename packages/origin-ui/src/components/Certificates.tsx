@@ -60,19 +60,19 @@ export function Certificates() {
         },
         {
             key: 'for_sale',
-            label: 'For Sale',
+            label: 'For sale',
             component: ForSaleCertificates,
             show: !isIssuer
         },
         {
             key: 'claims_report',
-            label: 'Claims Report',
+            label: 'Claims report',
             component: ClaimedCertificates,
             show: !isIssuer
         },
         {
             key: 'detail_view',
-            label: 'Detail View',
+            label: 'Detail view',
             component: null,
             show: !isIssuer
         },
@@ -90,7 +90,7 @@ export function Certificates() {
         },
         {
             key: 'for_demand',
-            label: 'For Demand',
+            label: 'For demand',
             component: null,
             show: false
         }
