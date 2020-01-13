@@ -88,7 +88,7 @@ describe('Application[E2E]', () => {
 
             expect(rendered.find(dataTestSelector('totalDemand')).text()).toBe('0 MWh');
 
-            fillInputField('demandNeedsInMWh', '1');
+            fillInputField('demandNeedsInDisplayUnit', '1');
 
             fillInputField('maxPricePerMWh', '1');
 
@@ -102,7 +102,6 @@ describe('Application[E2E]', () => {
             ]);
 
             await fillDate('startDate', 1);
-            await fillDate('activeUntilDate', 10);
             await fillDate('endDate', 10);
 
             expect(

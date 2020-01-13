@@ -416,6 +416,9 @@ export function AddDevice() {
                                             label="Project story"
                                             name="projectStory"
                                             component={TextField}
+                                            multiline
+                                            rows={4}
+                                            rowsMax={20}
                                             variant="filled"
                                             fullWidth
                                             disabled={fieldDisabled}

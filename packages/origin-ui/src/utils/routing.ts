@@ -17,6 +17,10 @@ export function getAccountLink(baseURL: string) {
     return `${baseURL}/account`;
 }
 
+export function getUserRegisterLink(baseURL: string) {
+    return `${getAccountLink(baseURL)}/user-register`;
+}
+
 export function getDevicesAddLink(baseURL: string) {
     return `${getDevicesLink(baseURL)}/add`;
 }
@@ -85,6 +89,7 @@ export function useLinks() {
             getCertificatesForDemandLink(baseURL, demandId),
         getProducingDeviceDetailLink: (deviceId: string | number) =>
             getProducingDeviceDetailLink(baseURL, deviceId),
-        getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id)
+        getOrganizationViewLink: (id: string) => getOrganizationViewLink(baseURL, id),
+        getUserRegisterLink: () => getUserRegisterLink(baseURL)
     };
 }

@@ -7,6 +7,7 @@ export const STYLE_CONFIG = {
     PRIMARY_COLOR_DARKER: variables.primaryColorDarker,
     TEXT_COLOR_DEFAULT: variables.textColorDefault,
     BACKGROUND_COLOR_DARK: variables.backgroundColorDark,
+    FIELD_ICON_COLOR: variables.fieldIconColor,
     WHITE: '#fff'
 };
 
@@ -83,6 +84,11 @@ export const DEFAULT_MATERIAL_THEME = () => {
                     fontWeight: 'bold',
                     borderBottom: '3px solid #252525',
                     fontSize: '12px'
+                }
+            },
+            MuiSelect: {
+                icon: {
+                    color: STYLE_CONFIG.FIELD_ICON_COLOR
                 }
             }
         }

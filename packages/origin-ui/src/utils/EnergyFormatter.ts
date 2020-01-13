@@ -13,7 +13,7 @@ export class EnergyFormatter {
         maximumFractionDigits: EnergyFormatter.decimalPlaces
     });
 
-    static getValueInDisplayUnit(baseValue): number {
+    static getValueInDisplayUnit(baseValue: number): number {
         return baseValue / Unit[EnergyFormatter.displayUnit];
     }
 

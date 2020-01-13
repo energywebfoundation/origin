@@ -1,10 +1,13 @@
 import React from 'react';
-
 import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Role } from '@energyweb/user-registry';
 import { Link, Redirect } from 'react-router-dom';
 import { Configuration } from '@energyweb/utils-general';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { connect } from 'react-redux';
+import { Fab, Tooltip } from '@material-ui/core';
+import { Add, Assignment, Check } from '@material-ui/icons';
+
 import {
     PaginatedLoaderFiltered,
     IPaginatedLoaderFilteredState,
@@ -16,10 +19,8 @@ import {
     IPaginatedLoaderFetchDataReturnValues
 } from './Table/PaginatedLoader';
 import { getProducingDeviceDetailLink } from '../utils/routing';
-import { connect } from 'react-redux';
 import { IStoreState } from '../types';
 import { getConfiguration, getProducingDevices, getBaseURL } from '../features/selectors';
-import { Add, Assignment, Check } from '@material-ui/icons';
 import { TableMaterial } from './Table/TableMaterial';
 import { getUsers, getUserById, getCurrentUser } from '../features/users/selectors';
 import { getCertificates } from '../features/certificates/selectors';
@@ -27,7 +28,6 @@ import {
     showRequestCertificatesModal,
     TShowRequestCertificatesModalAction
 } from '../features/certificates/actions';
-import { Fab } from '@material-ui/core';
 import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { setLoading, TSetLoading } from '../features/general/actions';
@@ -269,13 +269,15 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
                 </div>
                 {this.props.showAddDeviceButton && (
                     <Link to={'/devices/add'}>
-                        <Fab
-                            color="primary"
-                            aria-label="add"
-                            style={{ float: 'right', marginTop: '20px' }}
-                        >
-                            <Add />
-                        </Fab>
+                        <Tooltip title="Register device">
+                            <Fab
+                                color="primary"
+                                aria-label="add"
+                                style={{ position: 'relative', marginTop: '20px', float: 'right' }}
+                            >
+                                <Add />
+                            </Fab>
+                        </Tooltip>
                     </Link>
                 )}
             </>
