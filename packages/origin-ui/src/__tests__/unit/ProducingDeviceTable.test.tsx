@@ -19,7 +19,7 @@ describe('ProducingDeviceTable', () => {
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             country: 'Thailand',
-            capacityWh: 736123,
+            capacityInW: 736123,
             lastSmartMeterReadWh: 312,
             region: 'Central',
             province: 'Nakhon Pathom'
@@ -47,15 +47,15 @@ describe('ProducingDeviceTable', () => {
             'Wuthering Heights facility',
             'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
-            '9,876.543',
-            '7.777',
+            '9.877',
+            '0.008',
             // next device
             'Example Organization',
             'Biomass Energy Facility',
             'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
-            '736.123',
-            '0.312'
+            '0.736',
+            '0'
         ]);
 
         assertPagination(1, 2, 2);
@@ -73,8 +73,8 @@ describe('ProducingDeviceTable', () => {
             'Biomass Energy Facility',
             'Central, Nakhon Pathom',
             'Gaseous - Agricultural gas',
-            '736.123',
-            '0.312'
+            '0.736',
+            '0'
         ]);
 
         assertPagination(1, 1, 1);
@@ -88,8 +88,8 @@ describe('ProducingDeviceTable', () => {
             'Wuthering Heights facility',
             'Central, Nakhon Pathom',
             'Solar - Photovoltaic - Roof mounted',
-            '9,876.543',
-            '7.777'
+            '9.877',
+            '0.008'
         ]);
 
         assertPagination(1, 1, 1);

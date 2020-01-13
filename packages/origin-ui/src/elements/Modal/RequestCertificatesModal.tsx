@@ -21,6 +21,7 @@ import {
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
 import { formatDate, DATE_FORMAT_DMY } from '../../utils/helper';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 function setMaxTimeInDay(date: Moment): Moment {
     return date
@@ -107,8 +108,8 @@ export function RequestCertificatesModal() {
 
     return (
         <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Request Certificates for ${producingDevice?.offChainProperties
-                ?.facilityName || ''}`}</DialogTitle>
+            <DialogTitle>{`Request certificates for ${producingDevice?.offChainProperties
+                ?.facilityName ?? ''}`}</DialogTitle>
             <DialogContent>
                 <TextField label="From" value={formatDate(moment(fromDate))} fullWidth disabled />
 
@@ -123,7 +124,13 @@ export function RequestCertificatesModal() {
                     format={DATE_FORMAT_DMY}
                 />
 
-                <TextField label="kWh" value={energy / 1000} className="mt-4" fullWidth disabled />
+                <TextField
+                    label={EnergyFormatter.displayUnit}
+                    value={EnergyFormatter.format(energy)}
+                    className="mt-4"
+                    fullWidth
+                    disabled
+                />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">

@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
 import { Certificate } from '@energyweb/origin';
 import { MarketUser } from '@energyweb/market';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import './DetailView.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { getConfiguration, getProducingDevices } from '../features/selectors';
+import { getConfiguration } from '../features/selectors';
 import { getCertificates } from '../features/certificates/selectors';
-import { deduplicate } from '../utils/helper';
-import { useLinks } from '../utils/routing';
+import { deduplicate, formatDate } from '../utils/helper';
 import { getUsers, getUserById } from '../features/users/selectors';
 import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { getEnvironment } from '../features/general/selectors';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
 
 interface IProps {
     id: string;
@@ -31,7 +30,6 @@ export function CertificateDetailView(props: IProps) {
 
     const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
-    const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
 
@@ -49,10 +47,8 @@ export function CertificateDetailView(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    const { getProducingDeviceDetailLink } = useLinks();
-
     const selectedCertificate =
-        id !== null && id !== undefined && certificates.find(c => c.id === id);
+        id !== null && typeof id !== 'undefined' && certificates.find(c => c.id === id);
 
     let owner: MarketUser.Entity = null;
 
@@ -180,7 +176,7 @@ export function CertificateDetailView(props: IProps) {
         eventsDisplay = events.reverse().map((event, index) => (
             <p key={index}>
                 <span className="timestamp text-muted">
-                    {new Date(event.timestamp * 1000).toLocaleString()} -{' '}
+                    {formatDate(event.timestamp * 1000, true)} -{' '}
                     <a
                         href={`${environment.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
                         className="text-muted"
@@ -197,19 +193,15 @@ export function CertificateDetailView(props: IProps) {
             </p>
         ));
 
-        const device = producingDevices.find(
-            p => p.id === selectedCertificate.certificate.deviceId.toString()
-        );
-
         data = [
             [
                 {
-                    label: 'Certificate Id',
+                    label: 'Certificate id',
                     data: selectedCertificate.id
                 },
                 {
-                    label: 'Current Owner',
-                    data: owner?.organization || ''
+                    label: 'Current owner',
+                    data: owner?.organization ?? ''
                 },
                 {
                     label: 'Claimed',
@@ -219,33 +211,25 @@ export function CertificateDetailView(props: IProps) {
                             : 'no'
                 },
                 {
-                    label: 'Producing Device Id',
-                    data: device.id,
-                    link: getProducingDeviceDetailLink(device.id)
+                    label: 'Creation date',
+                    data: formatDate(selectedCertificate.certificate.creationTime * 1000)
                 }
             ],
             [
                 {
-                    label: 'Certified Energy (kWh)',
-                    data: (selectedCertificate.certificate.energy / 1000).toLocaleString()
+                    label: `Certified energy (${EnergyFormatter.displayUnit})`,
+                    data: EnergyFormatter.format(selectedCertificate.certificate.energy)
                 },
                 {
-                    label: 'Generation Start',
-                    data: moment(selectedCertificate.certificate.generationStartTime * 1000).format(
-                        'DD MMM YY HH:mm'
+                    label: 'Generation start',
+                    data: formatDate(
+                        selectedCertificate.certificate.generationStartTime * 1000,
+                        true
                     )
                 },
                 {
-                    label: 'Generation End',
-                    data: moment(selectedCertificate.certificate.generationEndTime * 1000).format(
-                        'DD MMM YY HH:mm'
-                    )
-                },
-                {
-                    label: 'Creation Date',
-                    data: moment(selectedCertificate.certificate.creationTime * 1000).format(
-                        'DD MMM YY'
-                    )
+                    label: 'Generation end',
+                    data: formatDate(selectedCertificate.certificate.generationEndTime * 1000, true)
                 }
             ]
         ];

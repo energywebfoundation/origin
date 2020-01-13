@@ -6,6 +6,8 @@ import {
     usePaginatedLoader,
     IPaginatedLoaderHooksFetchDataParameters
 } from './Table/PaginatedLoaderHooks';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { formatDate } from '../utils/helper';
 
 interface IProps {
     producingDevice: ProducingDevice.Entity;
@@ -30,10 +32,7 @@ export function SmartMeterReadingsTable(props: IProps) {
             currentSmartMeterState += readings[i].energy;
 
             data.push([
-                moment
-                    .unix(readings[i].timestamp)
-                    .tz(deviceTimezone)
-                    .format('DD MMM YY, HH:mm'),
+                formatDate(moment.unix(readings[i].timestamp).tz(deviceTimezone), true),
                 currentSmartMeterState
             ]);
         }
@@ -63,12 +62,12 @@ export function SmartMeterReadingsTable(props: IProps) {
 
     const columns = [
         { id: 'time', label: `Time (${producingDevice.offChainProperties.timezone})` },
-        { id: 'value', label: 'Smart Meter Value' }
+        { id: 'value', label: `Meter value (${EnergyFormatter.displayUnit})` }
     ] as const;
 
     const rows = paginatedData.map(data => ({
         time: data[0],
-        value: data[1].toLocaleString()
+        value: EnergyFormatter.format(data[1])
     }));
 
     return (

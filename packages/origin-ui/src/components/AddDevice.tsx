@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IRECDeviceService, Unit } from '@energyweb/utils-general';
+import { IRECDeviceService } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -29,6 +29,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import axios from 'axios';
 import { DEFAULT_COUNTRY } from './Demand/DemandForm';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
+import { PowerFormatter } from '../utils/PowerFormatter';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -145,7 +146,9 @@ export function AddDevice() {
             deviceType,
             complianceRegistry: compliance,
             facilityName: values.facilityName,
-            capacityWh: parseFloat(values.capacity) * Unit.kW,
+            capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
+                parseFloat(values.capacity)
+            ),
             country: DEFAULT_COUNTRY,
             address: values.address,
             region,
@@ -324,7 +327,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
-                                            label="Capacity (kW)"
+                                            label={`Capacity (${PowerFormatter.displayUnit})`}
                                             name="capacity"
                                             component={TextField}
                                             variant="filled"

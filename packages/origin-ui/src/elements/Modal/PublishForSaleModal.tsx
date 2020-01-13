@@ -21,6 +21,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
 import { getCurrencies } from '../../features/general/selectors';
 import { setLoading } from '../../features/general/actions';
+import { countDecimals, formatDate } from '../../utils/helper';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 interface IProps {
     certificate: PurchasableCertificate.Entity;
@@ -30,7 +32,8 @@ interface IProps {
 }
 
 const ERC20CURRENCY = 'ERC20 Token';
-const minKwh = 0.001;
+
+const DEFAULT_ENERGY_IN_BASE_UNIT = 1;
 
 export function PublishForSaleModal(props: IProps) {
     const { certificate, callback, producingDevice, showModal } = props;
@@ -39,12 +42,18 @@ export function PublishForSaleModal(props: IProps) {
 
     const configuration = useSelector(getConfiguration);
 
-    const [kwh, setKwh] = useState(minKwh);
+    const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
+        EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
+    );
+
+    const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+        energyInDisplayUnit
+    );
     const [price, setPrice] = useState(1);
     const [currency, setCurrency] = useState(availableCurrencies[0]);
     const [erc20TokenAddress, setErc20TokenAddress] = useState('');
     const [validation, setValidation] = useState({
-        kwh: true,
+        energyInDisplayUnit: true,
         price: true,
         erc20TokenAddress: false
     });
@@ -53,7 +62,9 @@ export function PublishForSaleModal(props: IProps) {
 
     useEffect(() => {
         if (certificate) {
-            setKwh(certificate.certificate.energy / 1000);
+            setEnergyInDisplayUnit(
+                EnergyFormatter.getValueInDisplayUnit(certificate.certificate.energy)
+            );
         }
     }, [certificate]);
 
@@ -61,7 +72,7 @@ export function PublishForSaleModal(props: IProps) {
 
     const isFormValid = isErc20Sale
         ? Object.keys(validation).every(property => validation[property] === true)
-        : validation.kwh && validation.price;
+        : validation.energyInDisplayUnit && validation.price;
 
     function handleClose() {
         callback();
@@ -86,7 +97,7 @@ export function PublishForSaleModal(props: IProps) {
         await certificate.publishForSale(
             price,
             isErc20Sale ? erc20TokenAddress : currency,
-            kwh * 1000
+            energyInBaseUnit
         );
 
         showNotification(`Certificate has been published for sale.`, NotificationType.Success);
@@ -95,24 +106,25 @@ export function PublishForSaleModal(props: IProps) {
     }
 
     async function validateInputs(event) {
-        const countDecimals = value => (value % 1 ? value.toString().split('.')[1].length : 0);
-
         switch (event.target.id) {
-            case 'kwhInput':
-                const newKwh = Number(event.target.value);
-                const kwhValid =
-                    !isNaN(newKwh) &&
-                    newKwh >= minKwh &&
-                    newKwh <= certificate.certificate.energy / 1000 &&
-                    countDecimals(newKwh) <= 3;
+            case 'energyInDisplayUnitInput':
+                const newEnergyInDisplayUnit = Number(event.target.value);
+                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                    newEnergyInDisplayUnit
+                );
 
-                setKwh(event.target.value);
+                const energyInDisplayUnitValid =
+                    !isNaN(energyInDisplayUnit) &&
+                    newEnergyInBaseValueUnit >= 1 &&
+                    newEnergyInBaseValueUnit <= certificate.certificate.energy &&
+                    countDecimals(newEnergyInDisplayUnit) <= 6;
+
+                setEnergyInDisplayUnit(newEnergyInDisplayUnit);
+
                 setValidation({
-                    kwh: kwhValid,
-                    price: validation.price,
-                    erc20TokenAddress: validation.erc20TokenAddress
+                    ...validation,
+                    energyInDisplayUnit: energyInDisplayUnitValid
                 });
-
                 break;
             case 'priceInput':
                 const newPrice = Number(event.target.value);
@@ -123,9 +135,8 @@ export function PublishForSaleModal(props: IProps) {
 
                 setPrice(event.target.value);
                 setValidation({
-                    kwh: validation.kwh,
-                    price: priceValid,
-                    erc20TokenAddress: validation.erc20TokenAddress
+                    ...validation,
+                    price: priceValid
                 });
                 break;
             case 'tokenAddressInput':
@@ -150,8 +161,7 @@ export function PublishForSaleModal(props: IProps) {
 
                 setErc20TokenAddress(givenAddress);
                 setValidation({
-                    kwh: validation.kwh,
-                    price: validation.price,
+                    ...validation,
                     erc20TokenAddress: isAddress && isInitializedToken
                 });
                 break;
@@ -164,7 +174,8 @@ export function PublishForSaleModal(props: IProps) {
     let creationTime: string;
 
     try {
-        creationTime = certificate && moment.unix(certificate.certificate.creationTime).toString();
+        creationTime =
+            certificate && formatDate(moment.unix(certificate.certificate.creationTime), true);
     } catch (error) {
         console.error('Error in PublishForSaleModal', error);
     }
@@ -178,7 +189,7 @@ export function PublishForSaleModal(props: IProps) {
                 {creationTime && (
                     <>
                         <TextField
-                            label="Date"
+                            label="Creation time"
                             value={creationTime}
                             fullWidth
                             disabled
@@ -188,13 +199,13 @@ export function PublishForSaleModal(props: IProps) {
                 )}
 
                 <TextField
-                    label="kWh"
-                    value={kwh}
+                    label={EnergyFormatter.displayUnit}
+                    value={energyInDisplayUnit}
                     type="number"
                     placeholder="1"
                     onChange={e => validateInputs(e)}
                     className="mt-4"
-                    id="kwhInput"
+                    id="energyInDisplayUnitInput"
                     fullWidth
                 />
 
@@ -240,7 +251,9 @@ export function PublishForSaleModal(props: IProps) {
 
                 <div className="text-danger">
                     {!validation.price && <div>Price is invalid</div>}
-                    {!validation.kwh && <div>kWh value is invalid</div>}
+                    {!validation.energyInDisplayUnit && (
+                        <div>{EnergyFormatter.displayUnit} value is invalid</div>
+                    )}
                     {isErc20Sale && !validation.erc20TokenAddress && (
                         <div>Token address is invalid</div>
                     )}

@@ -65,17 +65,17 @@ export function Device() {
     const DevicesMenu = [
         {
             key: 'production',
-            label: 'Production List',
+            label: 'All devices',
             component: ProductionList
         },
         {
             key: 'production-map',
-            label: 'Production Map',
+            label: 'Map view',
             component: Map
         },
         {
             key: 'owned',
-            label: 'My Devices',
+            label: 'My devices',
             component: MyDevices,
             roles: [Role.DeviceManager]
         },
@@ -87,13 +87,12 @@ export function Device() {
         },
         {
             key: 'add',
-            label: 'Add',
-            component: AddDevice,
-            hide: true
+            label: 'Register device',
+            component: AddDevice
         },
         {
             key: 'producing_detail_view',
-            label: 'Production Detail',
+            label: 'Production detail',
             component: null,
             hide: true
         }

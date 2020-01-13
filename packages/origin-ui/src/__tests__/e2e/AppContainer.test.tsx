@@ -1,7 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { AppContainer } from '../../components/AppContainer';
 import { Route } from 'react-router-dom';
+import moment from 'moment';
+import { TimeFrame } from '@energyweb/utils-general';
+
+import { AppContainer } from '../../components/AppContainer';
 import {
     WrapperComponent,
     setupStore,
@@ -10,10 +13,9 @@ import {
     waitForConditionAndAssert
 } from '../utils/helpers';
 import { startGanache, deployDemo, ACCOUNTS } from '../utils/demo';
-import { dataTestSelector } from '../../utils/helper';
-import { TimeFrame } from '@energyweb/utils-general';
-
-import moment from 'moment';
+import { dataTestSelector, formatDate } from '../../utils/helper';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { PowerFormatter } from '../../utils/PowerFormatter';
 
 jest.setTimeout(100000);
 
@@ -139,11 +141,7 @@ describe('Application[E2E]', () => {
             ).toEqual(
                 expect.arrayContaining([
                     'Trader organization',
-                    `${moment()
-                        .date(1)
-                        .format('DD MMM YY')} - ${moment()
-                        .date(10)
-                        .format('DD MMM YY')}`,
+                    `${formatDate(moment().date(1))} - ${formatDate(moment().date(10))}`,
                     'any',
                     'any',
                     'daily',
@@ -179,26 +177,26 @@ describe('Application[E2E]', () => {
             rendered.update();
 
             expect(rendered.find('table tbody tr td div').map(el => el.text())).toEqual([
-                'Facility Name',
+                'Facility name',
                 'Wuthering Heights Windfarm ',
-                'Device Owner',
+                'Device owner',
                 'Device Manager organization ',
-                'Certified by Registry',
+                'Certified by registry',
                 'I-REC ',
-                'Other Green Attributes',
+                'Other green attributes',
                 ' ',
-                'Device Type',
+                'Device type',
                 'Wind - Onshore ',
                 '',
-                'Meter Read',
-                '0 kWh',
-                'Public Support',
+                'Meter read',
+                EnergyFormatter.format(0, true),
+                'Public support',
                 ' ',
-                'Commissioning Date',
-                'Jan 70 ',
-                'Nameplate Capacity',
-                '0 kW',
-                'Geo Location',
+                'Commissioning date',
+                'Jan 1st, 1970 ',
+                'Nameplate capacity',
+                PowerFormatter.format(0, true),
+                'Geo location',
                 ',  ',
                 '',
                 ''

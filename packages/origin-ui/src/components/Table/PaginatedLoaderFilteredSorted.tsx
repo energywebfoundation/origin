@@ -1,16 +1,23 @@
-import { getPropertyByPath, deepEqual } from '../../utils/helper';
+import { RecordPropertyGetterFunction } from './FiltersHeader';
 import {
     IPaginatedLoaderFilteredState,
     PaginatedLoaderFiltered,
     getInitialPaginatedLoaderFilteredState
 } from './PaginatedLoaderFiltered';
+import { ITableColumn } from './TableMaterial';
 
 export type SortPropertiesType = ReadonlyArray<
-    string | readonly [string, (value: string) => number]
+    | RecordPropertyGetterFunction
+    | readonly [
+          RecordPropertyGetterFunction,
+          (
+              value: ReturnType<RecordPropertyGetterFunction>
+          ) => ReturnType<RecordPropertyGetterFunction>
+      ]
 >;
 
 export interface IPaginatedLoaderFilteredSortedState extends IPaginatedLoaderFilteredState {
-    currentSort: SortPropertiesType;
+    currentSort: ITableColumn;
     sortAscending: boolean;
 }
 
@@ -18,7 +25,7 @@ export type IPaginatedLoaderFilteredSortedProps = {};
 
 export const PAGINATED_LOADER_FILTERED_SORTED_INITIAL_STATE: IPaginatedLoaderFilteredSortedState = {
     ...getInitialPaginatedLoaderFilteredState(),
-    currentSort: [],
+    currentSort: null,
     sortAscending: false
 };
 
@@ -40,19 +47,19 @@ export abstract class PaginatedLoaderFilteredSorted<
         const { currentSort, sortAscending } = this.state;
 
         return records.sort((a, b) => {
-            return currentSort
-                .map(field => {
+            return currentSort?.sortProperties
+                ?.map(field => {
                     const direction = sortAscending ? 1 : -1;
 
                     let aPropertyValue;
                     let bPropertyValue;
 
-                    if (Array.isArray(field) && field.length === 2) {
-                        aPropertyValue = field[1](getPropertyByPath(a, field[0]));
-                        bPropertyValue = field[1](getPropertyByPath(b, field[0]));
-                    } else {
-                        aPropertyValue = getPropertyByPath(a, field);
-                        bPropertyValue = getPropertyByPath(b, field);
+                    if (typeof field === 'function') {
+                        aPropertyValue = field(a);
+                        bPropertyValue = field(b);
+                    } else if (field.length === 2) {
+                        aPropertyValue = field[1](field[0](a));
+                        bPropertyValue = field[1](field[0](b));
                     }
 
                     if (aPropertyValue > bPropertyValue) {
@@ -69,14 +76,14 @@ export abstract class PaginatedLoaderFilteredSorted<
         });
     }
 
-    toggleSort(sortProperties: SortPropertiesType) {
-        if (deepEqual(sortProperties, this.state.currentSort)) {
+    toggleSort(column: ITableColumn) {
+        if (column.id === this.state.currentSort.id) {
             this.setState({
                 sortAscending: !this.state.sortAscending
             });
         } else {
             this.setState({
-                currentSort: sortProperties,
+                currentSort: column,
                 sortAscending: true
             });
         }

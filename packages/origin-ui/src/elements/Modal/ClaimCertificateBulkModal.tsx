@@ -1,5 +1,5 @@
 import React from 'react';
-import { PurchasableCertificate, MarketUser } from '@energyweb/market';
+import { PurchasableCertificate } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
@@ -10,78 +10,54 @@ import {
     DialogTitle,
     DialogContentText
 } from '@material-ui/core';
-import { IStoreState } from '../../types/index';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
-import { getCurrentUser } from '../../features/users/selectors';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
-interface IStateProps {
-    configuration: IStoreState['configuration'];
-    currentUser: MarketUser.Entity;
-}
-
-interface IOwnProps {
+interface IProps {
     certificates: PurchasableCertificate.Entity[];
     showModal: boolean;
     callback: () => void;
 }
 
-type Props = IOwnProps & IStateProps;
+export function ClaimCertificateBulkModal(props: IProps) {
+    const configuration = useSelector(getConfiguration);
 
-class ClaimCertificateBulkModalClass extends React.Component<Props> {
-    constructor(props, context) {
-        super(props, context);
-
-        this.handleClose = this.handleClose.bind(this);
-        this.claimCertificates = this.claimCertificates.bind(this);
+    function handleClose() {
+        props.callback();
     }
 
-    async claimCertificates() {
-        const certificateIds: string[] = this.props.certificates.map(cert => cert.id);
+    async function claimCertificates() {
+        const certificateIds: string[] = props.certificates.map(cert => cert.id);
 
-        await Certificate.claimCertificates(certificateIds, this.props.configuration);
+        await Certificate.claimCertificates(certificateIds, configuration);
 
         showNotification(`Certificates have been claimed.`, NotificationType.Success);
-        this.handleClose();
+        handleClose();
     }
 
-    handleClose() {
-        this.props.callback();
-    }
+    const totalEnergy = EnergyFormatter.format(
+        props.certificates.reduce((a, b) => a + Number(b.certificate.energy), 0),
+        true
+    );
 
-    render() {
-        const totalWh = this.props.certificates.reduce(
-            (a, b) => a + Number(b.certificate.energy),
-            0
-        );
-
-        return (
-            <Dialog open={this.props.showModal} onClose={this.handleClose}>
-                <DialogTitle>Claim certificates</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        You selected a total of {totalWh / 1e6} MWh worth of certificates.
-                    </DialogContentText>
-                    <DialogContentText>
-                        Would you like to proceed with claiming them?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleClose} color="secondary">
-                        Cancel
-                    </Button>
-                    <Button onClick={this.claimCertificates} color="primary">
-                        Claim
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+    return (
+        <Dialog open={props.showModal} onClose={handleClose}>
+            <DialogTitle>Claim certificates</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    You selected a total of {totalEnergy} worth of certificates.
+                </DialogContentText>
+                <DialogContentText>Would you like to proceed with claiming them?</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="secondary">
+                    Cancel
+                </Button>
+                <Button onClick={claimCertificates} color="primary">
+                    Claim
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 }
-
-export const ClaimCertificateBulkModal = connect(
-    (state: IStoreState): IStateProps => ({
-        currentUser: getCurrentUser(state),
-        configuration: getConfiguration(state)
-    })
-)(ClaimCertificateBulkModalClass);

@@ -72,7 +72,7 @@ export abstract class PaginatedLoaderFiltered<
                             filter.selectedValue &&
                             filter.selectedValue.length !== 0 &&
                             !this.deviceTypeService.includesDeviceType(
-                                filteredPropertyResolvedValue,
+                                filteredPropertyResolvedValue?.toString(),
                                 filter.selectedValue as string[]
                             )
                         ) {
@@ -92,10 +92,10 @@ export abstract class PaginatedLoaderFiltered<
                         if (filter.selectedValue) {
                             const [min, max] = filter.selectedValue as number[];
 
-                            const valueAsNumber = parseInt(
-                                filteredPropertyResolvedValue.toString(),
-                                10
-                            );
+                            const valueAsNumber =
+                                typeof filteredPropertyResolvedValue === 'number'
+                                    ? filteredPropertyResolvedValue
+                                    : parseInt(filteredPropertyResolvedValue.toString(), 10);
 
                             if (valueAsNumber < min || valueAsNumber > max) {
                                 return false;

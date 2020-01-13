@@ -21,7 +21,7 @@
     "test:e2e": "yarn config-env && jest -c jest.config.e2e.js",
     "test:watch": "yarn config-env && jest -u --watchAll",
     "test:unit:watch": "yarn config-env && jest -u --watchAll -c jest.config.unit.js",
-    "test:e2e:watch": "yarn config-env && jest -u --watchAll -c jest.e2e.unit.js",
+    "test:e2e:watch": "yarn config-env && jest -u --watchAll -c jest.config.e2e.js",
     "precommit": "lint-staged",
     "prettier": "prettier --write --config-precedence file-override './src/**/*'",
     "clean": "shx rm -rf dist"

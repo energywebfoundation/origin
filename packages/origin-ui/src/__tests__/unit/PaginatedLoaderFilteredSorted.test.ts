@@ -2,7 +2,8 @@ import {
     PaginatedLoaderFilteredSorted,
     IPaginatedLoaderFilteredSortedState,
     IPaginatedLoaderFilteredSortedProps,
-    getInitialPaginatedLoaderFilteredSortedState
+    getInitialPaginatedLoaderFilteredSortedState,
+    SortPropertiesType
 } from '../../components/Table/PaginatedLoaderFilteredSorted';
 import { IPaginatedLoaderFetchDataReturnValues } from '../../components/Table/PaginatedLoader';
 
@@ -17,7 +18,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
 
                 this.state = {
                     ...getInitialPaginatedLoaderFilteredSortedState(),
-                    currentSort: [],
+                    currentSort: null,
                     sortAscending: false
                 };
             }
@@ -29,103 +30,67 @@ describe('PaginatedLoaderFilteredSorted', () => {
 
         const paginationFilteredLoader = new TestClass({});
 
+        const DEVICES = {
+            BERLIN: {
+                producingDevice: {
+                    offChainProperties: {
+                        country: 'Germany',
+                        city: 'Berlin'
+                    }
+                }
+            },
+            ANG_THONG: {
+                producingDevice: {
+                    offChainProperties: {
+                        country: 'Thailand',
+                        city: 'Ang Thong'
+                    }
+                }
+            },
+            BANGKOK: {
+                producingDevice: {
+                    offChainProperties: {
+                        country: 'Thailand',
+                        city: 'Bangkok'
+                    }
+                }
+            }
+        };
+
+        const records = [DEVICES.BERLIN, DEVICES.BANGKOK, DEVICES.ANG_THONG];
+
+        type RecordType = typeof records[0];
+        const countryCityColumn = {
+            id: 'countryCity',
+            label: '',
+            sortProperties: [
+                (record: RecordType) => record.producingDevice.offChainProperties.country,
+                (record: RecordType) => record.producingDevice.offChainProperties.city
+            ]
+        };
+
         paginationFilteredLoader.state = {
             ...getInitialPaginatedLoaderFilteredSortedState(),
-            currentSort: [
-                'producingDevice.offChainProperties.country',
-                'producingDevice.offChainProperties.city'
-            ],
+            currentSort: countryCityColumn,
             sortAscending: true
         };
 
-        const records = [
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Germany',
-                        city: 'Berlin'
-                    }
-                }
-            },
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Thailand',
-                        city: 'Bangkok'
-                    }
-                }
-            },
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Thailand',
-                        city: 'Ang Thong'
-                    }
-                }
-            }
-        ];
-
         expect(paginationFilteredLoader.sortData(records)).toEqual([
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Germany',
-                        city: 'Berlin'
-                    }
-                }
-            },
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Thailand',
-                        city: 'Ang Thong'
-                    }
-                }
-            },
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Thailand',
-                        city: 'Bangkok'
-                    }
-                }
-            }
+            DEVICES.BERLIN,
+            DEVICES.ANG_THONG,
+            DEVICES.BANGKOK
         ]);
 
         paginationFilteredLoader.state = {
             ...getInitialPaginatedLoaderFilteredSortedState(),
-            currentSort: [
-                'producingDevice.offChainProperties.country',
-                'producingDevice.offChainProperties.city'
-            ],
+            currentSort: countryCityColumn,
             sortAscending: false
         };
 
         expect(paginationFilteredLoader.sortData(records)).toEqual([
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Thailand',
-                        city: 'Bangkok'
-                    }
-                }
-            },
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Thailand',
-                        city: 'Ang Thong'
-                    }
-                }
-            },
-            {
-                producingDevice: {
-                    offChainProperties: {
-                        country: 'Germany',
-                        city: 'Berlin'
-                    }
-                }
-            }
+            DEVICES.BANGKOK,
+            DEVICES.ANG_THONG,
+            DEVICES.BERLIN
         ]);
     });
 
@@ -139,7 +104,7 @@ describe('PaginatedLoaderFilteredSorted', () => {
 
                 this.state = {
                     ...getInitialPaginatedLoaderFilteredSortedState(),
-                    currentSort: [],
+                    currentSort: null,
                     sortAscending: false
                 };
             }
@@ -151,51 +116,64 @@ describe('PaginatedLoaderFilteredSorted', () => {
 
         const paginationFilteredLoader = new TestClass({});
 
-        paginationFilteredLoader.state = {
-            ...getInitialPaginatedLoaderFilteredSortedState(),
-            currentSort: [['energy', value => parseInt(value, 10)]],
-            sortAscending: true
-        };
-
         const records = [
             {
-                energy: '1000'
+                energy: 1000
             },
             {
-                energy: '21'
+                energy: 21
             },
             {
-                energy: '209'
+                energy: 209
             }
         ];
 
+        type RecordType = typeof records[0];
+
+        const energyColumn = {
+            id: 'energy',
+            label: '',
+            sortProperties: [
+                [
+                    (record: RecordType) => record.energy,
+                    (value: string | number): string | number => parseInt(value.toString(), 10)
+                ]
+            ] as SortPropertiesType
+        };
+
+        paginationFilteredLoader.state = {
+            ...getInitialPaginatedLoaderFilteredSortedState(),
+            currentSort: energyColumn,
+            sortAscending: true
+        };
+
         expect(paginationFilteredLoader.sortData(records)).toEqual([
             {
-                energy: '21'
+                energy: 21
             },
             {
-                energy: '209'
+                energy: 209
             },
             {
-                energy: '1000'
+                energy: 1000
             }
         ]);
 
         paginationFilteredLoader.state = {
             ...getInitialPaginatedLoaderFilteredSortedState(),
-            currentSort: [['energy', value => parseInt(value, 10)]],
+            currentSort: energyColumn,
             sortAscending: false
         };
 
         expect(paginationFilteredLoader.sortData(records)).toEqual([
             {
-                energy: '1000'
+                energy: 1000
             },
             {
-                energy: '209'
+                energy: 209
             },
             {
-                energy: '21'
+                energy: 21
             }
         ]);
     });

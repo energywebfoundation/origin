@@ -9,7 +9,6 @@ import iconLiquid from '../../assets/icon_liquid.svg';
 import iconGaseous from '../../assets/icon_gaseous.svg';
 import iconMarine from '../../assets/icon_marine.svg';
 import solar from '../../assets/icon_solar.svg';
-import moment from 'moment';
 import './DetailView.scss';
 import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -24,6 +23,9 @@ import { requestUser } from '../features/users/actions';
 import { getUserById, getUsers } from '../features/users/selectors';
 import { MarketUser } from '@energyweb/market';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
+import { PowerFormatter } from '../utils/PowerFormatter';
+import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { formatDate } from '../utils/helper';
 
 interface IProps {
     id: number;
@@ -96,25 +98,25 @@ export function ProducingDeviceDetailView(props: IProps) {
         data = [
             [
                 {
-                    label: 'Facility Name',
+                    label: 'Facility name',
                     data: selectedDevice.offChainProperties.facilityName
                 },
                 {
-                    label: 'Device Owner',
+                    label: 'Device owner',
                     data: owner ? owner.organization : ''
                 },
                 {
-                    label: 'Certified by Registry',
+                    label: 'Certified by registry',
                     data: selectedDevice.offChainProperties.complianceRegistry
                 },
                 {
-                    label: 'Other Green Attributes',
+                    label: 'Other green attributes',
                     data: selectedDevice.offChainProperties.otherGreenAttributes
                 }
             ],
             [
                 {
-                    label: 'Device Type',
+                    label: 'Device type',
                     data: deviceTypeService.getDisplayText(
                         selectedDevice.offChainProperties.deviceType
                     ),
@@ -122,30 +124,28 @@ export function ProducingDeviceDetailView(props: IProps) {
                     rowspan: 2
                 },
                 {
-                    label: 'Meter Read',
-                    data: (selectedDevice.lastSmartMeterReadWh / 1000).toLocaleString(),
-                    tip: 'kWh'
+                    label: 'Meter read',
+                    data: EnergyFormatter.format(selectedDevice.lastSmartMeterReadWh),
+                    tip: EnergyFormatter.displayUnit
                 },
                 {
-                    label: 'Public Support',
+                    label: 'Public support',
                     data: selectedDevice.offChainProperties.typeOfPublicSupport,
                     description: ''
                 },
                 {
-                    label: 'Commissioning Date',
-                    data: moment(selectedDevice.offChainProperties.operationalSince * 1000).format(
-                        'MMM YY'
-                    )
+                    label: 'Commissioning date',
+                    data: formatDate(selectedDevice.offChainProperties.operationalSince * 1000)
                 }
             ],
             [
                 {
-                    label: 'Nameplate Capacity',
-                    data: (selectedDevice.offChainProperties.capacityWh / 1000).toLocaleString(),
-                    tip: 'kW'
+                    label: 'Nameplate capacity',
+                    data: PowerFormatter.format(selectedDevice.offChainProperties.capacityInW),
+                    tip: PowerFormatter.displayUnit
                 },
                 {
-                    label: 'Geo Location',
+                    label: 'Geo location',
                     data:
                         selectedDevice.offChainProperties.gpsLatitude +
                         ', ' +
@@ -261,9 +261,9 @@ export function ProducingDeviceDetailView(props: IProps) {
                                 selectedState={SelectedState.ForSale}
                                 demand={null}
                                 hiddenColumns={[
-                                    'Device Type',
-                                    'Commissioning Date',
-                                    'Town, Country'
+                                    'Device type',
+                                    'Commissioning date',
+                                    'Town, country'
                                 ]}
                             />
                         </>
