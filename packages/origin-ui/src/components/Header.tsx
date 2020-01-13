@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Role } from '@energyweb/user-registry';
 import logo from '../../assets/logo.svg';
-import { AccountCircle, VpnKeySharp, Lock, Settings } from '@material-ui/icons';
 import './Header.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLinks } from '../utils/routing';
@@ -19,8 +18,10 @@ import {
     useTheme,
     Select,
     MenuItem,
-    FilledInput
+    FilledInput,
+    Tooltip
 } from '@material-ui/core';
+import { AccountCircle, VpnKeySharp, Lock, Settings, PersonAdd } from '@material-ui/icons';
 import { requestUser } from '../features/users/actions';
 import { setActiveAccount, unlockAccount } from '../features/authentication/actions';
 import { showRequestPasswordModal } from '../features/general/actions';
@@ -33,7 +34,7 @@ const useStyles = makeStyles(() =>
             fontSize: '16px',
             marginLeft: '8px'
         },
-        settingsIcon: {
+        endIcon: {
             opacity: 0.7,
             fontSize: '16px',
             marginLeft: '8px'
@@ -56,7 +57,13 @@ export function Header() {
 
     const classes = useStyles(useTheme());
 
-    const { getDevicesLink, getCertificatesLink, getDemandsLink, getAccountLink } = useLinks();
+    const {
+        getDevicesLink,
+        getUserRegisterLink,
+        getCertificatesLink,
+        getDemandsLink,
+        getAccountLink
+    } = useLinks();
 
     const privateKeyIndicator = <VpnKeySharp className={classes.icon} />;
 
@@ -194,7 +201,7 @@ export function Header() {
                             return (
                                 <>
                                     <AccountCircle className="ViewProfile_icon" color="primary" />
-                                    {selectedAccount && selectedAccount.label}
+                                    {selectedAccount?.label}
                                     {isUsingPK && privateKeyIndicator}
                                 </>
                             );
@@ -211,13 +218,25 @@ export function Header() {
                             </MenuItem>
                         ))}
                     </Select>
+                    {!currentUser?.organization && (
+                        <>
+                            &nbsp;
+                            <Link className={classes.endIcon} to={getUserRegisterLink()}>
+                                <Tooltip title="Register user">
+                                    <PersonAdd color="primary" />
+                                </Tooltip>
+                            </Link>
+                        </>
+                    )}
                     &nbsp;
                     <Link
                         to={getAccountLink()}
-                        className={classes.settingsIcon}
+                        className={classes.endIcon}
                         {...dataTest('header-link-account-settings')}
                     >
-                        <Settings color="primary" />
+                        <Tooltip title="Settings">
+                            <Settings color="primary" />
+                        </Tooltip>
                     </Link>
                 </div>
             </div>
