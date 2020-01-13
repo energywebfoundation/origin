@@ -102,7 +102,6 @@ describe('Application[E2E]', () => {
             ]);
 
             await fillDate('startDate', 1);
-            await fillDate('activeUntilDate', 10);
             await fillDate('endDate', 10);
 
             expect(

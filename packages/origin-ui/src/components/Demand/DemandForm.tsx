@@ -60,7 +60,6 @@ interface IFormValues {
     timeframe: TimeFrame | '';
     startDate: Moment;
     endDate: Moment;
-    activeUntilDate: Moment;
     procureFromSingleFacility: boolean;
     automaticMatching: boolean;
 }
@@ -70,7 +69,6 @@ const INITIAL_FORM_VALUES: IFormValues = {
     maxPricePerMWh: '',
     currency: '',
     timeframe: '',
-    activeUntilDate: null,
     startDate: null,
     endDate: null,
     procureFromSingleFacility: false,
@@ -113,7 +111,6 @@ export function DemandForm(props: IProps) {
                 currency: demand.offChainProperties.currency as IFormValues['currency'],
                 startDate: moment.unix(demand.offChainProperties.startTime),
                 endDate: moment.unix(demand.offChainProperties.endTime),
-                activeUntilDate: moment.unix(demand.offChainProperties.endTime),
                 demandNeedsInDisplayUnit: EnergyFormatter.getValueInDisplayUnit(
                     demand.offChainProperties.energyPerTimeFrame
                 ).toString(),
@@ -289,7 +286,6 @@ export function DemandForm(props: IProps) {
                         .required(),
                     startDate: Yup.date().required(),
                     endDate: Yup.date().required(),
-                    activeUntilDate: Yup.date().required(),
                     procureFromSingleFacility: Yup.boolean()
                 })}
                 isInitialValid={edit || clone || readOnly}
@@ -386,7 +382,7 @@ export function DemandForm(props: IProps) {
                                         {...dataTest('startDate')}
                                     />
                                     <Field
-                                        name="activeUntilDate"
+                                        name="endDate"
                                         label="Active until date"
                                         className="mt-3"
                                         inputVariant="filled"
@@ -395,9 +391,8 @@ export function DemandForm(props: IProps) {
                                         required
                                         component={FormikDatePicker}
                                         disabled={disabled}
-                                        {...dataTest('activeUntilDate')}
+                                        {...dataTest('endDate')}
                                     />
-
                                     <Field
                                         name="automaticMatching"
                                         Label={{
@@ -495,19 +490,6 @@ export function DemandForm(props: IProps) {
                                             ))}
                                         </Field>
                                     </FormControl>
-
-                                    <Field
-                                        name="endDate"
-                                        label="End date"
-                                        className="mt-3"
-                                        inputVariant="filled"
-                                        variant="inline"
-                                        fullWidth
-                                        required
-                                        component={FormikDatePicker}
-                                        disabled={disabled}
-                                        {...dataTest('endDate')}
-                                    />
 
                                     <div className="mt-3">
                                         Total demand:{' '}
