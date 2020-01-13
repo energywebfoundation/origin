@@ -32,6 +32,7 @@ import { setLoading } from '../../features/general/actions';
 
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
 import { Skeleton } from '@material-ui/lab';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 
 const REPEATABLE_TIMEFRAMES = [
     {
@@ -53,7 +54,7 @@ const REPEATABLE_TIMEFRAMES = [
 ];
 
 interface IFormValues {
-    demandNeedsInMWh: string;
+    demandNeedsInDisplayUnit: string;
     maxPricePerMWh: string;
     currency: string | '';
     timeframe: TimeFrame | '';
@@ -65,7 +66,7 @@ interface IFormValues {
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
-    demandNeedsInMWh: '',
+    demandNeedsInDisplayUnit: '',
     maxPricePerMWh: '',
     currency: '',
     timeframe: '',
@@ -113,8 +114,8 @@ export function DemandForm(props: IProps) {
                 startDate: moment.unix(demand.offChainProperties.startTime),
                 endDate: moment.unix(demand.offChainProperties.endTime),
                 activeUntilDate: moment.unix(demand.offChainProperties.endTime),
-                demandNeedsInMWh: Math.round(
-                    demand.offChainProperties.energyPerTimeFrame / 1000000
+                demandNeedsInDisplayUnit: EnergyFormatter.getValueInDisplayUnit(
+                    demand.offChainProperties.energyPerTimeFrame
                 ).toString(),
                 maxPricePerMWh: Math.round(
                     demand.offChainProperties.maxPricePerMwh / 100
@@ -160,17 +161,19 @@ export function DemandForm(props: IProps) {
     function totalDemand(
         startDate: IFormValues['startDate'],
         endDate: IFormValues['endDate'],
-        demandNeedsInMWh: IFormValues['demandNeedsInMWh'],
+        demandNeedsInDisplayUnit: IFormValues['demandNeedsInDisplayUnit'],
         timeframe: IFormValues['timeframe']
     ) {
-        if (!endDate || !demandNeedsInMWh || !startDate || timeframe === '') {
+        if (!endDate || !demandNeedsInDisplayUnit || !startDate || timeframe === '') {
             return 0;
         }
 
         return Demand.calculateTotalEnergyDemand(
             startDate.unix(),
             endDate.unix(),
-            parseInt(demandNeedsInMWh, 10) * 1000000,
+            EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                parseFloat(demandNeedsInDisplayUnit)
+            ),
             timeframe
         );
     }
@@ -194,7 +197,9 @@ export function DemandForm(props: IProps) {
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
             maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
-            energyPerTimeFrame: Math.round(parseFloat(values.demandNeedsInMWh) * 1000000),
+            energyPerTimeFrame: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
+                parseFloat(values.demandNeedsInDisplayUnit)
+            ),
             automaticMatching: values.automaticMatching
         };
 
@@ -267,8 +272,8 @@ export function DemandForm(props: IProps) {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={Yup.object().shape({
-                    demandNeedsInMWh: Yup.number()
-                        .label('Demand needs (MWh)')
+                    demandNeedsInDisplayUnit: Yup.number()
+                        .label(`Demand needs (${EnergyFormatter.displayUnit})`)
                         .required('Required')
                         .positive('Number has to be positive'),
                     maxPricePerMWh: Yup.number()
@@ -314,11 +319,11 @@ export function DemandForm(props: IProps) {
                                         variant="filled"
                                         className="mt-3"
                                         required
-                                        {...dataTest('demandNeedsInMWh')}
+                                        {...dataTest('demandNeedsInDisplayUnit')}
                                     >
                                         <Field
-                                            label="Demand needs (MWh)"
-                                            name="demandNeedsInMWh"
+                                            label={`Demand needs (${EnergyFormatter.displayUnit})`}
+                                            name="demandNeedsInDisplayUnit"
                                             component={TextField}
                                             variant="filled"
                                             fullWidth
@@ -507,15 +512,15 @@ export function DemandForm(props: IProps) {
                                     <div className="mt-3">
                                         Total demand:{' '}
                                         <b {...dataTest('totalDemand')}>
-                                            {(
+                                            {EnergyFormatter.format(
                                                 totalDemand(
                                                     values.startDate,
                                                     values.endDate,
-                                                    values.demandNeedsInMWh,
+                                                    values.demandNeedsInDisplayUnit,
                                                     values.timeframe
-                                                ) / 1000000
-                                            ).toLocaleString()}{' '}
-                                            MWh
+                                                ),
+                                                true
+                                            )}
                                         </b>
                                     </div>
                                 </Grid>

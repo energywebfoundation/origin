@@ -1,6 +1,7 @@
 import React from 'react';
-import { TextField, Chip } from '@material-ui/core';
+import { TextField, Chip, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import { STYLE_CONFIG } from '../styles/styleConfig';
 
 export interface IAutocompleteMultiSelectOptionType {
     label: string;
@@ -20,6 +21,19 @@ interface IOwnProps {
 
 export function MultiSelectAutocomplete(props: IOwnProps) {
     const { label, placeholder, options, selectedValues, disabled, className, max } = props;
+
+    const useStyles = makeStyles(() =>
+        createStyles({
+            clearIndicator: {
+                color: STYLE_CONFIG.FIELD_ICON_COLOR
+            },
+            popupIndicator: {
+                color: STYLE_CONFIG.FIELD_ICON_COLOR
+            }
+        })
+    );
+
+    const classes = useStyles(useTheme());
 
     return (
         <div className={className}>
@@ -49,6 +63,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                 getOptionSelected={(option, value) => option.value === value.value}
                 getOptionDisabled={() => disabled}
                 disabled={disabled}
+                classes={classes}
             />
         </div>
     );

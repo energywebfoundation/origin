@@ -4,6 +4,7 @@ $primaryColorDarker: darken($primaryColor, 20%);
 $textColorDefault: #a8a8a8;
 $backgroundColorDark: #2c2c2c;
 $bootstrapBodyColor: white;
+$fieldIconColor: darken(white, 30%);
 
 :export {
     primaryColor: $primaryColor;
@@ -12,4 +13,5 @@ $bootstrapBodyColor: white;
     backgroundColorDark: $backgroundColorDark;
     textColorDefault: $textColorDefault;
     bootstrapBodyColor: $bootstrapBodyColor;
+    fieldIconColor: $fieldIconColor
 }
