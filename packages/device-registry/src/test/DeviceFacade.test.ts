@@ -125,7 +125,7 @@ describe('Device Facade', () => {
 
             const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
                 operationalSince: 0,
-                capacityWh: 10,
+                capacityInW: 10,
                 country: 'Thailand',
                 address:
                     '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
@@ -190,7 +190,7 @@ describe('Device Facade', () => {
                 url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
                 offChainProperties: {
                     operationalSince: 0,
-                    capacityWh: 10,
+                    capacityInW: 10,
                     country: 'Thailand',
                     address:
                         '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
@@ -247,7 +247,7 @@ describe('Device Facade', () => {
 
             const devicePropsOffChain: Device.IOffChainProperties = {
                 operationalSince: 0,
-                capacityWh: 10,
+                capacityInW: 10,
                 country: 'Thailand',
                 address:
                     '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
@@ -308,7 +308,7 @@ describe('Device Facade', () => {
                 url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
                 offChainProperties: {
                     operationalSince: 0,
-                    capacityWh: 10,
+                    capacityInW: 10,
                     country: 'Thailand',
                     address:
                         '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
