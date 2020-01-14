@@ -68,14 +68,10 @@ contract Registry is ERC1155Mintable, ERC1888 {
 	}
 
 	function _validate(address _verifier, bytes memory _validityData) internal {
-		// emit checkBytes(_validityData);
-		// bytes memory checkerbytes = 0x72a9a8150000000000000000000000000000000000000000000000000000000000000002;
-		// uint shouldBeSize = 71;
-		// require(_validityData.length == shouldBeSize, "wrong size _validityData");
-		// require(checkerbytes.length == shouldBeSize, "wrong size checkerbytes");
-		// require(_validityData.length == checkerbytes.length, "wrong validity data");
-		// (bool success,) = _verifier.staticcall(_validityData);
-		// require(success, "Invalid request");
+		if (_verifier.isContract()) {
+			(bool success, bytes memory result) = _verifier.staticcall(_validityData);
+			require(success && abi.decode(result, (bool)), "Invalid request");
+        }
 	}
 
 	/**

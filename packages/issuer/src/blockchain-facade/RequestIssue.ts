@@ -51,10 +51,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
             name: 'isValid',
             type: 'function',
             inputs: [{
-                type: 'uint',
+                type: 'uint256',
                 name: '_requestId'
             }]
-        }, [this.id]);
+        }, [this.id.toString()]);
 
         const tx = await this.configuration.blockchainProperties.issuerLogicInstance.public.approveIssue(toAddress, this.id, value, validityData);
 

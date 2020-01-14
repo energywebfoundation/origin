@@ -2,7 +2,7 @@ import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 
-import { Registry, PublicIssuer } from '..';
+import { Registry, PublicIssuer, PUBLIC_CERTIFICATE_TOPIC } from '..';
 
 export interface ICertificate {
     id: string;
@@ -293,7 +293,6 @@ export async function approveCertificationRequest(
 
 export const createCertificate = async (
     to: string,
-    validityFunction: string,
     value: number,
     fromTime: Timestamp,
     toTime: Timestamp,
@@ -305,23 +304,12 @@ export const createCertificate = async (
     const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
     const issuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public;
 
-    const fromAccount = {
-        from: configuration.blockchainProperties.activeUser.address,
-        privateKey: configuration.blockchainProperties.activeUser.privateKey
-    };
-
-    const validityData = configuration.blockchainProperties.web3.eth.abi.encodeFunctionCall({
-        name: 'isValid',
-        type: 'function',
-        inputs: [{
-            type: 'uint',
-            name: '_requestId'
-        }]
-    }, ['1']);
-
     const data = await issuer.encodeIssue(fromTime, toTime, deviceId);
 
-    const { logs } = await registry.issue(to, validityData, 123, value, data, fromAccount);
+    const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, {
+        from: configuration.blockchainProperties.activeUser.address,
+        privateKey: configuration.blockchainProperties.activeUser.privateKey
+    });
 
     certificate.id = configuration.blockchainProperties.web3.utils
         .hexToNumber(logs[1].topics[1])

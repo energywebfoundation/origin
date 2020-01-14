@@ -64,8 +64,8 @@ contract PublicIssuer is Initializable {
         return registry.issue(_to, _validityData, certificateTopic, _value, request.data);
     }
 
-    function isValid(uint _requestId) external view returns (bool) {
-        return true;
+    function isValid(uint256 _requestId) external view returns (bool) {
+        return _requestId <= requestIssueNonce;
     }
 
     function version() public view returns (string memory) {

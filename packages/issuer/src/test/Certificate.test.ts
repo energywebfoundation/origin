@@ -51,7 +51,6 @@ describe('Registry tests', () => {
 
         return Certificate.createCertificate(
             accountDeviceOwner,
-            'isValid()',
             volume,
             generationStartTime,
             generationEndTime,
