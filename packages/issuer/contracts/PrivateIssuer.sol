@@ -5,203 +5,203 @@ import "./Registry.sol";
 import "./PublicIssuer.sol";
 
 contract PrivateIssuer {
-  event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
+	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 
-  event IssueRequest(address indexed _owner, uint256 indexed _id);
-  event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
-  event PrivateTransferRequest(address indexed _owner, uint256 indexed _id);
-  event PublicCertificateCreated(uint indexed _from, uint indexed _to);
+	event IssueRequest(address indexed _owner, uint256 indexed _id);
+	event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
+	event PrivateTransferRequest(address indexed _owner, uint256 indexed _id);
+	event PublicCertificateCreated(uint indexed _from, uint indexed _to);
 
-  Registry public registry;
-  PublicIssuer public publicIssuer;
+	Registry public registry;
+	PublicIssuer public publicIssuer;
 
-  int public privateCertificateTopic = 1234; 
-  int public publicCertificateTopic = 1235; 
+	int public privateCertificateTopic = 1234;
+	int public publicCertificateTopic = 1235;
 
-  struct RequestIssue {
-    address owner;
-    bytes data;
-    bool approved;
-  }
+	struct RequestIssue {
+		address owner;
+		bytes data;
+		bool approved;
+	}
 
-  struct RequestStateChange {
-    address owner;
-    uint certificateId;
-    bytes32 hash;
-    bool approved;
-  }
+	struct RequestStateChange {
+		address owner;
+		uint certificateId;
+		bytes32 hash;
+		bool approved;
+	}
 
-  struct Proof {
-    bool left;
-    bytes32 hash;
-  }
+	struct Proof {
+		bool left;
+		bytes32 hash;
+	}
 
-  uint public requestIssueNonce;
-  uint public requestMigrateToPublicNonce;
-  uint public requestPrivateTransferNonce;
+	uint public requestIssueNonce;
+	uint public requestMigrateToPublicNonce;
+	uint public requestPrivateTransferNonce;
 
-  mapping(uint256 => RequestIssue) public requestIssueStorage;
-  mapping(uint256 => RequestStateChange) public requestMigrateToPublicStorage;
-  mapping(uint256 => RequestStateChange) public requestPrivateTransferStorage;
-  
-  mapping(uint256 => bytes32) public commitments;
-  mapping(uint256 => bool) public migrations;
+	mapping(uint256 => RequestIssue) public requestIssueStorage;
+	mapping(uint256 => RequestStateChange) public requestMigrateToPublicStorage;
+	mapping(uint256 => RequestStateChange) public requestPrivateTransferStorage;
 
-  constructor(Registry _registry, PublicIssuer _publicIssuer) public {
-    registry = _registry;
-    publicIssuer = _publicIssuer;
-  }
+	mapping(uint256 => bytes32) public commitments;
+	mapping(uint256 => bool) public migrations;
 
-  function updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) public {
-    require(commitments[_id] == _previousCommitment);
+	constructor(Registry _registry, PublicIssuer _publicIssuer) public {
+		registry = _registry;
+		publicIssuer = _publicIssuer;
+	}
 
-    commitments[_id] = _commitment;
+	function updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) public {
+		require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
 
-    emit CommitmentUpdated(msg.sender, _id, _commitment);
-  }
+		commitments[_id] = _commitment;
 
-  /*
-    Private Issue
-  */
+		emit CommitmentUpdated(msg.sender, _id, _commitment);
+	}
 
-  function encodeIssue(uint _from, uint _to, string memory _deviceId) public pure returns (bytes memory) {
-    return abi.encode(_from, _to, _deviceId);
-  }
+	/*
+		Private Issue
+	*/
 
-  function decodeIssue(bytes memory _data) public pure returns (uint, uint, string memory) {
-    return abi.decode(_data, (uint, uint, string));
-  }
+	function encodeIssue(uint _from, uint _to, string memory _deviceId) public pure returns (bytes memory) {
+		return abi.encode(_from, _to, _deviceId);
+	}
 
-  function requestIssue(bytes calldata _data) external {
-    uint id = ++requestIssueNonce;
+	function decodeIssue(bytes memory _data) public pure returns (uint, uint, string memory) {
+		return abi.decode(_data, (uint, uint, string));
+	}
 
-    requestIssueStorage[id] = RequestIssue({
-      owner: msg.sender,
-      data: _data,
-      approved: false
-    });
+	function requestIssue(bytes calldata _data) external {
+		uint id = ++requestIssueNonce;
 
-    emit IssueRequest(msg.sender, id);
-  }
+		requestIssueStorage[id] = RequestIssue({
+			owner: msg.sender,
+			data: _data,
+			approved: false
+		});
 
-  //onlyOwner (issuer)
-  function approveIssue(address _to, uint _requestId, bytes32 _commitment, bytes calldata _validityData) external returns (uint256) {
-    RequestIssue storage request = requestIssueStorage[_requestId];
-    require(!request.approved, "Already issued"); //consider checking topic and other params from request
+		emit IssueRequest(msg.sender, id);
+	}
 
-    request.approved = true;
+	//onlyOwner (issuer)
+	function approveIssue(address _to, uint _requestId, bytes32 _commitment, bytes calldata _validityData) external returns (uint256) {
+		RequestIssue storage request = requestIssueStorage[_requestId];
+		require(!request.approved, "Already issued"); //consider checking topic and other params from request
 
-    uint id = registry.issue(_to, _validityData, privateCertificateTopic, 0, request.data);
+		request.approved = true;
 
-    updateCommitment(id, 0x0, _commitment);
+		uint id = registry.issue(_to, _validityData, privateCertificateTopic, 0, request.data);
 
-    return id;
-  }
+		updateCommitment(id, 0x0, _commitment);
 
-  /*
-    Migrate to public certificate (public issue)  
-  */
-  function requestMigrateToPublic(uint _certificateId, bytes32 _hash) external {
-    uint id = ++requestMigrateToPublicNonce;
+		return id;
+	}
 
-    requestMigrateToPublicStorage[id] = RequestStateChange({
-      owner: msg.sender,
-      hash: _hash,
-      certificateId: _certificateId,
-      approved: false
-    });
+	/*
+		Migrate to public certificate (public issue)  
+	*/
+	function requestMigrateToPublic(uint _certificateId, bytes32 _hash) external {
+		uint id = ++requestMigrateToPublicNonce;
 
-    emit MigrateToPublicRequest(msg.sender, id);
-  }
+		requestMigrateToPublicStorage[id] = RequestStateChange({
+			owner: msg.sender,
+			hash: _hash,
+			certificateId: _certificateId,
+			approved: false
+		});
 
-  function migrateToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof, bytes32 _newCommitment) external {
-    RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
+		emit MigrateToPublicRequest(msg.sender, id);
+	}
 
-    require(!request.approved, "Request already approved");
-    require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
-    require(validateProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+	function migrateToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof, bytes32 _newCommitment) external {
+		RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
 
-    request.approved = true;
+		require(!request.approved, "Request already approved");
+		require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
+		require(validateProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 
-    //here delegate both to public issuer
-    //or even better move the logic to separate contract that keeps track of public to private and opposite direction
-    if (migrations[request.certificateId]) {
-      // registry.mint(request.owner, request.certificateId, _value);
-      // publicIssuer.mint()
-    } else {
-      migrations[request.certificateId] = true;
-      (,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
-    
-      uint requestId = publicIssuer.requestIssueFor(request.owner, data);
-      uint id = publicIssuer.approveIssue(request.owner, requestId, _value, validityData);
+		request.approved = true;
 
-      emit PublicCertificateCreated(request.certificateId, id);
-    }
-  }
+		//here delegate both to public issuer
+		//or even better move the logic to separate contract that keeps track of public to private and opposite direction
+		if (migrations[request.certificateId]) {
+			// registry.mint(request.owner, request.certificateId, _value);
+			// publicIssuer.mint()
+		} else {
+			migrations[request.certificateId] = true;
+			(,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
 
-  /*
-    Transfer volume to public
-  */
-  function transferToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof) external {
-    RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
+			uint requestId = publicIssuer.requestIssueFor(data, request.owner);
+			uint id = publicIssuer.approveIssue(request.owner, requestId, _value, validityData);
 
-    require(!request.approved, "Request already approved");
-    require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
-    require(validateProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+			emit PublicCertificateCreated(request.certificateId, id);
+		}
+	}
 
-    request.approved = true;
-  
-    registry.safeTransferFrom(address(this), request.owner, request.certificateId, _value, new bytes(0)); //TODO: do we need a data here?
-  }
+	/*
+		Transfer volume to public
+	*/
+	function transferToPublic(uint _requestId, uint _value, string calldata _salt, Proof[] calldata _proof) external {
+		RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
 
-  /*
-    Private transfer
-  */
-  function requestPrivateTransfer(uint _certificateId, bytes32 _hash) external {
-    uint id = ++requestPrivateTransferNonce;
+		require(!request.approved, "Request already approved");
+		require(request.hash == keccak256(abi.encodePacked(request.owner, _value, _salt)), "Requested hash does not match");
+		require(validateProof(request.owner, _value, _salt, commitments[request.certificateId], _proof), "Invalid proof");
 
-    requestPrivateTransferStorage[id] = RequestStateChange({
-      owner: msg.sender,
-      hash: _hash,
-      certificateId: _certificateId,
-      approved: false
-    });
+		request.approved = true;
 
-    emit PrivateTransferRequest(msg.sender, id);
-  }
+		registry.safeTransferFrom(address(this), request.owner, request.certificateId, _value, new bytes(0)); //TODO: do we need a data here?
+	}
 
-  function privateTransfer(uint _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external {
-    RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
+	/*
+		Private transfer
+	*/
+	function requestPrivateTransfer(uint _certificateId, bytes32 _hash) external {
+		uint id = ++requestPrivateTransferNonce;
 
-    require(!request.approved, "Request already approved");
-    require(validateMerkle(request.hash, _commitment, _proof), "Wrong merkle tree");
+		requestPrivateTransferStorage[id] = RequestStateChange({
+			owner: msg.sender,
+			hash: _hash,
+			certificateId: _certificateId,
+			approved: false
+		});
 
-    request.approved = true;
+		emit PrivateTransferRequest(msg.sender, id);
+	}
 
-    updateCommitment(request.certificateId, _previousCommitment, _commitment);
-  }
+	function privateTransfer(uint _requestId, Proof[] calldata _proof, bytes32 _previousCommitment, bytes32 _commitment) external {
+		RequestStateChange storage request = requestPrivateTransferStorage[_requestId];
 
-  /*
-    Utils
-  */
-  function validateProof(address _key, uint _value, string memory _salt, bytes32 _rootHash, Proof[] memory _proof) pure private returns(bool) {
-    bytes32 hash = keccak256(abi.encodePacked(_key, _value, _salt));
+		require(!request.approved, "Request already approved");
+		require(validateMerkle(request.hash, _commitment, _proof), "Wrong merkle tree");
 
-    return validateMerkle(hash, _rootHash, _proof);
-  }
+		request.approved = true;
 
-  function validateMerkle(bytes32 _leaf, bytes32 _rootHash, Proof[] memory _proof) pure private returns(bool) {
-    bytes32 hash = _leaf;
+		updateCommitment(request.certificateId, _previousCommitment, _commitment);
+	}
 
-    for(uint i=0; i<_proof.length; i++) {
-        Proof memory p = _proof[i];
-        if (p.left) {
-            hash = keccak256(abi.encodePacked(p.hash, hash));
-        } else {
-            hash = keccak256(abi.encodePacked(hash, p.hash));
-        }
-    }
+	/*
+		Utils
+	*/
+	function validateProof(address _key, uint _value, string memory _salt, bytes32 _rootHash, Proof[] memory _proof) pure private returns(bool) {
+		bytes32 hash = keccak256(abi.encodePacked(_key, _value, _salt));
 
-    return _rootHash == hash;
-  }
+		return validateMerkle(hash, _rootHash, _proof);
+	}
+
+	function validateMerkle(bytes32 _leaf, bytes32 _rootHash, Proof[] memory _proof) pure private returns(bool) {
+		bytes32 hash = _leaf;
+
+		for (uint i = 0; i < _proof.length; i++) {
+			Proof memory p = _proof[i];
+			if (p.left) {
+				hash = keccak256(abi.encodePacked(p.hash, hash));
+			} else {
+				hash = keccak256(abi.encodePacked(hash, p.hash));
+			}
+		}
+
+		return _rootHash == hash;
+	}
 }

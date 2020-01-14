@@ -1,68 +1,88 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "./ERC1155/ERC1155.sol";
+import "./ERC1155/ERC1155Mintable.sol";
 import "./ERC1888/IERC1888.sol";
 
-contract Registry is ERC1155, ERC1888 {
-  uint public nonce;
-  mapping(uint256 => Certificate) public certificateStorage;
-  mapping(uint256 => mapping(address => uint256)) public claimedBalances;
+contract Registry is ERC1155Mintable, ERC1888 {
 
-  function issue(address _to, bytes calldata _validityData, int256 _topic, uint256 _value, bytes calldata _data) external returns (uint256) {
-    _validate(msg.sender, _validityData);
+	mapping(uint256 => Certificate) public certificateStorage;
+	mapping(uint256 => mapping(address => uint256)) public claimedBalances;
 
-    uint256 id = ++nonce;
+	// Array with all certificate ids, used for enumeration
+    uint256[] private _allCertificates;
+	// Mapping from certificate id to position in the allCertificates array
+    mapping(uint256 => uint256) private _allCertificatesIndex;
 
-    certificateStorage[id] = Certificate({
-      topic: _topic,
-      issuer: msg.sender,
-      validityData: _validityData,
-      data: _data
-    });
+	function issue(address _to, bytes calldata _validityData, int256 _topic, uint256 _value, bytes calldata _data) external returns (uint256 _id) {
+		_validate(msg.sender, _validityData);
 
-    ERC1155.safeTransferFrom(address(0x0), _to, id, _value, new bytes(0));
+		uint _id = this.create(_value, "Certificate", msg.sender);
+		safeTransferFrom(msg.sender, _to, _id, _value, _data);
 
-    emit IssuanceSingle(msg.sender, _topic, id);
+		certificateStorage[_id] = Certificate({
+			topic: _topic,
+			issuer: msg.sender,
+			validityData: _validityData,
+			data: _data
+		});
 
-    return id;
-  }
+		_allCertificatesIndex[_id] = _allCertificates.length;
+		_allCertificates.push(_id);
 
-  function safeTransferAndClaimFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data, bytes32 _claimData) external {
-    Certificate memory cert = certificateStorage[_id];
+		emit IssuanceSingle(msg.sender, _topic, _id);
+	}
 
-    _validate(cert.issuer,  cert.validityData);
+	function safeTransferAndClaimFrom(
+		address _from,
+		address _to,
+		uint256 _id,
+		uint256 _value,
+		bytes calldata _data,
+		bytes32 _claimData
+	) external {
+		Certificate memory cert = certificateStorage[_id];
 
-    //transfer
-    ERC1155.safeTransferFrom(_from, _to, _id, _value, _data);
-    //burn
-    _burn(_to, _id, _value);
+		_validate(cert.issuer,  cert.validityData);
 
-    emit ClaimSingle(cert.issuer, address(0x0), cert.topic, _id, _value, _claimData); //_claimSubject address ??
-  }
+		safeTransferFrom(_from, _to, _id, _value, _data);
+		_burn(_to, _id, _value);
 
-  function getCertificate(uint256 _id) external view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
-    Certificate memory certificate = certificateStorage[_id];
-    return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
-  }
+		emit ClaimSingle(cert.issuer, address(0x0), cert.topic, _id, _value, _claimData); //_claimSubject address ??
+	}
 
-  function mint(address _to, uint256 _id, uint256 _value) external {
-    require(certificateStorage[_id].issuer == msg.sender); // this also implicity checks if certificate has been issued before mint
-    
-    ERC1155.safeTransferFrom(address(0x0), _to, _id, _value, new bytes(0));
-  }
+	function getCertificate(uint256 _id) external view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
+		require(_id <= totalSupply(), "getCertificate: _id out of bounds");
 
-  function claimedBalanceOf(address _owner, uint256 _id) external view returns (uint256) {
-    return claimedBalances[_id][_owner];
-  }
+		Certificate memory certificate = certificateStorage[_id];
+		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
+	}
 
-  function _burn(address _from, uint256 _id, uint256 _value) internal {
-    balances[_id][_from] = balances[_id][_from].sub(_value);
-    claimedBalances[_id][_from] = claimedBalances[_id][_from].add(_value);
-  }
+	function claimedBalanceOf(address _owner, uint256 _id) external view returns (uint256) {
+		return claimedBalances[_id][_owner];
+	}
 
-  function _validate(address _verifier, bytes memory _validityData) internal {
-    (bool success, bytes memory result) = _verifier.staticcall(_validityData);
-    require(success && abi.decode(result, (bool)), "Invalid request");
-  }
+	function _burn(address _from, uint256 _id, uint256 _value) internal {
+		balances[_id][_from] = balances[_id][_from].sub(_value);
+		claimedBalances[_id][_from] = claimedBalances[_id][_from].add(_value);
+	}
+
+	function _validate(address _verifier, bytes memory _validityData) internal {
+		// emit checkBytes(_validityData);
+		// bytes memory checkerbytes = 0x72a9a8150000000000000000000000000000000000000000000000000000000000000002;
+		// uint shouldBeSize = 71;
+		// require(_validityData.length == shouldBeSize, "wrong size _validityData");
+		// require(checkerbytes.length == shouldBeSize, "wrong size checkerbytes");
+		// require(_validityData.length == checkerbytes.length, "wrong validity data");
+		// (bool success,) = _verifier.staticcall(_validityData);
+		// require(success, "Invalid request");
+	}
+
+	/**
+     * @dev Gets the total amount of certificates stored by the contract.
+     * @return uint256 representing the total amount of certificates
+     */
+    function totalSupply() public view returns (uint256) {
+        return _allCertificates.length;
+    }
 }

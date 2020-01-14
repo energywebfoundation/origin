@@ -8,16 +8,7 @@
     "include": ["./src/**/*", "./dist/ts/**/*", "./build/**/*.json"],
     "references": [
         {
-            "path": "../user-registry/tsconfig.build.json"
-        },
-        {
             "path": "../utils-general/tsconfig.build.json"
-        },
-        {
-            "path": "../device-registry/tsconfig.build.json"
-        },
-        {
-            "path": "../origin-backend-client/tsconfig.build.json"
         }
     ]
 }
