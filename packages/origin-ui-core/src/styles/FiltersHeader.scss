@@ -1,0 +1,54 @@
+.FiltersHeader {
+    padding-bottom: 20px;
+}
+
+.Filter {
+    background: $backgroundColorDark;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    display: inline;
+    padding: 14px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+    user-select: none;
+
+    &-opened {
+        display: block;
+    }
+
+    &_icon {
+        display: inline;
+        vertical-align: text-top;
+        margin-right: 10px;
+    }
+
+    &_menu {
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        user-select: none;
+        background: $backgroundColorDark;
+
+        &_item {
+            padding: 10px;
+            align-items: center;
+            display: inline-flex;
+            width: 50%;
+            position: relative;
+            vertical-align: top;
+
+            &-fullWidth {
+                display: block;
+                width: 100%;
+            }
+
+            &_sliderWrapper {
+                width: calc(100% - 28px);
+                display: inline-flex;
+                flex-direction: column;
+
+                .MuiSlider-root {
+                    margin-top: 15px;
+                    margin-left: 13px;
+                }
+            }
+        }
+    }
+}
