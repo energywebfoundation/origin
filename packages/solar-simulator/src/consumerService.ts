@@ -17,10 +17,8 @@ export function wait(milliseconds: number) {
     });
 }
 
-const WEB3 = process.env.WEB3 || 'http://localhost:8545';
-
 async function createBlockchainConfiguration() {
-    const web3 = new Web3(WEB3);
+    const web3 = new Web3(process.env.WEB3 ?? 'http://localhost:8545');
 
     const logger = Winston.createLogger({
         format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
