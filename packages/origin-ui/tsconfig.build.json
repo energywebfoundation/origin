@@ -32,6 +32,9 @@
         },
         {
             "path": "../origin-backend-core/tsconfig.build.json"
-        }
+        },
+        {
+            "path": "../origin-ui-core/tsconfig.build.json"
+        },
     ]
 }

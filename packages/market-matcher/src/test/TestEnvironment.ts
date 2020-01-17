@@ -265,7 +265,7 @@ const deployDevice = (config: Configuration.Entity) => {
     const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
         facilityName: 'MatcherTestFacility',
         operationalSince: 0,
-        capacityWh: 10,
+        capacityInW: 10,
         country: 'Thailand',
         address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '14.059500',
