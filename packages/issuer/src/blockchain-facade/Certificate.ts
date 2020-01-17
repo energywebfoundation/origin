@@ -48,7 +48,8 @@ export const getAllCertificateEvents = async (
                     '0'
                 )
             ],
-            toBlock: undefined
+            fromBlock: 0,
+            toBlock: 'latest'
         }
     );
 
@@ -79,7 +80,8 @@ export const getAllCertificateEvents = async (
                         '0'
                     )
                 ],
-                toBlock: undefined
+                fromBlock: 0,
+                toBlock: 'latest'
             }
         );
 
@@ -100,15 +102,9 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     public energy: number;
     public creationTime: number;
 
-    public initialized: boolean;
+    public initialized: boolean = false;
 
     private data: number[];
-
-    constructor(id: string, configuration: Configuration.Entity) {
-        super(id, configuration);
-
-        this.initialized = false;
-    }
 
     async sync(): Promise<Entity> {
         if (this.id === null) {
@@ -179,7 +175,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             from,
             to,
             parseInt(this.id, 10),
-            Math.round(amount),
+            amount,
             this.data,
             getAccountFromConfiguration(this.configuration)
         );

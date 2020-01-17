@@ -17,13 +17,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
     toTime: Timestamp;
     deviceId: string;
     approved: boolean;
-    initialized: boolean;
-
-    constructor(id: string, configuration: Configuration.Entity) {
-        super(id, configuration);
-
-        this.initialized = false;
-    }
+    initialized: boolean = false;
 
     async sync(): Promise<Entity> {
         const publicIssuer = this.configuration.blockchainProperties.issuerLogicInstance.public;

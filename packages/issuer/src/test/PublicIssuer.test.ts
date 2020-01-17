@@ -58,10 +58,6 @@ describe('PublicIssuer', () => {
         };
     });
 
-    it('issuer initializes the supply', async () => {
-
-    });
-
     it('user correctly requests issuance', async () => {
         conf.blockchainProperties.activeUser = {
             address: accountDeviceOwner,
