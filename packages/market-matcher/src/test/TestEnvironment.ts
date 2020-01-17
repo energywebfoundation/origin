@@ -5,25 +5,18 @@ import Web3 from 'web3';
 import {
     Device,
     ProducingDevice,
-    DeviceLogic,
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
 import {
     Agreement,
     Demand,
-    MarketLogic,
     Supply,
     PurchasableCertificate,
     Contracts as MarketContracts,
     Currency
 } from '@energyweb/market';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import {
-    buildRights,
-    Role,
-    UserLogic,
-    Contracts as UserRegistryContracts
-} from '@energyweb/user-registry';
+import { buildRights, Role, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
@@ -168,7 +161,7 @@ const deploy = async () => {
         privateKey: privateKeyDeployment
     });
 
-    const config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic> = {
+    const config: Configuration.Entity = {
         blockchainProperties: {
             activeUser: {
                 address: accountTrader,

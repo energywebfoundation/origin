@@ -13,7 +13,7 @@ import { IAuthenticationState } from '../features/authentication/reducer';
 
 export interface IStoreState {
     authentication: IAuthenticationState;
-    configuration: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
+    configuration: Configuration.Entity;
     producingDevices: IProducingDevicesState;
     certificates: ICertificatesState;
     demands: Demand.Entity[];
