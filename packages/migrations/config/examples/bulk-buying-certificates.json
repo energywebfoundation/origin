@@ -92,7 +92,7 @@
                 "smartMeterPK": "191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c",
                 "owner": "0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45",
                 "operationalSince": 1514764800,
-                "capacityWh": 10000,
+                "capacityInW": 10000,
                 "lastSmartMeterReadWh": 0,
                 "active": true,
                 "lastSmartMeterReadFileHash": "",

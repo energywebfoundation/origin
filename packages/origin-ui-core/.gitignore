@@ -1,0 +1,6 @@
+node_modules
+.DS_Store
+dist
+db.sqlite
+.vscode
+env-config.js

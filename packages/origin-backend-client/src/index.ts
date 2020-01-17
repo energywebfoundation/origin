@@ -3,3 +3,4 @@ export { OffChainDataClientMock } from './OffChainDataClientMock';
 export { IConfigurationClient, ConfigurationClient } from './ConfigurationClient';
 export { ConfigurationClientMock } from './ConfigurationClientMock';
 export { OrganizationClient, IOrganizationClient } from './OrganizationClient';
+export * from './UserClient';

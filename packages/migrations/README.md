@@ -146,7 +146,7 @@ usage: command to onboard a new consuming device
 * <code>smartMeterPK</code>: the private Key of the smart meter (needed for simulating meterreadings)
 * <code>owner</code>: the owner of an device (has to have the device manager rights)
 * <code>operationalSince</code>: the unix-timestamp when the device went into operation mode
-* <code>capacityWh</code>: maximal capcity of an device
+* <code>capacityInW</code>: maximal capcity of an device
 * <code>lastSmartMeterReadWh</code>: the last meterreading, should be 0
 * <code>active</code>: flag if the the device is active
 * <code>lastSmartMeterReadFileHash</code>: the last filehash
@@ -172,7 +172,7 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
         "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
         "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
         "operationalSince": "1529971200",
-        "capacityWh": 5000,
+        "capacityInW": 5000,
         "lastSmartMeterReadWh": 0,
         "active": true,
         "lastSmartMeterReadFileHash": "",
@@ -196,7 +196,7 @@ usage: command to onboard a new producing device
 * <code>smartMeterPK</code>: private key of the ethereum address (needed to simuate meterreading)
 * <code>owner</code>: ethereum address of the owner of the device, has to have to device manager rights
 * <code>operationalSince</code>: UNIX-timestamp when the device entered service
-* <code>capacityWh</code>: capacity of the device
+* <code>capacityInW</code>: capacity of the device
 * <code>lastSmartMeterReadWh</code>: last meterreading in Wh
 * <code>status</code>: device status (Submitted, Denied, Active)
 * <code>lastSmartMeterReadFileHash</code>: last filehash
@@ -225,7 +225,7 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
         "smartMeterPK": "09f08bc14bfdaf427fdd0eb676db21a86fa908a25870158345e4f847b5ada35e",
         "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
         "operationalSince": 1514764800,
-        "capacityWh": 10000,
+        "capacityInW": 10000,
         "lastSmartMeterReadWh": 0,
         "active": true,
         "lastSmartMeterReadFileHash": "",
