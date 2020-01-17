@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.3.0...@energyweb/origin-ui@1.4.0) (2020-01-17)
+
+
+### Bug Fixes
+
+* **origin-ui:** only show register device tab to device manager ([b34f85f](https://github.com/energywebfoundation/origin/commit/b34f85f4009daf77983428a4208d16820ad42270))
+* **origin-ui:** unify power/energy units and dates display ([b6ba906](https://github.com/energywebfoundation/origin/commit/b6ba906a38b6e900e9c8264e487fc5414969c8e9))
+
+
+### Features
+
+* **origin-ui:** add register icon when user is guest ([f155344](https://github.com/energywebfoundation/origin/commit/f1553441ae9aacef4756eb4a4bcf6f2c9845fa90))
+* **origin-ui:** remove demand repeatable end date ([7b8fe4f](https://github.com/energywebfoundation/origin/commit/7b8fe4fa130bd3f351106cb08500021f228741ec))
+* **origin-ui:** style improvements ([daf71ff](https://github.com/energywebfoundation/origin/commit/daf71ffeab106e159e0204e20c610422131144f4))
+* **origin-ui:** wire user registration to backend ([5d892e2](https://github.com/energywebfoundation/origin/commit/5d892e22a35340cdd72199999acdb498d5cc85c3))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.2.0...@energyweb/origin-ui@1.3.0) (2020-01-07)
 
 
