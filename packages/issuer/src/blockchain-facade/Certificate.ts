@@ -27,39 +27,10 @@ export interface ICertificate {
     getAllCertificateEvents(): Promise<EventLog[]>;
 }
 
-export const getCertificateListLength = async (
-    configuration: Configuration.Entity
-): Promise<number> => {
-    const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
-
-    return parseInt(
-        await registry.totalSupply(),
-        10
-    );
-};
-
 const getAccountFromConfiguration = (configuration: Configuration.Entity) => ({
     from: configuration.blockchainProperties.activeUser.address,
     privateKey: configuration.blockchainProperties.activeUser.privateKey
 });
-
-export const getAllCertificates = async (configuration: Configuration.Entity) => {
-    const certificatePromises = Array(await getCertificateListLength(configuration))
-        .fill(null)
-        .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-    return Promise.all(certificatePromises);
-};
-
-// export const getActiveCertificates = async (configuration: Configuration.Entity) => {
-//     const certificatePromises = Array(await getCertificateListLength(configuration))
-//         .fill(null)
-//         .map((item, index) => new Entity(index.toString(), configuration).sync());
-
-//     const certs = await Promise.all(certificatePromises);
-
-//     return certs.filter((cert: Entity) => Number(cert.status) === Status.Active);
-// };
 
 export const getAllCertificateEvents = async (
     certId: number,
@@ -257,40 +228,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     }
 }
 
-export async function claimCertificates(
-    certificateIds: string[],
-    configuration: Configuration.Entity
-) {
-    const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
-
-    return configuration.blockchainProperties.certificateLogicInstance.claimCertificateBulk(
-        certificateIdsAsNumber,
-        getAccountFromConfiguration(configuration)
-    );
-}
-
-export async function requestCertificates(
-    deviceId: string,
-    limitingSmartMeterReadIndex: number,
-    configuration: Configuration.Entity
-) {
-    return configuration.blockchainProperties.certificateLogicInstance.requestCertificates(
-        parseInt(deviceId, 10),
-        limitingSmartMeterReadIndex,
-        getAccountFromConfiguration(configuration)
-    );
-}
-
-export async function approveCertificationRequest(
-    certicationRequestIndex: number,
-    configuration: Configuration.Entity
-) {
-    return configuration.blockchainProperties.certificateLogicInstance.approveCertificationRequest(
-        certicationRequestIndex,
-        getAccountFromConfiguration(configuration)
-    );
-}
-
 export const createCertificate = async (
     to: string,
     value: number,
@@ -306,10 +243,7 @@ export const createCertificate = async (
 
     const data = await issuer.encodeIssue(fromTime, toTime, deviceId);
 
-    const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, {
-        from: configuration.blockchainProperties.activeUser.address,
-        privateKey: configuration.blockchainProperties.activeUser.privateKey
-    });
+    const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
 
     certificate.id = configuration.blockchainProperties.web3.utils
         .hexToNumber(logs[1].topics[1])
