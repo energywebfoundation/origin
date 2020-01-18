@@ -47,7 +47,7 @@
     "history": "4.10.1",
     "moment": "2.24.0",
     "moment-timezone": "0.5.27",
-    "query-string": "6.9.0",
+    "query-string": "6.10.1",
     "react": "16.12.0",
     "react-chartjs-2": "2.8.0",
     "react-dom": "16.12.0",
