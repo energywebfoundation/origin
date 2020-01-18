@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "3.2.0",
+    "version": "3.2.1",
     "main": "dist/js/src/index.js",
     "bin": {
         "event-listener": "./bin/event-listener"
@@ -34,13 +34,13 @@
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
-        "@energyweb/device-registry": "2.0.1",
-        "@energyweb/market": "3.3.1",
-        "@energyweb/market-matcher-core": "1.2.1",
-        "@energyweb/origin": "3.1.1",
-        "@energyweb/origin-backend-client": "2.2.2",
-        "@energyweb/user-registry": "2.0.4",
-        "@energyweb/utils-general": "4.1.0",
+        "@energyweb/device-registry": "3.0.0",
+        "@energyweb/market": "3.3.2",
+        "@energyweb/market-matcher-core": "1.2.2",
+        "@energyweb/origin": "3.1.2",
+        "@energyweb/origin-backend-client": "2.2.3",
+        "@energyweb/user-registry": "2.0.5",
+        "@energyweb/utils-general": "4.1.1",
         "@types/mandrill-api": "^1.0.30",
         "@types/nodemailer": "^6.2.1",
         "commander": "^4.0.1",
