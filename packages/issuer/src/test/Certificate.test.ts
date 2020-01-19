@@ -7,12 +7,12 @@ import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
-import { migratePublicIssuer, migrateRegistry } from '../migrate';
-import {  Certificate } from '..';
+import { migratePublicIssuer, migrateRegistry, migratePrivateIssuer } from '../migrate';
+import { Certificate } from '..';
 
 import { logger } from '../Logger';
 
-describe('Registry tests', () => {
+describe('Cerificate tests', () => {
     let conf: Configuration.Entity;
 
     dotenv.config({
@@ -41,7 +41,7 @@ describe('Registry tests', () => {
         };
     }
 
-    const issueCertificate = async (volume: number, conf: Configuration.Entity) => {
+    const issueCertificate = async (volume: number, conf: Configuration.Entity, isPrivate: boolean = false) => {
         setActiveUser(issuerPK);
 
         const now = moment();
@@ -55,13 +55,20 @@ describe('Registry tests', () => {
             generationStartTime,
             generationEndTime,
             deviceId,
-            conf
+            conf,
+            isPrivate
         );
     }
 
     it('migrates Registry', async () => {
         const registry = await migrateRegistry(web3, privateKeyDeployment);
         const publicIssuer = await migratePublicIssuer(web3, privateKeyDeployment, registry.web3Contract.options.address);
+        const privateIssuer = await migratePrivateIssuer(
+            web3,
+            privateKeyDeployment,
+            registry.web3Contract.options.address,
+            publicIssuer.web3Contract.options.address
+        );
 
         conf = {
             blockchainProperties: {
@@ -70,7 +77,10 @@ describe('Registry tests', () => {
                     privateKey: privateKeyDeployment
                 },
                 certificateLogicInstance: registry,
-                issuerLogicInstance: { public: publicIssuer },
+                issuerLogicInstance: {
+                    public: publicIssuer,
+                    private: privateIssuer
+                },
                 web3
             },
             offChainDataSource: {
@@ -139,6 +149,27 @@ describe('Registry tests', () => {
 
         assert.isTrue(await certificate.isClaimed());
         assert.equal(await certificate.claimedVolume(), amountToSendToTrader);
+    });
+
+    it('issuer issues a private certificate', async () => {
+        const volume = 123;
+        const certificate = await issueCertificate(volume, conf, true);
+
+        assert.isNotNull(certificate.id);
+
+        // setActiveUser(issuerPK);
+        // assert.isFalse(await certificate.isOwned());
+
+        // setActiveUser(deviceOwnerPK);
+        // assert.isTrue(await certificate.isOwned());
+        // const ownedVolume = await certificate.ownedVolume();
+
+        // assert.equal(ownedVolume, volume);
+
+        assert.deepOwnInclude(certificate, {
+            initialized: true,
+            issuer: issuerAccount
+        } as Partial<Certificate.ICertificate>);
     });
 
 });

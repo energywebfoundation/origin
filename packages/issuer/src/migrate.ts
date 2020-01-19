@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import { Contracts, ProxyAdminProject, ZWeb3, Contract } from '@openzeppelin/upgrades';
 import { PublicIssuer } from './wrappedContracts/PublicIssuer';
+import { PrivateIssuer } from './wrappedContracts/PrivateIssuer';
 import { Registry } from './wrappedContracts/Registry';
 
 export async function migratePublicIssuer(web3: Web3, deployKey: string, registryAddress: string): Promise<PublicIssuer> {
@@ -20,6 +21,25 @@ export async function migratePublicIssuer(web3: Web3, deployKey: string, registr
     console.log(`PublicIssuer ${version} created at ${address}`);
 
     return publicIssuer;
+}
+
+export async function migratePrivateIssuer(web3: Web3, deployKey: string, registryAddress: string, publicIssuerAddress: string): Promise<PrivateIssuer> {
+    ZWeb3.initialize(web3.currentProvider);
+
+    const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
+    const from = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
+
+    const project = new ProxyAdminProject('PrivateIssuer', null, null, { from });
+
+    const privateIssuerContract = Contracts.getFromLocal('PrivateIssuer');
+    const instance = await project.createProxy(privateIssuerContract, { initMethod: 'initialize', initArgs: [registryAddress, publicIssuerAddress] });
+    const address = instance.options.address;
+
+    const privateIssuer = new PrivateIssuer(web3, address);
+    const version = await privateIssuer.version();
+    console.log(`PrivateIssuer ${version} created at ${address}`);
+
+    return privateIssuer;
 }
 
 export async function migrateRegistry(web3: Web3, deployKey: string): Promise<Registry> {

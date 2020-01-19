@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "./Registry.sol";
 import "./PublicIssuer.sol";
 
-contract PrivateIssuer {
+contract PrivateIssuer is Initializable {
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 
 	event IssueRequest(address indexed _owner, uint256 indexed _id);
@@ -47,7 +47,7 @@ contract PrivateIssuer {
 	mapping(uint256 => bytes32) public commitments;
 	mapping(uint256 => bool) public migrations;
 
-	constructor(Registry _registry, PublicIssuer _publicIssuer) public {
+	function initialize(Registry _registry, PublicIssuer _publicIssuer) public initializer {
 		registry = _registry;
 		publicIssuer = _publicIssuer;
 	}
@@ -71,6 +71,10 @@ contract PrivateIssuer {
 	function decodeIssue(bytes memory _data) public pure returns (uint, uint, string memory) {
 		return abi.decode(_data, (uint, uint, string));
 	}
+
+    function getRequestIssue(uint _requestId) external returns (RequestIssue memory) {
+        return requestIssueStorage[_requestId];
+    }
 
 	function requestIssue(bytes calldata _data) external {
 		uint id = ++requestIssueNonce;
@@ -99,7 +103,7 @@ contract PrivateIssuer {
 	}
 
 	/*
-		Migrate to public certificate (public issue)  
+		Migrate to public certificate (public issue)
 	*/
 	function requestMigrateToPublic(uint _certificateId, bytes32 _hash) external {
 		uint id = ++requestMigrateToPublicNonce;
@@ -184,13 +188,13 @@ contract PrivateIssuer {
 	/*
 		Utils
 	*/
-	function validateProof(address _key, uint _value, string memory _salt, bytes32 _rootHash, Proof[] memory _proof) pure private returns(bool) {
+	function validateProof(address _key, uint _value, string memory _salt, bytes32 _rootHash, Proof[] memory _proof) private pure returns(bool) {
 		bytes32 hash = keccak256(abi.encodePacked(_key, _value, _salt));
 
 		return validateMerkle(hash, _rootHash, _proof);
 	}
 
-	function validateMerkle(bytes32 _leaf, bytes32 _rootHash, Proof[] memory _proof) pure private returns(bool) {
+	function validateMerkle(bytes32 _leaf, bytes32 _rootHash, Proof[] memory _proof) private pure returns(bool) {
 		bytes32 hash = _leaf;
 
 		for (uint i = 0; i < _proof.length; i++) {
@@ -204,4 +208,12 @@ contract PrivateIssuer {
 
 		return _rootHash == hash;
 	}
+
+	function isValid(uint256 _requestId) external view returns (bool) {
+        return _requestId <= requestIssueNonce;
+    }
+
+    function version() public view returns (string memory) {
+        return "v0.1";
+    }
 }

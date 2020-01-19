@@ -14,13 +14,13 @@ Issuer uses specific topic to issue:
 - private certificates
 - public certificates (used when migrating from private to public certificate)
 
-2) `PublicIssuer.sol` is an implementation of public I-REC compliant issuer
+2) `PublicIssuer.sol` is an implementation of a public I-REC compliant issuer
 
 ### Recipes
 
 1) Private issuance and private trading
   - issue using PrivateIssuer.requestIssue / PrivateIssuer.approveIssue
-  - transfer using  PrivateIssuer.privateTransfer
+  - transfer using PrivateIssuer.privateTransfer
 
 2) Private issuance and public trading
   - issue using PrivateIssuer.requestIssue / PrivateIssuer.approveIssue
@@ -30,7 +30,7 @@ Issuer uses specific topic to issue:
 3) Public issuance and private trading
   - issue using PublicIssuer
   - deposit volume to PrivateIssuer
-  - transfer using  PrivateIssuer.privateTransfer
+  - transfer using PrivateIssuer.privateTransfer
 
 ### Technical documentation
 

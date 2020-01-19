@@ -39,7 +39,7 @@ contract ERC1155Mintable is ERC1155 {
         creators[_id] = creator;
         balances[_id][creator] = _initialSupply;
 
-        require(balances[_id][creator] > 0, "balance not increased");
+        // require(balances[_id][creator] > 0, "balance not increased");
 
         // Transfer event with mint semantic
         emit TransferSingle(creator, address(0x0), creator, _id, _initialSupply);

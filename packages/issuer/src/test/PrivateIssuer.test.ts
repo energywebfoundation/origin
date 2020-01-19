@@ -7,13 +7,14 @@ import moment from 'moment';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
-import { migratePublicIssuer, migrateRegistry } from '../migrate';
-import { RequestIssue, PublicIssuer, Registry } from '..';
+import { migratePrivateIssuer, migratePublicIssuer, migrateRegistry } from '../migrate';
+import { RequestIssue, PrivateIssuer, Registry, PublicIssuer } from '..';
 
 import { logger } from '../Logger';
 
-describe('PublicIssuer', () => {
+describe('PrivateIssuer', () => {
     let publicIssuer: PublicIssuer;
+    let privateIssuer: PrivateIssuer;
     let registry: Registry;
     let conf: Configuration.Entity;
 
@@ -31,12 +32,35 @@ describe('PublicIssuer', () => {
     const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
-    const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    it('migrates PublicIssuer and Registry', async () => {
+    const setActiveUser = (privateKey: string) => {
+        conf.blockchainProperties.activeUser = {
+            address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
+            privateKey
+        };
+    }
+
+    const createRequestIssue = async (conf: Configuration.Entity) => {
+        setActiveUser(deviceOwnerPK);
+
+        const now = moment();
+        const fromTime = now.subtract(30, 'day').unix();
+        const toTime = now.unix();
+        const deviceId = '1';
+
+        return RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf, true);
+    }
+
+    it('migrates PrivateIssuer and Registry', async () => {
         registry = await migrateRegistry(web3, privateKeyDeployment);
         publicIssuer = await migratePublicIssuer(web3, privateKeyDeployment, registry.web3Contract.options.address);
-        const version = await publicIssuer.version();
+        privateIssuer = await migratePrivateIssuer(
+            web3,
+            privateKeyDeployment,
+            registry.web3Contract.options.address,
+            publicIssuer.web3Contract.options.address
+        );
+        const version = await privateIssuer.version();
 
         assert.equal(version, 'v0.1');
 
@@ -46,7 +70,10 @@ describe('PublicIssuer', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                issuerLogicInstance: { public: publicIssuer },
+                issuerLogicInstance: {
+                    public: publicIssuer,
+                    private: privateIssuer
+                },
                 web3
             },
             offChainDataSource: {
@@ -59,48 +86,23 @@ describe('PublicIssuer', () => {
     });
 
     it('user correctly requests issuance', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountDeviceOwner,
-            privateKey: deviceOwnerPK
-        };
-
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
-        const deviceId = '1';
-
-        const requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        const requestIssue = await createRequestIssue(conf);
 
         assert.isAbove(Number(requestIssue.id), -1);
 
         assert.deepOwnInclude(requestIssue, {
             initialized: true,
-            deviceId,
+            deviceId: '1',
             owner: accountDeviceOwner,
-            fromTime,
-            toTime,
             approved: false,
-            isPrivate: false
+            isPrivate: true
         } as Partial<RequestIssue.Entity>);
     });
 
     it('issuer correctly approves issuance', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountDeviceOwner,
-            privateKey: deviceOwnerPK
-        };
+        let requestIssue = await createRequestIssue(conf);
 
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
-        const deviceId = '1';
-
-        let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
-
-        conf.blockchainProperties.activeUser = {
-            address: issuerAccount,
-            privateKey: issuerPK
-        };
+        setActiveUser(issuerPK);
 
         const volume = 1000;
         const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
@@ -110,7 +112,24 @@ describe('PublicIssuer', () => {
         assert.isTrue(requestIssue.approved);
         
         const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
-        assert.equal(deviceOwnerBalance, volume);
+        assert.equal(deviceOwnerBalance, 0);
     });
+
+    it('migrates private certificate to public certificate', async () => {
+        let requestIssue = await createRequestIssue(conf);
+
+        setActiveUser(issuerPK);
+
+        const volume = 1000;
+        const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
+
+        requestIssue = await requestIssue.sync();
+
+        assert.isTrue(requestIssue.approved);
+        
+        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
+        assert.equal(deviceOwnerBalance, 0);
+    });
+
 
 });

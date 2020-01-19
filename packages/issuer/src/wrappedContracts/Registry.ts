@@ -85,6 +85,27 @@ export class Registry extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async safeBatchTransferAndClaimFrom(
+        _from: string,
+        _to: string,
+        _ids: number[],
+        _values: number[],
+        _data: number[][],
+        _claimData: number[][],
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.safeBatchTransferAndClaimFrom(
+            _from,
+            _to,
+            _ids,
+            _values,
+            _data,
+            _claimData
+        );
+
+        return this.send(method, txParams);
+    }
+
     async totalSupply(txParams?: ISpecialTx) {
         return this.web3Contract.methods.totalSupply().call(txParams);
     }

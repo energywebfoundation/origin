@@ -2,17 +2,17 @@ import Web3 from 'web3';
 
 import { GeneralFunctions, ISpecialTx, Timestamp } from '@energyweb/utils-general';
 
-import PublicIssuerJSON from '../../build/contracts/PublicIssuer.json';
+import PrivateIssuerJSON from '../../build/contracts/PrivateIssuer.json';
 import { PastEventOptions } from 'web3-eth-contract';
 
-export class PublicIssuer extends GeneralFunctions {
+export class PrivateIssuer extends GeneralFunctions {
     web3: Web3;
 
     constructor(web3: Web3, address?: string) {
-        const buildFile: any = PublicIssuerJSON;
+        const buildFile: any = PrivateIssuerJSON;
         super(
             address
-                ? new web3.eth.Contract(PublicIssuerJSON.abi, address)
+                ? new web3.eth.Contract(PrivateIssuerJSON.abi, address)
                 : new web3.eth.Contract(
                       buildFile.abi,
                       buildFile.networks.length > 0 ? buildFile.networks[0] : null
@@ -52,15 +52,43 @@ export class PublicIssuer extends GeneralFunctions {
     async approveIssue(
         _to: string,
         _requestId: number,
-        _value: number,
+        _commitment: any,
         _validityData: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.approveIssue(
             _to,
             _requestId,
-            _value,
+            _commitment,
             _validityData,
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async updateCommitment(
+        _id: number,
+        _previousCommitment: any,
+        _commitment: any,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.updateCommitment(
+            _id,
+            _previousCommitment,
+            _commitment
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async requestMigrateToPublic(
+        _certificateId: number,
+        _hash: string,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.requestMigrateToPublic(
+            _certificateId,
+            _hash
         );
 
         return this.send(method, txParams);

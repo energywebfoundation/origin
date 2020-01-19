@@ -1,7 +1,7 @@
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
-import { PublicIssuer } from '..';
+import { PublicIssuer, PrivateIssuer, CommitmentSchema, ICommitment } from '..';
 
-export interface IRequestIssueOnChainProperties  {
+export interface IRequestIssueOnChainProperties {
     id: string;
     owner: string;
     fromTime: Timestamp,
@@ -12,18 +12,27 @@ export interface IRequestIssueOnChainProperties  {
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IRequestIssueOnChainProperties {
 
-    owner: string;
-    fromTime: Timestamp;
-    toTime: Timestamp;
-    deviceId: string;
-    approved: boolean;
-    initialized: boolean = false;
+    public owner: string;
+    public fromTime: Timestamp;
+    public toTime: Timestamp;
+    public deviceId: string;
+    public approved: boolean;
+
+    public initialized: boolean = false;
+
+    private issuers: { public: PublicIssuer, private: PrivateIssuer };
+
+    constructor(id: string, configuration: Configuration.Entity, public isPrivate: boolean = false) {
+        super(id, configuration);
+
+        this.issuers = this.configuration.blockchainProperties.issuerLogicInstance;
+    }
 
     async sync(): Promise<Entity> {
-        const publicIssuer = this.configuration.blockchainProperties.issuerLogicInstance.public;
-        const issueRequest = await publicIssuer.getRequestIssue(Number(this.id));
+        const issuer = this.isPrivate ? this.issuers.private : this.issuers.public;
 
-        const decodedData = await publicIssuer.decodeIssue(issueRequest.data);
+        const issueRequest = await issuer.getRequestIssue(Number(this.id));
+        const decodedData = await issuer.decodeIssue(issueRequest.data);
 
         this.owner = issueRequest.owner;
         this.fromTime = Number(decodedData['0']);
@@ -50,10 +59,32 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
             }]
         }, [this.id.toString()]);
 
-        const tx = await this.configuration.blockchainProperties.issuerLogicInstance.public.approveIssue(toAddress, this.id, value, validityData);
+        let approveTx;
+
+        if (this.isPrivate) {
+            const commitment: ICommitment = {
+                volume: value
+            };
+            const { rootHash } = this.prepareEntityCreation(commitment, CommitmentSchema);
+
+            approveTx = await this.issuers.private.approveIssue(toAddress, Number(this.id), rootHash, validityData);
+        } else {
+            approveTx = await this.issuers.public.approveIssue(toAddress, Number(this.id), Number(value), validityData);
+        } 
 
         return this.configuration.blockchainProperties.web3.utils
-            .hexToNumber(tx.logs[1].topics[1]);
+            .hexToNumber(approveTx.logs[1].topics[1]);
+    }
+
+    async requestMigrateToPublic(value: number) {
+        if (!this.isPrivate) {
+            throw new Error('Certificate is already public.');
+        }
+
+        const commitment: ICommitment = { volume: value };
+        const { rootHash } = this.prepareEntityCreation(commitment, CommitmentSchema);
+
+        return this.issuers.private.requestMigrateToPublic(Number(this.id), rootHash);
     }
 }
 
@@ -62,23 +93,26 @@ export const createRequestIssue = async (
     toTime: Timestamp,
     deviceId: string,
     configuration: Configuration.Entity,
-    forAddress?: string
+    isVolumePrivate: boolean = false,
+    forAddress?: string,
 ): Promise<Entity> => {
-    const request = new Entity(null, configuration);
+    const request = new Entity(null, configuration, isVolumePrivate);
+
+    const issuer = isVolumePrivate 
+        ? configuration.blockchainProperties.issuerLogicInstance.private
+        : configuration.blockchainProperties.issuerLogicInstance.public;
+
+    const data = await issuer.encodeIssue(fromTime, toTime, deviceId);
 
     const fromAccount = {
         from: configuration.blockchainProperties.activeUser.address,
         privateKey: configuration.blockchainProperties.activeUser.privateKey
     };
 
-    const issuerLogicInstance: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public;
-
-    const data = await issuerLogicInstance.encodeIssue(fromTime, toTime, deviceId);
-
     const { logs } = await (
-        forAddress 
-            ? issuerLogicInstance.requestIssueFor(data, forAddress, fromAccount) 
-            : issuerLogicInstance.requestIssue(data, fromAccount)
+        forAddress
+            ? issuer.requestIssueFor(data, forAddress, fromAccount) 
+            : issuer.requestIssue(data, fromAccount)
     );
 
     request.id = configuration.blockchainProperties.web3.utils

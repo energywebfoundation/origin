@@ -2,7 +2,7 @@ import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 
-import { Registry, PublicIssuer, PUBLIC_CERTIFICATE_TOPIC } from '..';
+import { Registry, PublicIssuer, PrivateIssuer, PRIVATE_CERTIFICATE_TOPIC, PUBLIC_CERTIFICATE_TOPIC, ICommitment, CommitmentSchema } from '..';
 
 export interface ICertificate {
     id: string;
@@ -104,7 +104,11 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
     public initialized: boolean = false;
 
-    private data: number[];
+    public data: number[];
+
+    constructor(id: string, configuration: Configuration.Entity, public isPrivate: boolean = false) {
+        super(id, configuration);
+    }
 
     async sync(): Promise<Entity> {
         if (this.id === null) {
@@ -154,7 +158,8 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
 
         const { randomHex, hexToBytes } = this.configuration.blockchainProperties.web3.utils;
 
-        const claimData = randomHex(32);
+        // TO-DO: replace with proper claim data
+        const claimData = hexToBytes(randomHex(32));
 
         return registry.safeTransferAndClaimFrom(
             owner,
@@ -162,7 +167,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             parseInt(this.id, 10),
             amount,
             this.data,
-            hexToBytes(claimData),
+            claimData,
             getAccountFromConfiguration(this.configuration)
         );
     }
@@ -186,12 +191,20 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     }
 
     async isOwned(): Promise<boolean> {
+        if (this.isPrivate) {
+            throw new Error('Unable to fetch owner for private certificates.');
+        }
+
         const ownedVolume = await this.ownedVolume();
 
         return ownedVolume > 0;
     }
 
     async ownedVolume(): Promise<number> {
+        if (this.isPrivate) {
+            throw new Error('Unable to fetch volumes for private certificates.');
+        }
+
         const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
         const address = this.configuration.blockchainProperties.activeUser.address;
 
@@ -230,24 +243,72 @@ export const createCertificate = async (
     fromTime: Timestamp,
     toTime: Timestamp,
     deviceId: string,
-    configuration: Configuration.Entity
+    configuration: Configuration.Entity,
+    isVolumePrivate: boolean = false
 ): Promise<Entity> => {
-    const certificate = new Entity(null, configuration);
+    const certificate = new Entity(null, configuration, isVolumePrivate);
 
     const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
-    const issuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public;
 
-    const data = await issuer.encodeIssue(fromTime, toTime, deviceId);
-
-    const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
-
-    certificate.id = configuration.blockchainProperties.web3.utils
+    const getIdFromLogs = (logs: any) => configuration.blockchainProperties.web3.utils
         .hexToNumber(logs[1].topics[1])
         .toString();
 
+    if (isVolumePrivate) {
+        const privateIssuer: PrivateIssuer = configuration.blockchainProperties.issuerLogicInstance.private;
+        const data = await privateIssuer.encodeIssue(fromTime, toTime, deviceId);
+
+        const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
+
+        certificate.id = getIdFromLogs(logs);
+
+        const commitment: ICommitment = { volume: value };
+        const { rootHash } = certificate.prepareEntityCreation(commitment, CommitmentSchema);
+        await privateIssuer.updateCommitment(Number(certificate.id), configuration.blockchainProperties.web3.utils.hexToBytes('0x0'), rootHash);
+    } else {
+        const publicIssuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public
+        const data = await publicIssuer.encodeIssue(fromTime, toTime, deviceId);
+
+        const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
+
+        certificate.id = getIdFromLogs(logs);
+    }
+    
     if (configuration.logger) {
         configuration.logger.info(`Certificate ${certificate.id} created`);
     }
 
     return certificate.sync();
 };
+
+export async function claimCertificates(
+    certificateIds: string[],
+    from: string,
+    to: string,
+    configuration: Configuration.Entity
+) {
+    const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
+    const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
+
+    const certificatesPromises = certificateIds.map(certId => new Entity(certId, configuration).sync());
+    const certificates = await Promise.all(certificatesPromises);
+
+    const valuesPromise = certificates.map(cert => cert.ownedVolume());
+    const values = await Promise.all(valuesPromise);
+
+    const data = certificates.map(cert => cert.data);
+
+    const { randomHex, hexToBytes } = configuration.blockchainProperties.web3.utils;
+    // TO-DO: replace with proper claim data
+    const claimData = certificates.map(cert => hexToBytes(randomHex(32)));
+
+    return registry.safeBatchTransferAndClaimFrom(
+        from,
+        to,
+        certificateIdsAsNumber,
+        values,
+        data,
+        claimData,
+        getAccountFromConfiguration(configuration)
+    );
+}

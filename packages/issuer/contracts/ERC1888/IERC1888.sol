@@ -19,7 +19,7 @@ interface ERC1888 {
     // function batchIssue(bytes[]   _data, uint256[]   _topics, uint256[]   _value, bytes32[]   _signatures) external returns(uint256[]);
 
     function safeTransferAndClaimFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data, bytes32 _claimData) external;
-    // function safeBatchTransferAndClaimFrom(address _from, address _to, uint256[] calldata _ids, uint256[] calldata _values, bytes calldata _data, bytes32[] calldata _claimData) external;
+    function safeBatchTransferAndClaimFrom(address _from, address _to, uint256[] calldata _ids, uint256[] calldata _values, bytes calldata _data, bytes32[] calldata _claimData) external;
 
     function getCertificate(uint256 _id) external view returns (address issuer, int256 topic, bytes memory validityCall, bytes memory data);
     function claimedBalanceOf(address _owner, uint256 _id) external view returns (uint256);

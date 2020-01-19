@@ -17,8 +17,11 @@ contract Registry is ERC1155Mintable, ERC1888 {
 	function issue(address _to, bytes calldata _validityData, int256 _topic, uint256 _value, bytes calldata _data) external returns (uint256 _id) {
 		_validate(msg.sender, _validityData);
 
-		uint _id = this.create(_value, "Certificate", msg.sender);
-		safeTransferFrom(msg.sender, _to, _id, _value, _data);
+		_id = this.create(_value, "Certificate", msg.sender);
+
+		if (_value > 0) {
+			safeTransferFrom(msg.sender, _to, _id, _value, _data);
+		}
 
 		certificateStorage[_id] = Certificate({
 			topic: _topic,
@@ -49,6 +52,45 @@ contract Registry is ERC1155Mintable, ERC1888 {
 		_burn(_to, _id, _value);
 
 		emit ClaimSingle(cert.issuer, address(0x0), cert.topic, _id, _value, _claimData); //_claimSubject address ??
+	}
+
+	function safeBatchTransferAndClaimFrom(
+		address _from,
+		address _to,
+		uint256[] calldata _ids,
+		uint256[] calldata _values,
+		bytes calldata _data,
+		bytes32[] calldata _claimData
+	) external {
+		uint numberOfClaims = _ids.length;
+
+		require(numberOfClaims > 0, "safeBatchTransferAndClaimFrom: at least one certificate has to be present.");
+		require(
+			_values.length == numberOfClaims && _data.length == numberOfClaims && _claimData.length == numberOfClaims,
+			"safeBatchTransferAndClaimFrom: not all arrays are of same length."
+		);
+
+		int256[] memory topics = new int256[](numberOfClaims);
+		address issuer = address(0);
+
+		for (uint256 i = 0; i < numberOfClaims; ++i) {
+			Certificate memory cert = certificateStorage[_ids[i]];
+
+			_validate(cert.issuer,  cert.validityData);
+			if (issuer == address(0)) {
+				issuer = cert.issuer;
+			}
+
+			topics[i] = cert.topic;
+		}
+
+		safeBatchTransferFrom(_from, _to, _ids, _values, _data);
+
+		for (uint256 i = 0; i < numberOfClaims; ++i) {
+			_burn(_to, _ids[i], _values[i]);
+		}
+
+		emit ClaimBatch(issuer, address(0x0), topics, _ids, _values, _claimData); //_claimSubject address ??
 	}
 
 	function getCertificate(uint256 _id) external view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
