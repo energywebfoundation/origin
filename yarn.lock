@@ -7068,10 +7068,10 @@ formidable@^1.2.0:
   resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.2.1.tgz#70fb7ca0290ee6ff961090415f4b3df3d2082659"
   integrity sha512-Fs9VRguL0gqGHkXS5GQiMCr1VhZBxz0JnJs4JmMp/2jL18Fmbzvv7vOFRU+U8TBkHEE/CX1qDXzJplVULgsLeg==
 
-formik-material-ui@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/formik-material-ui/-/formik-material-ui-1.0.0.tgz#87e36a7b3b8c54678aa484b1d89076fdfb63780b"
-  integrity sha512-m9Q9PrebdT2XQRY8LbxAecXgXeQ8Sxa/UC/skG2ekwt+x5E1N3vvOw2A91GHi7rXkhNO32nQTDu6z7HJ3phLzA==
+formik-material-ui@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/formik-material-ui/-/formik-material-ui-1.0.1.tgz#d945e116d7399c709d223f3194a132e2495fcbe3"
+  integrity sha512-0TvLrQbOobF1SBhgTgz88mptYiZ73AeOG9Z+JsTncNU6Cgw2DN7W2WuYaYX1gFlPazfkAkwsupKAbCUu64BQkA==
 
 formik@1.5.8:
   version "1.5.8"
