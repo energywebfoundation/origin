@@ -114,7 +114,7 @@ export function DemandForm(props: IProps) {
                     demand.offChainProperties.energyPerTimeFrame
                 ).toString(),
                 maxPricePerMWh: Math.round(
-                    demand.offChainProperties.maxPricePerMwh / 100
+                    demand.offChainProperties.maxPriceInCentsPerMwh
                 ).toString(),
                 procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
                 timeframe: demand.offChainProperties.timeFrame,
@@ -192,7 +192,7 @@ export function DemandForm(props: IProps) {
             startTime: values.startDate.unix(),
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
-            maxPricePerMwh: Math.round(parseFloat(values.maxPricePerMWh) * 100),
+            maxPriceInCentsPerMwh: parseFloat(values.maxPricePerMWh, 10) * 100,
             energyPerTimeFrame: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
                 parseFloat(values.demandNeedsInDisplayUnit)
             ),

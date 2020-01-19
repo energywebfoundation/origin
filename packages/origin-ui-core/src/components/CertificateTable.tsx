@@ -480,7 +480,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
             const offChainProperties: Demand.IDemandOffChainProperties = {
                 timeFrame: TimeFrame.yearly,
-                maxPricePerMwh: 0,
+                maxPriceInCentsPerMwh: 0,
                 currency: currencies[0],
                 otherGreenAttributes: device.offChainProperties.otherGreenAttributes,
                 typeOfPublicSupport: device.offChainProperties.typeOfPublicSupport,

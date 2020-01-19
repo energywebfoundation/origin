@@ -193,13 +193,13 @@ export function AccountSettings() {
                                         <div>
                                             <TextField
                                                 label="Price"
-                                                value={autoPublishCandidate.price}
+                                                value={autoPublishCandidate.priceInCents / 100}
                                                 type="number"
                                                 placeholder="1"
                                                 onChange={e =>
                                                     setAutoPublish({
                                                         ...autoPublishCandidate,
-                                                        price: parseFloat(e.target.value)
+                                                        priceInCents: parseFloat(e.target.value) * 100
                                                     })
                                                 }
                                                 id="priceInput"

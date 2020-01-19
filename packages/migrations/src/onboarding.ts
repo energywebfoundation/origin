@@ -54,7 +54,7 @@ export const onboardDemo = async (
             notifications: action.data.notifications || false,
             autoPublish: action.data.autoPublish || {
                 enabled: false,
-                price: 1.5,
+                priceInCents: 150,
                 currency: currencies[0]
             }
         };
