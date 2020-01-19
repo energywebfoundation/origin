@@ -6,7 +6,7 @@ import supplyOffChainPropertiesSchema from '../../schemas/SupplyOffChainProperti
 import { Currency } from '../types';
 
 export interface ISupplyOffChainProperties {
-    price: number;
+    priceInCents: number;
     currency: Currency;
     availableWh: number;
     timeFrame: TimeFrame;

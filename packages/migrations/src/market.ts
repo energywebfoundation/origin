@@ -164,7 +164,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
 
                 const demandOffchainProps: Demand.IDemandOffChainProperties = {
                     timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame],
-                    maxPricePerMwh: action.data.maxPricePerMwh,
+                    maxPriceInCentsPerMwh: action.data.maxPriceInCentsPerMwh,
                     currency: action.data.currency,
                     location: [action.data.location],
                     deviceType: action.data.devicetype,
@@ -202,7 +202,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 };
 
                 const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
-                    price: action.data.price,
+                    priceInCents: parseInt(action.data.price, 10) * 100,
                     currency: action.data.currency,
                     availableWh: action.data.availableWh,
                     timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame]
@@ -253,7 +253,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
                     start: action.data.startTime,
                     end: action.data.endTime,
-                    price: action.data.price,
+                    priceInCents: parseInt(action.data.price, 10) * 100,
                     currency: action.data.currency,
                     period: action.data.period,
                     timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame]

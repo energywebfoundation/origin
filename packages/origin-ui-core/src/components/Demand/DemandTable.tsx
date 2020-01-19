@@ -301,7 +301,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                         ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
                         : NO_VALUE_TEXT,
                 demand: EnergyFormatter.format(demand.offChainProperties.energyPerTimeFrame),
-                max: `${(demand.offChainProperties.maxPricePerMwh / 100).toFixed(2)} ${
+                max: `${(demand.offChainProperties.maxPriceInCentsPerMwh / 100).toFixed(2)} ${
                     demand.offChainProperties.currency
                 }`,
                 status: demandStatus,

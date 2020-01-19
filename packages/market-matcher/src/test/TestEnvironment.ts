@@ -226,7 +226,7 @@ const deployDemand = async (
 
     const demandOffChainProps: Demand.IDemandOffChainProperties = {
         timeFrame: TimeFrame.hourly,
-        maxPricePerMwh: price,
+        maxPriceInCentsPerMwh: price,
         currency,
         location: ['Thailand;Central;Nakhon Pathom'],
         deviceType: ['Solar'],
@@ -303,7 +303,7 @@ const deploySupply = (
             deviceId
         },
         {
-            price,
+            priceInCents: price,
             currency,
             availableWh: requiredEnergy,
             timeFrame: TimeFrame.hourly
@@ -365,7 +365,7 @@ const deployAgreement = async (
     const agreementOffChainProps: Agreement.IAgreementOffChainProperties = {
         start: startTime,
         end: endTime,
-        price,
+        priceInCents: price,
         currency,
         period: 10,
         timeFrame: TimeFrame.hourly

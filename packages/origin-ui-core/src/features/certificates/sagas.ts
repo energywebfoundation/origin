@@ -33,7 +33,7 @@ function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate
         certificate.acceptedToken === '0x0000000000000000000000000000000000000000' &&
         (!certificate.offChainProperties ||
             (certificate.offChainProperties.currency === NoneCurrency &&
-                certificate.offChainProperties.price === 0))
+                certificate.offChainProperties.priceInCents === 0))
     );
 }
 
