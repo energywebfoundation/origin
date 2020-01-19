@@ -192,7 +192,7 @@ export function DemandForm(props: IProps) {
             startTime: values.startDate.unix(),
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
-            maxPriceInCentsPerMwh: parseFloat(values.maxPricePerMWh, 10) * 100,
+            maxPriceInCentsPerMwh: parseFloat(values.maxPricePerMWh) * 100,
             energyPerTimeFrame: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
                 parseFloat(values.demandNeedsInDisplayUnit)
             ),
