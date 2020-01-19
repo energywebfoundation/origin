@@ -95,7 +95,7 @@ export function PublishForSaleModal(props: IProps) {
 
         dispatch(setLoading(true));
         await certificate.publishForSale(
-            price,
+            price * 100,
             isErc20Sale ? erc20TokenAddress : currency,
             energyInBaseUnit
         );

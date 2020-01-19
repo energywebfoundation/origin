@@ -20,7 +20,7 @@ import { Currency } from '../types';
 
 export interface IDemandOffChainProperties {
     timeFrame: TimeFrame;
-    maxPricePerMwh: number;
+    maxPriceInCentsPerMwh: number;
     currency: Currency;
     location?: string[];
     deviceType?: string[];

@@ -204,7 +204,7 @@ export class Demo {
             notifications: true,
             autoPublish: {
                 enabled: true,
-                price: 1000,
+                priceInCents: 1000,
                 currency: 'USD'
             }
         };
@@ -452,7 +452,7 @@ export class Demo {
 
         const demandOffChainProps: Demand.IDemandOffChainProperties = {
             timeFrame: TimeFrame.hourly,
-            maxPricePerMwh: 150000,
+            maxPriceInCentsPerMwh: 150000,
             currency: 'USD',
             location: ['Thailand;Central;Nakhon Pathom'],
             deviceType: ['Wind'],

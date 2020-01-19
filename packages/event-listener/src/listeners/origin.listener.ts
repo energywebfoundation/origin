@@ -100,7 +100,7 @@ export class OriginEventListener implements IOriginEventListener {
                     `Automatically publishing Certificate #${newCertificate.id} for sale...`
                 );
                 await newCertificate.publishForSale(
-                    autoPublishSettings.price,
+                    autoPublishSettings.priceInCents,
                     autoPublishSettings.currency
                 );
                 this.conf.logger.info(

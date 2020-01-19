@@ -30,7 +30,7 @@ describe('MatchableDemand tests', () => {
     describe('Certificates', () => {
         const missingDemand = 1000;
         const certificateEnergy = 1000;
-        const energyPrice = 2;
+        const energyPrice = 200;
         const currency = 'USD';
         const deviceType = 'Solar';
         const location = [`${country};Central;Nakhon Pathom`];
@@ -42,7 +42,7 @@ describe('MatchableDemand tests', () => {
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
             demandOffChainProperties.energyPerTimeFrame.returns(certificateEnergy);
-            demandOffChainProperties.maxPricePerMwh.returns(energyPrice);
+            demandOffChainProperties.maxPriceInCentsPerMwh.returns(energyPrice);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.deviceType.returns([deviceType]);
             demandOffChainProperties.location.returns(options.location || location);
@@ -240,14 +240,14 @@ describe('MatchableDemand tests', () => {
     });
     describe('Supply', () => {
         const supplyEnergy = 1000;
-        const energyPrice = 100;
+        const energyPrice = 10000;
         const currency = 'USD';
         const deviceType = 'Solar';
 
         const createMatchingMocks = (options: IMockOptions) => {
             const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
             demandOffChainProperties.energyPerTimeFrame.returns(supplyEnergy);
-            demandOffChainProperties.maxPricePerMwh.returns(energyPrice * 1e6);
+            demandOffChainProperties.maxPriceInCentsPerMwh.returns(energyPrice * 1e6);
             demandOffChainProperties.currency.returns(currency);
             demandOffChainProperties.deviceType.returns([deviceType]);
 
@@ -257,7 +257,7 @@ describe('MatchableDemand tests', () => {
 
             const supplyOffChainProperties = Substitute.for<Supply.ISupplyOffChainProperties>();
             supplyOffChainProperties.availableWh.returns(options.energy || supplyEnergy);
-            supplyOffChainProperties.price.returns(
+            supplyOffChainProperties.priceInCents.returns(
                 options.price || (energyPrice * (options.energy || supplyEnergy)) / 1e6
             );
 

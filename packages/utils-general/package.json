@@ -30,7 +30,7 @@
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
     "@energyweb/origin-backend-client": "2.2.3",
-    "ew-utils-general-precise-proofs": "0.3.0",
+    "precise-proofs-js": "1.0.1",
     "jsonschema": "1.2.5",
     "moment": "^2.24.0",
     "web3": "1.2.4",
