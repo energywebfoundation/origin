@@ -22,12 +22,16 @@ import { useLinks } from '../utils/routing';
 import { FormikDatePicker } from './FormikDatePicker';
 import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
-import { getCompliance, getEnvironment, getRegions } from '../features/general/selectors';
+import {
+    getCompliance,
+    getEnvironment,
+    getRegions,
+    getCountry
+} from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
 import axios from 'axios';
-import { DEFAULT_COUNTRY } from './Demand/DemandForm';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
 
@@ -87,6 +91,7 @@ export function AddDevice() {
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
     const environment = useSelector(getEnvironment);
+    const country = useSelector(getCountry);
 
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
@@ -149,7 +154,7 @@ export function AddDevice() {
             capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
                 parseFloat(values.capacity)
             ),
-            country: DEFAULT_COUNTRY,
+            country,
             address: values.address,
             region,
             province: province.split(';')[1],
