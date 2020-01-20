@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.3.0...@energyweb/origin-ui@1.4.0) (2020-01-17)
+
+
+### Bug Fixes
+
+* **origin-ui:** only show register device tab to device manager ([b34f85f](https://github.com/energywebfoundation/origin/commit/b34f85f4009daf77983428a4208d16820ad42270))
+* **origin-ui:** unify power/energy units and dates display ([b6ba906](https://github.com/energywebfoundation/origin/commit/b6ba906a38b6e900e9c8264e487fc5414969c8e9))
+
+
+### Features
+
+* **origin-ui:** add register icon when user is guest ([f155344](https://github.com/energywebfoundation/origin/commit/f1553441ae9aacef4756eb4a4bcf6f2c9845fa90))
+* **origin-ui:** remove demand repeatable end date ([7b8fe4f](https://github.com/energywebfoundation/origin/commit/7b8fe4fa130bd3f351106cb08500021f228741ec))
+* **origin-ui:** style improvements ([daf71ff](https://github.com/energywebfoundation/origin/commit/daf71ffeab106e159e0204e20c610422131144f4))
+* **origin-ui:** wire user registration to backend ([5d892e2](https://github.com/energywebfoundation/origin/commit/5d892e22a35340cdd72199999acdb498d5cc85c3))
+
+
+
+
+
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.2.0...@energyweb/origin-ui@1.3.0) (2020-01-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency redux to v4.0.5 ([dfeb6e7](https://github.com/energywebfoundation/origin/commit/dfeb6e7e0eb3377350b363190630ae48de274501))
+* **deps:** update dependency yup to v0.28.0 ([cde01cb](https://github.com/energywebfoundation/origin/commit/cde01cbcae566d65d20544edee7b8441ca70802d))
+* **deps:** update mui monorepo ([5af4355](https://github.com/energywebfoundation/origin/commit/5af4355f87125e1e0ef735e1c7539101afb484a0))
+* **deps:** update react ([7186101](https://github.com/energywebfoundation/origin/commit/718610194580a5da879e7e6b2422e0a38abf8202))
+* **origin-ui:** adjust register organization form to autocomplete changes ([c14b03d](https://github.com/energywebfoundation/origin/commit/c14b03d3c9e0d11c23eba5abc921446db0059126))
+* **origin-ui:** hide demands tab for the issuer ([9ac3276](https://github.com/energywebfoundation/origin/commit/9ac32764560ff1d18170b3d2e004e62f5c906c4f))
+
+
+### Features
+
+* complete backend for registering organization ([b0dd715](https://github.com/energywebfoundation/origin/commit/b0dd71550011b97765362aeea87285a75f8119c1))
+* **origin-backend:** add endpoint to save organizations ([7382725](https://github.com/energywebfoundation/origin/commit/738272579d8214315323e79d163fe51e14676155))
+* **origin-ui:** input form for registering an organization ([a6c95eb](https://github.com/energywebfoundation/origin/commit/a6c95eb17f15b571fb3f869cdc35e289471d77f7))
+* **origin-ui:** input form of user registration ([8a3338f](https://github.com/energywebfoundation/origin/commit/8a3338fb781b86975386efd21b86691b12f8dae3))
+* **origin-ui:** remove "Consumption List" from "Devices" ([0bc9e7d](https://github.com/energywebfoundation/origin/commit/0bc9e7dd06f5c575d04f3efa8b4f04c8c1115738))
+* **origin-ui:** use material ui autocomplete instead of react-select ([f1e1106](https://github.com/energywebfoundation/origin/commit/f1e1106cc622c6d1e4f803958bdcbb3d5d31335b))
+
+
+
+
+
 # [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.1.1...@energyweb/origin-ui@1.2.0) (2019-12-20)
 
 

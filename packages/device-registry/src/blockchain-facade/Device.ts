@@ -26,7 +26,7 @@ export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainPr
 
 export interface IOffChainProperties {
     operationalSince: Timestamp;
-    capacityWh: number;
+    capacityInW: number;
     country: string;
     address: string;
     gpsLatitude: string;

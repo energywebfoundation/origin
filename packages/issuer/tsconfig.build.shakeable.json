@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.build.json",
+    "compilerOptions": {
+        "module": "es2015",
+        "outDir": "./dist-shakeable/js",
+        "references": [
+            {
+                "path": "../utils-general/tsconfig.build.json"
+            }
+        ]
+    }
+}

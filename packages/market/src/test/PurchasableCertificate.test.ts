@@ -236,7 +236,7 @@ describe('PurchasableCertificate-Facade', () => {
         const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
             facilityName: 'TestFacility',
             operationalSince: 0,
-            capacityWh: 10,
+            capacityInW: 10,
             country: 'Thailand',
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
@@ -270,7 +270,7 @@ describe('PurchasableCertificate-Facade', () => {
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: 0,
             offChainProperties: {
-                price: 0,
+                priceInCents: 0,
                 currency: NoneCurrency
             }
         } as Partial<PurchasableCertificate.Entity>);
@@ -339,7 +339,7 @@ describe('PurchasableCertificate-Facade', () => {
             acceptedToken: erc20TestTokenAddress,
             onChainDirectPurchasePrice: 100,
             offChainProperties: {
-                price: 0,
+                priceInCents: 0,
                 currency: NoneCurrency
             }
         } as Partial<PurchasableCertificate.Entity>);
@@ -427,7 +427,7 @@ describe('PurchasableCertificate-Facade', () => {
             acceptedToken: '0x0000000000000000000000000000000000000000',
             onChainDirectPurchasePrice: 0,
             offChainProperties: {
-                price: 0,
+                priceInCents: 0,
                 currency: NoneCurrency
             }
         } as Partial<PurchasableCertificate.Entity>);
@@ -437,9 +437,9 @@ describe('PurchasableCertificate-Facade', () => {
         const newCertificateId = await generateCertificateAndGetId();
         let pCert = await new PurchasableCertificate.Entity(newCertificateId, conf).sync();
 
-        const price = 10.5;
+        const priceInCents = 1050;
 
-        await pCert.publishForSale(price, 'USD');
+        await pCert.publishForSale(priceInCents, 'USD');
 
         pCert = await pCert.sync();
 
@@ -449,7 +449,7 @@ describe('PurchasableCertificate-Facade', () => {
             forSale: true,
             acceptedToken: '0x0000000000000000000000000000000000000000',
             offChainProperties: {
-                price: price * 100,
+                priceInCents,
                 currency: 'USD'
             }
         } as Partial<PurchasableCertificate.Entity>);
@@ -588,7 +588,7 @@ describe('PurchasableCertificate-Facade', () => {
             await Certificate.getCertificateListLength(conf)
         );
         const CERTIFICATE_ENERGY = 100;
-        const CERTIFICATE_PRICE = 7;
+        const CERTIFICATE_PRICE = 700;
         const CERTIFICATE_CURRENCY = 'USD';
         const TRADER_STARTING_TOKEN_BALANCE = Number(await erc20TestToken.balanceOf(accountTrader));
         const DEVICE_OWNER_STARTING_TOKEN_BALANCE = Number(
@@ -609,7 +609,7 @@ describe('PurchasableCertificate-Facade', () => {
 
         assert.equal(parentCertificate.onChainDirectPurchasePrice, 0);
         assert.deepEqual(parentCertificate.offChainProperties, {
-            price: CERTIFICATE_PRICE * 100,
+            priceInCents: CERTIFICATE_PRICE,
             currency: CERTIFICATE_CURRENCY
         });
 

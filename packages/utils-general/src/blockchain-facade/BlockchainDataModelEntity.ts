@@ -1,5 +1,5 @@
 import * as Configuration from './Configuration';
-import { PreciseProofs } from 'ew-utils-general-precise-proofs';
+import { PreciseProofs } from 'precise-proofs-js';
 import { validateJson } from '../off-chain-data/json-validator';
 import { IOffChainData } from '@energyweb/origin-backend-client';
 

@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@2.0.1...@energyweb/device-registry@3.0.0) (2020-01-17)
+
+
+### chore
+
+* **device-registry:** rename power property capacityWh to capacityInW ([48bfdf3](https://github.com/energywebfoundation/origin/commit/48bfdf335e4693af887bcba1ab497cb5a33f9324))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** rename capacityWh to capacityInW
+
+
+
+
+
+## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@2.0.0...@energyweb/device-registry@2.0.1) (2020-01-07)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@1.0.2...@energyweb/device-registry@2.0.0) (2019-12-20)
 
 

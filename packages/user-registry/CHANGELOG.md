@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/energywebfoundation/origin/compare/@energyweb/user-registry@2.0.4...@energyweb/user-registry@2.0.5) (2020-01-17)
+
+**Note:** Version bump only for package @energyweb/user-registry
+
+
+
+
+
+## [2.0.4](https://github.com/energywebfoundation/origin/compare/@energyweb/user-registry@2.0.3...@energyweb/user-registry@2.0.4) (2020-01-07)
+
+**Note:** Version bump only for package @energyweb/user-registry
+
+
+
+
+
 ## [2.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/user-registry@2.0.2...@energyweb/user-registry@2.0.3) (2019-12-20)
 
 **Note:** Version bump only for package @energyweb/user-registry

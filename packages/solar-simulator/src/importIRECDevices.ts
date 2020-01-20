@@ -83,7 +83,7 @@ const processDevices = async parsedContent => {
                 smartMeterPK: account.privateKey,
                 owner: program.owner || '',
                 operationalSince: new Date(registrationDate).getTime() / 1000,
-                capacityWh: maxCapacity,
+                capacityInW: maxCapacity,
                 lastSmartMeterReadWh: 0,
                 active: true,
                 lastSmartMeterReadFileHash: '',

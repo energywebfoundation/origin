@@ -6,7 +6,7 @@ import MarketUserOffChainPropertiesSchema from '../../schemas/MarketUserOffChain
 export interface IAutoPublishConfig {
     enabled: boolean;
     currency: Currency;
-    price: number;
+    priceInCents: number;
 }
 
 export interface IMarketUserOffChainProperties extends User.IUserOffChainProperties {

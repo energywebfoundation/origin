@@ -10,7 +10,7 @@ import { Currency } from '../types';
 import { NoneCurrency } from '../const';
 
 const DEFAULT_OFF_CHAIN_PROPERTIES = {
-    price: 0,
+    priceInCents: 0,
     currency: NoneCurrency
 };
 
@@ -32,7 +32,7 @@ export interface IPurchasableCertificate {
 }
 
 export interface IPurchasableCertificateOffChainProperties {
-    price: number;
+    priceInCents: number;
     currency: Currency;
 }
 
@@ -204,7 +204,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
             tokenAddress: isErc20Sale
                 ? tokenAddressOrCurrency
                 : '0x0000000000000000000000000000000000000000',
-            offChainPrice: isFiatSale ? Math.floor(price * 100) : 0,
+            offChainPrice: isFiatSale ? Math.floor(price) : 0,
             offChainCurrency: isFiatSale ? tokenAddressOrCurrency : NoneCurrency
         };
 
@@ -215,7 +215,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         }
 
         const newOffChainProperties = {
-            price: saleParams.offChainPrice,
+            priceInCents: saleParams.offChainPrice,
             currency: saleParams.offChainCurrency
         };
         const updatedOffChainStorageProperties = this.prepareEntityCreation(
@@ -296,7 +296,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         }
 
         return this.isOffChainSettlement
-            ? this.offChainProperties.price
+            ? this.offChainProperties.priceInCents
             : this.onChainDirectPurchasePrice;
     }
 

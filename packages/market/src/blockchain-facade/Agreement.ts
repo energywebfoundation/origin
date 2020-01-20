@@ -13,7 +13,7 @@ import AgreementOffChainPropertiesSchema from '../../schemas/AgreementOffChainPr
 export interface IAgreementOffChainProperties {
     start: Timestamp;
     end: Timestamp;
-    price: number;
+    priceInCents: number;
     currency: Currency;
     period: number;
     timeFrame: TimeFrame;

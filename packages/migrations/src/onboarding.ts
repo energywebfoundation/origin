@@ -54,7 +54,7 @@ export const onboardDemo = async (
             notifications: action.data.notifications || false,
             autoPublish: action.data.autoPublish || {
                 enabled: false,
-                price: 1.5,
+                priceInCents: 150,
                 currency: currencies[0]
             }
         };
@@ -81,7 +81,7 @@ export const onboardDemo = async (
 
         const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
             operationalSince: action.data.operationalSince,
-            capacityWh: action.data.capacityWh,
+            capacityInW: action.data.capacityInW,
             country: action.data.country,
             address: action.data.address,
             gpsLatitude: action.data.gpsLatitude,
@@ -124,7 +124,7 @@ export const onboardDemo = async (
         };
 
         const deviceConsumingPropsOffChain: Device.IOffChainProperties = {
-            capacityWh: action.data.capacityWh,
+            capacityInW: action.data.capacityInW,
             country: action.data.country,
             address: action.data.address,
             gpsLatitude: action.data.gpsLatitude,

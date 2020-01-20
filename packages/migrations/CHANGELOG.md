@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.5.1...@energyweb/migrations@0.5.2) (2020-01-17)
+
+**Note:** Version bump only for package @energyweb/migrations
+
+
+
+
+
+## [0.5.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.5.0...@energyweb/migrations@0.5.1) (2020-01-07)
+
+**Note:** Version bump only for package @energyweb/migrations
+
+
+
+
+
 # [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.4.0...@energyweb/migrations@0.5.0) (2019-12-20)
 
 

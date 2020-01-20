@@ -5,25 +5,18 @@ import Web3 from 'web3';
 import {
     Device,
     ProducingDevice,
-    DeviceLogic,
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
 import {
     Agreement,
     Demand,
-    MarketLogic,
     Supply,
     PurchasableCertificate,
     Contracts as MarketContracts,
     Currency
 } from '@energyweb/market';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import {
-    buildRights,
-    Role,
-    UserLogic,
-    Contracts as UserRegistryContracts
-} from '@energyweb/user-registry';
+import { buildRights, Role, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
 
@@ -168,7 +161,7 @@ const deploy = async () => {
         privateKey: privateKeyDeployment
     });
 
-    const config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic> = {
+    const config: Configuration.Entity = {
         blockchainProperties: {
             activeUser: {
                 address: accountTrader,
@@ -226,7 +219,7 @@ const deployDemand = async (
 
     const demandOffChainProps: Demand.IDemandOffChainProperties = {
         timeFrame: TimeFrame.hourly,
-        maxPricePerMwh: price,
+        maxPriceInCentsPerMwh: price,
         currency,
         location: ['Thailand;Central;Nakhon Pathom'],
         deviceType: ['Solar'],
@@ -265,7 +258,7 @@ const deployDevice = (config: Configuration.Entity) => {
     const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
         facilityName: 'MatcherTestFacility',
         operationalSince: 0,
-        capacityWh: 10,
+        capacityInW: 10,
         country: 'Thailand',
         address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '14.059500',
@@ -303,7 +296,7 @@ const deploySupply = (
             deviceId
         },
         {
-            price,
+            priceInCents: price,
             currency,
             availableWh: requiredEnergy,
             timeFrame: TimeFrame.hourly
@@ -365,7 +358,7 @@ const deployAgreement = async (
     const agreementOffChainProps: Agreement.IAgreementOffChainProperties = {
         start: startTime,
         end: endTime,
-        price,
+        priceInCents: price,
         currency,
         period: 10,
         timeFrame: TimeFrame.hourly

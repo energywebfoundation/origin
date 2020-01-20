@@ -9,7 +9,8 @@
         "@energyweb/user-registry",
         "@energyweb/utils-general",
         "@energyweb/origin-backend",
-        "ganache-cli"
+        "ganache-cli",
+        "solc"
     ],
     "packageRules": [
         {

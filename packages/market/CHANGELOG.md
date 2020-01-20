@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.3.1...@energyweb/market@3.3.2) (2020-01-17)
+
+**Note:** Version bump only for package @energyweb/market
+
+
+
+
+
+## [3.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.3.0...@energyweb/market@3.3.1) (2020-01-07)
+
+**Note:** Version bump only for package @energyweb/market
+
+
+
+
+
 # [3.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.2.0...@energyweb/market@3.3.0) (2019-12-20)
 
 

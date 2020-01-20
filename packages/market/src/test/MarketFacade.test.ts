@@ -353,7 +353,7 @@ describe('Market-Facade', () => {
 
         const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
             operationalSince: 0,
-            capacityWh: 10,
+            capacityInW: 10,
             country: 'Thailand',
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
@@ -390,7 +390,7 @@ describe('Market-Facade', () => {
 
             const demandOffChainProps: Demand.IDemandOffChainProperties = {
                 timeFrame: TimeFrame.hourly,
-                maxPricePerMwh: 1.5,
+                maxPriceInCentsPerMwh: 150,
                 currency: 'USD',
                 location: ['Thailand;Central;Nakhon Pathom'],
                 deviceType: ['Solar'],
@@ -443,7 +443,7 @@ describe('Market-Facade', () => {
                 location: ['Thailand;Central;Nakhon Pathom'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
-                maxPricePerMwh: 1.5,
+                maxPriceInCentsPerMwh: 150,
                 registryCompliance: 'I-REC',
                 energyPerTimeFrame: 10,
                 timeFrame: TimeFrame.hourly,
@@ -623,7 +623,7 @@ describe('Market-Facade', () => {
             };
 
             const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
-                price: 10,
+                priceInCents: 1000,
                 currency: 'USD',
                 availableWh: 10,
                 timeFrame: TimeFrame.hourly
@@ -649,7 +649,7 @@ describe('Market-Facade', () => {
                 offChainProperties: {
                     availableWh: 10,
                     currency: 'USD',
-                    price: 10,
+                    priceInCents: 1000,
                     timeFrame: TimeFrame.hourly
                 }
             } as Partial<Supply.Entity>);
@@ -666,7 +666,7 @@ describe('Market-Facade', () => {
                 offChainProperties: {
                     availableWh: 10,
                     currency: 'USD',
-                    price: 10,
+                    priceInCents: 1000,
                     timeFrame: TimeFrame.hourly
                 }
             } as Partial<Supply.Entity>);
@@ -692,7 +692,7 @@ describe('Market-Facade', () => {
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
                 end: startTime + 1000,
-                price: 10,
+                priceInCents: 1000,
                 currency: 'USD',
                 period: 10,
                 timeFrame: TimeFrame.hourly
@@ -728,7 +728,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -753,7 +753,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -784,7 +784,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -802,7 +802,7 @@ describe('Market-Facade', () => {
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
                 end: startTime + 1000,
-                price: 10,
+                priceInCents: 1000,
                 currency: 'USD',
                 period: 10,
                 timeFrame: TimeFrame.hourly
@@ -835,7 +835,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -866,7 +866,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }

@@ -186,7 +186,7 @@ export const certificateDemo = async (
             try {
                 let certificate = await new PurchasableCertificate.Entity(action.data.certId, conf).sync();
 
-                await certificate.publishForSale(action.data.price, action.data.currency);
+                await certificate.publishForSale((action.data.price * 100), action.data.currency);
                 certificate = await certificate.sync();
 
                 conf.logger.info(`Certificate ${action.data.certId} published for sale`);
