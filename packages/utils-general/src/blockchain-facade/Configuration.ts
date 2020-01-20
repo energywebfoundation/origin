@@ -14,8 +14,9 @@ export interface OffChainDataSource {
     client: IOffChainDataClient;
     configurationClient: IConfigurationClient;
 }
-export interface BlockchainProperties<TMarketLogic = any, TDeviceLogic = any, TCertificateLogic = any, TUserLogic = any> {
+export interface BlockchainProperties<TIssuerLogic = { public: any, private: any }, TMarketLogic = any, TDeviceLogic = any, TCertificateLogic = any, TUserLogic = any> {
     web3: Web3;
+    issuerLogicInstance?: TIssuerLogic
     marketLogicInstance?: TMarketLogic;
     deviceLogicInstance?: TDeviceLogic;
     certificateLogicInstance?: TCertificateLogic;
