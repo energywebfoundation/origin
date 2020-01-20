@@ -179,6 +179,12 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         );
     }
 
+    async revoke(): Promise<TransactionReceipt> {
+        const publicIssuer: PublicIssuer = this.configuration.blockchainProperties.issuerLogicInstance.public;
+        
+        return publicIssuer.revokeCertificate(Number(this.id), getAccountFromConfiguration(this.configuration));
+    }
+
     async getAllCertificateEvents(): Promise<EventLog[]> {
         return getAllCertificateEvents(parseInt(this.id, 10), this.configuration);
     }
@@ -244,7 +250,7 @@ export const createCertificate = async (
     const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
 
     const getIdFromLogs = (logs: any) => configuration.blockchainProperties.web3.utils
-        .hexToNumber(logs[1].topics[1])
+        .hexToNumber(logs[0].topics[2])
         .toString();
 
     if (isVolumePrivate) {
@@ -262,7 +268,7 @@ export const createCertificate = async (
         const publicIssuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public
         const data = await publicIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
+        const { logs } = await publicIssuer.issue(to, value, data, getAccountFromConfiguration(configuration));
 
         certificate.id = getIdFromLogs(logs);
     }

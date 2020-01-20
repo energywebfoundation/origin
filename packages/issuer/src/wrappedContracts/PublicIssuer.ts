@@ -65,7 +65,34 @@ export class PublicIssuer extends GeneralFunctions {
 
         return this.send(method, txParams);
     }
-    
+
+    async issue(
+        _to: string,
+        _value: number,
+        _data: any,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.issue(
+            _to,
+            _value,
+            _data
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async revokeRequest(_requestId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.revokeRequest(_requestId);
+
+        return this.send(method, txParams);
+    }
+
+    async revokeCertificate(_certificateId: number, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.revokeCertificate(_certificateId);
+
+        return this.send(method, txParams);
+    }
+
     async version(txParams?: ISpecialTx) {
         return this.web3Contract.methods.version().call(txParams);
     }

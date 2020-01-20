@@ -93,6 +93,15 @@ export class PrivateIssuer extends GeneralFunctions {
 
         return this.send(method, txParams);
     }
+
+    async revokeRequest(
+        _requestId: number,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.revokeRequest(_requestId);
+
+        return this.send(method, txParams);
+    }
     
     async version(txParams?: ISpecialTx) {
         return this.web3Contract.methods.version().call(txParams);
