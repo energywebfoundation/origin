@@ -8,7 +8,6 @@ import ProducingDevicePropertiesOffChainSchema from '../schemas/ProducingDeviceP
 
 export { createBlockchainProperties } from './blockchain-facade/BlockchainPropertiesFactory';
 export { DeviceLogic } from './wrappedContracts/DeviceLogic';
-export { LocationService } from './utils/LocationService';
 export {
     Contracts,
     ProducingDevice,
