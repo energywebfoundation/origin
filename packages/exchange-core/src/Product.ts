@@ -1,5 +1,5 @@
 export class Product {
-    public assetType?: string[];
+    public deviceType?: string[];
 
     public location?: string[];
 

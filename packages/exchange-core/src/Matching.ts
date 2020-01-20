@@ -4,6 +4,9 @@ import { IRECDeviceService } from '@energyweb/utils-general';
 
 import { OrderSide, Order, OrderStatus } from './Order';
 import { Trade } from './Trade';
+import { Product } from './Product';
+import { Bid } from './Bid';
+import { Ask } from './Ask';
 
 export type Listener<T> = (entity: T) => void;
 
@@ -12,9 +15,9 @@ type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: 
 export class Matching {
     private deviceService = new IRECDeviceService();
 
-    private bids: List<Order> = List<Order>();
+    private bids: List<Bid> = List<Bid>();
 
-    private asks: List<Order> = List<Order>();
+    private asks: List<Ask> = List<Ask>();
 
     public trades = new Subject<List<Trade>>();
 
@@ -22,9 +25,9 @@ export class Matching {
 
     public submitOrder(order: Order) {
         if (order.side === OrderSide.Ask) {
-            this.asks = this.insert(this.asks, order);
+            this.asks = this.insert(this.asks, order as Ask);
         } else {
-            this.bids = this.insert(this.bids, order);
+            this.bids = this.insert(this.bids, order as Bid);
         }
     }
 
@@ -36,6 +39,13 @@ export class Matching {
         return { asks: this.asks, bids: this.bids };
     }
 
+    public orderBookByProduct(product: Product) {
+        const asks = this.asks.filter(ask => ask.filterBy(product, this.deviceService));
+        const bids = this.bids.filter(bid => bid.filterBy(product, this.deviceService));
+
+        return { asks, bids };
+    }
+
     public tick() {
         const trades = this.match();
         if (!trades.isEmpty()) {
@@ -43,7 +53,7 @@ export class Matching {
         }
     }
 
-    private insert(orderBook: List<Order>, order: Order) {
+    private insert<T extends Order>(orderBook: List<T>, order: T) {
         const unSorted = orderBook.concat(order);
         const direction = order.side === OrderSide.Ask ? 1 : -1;
 
@@ -96,17 +106,15 @@ export class Matching {
         this.bids = this.bids.filterNot(bid => bid.status === OrderStatus.Filled);
     }
 
-    private generateTrades(bid: Order, bidKey: number) {
+    private generateTrades(bid: Bid, bidKey: number) {
         const executed: ExecutedTrade[] = [];
         let missing = bid.volume;
 
         this.asks.forEach((ask, key) => {
-            const hasProductMatched = bid.matches(ask, this.deviceService);
-            const hasVolume = ask.volume > 0;
-            const hasPriceMatched = ask.price <= bid.price;
+            const isMatching = this.matches(bid, ask);
             const notFilled = missing > 0;
 
-            if (hasPriceMatched && hasVolume && notFilled && hasProductMatched) {
+            if (isMatching && notFilled) {
                 const isPartial = missing < ask.volume;
                 const filled = isPartial ? ask.volume - missing : ask.volume;
                 missing -= filled;
@@ -125,5 +133,13 @@ export class Matching {
         });
 
         return executed;
+    }
+
+    private matches(bid: Bid, ask: Ask) {
+        const hasProductMatched = bid.matches(ask, this.deviceService);
+        const hasVolume = ask.volume > 0;
+        const hasPriceMatched = ask.price <= bid.price;
+
+        return hasPriceMatched && hasVolume && hasProductMatched;
     }
 }
