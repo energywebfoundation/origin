@@ -146,12 +146,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return this;
     }
 
-    async getCertificateOwner(): Promise<string> {
-        return this.configuration.blockchainProperties.certificateLogicInstance.getCertificateOwner(
-            this.id
-        );
-    }
-
     async claim(amount: number): Promise<TransactionReceipt> {
         const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
         const owner = this.configuration.blockchainProperties.activeUser.address;
@@ -258,7 +252,7 @@ export const createCertificate = async (
         const privateIssuer: PrivateIssuer = configuration.blockchainProperties.issuerLogicInstance.private;
         const data = await privateIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await registry.issue(to, [], PUBLIC_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
+        const { logs } = await registry.issue(to, [], PRIVATE_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
 
         certificate.id = getIdFromLogs(logs);
 

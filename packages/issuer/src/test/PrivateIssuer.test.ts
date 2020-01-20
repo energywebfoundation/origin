@@ -115,21 +115,4 @@ describe('PrivateIssuer', () => {
         assert.equal(deviceOwnerBalance, 0);
     });
 
-    it('migrates private certificate to public certificate', async () => {
-        let requestIssue = await createRequestIssue(conf);
-
-        setActiveUser(issuerPK);
-
-        const volume = 1000;
-        const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
-
-        requestIssue = await requestIssue.sync();
-
-        assert.isTrue(requestIssue.approved);
-        
-        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
-        assert.equal(deviceOwnerBalance, 0);
-    });
-
-
 });
