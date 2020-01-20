@@ -18,7 +18,6 @@ export interface ICertificate {
 
     sync(): Promise<ICertificate>;
 
-    getCertificateOwner(): Promise<string>;
     isClaimed(): Promise<boolean>;
     claim(amount: number): Promise<TransactionReceipt>;
 
