@@ -44,9 +44,6 @@
     "write-json-file": "4.2.1",
     "yaeti": "1.0.2"
   },
-  "devDependencies": {
-    "ganache-cli": "6.7.0"
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"

@@ -51,7 +51,6 @@
         "@energyweb/origin-backend-client": "2.2.3",
         "ethlint": "1.2.5",
         "fs-extra": "8.1.0",
-        "ganache-cli": "6.5.1",
         "moment": "2.24.0",
         "truffle-flattener": "1.4.2"
     },
