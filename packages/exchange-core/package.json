@@ -33,7 +33,7 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/utils-general": "4.0.0",
+    "@energyweb/utils-general": "4.1.1",
     "immutable": "4.0.0-rc.12",
     "rxjs": "6.5.4"
   },
