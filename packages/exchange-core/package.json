@@ -1,0 +1,46 @@
+{
+  "name": "@energyweb/exchange-core",
+  "description": "",
+  "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-core#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "version": "0.0.1",
+  "main": "dist/js/src/index.js",
+  "files": [
+    "dist/js/build",
+    "dist/js/src",
+    "dist/js/schemas"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "yarn build:ts",
+    "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
+    "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+    "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
+    "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
+    "test:unit": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit",
+    "test:concurrent": "yarn test",
+    "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+    "clean": "shx rm -rf build dist dist-shakeable schemas db.sqlite",
+    "precommit": "lint-staged"
+  },
+  "types": "dist/js/src/index.d.ts",
+  "dependencies": {
+    "@energyweb/utils-general": "4.1.1",
+    "immutable": "4.0.0-rc.12",
+    "rxjs": "6.5.4"
+  },
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "license": "GPL-3.0-only"
+}
