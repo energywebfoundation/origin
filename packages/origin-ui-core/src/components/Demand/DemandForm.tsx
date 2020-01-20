@@ -16,7 +16,7 @@ import {
 import { dataTest } from '../../utils/helper';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
-import { getRegions, getCurrencies } from '../../features/general/selectors';
+import { getRegions, getCurrencies, getCountry } from '../../features/general/selectors';
 import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import moment, { Moment } from 'moment';
 import { Formik, Field, Form, FormikActions } from 'formik';
@@ -83,13 +83,12 @@ interface IProps {
 
 const DEFAULT_VINTAGE_RANGE: [number, number] = [1970, moment().year()];
 
-export const DEFAULT_COUNTRY = 'Thailand';
-
 export function DemandForm(props: IProps) {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
     const currencies = useSelector(getCurrencies);
     const regions = useSelector(getRegions);
+    const country = useSelector(getCountry);
 
     const dispatch = useDispatch();
     const { getDemandViewLink } = useLinks();
@@ -143,7 +142,7 @@ export function DemandForm(props: IProps) {
             ) {
                 setSelectedLocation(
                     demand.offChainProperties.location.map(location =>
-                        location.replace(`${DEFAULT_COUNTRY};`, '')
+                        location.replace(`${country};`, '')
                     )
                 );
             }
@@ -208,9 +207,7 @@ export function DemandForm(props: IProps) {
         }
 
         if (selectedLocation && selectedLocation.length > 0) {
-            offChainProps.location = selectedLocation.map(
-                location => `${DEFAULT_COUNTRY};${location}`
-            );
+            offChainProps.location = selectedLocation.map(location => `${country};${location}`);
         }
 
         if (
