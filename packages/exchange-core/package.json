@@ -22,8 +22,8 @@
   "scripts": {
     "build": "yarn build:ts",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
-    "lint": "solium -d contracts && eslint \"src/**/*{.ts,.tsx}\"",
-    "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
+    "lint": "eslint \"src/**/*{.ts,.tsx}\"",
+    "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
     "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
     "test:unit": "mocha -r ts-node/register src/test/unit/*.test.ts --timeout 60000 --exit",
     "test:concurrent": "yarn test",
@@ -34,8 +34,8 @@
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
     "@energyweb/utils-general": "4.0.0",
-    "immutable": "^4.0.0-rc.12",
-    "rxjs": "^6.5.4"
+    "immutable": "4.0.0-rc.12",
+    "rxjs": "6.5.4"
   },
   "private": true,
   "publishConfig": {
