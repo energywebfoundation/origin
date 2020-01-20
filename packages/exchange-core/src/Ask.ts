@@ -1,4 +1,4 @@
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import { Order, OrderStatus, OrderSide } from './Order';
 import { Product } from './Product';
 import { Bid } from './Bid';
@@ -12,15 +12,24 @@ export class Ask extends Order {
         }
     }
 
-    public filterBy(product: Product, deviceService: IRECDeviceService): boolean {
+    public filterBy(
+        product: Product,
+        deviceService: IRECDeviceService,
+        locationService: LocationService
+    ): boolean {
         const hasMatchingDeviceType = this.hasMatchingDeviceType(product, deviceService);
         const hasMatchingVintage = this.hasMatchingVintage(product);
+        const hasMatchingLocation = this.hasMatchingLocation(product, locationService);
 
-        return hasMatchingDeviceType && hasMatchingVintage;
+        return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
     }
 
-    public matches(bid: Bid, deviceService: IRECDeviceService): boolean {
-        return this.filterBy(bid.product, deviceService);
+    public matches(
+        bid: Bid,
+        deviceService: IRECDeviceService,
+        locationService: LocationService
+    ): boolean {
+        return this.filterBy(bid.product, deviceService, locationService);
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IRECDeviceService) {
@@ -36,5 +45,13 @@ export class Ask extends Order {
             return true;
         }
         return this.product.deviceVintage <= product.deviceVintage;
+    }
+
+    private hasMatchingLocation(product: Product, locationService: LocationService) {
+        if (!product.location) {
+            return true;
+        }
+
+        return locationService.matches(product.location, this.product.location[0]);
     }
 }

@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 
 import { OrderSide, Order, OrderStatus } from './Order';
 import { Trade } from './Trade';
@@ -14,6 +14,8 @@ type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: 
 
 export class Matching {
     private deviceService = new IRECDeviceService();
+
+    private locationService = new LocationService();
 
     private bids: List<Bid> = List<Bid>();
 
@@ -40,8 +42,12 @@ export class Matching {
     }
 
     public orderBookByProduct(product: Product) {
-        const asks = this.asks.filter(ask => ask.filterBy(product, this.deviceService));
-        const bids = this.bids.filter(bid => bid.filterBy(product, this.deviceService));
+        const asks = this.asks.filter(ask =>
+            ask.filterBy(product, this.deviceService, this.locationService)
+        );
+        const bids = this.bids.filter(bid =>
+            bid.filterBy(product, this.deviceService, this.locationService)
+        );
 
         return { asks, bids };
     }
@@ -139,7 +145,7 @@ export class Matching {
     }
 
     private matches(bid: Bid, ask: Ask) {
-        const hasProductMatched = bid.matches(ask, this.deviceService);
+        const hasProductMatched = bid.matches(ask, this.deviceService, this.locationService);
         const hasVolume = ask.volume > 0;
         const hasPriceMatched = ask.price <= bid.price;
 

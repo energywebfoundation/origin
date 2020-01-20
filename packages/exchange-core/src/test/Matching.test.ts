@@ -30,7 +30,9 @@ describe('Matching tests', () => {
 
     const twoUSD = 2;
     const onekWh = 1000;
-    const vintage = 2019;
+    const deviceVintage = 2019;
+    const locationCentral = ['Thailand;Central;Nakhon Pathom'];
+    const locationEast = ['Thailand;East;Nakhon Pathom'];
 
     const solarTypeLevel1 = deviceService.encode([['Solar']]);
     const solarTypeLevel2 = deviceService.encode([['Solar', 'Photovoltaic']]);
@@ -48,7 +50,11 @@ describe('Matching tests', () => {
             (initialOrderId++).toString(),
             args?.price || twoUSD,
             args?.volume || onekWh,
-            args?.product || { deviceType: solarTypeLevel3, deviceVintage: vintage },
+            args?.product || {
+                deviceType: solarTypeLevel3,
+                deviceVintage,
+                location: locationCentral
+            },
             0
         );
     };
@@ -58,7 +64,11 @@ describe('Matching tests', () => {
             (initialOrderId++).toString(),
             args?.price || twoUSD,
             args?.volume || onekWh,
-            args?.product || { deviceType: solarTypeLevel3, deviceVintage: vintage },
+            args?.product || {
+                deviceType: solarTypeLevel3,
+                deviceVintage,
+                location: locationCentral
+            },
             0
         );
     };
@@ -406,6 +416,31 @@ describe('Matching tests', () => {
                 expectedBids
             );
         });
+
+        it('should return order book based on location', () => {
+            const asks = [
+                createAsk({ product: { location: locationCentral, deviceType: solarTypeLevel3 } }),
+                createAsk({ product: { location: locationEast, deviceType: solarTypeLevel3 } }),
+                createAsk({ product: { location: locationCentral, deviceType: solarTypeLevel3 } })
+            ];
+            const bids = [
+                createBid({ product: { location: ['Thailand'] } }),
+                createBid({ product: { location: ['Thailand'] } }),
+                createBid({ product: { location: locationCentral } }),
+                createBid({ product: { location: locationEast } })
+            ];
+
+            const expectedAsks = [asks[1]];
+            const expectedBids = [bids[0], bids[1], bids[3]];
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                { location: locationEast },
+                expectedAsks,
+                expectedBids
+            );
+        });
     });
 
     describe('vintage matching', () => {
@@ -456,6 +491,61 @@ describe('Matching tests', () => {
             ];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+    });
+
+    describe('location matching', () => {
+        it('should not match with different region', done => {
+            const asksBefore = [createAsk()];
+            const bidsBefore = [
+                createBid({
+                    product: { location: ['Thailand;East'] }
+                })
+            ];
+
+            const expectedTrades: Trade[] = [];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+
+        it('should match with same region', done => {
+            const asksBefore = [createAsk()];
+            const bidsBefore = [
+                createBid({
+                    product: { location: ['Thailand;Central'] }
+                }),
+                createBid({
+                    product: { location: ['Thailand;East'] }
+                })
+            ];
+
+            const bidsAfter = bidsBefore.slice(-1);
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
+        });
+
+        it('should match with same country', done => {
+            const asksBefore = [createAsk()];
+            const bidsBefore = [
+                createBid({
+                    product: { location: ['Thailand'] }
+                }),
+                createBid({
+                    product: { location: ['Malaysia'] }
+                })
+            ];
+
+            const bidsAfter = bidsBefore.slice(-1);
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });
     });
 });

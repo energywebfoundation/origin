@@ -1,4 +1,4 @@
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 
 import { Ask } from './Ask';
 import { Order, OrderSide, OrderStatus } from './Order';
@@ -9,18 +9,28 @@ export class Bid extends Order {
         super(id, OrderSide.Bid, OrderStatus.Active, validFrom, product, price, volume);
     }
 
-    public filterBy(product: Product, deviceService: IRECDeviceService): boolean {
-        const hasMatchingDeviceType = this.isIncludedInDeviceType(product, deviceService);
+    public filterBy(
+        product: Product,
+        deviceService: IRECDeviceService,
+        locationService: LocationService
+    ): boolean {
+        const isIncludedInDeviceType = this.isIncludedInDeviceType(product, deviceService);
         const hasMatchingVintage = this.hasMatchingVintage(product);
+        const isIncludedInLocation = this.isIncludedInLocation(product, locationService);
 
-        return hasMatchingDeviceType && hasMatchingVintage;
+        return isIncludedInDeviceType && hasMatchingVintage && isIncludedInLocation;
     }
 
-    public matches(ask: Ask, deviceService: IRECDeviceService): boolean {
+    public matches(
+        ask: Ask,
+        deviceService: IRECDeviceService,
+        locationService: LocationService
+    ): boolean {
         const hasMatchingDeviceType = this.hasMatchingDeviceType(ask.product, deviceService);
         const hasMatchingVintage = this.hasMatchingVintage(ask.product);
+        const hasMatchingLocation = this.hasMatchingLocation(ask.product, locationService);
 
-        return hasMatchingDeviceType && hasMatchingVintage;
+        return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
     }
 
     private hasMatchingDeviceType(product: Product, deviceService: IRECDeviceService) {
@@ -29,6 +39,25 @@ export class Bid extends Order {
         }
 
         return deviceService.includesDeviceType(product.deviceType[0], this.product.deviceType);
+    }
+
+    private hasMatchingLocation(product: Product, locationService: LocationService) {
+        if (!this.product.location || !product.location) {
+            return true;
+        }
+
+        return locationService.matches(this.product.location, product.location[0]);
+    }
+
+    private isIncludedInLocation(product: Product, locationService: LocationService) {
+        if (!this.product.location || !product.location) {
+            return true;
+        }
+
+        return (
+            locationService.matches(product.location, this.product.location[0]) ||
+            locationService.matches(this.product.location, product.location[0])
+        );
     }
 
     private isIncludedInDeviceType(product: Product, deviceService: IRECDeviceService) {
