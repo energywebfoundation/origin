@@ -121,7 +121,7 @@ describe('Matching tests', () => {
         matchingEngine.tick();
 
         if (testCase.expectedTrades.length === 0) {
-            done();
+            setTimeout(() => done(), 250);
         }
     };
 
@@ -405,6 +405,57 @@ describe('Matching tests', () => {
                 expectedAsks,
                 expectedBids
             );
+        });
+    });
+
+    describe('vintage matching', () => {
+        it('should not match when bid vintage is older than ask', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceVintage: 2019, deviceType: solarTypeLevel3 } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { deviceVintage: 2018, deviceType: solarTypeLevel3 }
+                })
+            ];
+
+            const expectedTrades: Trade[] = [];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+
+        it('should match when bid vintage is younger than ask', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceVintage: 2010, deviceType: solarTypeLevel3 } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { deviceVintage: 2018, deviceType: solarTypeLevel3 }
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+
+        it('should match when bid vintage is the same as ask', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceVintage: 2010, deviceType: solarTypeLevel3 } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { deviceVintage: 2010, deviceType: solarTypeLevel3 }
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
+            ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
         });
     });
 });
