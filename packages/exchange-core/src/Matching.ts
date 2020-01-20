@@ -61,12 +61,12 @@ export class Matching {
     }
 
     private match() {
-        let result: ExecutedTrade[] = [];
+        let result = List<ExecutedTrade>();
         this.cancel();
 
         this.bids.forEach((bid, key) => {
             const executed = this.generateTrades(bid, key);
-            if (!executed.length) {
+            if (executed.isEmpty()) {
                 return false;
             }
 
@@ -78,23 +78,26 @@ export class Matching {
 
         this.cleanOrderBook();
 
-        return List(result.map(m => m.trade));
+        return result.map(m => m.trade);
     }
 
     private cancel() {
         this.cancellationQueue.forEach(id => {
             const bidKey = this.bids.findKey(bid => bid.id === id);
+
             if (bidKey !== undefined) {
                 this.bids = this.bids.remove(bidKey);
             } else {
                 const askKey = this.asks.findKey(ask => ask.id === id);
-                this.asks = this.asks.remove(askKey);
+                if (askKey !== undefined) {
+                    this.asks = this.asks.remove(askKey);
+                }
             }
         });
         this.cancellationQueue = List<string>();
     }
 
-    private updateOrderBook(matched: ExecutedTrade[]) {
+    private updateOrderBook(matched: List<ExecutedTrade>) {
         matched.forEach(m => {
             this.asks = this.asks.update(m.askKey, order => order.updateVolume(m.trade.volume));
             this.bids = this.bids.update(m.bidKey, order => order.updateVolume(m.trade.volume));
@@ -107,29 +110,29 @@ export class Matching {
     }
 
     private generateTrades(bid: Bid, bidKey: number) {
-        const executed: ExecutedTrade[] = [];
+        let executed = List<ExecutedTrade>();
         let missing = bid.volume;
 
         this.asks.forEach((ask, key) => {
             const isMatching = this.matches(bid, ask);
-            const notFilled = missing > 0;
+            const isFilled = missing === 0;
 
-            if (isMatching && notFilled) {
-                const isPartial = missing < ask.volume;
-                const filled = isPartial ? ask.volume - missing : ask.volume;
-                missing -= filled;
-
-                executed.push({
-                    trade: new Trade(bid, ask, filled, ask.price),
-                    askKey: key,
-                    bidKey,
-                    isPartial
-                });
-
-                return true;
+            if (!isMatching || isFilled) {
+                return false;
             }
 
-            return false;
+            const isPartial = missing < ask.volume;
+            const filled = isPartial ? ask.volume - missing : ask.volume;
+            missing -= filled;
+
+            executed = executed.push({
+                trade: new Trade(bid, ask, filled, ask.price),
+                askKey: key,
+                bidKey,
+                isPartial
+            });
+
+            return true;
         });
 
         return executed;
