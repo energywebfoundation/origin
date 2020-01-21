@@ -1,8 +1,8 @@
 import React, { createContext, ReactNode } from 'react';
 import { createMuiTheme, Theme } from '@material-ui/core';
 
-import logo from '../../assets/logo.svg';
 import variables from '../styles/variables.scss';
+import { OriginGenericLogo } from './icons/OriginGenericLogo';
 
 export interface IOriginStyleConfig {
     PRIMARY_COLOR: string;
@@ -174,7 +174,7 @@ export function createOriginConfiguration(configuration: Partial<IOriginConfigur
     const DEFAULT_STYLE_CONFIG = createStyleConfigFromSCSSVariables(variables);
 
     const DEFAULT_ORIGIN_CONFIGURATION: IOriginConfiguration = {
-        logo: <img src={logo} />,
+        logo: <OriginGenericLogo />,
         styleConfig: DEFAULT_STYLE_CONFIG,
         customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
         materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG)
