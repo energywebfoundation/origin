@@ -1,10 +1,12 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
+
 import "./Registry.sol";
 import "./PublicIssuer.sol";
 
-contract PrivateIssuer is Initializable {
+contract PrivateIssuer is Initializable, Ownable {
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 
 	event IssueRequest(address indexed _owner, uint256 indexed _id);
@@ -22,6 +24,7 @@ contract PrivateIssuer is Initializable {
 		address owner;
 		bytes data;
 		bool approved;
+        bool revoked;
 	}
 
 	struct RequestStateChange {
@@ -47,9 +50,14 @@ contract PrivateIssuer is Initializable {
 	mapping(uint256 => bytes32) public commitments;
 	mapping(uint256 => bool) public migrations;
 
-	function initialize(Registry _registry, PublicIssuer _publicIssuer) public initializer {
-		registry = _registry;
-		publicIssuer = _publicIssuer;
+	function initialize(address _registry, address _publicIssuer) public initializer {
+		require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
+		registry = Registry(_registry);
+
+		require(_publicIssuer != address(0), "initialize: Cannot use address 0x0 as public issuer.");
+		publicIssuer = PublicIssuer(_publicIssuer);
+
+		Ownable.initialize(msg.sender);
 	}
 
 	function updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) public {
@@ -76,20 +84,26 @@ contract PrivateIssuer is Initializable {
         return requestIssueStorage[_requestId];
     }
 
-	function requestIssue(bytes calldata _data) external {
+	function requestIssueFor(bytes memory _data, address _owner) public returns (uint256) {
 		uint id = ++requestIssueNonce;
 
 		requestIssueStorage[id] = RequestIssue({
-			owner: msg.sender,
+			owner: _owner,
 			data: _data,
-			approved: false
+			approved: false,
+            revoked: false
 		});
 
-		emit IssueRequest(msg.sender, id);
+		emit IssueRequest(_owner, id);
+
+        return id;
 	}
 
-	//onlyOwner (issuer)
-	function approveIssue(address _to, uint _requestId, bytes32 _commitment, bytes calldata _validityData) external returns (uint256) {
+    function requestIssue(bytes calldata _data) external {
+        requestIssueFor(_data, msg.sender);
+    }
+
+	function approveIssue(address _to, uint _requestId, bytes32 _commitment, bytes calldata _validityData) external onlyOwner returns (uint256) {
 		RequestIssue storage request = requestIssueStorage[_requestId];
 		require(!request.approved, "Already issued"); //consider checking topic and other params from request
 
@@ -209,8 +223,17 @@ contract PrivateIssuer is Initializable {
 		return _rootHash == hash;
 	}
 
-	function isValid(uint256 _requestId) external view returns (bool) {
-        return _requestId <= requestIssueNonce;
+    function revokeRequest(uint256 _requestId) public onlyOwner {
+        RequestIssue storage request = requestIssueStorage[_requestId];
+        require(!request.revoked, "revokeRequest(): Already revoked");
+
+        request.revoked = true;
+    }
+
+    function isRequestValid(uint256 _requestId) external view returns (bool) {
+        RequestIssue storage request = requestIssueStorage[_requestId];
+
+        return _requestId <= requestIssueNonce && request.approved && request.revoked == false;
     }
 
     function version() public view returns (string memory) {
