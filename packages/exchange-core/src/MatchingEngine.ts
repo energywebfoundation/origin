@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IDeviceService, ILocationService } from '@energyweb/utils-general';
 
 import { OrderSide, Order, OrderStatus } from './Order';
 import { Trade } from './Trade';
@@ -8,22 +8,18 @@ import { Product } from './Product';
 import { Bid } from './Bid';
 import { Ask } from './Ask';
 
-export type Listener<T> = (entity: T) => void;
-
-type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: boolean };
+type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
 
 export class MatchingEngine {
-    private deviceService = new IRECDeviceService();
-
-    private locationService = new LocationService();
-
     private bids: List<Bid> = List<Bid>();
 
     private asks: List<Ask> = List<Ask>();
 
-    public trades = new Subject<List<Trade>>();
+    public trades = new Subject<List<TradeExecutedEvent>>();
 
     public cancellationQueue = List<string>();
+
+    constructor(private deviceService: IDeviceService, private locationService: ILocationService) {}
 
     public submitOrder(order: Order) {
         if (order.side === OrderSide.Ask) {
@@ -67,24 +63,25 @@ export class MatchingEngine {
     }
 
     private match() {
-        let result = List<ExecutedTrade>();
+        let executedTrades = List<TradeExecutedEvent>();
         this.cancel();
 
-        this.bids.forEach((bid, key) => {
-            const executed = this.generateTrades(bid, key);
+        this.bids.forEach(bid => {
+            const executed = this.generateTrades(bid);
             if (executed.isEmpty()) {
                 return false;
             }
 
             this.updateOrderBook(executed);
-            result = result.concat(executed);
+
+            executedTrades = executedTrades.concat(executed);
 
             return true;
         });
 
         this.cleanOrderBook();
 
-        return result.map(m => m.trade);
+        return executedTrades;
     }
 
     private cancel() {
@@ -103,10 +100,16 @@ export class MatchingEngine {
         this.cancellationQueue = List<string>();
     }
 
-    private updateOrderBook(matched: List<ExecutedTrade>) {
+    private updateOrderBook(matched: List<TradeExecutedEvent>) {
         matched.forEach(m => {
-            this.asks = this.asks.update(m.askKey, order => order.updateVolume(m.trade.volume));
-            this.bids = this.bids.update(m.bidKey, order => order.updateVolume(m.trade.volume));
+            this.asks = this.asks.set(
+                this.asks.findIndex(ask => ask.id === m.ask.id),
+                m.ask
+            );
+            this.bids = this.bids.set(
+                this.bids.findIndex(bid => bid.id === m.bid.id),
+                m.bid
+            );
         });
     }
 
@@ -115,11 +118,11 @@ export class MatchingEngine {
         this.bids = this.bids.filterNot(bid => bid.status === OrderStatus.Filled);
     }
 
-    private generateTrades(bid: Bid, bidKey: number) {
-        let executed = List<ExecutedTrade>();
+    private generateTrades(bid: Bid) {
+        let executed = List<TradeExecutedEvent>();
         let missing = bid.volume;
 
-        this.asks.forEach((ask, key) => {
+        this.asks.forEach(ask => {
             const isMatching = this.matches(bid, ask);
             const isFilled = missing === 0;
 
@@ -131,11 +134,10 @@ export class MatchingEngine {
             const filled = isPartial ? ask.volume - missing : ask.volume;
             missing -= filled;
 
-            executed = executed.push({
+            executed = executed.concat({
                 trade: new Trade(bid, ask, filled, ask.price),
-                askKey: key,
-                bidKey,
-                isPartial
+                ask: ask.updateVolume(filled),
+                bid: bid.updateVolume(filled)
             });
 
             return true;

@@ -1,4 +1,4 @@
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IDeviceService, ILocationService } from '@energyweb/utils-general';
 
 import { Ask } from './Ask';
 import { Order, OrderSide, OrderStatus } from './Order';
@@ -11,8 +11,8 @@ export class Bid extends Order {
 
     public filterBy(
         product: Product,
-        deviceService: IRECDeviceService,
-        locationService: LocationService
+        deviceService: IDeviceService,
+        locationService: ILocationService
     ): boolean {
         const isIncludedInDeviceType = this.isIncludedInDeviceType(product, deviceService);
         const hasMatchingVintage = this.hasMatchingVintage(product);
@@ -23,8 +23,8 @@ export class Bid extends Order {
 
     public matches(
         ask: Ask,
-        deviceService: IRECDeviceService,
-        locationService: LocationService
+        deviceService: IDeviceService,
+        locationService: ILocationService
     ): boolean {
         const hasMatchingDeviceType = this.hasMatchingDeviceType(ask.product, deviceService);
         const hasMatchingVintage = this.hasMatchingVintage(ask.product);
@@ -33,7 +33,7 @@ export class Bid extends Order {
         return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
     }
 
-    private hasMatchingDeviceType(product: Product, deviceService: IRECDeviceService) {
+    private hasMatchingDeviceType(product: Product, deviceService: IDeviceService) {
         if (!this.product.deviceType || !product.deviceType) {
             return true;
         }
@@ -41,7 +41,7 @@ export class Bid extends Order {
         return deviceService.includesDeviceType(product.deviceType[0], this.product.deviceType);
     }
 
-    private hasMatchingLocation(product: Product, locationService: LocationService) {
+    private hasMatchingLocation(product: Product, locationService: ILocationService) {
         if (!this.product.location || !product.location) {
             return true;
         }
@@ -49,7 +49,7 @@ export class Bid extends Order {
         return locationService.matches(this.product.location, product.location[0]);
     }
 
-    private isIncludedInLocation(product: Product, locationService: LocationService) {
+    private isIncludedInLocation(product: Product, locationService: ILocationService) {
         if (!this.product.location || !product.location) {
             return true;
         }
@@ -60,7 +60,7 @@ export class Bid extends Order {
         );
     }
 
-    private isIncludedInDeviceType(product: Product, deviceService: IRECDeviceService) {
+    private isIncludedInDeviceType(product: Product, deviceService: IDeviceService) {
         if (!this.product.deviceType || !product.deviceType) {
             return true;
         }

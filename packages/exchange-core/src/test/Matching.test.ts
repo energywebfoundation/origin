@@ -1,4 +1,4 @@
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import { List } from 'immutable';
 
@@ -27,6 +27,7 @@ interface ITestCase {
 
 describe('Matching tests', () => {
     const deviceService = new IRECDeviceService();
+    const locationService = new LocationService();
 
     const twoUSD = 2;
     const onekWh = 1000;
@@ -109,14 +110,17 @@ describe('Matching tests', () => {
     };
 
     const executeTestCase = (testCase: ITestCase, done: any) => {
-        const matchingEngine = new MatchingEngine();
+        const matchingEngine = new MatchingEngine(deviceService, locationService);
 
         testCase.bidsBefore.forEach(b => matchingEngine.submitOrder(b));
         testCase.asksBefore.forEach(a => matchingEngine.submitOrder(a));
 
         matchingEngine.trades.subscribe(res => {
             const expectedTrades = List(testCase.expectedTrades);
-            assertTrades(expectedTrades, res);
+            assertTrades(
+                expectedTrades,
+                res.map(r => r.trade)
+            );
 
             const expectedBidsAfter = List(testCase.bidsAfter);
             const expectedAsksAfter = List(testCase.asksAfter);
@@ -142,7 +146,7 @@ describe('Matching tests', () => {
         expectedAsks: Order[],
         expectedBids: Order[]
     ) => {
-        const matchingEngine = new MatchingEngine();
+        const matchingEngine = new MatchingEngine(deviceService, locationService);
 
         asks.forEach(b => matchingEngine.submitOrder(b));
         bids.forEach(a => matchingEngine.submitOrder(a));
