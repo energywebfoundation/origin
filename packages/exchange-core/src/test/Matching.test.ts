@@ -2,7 +2,7 @@ import { IRECDeviceService } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import { List } from 'immutable';
 
-import { Matching } from '../Matching';
+import { MatchingEngine } from '../MatchingEngine';
 import { Order, OrderSide } from '../Order';
 import { Trade } from '../Trade';
 import { Product } from '../Product';
@@ -109,7 +109,7 @@ describe('Matching tests', () => {
     };
 
     const executeTestCase = (testCase: ITestCase, done: any) => {
-        const matchingEngine = new Matching();
+        const matchingEngine = new MatchingEngine();
 
         testCase.bidsBefore.forEach(b => matchingEngine.submitOrder(b));
         testCase.asksBefore.forEach(a => matchingEngine.submitOrder(a));
@@ -142,7 +142,7 @@ describe('Matching tests', () => {
         expectedAsks: Order[],
         expectedBids: Order[]
     ) => {
-        const matchingEngine = new Matching();
+        const matchingEngine = new MatchingEngine();
 
         asks.forEach(b => matchingEngine.submitOrder(b));
         bids.forEach(a => matchingEngine.submitOrder(a));

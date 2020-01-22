@@ -12,7 +12,7 @@ export type Listener<T> = (entity: T) => void;
 
 type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: boolean };
 
-export class Matching {
+export class MatchingEngine {
     private deviceService = new IRECDeviceService();
 
     private locationService = new LocationService();
