@@ -27,7 +27,7 @@ describe('Cerificate tests', () => {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    const deviceOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
+    const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
@@ -95,7 +95,7 @@ describe('Cerificate tests', () => {
     });
 
     it('issuer issues a certificate', async () => {
-        const volume = 123;
+        const volume = 1e9;
         const certificate = await issueCertificate(volume);
 
         assert.isNotNull(certificate.id);
@@ -116,7 +116,7 @@ describe('Cerificate tests', () => {
     });
 
     it('transfers a certificate', async () => {
-        const totalVolume = 100;
+        const totalVolume = 1e9;
         const certificate = await issueCertificate(totalVolume);
 
         setActiveUser(deviceOwnerPK);
@@ -133,7 +133,7 @@ describe('Cerificate tests', () => {
     });
 
     it('fails claiming a revoked certificate', async () => {
-        const totalVolume = 1000;
+        const totalVolume = 1e9;
         const certificate = await issueCertificate(totalVolume);
 
         setActiveUser(issuerPK);
@@ -154,7 +154,7 @@ describe('Cerificate tests', () => {
     });
 
     it('claims a certificate', async () => {
-        const totalVolume = 1000;
+        const totalVolume = 1e9;
         const certificate = await issueCertificate(totalVolume);
 
         setActiveUser(deviceOwnerPK);

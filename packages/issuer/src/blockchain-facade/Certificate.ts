@@ -210,7 +210,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         const balance = await registry.balanceOf(
             address,
             Number(this.id),
-            getAccountFromConfiguration(this.configuration)
+            { from: address }
         );
         
         return Number(balance);

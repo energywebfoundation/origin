@@ -112,7 +112,11 @@ contract Registry is ERC1155Mintable, ERC1888 {
 	function _validate(address _verifier, bytes memory _validityData) internal {
 		if (_verifier.isContract()) {
 			(bool success, bytes memory result) = _verifier.staticcall(_validityData);
-			require(success && abi.decode(result, (bool)), "Invalid request");
+
+			require(
+				success && abi.decode(result, (bool)),
+				"_validate(): Request/certificate invalid, please check with your issuer."
+			);
         }
 	}
 
@@ -122,5 +126,9 @@ contract Registry is ERC1155Mintable, ERC1888 {
      */
     function totalSupply() public view returns (uint256) {
         return _allCertificates.length;
+    }
+
+	function allCertificateIds() public view returns (uint256[] memory) {
+		return _allCertificates;
     }
 }

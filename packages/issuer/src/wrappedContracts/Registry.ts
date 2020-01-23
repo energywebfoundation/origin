@@ -21,6 +21,12 @@ export class Registry extends GeneralFunctions {
         this.web3 = web3;
     }
 
+    async initialize(txParams: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize();
+
+        return this.send(method, txParams);
+    }
+
     async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
