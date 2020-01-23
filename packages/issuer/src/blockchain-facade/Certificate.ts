@@ -210,7 +210,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         const balance = await registry.balanceOf(
             address,
             Number(this.id),
-            getAccountFromConfiguration(this.configuration)
+            { from: address }
         );
         
         return Number(balance);
@@ -282,7 +282,46 @@ export const createCertificate = async (
 
 export async function claimCertificates(
     certificateIds: string[],
-    from: string,
+    configuration: Configuration.Entity
+) {
+    const registry: Registry = configuration.blockchainProperties.certificateLogicInstance;
+    const certificateIdsAsNumber = certificateIds.map(c => parseInt(c, 10));
+
+    const certificatesPromises = certificateIds.map(certId => new Entity(certId, configuration).sync());
+    const certificates = await Promise.all(certificatesPromises);
+
+    const isOwnerPromise = certificates.map(cert => cert.isOwned());
+    const owned = await Promise.all(isOwnerPromise);
+
+    const ownsAllCertificates = owned.every(isOwned => isOwned === true);
+
+    if (!ownsAllCertificates) {
+        throw new Error(`You can only claim your own certificates`);
+    }
+
+    const valuesPromise = certificates.map(cert => cert.ownedVolume());
+    const values = await Promise.all(valuesPromise);
+
+    const { randomHex, hexToBytes } = configuration.blockchainProperties.web3.utils;
+    // TO-DO: replace with proper claim data
+    const claimData = certificates.map(cert => hexToBytes(randomHex(32)));
+    const data = hexToBytes(randomHex(32));
+
+    const { from } = getAccountFromConfiguration(configuration);
+
+    return registry.safeBatchTransferAndClaimFrom(
+        from,
+        from,
+        certificateIdsAsNumber,
+        values,
+        data,
+        claimData,
+        getAccountFromConfiguration(configuration)
+    );
+}
+
+export async function transferCertificates(
+    certificateIds: string[],
     to: string,
     configuration: Configuration.Entity
 ) {
@@ -295,19 +334,18 @@ export async function claimCertificates(
     const valuesPromise = certificates.map(cert => cert.ownedVolume());
     const values = await Promise.all(valuesPromise);
 
-    const data = certificates.map(cert => cert.data);
-
     const { randomHex, hexToBytes } = configuration.blockchainProperties.web3.utils;
-    // TO-DO: replace with proper claim data
-    const claimData = certificates.map(cert => hexToBytes(randomHex(32)));
+    // TO-DO: replace with proper data
+    const data = hexToBytes(randomHex(32));
 
-    return registry.safeBatchTransferAndClaimFrom(
+    const { from } = getAccountFromConfiguration(configuration);
+
+    return registry.safeBatchTransferFrom(
         from,
         to,
         certificateIdsAsNumber,
         values,
         data,
-        claimData,
         getAccountFromConfiguration(configuration)
     );
 }

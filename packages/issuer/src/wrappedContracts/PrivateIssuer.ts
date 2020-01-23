@@ -21,6 +21,12 @@ export class PrivateIssuer extends GeneralFunctions {
         this.web3 = web3;
     }
 
+    async initialize(registryAddress: string, publicIssuer: string, txParams: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(registryAddress, publicIssuer);
+
+        return this.send(method, txParams);
+    }
+
     async getAllEvents(eventFilter?: PastEventOptions) {
         return this.web3Contract.getPastEvents('allEvents', this.createFilter(eventFilter));
     }
