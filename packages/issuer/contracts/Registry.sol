@@ -66,8 +66,8 @@ contract Registry is ERC1155Mintable, ERC1888 {
 
 		require(numberOfClaims > 0, "safeBatchTransferAndClaimFrom: at least one certificate has to be present.");
 		require(
-			_values.length == numberOfClaims && _data.length == numberOfClaims && _claimData.length == numberOfClaims,
-			"safeBatchTransferAndClaimFrom: not all arrays are of same length."
+			_values.length == numberOfClaims && _claimData.length == numberOfClaims,
+			"safeBatchTransferAndClaimFrom: not all arrays are of the same length."
 		);
 
 		int256[] memory topics = new int256[](numberOfClaims);

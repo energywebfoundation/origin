@@ -96,7 +96,7 @@ export class Registry extends GeneralFunctions {
         _to: string,
         _ids: number[],
         _values: number[],
-        _data: number[][],
+        _data: number[],
         _claimData: number[][],
         txParams?: ISpecialTx
     ) {
@@ -107,6 +107,25 @@ export class Registry extends GeneralFunctions {
             _values,
             _data,
             _claimData
+        );
+
+        return this.send(method, txParams);
+    }
+
+    async safeBatchTransferFrom(
+        _from: string,
+        _to: string,
+        _ids: number[],
+        _values: number[],
+        _data: number[],
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.safeBatchTransferFrom(
+            _from,
+            _to,
+            _ids,
+            _values,
+            _data
         );
 
         return this.send(method, txParams);

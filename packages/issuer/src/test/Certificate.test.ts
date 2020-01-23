@@ -174,4 +174,66 @@ describe('Cerificate tests', () => {
         assert.equal(await certificate.claimedVolume(), amountToSendToTrader);
     });
 
+    it('batch transfers certificates', async () => {
+        const totalVolume = 1e9;
+
+        let certificate = await issueCertificate(totalVolume);
+        let certificate2 = await issueCertificate(totalVolume);
+
+        setActiveUser(deviceOwnerPK);
+
+        assert.isTrue(await certificate.isOwned());
+        assert.isTrue(await certificate2.isOwned());
+        assert.equal(await certificate.ownedVolume(), totalVolume);
+        assert.equal(await certificate2.ownedVolume(), totalVolume);
+
+        await Certificate.transferCertificates(
+            [certificate.id, certificate2.id],
+            accountTrader,
+            conf
+        );
+
+        certificate = await certificate.sync();
+        certificate2 = await certificate2.sync();
+
+        assert.isFalse(await certificate.isOwned());
+        assert.isFalse(await certificate2.isOwned());
+        assert.equal(await certificate.ownedVolume(), 0);
+        assert.equal(await certificate2.ownedVolume(), 0);
+
+        setActiveUser(traderPK);
+
+        assert.isTrue(await certificate.isOwned());
+        assert.isTrue(await certificate2.isOwned());
+        assert.equal(await certificate.ownedVolume(), totalVolume);
+        assert.equal(await certificate2.ownedVolume(), totalVolume);
+    });
+
+    it('batch claims certificates', async () => {
+        const totalVolume = 1e9;
+
+        let certificate = await issueCertificate(totalVolume);
+        let certificate2 = await issueCertificate(totalVolume);
+
+        setActiveUser(deviceOwnerPK);
+
+        assert.isFalse(await certificate.isClaimed());
+        assert.isFalse(await certificate2.isClaimed());
+        assert.equal(await certificate.claimedVolume(), 0);
+        assert.equal(await certificate2.claimedVolume(), 0);
+
+        await Certificate.claimCertificates(
+            [certificate.id, certificate2.id],
+            conf
+        );
+
+        certificate = await certificate.sync();
+        certificate2 = await certificate2.sync();
+
+        assert.isTrue(await certificate.isClaimed());
+        assert.isTrue(await certificate2.isClaimed());
+        assert.equal(await certificate.claimedVolume(), totalVolume);
+        assert.equal(await certificate2.claimedVolume(), totalVolume);
+    });
+
 });
