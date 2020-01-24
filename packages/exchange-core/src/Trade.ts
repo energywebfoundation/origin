@@ -6,14 +6,14 @@ export class Trade {
         this.askId = ask.id;
         this.volume = volume;
         this.price = price;
-        this.timestamp = new Date().getTime();
+        this.created = new Date();
     }
 
     public readonly bidId: string;
 
     public readonly askId: string;
 
-    public readonly timestamp: number;
+    public readonly created: Date;
 
     public readonly volume: number;
 

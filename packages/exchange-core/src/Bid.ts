@@ -5,8 +5,15 @@ import { Order, OrderSide, OrderStatus } from './Order';
 import { Product } from './Product';
 
 export class Bid extends Order {
-    constructor(id: string, price: number, volume: number, product: Product, validFrom: number) {
-        super(id, OrderSide.Bid, OrderStatus.Active, validFrom, product, price, volume);
+    constructor(
+        id: string,
+        price: number,
+        volume: number,
+        product: Product,
+        validFrom: Date,
+        status: OrderStatus
+    ) {
+        super(id, OrderSide.Bid, status, validFrom, product, price, volume);
     }
 
     public filterBy(

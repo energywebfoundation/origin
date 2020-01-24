@@ -8,7 +8,7 @@ import { Product } from './Product';
 import { Bid } from './Bid';
 import { Ask } from './Ask';
 
-type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
+export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
 
 export class MatchingEngine {
     private bids: List<Bid> = List<Bid>();
@@ -21,7 +21,7 @@ export class MatchingEngine {
 
     constructor(private deviceService: IDeviceService, private locationService: ILocationService) {}
 
-    public submitOrder(order: Order) {
+    public submitOrder(order: Ask | Bid) {
         if (order.side === OrderSide.Ask) {
             this.asks = this.insert(this.asks, order as Ask);
         } else {

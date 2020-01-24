@@ -4,8 +4,15 @@ import { Product } from './Product';
 import { Bid } from './Bid';
 
 export class Ask extends Order {
-    constructor(id: string, price: number, volume: number, product: Product, validFrom: number) {
-        super(id, OrderSide.Ask, OrderStatus.Active, validFrom, product, price, volume);
+    constructor(
+        id: string,
+        price: number,
+        volume: number,
+        product: Product,
+        validFrom: Date,
+        status: OrderStatus
+    ) {
+        super(id, OrderSide.Ask, status, validFrom, product, price, volume);
 
         if (product.deviceType?.length !== 1) {
             throw new Error('Unable to create ask order. AssetType has to be specified');
