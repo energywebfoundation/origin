@@ -268,6 +268,40 @@ describe('Matching tests', () => {
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
         });
+
+        it('should not overmatch bids', done => {
+            const asksBefore = [
+                createAsk({ volume: onekWh * 10 }),
+                createAsk({ volume: onekWh * 10 })
+            ];
+            const bidsBefore = [createBid(), createBid({ volume: onekWh * 2 })];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[1], asksBefore[0], onekWh * 2, asksBefore[0].price)
+            ];
+
+            const asksAfter = [cloneOrder(asksBefore[0], onekWh * 3) as Ask, asksBefore[1]];
+            const bidsAfter: Bid[] = [];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
+        });
+
+        it('should not overmatch asks', done => {
+            const asksBefore = [createAsk(), createAsk(), createAsk()];
+            const bidsBefore = [createBid({ volume: onekWh * 10 })];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[1].price),
+                new Trade(bidsBefore[0], asksBefore[2], onekWh, asksBefore[2].price)
+            ];
+
+            const asksAfter: Ask[] = [];
+            const bidsAfter: Bid[] = [cloneOrder(bidsBefore[0], onekWh * 3) as Bid];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
+        });
     });
 
     describe('when ask is solar level 3 specific device type', () => {

@@ -120,19 +120,16 @@ export class MatchingEngine {
 
     private generateTrades(bid: Bid) {
         let executed = List<TradeExecutedEvent>();
-        let missing = bid.volume;
 
         this.asks.forEach(ask => {
             const isMatching = this.matches(bid, ask);
-            const isFilled = missing === 0;
+            const isFilled = bid.volume === 0;
 
             if (!isMatching || isFilled) {
                 return false;
             }
 
-            const isPartial = missing < ask.volume;
-            const filled = isPartial ? ask.volume - missing : ask.volume;
-            missing -= filled;
+            const filled = Math.min(ask.volume, bid.volume);
 
             executed = executed.concat({
                 trade: new Trade(bid, ask, filled, ask.price),
