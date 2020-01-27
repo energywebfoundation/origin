@@ -12,12 +12,14 @@ import {
 } from '@energyweb/origin-backend-client-mocks';
 
 import { migratePublicIssuer, migrateRegistry, migratePrivateIssuer } from '../migrate';
-import { Certificate } from '..';
+import { Certificate, PublicIssuer, PrivateIssuer } from '..';
 
 import { logger } from '../Logger';
 
 describe('Cerificate tests', () => {
     let conf: Configuration.Entity;
+    let publicIssuer: PublicIssuer;
+    let privateIssuer: PrivateIssuer;
 
     dotenv.config({
         path: '.env.test'
@@ -29,7 +31,7 @@ describe('Cerificate tests', () => {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
-    const deviceOwnerPK = '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3';
+    const deviceOwnerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const accountDeviceOwner = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
@@ -45,11 +47,7 @@ describe('Cerificate tests', () => {
         };
     };
 
-    const issueCertificate = async (
-        volume: number,
-        conf: Configuration.Entity,
-        isPrivate = false
-    ) => {
+    const issueCertificate = async (volume: number, isPrivate: boolean = false) => {
         setActiveUser(issuerPK);
 
         const now = moment();
@@ -70,14 +68,10 @@ describe('Cerificate tests', () => {
 
     it('migrates Registry', async () => {
         const registry = await migrateRegistry(web3, privateKeyDeployment);
-        const publicIssuer = await migratePublicIssuer(
+        publicIssuer = await migratePublicIssuer(web3, issuerPK, registry.web3Contract.options.address);
+        privateIssuer = await migratePrivateIssuer(
             web3,
-            privateKeyDeployment,
-            registry.web3Contract.options.address
-        );
-        const privateIssuer = await migratePrivateIssuer(
-            web3,
-            privateKeyDeployment,
+            issuerPK,
             registry.web3Contract.options.address,
             publicIssuer.web3Contract.options.address
         );
@@ -106,8 +100,8 @@ describe('Cerificate tests', () => {
     });
 
     it('issuer issues a certificate', async () => {
-        const volume = 123;
-        const certificate = await issueCertificate(volume, conf);
+        const volume = 1e9;
+        const certificate = await issueCertificate(volume);
 
         assert.isNotNull(certificate.id);
 
@@ -122,13 +116,13 @@ describe('Cerificate tests', () => {
 
         assert.deepOwnInclude(certificate, {
             initialized: true,
-            issuer: issuerAccount
+            issuer: publicIssuer.web3Contract.options.address
         } as Partial<Certificate.ICertificate>);
     });
 
     it('transfers a certificate', async () => {
-        const totalVolume = 100;
-        const certificate = await issueCertificate(totalVolume, conf);
+        const totalVolume = 1e9;
+        const certificate = await issueCertificate(totalVolume);
 
         setActiveUser(deviceOwnerPK);
 
@@ -143,9 +137,30 @@ describe('Cerificate tests', () => {
         assert.equal(await certificate.ownedVolume(), totalVolume / 4);
     });
 
+    it('fails claiming a revoked certificate', async () => {
+        const totalVolume = 1e9;
+        const certificate = await issueCertificate(totalVolume);
+
+        setActiveUser(issuerPK);
+
+        await certificate.revoke();
+
+        setActiveUser(deviceOwnerPK);
+
+        let failed = false;
+
+        try {
+            await certificate.claim(totalVolume);
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
     it('claims a certificate', async () => {
-        const totalVolume = 1000;
-        const certificate = await issueCertificate(totalVolume, conf);
+        const totalVolume = 1e9;
+        const certificate = await issueCertificate(totalVolume);
 
         setActiveUser(deviceOwnerPK);
 
@@ -164,24 +179,65 @@ describe('Cerificate tests', () => {
         assert.equal(await certificate.claimedVolume(), amountToSendToTrader);
     });
 
-    it('issuer issues a private certificate', async () => {
-        const volume = 123;
-        const certificate = await issueCertificate(volume, conf, true);
+    it('batch transfers certificates', async () => {
+        const totalVolume = 1e9;
 
-        assert.isNotNull(certificate.id);
+        let certificate = await issueCertificate(totalVolume);
+        let certificate2 = await issueCertificate(totalVolume);
 
-        // setActiveUser(issuerPK);
-        // assert.isFalse(await certificate.isOwned());
+        setActiveUser(deviceOwnerPK);
 
-        // setActiveUser(deviceOwnerPK);
-        // assert.isTrue(await certificate.isOwned());
-        // const ownedVolume = await certificate.ownedVolume();
+        assert.isTrue(await certificate.isOwned());
+        assert.isTrue(await certificate2.isOwned());
+        assert.equal(await certificate.ownedVolume(), totalVolume);
+        assert.equal(await certificate2.ownedVolume(), totalVolume);
 
-        // assert.equal(ownedVolume, volume);
+        await Certificate.transferCertificates(
+            [certificate.id, certificate2.id],
+            accountTrader,
+            conf
+        );
 
-        assert.deepOwnInclude(certificate, {
-            initialized: true,
-            issuer: issuerAccount
-        } as Partial<Certificate.ICertificate>);
+        certificate = await certificate.sync();
+        certificate2 = await certificate2.sync();
+
+        assert.isFalse(await certificate.isOwned());
+        assert.isFalse(await certificate2.isOwned());
+        assert.equal(await certificate.ownedVolume(), 0);
+        assert.equal(await certificate2.ownedVolume(), 0);
+
+        setActiveUser(traderPK);
+
+        assert.isTrue(await certificate.isOwned());
+        assert.isTrue(await certificate2.isOwned());
+        assert.equal(await certificate.ownedVolume(), totalVolume);
+        assert.equal(await certificate2.ownedVolume(), totalVolume);
+    });
+
+    it('batch claims certificates', async () => {
+        const totalVolume = 1e9;
+
+        let certificate = await issueCertificate(totalVolume);
+        let certificate2 = await issueCertificate(totalVolume);
+
+        setActiveUser(deviceOwnerPK);
+
+        assert.isFalse(await certificate.isClaimed());
+        assert.isFalse(await certificate2.isClaimed());
+        assert.equal(await certificate.claimedVolume(), 0);
+        assert.equal(await certificate2.claimedVolume(), 0);
+
+        await Certificate.claimCertificates(
+            [certificate.id, certificate2.id],
+            conf
+        );
+
+        certificate = await certificate.sync();
+        certificate2 = await certificate2.sync();
+
+        assert.isTrue(await certificate.isClaimed());
+        assert.isTrue(await certificate2.isClaimed());
+        assert.equal(await certificate.claimedVolume(), totalVolume);
+        assert.equal(await certificate2.claimedVolume(), totalVolume);
     });
 });

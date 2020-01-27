@@ -129,4 +129,40 @@ describe('PublicIssuer', () => {
         );
         assert.equal(deviceOwnerBalance, volume);
     });
+
+    it('issuer revokes a certificate', async () => {
+        conf.blockchainProperties.activeUser = {
+            address: accountDeviceOwner,
+            privateKey: deviceOwnerPK
+        };
+
+        const now = moment();
+        const fromTime = now.subtract(30, 'day').unix();
+        const toTime = now.unix();
+        const deviceId = '1';
+
+        let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+
+        conf.blockchainProperties.activeUser = {
+            address: issuerAccount,
+            privateKey: issuerPK
+        };
+
+        const volume = 1000;
+        const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
+
+        requestIssue = await requestIssue.sync();
+
+        assert.isTrue(requestIssue.approved);
+        assert.isFalse(requestIssue.revoked);
+
+        await requestIssue.revoke();
+
+        requestIssue = await requestIssue.sync();
+        assert.isTrue(requestIssue.revoked);
+
+        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
+        assert.equal(deviceOwnerBalance, volume);
+    });
+
 });

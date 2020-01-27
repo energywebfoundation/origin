@@ -8,6 +8,7 @@ export interface IRequestIssueOnChainProperties {
     toTime: Timestamp,
     deviceId: string;
     approved: boolean;
+    revoked: boolean;
 }
 
 export class Entity extends BlockchainDataModelEntity.Entity implements IRequestIssueOnChainProperties {
@@ -17,6 +18,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
     public toTime: Timestamp;
     public deviceId: string;
     public approved: boolean;
+    public revoked: boolean;
 
     public initialized: boolean = false;
 
@@ -39,6 +41,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
         this.toTime = Number(decodedData['1']);
         this.deviceId = decodedData['2'];
         this.approved = issueRequest.approved;
+        this.revoked = issueRequest.revoked;
 
         this.initialized = true;
 
@@ -51,7 +54,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
 
     async approve(toAddress: string, value: number): Promise<number> {
         const validityData = this.configuration.blockchainProperties.web3.eth.abi.encodeFunctionCall({
-            name: 'isValid',
+            name: 'isRequestValid',
             type: 'function',
             inputs: [{
                 type: 'uint256',
@@ -74,6 +77,14 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IRequest
 
         return this.configuration.blockchainProperties.web3.utils
             .hexToNumber(approveTx.logs[1].topics[1]);
+    }
+
+    async revoke() {
+        if (this.isPrivate) {
+            await this.issuers.private.revokeRequest(Number(this.id));
+        } else {
+            await this.issuers.public.revokeRequest(Number(this.id));
+        } 
     }
 
     async requestMigrateToPublic(value: number) {
