@@ -7,19 +7,28 @@ import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
-import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClient,
+    ConfigurationClient,
+    UserClient
+} from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
 import { DeployedContractAddresses } from './deployEmpty';
 
-export const marketDemo = async (demoConfigPath: string, contractConfig: DeployedContractAddresses) => {
+export const marketDemo = async (
+    demoConfigPath: string,
+    contractConfig: DeployedContractAddresses
+) => {
     const startTime = Date.now();
 
     const web3: Web3 = new Web3(process.env.WEB3);
     const deployKey: string = process.env.DEPLOY_KEY;
 
-    const demoConfig = JSON.parse(fs.readFileSync(demoConfigPath ?? './config/demo-config.json', 'utf8').toString());
+    const demoConfig = JSON.parse(
+        fs.readFileSync(demoConfigPath ?? './config/demo-config.json', 'utf8').toString()
+    );
 
     const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
@@ -31,10 +40,12 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
-    // blockchain configuration
-    let conf: Configuration.Entity;
+    const baseUrl = `${process.env.BACKEND_URL}/api`;
 
-    conf = {
+    const configurationClient = new ConfigurationClient();
+    const userClient = new UserClient(baseUrl);
+
+    const conf: Configuration.Entity = {
         blockchainProperties: {
             activeUser: {
                 address: adminAccount.address,
@@ -47,58 +58,64 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
             web3
         },
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`,
+            baseUrl,
             client: new OffChainDataClient(),
-            configurationClient: new ConfigurationClient()
+            configurationClient,
+            userClient
         },
         logger
     };
+
+    const currencies = await configurationClient.get(conf.offChainDataSource.baseUrl, 'Currency');
 
     const userPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
         url: null,
         id: adminAccount.address,
         active: true,
-        roles: buildRights([Role.UserAdmin, Role.DeviceAdmin]),
-        organization: 'admin'
+        roles: buildRights([Role.UserAdmin, Role.DeviceAdmin])
     };
 
     const userPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-        firstName: 'Admin',
-        surname: 'User',
-        email: 'admin@example.com',
-        street: '',
-        number: '',
-        zip: '',
-        city: '',
-        country: '',
-        state: ''
+        notifications: false,
+        autoPublish: {
+            enabled: false,
+            priceInCents: 150,
+            currency: currencies[0]
+        }
     };
 
-    await MarketUser.createMarketUser(userPropsOnChain, userPropsOffChain, conf);
+    await MarketUser.createMarketUser(
+        userPropsOnChain,
+        userPropsOffChain,
+        conf,
+        {
+            email: 'admin@example.com'
+        },
+        adminAccount.privateKey,
+        false,
+        {
+            address: adminAccount.address,
+            privateKey: adminAccount.privateKey
+        }
+    );
 
     const marketLogicMatcherRole: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
         url: null,
         id: contractConfig.marketLogic,
         active: true,
-        roles: buildRights([Role.Matcher]),
-        organization: 'admin'
+        roles: buildRights([Role.Matcher])
     };
 
-    const marketLogicMatcherRoleOffChain: MarketUser.IMarketUserOffChainProperties = {
-        firstName: 'MarketMatcher',
-        surname: 'User',
-        email: 'admin@example.com',
-        street: '',
-        number: '',
-        zip: '',
-        city: '',
-        country: '',
-        state: ''
-    };
-
-    await MarketUser.createMarketUser(marketLogicMatcherRole, marketLogicMatcherRoleOffChain, conf);
+    await MarketUser.createMarketUser(
+        marketLogicMatcherRole,
+        userPropsOffChain,
+        conf,
+        null,
+        null,
+        true
+    );
 
     const actionsArray = demoConfig.flow;
 
@@ -108,13 +125,18 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
         adminPK
     );
 
-    const token = new Market.Contracts.Erc20TestToken(conf.blockchainProperties.web3, erc20TestAddress);
+    const token = new Market.Contracts.Erc20TestToken(
+        conf.blockchainProperties.web3,
+        erc20TestAddress
+    );
     const symbol = await token.web3Contract.methods.symbol().call();
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
 
-    const currencies = await conf.offChainDataSource.configurationClient.get(conf.offChainDataSource.baseUrl, 'Currency');
-    const complianceRegistry = await conf.offChainDataSource.configurationClient.get(conf.offChainDataSource.baseUrl, 'Compliance');
+    const complianceRegistry = await conf.offChainDataSource.configurationClient.get(
+        conf.offChainDataSource.baseUrl,
+        'Compliance'
+    );
 
     for (const action of actionsArray) {
         switch (action.type) {
@@ -137,8 +159,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                     );
                 } catch (e) {
                     conf.logger.error(
-                        `Could not transfer ${action.data.amount} ${tokenSymbol} tokens to ${action.data.address}\n` +
-                            e
+                        `Could not transfer ${action.data.amount} ${tokenSymbol} tokens to ${action.data.address}\n${e}`
                     );
                 }
 
@@ -179,15 +200,12 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                 };
 
                 try {
-                    const demand = await Demand.createDemand(
-                        demandOffchainProps,
-                        conf
-                    );
+                    const demand = await Demand.createDemand(demandOffchainProps, conf);
                     delete demand.proofs;
                     delete demand.configuration;
-                    conf.logger.info('Demand Created, ID: ' + demand.id);
+                    conf.logger.info(`Demand Created, ID: ${demand.id}`);
                 } catch (e) {
-                    conf.logger.error('Demand could not be created\n' + e);
+                    conf.logger.error(`Demand could not be created\n${e}`);
                 }
 
                 console.log('-----------------------------------------------------------\n');
@@ -222,9 +240,9 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                     );
                     delete supply.proofs;
                     delete supply.configuration;
-                    conf.logger.info('Onboarded Supply ID: ' + supply.id);
+                    conf.logger.info(`Onboarded Supply ID: ${supply.id}`);
                 } catch (e) {
-                    conf.logger.error('Could not onboard a supply\n' + e);
+                    conf.logger.error(`Could not onboard a supply\n${e}`);
                 }
 
                 console.log('-----------------------------------------------------------\n');
@@ -243,10 +261,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                     action.data.startTime = Math.floor(Date.now() / 1000);
                     action.data.endTime += action.data.startTime;
                     logger.verbose(
-                        'Agreement starts at ' +
-                            action.data.startTime +
-                            ' and ends at ' +
-                            action.data.endTime
+                        `Agreement starts at ${action.data.startTime} and ends at ${action.data.endTime}`
                     );
                 }
 
@@ -283,7 +298,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                         conf.logger.info('Supply Owner did not approve yet');
                     }
                 } catch (e) {
-                    conf.logger.error('Error making an agreement\n' + e);
+                    conf.logger.error(`Error making an agreement\n${e}`);
                 }
 
                 console.log('-----------------------------------------------------------\n');
@@ -311,7 +326,7 @@ export const marketDemo = async (demoConfigPath: string, contractConfig: Deploye
                         conf.logger.info('Supply Owner did not approve yet');
                     }
                 } catch (e) {
-                    conf.logger.error('Could not approve agreement\n' + e);
+                    conf.logger.error(`Could not approve agreement\n${e}`);
                 }
 
                 console.log('-----------------------------------------------------------\n');

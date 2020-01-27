@@ -61,7 +61,6 @@ Every flowaction has two entries:
 Currently the following action types are supported:
 * APPROVE_CERTIFICATION_REQUEST
 * CREATE_ACCOUNT
-* CREATE_CONSUMING_DEVICE
 * CREATE_PRODUCING_DEVICE
 * SAVE_SMARTMETER_READ_PRODUCING
 * SAVE_SMARTMETER_READ_CONSUMING
@@ -135,56 +134,6 @@ Onboard the user <code>John Doe</code> working for the <code>UserAdmin Organizat
         "address": "0x71c31ff1faa17b1cb5189fd845e0cca650d215d3",
         "privateKey:" "0xbfb423a193614c6712efd02951289192c20d70b3fc8a8b7cdee7360ead486",
         "rights": 1
-    }
-}
-</code>
-
-### CREATE_CONSUMING_DEVICE
-usage: command to onboard a new consuming device
-<br>params:
-* <code>smartMeter</code>: ethereum address of the used smart meter
-* <code>smartMeterPK</code>: the private Key of the smart meter (needed for simulating meterreadings)
-* <code>owner</code>: the owner of an device (has to have the device manager rights)
-* <code>operationalSince</code>: the unix-timestamp when the device went into operation mode
-* <code>capacityInW</code>: maximal capcity of an device
-* <code>lastSmartMeterReadWh</code>: the last meterreading, should be 0
-* <code>active</code>: flag if the the device is active
-* <code>lastSmartMeterReadFileHash</code>: the last filehash
-* <code>country</code>: the country where the device is located
-* <code>address</code>: the address where the device is located
-* <code>region</code>: the region where the device is located
-* <code>province</code>: the province where the device is located
-* <code>gpsLatitude</code>: the latitude of the device as string
-* <code>gpsLongitude</code>: the longitude of the device as string
-* <code>timezone</code>: the timezone of the device as string
-
-#### example
-Onboard a new consuming device for the owner <code>0x33496f621350cea01b18ea5b5c43c6c233c3f72d (John Doe Four of the DeviceManager Organization)
-</code>. The device has a smart meter connected with the ethereum account <code>0x1112ec367b20d2bffd40ee11523c3d36d61adf1b</code>. We're also passing the private key <code>50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c</code> of that smart meter because we want to log new data within the demonstration.<br>
-The smart meter is active since 06/28/2018 (<code>1529971200</code>), has the capactiy of <code>5000</code> and is active. Because we're freshly deploying that device, it does not have a meterreading thus no need for a filehash. <br>
-The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</code>. If you're passing the some GPS coordinates, you will see the location of the device within the webapplication in the consuming device detail view.
-
-<code>
-{
-    "type": "CREATE_CONSUMING_DEVICE",
-    "data": {
-        "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
-        "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
-        "owner": "0x33496f621350cea01b18ea5b5c43c6c233c3f72d",
-        "operationalSince": "1529971200",
-        "capacityInW": 5000,
-        "lastSmartMeterReadWh": 0,
-        "active": true,
-        "lastSmartMeterReadFileHash": "",
-        "country": "USA",
-        "region": "AnyState",
-        "zip": "01234",
-        "city": "Anytown",
-        "street": "Main Street",
-        "houseNumber": "11",
-        "gpsLatitude": "0",
-        "gpsLongitude": "0",
-        "timezone": "America/Los_Angeles"
     }
 }
 </code>
