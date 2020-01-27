@@ -14,8 +14,6 @@ export class JsonEntityController {
 
     @Get()
     async get(@Param('hash') hash: string) {
-        console.log(`<GET> ${hash}`);
-
         if (hash === undefined || hash === null) {
             const allEntities = await this.jsonEntityRepository.find();
 
@@ -33,8 +31,6 @@ export class JsonEntityController {
 
     @Post()
     async post(@Param('hash') hash: string, @Body() body: any) {
-        console.log(`<POST> ${hash}`);
-
         const exists = (await this.jsonEntityRepository.count({ hash })) > 0;
 
         if (exists) {
@@ -57,8 +53,6 @@ export class JsonEntityController {
 
     @Delete()
     async delete(@Param('hash') hash: string) {
-        console.log(`<DELETE> ${hash}`);
-
         const existingEntity = await this.jsonEntityRepository.findOne({ hash });
 
         if (!existingEntity) {

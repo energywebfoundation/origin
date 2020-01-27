@@ -1,19 +1,22 @@
 import React from 'react';
-import { PageContent } from '../PageContent/PageContent';
 import { useSelector } from 'react-redux';
-import { getAccountLink } from '../../utils/routing';
-import { getBaseURL } from '../../features/selectors';
 import { NavLink, Route, Redirect } from 'react-router-dom';
+
+import { PageContent } from '../PageContent/PageContent';
+import { useLinks } from '../../utils/routing';
+import { getUserOffchain } from '../../features/users/selectors';
 import { AccountImport } from './AccountImport';
 import { AccountSettings } from './AccountSettings';
 import { UserRegister } from './UserRegister';
-import { OrganizationForm } from './OrganizationForm';
-import { OrganizationTable } from './OrganizationTable';
+import { UserLogin } from './UserLogin';
 import { dataTest } from '../../utils/helper';
-import { OrganizationView } from './OrganizationView';
 
 export function Account() {
-    const baseURL = useSelector(getBaseURL);
+    const userOffchain = useSelector(getUserOffchain);
+
+    const { getAccountLink } = useLinks();
+
+    const isLoggedIn = Boolean(userOffchain);
 
     const Menu = [
         {
@@ -27,25 +30,16 @@ export function Account() {
             component: AccountImport
         },
         {
+            key: 'user-login',
+            label: 'Login',
+            component: UserLogin,
+            hide: isLoggedIn
+        },
+        {
             key: 'user-register',
-            label: 'Register User',
-            component: UserRegister
-        },
-        {
-            key: 'organization-register',
-            label: 'Register Organization',
-            component: OrganizationForm
-        },
-        {
-            key: 'organization-table',
-            label: 'Organizations',
-            component: OrganizationTable
-        },
-        {
-            key: 'organization-view',
-            label: 'View Organization',
-            component: OrganizationView,
-            hide: true
+            label: 'Register user',
+            component: UserRegister,
+            hide: isLoggedIn
         }
     ];
 
@@ -62,7 +56,7 @@ export function Account() {
                             <li key={menu.key}>
                                 <NavLink
                                     exact={true}
-                                    to={`${getAccountLink(baseURL)}/${menu.key}`}
+                                    to={`${getAccountLink()}/${menu.key}`}
                                     activeClassName="active"
                                     {...dataTest(`account-link-${menu.key}`)}
                                 >
@@ -75,7 +69,7 @@ export function Account() {
             </div>
 
             <Route
-                path={`${getAccountLink(baseURL)}/:key/:id?`}
+                path={`${getAccountLink()}/:key/:id?`}
                 render={props => {
                     const key = props.match.params.key;
                     const matches = Menu.filter(item => {
@@ -85,7 +79,7 @@ export function Account() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getAccountLink(baseURL)}
+                            redirectPath={getAccountLink()}
                         />
                     );
                 }}
@@ -93,10 +87,8 @@ export function Account() {
 
             <Route
                 exact={true}
-                path={`${getAccountLink(baseURL)}`}
-                render={() => (
-                    <Redirect to={{ pathname: `${getAccountLink(baseURL)}/${Menu[0].key}` }} />
-                )}
+                path={`${getAccountLink()}`}
+                render={() => <Redirect to={{ pathname: `${getAccountLink()}/${Menu[0].key}` }} />}
             />
         </div>
     );

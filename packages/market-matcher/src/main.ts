@@ -3,7 +3,11 @@ import Web3 from 'web3';
 import path from 'path';
 import program from 'commander';
 
-import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClient,
+    ConfigurationClient,
+    UserClient
+} from '@energyweb/origin-backend-client';
 import { startMatcher } from '.';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
@@ -52,9 +56,10 @@ program.parse(process.argv);
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
         },
-        offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
+        offChainDataSourceUrl: baseUrl,
         offChainDataSourceClient: new OffChainDataClient(),
         configurationClient,
+        userClient: new UserClient(baseUrl),
         matcherInterval
     };
 

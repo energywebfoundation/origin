@@ -16,7 +16,11 @@ import {
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 import { deployERC721TestReceiver } from './deploy';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
 
@@ -97,13 +101,9 @@ describe('CertificateLogic-Facade', () => {
             privateKeyDeployment
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            'admin',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(
             accountDeployment,
@@ -137,7 +137,8 @@ describe('CertificateLogic-Facade', () => {
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient: new UserClientMock()
             },
             logger
         };
@@ -150,21 +151,13 @@ describe('CertificateLogic-Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeviceOwner,
-            'deviceOwner',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeviceOwner, {
+            privateKey: privateKeyDeployment
+        });
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountTrader,
-            'trader',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountTrader, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
@@ -177,13 +170,9 @@ describe('CertificateLogic-Facade', () => {
             }
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            issuerAccount,
-            'issuer',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', issuerAccount, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
             privateKey: privateKeyDeployment
@@ -514,13 +503,9 @@ describe('CertificateLogic-Facade', () => {
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            testReceiverAddress,
-            'testReceiverAddress',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', testReceiverAddress, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(testReceiverAddress, buildRights([Role.DeviceManager]), {
             privateKey: privateKeyDeployment
@@ -584,13 +569,9 @@ describe('CertificateLogic-Facade', () => {
 
         testReceiver = new TestReceiver(web3, testReceiverAddress);
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            testReceiverAddress,
-            'testReceiverAddress',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', testReceiverAddress, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(testReceiverAddress, buildRights([Role.DeviceManager]), {
             privateKey: privateKeyDeployment

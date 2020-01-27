@@ -1,7 +1,7 @@
-import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request as ExpressRequest } from 'express';
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, UserLoginReturnData } from '@energyweb/origin-backend-core';
 
 import { AuthService } from './auth/auth.service';
 
@@ -11,13 +11,7 @@ export class AppController {
 
     @UseGuards(AuthGuard('local'))
     @Post('auth/login')
-    async login(@Request() req: ExpressRequest) {
+    async login(@Request() req: ExpressRequest): Promise<UserLoginReturnData> {
         return this.authService.login(req.user as Omit<IUser, 'password'>);
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get('profile')
-    getProfile(@Request() req: ExpressRequest) {
-        return req.user;
     }
 }

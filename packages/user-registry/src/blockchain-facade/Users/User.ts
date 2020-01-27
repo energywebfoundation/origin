@@ -1,22 +1,13 @@
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
+import { IUserWithRelationsIds } from '@energyweb/origin-backend-core';
+
 import { Role } from '../../wrappedContracts/RoleManagement';
 import UserOffChainPropertiesSchema from '../../../schemas/UserOffChainProperties.schema.json';
 
-export interface IUserOffChainProperties {
-    email: string;
-    firstName?: string;
-    surname?: string;
-    street?: string;
-    number?: string;
-    zip?: string;
-    city?: string;
-    country?: string;
-    state?: string;
-}
+export type IUserOffChainProperties = {};
 
 export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
     id: string;
-    organization: string;
     roles: number;
     active?: boolean;
 }
@@ -24,13 +15,13 @@ export interface IUserOnChainProperties extends BlockchainDataModelEntity.IOnCha
 export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnChainProperties {
     offChainProperties: IUserOffChainProperties;
 
-    organization: string;
-
     roles: number;
 
     active: boolean;
 
     initialized: boolean;
+
+    information: IUserWithRelationsIds;
 
     constructor(accountAddress: string, configuration: Configuration.Entity) {
         if (accountAddress) {
@@ -61,17 +52,25 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
 
         this.propertiesDocumentHash = userData._propertiesDocumentHash;
         this.url = userData._documentDBURL;
-        this.organization = userData._organization;
         this.roles = parseInt(userData._roles, 10);
         this.active = userData._active;
 
         this.offChainProperties = await this.getOffChainProperties();
+        try {
+            this.information = await this.getInformation();
+            // eslint-disable-next-line no-empty
+        } catch (error) {
+            // eslint-disable-next-line no-unused-expressions
+            this.configuration?.logger?.warn(
+                `Could not fetch offchain information for user: ${this.id}. Error: `,
+                error
+            );
+        }
 
         this.initialized = true;
 
-        if (this.configuration.logger) {
-            this.configuration.logger.verbose(`User ${this.id} synced`);
-        }
+        // eslint-disable-next-line no-unused-expressions
+        this.configuration?.logger?.verbose(`User ${this.id} synced`);
 
         return this;
     }
@@ -104,6 +103,10 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IUserOnC
 
         return new Entity(this.id, this.configuration).sync();
     }
+
+    async getInformation(): Promise<IUserWithRelationsIds> {
+        return this.configuration.offChainDataSource.userClient.getUserByBlockchainAccount(this.id);
+    }
 }
 
 export const createUser = async (
@@ -135,7 +138,6 @@ export const createUser = async (
         userPropertiesOnChain.propertiesDocumentHash,
         userPropertiesOnChain.url,
         userPropertiesOnChain.id,
-        userPropertiesOnChain.organization,
         accountProperties
     );
 

@@ -46,16 +46,6 @@ export async function replayTransaction(web3: Web3, txHash: string) {
     });
 }
 
-interface IBuildTransactionParams {
-    privateKey?: string;
-    from?: string;
-    data?: string;
-    gas?: string;
-    gasPrice?: string;
-    nonce?: number;
-    skipGasEstimation?: boolean;
-}
-
 export class GeneralFunctions {
     web3Contract: Contract;
 

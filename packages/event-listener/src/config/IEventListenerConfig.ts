@@ -1,4 +1,8 @@
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    IOffChainDataClient,
+    IConfigurationClient,
+    IUserClient
+} from '@energyweb/origin-backend-client';
 
 export interface IEventListenerConfig {
     web3Url: string;
@@ -6,6 +10,7 @@ export interface IEventListenerConfig {
     offChainDataSourceUrl: string;
     offChainDataSourceClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
+    userClient: IUserClient;
     scanInterval: number;
     notificationInterval: number;
     marketLogicAddress?: string;

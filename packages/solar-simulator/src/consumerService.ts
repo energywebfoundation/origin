@@ -9,7 +9,11 @@ import fs from 'fs';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClient, ConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClient,
+    ConfigurationClient,
+    UserClient
+} from '@energyweb/origin-backend-client';
 
 export function wait(milliseconds: number) {
     return new Promise(resolve => {
@@ -36,7 +40,8 @@ async function createBlockchainConfiguration() {
         offChainDataSource: {
             baseUrl,
             client: new OffChainDataClient(),
-            configurationClient: new ConfigurationClient()
+            configurationClient: new ConfigurationClient(),
+            userClient: new UserClient(baseUrl)
         }
     };
 

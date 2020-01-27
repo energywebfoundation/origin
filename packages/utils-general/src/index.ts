@@ -25,3 +25,4 @@ export {
     IRECBusinessLegalStatusLabelsMap
 } from './irec/BusinessLegalStatus';
 export { LocationService } from './blockchain-facade/LocationService';
+export * from './Signing';

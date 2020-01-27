@@ -1,8 +1,6 @@
-import { IOffChainDataClient, IOffChainData } from './OffChainDataClient';
+import { IOffChainDataClient, IOffChainData } from '@energyweb/origin-backend-client';
 
-class MissingEntity extends Error {
-    public response = { status: 404 };
-}
+import { MissingEntity } from './MissingEntity';
 
 export class OffChainDataClientMock implements IOffChainDataClient {
     private storage = new Map<string, any>();

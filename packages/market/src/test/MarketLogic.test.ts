@@ -78,13 +78,9 @@ describe('MarketLogic', () => {
             privateKeyDeployment
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            'admin',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(accountDeployment, 3, { privateKey: privateKeyDeployment });
 
@@ -153,27 +149,15 @@ describe('MarketLogic', () => {
     });
 
     it('should set right roles to users', async () => {
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountTrader,
-            'trader',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountTrader2,
-            'trader',
-            { privateKey: privateKeyDeployment }
-        );
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeviceOwner,
-            'deviceOwner',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountTrader, {
+            privateKey: privateKeyDeployment
+        });
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountTrader2, {
+            privateKey: privateKeyDeployment
+        });
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeviceOwner, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment

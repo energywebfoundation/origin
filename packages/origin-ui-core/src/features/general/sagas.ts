@@ -19,7 +19,9 @@ import {
     getAccountChangedModalVisible,
     getAccountChangedModalEnabled,
     getEnvironment,
-    getConfigurationClient
+    getConfigurationClient,
+    getRequestClient,
+    getUserClient
 } from './selectors';
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
@@ -27,7 +29,9 @@ import axios from 'axios';
 import {
     IConfigurationClient,
     OrganizationClient,
-    UserClient
+    UserClient,
+    IRequestClient,
+    IUserClient
 } from '@energyweb/origin-backend-client';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
@@ -83,14 +87,15 @@ async function getENV(): Promise<IEnvironment> {
 
         return response.data;
     } catch (error) {
-        console.error('Error while fetching env-config.js');
+        console.warn('Error while fetching env-config.js');
     }
 
     return {
         MODE: 'development',
         BACKEND_URL: 'http://localhost:3030',
         BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
-        WEB3: 'http://localhost:8545'
+        WEB3: 'http://localhost:8545',
+        REGISTRATION_MESSAGE_TO_SIGN: 'I register as Origin user'
     };
 }
 
@@ -168,9 +173,13 @@ function* fillCompliance(): SagaIterator {
 
         const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
-        const compliance = yield call(getComplianceFromAPI, configurationClient, baseURL);
+        try {
+            const compliance = yield call(getComplianceFromAPI, configurationClient, baseURL);
 
-        yield put(setCompliance(compliance));
+            yield put(setCompliance(compliance));
+        } catch (error) {
+            console.warn('Could not set compliance due to an error: ', error?.message);
+        }
     }
 }
 
@@ -188,10 +197,14 @@ function* fillCountryAndRegions(): SagaIterator {
 
         const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
 
-        const country = yield call(getCountryFromAPI, configurationClient, baseURL);
+        try {
+            const country = yield call(getCountryFromAPI, configurationClient, baseURL);
 
-        yield put(setCountry(country ? country.name : null));
-        yield put(setRegions(country ? country.regions : null));
+            yield put(setCountry(country ? country.name : null));
+            yield put(setRegions(country ? country.regions : null));
+        } catch (error) {
+            console.warn(`Could not set country and regions due to an error: `, error?.message);
+        }
     }
 }
 
@@ -200,14 +213,16 @@ function* initializeOrganizationClient(): SagaIterator {
         yield take(GeneralActions.setEnvironment);
 
         const environment: IEnvironment = yield select(getEnvironment);
+        const requestClient: IRequestClient = yield select(getRequestClient);
+        const existingOrganizationClient: IUserClient = yield select(getUserClient);
 
-        if (!environment) {
+        if (!environment || !requestClient || existingOrganizationClient) {
             return;
         }
 
         const baseURL = `${environment.BACKEND_URL}/api`;
 
-        const organizationClient = new OrganizationClient(baseURL);
+        const organizationClient = new OrganizationClient(baseURL, requestClient);
 
         yield put(setOrganizationClient(organizationClient));
     }
@@ -218,14 +233,16 @@ function* initializeUserClient(): SagaIterator {
         yield take(GeneralActions.setEnvironment);
 
         const environment: IEnvironment = yield select(getEnvironment);
+        const requestClient: IRequestClient = yield select(getRequestClient);
+        const existingUserClient: IUserClient = yield select(getUserClient);
 
-        if (!environment) {
+        if (!environment || !requestClient || existingUserClient) {
             return;
         }
 
         const baseURL = `${environment.BACKEND_URL}/api`;
 
-        const userClient = new UserClient(baseURL);
+        const userClient = new UserClient(baseURL, requestClient);
 
         yield put(setUserClient(userClient));
     }

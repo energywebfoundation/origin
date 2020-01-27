@@ -5,6 +5,7 @@ import { Header } from './Header';
 import { Device } from './Device';
 import { Demands } from './Demand/Demands';
 import { Account } from './Account/Account';
+import { Organization } from './Organization/Organization';
 import { AccountChangedModal } from './Modal/AccountChangedModal';
 import { RequestPasswordModal } from './Modal/RequestPasswordModal';
 import { RequestCertificatesModal } from './Modal/RequestCertificatesModal';
@@ -23,7 +24,8 @@ export function AppContainer() {
         getAccountLink,
         getDemandsLink,
         getDevicesLink,
-        getCertificatesLink
+        getCertificatesLink,
+        getOrganizationLink
     } = useLinks();
 
     const useStyles = makeStyles(() =>
@@ -59,6 +61,7 @@ export function AppContainer() {
                 <Route path={getCertificatesLink()} component={Certificates} />
                 <Route path={getDemandsLink()} component={Demands} />
                 <Route path={getAccountLink()} component={Account} />
+                <Route path={getOrganizationLink()} component={Organization} />
 
                 <Route path={baseURL} component={Device} />
             </Switch>

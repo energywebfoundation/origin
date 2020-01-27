@@ -1,11 +1,14 @@
-import { UsersActions, IUsersAction, IUserFetcher } from './actions';
 import { MarketUser } from '@energyweb/market';
+import { IUserWithRelations } from '@energyweb/origin-backend-core';
+
+import { UsersActions, IUsersAction, IUserFetcher } from './actions';
 import { IStoreState } from '../../types';
 
 export interface IUsersState {
     users: MarketUser.Entity[];
     currentUserId: string;
     fetcher: IUserFetcher;
+    userOffchain: IUserWithRelations;
 }
 
 const fetcher: IUserFetcher = {
@@ -16,7 +19,8 @@ const fetcher: IUserFetcher = {
 const defaultState: IUsersState = {
     users: [],
     currentUserId: null,
-    fetcher
+    fetcher,
+    userOffchain: null
 };
 
 export default function reducer(state = defaultState, action: IUsersAction): IUsersState {
@@ -59,6 +63,12 @@ export default function reducer(state = defaultState, action: IUsersAction): IUs
             return {
                 ...state,
                 fetcher: action.payload
+            };
+
+        case UsersActions.setUserOffchain:
+            return {
+                ...state,
+                userOffchain: action.payload
             };
 
         default:

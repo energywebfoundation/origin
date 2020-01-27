@@ -14,7 +14,6 @@ export class MarketContractLookupController {
 
     @Get()
     async get() {
-        console.log(`GET - MarketContractLookup`);
         const contracts = await this.marketContractLookupRepository.find();
 
         return contracts.map(contract => contract.address);
@@ -24,8 +23,6 @@ export class MarketContractLookupController {
     async post(@Body() body: any) {
         let { value } = body;
         value = value.toLowerCase();
-
-        console.log(`POST - MarketContractLookup: ${value}`);
 
         const marketContracts = await this.marketContractLookupRepository.find();
         const marketAddresses = marketContracts.map(contract => contract.address);

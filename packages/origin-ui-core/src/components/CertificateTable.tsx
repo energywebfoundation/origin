@@ -37,10 +37,12 @@ import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
-import { getCurrencies } from '../features/general/selectors';
+import { getCurrencies, getOrganizationClient } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { CircularProgress } from '@material-ui/core';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import { IOrganization } from '@energyweb/origin-backend-core';
 
 interface IOwnProps {
     certificates?: PurchasableCertificate.Entity[];
@@ -56,6 +58,7 @@ interface IStateProps {
     currentUser: MarketUser.Entity;
     users: MarketUser.Entity[];
     baseURL: string;
+    organizationClient: IOrganizationClient;
 }
 
 interface IDispatchProps {
@@ -73,6 +76,7 @@ interface IEnrichedCertificateData {
     isOffChainSettlement: boolean;
     deviceTypeLabel: string;
     locationText: string;
+    organization: IOrganization;
 }
 
 interface ICertificatesState extends IPaginatedLoaderFilteredSortedState {
@@ -222,11 +226,18 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                     device => device.id === certificate.certificate.deviceId.toString()
                 );
 
+            const certificateOwner = getUserById(this.props.users, certificate.certificate.owner);
+
+            const organization = await this.props.organizationClient.getById(
+                certificateOwner?.information?.organization
+            );
+
             enrichedData.push({
                 certificate,
                 producingDevice,
                 deviceTypeLabel: producingDevice?.offChainProperties?.deviceType,
-                certificateOwner: getUserById(this.props.users, certificate.certificate.owner),
+                certificateOwner,
+                organization,
                 price: certificate.isOffChainSettlement
                     ? formatCurrency(certificate.price / 100)
                     : certificate.price?.toString(),
@@ -556,8 +567,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 }
             },
             {
-                property: (record: IEnrichedCertificateData) =>
-                    record?.certificateOwner?.organization,
+                property: (record: IEnrichedCertificateData) => record?.organization?.name,
                 label: 'Owner',
                 input: {
                     type: CustomFilterInputType.string
@@ -719,9 +729,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             {
                 id: 'owner',
                 label: 'Owner',
-                sortProperties: [
-                    (record: IEnrichedCertificateData) => record?.certificateOwner?.organization
-                ]
+                sortProperties: [(record: IEnrichedCertificateData) => record?.organization?.name]
             },
             CERTIFICATION_DATE_COLUMN,
             { id: 'price', label: 'Price' },
@@ -771,7 +779,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
                 commissioningDate,
                 locationText: getDeviceLocationText(enrichedData.producingDevice),
                 compliance,
-                owner: enrichedData.certificateOwner && enrichedData.certificateOwner.organization,
+                owner: enrichedData?.organization?.name,
                 certificationDate: formatDate(
                     moment.unix(enrichedData.certificate.certificate.creationTime)
                 ),
@@ -875,7 +883,8 @@ export const CertificateTable = connect(
         configuration: getConfiguration(state),
         currentUser: getCurrentUser(state),
         producingDevices: getProducingDevices(state),
-        users: getUsers(state)
+        users: getUsers(state),
+        organizationClient: getOrganizationClient(state)
     }),
     dispatchProps
 )(CertificateTableClass);

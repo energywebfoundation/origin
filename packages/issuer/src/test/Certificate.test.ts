@@ -5,7 +5,11 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { migratePublicIssuer, migrateRegistry, migratePrivateIssuer } from '../migrate';
 import { Certificate, PublicIssuer, PrivateIssuer } from '..';
@@ -41,7 +45,7 @@ describe('Cerificate tests', () => {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
         };
-    }
+    };
 
     const issueCertificate = async (volume: number, isPrivate: boolean = false) => {
         setActiveUser(issuerPK);
@@ -60,7 +64,7 @@ describe('Cerificate tests', () => {
             conf,
             isPrivate
         );
-    }
+    };
 
     it('migrates Registry', async () => {
         const registry = await migrateRegistry(web3, privateKeyDeployment);
@@ -88,7 +92,8 @@ describe('Cerificate tests', () => {
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient: new UserClientMock()
             },
             logger
         };
@@ -137,7 +142,7 @@ describe('Cerificate tests', () => {
         const certificate = await issueCertificate(totalVolume);
 
         setActiveUser(issuerPK);
-        
+
         await certificate.revoke();
 
         setActiveUser(deviceOwnerPK);
@@ -235,5 +240,4 @@ describe('Cerificate tests', () => {
         assert.equal(await certificate.claimedVolume(), totalVolume);
         assert.equal(await certificate2.claimedVolume(), totalVolume);
     });
-
 });

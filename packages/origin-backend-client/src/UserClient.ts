@@ -1,37 +1,85 @@
-import axios from 'axios';
 import {
     UserRegisterReturnData,
     UserRegisterData,
     UserLoginData,
-    UserLoginReturnData
+    UserLoginReturnData,
+    UserUpdateData,
+    IUserWithRelationsIds
 } from '@energyweb/origin-backend-core';
 
+import { IRequestClient, RequestClient } from './RequestClient';
+
 export interface IUserClient {
-    login(data: UserLoginData): Promise<UserLoginReturnData>;
+    login(email: string, password: string): Promise<UserLoginReturnData>;
+    logout(): Promise<void>;
     register(data: UserRegisterData): Promise<UserRegisterReturnData>;
+    me(): Promise<IUserWithRelationsIds>;
+    getUserByBlockchainAccount(blockchainAccountAddress: string): Promise<IUserWithRelationsIds>;
+    attachSignedMessage(id: number, signedMessage: string): Promise<any>;
 }
 
 export class UserClient implements IUserClient {
-    private baseURL: string;
+    constructor(
+        private readonly baseURL: string,
+        private readonly requestClient: IRequestClient = new RequestClient()
+    ) {}
 
-    constructor(_baseUrl: string) {
-        this.baseURL = _baseUrl;
+    private get authEndpoint() {
+        return `${this.baseURL}/auth`;
     }
 
-    private get endpoint() {
+    private get userEndpoint() {
         return `${this.baseURL}/User`;
     }
 
     public async register(formData: UserRegisterData): Promise<UserRegisterReturnData> {
-        const url = `${this.endpoint}/register`;
-        const { data } = await axios.post(url, formData);
+        const url = `${this.userEndpoint}/register`;
+        const { data } = await this.requestClient.post(url, formData);
 
         return data;
     }
 
-    public async login(formData: UserLoginData): Promise<UserLoginReturnData> {
-        const url = `${this.endpoint}/login`;
-        const { data } = await axios.post(url, formData);
+    public async login(email: string, password: string) {
+        const url = `${this.authEndpoint}/login`;
+        const { data } = await this.requestClient.post<UserLoginData, UserLoginReturnData>(url, {
+            username: email,
+            password
+        });
+
+        if (data?.accessToken) {
+            this.requestClient.authenticationToken = data.accessToken;
+        }
+
+        return data;
+    }
+
+    public async logout() {
+        this.requestClient.authenticationToken = null;
+    }
+
+    public async me(): Promise<IUserWithRelationsIds> {
+        const url = `${this.userEndpoint}/me`;
+        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
+
+        return data;
+    }
+
+    public async getUserByBlockchainAccount(
+        blockchainAccountAddress: string
+    ): Promise<IUserWithRelationsIds> {
+        const url = `${this.userEndpoint}/for-blockchain-account/${blockchainAccountAddress}`;
+        const { data } = await this.requestClient.get<{}, IUserWithRelationsIds>(url);
+
+        return data;
+    }
+
+    public async attachSignedMessage(id: number, signedMessage: string) {
+        return this.updateUser(id, { blockchainAccountSignedMessage: signedMessage });
+    }
+
+    private async updateUser(id: number, updatedUserInfo: UserUpdateData) {
+        const url = `${this.userEndpoint}/${id}`;
+        const { data } = await this.requestClient.put(url, updatedUserInfo);
 
         return data;
     }

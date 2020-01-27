@@ -18,7 +18,11 @@ import {
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { buildRights, Role, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
@@ -51,13 +55,9 @@ const deployUserRegistry = async () => {
         privateKeyDeployment
     );
 
-    await userLogic.createUser(
-        'propertiesDocumentHash',
-        'documentDBURL',
-        accountDeployment,
-        'admin',
-        { privateKey: privateKeyDeployment }
-    );
+    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+        privateKey: privateKeyDeployment
+    });
 
     await userLogic.setRoles(
         accountDeployment,
@@ -71,7 +71,7 @@ const deployUserRegistry = async () => {
         { privateKey: privateKeyDeployment }
     );
 
-    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountTrader, 'trader', {
+    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountTrader, {
         privateKey: privateKeyDeployment
     });
 
@@ -79,18 +79,14 @@ const deployUserRegistry = async () => {
         privateKey: privateKeyDeployment
     });
 
-    await userLogic.createUser(
-        'propertiesDocumentHash',
-        'documentDBURL',
-        deviceOwnerAddress,
-        'deviceOwner',
-        { privateKey: privateKeyDeployment }
-    );
+    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', deviceOwnerAddress, {
+        privateKey: privateKeyDeployment
+    });
     await userLogic.setRoles(deviceOwnerAddress, buildRights([Role.DeviceManager]), {
         privateKey: privateKeyDeployment
     });
 
-    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', issuerAccount, 'issuer', {
+    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', issuerAccount, {
         privateKey: privateKeyDeployment
     });
 
@@ -149,13 +145,9 @@ const deploy = async () => {
 
     const marketLogicAddress = marketLogic.web3Contract.options.address;
 
-    await userLogic.createUser(
-        'propertiesDocumentHash',
-        'documentDBURL',
-        marketLogicAddress,
-        'matcher',
-        { privateKey: privateKeyDeployment }
-    );
+    await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', marketLogicAddress, {
+        privateKey: privateKeyDeployment
+    });
 
     await userLogic.setRoles(marketLogicAddress, buildRights([Role.Matcher]), {
         privateKey: privateKeyDeployment
@@ -176,7 +168,8 @@ const deploy = async () => {
         offChainDataSource: {
             baseUrl: `${process.env.BACKEND_URL}/api`,
             client: new OffChainDataClientMock(),
-            configurationClient: new ConfigurationClientMock()
+            configurationClient: new ConfigurationClientMock(),
+            userClient: new UserClientMock()
         },
         logger
     };
@@ -195,6 +188,7 @@ const deploy = async () => {
         offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
         offChainDataSourceClient: config.offChainDataSource.client,
         configurationClient: config.offChainDataSource.configurationClient,
+        userClient: config.offChainDataSource.userClient,
         marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,

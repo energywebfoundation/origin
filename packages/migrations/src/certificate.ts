@@ -2,7 +2,6 @@ import { ConsumingDevice, ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
-
 import { onboardDemo } from './onboarding';
 
 export const certificateDemo = async (
@@ -340,6 +339,18 @@ export const certificateDemo = async (
 
         default:
             const passString = JSON.stringify(action);
-            await onboardDemo(passString, conf, adminPK);
+            try {
+                await onboardDemo(passString, conf);
+            } catch (error) {
+                if (error?.response?.data) {
+                    console.log('HTTP Error', {
+                        config: error.config,
+                        response: error?.response?.data
+                    });
+                }
+
+                throw error;
+            }
+
     }
 };
