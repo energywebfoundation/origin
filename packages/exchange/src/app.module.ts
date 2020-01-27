@@ -10,6 +10,7 @@ import { OrderModule } from './pods/order/order.module';
 import { Trade } from './pods/trade/trade.entity';
 import { TradeModule } from './pods/trade/trade.module';
 import { DemandModule } from './pods/demand/demand.module';
+import { OrderBookModule } from './pods/order-book/order-book.module';
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { DemandModule } from './pods/demand/demand.module';
         MatchingEngineModule,
         TradeModule,
         OrderModule,
-        DemandModule
+        DemandModule,
+        OrderBookModule
     ],
     providers: [AppService]
 })

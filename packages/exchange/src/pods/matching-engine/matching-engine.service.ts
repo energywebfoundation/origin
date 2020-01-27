@@ -1,4 +1,11 @@
-import { Ask, Bid, MatchingEngine, OrderSide, TradeExecutedEvent } from '@energyweb/exchange-core';
+import {
+    Ask,
+    Bid,
+    MatchingEngine,
+    OrderSide,
+    TradeExecutedEvent,
+    Product
+} from '@energyweb/exchange-core';
 import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
@@ -39,6 +46,11 @@ export class MatchingEngineService {
 
         const order = this.toOrder(orderEntity);
         this.matchingEngine.submitOrder(order);
+    }
+
+    public query(product: Product) {
+        // TODO: consider reading this info from DB and filtering
+        return this.matchingEngine.orderBookByProduct(product);
     }
 
     @Interval(1000)

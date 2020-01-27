@@ -1,11 +1,4 @@
-import {
-    Controller,
-    Post,
-    Logger,
-    Get,
-    Param,
-    ParseUUIDPipe
-} from '@nestjs/common';
+import { Controller, Post, Logger, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { DemandService } from './demand.service';
 
 @Controller('demand')
