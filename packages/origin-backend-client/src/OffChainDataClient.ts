@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IOffChainData<T> {
     properties: T;
@@ -13,21 +13,23 @@ export interface IOffChainDataClient {
 }
 
 export class OffChainDataClient implements IOffChainDataClient {
+    constructor(private readonly requestClient: IRequestClient = new RequestClient()) {}
+
     public async get<T>(url: string): Promise<IOffChainData<T>> {
-        const result = await axios.get(this.normalizeURL(url));
+        const result = await this.requestClient.get(this.normalizeURL(url));
 
         return result.data as IOffChainData<T>;
     }
 
     public async delete(url: string): Promise<boolean> {
-        const result = await axios.delete(this.normalizeURL(url));
+        const result = await this.requestClient.delete(this.normalizeURL(url));
 
         return result.status === 200;
     }
 
     public async insert<T>(url: string, offChainData: IOffChainData<T>): Promise<boolean> {
         const normalizedURL = this.normalizeURL(url);
-        const result = await axios.post(normalizedURL, offChainData);
+        const result = await this.requestClient.post(normalizedURL, offChainData);
 
         return result.status >= 200 && result.status < 300;
     }
