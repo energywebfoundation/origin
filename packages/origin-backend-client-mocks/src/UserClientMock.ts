@@ -27,7 +27,9 @@ export class UserClientMock implements IUserClient {
         const user: IUserWithRelationsIds = {
             id: this.userIdCounter,
             ...data,
-            organization: null
+            organization: null,
+            blockchainAccountAddress: '',
+            blockchainAccountSignedMessage: ''
         };
 
         this.storage.set(this.userIdCounter, user);

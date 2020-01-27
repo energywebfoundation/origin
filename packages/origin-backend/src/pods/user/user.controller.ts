@@ -31,9 +31,7 @@ export class UserController {
                 title,
                 firstName,
                 lastName,
-                telephone,
-                blockchainAccountAddress: '',
-                blockchainAccountSignedMessage: ''
+                telephone
             });
 
             return {

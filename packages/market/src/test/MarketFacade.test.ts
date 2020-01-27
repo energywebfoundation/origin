@@ -24,12 +24,24 @@ import {
     UserClientMock
 } from '@energyweb/origin-backend-client-mocks';
 
+import { UserRegisterData } from '@energyweb/origin-backend-core';
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { PurchasableCertificate, MarketLogic, Demand, Supply, Agreement, MarketUser } from '..';
+
+function createTestRegisterData(email: string): UserRegisterData {
+    return {
+        email,
+        firstName: 'John',
+        lastName: 'Doe',
+        password: 'test',
+        telephone: '111-111-111',
+        title: 'Mr'
+    };
+}
 
 describe('Market-Facade', () => {
     dotenv.config({
@@ -159,9 +171,7 @@ describe('Market-Facade', () => {
                 notifications: false
             },
             conf,
-            {
-                email: 'admin@example.com'
-            },
+            createTestRegisterData('admin@example.com'),
             privateKeyDeployment
         );
 
@@ -177,9 +187,7 @@ describe('Market-Facade', () => {
                 notifications: false
             },
             conf,
-            {
-                email: 'trader@example.com'
-            },
+            createTestRegisterData('trader@example.com'),
             traderPK
         );
 
@@ -195,9 +203,7 @@ describe('Market-Facade', () => {
                 notifications: false
             },
             conf,
-            {
-                email: 'deviceowner@example.com'
-            },
+            createTestRegisterData('deviceowner@example.com'),
             deviceOwnerPK
         );
 
@@ -213,9 +219,7 @@ describe('Market-Facade', () => {
                 notifications: false
             },
             conf,
-            {
-                email: 'issuer@example.com'
-            },
+            createTestRegisterData('issuer@example.com'),
             issuerPK
         );
 
@@ -231,9 +235,7 @@ describe('Market-Facade', () => {
                 notifications: false
             },
             conf,
-            {
-                email: 'matcher@example.com'
-            },
+            createTestRegisterData('matcher@example.com'),
             matcherPK
         );
 

@@ -33,6 +33,17 @@ import {
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+function createTestRegisterData(email: string) {
+    return {
+        email,
+        firstName: 'John',
+        lastName: 'Doe',
+        password: 'test',
+        telephone: '111-111-111',
+        title: 'Mr'
+    };
+}
+
 export class Demo {
     public marketContractLookup: string;
 
@@ -182,9 +193,7 @@ export class Demo {
             adminPropsOnChain,
             adminPropsOffChain,
             this.conf,
-            {
-                email: 'admin@example.com'
-            },
+            createTestRegisterData('admin@example.com'),
             this.ACCOUNTS.ADMIN.privateKey
         );
 
@@ -207,9 +216,7 @@ export class Demo {
             deviceManagerPropsOnChain,
             deviceManagerPropsOffChain,
             this.conf,
-            {
-                email: 'devicemanager@example.com'
-            },
+            createTestRegisterData('devicemanager@example.com'),
             this.ACCOUNTS.DEVICE_MANAGER.privateKey
         );
 
@@ -227,9 +234,7 @@ export class Demo {
             listenerPropsOnChain,
             listenerPropsOffChain,
             this.conf,
-            {
-                email: 'listener@example.com'
-            },
+            createTestRegisterData('listener@example.com'),
             this.ACCOUNTS.LISTENER.privateKey
         );
 
@@ -247,9 +252,7 @@ export class Demo {
             matcherPropsOnChain,
             matcherPropsOffChain,
             this.conf,
-            {
-                email: 'matcher@example.com'
-            },
+            createTestRegisterData('matcher@example.com'),
             this.ACCOUNTS.MATCHER.privateKey
         );
 
@@ -284,9 +287,7 @@ export class Demo {
             traderOnChain,
             traderOffChain,
             this.conf,
-            {
-                email: 'trader@example.com'
-            },
+            createTestRegisterData('trader@example.com'),
             this.ACCOUNTS.TRADER.privateKey
         );
 

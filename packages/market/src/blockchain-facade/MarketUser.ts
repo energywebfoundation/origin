@@ -54,7 +54,7 @@ export const createMarketUser = async (
     userPropertiesOnChain: User.IUserOnChainProperties,
     userPropertiesOffChain: IMarketUserOffChainProperties,
     configuration: Configuration.Entity,
-    registerData?: Partial<UserRegisterData>,
+    registerData?: UserRegisterData,
     createdUserPrivateKey?: string,
     adminProperties?: IAccountProperties
 ): Promise<Entity> => {
@@ -105,16 +105,7 @@ export const createMarketUser = async (
     if (registerData) {
         const userClient = configuration?.offChainDataSource?.userClient;
 
-        const userOffchain = await userClient.register({
-            email: registerData.email ?? 'test@mailinator.com',
-            firstName: registerData.firstName ?? 'John',
-            lastName: registerData.lastName ?? 'Doe',
-            password: registerData.password ?? 'test',
-            telephone: registerData.telephone ?? '111-111-111',
-            title: registerData.title ?? 'Mr',
-            blockchainAccountAddress: '',
-            blockchainAccountSignedMessage: ''
-        });
+        const userOffchain = await userClient.register(registerData);
 
         const REGISTRATION_MESSAGE_TO_SIGN =
             process.env.REGISTRATION_MESSAGE_TO_SIGN ?? 'I register as Origin user';

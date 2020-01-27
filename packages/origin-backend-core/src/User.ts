@@ -23,7 +23,10 @@ export interface IUserWithRelations extends IUser {
     organization: IOrganization;
 }
 
-export type UserRegisterData = Omit<IUserProperties, 'id'> & { password: string };
+export type UserRegisterData = Omit<
+    IUserProperties,
+    'id' | 'blockchainAccountAddress' | 'blockchainAccountSignedMessage'
+> & { password: string };
 export type UserRegisterReturnData = IUser;
 
 export type UserLoginData = { username: string; password: string };

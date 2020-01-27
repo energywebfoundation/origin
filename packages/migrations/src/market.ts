@@ -90,7 +90,12 @@ export const marketDemo = async (
         userPropsOffChain,
         conf,
         {
-            email: 'admin@example.com'
+            email: 'admin@example.com',
+            firstName: 'n',
+            lastName: 'n',
+            password: 'test',
+            telephone: '1',
+            title: 'Mr'
         },
         adminAccount.privateKey,
         {
