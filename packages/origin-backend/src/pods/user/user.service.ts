@@ -21,7 +21,9 @@ export class UserService {
         return this.repository
             .create({
                 ...data,
-                password: this.hashPassword(data.password)
+                password: this.hashPassword(data.password),
+                blockchainAccountAddress: '',
+                blockchainAccountSignedMessage: ''
             })
             .save();
     }

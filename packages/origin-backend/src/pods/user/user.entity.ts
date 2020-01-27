@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Unique, ManyToOne,  } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
 
 import { IUser } from '@energyweb/origin-backend-core';
@@ -31,10 +31,10 @@ export class User extends BaseEntity implements IUser {
     @Length(4, 100)
     password: string;
 
-    @Column()
+    @Column({ nullable: true })
     blockchainAccountAddress: string;
 
-    @Column()
+    @Column({ nullable: true })
     blockchainAccountSignedMessage: string;
 
     @ManyToOne(

@@ -34,6 +34,17 @@ const connectionConfig = {
 const adminPK = connectionConfig.deployKey;
 const web3 = new Web3(connectionConfig.web3);
 
+function createTestRegisterData(email: string, firstName?: string, lastName?: string) {
+    return {
+        email,
+        firstName: firstName ?? 'John',
+        lastName: lastName ?? 'Doe',
+        password: 'test',
+        telephone: '111-111-111',
+        title: 'Mr'
+    };
+}
+
 export const ACCOUNTS = {
     ADMIN: {
         address: web3.eth.accounts.privateKeyToAccount(adminPK).address,
@@ -173,9 +184,7 @@ export async function deployDemo() {
         adminPropsOnChain,
         adminPropsOffChain,
         conf,
-        {
-            email: 'admin@example.com'
-        },
+        createTestRegisterData('admin@example.com'),
         ACCOUNTS.ADMIN.privateKey
     );
 
@@ -193,9 +202,7 @@ export async function deployDemo() {
         deviceManagerPropsOnChain,
         deviceManagerPropsOffChain,
         conf,
-        {
-            email: 'devicemanager@example.com'
-        },
+        createTestRegisterData('devicemanager@example.com'),
         ACCOUNTS.DEVICE_MANAGER.privateKey
     );
 
@@ -205,11 +212,7 @@ export async function deployDemo() {
         ACCOUNTS.TRADER.onChain,
         ACCOUNTS.TRADER.offChain,
         conf,
-        {
-            email: 'trader@example.com',
-            firstName: 'Trader_Forename',
-            lastName: 'Trader_Surname'
-        },
+        createTestRegisterData('trader@example.com', 'Trader_Forename', 'Trader_Surname'),
         ACCOUNTS.TRADER.privateKey
     );
 
