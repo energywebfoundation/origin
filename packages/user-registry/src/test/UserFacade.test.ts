@@ -4,11 +4,15 @@ import dotenv from 'dotenv';
 import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
-import { UserLogic } from '..';
+import { UserLogic, User } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
-import { User } from '..';
+
 import { logger } from '../blockchain-facade/Logger';
 import { buildRights, Role } from '../wrappedContracts/RoleManagement';
 
@@ -47,21 +51,14 @@ describe('User Facade', () => {
             propertiesDocumentHash: null,
             id: user1,
             active: true,
-            roles: RIGHTS,
-            organization: 'Testorganization'
+            roles: RIGHTS
         };
 
         const userPropsOffChain: User.IUserOffChainProperties = {
-            firstName: 'John',
-            surname: 'Doe',
-            email: 'john@doe.com',
-            street: 'Evergreen Terrace',
-            number: '101',
-            zip: '14789',
-            city: 'Shelbyville',
-            country: 'US',
-            state: 'FL'
+            dummy: true
         };
+
+        const baseUrl = `${process.env.BACKEND_URL}/api`;
 
         conf = {
             blockchainProperties: {
@@ -73,9 +70,10 @@ describe('User Facade', () => {
                 }
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
+                baseUrl,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient: new UserClientMock()
             },
             logger
         };
@@ -86,7 +84,6 @@ describe('User Facade', () => {
 
         assert.ownInclude(user, {
             id: user1.toLowerCase(),
-            organization: 'Testorganization',
             roles: RIGHTS,
             active: true,
             initialized: true
@@ -110,15 +107,7 @@ describe('User Facade', () => {
         const user = await new User.Entity(user1, conf).sync();
 
         assert.deepEqual(user.offChainProperties, {
-            city: 'Shelbyville',
-            country: 'US',
-            email: 'john@doe.com',
-            firstName: 'John',
-            number: '101',
-            state: 'FL',
-            street: 'Evergreen Terrace',
-            surname: 'Doe',
-            zip: '14789'
+            dummy: true
         });
     });
 
@@ -126,7 +115,7 @@ describe('User Facade', () => {
         let user = await new User.Entity(user1, conf).sync();
 
         assert.ownInclude(user.offChainProperties, {
-            city: 'Shelbyville'
+            dummy: true
         });
 
         conf.blockchainProperties.activeUser = {
@@ -134,15 +123,16 @@ describe('User Facade', () => {
             privateKey: user1PK
         };
 
-        const newProperties: User.IUserOffChainProperties = user.offChainProperties;
-        newProperties.city = 'New York';
+        const newProperties = {
+            dummy: false
+        };
 
         await user.update(newProperties);
 
         user = await user.sync();
 
         assert.ownInclude(user.offChainProperties, {
-            city: 'New York'
+            dummy: false
         });
     });
 });

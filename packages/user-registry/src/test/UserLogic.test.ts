@@ -54,12 +54,10 @@ describe('UserLogic', () => {
             {
                 0: '',
                 1: '',
-                2: '',
-                3: '0',
-                4: false,
+                2: '0',
+                3: false,
                 _documentDBURL: '',
                 _propertiesDocumentHash: '',
-                _organization: '',
                 _roles: '0',
                 _active: false
             }
@@ -84,7 +82,7 @@ describe('UserLogic', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             '0x1000000000000000000000000000000000000005',
-            'TestOrganization', {
+            {
                 privateKey: privateKeyDeployment
             }
         );
@@ -94,12 +92,10 @@ describe('UserLogic', () => {
             {
                 0: 'propertiesDocumentHash',
                 1: 'documentDBURL',
-                2: 'TestOrganization',
-                3: '0',
-                4: true,
+                2: '0',
+                3: true,
                 _propertiesDocumentHash: 'propertiesDocumentHash',
                 _documentDBURL: 'documentDBURL',
-                _organization: 'TestOrganization',
                 _roles: '0',
                 _active: true
             }
@@ -133,12 +129,10 @@ describe('UserLogic', () => {
             {
                 0: 'propertiesDocumentHash',
                 1: 'documentDBURL',
-                2: 'TestOrganization',
-                3: '1',
-                4: true,
+                2: '1',
+                3: true,
                 _propertiesDocumentHash: 'propertiesDocumentHash',
                 _documentDBURL: 'documentDBURL',
-                _organization: 'TestOrganization',
                 _roles: '1',
                 _active: true
             }
@@ -174,9 +168,9 @@ describe('UserLogic', () => {
     it('should correctly grant DeviceManager and Trader roles when mixed together as rights', async () => {
         const TEST_ACCOUNT = '0x1000000000000000000000000000000000000006';
 
-        const rights = buildRights([Role.DeviceManager, Role.Trader])
+        const rights = buildRights([Role.DeviceManager, Role.Trader]);
 
-        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', TEST_ACCOUNT, 'TestOrganization', {
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', TEST_ACCOUNT, {
             privateKey: privateKeyDeployment
         });
 
@@ -184,10 +178,7 @@ describe('UserLogic', () => {
             privateKey: privateKeyDeployment
         });
 
-        assert.equal(
-            await userLogic.getRolesRights(TEST_ACCOUNT),
-            rights
-        );
+        assert.equal(await userLogic.getRolesRights(TEST_ACCOUNT), rights);
 
         assert.equal(await userLogic.isRole(Role.UserAdmin, TEST_ACCOUNT), false);
         assert.equal(await userLogic.isRole(Role.DeviceAdmin, TEST_ACCOUNT), false);
