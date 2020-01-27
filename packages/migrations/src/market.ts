@@ -93,7 +93,6 @@ export const marketDemo = async (
             email: 'admin@example.com'
         },
         adminAccount.privateKey,
-        false,
         {
             address: adminAccount.address,
             privateKey: adminAccount.privateKey
@@ -108,14 +107,7 @@ export const marketDemo = async (
         roles: buildRights([Role.Matcher])
     };
 
-    await MarketUser.createMarketUser(
-        marketLogicMatcherRole,
-        userPropsOffChain,
-        conf,
-        null,
-        null,
-        true
-    );
+    await MarketUser.createMarketUser(marketLogicMatcherRole, userPropsOffChain, conf);
 
     const actionsArray = demoConfig.flow;
 

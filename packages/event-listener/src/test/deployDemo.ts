@@ -267,10 +267,7 @@ export class Demo {
         await MarketUser.createMarketUser(
             marketLogicPropsOnChain,
             marketLogicPropsOffChain,
-            this.conf,
-            null,
-            null,
-            true
+            this.conf
         );
 
         const traderOnChain: User.IUserOnChainProperties = {

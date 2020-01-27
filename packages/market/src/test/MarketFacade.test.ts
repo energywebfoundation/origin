@@ -248,10 +248,7 @@ describe('Market-Facade', () => {
             {
                 notifications: false
             },
-            conf,
-            null,
-            null,
-            true
+            conf
         );
     });
 

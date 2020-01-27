@@ -54,9 +54,8 @@ export const createMarketUser = async (
     userPropertiesOnChain: User.IUserOnChainProperties,
     userPropertiesOffChain: IMarketUserOffChainProperties,
     configuration: Configuration.Entity,
-    registerData: Partial<UserRegisterData>,
+    registerData?: Partial<UserRegisterData>,
     createdUserPrivateKey?: string,
-    skipOffchainRegistration = false,
     adminProperties?: IAccountProperties
 ): Promise<Entity> => {
     const user = new Entity(null, configuration);
@@ -103,7 +102,7 @@ export const createMarketUser = async (
         throw new Error('createMarketUser: Saving on-chain data failed. Reverting...');
     }
 
-    if (!skipOffchainRegistration) {
+    if (registerData) {
         const userClient = configuration?.offChainDataSource?.userClient;
 
         const userOffchain = await userClient.register({
