@@ -6,6 +6,7 @@ import { Connection, Repository } from 'typeorm';
 
 import { Order } from '../order/order.entity';
 import { Trade } from './trade.entity';
+import { Demand } from '../demand/demand.entity';
 
 @Injectable()
 export class TradeService {
@@ -31,21 +32,38 @@ export class TradeService {
                     currentVolume: bid.volume,
                     status: bid.status
                 });
-                await entityManager.insert<Trade>(Trade, {
+                const tradeEntity = await entityManager.insert<Trade>(Trade, {
                     ...trade,
                     bid,
                     ask
                 });
+                const demand = await entityManager
+                    .getRepository(Demand)
+                    .createQueryBuilder('demand')
+                    .leftJoin('demand.bids', 'bid')
+                    .where('bid.id = :id', { id: bid.id })
+                    .getOne();
+
+                if (demand) {
+                    await entityManager
+                        .getRepository(Demand)
+                        .createQueryBuilder('demand')
+                        .relation(Demand, 'trades')
+                        .of(demand)
+                        .add(tradeEntity.identifiers[0].id);
+                }
             }
         });
     }
 
-    public async findAll(userId: string) {
-        return this.repository
+    public async getAll(userId: string) {
+        const trades = await this.repository
             .createQueryBuilder('trade')
-            .leftJoin('trade.bid', 'bid')
-            .leftJoin('trade.ask', 'ask')
+            .leftJoinAndSelect('trade.bid', 'bid')
+            .leftJoinAndSelect('trade.ask', 'ask')
             .where('ask.userId = :userId OR bid.userId = :userId', { userId })
             .getMany();
+
+        return trades.map(trade => trade.withMaskedOrder(userId));
     }
 }

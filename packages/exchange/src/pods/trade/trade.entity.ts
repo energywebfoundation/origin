@@ -16,11 +16,17 @@ export class Trade extends BaseEntity {
     @Column()
     price: number;
 
-    @ManyToOne(() => Order)
+    @ManyToOne(() => Order, { eager: true })
     @JoinTable()
     bid: Order;
 
-    @ManyToOne(() => Order)
+    @ManyToOne(() => Order, { eager: true })
     @JoinTable()
     ask: Order;
+
+    public withMaskedOrder(userId: string): Trade {
+        return this.ask.userId === userId
+            ? { ...this, bid: undefined }
+            : { ...this, ask: undefined };
+    }
 }

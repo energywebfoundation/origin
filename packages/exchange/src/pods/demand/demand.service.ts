@@ -46,14 +46,27 @@ export class DemandService {
 
         this.matchingService.submit(bid);
 
-        return this.findOne(demand.id);
+        return this.findOne(userId, demand.id);
     }
 
-    public async findOne(id: string) {
-        return this.repository.findOne(id);
+    public async findOne(userId: string, id: string) {
+        const demand = await this.repository.findOne(id, { where: { userId } });
+        if (!demand) {
+            return null;
+        }
+
+        return { ...demand, trades: demand.trades.map(trade => trade.withMaskedOrder(userId)) };
     }
 
-    public async getAll() {
-        return this.repository.find();
+    public async getAll(userId: string) {
+        const demands = await this.repository.find({ where: { userId } });
+        if (!demands) {
+            return null;
+        }
+
+        return demands.map(demand => ({
+            ...demand,
+            trades: demand.trades.map(trade => trade.withMaskedOrder(userId))
+        }));
     }
 }

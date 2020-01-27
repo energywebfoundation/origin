@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Product } from '@energyweb/exchange-core';
 import { Order } from '../order/order.entity';
+import { Trade } from '../trade/trade.entity';
 
 @Entity()
 export class Demand extends BaseEntity {
@@ -42,4 +43,11 @@ export class Demand extends BaseEntity {
     })
     @JoinTable()
     bids: Order[];
+
+    @ManyToMany(() => Trade, {
+        eager: true,
+        cascade: true
+    })
+    @JoinTable()
+    trades: Trade[];
 }

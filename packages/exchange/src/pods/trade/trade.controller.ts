@@ -9,6 +9,6 @@ export class TradeController {
 
     @Get()
     public getAll() {
-        return this.tradeService.findAll('1');
+        return this.tradeService.getAll('2');
     }
 }
