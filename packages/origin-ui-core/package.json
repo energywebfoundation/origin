@@ -67,6 +67,7 @@
     "yup": "0.28.0"
   },
   "devDependencies": {
+    "@energyweb/origin-backend-client-mocks": "0.0.1",
     "@testing-library/react": "9.4.0",
     "@types/enzyme": "3.10.4",
     "@types/jest": "24.9.0",

@@ -1,16 +1,6 @@
 import React, { useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Role } from '@energyweb/user-registry';
-
-import { useSelector, useDispatch } from 'react-redux';
-import { useLinks } from '../utils/routing';
-import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
-import {
-    isUsingInBrowserPK,
-    getAccounts,
-    getActiveAccount,
-    getEncryptedAccounts
-} from '../features/authentication/selectors';
 import {
     makeStyles,
     createStyles,
@@ -20,12 +10,44 @@ import {
     FilledInput,
     Tooltip
 } from '@material-ui/core';
-import { AccountCircle, VpnKeySharp, Lock, Settings, PersonAdd } from '@material-ui/icons';
-import { requestUser } from '../features/users/actions';
+import {
+    AccountCircle,
+    VpnKeySharp,
+    Lock,
+    Settings,
+    PersonAdd,
+    ExitToApp
+} from '@material-ui/icons';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { useLinks } from '../utils/routing';
+import {
+    getUserById,
+    getUsers,
+    getCurrentUser,
+    getUserOffchain
+} from '../features/users/selectors';
+import { clearAuthenticationToken, requestUser } from '../features/users/actions';
+import {
+    isUsingInBrowserPK,
+    getAccounts,
+    getActiveAccount,
+    getEncryptedAccounts
+} from '../features/authentication/selectors';
+
 import { setActiveAccount, unlockAccount } from '../features/authentication/actions';
 import { showRequestPasswordModal } from '../features/general/actions';
 import { dataTest } from '../utils/helper';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
+import { MarketUser } from '@energyweb/market';
+
+export function getAddressDisplay(address: string, user: MarketUser.Entity) {
+    if (user?.information) {
+        return `${user?.information?.firstName} ${user?.information?.lastName}`;
+    }
+
+    return `${address.slice(0, 5)}...${address.slice(address.length - 3, address.length)}`;
+}
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -38,6 +60,12 @@ const useStyles = makeStyles(() =>
             opacity: 0.7,
             fontSize: '16px',
             marginLeft: '8px'
+        },
+        logOutIcon: {
+            opacity: 0.7,
+            marginLeft: '8px',
+            verticalAlign: 'sub',
+            cursor: 'pointer'
         }
     })
 );
@@ -48,6 +76,7 @@ export function Header() {
     const users = useSelector(getUsers);
     const encryptedAccounts = useSelector(getEncryptedAccounts);
     const currentUser = useSelector(getCurrentUser);
+    const userOffchain = useSelector(getUserOffchain);
 
     const isIssuer = currentUser?.isRole(Role.Issuer);
 
@@ -62,7 +91,8 @@ export function Header() {
         getUserRegisterLink,
         getCertificatesLink,
         getDemandsLink,
-        getAccountLink
+        getAccountLink,
+        getOrganizationLink
     } = useLinks();
 
     const originConfiguration = useContext(OriginConfigurationContext);
@@ -79,7 +109,7 @@ export function Header() {
         return {
             id: `${a.address}${a.privateKey ? 'PK' : ''}`,
             value: a.address,
-            label: user?.organization || 'Guest',
+            label: getAddressDisplay(a.address, user),
             isPrivateKey: Boolean(a.privateKey),
             isLocked: false
         };
@@ -104,7 +134,7 @@ export function Header() {
         selectorAccounts.push({
             id: `${a.address}PK`,
             value: a.address,
-            label: user?.organization || 'Guest',
+            label: getAddressDisplay(a.address, user),
             isPrivateKey: true,
             isLocked: true
         });
@@ -176,9 +206,15 @@ export function Header() {
                             </NavLink>
                         </li>
                     )}
+                    {userOffchain && (
+                        <li>
+                            <NavLink to={getOrganizationLink()}>Organizations</NavLink>
+                        </li>
+                    )}
                 </ul>
 
                 <div className="ViewProfile">
+                    Blockchain:&nbsp;
                     <Select
                         input={
                             <FilledInput
@@ -218,11 +254,11 @@ export function Header() {
                             </MenuItem>
                         ))}
                     </Select>
-                    {!currentUser?.organization && (
+                    {!userOffchain && (
                         <>
                             &nbsp;
                             <Link className={classes.endIcon} to={getUserRegisterLink()}>
-                                <Tooltip title="Register user">
+                                <Tooltip title="Register offchain user">
                                     <PersonAdd color="primary" />
                                 </Tooltip>
                             </Link>
@@ -238,6 +274,19 @@ export function Header() {
                             <Settings color="primary" />
                         </Tooltip>
                     </Link>
+                    <br />
+                    {userOffchain && (
+                        <div>
+                            Offchain logged in as: {userOffchain.firstName} {userOffchain.lastName}{' '}
+                            <Tooltip title="Log out">
+                                <ExitToApp
+                                    color="primary"
+                                    className={classes.logOutIcon}
+                                    onClick={() => dispatch(clearAuthenticationToken())}
+                                />
+                            </Tooltip>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

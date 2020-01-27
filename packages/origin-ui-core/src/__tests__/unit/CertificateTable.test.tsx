@@ -4,6 +4,9 @@ import { CertificateTable, SelectedState } from '../../components/CertificateTab
 import { Certificate } from '@energyweb/origin';
 import { Unit } from '@energyweb/utils-general';
 import { setupStore, createRenderedHelpers, WrapperComponent } from '../utils/helpers';
+import { setOrganizationClient } from '../../features/general/actions';
+import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 describe('CertificateTable', () => {
     it('correctly renders', async () => {
@@ -60,6 +63,15 @@ describe('CertificateTable', () => {
                 status: Certificate.Status.Claimed
             } as Certificate.ICertificate
         });
+
+        store.dispatch(
+            setOrganizationClient(({
+                getById: async () =>
+                    (({ name: 'Example Organization' } as Partial<
+                        IOrganizationWithRelationsIds
+                    >) as IOrganizationWithRelationsIds)
+            } as Partial<IOrganizationClient>) as IOrganizationClient)
+        );
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>

@@ -5,7 +5,9 @@ import {
     ConfigurationClient,
     IConfigurationClient,
     IOrganizationClient,
-    IUserClient
+    IUserClient,
+    IRequestClient,
+    RequestClient
 } from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
@@ -19,6 +21,7 @@ export interface IGeneralState {
     offChainDataClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
     organizationClient: IOrganizationClient;
+    requestClient: IRequestClient;
     userClient: IUserClient;
     environment: IEnvironment;
     currencies: string[];
@@ -26,6 +29,8 @@ export interface IGeneralState {
     country: string;
     regions: object;
 }
+
+const requestClient = new RequestClient();
 
 const defaultState: IGeneralState = {
     accountChangedModalVisible: false,
@@ -35,9 +40,10 @@ const defaultState: IGeneralState = {
     requestPasswordModalVisible: false,
     requestPasswordModalCallback: null,
     requestPasswordModalTitle: null,
-    offChainDataClient: new OffChainDataClient(),
-    configurationClient: new ConfigurationClient(),
+    offChainDataClient: new OffChainDataClient(requestClient),
+    configurationClient: new ConfigurationClient(requestClient),
     organizationClient: null,
+    requestClient,
     userClient: null,
     environment: null,
     currencies: [],

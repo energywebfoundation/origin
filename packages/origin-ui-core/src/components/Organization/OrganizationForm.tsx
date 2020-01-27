@@ -212,7 +212,12 @@ export function OrganizationForm(props: IProps) {
             showNotification('Organization registered.', NotificationType.Success);
         } catch (error) {
             console.warn('Error while registering an organization', error);
-            showNotification('Organization could not be created.', NotificationType.Error);
+
+            if (error?.response?.status === 401) {
+                showNotification('Unauthorized.', NotificationType.Error);
+            } else {
+                showNotification('Organization could not be created.', NotificationType.Error);
+            }
         }
 
         dispatch(setLoading(false));

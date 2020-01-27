@@ -3,6 +3,9 @@ import { mount } from 'enzyme';
 import { ProducingDeviceTable } from '../../components/ProducingDeviceTable';
 import { dataTestSelector } from '../../utils/helper';
 import { setupStore, WrapperComponent, createRenderedHelpers } from '../utils/helpers';
+import { setOrganizationClient } from '../../features/general/actions';
+import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
@@ -24,6 +27,15 @@ describe('ProducingDeviceTable', () => {
             region: 'Central',
             province: 'Nakhon Pathom'
         });
+
+        store.dispatch(
+            setOrganizationClient(({
+                getById: async () =>
+                    (({ name: 'Example Organization' } as Partial<
+                        IOrganizationWithRelationsIds
+                    >) as IOrganizationWithRelationsIds)
+            } as Partial<IOrganizationClient>) as IOrganizationClient)
+        );
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>

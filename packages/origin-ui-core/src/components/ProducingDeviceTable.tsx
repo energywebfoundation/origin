@@ -37,6 +37,8 @@ import {
 } from '../features/producingDevices/actions';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { PowerFormatter } from '../utils/PowerFormatter';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import { getOrganizationClient } from '../features/general/selectors';
 
 interface IOwnProps {
     actions: {
@@ -56,6 +58,7 @@ interface IStateProps {
     currentUser: MarketUser.Entity;
     users: MarketUser.Entity[];
     baseURL: string;
+    organizationClient: IOrganizationClient;
 }
 
 interface IDispatchProps {
@@ -104,9 +107,13 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         const promises = producingDevices.map(async device => {
             const user = getUserById(this.props.users, device.owner.address);
 
+            const organization = await this.props.organizationClient.getById(
+                user?.information?.organization
+            );
+
             return {
                 device,
-                organizationName: user?.organization,
+                organizationName: organization?.name,
                 locationText: getDeviceLocationText(device)
             };
         });
@@ -298,7 +305,8 @@ export const ProducingDeviceTable = connect(
         producingDevices: getProducingDevices(state),
         users: getUsers(state),
         currentUser: getCurrentUser(state),
-        baseURL: getBaseURL()
+        baseURL: getBaseURL(),
+        organizationClient: getOrganizationClient(state)
     }),
     mapDispatchToProps
 )(ProducingDeviceTableClass);

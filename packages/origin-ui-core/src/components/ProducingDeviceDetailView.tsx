@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import marker from '../../assets/marker.svg';
 import map from '../../assets/map.svg';
 import wind from '../../assets/icon_wind.svg';
@@ -25,6 +25,8 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { formatDate } from '../utils/helper';
+import { getOrganizationClient } from '../features/general/selectors';
+import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id: number;
@@ -36,6 +38,17 @@ export function ProducingDeviceDetailView(props: IProps) {
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
+    const organizationClient = useSelector(getOrganizationClient);
+
+    const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
+
+    useEffect(() => {
+        (async () => {
+            if (organizationClient) {
+                setOrganizations(await organizationClient.getAll());
+            }
+        })();
+    }, [organizationClient]);
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -102,7 +115,9 @@ export function ProducingDeviceDetailView(props: IProps) {
                 },
                 {
                     label: 'Device owner',
-                    data: owner ? owner.organization : ''
+                    data: owner
+                        ? organizations?.find(o => o.id === owner?.information?.organization)?.name
+                        : ''
                 },
                 {
                     label: 'Certified by registry',

@@ -16,9 +16,15 @@ import {
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock,
+    OrganizationClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { IStoreState } from '../../types';
+import { OrganizationPostData, IUserWithRelationsIds } from '@energyweb/origin-backend-core';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -49,19 +55,9 @@ export const ACCOUNTS = {
             propertiesDocumentHash: null,
             url: null,
             active: true,
-            roles: buildRights([Role.Trader]),
-            organization: 'Trader organization'
+            roles: buildRights([Role.Trader])
         },
         offChain: {
-            firstName: 'Trader',
-            surname: '',
-            email: 'trader@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: '',
             notifications: false
         }
     }
@@ -113,6 +109,8 @@ export async function deployDemo() {
 
     const configurationClient = new ConfigurationClientMock();
     const offChainDataClient = new OffChainDataClientMock();
+    const userClient = new UserClientMock();
+    const organizationClient = new OrganizationClientMock();
 
     const BACKEND_URL = 'http://localhost:3030';
     const baseUrl = `${BACKEND_URL}/api`;
@@ -143,56 +141,79 @@ export async function deployDemo() {
         offChainDataSource: {
             baseUrl: `${BACKEND_URL}/api`,
             client: offChainDataClient,
-            configurationClient
+            configurationClient,
+            userClient
         },
         logger
     };
+
+    function createOrganization(user: IUserWithRelationsIds, name: string) {
+        const newOrganization = organizationClient.addMocked(
+            ({ name } as Partial<OrganizationPostData>) as OrganizationPostData,
+            user.id
+        );
+
+        userClient.updateMocked(user.id, {
+            ...user,
+            organization: newOrganization.id
+        });
+    }
 
     const adminPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
         url: null,
         id: ACCOUNTS.ADMIN.address,
         active: true,
-        roles: buildRights([Role.UserAdmin, Role.DeviceAdmin]),
-        organization: 'admin'
+        roles: buildRights([Role.UserAdmin, Role.DeviceAdmin])
     };
     const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-        firstName: 'Admin',
-        surname: 'User',
-        email: 'admin@example.com',
-        street: '',
-        number: '',
-        zip: '',
-        city: '',
-        country: '',
-        state: '',
         notifications: false
     };
-    await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, conf);
+    await MarketUser.createMarketUser(
+        adminPropsOnChain,
+        adminPropsOffChain,
+        conf,
+        {
+            email: 'admin@example.com'
+        },
+        ACCOUNTS.ADMIN.privateKey
+    );
 
     const deviceManagerPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
         url: null,
         id: ACCOUNTS.DEVICE_MANAGER.address,
         active: true,
-        roles: buildRights([Role.DeviceManager]),
-        organization: 'Device Manager organization'
+        roles: buildRights([Role.DeviceManager])
     };
     const deviceManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-        firstName: 'Device',
-        surname: 'Manager',
-        email: 'devicemanager@example.com',
-        street: '',
-        number: '',
-        zip: '',
-        city: '',
-        country: '',
-        state: '',
         notifications: false
     };
-    await MarketUser.createMarketUser(deviceManagerPropsOnChain, deviceManagerPropsOffChain, conf);
+    const deviceManager = await MarketUser.createMarketUser(
+        deviceManagerPropsOnChain,
+        deviceManagerPropsOffChain,
+        conf,
+        {
+            email: 'devicemanager@example.com'
+        },
+        ACCOUNTS.DEVICE_MANAGER.privateKey
+    );
 
-    await MarketUser.createMarketUser(ACCOUNTS.TRADER.onChain, ACCOUNTS.TRADER.offChain, conf);
+    createOrganization(deviceManager.information, 'Device Manager organization');
+
+    const trader = await MarketUser.createMarketUser(
+        ACCOUNTS.TRADER.onChain,
+        ACCOUNTS.TRADER.offChain,
+        conf,
+        {
+            email: 'trader@example.com',
+            firstName: 'Trader_Forename',
+            lastName: 'Trader_Surname'
+        },
+        ACCOUNTS.TRADER.privateKey
+    );
+
+    createOrganization(trader.information, 'Trader organization');
 
     const deviceProducingProps: Device.IOnChainProperties = {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
@@ -234,7 +255,14 @@ export async function deployDemo() {
         throw new Error(error);
     }
 
-    return { conf, deployResult, configurationClient, offChainDataClient };
+    return {
+        conf,
+        deployResult,
+        configurationClient,
+        offChainDataClient,
+        organizationClient,
+        userClient
+    };
 }
 
 interface IGanacheServer {

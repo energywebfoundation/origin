@@ -89,7 +89,9 @@ export function UserRegister() {
         try {
             await userClient.register({
                 ...values,
-                title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect
+                title: values.titleSelect === 'Other' ? values.titleInput : values.titleSelect,
+                blockchainAccountAddress: '',
+                blockchainAccountSignedMessage: ''
             });
 
             showNotification('User registered.', NotificationType.Success);
