@@ -1,10 +1,12 @@
+import { IUser } from './User';
+
 export enum OrganizationStatus {
     Submitted,
     Denied,
     Active
 }
 
-export interface IOrganization {
+export interface IOrganizationProperties {
     id: number;
 
     activeCountries: string;
@@ -50,6 +52,21 @@ export interface IOrganization {
     status: OrganizationStatus;
 }
 
-export type OrganizationPostData = Omit<IOrganization, 'id' | 'status'>;
+export interface IOrganization extends IOrganizationProperties {
+    leadUser: IUser | IUser['id'];
+    users: Array<IUser | IUser['id']>;
+}
+
+export interface IOrganizationWithRelationsIds extends IOrganization {
+    leadUser: IUser['id'];
+    users: Array<IUser['id']>;
+}
+
+export interface IOrganizationWithRelations extends IOrganization {
+    leadUser: IUser;
+    users: IUser[];
+}
+
+export type OrganizationPostData = Omit<IOrganizationProperties, 'id' | 'status'>;
 
 export type OrganizationUpdateData = Pick<IOrganization, 'status'>;
