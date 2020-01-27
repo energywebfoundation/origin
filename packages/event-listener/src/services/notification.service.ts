@@ -39,7 +39,7 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyFulfilledDemand(user: MarketUser.Entity) {
-        const emailAddress = user.offChainProperties.email;
+        const emailAddress = user.information.email;
         const fulfilledDemands = this.originEventsStore.getFulfilledDemands(user.id);
 
         if (fulfilledDemands.length > 0) {
@@ -55,7 +55,7 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyPartiallyFilledDemand(user: MarketUser.Entity) {
-        const emailAddress = user.offChainProperties.email;
+        const emailAddress = user.information.email;
         const partiallyFilledDemands = this.originEventsStore.getPartiallyFilledDemands(user.id);
 
         if (partiallyFilledDemands.length > 0) {
@@ -74,7 +74,7 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyMatchingCertificates(user: MarketUser.Entity) {
-        const emailAddress = user.offChainProperties.email;
+        const emailAddress = user.information.email;
         const matchingCertificates = this.originEventsStore.getMatchingCertificates(user.id);
 
         if (matchingCertificates.length > 0) {
@@ -97,7 +97,7 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyIssuedCertificates(user: MarketUser.Entity) {
-        const emailAddress = user.offChainProperties.email;
+        const emailAddress = user.information.email;
         const issuedCertificates = this.originEventsStore.getIssuedCertificates(user.id);
 
         if (issuedCertificates > 0) {
@@ -113,7 +113,7 @@ export class NotificationService implements INotificationService {
     }
 
     private async notifyDeviceStatusChange(user: MarketUser.Entity) {
-        const emailAddress = user.offChainProperties.email;
+        const emailAddress = user.information.email;
         const deviceStatusChanges = this.originEventsStore.getDeviceStatusChanges(user.id);
 
         if (deviceStatusChanges.length > 0) {

@@ -5,7 +5,11 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { migratePublicIssuer, migrateRegistry } from '../migrate';
 import { RequestIssue, PublicIssuer, Registry } from '..';
@@ -35,7 +39,11 @@ describe('PublicIssuer', () => {
 
     it('migrates PublicIssuer and Registry', async () => {
         registry = await migrateRegistry(web3, privateKeyDeployment);
-        publicIssuer = await migratePublicIssuer(web3, privateKeyDeployment, registry.web3Contract.options.address);
+        publicIssuer = await migratePublicIssuer(
+            web3,
+            privateKeyDeployment,
+            registry.web3Contract.options.address
+        );
         const version = await publicIssuer.version();
 
         assert.equal(version, 'v0.1');
@@ -52,7 +60,8 @@ describe('PublicIssuer', () => {
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient: new UserClientMock()
             },
             logger
         };
@@ -69,7 +78,12 @@ describe('PublicIssuer', () => {
         const toTime = now.unix();
         const deviceId = '1';
 
-        const requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        const requestIssue = await RequestIssue.createRequestIssue(
+            fromTime,
+            toTime,
+            deviceId,
+            conf
+        );
 
         assert.isAbove(Number(requestIssue.id), -1);
 
@@ -108,9 +122,11 @@ describe('PublicIssuer', () => {
         requestIssue = await requestIssue.sync();
 
         assert.isTrue(requestIssue.approved);
-        
-        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
+
+        const deviceOwnerBalance = await registry.balanceOf(
+            accountDeviceOwner,
+            Number(certificateId)
+        );
         assert.equal(deviceOwnerBalance, volume);
     });
-
 });

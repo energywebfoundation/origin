@@ -25,7 +25,11 @@ import {
 
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    IOffChainDataClient,
+    IConfigurationClient,
+    IUserClient
+} from '@energyweb/origin-backend-client';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -100,7 +104,8 @@ export class Demo {
 
     async deploy(
         offChainDataClient: IOffChainDataClient,
-        configurationClient: IConfigurationClient
+        configurationClient: IConfigurationClient,
+        userClient: IUserClient
     ) {
         this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
             this.web3,
@@ -157,7 +162,8 @@ export class Demo {
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: offChainDataClient,
-                configurationClient
+                configurationClient,
+                userClient
             },
             logger: this.logger
         };
@@ -167,40 +173,29 @@ export class Demo {
             url: null,
             id: this.ACCOUNTS.ADMIN.address,
             active: true,
-            roles: buildRights([Role.UserAdmin, Role.DeviceAdmin, Role.Issuer]),
-            organization: 'admin'
+            roles: buildRights([Role.UserAdmin, Role.DeviceAdmin, Role.Issuer])
         };
         const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-            firstName: 'Admin',
-            surname: 'User',
-            email: 'admin@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: ''
+            notifications: false
         };
-        await MarketUser.createMarketUser(adminPropsOnChain, adminPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            adminPropsOnChain,
+            adminPropsOffChain,
+            this.conf,
+            {
+                email: 'admin@example.com'
+            },
+            this.ACCOUNTS.ADMIN.privateKey
+        );
 
         const deviceManagerPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
             url: null,
             id: this.ACCOUNTS.DEVICE_MANAGER.address,
             active: true,
-            roles: buildRights([Role.DeviceAdmin, Role.DeviceManager, Role.Trader]),
-            organization: 'Device Manager organization'
+            roles: buildRights([Role.DeviceAdmin, Role.DeviceManager, Role.Trader])
         };
         const deviceManagerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-            firstName: 'Admin',
-            surname: 'User',
-            email: 'admin@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: '',
             notifications: true,
             autoPublish: {
                 enabled: true,
@@ -211,7 +206,11 @@ export class Demo {
         await MarketUser.createMarketUser(
             deviceManagerPropsOnChain,
             deviceManagerPropsOffChain,
-            this.conf
+            this.conf,
+            {
+                email: 'devicemanager@example.com'
+            },
+            this.ACCOUNTS.DEVICE_MANAGER.privateKey
         );
 
         const listenerPropsOnChain: User.IUserOnChainProperties = {
@@ -219,67 +218,59 @@ export class Demo {
             url: null,
             id: this.ACCOUNTS.LISTENER.address,
             active: true,
-            roles: buildRights([Role.Listener]),
-            organization: 'Listener organization'
+            roles: buildRights([Role.Listener])
         };
         const listenerPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-            firstName: 'Listener',
-            surname: 'L',
-            email: 'listener@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: ''
+            notifications: false
         };
-        await MarketUser.createMarketUser(listenerPropsOnChain, listenerPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            listenerPropsOnChain,
+            listenerPropsOffChain,
+            this.conf,
+            {
+                email: 'listener@example.com'
+            },
+            this.ACCOUNTS.LISTENER.privateKey
+        );
 
         const matcherPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
             url: null,
             id: this.ACCOUNTS.MATCHER.address,
             active: true,
-            roles: buildRights([Role.Matcher]),
-            organization: 'Matcher organization'
+            roles: buildRights([Role.Matcher])
         };
         const matcherPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-            firstName: 'Matcher',
-            surname: 'M',
-            email: 'matcher@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: ''
+            notifications: false
         };
-        await MarketUser.createMarketUser(matcherPropsOnChain, matcherPropsOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            matcherPropsOnChain,
+            matcherPropsOffChain,
+            this.conf,
+            {
+                email: 'matcher@example.com'
+            },
+            this.ACCOUNTS.MATCHER.privateKey
+        );
 
         const marketLogicPropsOnChain: User.IUserOnChainProperties = {
             propertiesDocumentHash: null,
             url: null,
             id: this.conf.blockchainProperties.marketLogicInstance.web3Contract._address,
             active: true,
-            roles: buildRights([Role.Matcher]),
-            organization: 'MarketLogic matcher'
+            roles: buildRights([Role.Matcher])
         };
         const marketLogicPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
-            firstName: 'MarketLogic',
-            surname: 'Matcher',
-            email: 'marketlogicmatcher@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: ''
+            notifications: false
         };
 
         await MarketUser.createMarketUser(
             marketLogicPropsOnChain,
             marketLogicPropsOffChain,
-            this.conf
+            this.conf,
+            null,
+            null,
+            true
         );
 
         const traderOnChain: User.IUserOnChainProperties = {
@@ -287,22 +278,20 @@ export class Demo {
             url: null,
             id: this.ACCOUNTS.TRADER.address,
             active: true,
-            roles: buildRights([Role.Trader]),
-            organization: 'Trader'
+            roles: buildRights([Role.Trader])
         };
         const traderOffChain: MarketUser.IMarketUserOffChainProperties = {
-            firstName: 'Trader',
-            surname: 'Trader',
-            email: 'marketlogicmatcher@example.com',
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: '',
             notifications: true
         };
-        await MarketUser.createMarketUser(traderOnChain, traderOffChain, this.conf);
+        await MarketUser.createMarketUser(
+            traderOnChain,
+            traderOffChain,
+            this.conf,
+            {
+                email: 'trader@example.com'
+            },
+            this.ACCOUNTS.TRADER.privateKey
+        );
 
         const deviceProducingProps: Device.IOnChainProperties = {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },

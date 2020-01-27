@@ -5,7 +5,11 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { migratePublicIssuer, migrateRegistry, migratePrivateIssuer } from '../migrate';
 import { Certificate } from '..';
@@ -39,9 +43,13 @@ describe('Cerificate tests', () => {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
         };
-    }
+    };
 
-    const issueCertificate = async (volume: number, conf: Configuration.Entity, isPrivate: boolean = false) => {
+    const issueCertificate = async (
+        volume: number,
+        conf: Configuration.Entity,
+        isPrivate = false
+    ) => {
         setActiveUser(issuerPK);
 
         const now = moment();
@@ -58,11 +66,15 @@ describe('Cerificate tests', () => {
             conf,
             isPrivate
         );
-    }
+    };
 
     it('migrates Registry', async () => {
         const registry = await migrateRegistry(web3, privateKeyDeployment);
-        const publicIssuer = await migratePublicIssuer(web3, privateKeyDeployment, registry.web3Contract.options.address);
+        const publicIssuer = await migratePublicIssuer(
+            web3,
+            privateKeyDeployment,
+            registry.web3Contract.options.address
+        );
         const privateIssuer = await migratePrivateIssuer(
             web3,
             privateKeyDeployment,
@@ -86,7 +98,8 @@ describe('Cerificate tests', () => {
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient: new UserClientMock()
             },
             logger
         };
@@ -171,5 +184,4 @@ describe('Cerificate tests', () => {
             issuer: issuerAccount
         } as Partial<Certificate.ICertificate>);
     });
-
 });
