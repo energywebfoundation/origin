@@ -11,7 +11,6 @@ export class ComplianceController {
 
     @Get()
     async get() {
-        console.log(`GET - Compliance`);
         const compliance = await this.complianceService.getSingle();
 
         if (!compliance) {
@@ -24,8 +23,6 @@ export class ComplianceController {
     @Post()
     async post(@Body() body: any) {
         const { value } = body;
-
-        console.log(`POST - Compliance: ${value}`);
 
         const compliances = await this.complianceService.findAll();
 

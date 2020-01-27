@@ -1,6 +1,16 @@
-import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    BaseEntity,
+    PrimaryGeneratedColumn,
+    OneToMany,
+    OneToOne,
+    JoinColumn
+} from 'typeorm';
 import { IsInt, IsEmail, Min, ValidateIf, IsNotEmpty, IsUrl } from 'class-validator';
-import { IOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
+import { OrganizationStatus, IOrganization } from '@energyweb/origin-backend-core';
+import { User } from '../user/user.entity';
+import { OrganizationInvitation } from './organizationInvitation.entity';
 
 @Entity()
 export class Organization extends BaseEntity implements IOrganization {
@@ -89,4 +99,21 @@ export class Organization extends BaseEntity implements IOrganization {
 
     @Column()
     status: OrganizationStatus;
+
+    @OneToMany(
+        () => User,
+        user => user.organization
+    )
+    users: User[];
+
+    @OneToMany(
+        () => OrganizationInvitation,
+        entity => entity.organization
+    )
+    invitations: OrganizationInvitation[];
+
+    @OneToOne(() => User)
+    @JoinColumn()
+    @IsNotEmpty()
+    leadUser: User;
 }

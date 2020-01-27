@@ -9,7 +9,6 @@ export class CountryController {
 
     @Get()
     async get() {
-        console.log(`GET - Country`);
         const country = await this.countryService.getSingle();
 
         if (!country) {
@@ -27,8 +26,6 @@ export class CountryController {
         const { value } = body;
         const newName = value.name;
         const newRegions = JSON.stringify(value.regions);
-
-        console.log(`POST - Country: ${value}`);
 
         const countries = await this.countryService.findAll();
 
@@ -57,8 +54,6 @@ export class CountryController {
 
     @Delete()
     async delete() {
-        console.log(`DELETE - Country`);
-
         const country = await this.countryService.getSingle();
 
         if (!country) {

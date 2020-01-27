@@ -34,6 +34,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@energyweb/origin-backend-core": "0.1.1",
+    "@energyweb/utils-general": "4.1.1",
     "@nestjs/common": "6.10.14",
     "@nestjs/config": "^0.0.9",
     "@nestjs/core": "6.10.14",
