@@ -10,7 +10,8 @@ import { createBlockchainProperties } from '@energyweb/market';
 import {
     OffChainDataClient,
     ConfigurationClient,
-    UserClient
+    UserClient,
+    DeviceClient
 } from '@energyweb/origin-backend-client';
 
 const web3 = new Web3(process.env.WEB3);
@@ -46,7 +47,8 @@ async function getDeviceConf(marketContractLookupAddress: string) {
             baseUrl,
             client: new OffChainDataClient(),
             configurationClient: new ConfigurationClient(),
-            userClient: new UserClient(baseUrl)
+            userClient: new UserClient(baseUrl),
+            deviceClient: new DeviceClient(baseUrl)
         },
         logger: Winston.createLogger({
             level: 'verbose',

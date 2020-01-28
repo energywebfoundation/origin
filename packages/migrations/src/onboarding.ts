@@ -8,6 +8,7 @@ import {
     OrganizationClient,
     RequestClient
 } from '@energyweb/origin-backend-client';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -151,15 +152,12 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             owner: { address: action.data.owner },
             lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
             status: deviceStatusFactory(action.data.status),
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHash,
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHas
         };
 
         const deviceTypeConfig = action.data.deviceType;
 
-        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+        const deviceProducingPropsOffChain: IDevice = {
             operationalSince: action.data.operationalSince,
             capacityInW: action.data.capacityInW,
             country: action.data.country,

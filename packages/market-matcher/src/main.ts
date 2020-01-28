@@ -6,7 +6,8 @@ import program from 'commander';
 import {
     OffChainDataClient,
     ConfigurationClient,
-    UserClient
+    UserClient,
+    DeviceClient
 } from '@energyweb/origin-backend-client';
 import { startMatcher } from '.';
 
@@ -60,6 +61,7 @@ program.parse(process.argv);
         offChainDataSourceClient: new OffChainDataClient(),
         configurationClient,
         userClient: new UserClient(baseUrl),
+        deviceClient: new DeviceClient(baseUrl),
         matcherInterval
     };
 

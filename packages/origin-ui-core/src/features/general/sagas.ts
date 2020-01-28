@@ -12,7 +12,8 @@ import {
     setCountry,
     setRegions,
     setOrganizationClient,
-    setUserClient
+    setUserClient,
+    setDeviceClient
 } from './actions';
 import { getConfiguration } from '../selectors';
 import {
@@ -21,7 +22,8 @@ import {
     getEnvironment,
     getConfigurationClient,
     getRequestClient,
-    getUserClient
+    getUserClient,
+    getDeviceClient
 } from './selectors';
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
@@ -31,7 +33,9 @@ import {
     OrganizationClient,
     UserClient,
     IRequestClient,
-    IUserClient
+    IUserClient,
+    IDeviceClient,
+    DeviceClient
 } from '@energyweb/origin-backend-client';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
@@ -245,6 +249,25 @@ function* initializeUserClient(): SagaIterator {
         const userClient = new UserClient(baseURL, requestClient);
 
         yield put(setUserClient(userClient));
+    }
+}
+
+function* initializeDeviceClient(): SagaIterator {
+    while (true) {
+        yield take(GeneralActions.setEnvironment);
+
+        const environment: IEnvironment = yield select(getEnvironment);
+        const existingDeviceClient: IDeviceClient = yield select(getDeviceClient);
+
+        if (!environment || existingDeviceClient) {
+            return;
+        }
+
+        const baseURL = `${environment.BACKEND_URL}/api`;
+
+        const deviceClient = new DeviceClient(baseURL);
+
+        yield put(setDeviceClient(deviceClient));
     }
 }
 

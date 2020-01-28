@@ -1,7 +1,8 @@
 import {
     IOffChainDataClient,
     IConfigurationClient,
-    IUserClient
+    IUserClient,
+    IDeviceClient
 } from '@energyweb/origin-backend-client';
 
 export interface IEventListenerConfig {
@@ -11,6 +12,7 @@ export interface IEventListenerConfig {
     offChainDataSourceClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
     userClient: IUserClient;
+    deviceClient: IDeviceClient;
     scanInterval: number;
     notificationInterval: number;
     marketLogicAddress?: string;

@@ -28,8 +28,10 @@ import moment from 'moment';
 import {
     IOffChainDataClient,
     IConfigurationClient,
-    IUserClient
+    IUserClient,
+    IDeviceClient
 } from '@energyweb/origin-backend-client';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -116,7 +118,8 @@ export class Demo {
     async deploy(
         offChainDataClient: IOffChainDataClient,
         configurationClient: IConfigurationClient,
-        userClient: IUserClient
+        userClient: IUserClient,
+        deviceClient: IDeviceClient
     ) {
         this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
             this.web3,
@@ -174,7 +177,8 @@ export class Demo {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: offChainDataClient,
                 configurationClient,
-                userClient
+                userClient,
+                deviceClient
             },
             logger: this.logger
         };
@@ -296,18 +300,15 @@ export class Demo {
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
             status: Device.DeviceStatus.Active,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: '',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: ''
         };
 
-        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+        const deviceProducingPropsOffChain: IDevice = {
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             facilityName: 'Wuthering Heights Windfarm',
             capacityInW: 0,
-            country: 'Thailand',
+            country: 221,
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '',
@@ -343,18 +344,15 @@ export class Demo {
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
             status: Device.DeviceStatus.Submitted,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: '',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: ''
         };
 
-        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+        const deviceProducingPropsOffChain: IDevice = {
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             facilityName: 'Test Device',
             capacityInW: 0,
-            country: 'Thailand',
+            country: 221,
             address:
                 '96 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '',

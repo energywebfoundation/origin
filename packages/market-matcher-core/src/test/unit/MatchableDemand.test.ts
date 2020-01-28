@@ -6,6 +6,7 @@ import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
 
+import { IDevice } from '@energyweb/origin-backend-core';
 import { MatchableDemand } from '../../MatchableDemand';
 import { MatchingErrorReason } from '../../MatchingErrorReason';
 
@@ -25,7 +26,7 @@ interface IMockOptions {
 }
 
 describe('MatchableDemand tests', () => {
-    const country = 'Thailand';
+    const country = 221;
 
     describe('Certificates', () => {
         const missingDemand = 1000;
@@ -64,9 +65,7 @@ describe('MatchableDemand tests', () => {
                 energy: options.energy || certificateEnergy
             } as Certificate.ICertificate);
 
-            const producingDeviceOffChainProperties = Substitute.for<
-                ProducingDevice.IOffChainProperties
-            >();
+            const producingDeviceOffChainProperties = Substitute.for<IDevice>();
             producingDeviceOffChainProperties.deviceType.returns(
                 options.producingDeviceDeviceType || deviceType
             );

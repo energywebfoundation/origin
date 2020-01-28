@@ -12,7 +12,7 @@ import {
     IUserFetcher
 } from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration, Compliance, Countries } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -29,15 +29,18 @@ import {
     IConfigurationClient,
     IOffChainDataClient,
     IOrganizationClient,
-    IUserClient
+    IUserClient,
+    IDeviceClient
 } from '@energyweb/origin-backend-client';
 import {
     setConfigurationClient,
     setOffChainDataClient,
     setOrganizationClient,
-    setUserClient
+    setUserClient,
+    setDeviceClient
 } from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -71,6 +74,7 @@ const setupStoreInternal = (
     configurationClient: IConfigurationClient,
     offChainDataClient: IOffChainDataClient,
     userClient: IUserClient,
+    deviceClient: IDeviceClient,
     organizationClient: IOrganizationClient,
     runSagas = true
 ) => {
@@ -109,6 +113,10 @@ const setupStoreInternal = (
         store.dispatch(setUserClient(userClient));
     }
 
+    if (deviceClient) {
+        store.dispatch(setDeviceClient(userClient));
+    }
+
     if (organizationClient) {
         store.dispatch(setOrganizationClient(organizationClient));
     }
@@ -142,14 +150,14 @@ interface ICreateProducingDeviceProperties {
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
-    country: 'Thailand',
+    country: Countries.find(c => c.name === 'Thailand').id,
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityInW: 9876543,
     operationalSince: 1568746970,
     complianceRegistry: 'I-REC',
     region: 'Central',
     province: 'Nakhon Pathom'
-} as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
+} as Partial<IDevice>) as IDevice;
 
 export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
@@ -157,7 +165,7 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
-    const offChainProperties: ProducingDevice.IOffChainProperties = {
+    const offChainProperties: IDevice= {
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
             properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,
@@ -171,7 +179,7 @@ export const createProducingDevice = (
         complianceRegistry:
             properties.complianceRegistry ||
             DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.complianceRegistry,
-        country: properties.country || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
+        country: Countries.find(c => c.name === properties.country).id || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
         gpsLatitude: '',
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',
@@ -234,6 +242,7 @@ interface ISetupStoreOptions {
     configurationClient?: IConfigurationClient;
     offChainDataClient?: IOffChainDataClient;
     userClient?: IUserClient;
+    deviceClient?: IDeviceClient;
     organizationClient?: IOrganizationClient;
     runSagas?: boolean;
     userFetcher?: IUserFetcher;
@@ -255,6 +264,7 @@ export const setupStore = (
         options.configurationClient,
         options.offChainDataClient,
         options.userClient,
+        options.deviceClient,
         options.organizationClient,
         options.runSagas
     );

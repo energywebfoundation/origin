@@ -8,7 +8,8 @@ import {
 import {
     IOffChainDataClient,
     IConfigurationClient,
-    IUserClient
+    IUserClient,
+    IDeviceClient
 } from '@energyweb/origin-backend-client';
 import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
@@ -28,6 +29,7 @@ export interface IMatcherConfig {
     offChainDataSourceClient: IOffChainDataClient;
     configurationClient: IConfigurationClient;
     userClient: IUserClient;
+    deviceClient: IDeviceClient;
     matcherInterval: number;
 }
 
@@ -49,7 +51,8 @@ const createBlockchainConfig = async (
             baseUrl: matcherConfig.offChainDataSourceUrl,
             client: matcherConfig.offChainDataSourceClient,
             configurationClient: matcherConfig.configurationClient,
-            userClient: matcherConfig.userClient
+            userClient: matcherConfig.userClient,
+            deviceClient: matcherConfig.deviceClient
         }
     };
 };

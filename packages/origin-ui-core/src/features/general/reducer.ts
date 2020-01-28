@@ -7,7 +7,8 @@ import {
     IOrganizationClient,
     IUserClient,
     IRequestClient,
-    RequestClient
+    RequestClient,
+    IDeviceClient
 } from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
@@ -23,6 +24,7 @@ export interface IGeneralState {
     organizationClient: IOrganizationClient;
     requestClient: IRequestClient;
     userClient: IUserClient;
+    deviceClient: IDeviceClient;
     environment: IEnvironment;
     currencies: string[];
     compliance: string;
@@ -45,6 +47,7 @@ const defaultState: IGeneralState = {
     organizationClient: null,
     requestClient,
     userClient: null,
+    deviceClient: null,
     environment: null,
     currencies: [],
     compliance: null,
@@ -117,6 +120,12 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
             return {
                 ...state,
                 userClient: action.payload
+            };
+
+        case GeneralActions.setDeviceClient:
+            return {
+                ...state,
+                deviceClient: action.payload
             };
 
         case GeneralActions.setEnvironment:

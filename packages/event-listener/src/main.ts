@@ -4,7 +4,8 @@ import program from 'commander';
 import {
     OffChainDataClient,
     ConfigurationClient,
-    UserClient
+    UserClient,
+    DeviceClient
 } from '@energyweb/origin-backend-client';
 
 import { startEventListener } from './index';
@@ -23,6 +24,7 @@ program.parse(process.argv);
         offChainDataSourceClient: new OffChainDataClient(),
         configurationClient: new ConfigurationClient(),
         userClient: new UserClient(`${process.env.BACKEND_URL}/api`),
+        deviceClient: new DeviceClient(`${process.env.BACKEND_URL}/api`),
         accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
         scanInterval: 3000,
         notificationInterval: 60000,

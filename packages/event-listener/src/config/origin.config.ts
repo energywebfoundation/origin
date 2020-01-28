@@ -3,6 +3,7 @@ import * as Winston from 'winston';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
+import { DeviceClient, UserClient } from '@energyweb/origin-backend-client';
 
 import { IEventListenerConfig } from './IEventListenerConfig';
 
@@ -21,13 +22,16 @@ export const initOriginConfig = async (
         address: web3.eth.accounts.privateKeyToAccount(config.accountPrivKey).address
     };
 
+    const baseUrl = `${process.env.BACKEND_URL}/api`;
+
     return {
         blockchainProperties,
         offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`,
+            baseUrl,
             client: config.offChainDataSourceClient,
             configurationClient: config.configurationClient,
-            userClient: config.userClient
+            userClient: new UserClient(baseUrl),
+            deviceClient: new DeviceClient(baseUrl)
         },
         logger: Winston.createLogger({
             level: 'verbose',

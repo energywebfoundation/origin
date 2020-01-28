@@ -20,8 +20,10 @@ import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@en
 import {
     OffChainDataClientMock,
     ConfigurationClientMock,
-    UserClientMock
+    UserClientMock,
+    DeviceClientMock
 } from '@energyweb/origin-backend-client-mocks';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -171,7 +173,8 @@ describe('PurchasableCertificate-Facade', () => {
                 baseUrl,
                 client: new OffChainDataClientMock(),
                 configurationClient: new ConfigurationClientMock(),
-                userClient
+                userClient,
+                deviceClient: new DeviceClientMock()
             },
             logger
         };
@@ -218,17 +221,14 @@ describe('PurchasableCertificate-Facade', () => {
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
             status: Device.DeviceStatus.Active,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
-        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+        const devicePropsOffChain: Omit<IDevice, 'id'> = {
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,
-            country: 'Thailand',
+            country: 221,
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '14.059500',

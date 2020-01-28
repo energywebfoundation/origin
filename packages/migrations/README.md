@@ -22,8 +22,8 @@ After they have been deployed, you can use the [EW Origin UI](https://github.com
 
 This repo is for demonstration purposes and to show how the certificate of origin can work. This repo will:
 * deploy and setup all required smart contracts with the provided private key
-* onboard users, consuming- and producing devices
-* set meterreading of both consuming- and producing devices
+* onboard users and devices
+* set meterreading of devices
 * trade certificates through transferring ownership and/or buying through ERC20 test tokens
 * split certificates
 * create demands, supplies and agreements
@@ -63,7 +63,6 @@ Currently the following action types are supported:
 * CREATE_ACCOUNT
 * CREATE_PRODUCING_DEVICE
 * SAVE_SMARTMETER_READ_PRODUCING
-* SAVE_SMARTMETER_READ_CONSUMING
 * SEND_ERC20_TOKENS_TO
 * TRANSFER_CERTIFICATE
 * SPLIT_CERTIFICATE
@@ -191,32 +190,6 @@ The device is located in <code>Main Street 11, 01234 Anytown, AnyState, USA</cod
         "cO2UsedForCertificate": 0,
         "otherGreenAttributes": "N.A.",
         "typeOfPublicSupport": "N.A"
-    }
-}
-</code>
-
-### SAVE_SMARTMETER_READ_CONSUMING
-usage: command store a new meterreading of an consuming device
-<br>params:
-* <code>deviceId</code>: the deviceID for the meterreading
-* <code>smartMeter</code>: the smartMeter address associated with the device
-* <code>smartMeterPK</code>: the smartMeter private key associated with the device
-* <code>meterreading</code>: the amount of energy to be logged (counter)
-* <code>filehash</code>: the filehash
-
-#### example
-We want to log a new meterreading for the consuming device with id <code>0</code>. The transaction to do so must be signed with smartMeter's privatekey associated with the device. The new meterreading will be <code>100000</code> Wh with the filehash <code>newMeterRead</code>.
-Keep in mind that the meterrading is not doing any addition, so the meterreading you pass here will be the new reading of the device.
-
-<code>
-{
-    "type": "SAVE_SMARTMETER_READ_CONSUMING",
-    "data": {
-        "deviceId": 0,
-        "smartMeter": "0x1112ec367b20d2bffd40ee11523c3d36d61adf1b",
-        "smartMeterPK": "50764e302e4ed8ce624003deca642c03ce06934fe77585175c5576723f084d4c",
-        "meterreading": 100000,
-        "filehash": "newMeterRead",
     }
 }
 </code>
@@ -456,7 +429,6 @@ usage: command to create a demand
     THB,
     SGD)
 * <code>producingDevice</code>: <BLANK>
-* <code>consumingDevice</code>: <BLANK>
 * <code>country</code>: country where the device is located
 * <code>region</code>: region where the device is located
 * <code>devicetype</code>: Type of device as string (Wind,
@@ -485,7 +457,6 @@ We want to report a demand with target watt-hour per period(timeframe) as <code>
         "maxPricePerMwh": 10,
         "currency": "USD",
         "producingDevice": 0,
-        "consumingDevice": 0,
         "country": "string",
         "region": "string",
         "devicetype": "Biomass from agriculture",

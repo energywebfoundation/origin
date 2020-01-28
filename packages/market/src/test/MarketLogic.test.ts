@@ -292,9 +292,6 @@ describe('MarketLogic', () => {
             '0x1000000000000000000000000000000000000005',
             accountDeviceOwner,
             Device.DeviceStatus.Submitted,
-            0,
-            'propertiesDocumentHash',
-            'url',
             {
                 privateKey: deviceOwnerPK
             }

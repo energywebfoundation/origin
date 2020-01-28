@@ -223,10 +223,7 @@ export async function deployDemo() {
         owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
         status: Device.DeviceStatus.Active,
-        usageType: Device.UsageType.Producing,
-        lastSmartMeterReadFileHash: '',
-        propertiesDocumentHash: null,
-        url: null
+        lastSmartMeterReadFileHash: ''
     };
 
     const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {

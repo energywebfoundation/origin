@@ -10,7 +10,8 @@ import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/m
 import {
     OffChainDataClient,
     ConfigurationClient,
-    UserClient
+    UserClient,
+    DeviceClient
 } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
@@ -61,7 +62,8 @@ export const marketDemo = async (
             baseUrl,
             client: new OffChainDataClient(),
             configurationClient,
-            userClient
+            userClient,
+            deviceClient: new DeviceClient(baseUrl)
         },
         logger
     };

@@ -12,7 +12,8 @@ import { Configuration } from '@energyweb/utils-general';
 import {
     OffChainDataClient,
     ConfigurationClient,
-    UserClient
+    UserClient,
+    DeviceClient
 } from '@energyweb/origin-backend-client';
 
 export function wait(milliseconds: number) {
@@ -41,7 +42,8 @@ async function createBlockchainConfiguration() {
             baseUrl,
             client: new OffChainDataClient(),
             configurationClient: new ConfigurationClient(),
-            userClient: new UserClient(baseUrl)
+            userClient: new UserClient(baseUrl),
+            deviceClient: new DeviceClient(baseUrl)
         }
     };
 

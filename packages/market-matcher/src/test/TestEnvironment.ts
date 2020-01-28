@@ -21,9 +21,11 @@ import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import {
     OffChainDataClientMock,
     ConfigurationClientMock,
-    UserClientMock
+    UserClientMock,
+    DeviceClientMock
 } from '@energyweb/origin-backend-client-mocks';
 
+import { IDevice } from '@energyweb/origin-backend-core';
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -169,7 +171,8 @@ const deploy = async () => {
             baseUrl: `${process.env.BACKEND_URL}/api`,
             client: new OffChainDataClientMock(),
             configurationClient: new ConfigurationClientMock(),
-            userClient: new UserClientMock()
+            userClient: new UserClientMock(),
+            deviceClient: new DeviceClientMock()
         },
         logger
     };
@@ -189,6 +192,7 @@ const deploy = async () => {
         offChainDataSourceClient: config.offChainDataSource.client,
         configurationClient: config.offChainDataSource.configurationClient,
         userClient: config.offChainDataSource.userClient,
+        deviceClient: config.offChainDataSource.deviceClient,
         marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,
@@ -243,17 +247,14 @@ const deployDevice = (config: Configuration.Entity) => {
         owner: { address: deviceOwnerAddress },
         lastSmartMeterReadWh: 0,
         status: Device.DeviceStatus.Active,
-        usageType: Device.UsageType.Producing,
-        lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-        propertiesDocumentHash: null,
-        url: null
+        lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
     };
 
-    const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+    const devicePropsOffChain: IDevice = {
         facilityName: 'MatcherTestFacility',
         operationalSince: 0,
         capacityInW: 10,
-        country: 'Thailand',
+        country: 221,
         address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '14.059500',
         gpsLongitude: '99.977800',

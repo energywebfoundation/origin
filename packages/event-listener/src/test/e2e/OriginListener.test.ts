@@ -6,7 +6,8 @@ import { Unit } from '@energyweb/utils-general';
 import {
     OffChainDataClientMock,
     ConfigurationClientMock,
-    UserClientMock
+    UserClientMock,
+    DeviceClientMock
 } from '@energyweb/origin-backend-client-mocks';
 
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
@@ -61,6 +62,7 @@ describe('Origin Listener Tests', async () => {
     const offChainDataClient = new OffChainDataClientMock();
     const configurationClient = new ConfigurationClientMock();
     const userClient = new UserClientMock();
+    const deviceClient = new DeviceClientMock();
 
     before(async () => {
         demo = new Demo(
@@ -68,7 +70,7 @@ describe('Origin Listener Tests', async () => {
             process.env.DEPLOY_KEY,
             process.env.EVENT_LISTENER_PRIV_KEY
         );
-        await demo.deploy(offChainDataClient, configurationClient, userClient);
+        await demo.deploy(offChainDataClient, configurationClient, userClient, deviceClient);
     });
 
     beforeEach(async () => {
@@ -81,6 +83,7 @@ describe('Origin Listener Tests', async () => {
             offChainDataSourceClient: offChainDataClient,
             configurationClient,
             userClient,
+            deviceClient,
             accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
             scanInterval: SCAN_INTERVAL,
             notificationInterval: SCAN_INTERVAL

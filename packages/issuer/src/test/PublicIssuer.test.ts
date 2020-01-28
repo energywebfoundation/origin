@@ -8,7 +8,8 @@ import { Configuration } from '@energyweb/utils-general';
 import {
     OffChainDataClientMock,
     ConfigurationClientMock,
-    UserClientMock
+    UserClientMock,
+    DeviceClientMock
 } from '@energyweb/origin-backend-client-mocks';
 
 import { migratePublicIssuer, migrateRegistry } from '../migrate';
@@ -61,7 +62,8 @@ describe('PublicIssuer', () => {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: new OffChainDataClientMock(),
                 configurationClient: new ConfigurationClientMock(),
-                userClient: new UserClientMock()
+                userClient: new UserClientMock(),
+                deviceClient: new DeviceClientMock()
             },
             logger
         };

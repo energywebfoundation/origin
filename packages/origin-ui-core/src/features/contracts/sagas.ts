@@ -18,7 +18,8 @@ import {
 import {
     IOffChainDataClient,
     IConfigurationClient,
-    IUserClient
+    IUserClient,
+    IDeviceClient
 } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
@@ -33,7 +34,8 @@ import {
     getOffChainDataClient,
     getConfigurationClient,
     getEnvironment,
-    getUserClient
+    getUserClient,
+    getDeviceClient
 } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
 
@@ -47,6 +49,7 @@ async function initConf(
     offChainDataClient: IOffChainDataClient,
     configurationClient: IConfigurationClient,
     userClient: IUserClient,
+    deviceClient: IDeviceClient,
     baseURL: string,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
@@ -82,7 +85,8 @@ async function initConf(
             baseUrl: baseURL,
             client: offChainDataClient,
             configurationClient,
-            userClient
+            userClient,
+            deviceClient
         },
         logger: Winston.createLogger({
             level: 'verbose',
@@ -305,6 +309,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
             const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
             const userClient: IUserClient = yield select(getUserClient);
+            const deviceClient: IDeviceClient = yield select(getDeviceClient);
 
             configuration = yield call(
                 initConf,
@@ -313,6 +318,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
                 offChainDataClient,
                 configurationClient,
                 userClient,
+                deviceClient,
                 baseURL,
                 environment.WEB3
             );
