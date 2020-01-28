@@ -6,7 +6,9 @@ import {
     IOrganizationInvitation,
     OrganizationInviteUpdateData,
     OrganizationInvitationStatus,
-    IOrganizationWithRelationsIds
+    IOrganizationWithRelationsIds,
+    IUserWithRelationsIds,
+    OrganizationRemoveMemberReturnData
 } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
@@ -23,6 +25,12 @@ export interface IOrganizationClient {
     getInvitationsForEmail(email: string): Promise<IOrganizationInvitation[]>;
     acceptInvitation(id: number): Promise<any>;
     rejectInvitation(id: number): Promise<any>;
+
+    getMembers(id: number): Promise<IUserWithRelationsIds[]>;
+    removeMember(
+        organizationId: number,
+        userId: number
+    ): Promise<OrganizationRemoveMemberReturnData>;
 }
 
 export class OrganizationClient implements IOrganizationClient {
@@ -118,6 +126,23 @@ export class OrganizationClient implements IOrganizationClient {
         );
 
         return data;
+    }
+
+    public async getMembers(id: number): Promise<IUserWithRelationsIds[]> {
+        const { data } = await this.requestClient.get(`${this.endpoint}/${id}/users`);
+
+        return data;
+    }
+
+    public async removeMember(
+        organizationId: number,
+        userId: number
+    ): Promise<{ success: boolean; error: string }> {
+        const response = await this.requestClient.post<{}, { success: boolean; error: string }>(
+            `${this.endpoint}/${organizationId}/remove-member/${userId}`
+        );
+
+        return response.data;
     }
 
     private async updateInvitation(id: number, data: OrganizationInviteUpdateData): Promise<any> {

@@ -4,7 +4,7 @@ import { Repository, FindConditions, BaseEntity } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 
-import { UserRegisterData, IUserWithRelationsIds } from '@energyweb/origin-backend-core';
+import { UserRegisterData, IUserWithRelationsIds, IUser } from '@energyweb/origin-backend-core';
 import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
 import { User } from './user.entity';
@@ -36,8 +36,23 @@ export class UserService {
         return this.findOne({ email });
     }
 
+    async getUserAndPasswordByEmail(
+        email: string
+    ): Promise<Pick<IUser, 'id' | 'email'> & { password: string }> {
+        return this.repository.findOne(
+            { email },
+            {
+                select: ['id', 'email', 'password']
+            }
+        );
+    }
+
     async findByBlockchainAccount(blockchainAccountAddress: string) {
         return this.findOne({ blockchainAccountAddress });
+    }
+
+    async findByIds(ids: number[], conditions: FindConditions<User>) {
+        return this.repository.findByIds(ids, conditions);
     }
 
     hashPassword(password: string) {
@@ -82,9 +97,7 @@ export class UserService {
         return user;
     }
 
-    private findOne(
-        conditions: FindConditions<User>
-    ): Promise<BaseEntity & IUserWithRelationsIds & { password: string }> {
+    private findOne(conditions: FindConditions<User>): Promise<BaseEntity & IUserWithRelationsIds> {
         return this.repository.findOne(conditions, {
             loadRelationIds: true
         }) as any;

@@ -7,7 +7,9 @@ import {
     IUser,
     OrganizationInvitationStatus,
     OrganizationInviteCreateReturnData,
-    IOrganizationInvitation
+    IOrganizationInvitation,
+    IUserWithRelationsIds,
+    OrganizationRemoveMemberReturnData
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -22,7 +24,8 @@ import {
     Delete,
     Put,
     UseGuards,
-    Query
+    Query,
+    ParseIntPipe
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -78,6 +81,24 @@ export class OrganizationController {
         }) as Promise<Omit<IOrganizationInvitation, 'organization'>[]>) as Promise<
             IOrganizationInvitation[]
         >;
+    }
+
+    @Get('/:id/users')
+    @UseGuards(AuthGuard('jwt'))
+    async getUsers(@Param('id') id: string, @UserDecorator() loggedUser: IUserWithRelationsIds) {
+        const organization = await this.organizationRepository.findOne(id, {
+            relations: ['users', 'leadUser']
+        });
+
+        if (!organization) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        if (loggedUser.id !== organization.leadUser.id) {
+            throw new BadRequestException('Only lead user can view other organization members.');
+        }
+
+        return organization.users;
     }
 
     @Get('/:id')
@@ -151,7 +172,13 @@ export class OrganizationController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        existingEntity.status = body.status;
+        const parsedStatus = parseInt(body?.status, 10);
+
+        if (existingEntity.status === parsedStatus) {
+            throw new BadRequestException(`Organization is already in requested status.`);
+        }
+
+        existingEntity.status = parsedStatus;
 
         try {
             await existingEntity.save();
@@ -298,6 +325,79 @@ export class OrganizationController {
             throw new BadRequestException({
                 success: false,
                 error: 'Could not invite user due to unknown error'
+            });
+        }
+    }
+
+    @Post(':id/remove-member/:userId')
+    @UseGuards(AuthGuard('jwt'))
+    async removeMember(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @Param('userId', new ParseIntPipe()) removedUserId: number,
+        @UserDecorator() loggedUser: IUserWithRelationsIds
+    ): Promise<OrganizationRemoveMemberReturnData> {
+        try {
+            const user = await this.userService.findById(loggedUser.id);
+
+            if (typeof user.organization === 'undefined') {
+                throw new BadRequestException({
+                    success: false,
+                    error: `User doesn't belong to any organization.`
+                });
+            }
+
+            const organization = await this.organizationRepository.findOne(user.organization, {
+                relations: ['leadUser', 'invitations', 'users']
+            });
+
+            if (organization.id !== organizationId || organization.leadUser.id !== user.id) {
+                throw new BadRequestException({
+                    success: false,
+                    error: `User is not a lead user of organization.`
+                });
+            }
+
+            if (organization.leadUser.id === removedUserId) {
+                throw new BadRequestException({
+                    success: false,
+                    error: `Can't remove lead user from organization.`
+                });
+            }
+
+            if (!organization.users.find(u => u.id === removedUserId)) {
+                throw new BadRequestException({
+                    success: false,
+                    error: `User to be removed is not part of the organization.`
+                });
+            }
+
+            const removedUser = organization.users.find(u => u.id === removedUserId);
+
+            organization.users = organization.users.filter(u => u.id !== removedUserId);
+
+            await organization.save();
+
+            removedUser.organization = null;
+
+            removedUser.save();
+
+            return {
+                success: true,
+                error: null
+            };
+        } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+
+            console.warn(
+                'Unexpected error while removing member from organization',
+                error?.message
+            );
+
+            throw new BadRequestException({
+                success: false,
+                error: 'Could not remove member due to unknown error'
             });
         }
     }

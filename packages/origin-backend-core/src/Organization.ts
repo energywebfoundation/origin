@@ -70,3 +70,5 @@ export interface IOrganizationWithRelations extends IOrganization {
 export type OrganizationPostData = Omit<IOrganizationProperties, 'id' | 'status'>;
 
 export type OrganizationUpdateData = Pick<IOrganization, 'status'>;
+
+export type OrganizationRemoveMemberReturnData = { success: boolean; error: string };

@@ -9,6 +9,7 @@ import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { OrganizationInvite } from './OrganizationInvite';
 import { OrganizationInvitations } from './OrganizationInvitations';
+import { OrganizationUsersTable } from './OrganizationUsersTable';
 
 export function Organization() {
     const userOffchain = useSelector(getUserOffchain);
@@ -20,16 +21,10 @@ export function Organization() {
 
     const Menu = [
         {
-            key: 'organization-register',
-            label: 'Register',
-            component: OrganizationForm,
-            hide: !isLoggedIn
-        },
-        {
-            key: 'organization-table',
-            label: 'All organizations',
-            component: OrganizationTable,
-            hide: !isLoggedIn
+            key: 'organization-users',
+            label: 'Members',
+            component: OrganizationUsersTable,
+            hide: !isLoggedIn || !isLeadUser
         },
         {
             key: 'organization-invitations',
@@ -44,12 +39,26 @@ export function Organization() {
             hide: !isLoggedIn || !isLeadUser
         },
         {
+            key: 'organization-register',
+            label: 'Register',
+            component: OrganizationForm,
+            hide: !isLoggedIn || userOffchain?.organization
+        },
+        {
+            key: 'organization-table',
+            label: 'All organizations',
+            component: OrganizationTable,
+            hide: !isLoggedIn
+        },
+        {
             key: 'organization-view',
             label: 'View',
             component: OrganizationView,
             hide: true
         }
     ];
+
+    const firstNotHiddenRoute = Menu.filter(i => !i.hide)[0]?.key;
 
     return (
         <div className="PageWrapper">
@@ -92,13 +101,19 @@ export function Organization() {
                 }}
             />
 
-            <Route
-                exact={true}
-                path={`${getOrganizationLink()}`}
-                render={() => (
-                    <Redirect to={{ pathname: `${getOrganizationLink()}/${Menu[0].key}` }} />
-                )}
-            />
+            {firstNotHiddenRoute && (
+                <Route
+                    exact={true}
+                    path={`${getOrganizationLink()}`}
+                    render={() => (
+                        <Redirect
+                            to={{
+                                pathname: `${getOrganizationLink()}/${firstNotHiddenRoute}`
+                            }}
+                        />
+                    )}
+                />
+            )}
         </div>
     );
 }
