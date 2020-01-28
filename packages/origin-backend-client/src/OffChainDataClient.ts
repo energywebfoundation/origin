@@ -1,9 +1,10 @@
 import { IRequestClient, RequestClient } from './RequestClient';
 
 export interface IOffChainData<T> {
-    properties: T;
     salts: string[];
     schema: string[];
+    properties?: T;
+    rootHash?: string;
 }
 
 export interface IOffChainDataClient {
