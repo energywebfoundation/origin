@@ -1,6 +1,8 @@
 {
   "name": "@energyweb/exchange-core",
-  "description": "",
+  "description": "A service project hosting order book based exchange",
+  "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
+  "license": "GPL-3.0",
   "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-core#readme",
   "repository": {
     "type": "git",
@@ -41,6 +43,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  },
-  "license": "GPL-3.0-only"
+  }
 }

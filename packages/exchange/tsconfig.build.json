@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist/js",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    },
+    "include": [
+        "src/**/*",
+    ],
+    "references": [
+        {
+            "path": "../exchange-core/tsconfig.build.json"
+        },
+        {
+            "path": "../utils-general/tsconfig.build.json"
+        }
+    ]
+}

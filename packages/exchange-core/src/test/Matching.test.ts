@@ -1,9 +1,9 @@
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import { List } from 'immutable';
 
-import { Matching } from '../Matching';
-import { Order, OrderSide } from '../Order';
+import { MatchingEngine } from '../MatchingEngine';
+import { Order, OrderStatus } from '../Order';
 import { Trade } from '../Trade';
 import { Product } from '../Product';
 import { Ask } from '../Ask';
@@ -16,17 +16,18 @@ interface IOrderCreationArgs {
 }
 
 interface ITestCase {
-    bidsBefore: Order[];
-    asksBefore: Order[];
+    bidsBefore: Bid[];
+    asksBefore: Ask[];
 
     expectedTrades: Trade[];
 
-    asksAfter?: Order[];
-    bidsAfter?: Order[];
+    asksAfter?: Ask[];
+    bidsAfter?: Bid[];
 }
 
 describe('Matching tests', () => {
     const deviceService = new IRECDeviceService();
+    const locationService = new LocationService();
 
     const twoUSD = 2;
     const onekWh = 1000;
@@ -55,7 +56,8 @@ describe('Matching tests', () => {
                 deviceVintage,
                 location: locationCentral
             },
-            0
+            new Date(0),
+            OrderStatus.Active
         );
     };
 
@@ -69,7 +71,8 @@ describe('Matching tests', () => {
                 deviceVintage,
                 location: locationCentral
             },
-            0
+            new Date(0),
+            OrderStatus.Active
         );
     };
 
@@ -99,24 +102,18 @@ describe('Matching tests', () => {
         });
     };
 
-    const cloneOrder = (order: Order, traded: number) => {
-        const cloned =
-            order.side === OrderSide.Bid
-                ? new Bid(order.id, order.price, order.volume, order.product, order.validFrom)
-                : new Ask(order.id, order.price, order.volume, order.product, order.validFrom);
-
-        return cloned.updateVolume(traded);
-    };
-
     const executeTestCase = (testCase: ITestCase, done: any) => {
-        const matchingEngine = new Matching();
+        const matchingEngine = new MatchingEngine(deviceService, locationService);
 
         testCase.bidsBefore.forEach(b => matchingEngine.submitOrder(b));
         testCase.asksBefore.forEach(a => matchingEngine.submitOrder(a));
 
         matchingEngine.trades.subscribe(res => {
             const expectedTrades = List(testCase.expectedTrades);
-            assertTrades(expectedTrades, res);
+            assertTrades(
+                expectedTrades,
+                res.map(r => r.trade)
+            );
 
             const expectedBidsAfter = List(testCase.bidsAfter);
             const expectedAsksAfter = List(testCase.asksAfter);
@@ -136,21 +133,21 @@ describe('Matching tests', () => {
     };
 
     const executeOrderBookQuery = (
-        asks: Order[],
-        bids: Order[],
+        asks: Ask[],
+        bids: Bid[],
         product: Product,
-        expectedAsks: Order[],
-        expectedBids: Order[]
+        expectedAsks: Ask[],
+        expectedBids: Bid[]
     ) => {
-        const matchingEngine = new Matching();
+        const matchingEngine = new MatchingEngine(deviceService, locationService);
 
         asks.forEach(b => matchingEngine.submitOrder(b));
         bids.forEach(a => matchingEngine.submitOrder(a));
 
         const orderBook = matchingEngine.orderBookByProduct(product);
 
-        assertOrders(List<Order>(expectedAsks), orderBook.asks);
-        assertOrders(List<Order>(expectedBids), orderBook.bids);
+        assertOrders(List<Ask>(expectedAsks), orderBook.asks);
+        assertOrders(List<Bid>(expectedBids), orderBook.bids);
     };
 
     describe('when asks and bid have to same product', () => {
@@ -227,7 +224,7 @@ describe('Matching tests', () => {
                 new Trade(bidsBefore[1], asksBefore[0], onekWh, asksBefore[0].price)
             ];
 
-            const bidsAfter = [cloneOrder(bidsBefore[1], onekWh)];
+            const bidsAfter = [bidsBefore[1].clone().updateVolume(onekWh)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });
@@ -245,6 +242,40 @@ describe('Matching tests', () => {
 
             const asksAfter = [asksBefore[1]];
             const bidsAfter = [bidsBefore[0]];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
+        });
+
+        it('should not overmatch bids', done => {
+            const asksBefore = [
+                createAsk({ volume: onekWh * 10 }),
+                createAsk({ volume: onekWh * 10 })
+            ];
+            const bidsBefore = [createBid(), createBid({ volume: onekWh * 2 })];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[1], asksBefore[0], onekWh * 2, asksBefore[0].price)
+            ];
+
+            const asksAfter = [asksBefore[0].clone().updateVolume(onekWh * 3), asksBefore[1]];
+            const bidsAfter: Bid[] = [];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
+        });
+
+        it('should not overmatch asks', done => {
+            const asksBefore = [createAsk(), createAsk(), createAsk()];
+            const bidsBefore = [createBid({ volume: onekWh * 10 })];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[1].price),
+                new Trade(bidsBefore[0], asksBefore[2], onekWh, asksBefore[2].price)
+            ];
+
+            const asksAfter: Ask[] = [];
+            const bidsAfter: Bid[] = [bidsBefore[0].clone().updateVolume(onekWh * 3)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
         });
