@@ -30,12 +30,16 @@ import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
 import { formatDate } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { getOrganizationClient } from '../../features/general/selectors';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 interface IStateProps {
     configuration: Configuration.Entity;
     demands: Demand.Entity[];
     currentUser: MarketUser.Entity;
     baseURL: string;
+    organizationClient: IOrganizationClient;
 }
 
 type Props = RouteComponentProps<{}> & IStateProps;
@@ -48,6 +52,7 @@ export interface IDemandTableState extends IPaginatedLoaderFilteredState {
 export interface IEnrichedDemandData {
     demand: Demand.Entity;
     demandOwner: MarketUser.Entity;
+    demandOwnerOrganization: IOrganizationWithRelationsIds;
 }
 
 const NO_VALUE_TEXT = 'any';
@@ -95,12 +100,19 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
     async enrichData(demands: Demand.Entity[]): Promise<IEnrichedDemandData[]> {
         const promises = demands.map(async (demand: Demand.Entity) => {
+            const demandOwner = await new MarketUser.Entity(
+                demand.demandOwner,
+                this.props.configuration
+            ).sync();
+
+            const demandOwnerOrganization = demandOwner
+                ? await this.props.organizationClient.getById(demandOwner.information?.organization)
+                : null;
+
             return {
                 demand,
-                demandOwner: await new MarketUser.Entity(
-                    demand.demandOwner,
-                    this.props.configuration
-                ).sync()
+                demandOwner,
+                demandOwnerOrganization
             };
         });
 
@@ -283,7 +295,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             }
 
             return {
-                buyer: enrichedDemandData.demandOwner.organization,
+                buyer: enrichedDemandData.demandOwnerOrganization?.name,
                 duration: `${formatDate(
                     moment.unix(demand.offChainProperties.startTime)
                 )} - ${formatDate(moment.unix(demand.offChainProperties.endTime))}`,
@@ -345,7 +357,8 @@ export const DemandTable = withRouter(
             configuration: getConfiguration(state),
             demands: getDemands(state),
             currentUser: getCurrentUser(state),
-            baseURL: getBaseURL()
+            baseURL: getBaseURL(),
+            organizationClient: getOrganizationClient(state)
         })
     )(DemandTableClass)
 );

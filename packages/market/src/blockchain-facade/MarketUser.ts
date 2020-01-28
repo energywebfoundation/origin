@@ -1,5 +1,7 @@
 import { User } from '@energyweb/user-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, signTypedMessage } from '@energyweb/utils-general';
+import { UserRegisterData } from '@energyweb/origin-backend-core';
+
 import { Currency } from '../types';
 import MarketUserOffChainPropertiesSchema from '../../schemas/MarketUserOffChainProperties.schema.json';
 
@@ -37,12 +39,24 @@ export class Entity extends User.Entity {
 
         return new Entity(this.id, this.configuration).sync();
     }
+
+    async sync(): Promise<Entity> {
+        return super.sync();
+    }
+}
+
+interface IAccountProperties {
+    address: string;
+    privateKey?: string;
 }
 
 export const createMarketUser = async (
     userPropertiesOnChain: User.IUserOnChainProperties,
     userPropertiesOffChain: IMarketUserOffChainProperties,
-    configuration: Configuration.Entity
+    configuration: Configuration.Entity,
+    registerData?: UserRegisterData,
+    createdUserPrivateKey?: string,
+    adminProperties?: IAccountProperties
 ): Promise<Entity> => {
     const user = new Entity(null, configuration);
 
@@ -58,12 +72,13 @@ export const createMarketUser = async (
     propertiesDocumentHash = offChainStorageProperties.rootHash;
     url = `${user.baseUrl}/${propertiesDocumentHash}`;
 
-    const accountProperties = {
-        from: configuration.blockchainProperties.activeUser.address,
-        privateKey: configuration.blockchainProperties.activeUser.privateKey
-    };
-
     await user.syncOffChainStorage(userPropertiesOffChain, offChainStorageProperties);
+
+    const adminAccountProperties = {
+        from: adminProperties?.address ?? configuration.blockchainProperties.activeUser.address,
+        privateKey:
+            adminProperties?.privateKey ?? configuration.blockchainProperties.activeUser.privateKey
+    };
 
     const {
         status: successCreateUser
@@ -71,8 +86,7 @@ export const createMarketUser = async (
         propertiesDocumentHash,
         url,
         userPropertiesOnChain.id,
-        userPropertiesOnChain.organization,
-        accountProperties
+        adminAccountProperties
     );
 
     const {
@@ -80,12 +94,30 @@ export const createMarketUser = async (
     } = await configuration.blockchainProperties.userLogicInstance.setRoles(
         userPropertiesOnChain.id,
         userPropertiesOnChain.roles,
-        accountProperties
+        adminAccountProperties
     );
 
     if (!successCreateUser || !successSetRoles) {
         await user.deleteFromOffChainStorage();
         throw new Error('createMarketUser: Saving on-chain data failed. Reverting...');
+    }
+
+    if (registerData) {
+        const userClient = configuration?.offChainDataSource?.userClient;
+
+        const userOffchain = await userClient.register(registerData);
+
+        const REGISTRATION_MESSAGE_TO_SIGN =
+            process.env.REGISTRATION_MESSAGE_TO_SIGN ?? 'I register as Origin user';
+
+        const signedMessage = await signTypedMessage(
+            userPropertiesOnChain.id,
+            REGISTRATION_MESSAGE_TO_SIGN,
+            configuration.blockchainProperties.web3,
+            createdUserPrivateKey
+        );
+
+        await userClient.attachSignedMessage(userOffchain.id, signedMessage);
     }
 
     if (configuration.logger) {

@@ -1,4 +1,4 @@
-import { IConfigurationClient, ConfigurationItem } from './ConfigurationClient';
+import { IConfigurationClient, ConfigurationItem } from '@energyweb/origin-backend-client';
 
 export class ConfigurationClientMock implements IConfigurationClient {
     private storage = new Map<string, any>();

@@ -23,6 +23,7 @@ import { ContractsStorageModule } from './pods/contracts-storage/contracts-stora
 import { OrganizationModule } from './pods/organization/organization.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
+import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -43,7 +44,8 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
                     Compliance,
                     Country,
                     Organization,
-                    User
+                    User,
+                    OrganizationInvitation
                 ]
             }),
             inject: [ConfigService]

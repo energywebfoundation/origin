@@ -10,8 +10,9 @@ import { getUsers, getUserById } from '../features/users/selectors';
 import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment } from '../features/general/selectors';
+import { getEnvironment, getOrganizationClient } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
 interface IProps {
     id: string;
@@ -31,8 +32,25 @@ export function CertificateDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
+    const organizationClient = useSelector(getOrganizationClient);
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
+    const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
+
+    useEffect(() => {
+        (async () => {
+            if (organizationClient) {
+                setOrganizations(await organizationClient.getAll());
+            }
+        })();
+    }, [organizationClient]);
+
+    function getUserDisplayText(user: MarketUser.Entity) {
+        return (
+            organizations?.find(o => o.id === user?.information?.organization)?.name ||
+            `${user?.information?.firstName} ${user?.information?.lastName}`
+        );
+    }
 
     const dispatch = useDispatch();
 
@@ -84,23 +102,26 @@ export function CertificateDetailView(props: IProps) {
                                 event.returnValues.to,
                                 configuration
                             ).sync());
-                        description = user.organization;
+
+                        description = getUserDisplayText(user);
                     } else {
-                        const newOwner = (
+                        const newOwnerUser =
                             getUserById(users, event.returnValues.to) ||
                             (await new MarketUser.Entity(
                                 event.returnValues.to,
                                 configuration
-                            ).sync())
-                        ).organization;
+                            ).sync());
 
-                        const oldOwner = (
+                        const newOwner = getUserDisplayText(newOwnerUser);
+
+                        const oldOwnerUser =
                             getUserById(users, event.returnValues.from) ||
                             (await new MarketUser.Entity(
                                 event.returnValues.from,
                                 configuration
-                            ).sync())
-                        ).organization;
+                            ).sync());
+
+                        const oldOwner = getUserDisplayText(oldOwnerUser);
 
                         label = 'Changed ownership';
                         description = `Transferred from ${oldOwner} to ${newOwner}`;
@@ -115,7 +136,7 @@ export function CertificateDetailView(props: IProps) {
 
                 case 'LogCertificateClaimed':
                     label = 'Certificate claimed';
-                    description = `Initiated by ${owner.organization}`;
+                    description = `Initiated by ${getUserDisplayText(owner)}`;
                     break;
 
                 default:
@@ -200,7 +221,7 @@ export function CertificateDetailView(props: IProps) {
                 },
                 {
                     label: 'Current owner',
-                    data: owner?.organization ?? ''
+                    data: getUserDisplayText(owner)
                 },
                 {
                     label: 'Claimed',

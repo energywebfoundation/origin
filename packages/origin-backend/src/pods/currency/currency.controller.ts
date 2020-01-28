@@ -9,7 +9,6 @@ export class CurrencyController {
 
     @Get()
     async get() {
-        console.log(`GET - Currency`);
         const currencies = await this.currencyService.findAll();
 
         return currencies.map(currency => currency.code);
@@ -19,8 +18,6 @@ export class CurrencyController {
     async post(@Body() body: any) {
         let { value } = body;
         value = value.toUpperCase();
-
-        console.log(`POST - Currency: ${value}`);
 
         const currencies = await this.currencyService.findAll();
         const currencyCodes = currencies.map(currency => currency.code);
@@ -44,8 +41,6 @@ export class CurrencyController {
     async delete(@Body() body: any) {
         let { value } = body;
         value = value.toUpperCase();
-
-        console.log(`DELETE - Currency ${value}`);
 
         const currency = await this.currencyService.findOne(value);
 

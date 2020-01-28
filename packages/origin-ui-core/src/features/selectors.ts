@@ -9,3 +9,5 @@ export const getProducingDevices = (state: IStoreState) => state.producingDevice
 export const getBaseURL = () => {
     return '';
 };
+
+export const getWeb3 = (state: IStoreState) => state.configuration?.blockchainProperties?.web3;

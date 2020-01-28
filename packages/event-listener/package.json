@@ -52,6 +52,9 @@
         "web3": "1.2.4",
         "winston": "3.2.1"
     },
+    "devDependencies": {
+        "@energyweb/origin-backend-client-mocks": "0.0.1"
+    },
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org"

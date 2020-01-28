@@ -8,6 +8,9 @@
     "include": ["./contracts.ts", "./src/**/**/*", "./build/**/*.json", "./schemas/**/*.json"],
     "references": [
         {
+            "path": "../origin-backend-core/tsconfig.build.json"
+        },
+        {
             "path": "../user-registry/tsconfig.build.json"
         },
         {
@@ -18,6 +21,9 @@
         },
         {
             "path": "../origin-backend-client/tsconfig.build.json"
+        },
+        {
+            "path": "../origin-backend-client-mocks/tsconfig.build.json"
         },
         {
             "path": "../origin/tsconfig.build.json"

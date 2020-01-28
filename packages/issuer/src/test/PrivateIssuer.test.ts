@@ -5,7 +5,11 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { migratePrivateIssuer, migratePublicIssuer, migrateRegistry } from '../migrate';
 import { RequestIssue, PrivateIssuer, Registry, PublicIssuer } from '..';
@@ -38,7 +42,7 @@ describe('PrivateIssuer', () => {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
         };
-    }
+    };
 
     const createRequestIssue = async (conf: Configuration.Entity) => {
         setActiveUser(deviceOwnerPK);
@@ -49,11 +53,15 @@ describe('PrivateIssuer', () => {
         const deviceId = '1';
 
         return RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf, true);
-    }
+    };
 
     it('migrates PrivateIssuer and Registry', async () => {
         registry = await migrateRegistry(web3, privateKeyDeployment);
-        publicIssuer = await migratePublicIssuer(web3, privateKeyDeployment, registry.web3Contract.options.address);
+        publicIssuer = await migratePublicIssuer(
+            web3,
+            privateKeyDeployment,
+            registry.web3Contract.options.address
+        );
         privateIssuer = await migratePrivateIssuer(
             web3,
             privateKeyDeployment,
@@ -79,7 +87,8 @@ describe('PrivateIssuer', () => {
             offChainDataSource: {
                 baseUrl: `${process.env.BACKEND_URL}/api`,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient: new UserClientMock()
             },
             logger
         };
@@ -110,9 +119,11 @@ describe('PrivateIssuer', () => {
         requestIssue = await requestIssue.sync();
 
         assert.isTrue(requestIssue.approved);
-        
-        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
+
+        const deviceOwnerBalance = await registry.balanceOf(
+            accountDeviceOwner,
+            Number(certificateId)
+        );
         assert.equal(deviceOwnerBalance, 0);
     });
-
 });

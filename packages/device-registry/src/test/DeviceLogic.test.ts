@@ -48,7 +48,6 @@ describe('DeviceLogic', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             accountDeployment,
-            'admin',
             { privateKey: privateKeyDeployment }
         );
 
@@ -62,7 +61,6 @@ describe('DeviceLogic', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             issuerAccount,
-            'admin',
             { privateKey: privateKeyDeployment }
         );
 
@@ -76,7 +74,6 @@ describe('DeviceLogic', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             traderAndDeviceManagerAddress,
-            'trader',
             { privateKey: privateKeyDeployment }
         );
 
@@ -145,7 +142,6 @@ describe('DeviceLogic', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             deviceOwnerAddress,
-            'deviceOwner',
             { privateKey: privateKeyDeployment }
         );
         await userLogic.setRoles(

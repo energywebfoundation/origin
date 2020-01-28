@@ -9,6 +9,9 @@ import { Link } from 'react-router-dom';
 import { getProducingDeviceDetailLink } from '../utils/routing';
 import { getBaseURL, getProducingDevices, getConfiguration } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
+import { getOrganizationClient } from '../features/general/selectors';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import { IOrganization } from '@energyweb/origin-backend-core';
 
 interface IOwnProps {
     devices?: Device.Entity[];
@@ -18,6 +21,7 @@ interface IOwnProps {
 interface IStateProps {
     baseURL: string;
     configuration: IStoreState['configuration'];
+    organizationClient: IOrganizationClient;
 }
 
 type Props = IOwnProps & IStateProps;
@@ -25,6 +29,7 @@ type Props = IOwnProps & IStateProps;
 interface IState {
     deviceHighlighted: Device.Entity;
     owner: MarketUser.Entity;
+    organizations: IOrganization[];
 }
 
 class DeviceMapClass extends React.Component<Props, IState> {
@@ -35,7 +40,8 @@ class DeviceMapClass extends React.Component<Props, IState> {
 
         this.state = {
             deviceHighlighted: null,
-            owner: null
+            owner: null,
+            organizations: []
         };
     }
 
@@ -85,6 +91,12 @@ class DeviceMapClass extends React.Component<Props, IState> {
 
     componentDidUpdate() {
         this.updateBounds();
+    }
+
+    async componentDidMount() {
+        this.setState({
+            organizations: await this.props.organizationClient?.getAll()
+        });
     }
 
     render() {
@@ -145,7 +157,12 @@ class DeviceMapClass extends React.Component<Props, IState> {
                                 <b>{deviceHighlighted.offChainProperties.facilityName}</b>
                                 <br />
                                 <br />
-                                Owner: {owner.organization}
+                                Owner:{' '}
+                                {
+                                    this.state.organizations?.find(
+                                        o => o?.id === owner.information?.organization
+                                    )?.name
+                                }
                                 <br />
                                 <br />
                                 <Link
@@ -165,5 +182,6 @@ class DeviceMapClass extends React.Component<Props, IState> {
 export const DeviceMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
     devices: ownProps.devices || getProducingDevices(state),
     baseURL: getBaseURL(),
-    configuration: getConfiguration(state)
+    configuration: getConfiguration(state),
+    organizationClient: getOrganizationClient(state)
 }))(DeviceMapClass);

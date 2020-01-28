@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, UserLoginReturnData } from '@energyweb/origin-backend-core';
 
 import { UserService } from '../pods/user/user.service';
 
@@ -30,7 +30,7 @@ export class AuthService {
         return null;
     }
 
-    async login(user: Omit<IUser, 'password'>) {
+    async login(user: Omit<IUser, 'password'>): Promise<UserLoginReturnData> {
         const payload: IJWTPayload = { email: user.email, id: user.id };
 
         return {

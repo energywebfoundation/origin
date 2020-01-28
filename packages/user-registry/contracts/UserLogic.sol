@@ -53,23 +53,17 @@ contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {
 	/// @param _propertiesDocumentHash document-hash with all the properties of the demand
 	/// @param _documentDBURL url-address of the demand
     /// @param _user address of the user
-    /// @param _organization organization the user is representing
     function createUser(
         string calldata _propertiesDocumentHash,
         string calldata _documentDBURL,
-        address _user,
-        string calldata _organization
+        address _user
     )
         external
         onlyRole(RoleManagement.Role.UserAdmin)
     {
-        bytes memory orgBytes = bytes(_organization);
-        require(orgBytes.length > 0, "empty string");
-
         User storage u = userList[_user];
         u.propertiesDocumentHash = _propertiesDocumentHash;
         u.documentDBURL = _documentDBURL;
-        u.organization = _organization;
         u.active = true;
     }
 
@@ -93,7 +87,6 @@ contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {
         returns (
             string memory _propertiesDocumentHash,
             string memory _documentDBURL,
-            string memory _organization,
             uint _roles,
             bool _active
         )
@@ -101,7 +94,6 @@ contract UserLogic is Initializable, RoleManagement, IRoles, IUserLogic {
         User memory user = userList[_user];
         _propertiesDocumentHash = user.propertiesDocumentHash;
         _documentDBURL = user.documentDBURL;
-        _organization = user.organization;
         _roles = user.roles;
         _active = user.active;
     }

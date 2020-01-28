@@ -25,8 +25,18 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import { IConfigurationClient, IOffChainDataClient } from '@energyweb/origin-backend-client';
-import { setConfigurationClient, setOffChainDataClient } from '../../features/general/actions';
+import {
+    IConfigurationClient,
+    IOffChainDataClient,
+    IOrganizationClient,
+    IUserClient
+} from '@energyweb/origin-backend-client';
+import {
+    setConfigurationClient,
+    setOffChainDataClient,
+    setOrganizationClient,
+    setUserClient
+} from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -60,6 +70,8 @@ const setupStoreInternal = (
     logActions = false,
     configurationClient: IConfigurationClient,
     offChainDataClient: IOffChainDataClient,
+    userClient: IUserClient,
+    organizationClient: IOrganizationClient,
     runSagas = true
 ) => {
     const history = createMemoryHistory({
@@ -91,6 +103,14 @@ const setupStoreInternal = (
 
     if (offChainDataClient) {
         store.dispatch(setOffChainDataClient(offChainDataClient));
+    }
+
+    if (userClient) {
+        store.dispatch(setUserClient(userClient));
+    }
+
+    if (organizationClient) {
+        store.dispatch(setOrganizationClient(organizationClient));
     }
 
     const sagasTasks: Task[] = runSagas
@@ -213,6 +233,8 @@ interface ISetupStoreOptions {
     logActions: boolean;
     configurationClient?: IConfigurationClient;
     offChainDataClient?: IOffChainDataClient;
+    userClient?: IUserClient;
+    organizationClient?: IOrganizationClient;
     runSagas?: boolean;
     userFetcher?: IUserFetcher;
 }
@@ -232,6 +254,8 @@ export const setupStore = (
         options.logActions,
         options.configurationClient,
         options.offChainDataClient,
+        options.userClient,
+        options.organizationClient,
         options.runSagas
     );
 
@@ -253,7 +277,6 @@ export const setupStore = (
         setCurrentUser: (properties: ISetCurrentUserProperties) => {
             const user: Partial<MarketUser.Entity> = {
                 id: properties.id,
-                organization: properties.organization || 'Example Organization',
                 isRole: () => true
             };
 

@@ -15,7 +15,11 @@ import {
     Demand,
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
-import { IOffChainDataClient, IConfigurationClient } from '@energyweb/origin-backend-client';
+import {
+    IOffChainDataClient,
+    IConfigurationClient,
+    IUserClient
+} from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
@@ -28,7 +32,8 @@ import { IStoreState } from '../../types';
 import {
     getOffChainDataClient,
     getConfigurationClient,
-    getEnvironment
+    getEnvironment,
+    getUserClient
 } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
 
@@ -41,6 +46,7 @@ async function initConf(
     routerSearch: string,
     offChainDataClient: IOffChainDataClient,
     configurationClient: IConfigurationClient,
+    userClient: IUserClient,
     baseURL: string,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
@@ -75,7 +81,8 @@ async function initConf(
         offChainDataSource: {
             baseUrl: baseURL,
             client: offChainDataClient,
-            configurationClient
+            configurationClient,
+            userClient
         },
         logger: Winston.createLogger({
             level: 'verbose',
@@ -297,6 +304,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
         try {
             const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
             const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+            const userClient: IUserClient = yield select(getUserClient);
 
             configuration = yield call(
                 initConf,
@@ -304,6 +312,7 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
                 routerSearch,
                 offChainDataClient,
                 configurationClient,
+                userClient,
                 baseURL,
                 environment.WEB3
             );

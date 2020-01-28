@@ -17,7 +17,11 @@ import {
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -106,13 +110,9 @@ describe('PurchasableCertificate-Facade', () => {
             privateKeyDeployment
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            'admin',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(
             accountDeployment,
@@ -142,7 +142,6 @@ describe('PurchasableCertificate-Facade', () => {
             'propertiesDocumentHash',
             'documentDBURL',
             marketLogic.web3Contract.options.address,
-            'marketLogic',
             { privateKey: privateKeyDeployment }
         );
         await userLogic.setRoles(
@@ -152,6 +151,9 @@ describe('PurchasableCertificate-Facade', () => {
                 privateKey: privateKeyDeployment
             }
         );
+
+        const baseUrl = `${process.env.BACKEND_URL}/api`;
+        const userClient = new UserClientMock();
 
         conf = {
             blockchainProperties: {
@@ -166,9 +168,10 @@ describe('PurchasableCertificate-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
+                baseUrl,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient
             },
             logger
         };
@@ -181,21 +184,13 @@ describe('PurchasableCertificate-Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeviceOwner,
-            'deviceOwner',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeviceOwner, {
+            privateKey: privateKeyDeployment
+        });
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountTrader,
-            'trader',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountTrader, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(accountTrader, buildRights([Role.Trader]), {
             privateKey: privateKeyDeployment
@@ -208,13 +203,9 @@ describe('PurchasableCertificate-Facade', () => {
             }
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            issuerAccount,
-            'issuer',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', issuerAccount, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(issuerAccount, buildRights([Role.Issuer]), {
             privateKey: privateKeyDeployment

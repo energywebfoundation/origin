@@ -29,6 +29,7 @@ export interface IEnvironment {
     BACKEND_URL: string;
     BLOCKCHAIN_EXPLORER_URL: string;
     WEB3: string;
+    REGISTRATION_MESSAGE_TO_SIGN: string;
 }
 
 export interface IShowAccountChangedModalAction {

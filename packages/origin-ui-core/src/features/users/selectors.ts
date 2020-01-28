@@ -11,6 +11,8 @@ export const getCurrentUser = (state: IStoreState) => {
     }
 };
 
+export const getCurrentUserId = (state: IStoreState) => state.users.currentUserId;
+
 export const getUserById = (users: IUsersState['users'], id: string) => {
     if (typeof id === 'undefined') {
         return;
@@ -20,3 +22,15 @@ export const getUserById = (users: IUsersState['users'], id: string) => {
 };
 
 export const getUserFetcher = (state: IStoreState) => state.users.fetcher;
+
+export const getUserOffchain = (state: IStoreState) => state.users.userOffchain;
+
+export const getIsLeadUser = (state: IStoreState): boolean => {
+    const user = getUserOffchain(state);
+
+    if (!user) {
+        return false;
+    }
+
+    return user.organization?.leadUser === user.id;
+};
