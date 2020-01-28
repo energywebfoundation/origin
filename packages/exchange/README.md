@@ -1,75 +1,76 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+<h1 align="center">
+  <br>
+  <a href="https://www.energyweb.org/"><img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150"></a>
+  <br>
+  EnergyWeb Origin
+  <br>
+  <h2 align="center">Exchange</h2>
+  <br>
+</h1>
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+**Exchange** package provides the order book based exchange functionality for the certificates issued by `issuer` package. The major difference between classic (asset, time, price) order book system is the **product** based matching engine, providing the ability to create custom matching rules.
 
-## Description
+## Main features
+- Order book matching engine for time, price and product matching
+- ERC 1155 / ERC 1888 compatible
+- Supply / Demand modules 
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Trading product concept
 
-## Installation
+### Definition
 
-```bash
-$ npm install
+`Product` defines the characteristics of the given producing device as well as buyers preferences . Currently it's represented as:
+
+```
+export class Product {
+    public deviceType?: string[];
+
+    public location?: string[];
+
+    public deviceVintage?: number;
+}
 ```
 
-## Running the app
+Where
 
-```bash
-# development
-$ npm run start
+- `deviceType` - describes the the type of the device for e.g using I-REC types
+- `location` - describes the location of the the device for e.g can be multi-level like Country->Region->Province
+- `deviceVintage` - describes the vintage of the device for e.g the start year of the device operation
 
-# watch mode
-$ npm run start:dev
+For a producing device all fields are mandatory.
 
-# production mode
-$ npm run start:prod
+## Development
+
+Default TypeOrm configuration requires running PostgreSQL database. The detailed config is:
+
+```
+TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'postgres',
+            password: 'postgres',
+            database: 'origin-exchange',
+            entities: [Demand, Order, Trade],
+            synchronize: true,
+            logging: ['query']
+        }),
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+yarn
+yarn start
 ```
 
-## Support
+### PostgreSQL installation using Docker
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+docker pull postgres
+docker run --name origin-postgres -d -p 5432:5432 postgres
+```
 
-## Stay in touch
+### Swagger
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Swagger endpoint can be found at
 
-## License
-
-  Nest is [MIT licensed](LICENSE).
+`http://localhost:3000/api`
