@@ -1,6 +1,6 @@
 import * as Winston from 'winston';
 import Web3 from 'web3';
-import { IOffChainDataClient, IConfigurationClient, IUserClient } from '@energyweb/origin-backend-client';
+import { IOffChainDataClient, IConfigurationClient, IUserClient, IDeviceClient } from '@energyweb/origin-backend-client';
 
 export interface Entity<
     TMarketLogic = any,
@@ -23,6 +23,7 @@ export interface OffChainDataSource {
     client: IOffChainDataClient;
     configurationClient: IConfigurationClient;
     userClient: IUserClient;
+    deviceClient: IDeviceClient;
 }
 export interface BlockchainProperties<
     TIssuerLogic = { public: any; private: any },
@@ -45,3 +46,8 @@ export interface EthAccount {
     address: string;
     privateKey?: string;
 }
+
+export const getAccount = (configuration: Entity) => ({
+    from: configuration.blockchainProperties.activeUser.address,
+    privateKey: configuration.blockchainProperties.activeUser.privateKey
+});
