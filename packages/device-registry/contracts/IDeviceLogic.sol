@@ -46,16 +46,12 @@ contract IDeviceLogic {
 	/// @param _owner device-owner
 	/// @param _status device status
 	/// @return generated device-id
-    function createDevice(
-        address _smartMeter,
-        address _owner,
-        DeviceDefinitions.DeviceStatus _status
-    ) external returns (uint deviceId);
+    function createDevice(address _smartMeter, address _owner, DeviceDefinitions.DeviceStatus _status) external returns (uint deviceId);
 
     function getSmartMeterReadsForDevice(uint _deviceId) external view
         returns (DeviceDefinitions.SmartMeterRead[] memory reads);
 
-    /// @notice Gets an device
+    /// @notice Gets a device
 	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @return Full informations of an device
     function getDeviceById(uint _deviceId) public view returns (DeviceDefinitions.Device memory);

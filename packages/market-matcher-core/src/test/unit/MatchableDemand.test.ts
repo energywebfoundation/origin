@@ -1,7 +1,7 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, PurchasableCertificate, Supply, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Year } from '@energyweb/utils-general';
+import { Year, Countries } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -192,8 +192,9 @@ describe('MatchableDemand tests', () => {
         });
 
         it('should match demand with certificate when province is in passed region', async () => {
+            const countryId = Countries.find(c => c.name === 'Thailand').id;
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                location: ['Thailand;Central']
+                location: [`${countryId};Central`]
             });
 
             const matchableDemand = new MatchableDemand(demand);

@@ -226,12 +226,12 @@ export async function deployDemo() {
         lastSmartMeterReadFileHash: ''
     };
 
-    const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+    const deviceProducingPropsOffChain: IDevice = {
         deviceType: 'Wind;Onshore',
         complianceRegistry: 'I-REC',
         facilityName: 'Wuthering Heights Windfarm',
         capacityInW: 0,
-        country: 'Thailand',
+        country: 221,
         address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '',
         gpsLongitude: '',
