@@ -3,14 +3,16 @@ import { IConfigurationClient, ConfigurationItem } from '@energyweb/origin-backe
 export class ConfigurationClientMock implements IConfigurationClient {
     private storage = new Map<string, any>();
 
-    public async get(baseUrl: string, item: ConfigurationItem) {
-        const url = `${baseUrl}/${item}`;
+    constructor(private readonly baseUrl: string) {}
+
+    public async get(item: ConfigurationItem) {
+        const url = `${this.baseUrl}/${item}`;
 
         return this.storage.get(url);
     }
 
-    public async add(baseUrl: string, item: ConfigurationItem, value: string | object) {
-        const url = `${baseUrl}/${item}`;
+    public async add(item: ConfigurationItem, value: string | object) {
+        const url = `${this.baseUrl}/${item}`;
 
         if (typeof value === 'string') {
             const values = this.storage.get(url) || [];
