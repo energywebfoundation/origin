@@ -4,12 +4,25 @@ import {
     OrganizationUpdateData,
     OrganizationInviteCreateReturnData,
     IOrganizationInvitation,
-    OrganizationStatus
+    OrganizationStatus,
+    OrganizationRemoveMemberReturnData,
+    IUserWithRelationsIds
 } from '@energyweb/origin-backend-core';
 
 import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 export class OrganizationClientMock implements IOrganizationClient {
+    getMembers(id: number): Promise<IUserWithRelationsIds[]> {
+        throw new Error('Method not implemented.');
+    }
+
+    removeMember(
+        organizationId: number,
+        userId: number
+    ): Promise<OrganizationRemoveMemberReturnData> {
+        throw new Error('Method not implemented.');
+    }
+
     private storage = new Map<number, IOrganizationWithRelationsIds>();
 
     private idCounter = 0;

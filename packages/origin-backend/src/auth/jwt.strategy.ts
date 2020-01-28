@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUserWithRelationsIds } from '@energyweb/origin-backend-core';
 
 import { UserService } from '../pods/user/user.service';
 import { IJWTPayload } from './auth.service';
@@ -24,14 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         this.configService = _configService;
     }
 
-    async validate(payload: IJWTPayload): Promise<Omit<IUser, 'password'>> {
+    async validate(payload: IJWTPayload): Promise<IUserWithRelationsIds> {
         const user = await this.userService.findByEmail(payload.email);
 
         if (user) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { password, ...userFieldsWithoutPassword } = user;
-
-            return userFieldsWithoutPassword;
+            return user;
         }
 
         return null;
