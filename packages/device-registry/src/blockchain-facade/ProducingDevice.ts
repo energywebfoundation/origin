@@ -1,16 +1,7 @@
-import polly from 'polly-js';
+import { Configuration } from '@energyweb/utils-general';
+import { IDevice } from '@energyweb/origin-backend-core';
 
-import { Compliance, Configuration } from '@energyweb/utils-general';
-
-import { ProducingDevicePropertiesOffChainSchema } from '..';
 import * as Device from './Device';
-
-export interface IOffChainProperties extends Device.IOffChainProperties {
-    deviceType: string;
-    complianceRegistry: Compliance;
-    otherGreenAttributes: string;
-    typeOfPublicSupport: string;
-}
 
 export const getAllDevices = async (configuration: Configuration.Entity): Promise<Entity[]> => {
     const { deviceLogicInstance } = configuration.blockchainProperties;
@@ -27,10 +18,7 @@ export const getAllDevices = async (configuration: Configuration.Entity): Promis
 
     const allDevices = await Promise.all(devicesPromises);
 
-    const producingDevices = allDevices.filter(
-        (device, index) => Number(device.device.usageType) === Device.UsageType.Producing
-    );
-    const producingDevicesSynced = producingDevices.map(device =>
+    const producingDevicesSynced = allDevices.map(device =>
         new Entity(device.id.toString(), configuration).sync()
     );
 
@@ -50,26 +38,10 @@ export const getAllDevicesOwnedBy = async (owner: string, configuration: Configu
 
 export const createDevice = async (
     devicePropertiesOnChain: Device.IOnChainProperties,
-    devicePropertiesOffChain: IOffChainProperties,
+    devicePropertiesOffChain: IDevice,
     configuration: Configuration.Entity
 ): Promise<Entity> => {
     const producingDevice = new Entity(null, configuration);
-    const offChainStorageProperties = producingDevice.prepareEntityCreation(
-        devicePropertiesOffChain,
-        ProducingDevicePropertiesOffChainSchema
-    );
-
-    devicePropertiesOnChain.url = `${producingDevice.baseUrl}/${offChainStorageProperties.rootHash}`;
-    devicePropertiesOnChain.propertiesDocumentHash = offChainStorageProperties.rootHash;
-
-    await polly()
-        .waitAndRetry(10)
-        .executeForPromise(async () => {
-            producingDevice.id = (await getDeviceListLength(configuration)).toString();
-            await producingDevice.throwIfExists();
-        });
-
-    await producingDevice.syncOffChainStorage(devicePropertiesOffChain, offChainStorageProperties);
 
     const {
         status: successCreateDevice,
@@ -78,13 +50,7 @@ export const createDevice = async (
         devicePropertiesOnChain.smartMeter.address,
         devicePropertiesOnChain.owner.address,
         devicePropertiesOnChain.status,
-        Device.UsageType.Producing,
-        devicePropertiesOnChain.propertiesDocumentHash,
-        devicePropertiesOnChain.url,
-        {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        }
+        Configuration.getAccount(configuration)
     );
 
     if (!successCreateDevice) {
@@ -96,26 +62,22 @@ export const createDevice = async (
         .hexToNumber(logs[0].topics[1])
         .toString();
 
-    if (producingDevice.id !== idFromTx) {
-        producingDevice.id = idFromTx;
-        await producingDevice.syncOffChainStorage(
-            devicePropertiesOffChain,
-            offChainStorageProperties
-        );
-    }
+    producingDevice.id = idFromTx;
+
+    await producingDevice.createOffChainProperties(devicePropertiesOffChain);
 
     if (configuration.logger) {
-        configuration.logger.info(`Producing device ${producingDevice.id} created`);
+        configuration.logger.info(`Producing device ${idFromTx} created`);
     }
 
     return producingDevice.sync();
 };
 export interface IProducingDevice extends Device.IOnChainProperties {
-    offChainProperties: IOffChainProperties;
+    offChainProperties: IDevice;
 }
 
 export class Entity extends Device.Entity implements IProducingDevice {
-    offChainProperties: IOffChainProperties;
+    offChainProperties: IDevice;
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
@@ -127,10 +89,8 @@ export class Entity extends Device.Entity implements IProducingDevice {
             this.owner = { address: device.owner };
             this.lastSmartMeterReadWh = Number(device.lastSmartMeterReadWh);
             this.status = Number(device.status);
-            this.usageType = Number(device.usageType);
             this.lastSmartMeterReadFileHash = device.lastSmartMeterReadFileHash;
-            this.propertiesDocumentHash = device.propertiesDocumentHash;
-            this.url = device.url;
+
             this.initialized = true;
 
             this.offChainProperties = await this.getOffChainProperties();

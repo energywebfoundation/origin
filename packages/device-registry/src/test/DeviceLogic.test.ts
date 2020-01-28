@@ -1,6 +1,5 @@
 import 'mocha';
 import { assert } from 'chai';
-import * as fs from 'fs';
 import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
@@ -101,9 +100,6 @@ describe('DeviceLogic', () => {
                 deviceSmartmeter,
                 deviceOwnerAddress,
                 DeviceStatus.Active,
-                0,
-                'propertiesDocumentHash',
-                'url',
                 {
                     privateKey: deviceOwnerPK
                 }
@@ -123,9 +119,6 @@ describe('DeviceLogic', () => {
                 deviceSmartmeter,
                 deviceOwnerAddress,
                 DeviceStatus.Active,
-                0,
-                'propertiesDocumentHash',
-                'url',
                 {
                     privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
                 }
@@ -160,9 +153,6 @@ describe('DeviceLogic', () => {
                 deviceSmartmeter,
                 traderAndDeviceManagerAddress,
                 DeviceStatus.Active,
-                0,
-                'propertiesDocumentHash',
-                'url',
                 {
                     privateKey: traderAndDeviceManagerPK
                 }
@@ -182,9 +172,6 @@ describe('DeviceLogic', () => {
             deviceSmartmeter,
             deviceOwnerAddress,
             DeviceStatus.Active,
-            0,
-            'propertiesDocumentHash',
-            'url',
             { privateKey: privateKeyDeployment }
         );
 
@@ -210,16 +197,13 @@ describe('DeviceLogic', () => {
     it('should return the deployed device correctly', async () => {
         const deployedDevice = await deviceLogic.getDeviceById(0);
 
-        assert.equal(deployedDevice.length, 8);
+        assert.equal(deployedDevice.length, 5);
 
         assert.equal(deployedDevice.smartMeter, deviceSmartmeter);
         assert.equal(deployedDevice.owner, deviceOwnerAddress);
         assert.equal(deployedDevice.lastSmartMeterReadWh, 0);
         assert.equal(deployedDevice.status, DeviceStatus.Active);
-        assert.equal(deployedDevice.usageType, 0);
         assert.equal(deployedDevice.lastSmartMeterReadFileHash, '');
-        assert.equal(deployedDevice.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(deployedDevice.url, 'url');
     });
 
     it('should return device by ID correctly', async () => {
@@ -230,8 +214,6 @@ describe('DeviceLogic', () => {
         assert.equal(device0.lastSmartMeterReadWh, 0);
         assert.equal(device0.status, DeviceStatus.Active);
         assert.equal(device0.lastSmartMeterReadFileHash, '');
-        assert.equal(device0.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(device0.url, 'url');
     });
 
     it('should fail when trying to log with saveSmartMeterRead using the wrong smart meter', async () => {
@@ -414,8 +396,6 @@ describe('DeviceLogic', () => {
         assert.equal(device0.lastSmartMeterReadWh, '200');
         assert.equal(device0.status, DeviceStatus.Denied);
         assert.equal(device0.lastSmartMeterReadFileHash, 'lastSmartMeterReadFileHash#2');
-        assert.equal(device0.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(device0.url, 'url');
     });
 
     it('should return the correct latest hashes + meter readings', async () => {

@@ -7,20 +7,12 @@ contract DeviceDefinitions {
         Active
     }
 
-    enum UsageType {
-        Producing,
-        Consuming
-    }
-
     struct Device {
-        UsageType usageType;
         address smartMeter;
         address owner;
         uint lastSmartMeterReadWh;
         DeviceStatus status;
         string lastSmartMeterReadFileHash;
-        string propertiesDocumentHash;
-        string url;
     }
 
     struct SmartMeterRead {

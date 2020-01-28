@@ -15,20 +15,16 @@
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/build",
-    "dist/js/src",
-    "dist/js/schemas"
+    "dist/js/src"
   ],
   "directories": {
     "test": "test"
   },
   "scripts": {
     "build": "yarn build:static && yarn build:ts",
-    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
+    "build:static": "yarn compile && yarn extractABI",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build && yarn deploy-contracts",
-    "build-schema:DevicePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Device.ts IOffChainProperties",
-    "build-schema:ProducingDevicePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingDevice.ts IOffChainProperties",
-    "build-schemas": "node ./scripts/buildSchemas.js",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",

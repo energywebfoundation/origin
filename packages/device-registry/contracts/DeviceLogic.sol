@@ -98,17 +98,11 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
 	/// @param _smartMeter smartmeter of the device
 	/// @param _owner device-owner
 	/// @param _status device status
-	/// @param _usageType consuming or producing device
-	/// @param _propertiesDocumentHash hash of the document with the properties of an device
-	/// @param _url where to find the documentHash
 	/// @return generated device-id
     function createDevice(
         address _smartMeter,
         address _owner,
-        DeviceDefinitions.DeviceStatus _status,
-        DeviceDefinitions.UsageType _usageType,
-        string calldata _propertiesDocumentHash,
-        string calldata _url
+        DeviceDefinitions.DeviceStatus _status
     ) external returns (uint deviceId) {
         require(isRole(RoleManagement.Role.DeviceManager, _owner), "device owner has to have device manager role");
         require(
@@ -128,10 +122,7 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
             owner: _owner,
             lastSmartMeterReadWh: 0,
             status: _status,
-            usageType: _usageType,
-            lastSmartMeterReadFileHash: "",
-            propertiesDocumentHash: _propertiesDocumentHash,
-            url: _url
+            lastSmartMeterReadFileHash: ""
         });
 
         deviceId = allDevices.length;

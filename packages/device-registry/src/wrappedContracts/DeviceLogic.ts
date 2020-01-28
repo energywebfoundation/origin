@@ -3,7 +3,7 @@ import { PastEventOptions } from 'web3-eth-contract';
 import Web3 from 'web3';
 import moment from 'moment';
 import DeviceLogicJSON from '../../build/contracts/lightweight/DeviceLogic.json';
-import { UsageType, DeviceStatus } from '../blockchain-facade/Device';
+import { DeviceStatus } from '../blockchain-facade/Device';
 
 export class DeviceLogic extends GeneralFunctions {
     web3: Web3;
@@ -74,18 +74,12 @@ export class DeviceLogic extends GeneralFunctions {
         _smartMeter: string,
         _owner: string,
         _status: DeviceStatus,
-        _usageType: UsageType,
-        _propertiesDocumentHash: string,
-        _url: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createDevice(
             _smartMeter,
             _owner,
-            _status,
-            _usageType,
-            _propertiesDocumentHash,
-            _url
+            _status
         );
 
         return this.send(method, txParams);
