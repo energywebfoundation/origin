@@ -16,15 +16,10 @@ import {
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
 
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock,
-    OrganizationClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IStoreState } from '../../types';
-import { OrganizationPostData, IUserWithRelationsIds } from '@energyweb/origin-backend-core';
+import { OrganizationPostData, IUserWithRelationsIds, IDevice } from '@energyweb/origin-backend-core';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -118,21 +113,17 @@ export async function deployDemo() {
     deployResult.certificateLogic = certificateLogicAddress;
     deployResult.marketLogic = marketContractLookup;
 
-    const configurationClient = new ConfigurationClientMock();
-    const offChainDataClient = new OffChainDataClientMock();
-    const userClient = new UserClientMock();
-    const organizationClient = new OrganizationClientMock();
-
     const BACKEND_URL = 'http://localhost:3030';
     const baseUrl = `${BACKEND_URL}/api`;
 
-    await configurationClient.add(
-        baseUrl,
+    const offChainDataSource = new OffChainDataSourceMock(baseUrl);
+
+    await offChainDataSource.configurationClient.add(
         'MarketContractLookup',
         marketContractLookup.toLowerCase()
     );
-    await configurationClient.add(baseUrl, 'Currency', 'USD');
-    await configurationClient.add(baseUrl, 'Country', {
+    await offChainDataSource.configurationClient.add('Currency', 'USD');
+    await offChainDataSource.configurationClient.add('Country', {
         name: 'Thailand',
         regions: { Central: ['Nakhon Pathom'] }
     });
@@ -149,22 +140,17 @@ export async function deployDemo() {
             marketLogicInstance: marketLogic,
             web3
         },
-        offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`,
-            client: offChainDataClient,
-            configurationClient,
-            userClient
-        },
+        offChainDataSource,
         logger
     };
 
     function createOrganization(user: IUserWithRelationsIds, name: string) {
-        const newOrganization = organizationClient.addMocked(
+        const newOrganization = offChainDataSource.organizationClient.addMocked(
             ({ name } as Partial<OrganizationPostData>) as OrganizationPostData,
             user.id
         );
 
-        userClient.updateMocked(user.id, {
+        offChainDataSource.userClient.updateMocked(user.id, {
             ...user,
             organization: newOrganization.id
         });
@@ -257,11 +243,7 @@ export async function deployDemo() {
 
     return {
         conf,
-        deployResult,
-        configurationClient,
-        offChainDataClient,
-        organizationClient,
-        userClient
+        deployResult
     };
 }
 

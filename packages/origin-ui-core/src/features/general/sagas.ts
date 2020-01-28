@@ -11,32 +11,19 @@ import {
     setCompliance,
     setCountry,
     setRegions,
-    setOrganizationClient,
-    setUserClient,
-    setDeviceClient
+    setOffChainDataSource
 } from './actions';
 import { getConfiguration } from '../selectors';
 import {
     getAccountChangedModalVisible,
     getAccountChangedModalEnabled,
     getEnvironment,
-    getConfigurationClient,
-    getRequestClient,
-    getUserClient,
-    getDeviceClient
+    getOffChainDataSource
 } from './selectors';
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
 import axios from 'axios';
-import {
-    IConfigurationClient,
-    OrganizationClient,
-    UserClient,
-    IRequestClient,
-    IUserClient,
-    IDeviceClient,
-    DeviceClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
@@ -103,17 +90,17 @@ async function getENV(): Promise<IEnvironment> {
     };
 }
 
-async function getComplianceFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+async function getComplianceFromAPI(offChainDataSource: IOffChainDataSource) {
     try {
-        return configurationClient.get(baseURL, 'Compliance');
+        return offChainDataSource.configurationClient.get('Compliance');
     } catch {
         return null;
     }
 }
 
-async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+async function getCurrenciesFromAPI(offChainDataSource: IOffChainDataSource) {
     try {
-        const currencies = await configurationClient.get(baseURL, 'Currency');
+        const currencies = await offChainDataSource.configurationClient.get('Currency');
 
         if (currencies.length > 0) {
             return currencies;
@@ -125,9 +112,9 @@ async function getCurrenciesFromAPI(configurationClient: IConfigurationClient, b
     }
 }
 
-async function getCountryFromAPI(configurationClient: IConfigurationClient, baseURL: string) {
+async function getCountryFromAPI(offChainDataSource: IOffChainDataSource) {
     try {
-        return configurationClient.get(baseURL, 'Country');
+        return offChainDataSource.configurationClient.get('Country');
     } catch {
         return null;
     }
@@ -149,11 +136,8 @@ function* fillCurrency(): SagaIterator {
             return;
         }
 
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-
-        const currencies = yield call(getCurrenciesFromAPI, configurationClient, baseURL);
+        const offChainDataSource = yield select(getOffChainDataSource);
+        const currencies = yield call(getCurrenciesFromAPI, offChainDataSource);
 
         yield put(
             setCurrencies({
@@ -173,12 +157,10 @@ function* fillCompliance(): SagaIterator {
             return;
         }
 
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+        const offChainDataSource = yield select(getOffChainDataSource);
 
         try {
-            const compliance = yield call(getComplianceFromAPI, configurationClient, baseURL);
+            const compliance = yield call(getComplianceFromAPI, offChainDataSource);
 
             yield put(setCompliance(compliance));
         } catch (error) {
@@ -197,12 +179,10 @@ function* fillCountryAndRegions(): SagaIterator {
             return;
         }
 
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+        const offChainDataSource = yield select(getOffChainDataSource);
 
         try {
-            const country = yield call(getCountryFromAPI, configurationClient, baseURL);
+            const country = yield call(getCountryFromAPI, offChainDataSource);
 
             yield put(setCountry(country ? country.name : null));
             yield put(setRegions(country ? country.regions : null));
@@ -212,73 +192,31 @@ function* fillCountryAndRegions(): SagaIterator {
     }
 }
 
-function* initializeOrganizationClient(): SagaIterator {
+function* initializeOffChainDataSource(): SagaIterator {
     while (true) {
         yield take(GeneralActions.setEnvironment);
 
         const environment: IEnvironment = yield select(getEnvironment);
-        const requestClient: IRequestClient = yield select(getRequestClient);
-        const existingOrganizationClient: IUserClient = yield select(getUserClient);
 
-        if (!environment || !requestClient || existingOrganizationClient) {
+        if (!environment) {
             return;
         }
 
         const baseURL = `${environment.BACKEND_URL}/api`;
+        const offChainDataSource = new OffChainDataSource(baseURL);
 
-        const organizationClient = new OrganizationClient(baseURL, requestClient);
-
-        yield put(setOrganizationClient(organizationClient));
+        yield put(setOffChainDataSource(offChainDataSource));
     }
 }
 
-function* initializeUserClient(): SagaIterator {
-    while (true) {
-        yield take(GeneralActions.setEnvironment);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-        const requestClient: IRequestClient = yield select(getRequestClient);
-        const existingUserClient: IUserClient = yield select(getUserClient);
-
-        if (!environment || !requestClient || existingUserClient) {
-            return;
-        }
-
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const userClient = new UserClient(baseURL, requestClient);
-
-        yield put(setUserClient(userClient));
-    }
-}
-
-function* initializeDeviceClient(): SagaIterator {
-    while (true) {
-        yield take(GeneralActions.setEnvironment);
-
-        const environment: IEnvironment = yield select(getEnvironment);
-        const existingDeviceClient: IDeviceClient = yield select(getDeviceClient);
-
-        if (!environment || existingDeviceClient) {
-            return;
-        }
-
-        const baseURL = `${environment.BACKEND_URL}/api`;
-
-        const deviceClient = new DeviceClient(baseURL);
-
-        yield put(setDeviceClient(deviceClient));
-    }
-}
 
 export function* generalSaga(): SagaIterator {
     yield all([
         fork(showAccountChangedModalOnChange),
         fork(setupEnvironment),
+        fork(initializeOffChainDataSource),
         fork(fillCurrency),
         fork(fillCompliance),
-        fork(fillCountryAndRegions),
-        fork(initializeOrganizationClient),
-        fork(initializeUserClient)
+        fork(fillCountryAndRegions)
     ]);
 }

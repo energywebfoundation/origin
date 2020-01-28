@@ -1,12 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import program from 'commander';
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient,
-    DeviceClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 
 import { startEventListener } from './index';
 
@@ -20,11 +15,7 @@ program.parse(process.argv);
 
     await startEventListener({
         web3Url: process.env.WEB3,
-        offChainDataSourceUrl: process.env.BACKEND_URL,
-        offChainDataSourceClient: new OffChainDataClient(),
-        configurationClient: new ConfigurationClient(),
-        userClient: new UserClient(`${process.env.BACKEND_URL}/api`),
-        deviceClient: new DeviceClient(`${process.env.BACKEND_URL}/api`),
+        offChainDataSource: new OffChainDataSource(`${process.env.BACKEND_URL}/api`),
         accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
         scanInterval: 3000,
         notificationInterval: 60000,

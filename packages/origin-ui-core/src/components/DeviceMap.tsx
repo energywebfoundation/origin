@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { getProducingDeviceDetailLink } from '../utils/routing';
 import { getBaseURL, getProducingDevices, getConfiguration } from '../features/selectors';
 import { CircularProgress } from '@material-ui/core';
-import { getOrganizationClient } from '../features/general/selectors';
+import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationClient } from '@energyweb/origin-backend-client';
 import { IOrganization } from '@energyweb/origin-backend-core';
 
@@ -183,5 +183,5 @@ export const DeviceMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
     devices: ownProps.devices || getProducingDevices(state),
     baseURL: getBaseURL(),
     configuration: getConfiguration(state),
-    organizationClient: getOrganizationClient(state)
+    organizationClient: getOffChainDataSource(state).organizationClient
 }))(DeviceMapClass);

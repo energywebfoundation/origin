@@ -18,12 +18,7 @@ import {
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { buildRights, Role, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock,
-    DeviceClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IDevice } from '@energyweb/origin-backend-core';
 import { IMatcherConfig } from '..';
@@ -167,32 +162,18 @@ const deploy = async () => {
             certificateLogicInstance: certificateLogic,
             web3
         },
-        offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`,
-            client: new OffChainDataClientMock(),
-            configurationClient: new ConfigurationClientMock(),
-            userClient: new UserClientMock(),
-            deviceClient: new DeviceClientMock()
-        },
+        offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
         logger
     };
 
-    await config.offChainDataSource.configurationClient.add(
-        config.offChainDataSource.baseUrl,
-        'Country',
-        {
-            name: 'Thailand',
-            regions: { Central: ['Nakhon Pathom'] }
-        }
-    );
+    await config.offChainDataSource.configurationClient.add('Country', {
+        name: 'Thailand',
+        regions: { Central: ['Nakhon Pathom'] }
+    });
 
     const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,
-        offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
-        offChainDataSourceClient: config.offChainDataSource.client,
-        configurationClient: config.offChainDataSource.configurationClient,
-        userClient: config.offChainDataSource.userClient,
-        deviceClient: config.offChainDataSource.deviceClient,
+        offChainDataSource: config.offChainDataSource,
         marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,

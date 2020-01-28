@@ -5,16 +5,12 @@ import { OriginEventsStore } from './stores/OriginEventsStore';
 import { IEventListenerConfig } from './config/IEventListenerConfig';
 
 const startEventListener = async (config: IEventListenerConfig) => {
-    const backendUrl: string = config.offChainDataSourceUrl || 'http://localhost:3035';
-    const baseUrl = `${backendUrl}/api`;
-
     let storedMarketContractAddresses: string[] = [];
 
     console.log(`[EVENT-LISTENER] Trying to get Market contract address`);
 
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await config.configurationClient.get(
-            baseUrl,
+        storedMarketContractAddresses = await config.offChainDataSource.configurationClient.get(
             'MarketContractLookup'
         );
 

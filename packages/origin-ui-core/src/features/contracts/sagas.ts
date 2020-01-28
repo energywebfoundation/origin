@@ -15,12 +15,7 @@ import {
     Demand,
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
-import {
-    IOffChainDataClient,
-    IConfigurationClient,
-    IUserClient,
-    IDeviceClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
@@ -31,11 +26,8 @@ import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
 import {
-    getOffChainDataClient,
-    getConfigurationClient,
-    getEnvironment,
-    getUserClient,
-    getDeviceClient
+    getOffChainDataSource,
+    getEnvironment
 } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
 
@@ -46,11 +38,7 @@ enum ERROR {
 async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
-    offChainDataClient: IOffChainDataClient,
-    configurationClient: IConfigurationClient,
-    userClient: IUserClient,
-    deviceClient: IDeviceClient,
-    baseURL: string,
+    offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
     let web3: Web3 = null;
@@ -81,13 +69,7 @@ async function initConf(
 
     return {
         blockchainProperties,
-        offChainDataSource: {
-            baseUrl: baseURL,
-            client: offChainDataClient,
-            configurationClient,
-            userClient,
-            deviceClient
-        },
+        offChainDataSource,
         logger: Winston.createLogger({
             level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
@@ -247,7 +229,7 @@ async function getMarketContractLookupAddressFromAPI(
     baseURL: string
 ) {
     try {
-        const marketContracts = await configurationClient.get(baseURL, 'MarketContractLookup');
+        const marketContracts = await configurationClient.get('MarketContractLookup');
 
         if (marketContracts.length > 0) {
             return marketContracts[marketContracts.length - 1];
@@ -279,12 +261,12 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
         const baseURL = `${environment.BACKEND_URL}/api`;
 
-        if (!marketContractLookupAddress) {
-            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
+        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
+        if (!marketContractLookupAddress) {
             marketContractLookupAddress = yield call(
                 getMarketContractLookupAddressFromAPI,
-                configurationClient,
+                offChainDataSource.configurationClient,
                 baseURL
             );
         }
@@ -306,20 +288,11 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
         let configuration: IStoreState['configuration'];
         try {
-            const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
-            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-            const userClient: IUserClient = yield select(getUserClient);
-            const deviceClient: IDeviceClient = yield select(getDeviceClient);
-
             configuration = yield call(
                 initConf,
                 marketContractLookupAddress,
                 routerSearch,
-                offChainDataClient,
-                configurationClient,
-                userClient,
-                deviceClient,
-                baseURL,
+                offChainDataSource,
                 environment.WEB3
             );
 

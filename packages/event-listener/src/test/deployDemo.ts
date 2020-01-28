@@ -25,13 +25,8 @@ import {
 
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import {
-    IOffChainDataClient,
-    IConfigurationClient,
-    IUserClient,
-    IDeviceClient
-} from '@energyweb/origin-backend-client';
 import { IDevice } from '@energyweb/origin-backend-core';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -115,12 +110,7 @@ export class Demo {
         return this.nextDeployedSmReadIndex - 1;
     }
 
-    async deploy(
-        offChainDataClient: IOffChainDataClient,
-        configurationClient: IConfigurationClient,
-        userClient: IUserClient,
-        deviceClient: IDeviceClient
-    ) {
+    async deploy() {
         this.userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
             this.web3,
             this.adminPK
@@ -173,13 +163,7 @@ export class Demo {
                 marketLogicInstance: this.marketLogic,
                 web3: this.web3
             },
-            offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: offChainDataClient,
-                configurationClient,
-                userClient,
-                deviceClient
-            },
+            offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
             logger: this.logger
         };
 

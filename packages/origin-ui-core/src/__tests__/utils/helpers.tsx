@@ -25,20 +25,8 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import {
-    IConfigurationClient,
-    IOffChainDataClient,
-    IOrganizationClient,
-    IUserClient,
-    IDeviceClient
-} from '@energyweb/origin-backend-client';
-import {
-    setConfigurationClient,
-    setOffChainDataClient,
-    setOrganizationClient,
-    setUserClient,
-    setDeviceClient
-} from '../../features/general/actions';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { setOffChainDataSource } from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
 import { IDevice } from '@energyweb/origin-backend-core';
 
@@ -71,11 +59,7 @@ export async function waitForConditionAndAssert(
 const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
-    configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient,
-    userClient: IUserClient,
-    deviceClient: IDeviceClient,
-    organizationClient: IOrganizationClient,
+    offChainDataSource: IOffChainDataSource,
     runSagas = true
 ) => {
     const history = createMemoryHistory({
@@ -101,24 +85,8 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
-    if (configurationClient) {
-        store.dispatch(setConfigurationClient(configurationClient));
-    }
-
-    if (offChainDataClient) {
-        store.dispatch(setOffChainDataClient(offChainDataClient));
-    }
-
-    if (userClient) {
-        store.dispatch(setUserClient(userClient));
-    }
-
-    if (deviceClient) {
-        store.dispatch(setDeviceClient(userClient));
-    }
-
-    if (organizationClient) {
-        store.dispatch(setOrganizationClient(organizationClient));
+    if (offChainDataSource) {
+        store.dispatch(setOffChainDataSource(offChainDataSource));
     }
 
     const sagasTasks: Task[] = runSagas
@@ -239,11 +207,7 @@ export const createCertificate = (
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
-    configurationClient?: IConfigurationClient;
-    offChainDataClient?: IOffChainDataClient;
-    userClient?: IUserClient;
-    deviceClient?: IDeviceClient;
-    organizationClient?: IOrganizationClient;
+    offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
     userFetcher?: IUserFetcher;
 }
@@ -261,11 +225,7 @@ export const setupStore = (
     const { store, history, sagasTasks } = setupStoreInternal(
         initialHistoryEntries,
         options.logActions,
-        options.configurationClient,
-        options.offChainDataClient,
-        options.userClient,
-        options.deviceClient,
-        options.organizationClient,
+        options.offChainDataSource,
         options.runSagas
     );
 

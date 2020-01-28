@@ -38,7 +38,7 @@ import {
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { IOrganizationClient } from '@energyweb/origin-backend-client';
-import { getOrganizationClient } from '../features/general/selectors';
+import { getOffChainDataSource } from '../features/general/selectors';
 
 interface IOwnProps {
     actions: {
@@ -306,7 +306,7 @@ export const ProducingDeviceTable = connect(
         users: getUsers(state),
         currentUser: getCurrentUser(state),
         baseURL: getBaseURL(),
-        organizationClient: getOrganizationClient(state)
+        organizationClient: getOffChainDataSource(state).organizationClient
     }),
     mapDispatchToProps
 )(ProducingDeviceTableClass);

@@ -7,12 +7,7 @@ import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
 import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient,
-    DeviceClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
@@ -43,8 +38,7 @@ export const marketDemo = async (
 
     const baseUrl = `${process.env.BACKEND_URL}/api`;
 
-    const configurationClient = new ConfigurationClient();
-    const userClient = new UserClient(baseUrl);
+    const offChainDataSource = new OffChainDataSource(baseUrl);
 
     const conf: Configuration.Entity = {
         blockchainProperties: {
@@ -58,17 +52,11 @@ export const marketDemo = async (
             marketLogicInstance: marketLogic,
             web3
         },
-        offChainDataSource: {
-            baseUrl,
-            client: new OffChainDataClient(),
-            configurationClient,
-            userClient,
-            deviceClient: new DeviceClient(baseUrl)
-        },
+        offChainDataSource,
         logger
     };
 
-    const currencies = await configurationClient.get(conf.offChainDataSource.baseUrl, 'Currency');
+    const currencies = await offChainDataSource.configurationClient.get('Currency');
 
     const userPropsOnChain: User.IUserOnChainProperties = {
         propertiesDocumentHash: null,
@@ -132,10 +120,7 @@ export const marketDemo = async (
 
     conf.logger.info(`ERC20 TOKEN - ${symbol}: ${erc20TestAddress}`);
 
-    const complianceRegistry = await conf.offChainDataSource.configurationClient.get(
-        conf.offChainDataSource.baseUrl,
-        'Compliance'
-    );
+    const complianceRegistry = await conf.offChainDataSource.configurationClient.get('Compliance');
 
     for (const action of actionsArray) {
         switch (action.type) {

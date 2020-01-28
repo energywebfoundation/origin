@@ -5,12 +5,7 @@ import {
     DemandMatcher,
     TimeTrigger
 } from '@energyweb/market-matcher-core';
-import {
-    IOffChainDataClient,
-    IConfigurationClient,
-    IUserClient,
-    IDeviceClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { Configuration } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
@@ -25,11 +20,7 @@ export interface IMatcherConfig {
     web3Url: string;
     marketLogicAddress: string;
     matcherAccount: Configuration.EthAccount;
-    offChainDataSourceUrl: string;
-    offChainDataSourceClient: IOffChainDataClient;
-    configurationClient: IConfigurationClient;
-    userClient: IUserClient;
-    deviceClient: IDeviceClient;
+    offChainDataSource: IOffChainDataSource;
     matcherInterval: number;
 }
 
@@ -47,13 +38,7 @@ const createBlockchainConfig = async (
     return {
         blockchainProperties,
         logger,
-        offChainDataSource: {
-            baseUrl: matcherConfig.offChainDataSourceUrl,
-            client: matcherConfig.offChainDataSourceClient,
-            configurationClient: matcherConfig.configurationClient,
-            userClient: matcherConfig.userClient,
-            deviceClient: matcherConfig.deviceClient
-        }
+        offChainDataSource: matcherConfig.offChainDataSource
     };
 };
 

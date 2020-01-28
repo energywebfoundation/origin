@@ -2,12 +2,6 @@ import { Device, ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 import { MarketUser } from '@energyweb/market';
-import {
-    ConfigurationClient,
-    UserClient,
-    OrganizationClient,
-    RequestClient
-} from '@energyweb/origin-backend-client';
 import { IDevice } from '@energyweb/origin-backend-core';
 
 function sleep(ms: number) {
@@ -25,17 +19,8 @@ function deviceStatusFactory(status: string) {
 export const onboardDemo = async (actionString: string, conf: Configuration.Entity) => {
     const action = JSON.parse(actionString);
 
-    const requestClient = new RequestClient();
-
-    const client = new ConfigurationClient(requestClient);
-    const currencies = await client.get(conf.offChainDataSource.baseUrl, 'Currency');
-    const complianceRegistry = await client.get(conf.offChainDataSource.baseUrl, 'Compliance');
-
-    const userClient = new UserClient(conf.offChainDataSource.baseUrl, requestClient);
-    const organizationClient = new OrganizationClient(
-        conf.offChainDataSource.baseUrl,
-        requestClient
-    );
+    const currencies = await conf.offChainDataSource.configurationClient.get('Currency');
+    const complianceRegistry = await conf.offChainDataSource.configurationClient.get('Compliance');
 
     if (action.type === 'CREATE_ACCOUNT') {
         const userPropsOnChain: User.IUserOnChainProperties = {
@@ -75,9 +60,9 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
         );
 
         if (typeof action.data.organization === 'string') {
-            await userClient.login(action.data.email, action.data.password);
+            await conf.offChainDataSource.userClient.login(action.data.email, action.data.password);
 
-            await organizationClient.add({
+            await conf.offChainDataSource.organizationClient.add({
                 address: 'Address',
                 ceoName: 'Ceo name',
                 telephone: '1',
@@ -100,25 +85,25 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
                 activeCountries: '[83]'
             });
         } else if (typeof action.data.organization?.id !== 'undefined') {
-            await userClient.login(
+            await conf.offChainDataSource.userClient.login(
                 action.data.organization.leadUser.email,
                 action.data.organization.leadUser.password
             );
-            await organizationClient.invite(action.data.email);
-            await userClient.logout();
+            await conf.offChainDataSource.organizationClient.invite(action.data.email);
+            await conf.offChainDataSource.userClient.logout();
 
-            await userClient.login(action.data.email, action.data.password);
-            await organizationClient.acceptInvitation(action.data.organization.id);
+            await conf.offChainDataSource.userClient.login(action.data.email, action.data.password);
+            await conf.offChainDataSource.organizationClient.acceptInvitation(action.data.organization.id);
 
             conf.logger.info(
                 `Added user ${action.data.address} to organization with id ${action.data.organizationId}`
             );
-            await userClient.logout();
+            await conf.offChainDataSource.userClient.logout();
         }
     } else if (action.type === 'CREATE_ORGANIZATION') {
-        await userClient.login(action.data.leadUser.email, action.data.leadUser.password);
+        await conf.offChainDataSource.userClient.login(action.data.leadUser.email, action.data.leadUser.password);
 
-        await organizationClient.add({
+        await conf.offChainDataSource.organizationClient.add({
             address: action.data.address,
             ceoName: action.data.ceoName,
             telephone: action.data.telephone,
@@ -143,7 +128,7 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
 
         conf.logger.info(`Onboarded a new organization: ${action.data.name}`);
 
-        await userClient.logout();
+        await conf.offChainDataSource.userClient.logout();
     } else if (action.type === 'CREATE_PRODUCING_DEVICE') {
         console.log('-----------------------------------------------------------');
 

@@ -19,17 +19,7 @@ export const getRequestPasswordModalCallback = (state: IStoreState) =>
 export const getRequestPasswordModalTitle = (state: IStoreState) =>
     state.general.requestPasswordModalTitle;
 
-export const getOffChainDataClient = (state: IStoreState) => state.general.offChainDataClient;
-
-export const getConfigurationClient = (state: IStoreState) => state.general.configurationClient;
-
-export const getOrganizationClient = (state: IStoreState) => state.general.organizationClient;
-
-export const getUserClient = (state: IStoreState) => state.general.userClient;
-
-export const getDeviceClient = (state: IStoreState) => state.general.deviceClient;
-
-export const getRequestClient = (state: IStoreState) => state.general.requestClient;
+export const getOffChainDataSource = (state: IStoreState) => state.general.offChainDataSource;
 
 export const getEnvironment = (state: IStoreState) => state.general.environment;
 

@@ -31,7 +31,7 @@ import { getCurrentUser } from '../../features/users/selectors';
 import { formatDate } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { getOrganizationClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 interface IStateProps {
@@ -358,7 +358,7 @@ export const DemandTable = withRouter(
             demands: getDemands(state),
             currentUser: getCurrentUser(state),
             baseURL: getBaseURL(),
-            organizationClient: getOrganizationClient(state)
+            organizationClient: getOffChainDataSource(state).organizationClient
         })
     )(DemandTableClass)
 );

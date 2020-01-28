@@ -37,7 +37,7 @@ import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
-import { getCurrencies, getOrganizationClient } from '../features/general/selectors';
+import { getCurrencies, getOffChainDataSource } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
 import { CircularProgress } from '@material-ui/core';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
@@ -884,7 +884,7 @@ export const CertificateTable = connect(
         currentUser: getCurrentUser(state),
         producingDevices: getProducingDevices(state),
         users: getUsers(state),
-        organizationClient: getOrganizationClient(state)
+        organizationClient: getOffChainDataSource(state).organizationClient
     }),
     dispatchProps
 )(CertificateTableClass);

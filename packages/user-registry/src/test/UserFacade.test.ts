@@ -4,12 +4,7 @@ import dotenv from 'dotenv';
 import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock,
-    DeviceClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { UserLogic, User } from '..';
 import { migrateUserRegistryContracts } from '../utils/migrateContracts';
@@ -70,13 +65,7 @@ describe('User Facade', () => {
                     privateKey: privateKeyDeployment
                 }
             },
-            offChainDataSource: {
-                baseUrl,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient: new UserClientMock(),
-                deviceClient: new DeviceClientMock()
-            },
+            offChainDataSource: new OffChainDataSourceMock(baseUrl),
             logger
         };
 

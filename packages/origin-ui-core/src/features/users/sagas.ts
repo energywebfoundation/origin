@@ -16,10 +16,9 @@ import {
 } from './actions';
 import { getConfiguration } from '../selectors';
 import { getUserById, getUsers, getUserFetcher } from './selectors';
-import { getRequestClient, getUserClient, getOrganizationClient } from '../general/selectors';
+import { getOffChainDataSource } from '../general/selectors';
 import { MarketUser } from '@energyweb/market';
 import { IRequestClient, IUserClient, IOrganizationClient } from '@energyweb/origin-backend-client';
-import { GeneralActions, ISetUserClientAction } from '../general/actions';
 import { showNotification, NotificationType } from '../../utils';
 import {
     IUserWithRelationsIds,
@@ -98,7 +97,7 @@ function* requestCurrentUserDetailsSaga(action: IUpdateCurrentUserIdAction): Sag
 function* setPreviouslyLoggedInOffchainUser(): SagaIterator {
     const authenticationTokenFromStorage = getStoredAuthenticationToken();
 
-    const requestClient: IRequestClient = yield select(getRequestClient);
+    const requestClient: IRequestClient = (yield select(getOffChainDataSource)).requestClient;
 
     if (!authenticationTokenFromStorage || !requestClient) {
         return;
@@ -133,18 +132,10 @@ function* fetchOffchainUserDetails(): SagaIterator {
                 ? action.payload
                 : getStoredAuthenticationToken();
 
-        let userClient: IUserClient = yield select(getUserClient);
+        let userClient: IUserClient = (yield select(getOffChainDataSource)).userClient;
 
         if (!authenticationToken) {
             return;
-        }
-
-        if (!userClient) {
-            const setUserClientAction: ISetUserClientAction = yield take(
-                GeneralActions.setUserClient
-            );
-
-            userClient = setUserClientAction.payload;
         }
 
         try {
@@ -153,7 +144,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
             let organization: IOrganizationWithRelationsIds = null;
 
             if (typeof userProfile.organization !== 'undefined') {
-                const organizationClient: IOrganizationClient = yield select(getOrganizationClient);
+                const organizationClient: IOrganizationClient = (yield select(getOffChainDataSource)).organizationClient;
 
                 organization = yield call(
                     [organizationClient, organizationClient.getById],
@@ -185,7 +176,7 @@ function* logOutSaga(): SagaIterator {
 
         localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
 
-        const requestClient: IRequestClient = yield select(getRequestClient);
+        const requestClient: IRequestClient = (yield select(getOffChainDataSource)).requestClient;
 
         if (!requestClient) {
             return;

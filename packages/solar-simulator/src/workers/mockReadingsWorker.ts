@@ -7,24 +7,17 @@ import * as Winston from 'winston';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient,
-    DeviceClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource, IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 const web3 = new Web3(process.env.WEB3);
-const baseUrl = `${process.env.BACKEND_URL}/api`;
 
-async function getMarketContractLookupAddress() {
+async function getMarketContractLookupAddress(offChainDataSource: IOffChainDataSource) {
     let storedMarketContractAddresses: string[] = [];
 
     console.log(`[SIMULATOR-MOCK-READINGS] Trying to get Market contract address`);
 
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await new ConfigurationClient().get(
-            baseUrl,
+        storedMarketContractAddresses = await offChainDataSource.configurationClient.get(
             'MarketContractLookup'
         );
 
@@ -36,33 +29,6 @@ async function getMarketContractLookupAddress() {
     const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     return process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
-}
-
-async function getDeviceConf(marketContractLookupAddress: string) {
-    const conf: Configuration.Entity = {
-        blockchainProperties: {
-            web3
-        },
-        offChainDataSource: {
-            baseUrl,
-            client: new OffChainDataClient(),
-            configurationClient: new ConfigurationClient(),
-            userClient: new UserClient(baseUrl),
-            deviceClient: new DeviceClient(baseUrl)
-        },
-        logger: Winston.createLogger({
-            level: 'verbose',
-            format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-            transports: [new Winston.transports.Console({ level: 'silly' })]
-        })
-    };
-
-    conf.blockchainProperties = await createBlockchainProperties(
-        conf.blockchainProperties.web3,
-        marketContractLookupAddress
-    );
-
-    return conf;
 }
 
 async function getProducingDeviceSmartMeterRead(
@@ -126,8 +92,26 @@ const measurementTime = currentTime
     .startOf('day');
 
 (async () => {
-    const marketContractLookupAddress = await getMarketContractLookupAddress();
-    const conf = await getDeviceConf(marketContractLookupAddress);
+    const offChainDataSource = new OffChainDataSource(`${process.env.BACKEND_URL}/api`);
+
+    const conf = {
+        blockchainProperties: {
+            web3
+        },
+        offChainDataSource,
+        logger: Winston.createLogger({
+            level: 'verbose',
+            format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
+            transports: [new Winston.transports.Console({ level: 'silly' })]
+        })
+    };
+
+    const marketContractLookupAddress = await getMarketContractLookupAddress(offChainDataSource);
+
+    conf.blockchainProperties = await createBlockchainProperties(
+        conf.blockchainProperties.web3,
+        marketContractLookupAddress
+    );
 
     while (measurementTime.isSameOrBefore(currentTime)) {
         const generateReadingsTimeData = workerData.DATA.find(

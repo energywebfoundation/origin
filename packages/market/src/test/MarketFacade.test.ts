@@ -18,12 +18,7 @@ import {
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock,
-    DeviceClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { UserRegisterData, IDevice } from '@energyweb/origin-backend-core';
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
@@ -128,9 +123,6 @@ describe('Market-Facade', () => {
     });
 
     it('should init the config', () => {
-        const baseUrl = `${process.env.BACKEND_URL}/api`;
-        const userClient = new UserClientMock();
-
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -143,13 +135,7 @@ describe('Market-Facade', () => {
                 certificateLogicInstance: certificateLogic,
                 web3
             },
-            offChainDataSource: {
-                baseUrl,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient,
-                deviceClient: new DeviceClientMock()
-            },
+            offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
             logger
         };
     });

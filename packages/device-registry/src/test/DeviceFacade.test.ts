@@ -11,7 +11,7 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 import { Configuration } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock, UserClientMock, DeviceClientMock } from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import { IDevice } from '@energyweb/origin-backend-core';
 
 import { DeviceLogic, ProducingDevice, Device } from '..';
@@ -101,13 +101,7 @@ describe('Device Facade', () => {
                     userLogicInstance: userLogic,
                     web3
                 },
-                offChainDataSource: {
-                    baseUrl: `${process.env.BACKEND_URL}/api`,
-                    client: new OffChainDataClientMock(),
-                    configurationClient: new ConfigurationClientMock(),
-                    userClient: new UserClientMock(),
-                    deviceClient: new DeviceClientMock()
-                },
+                offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
                 logger
             };
 

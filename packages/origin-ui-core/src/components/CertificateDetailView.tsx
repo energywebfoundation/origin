@@ -10,7 +10,7 @@ import { getUsers, getUserById } from '../features/users/selectors';
 import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment, getOrganizationClient } from '../features/general/selectors';
+import { getEnvironment, getOffChainDataSource } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 
@@ -32,7 +32,7 @@ export function CertificateDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
     const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);

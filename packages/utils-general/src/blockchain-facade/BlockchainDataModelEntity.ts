@@ -1,7 +1,7 @@
 import * as Configuration from './Configuration';
 import { PreciseProofs } from 'precise-proofs-js';
 import { validateJson } from '../off-chain-data/json-validator';
-import { IOffChainData } from '@energyweb/origin-backend-client';
+import { IPreciseProof } from '@energyweb/origin-backend-client';
 
 export interface IOffChainProperties {
     rootHash: string;
@@ -39,7 +39,7 @@ export abstract class Entity implements IOnChainProperties {
     }
 
     get offChainDataClient() {
-        return this.configuration.offChainDataSource.client
+        return this.configuration.offChainDataSource.preciseProofClient;
     };
 
     addProof(proof: PreciseProofs.Proof) {
@@ -105,7 +105,7 @@ export abstract class Entity implements IOnChainProperties {
         return properties;
     }
 
-    async getOffChainDump<T>(): Promise<IOffChainData<T>> {
+    async getOffChainDump<T>(): Promise<IPreciseProof<T>> {
         return this.offChainDataClient.get<T>(this.fullUrl);
     }
 

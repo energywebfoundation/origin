@@ -3,12 +3,7 @@ import dotenv from 'dotenv';
 
 import { Device } from '@energyweb/device-registry';
 import { Unit } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock,
-    DeviceClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
@@ -59,10 +54,6 @@ describe('Origin Listener Tests', async () => {
     let store: OriginEventsStore;
 
     let currentSmRead = 0;
-    const offChainDataClient = new OffChainDataClientMock();
-    const configurationClient = new ConfigurationClientMock();
-    const userClient = new UserClientMock();
-    const deviceClient = new DeviceClientMock();
 
     before(async () => {
         demo = new Demo(
@@ -70,7 +61,7 @@ describe('Origin Listener Tests', async () => {
             process.env.DEPLOY_KEY,
             process.env.EVENT_LISTENER_PRIV_KEY
         );
-        await demo.deploy(offChainDataClient, configurationClient, userClient, deviceClient);
+        await demo.deploy();
     });
 
     beforeEach(async () => {
@@ -79,11 +70,7 @@ describe('Origin Listener Tests', async () => {
 
         const config = {
             web3Url: process.env.WEB3,
-            offChainDataSourceUrl: process.env.BACKEND_URL,
-            offChainDataSourceClient: offChainDataClient,
-            configurationClient,
-            userClient,
-            deviceClient,
+            offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
             accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
             scanInterval: SCAN_INTERVAL,
             notificationInterval: SCAN_INTERVAL

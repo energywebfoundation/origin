@@ -9,12 +9,7 @@ import fs from 'fs';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient,
-    DeviceClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 
 export function wait(milliseconds: number) {
     return new Promise(resolve => {
@@ -31,20 +26,12 @@ async function createBlockchainConfiguration() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
-    const baseUrl = `${process.env.BACKEND_URL}/api`;
-
     const conf: Configuration.Entity = {
         blockchainProperties: {
             web3
         },
         logger,
-        offChainDataSource: {
-            baseUrl,
-            client: new OffChainDataClient(),
-            configurationClient: new ConfigurationClient(),
-            userClient: new UserClient(baseUrl),
-            deviceClient: new DeviceClient(baseUrl)
-        }
+        offChainDataSource: new OffChainDataSource(`${process.env.BACKEND_URL}/api`)
     };
 
     let storedMarketContractAddresses: string[] = [];
@@ -53,7 +40,6 @@ async function createBlockchainConfiguration() {
 
     while (storedMarketContractAddresses.length === 0) {
         storedMarketContractAddresses = await conf.offChainDataSource.configurationClient.get(
-            baseUrl,
             'MarketContractLookup'
         );
 

@@ -1,10 +1,4 @@
-import {
-    IOffChainDataClient,
-    IConfigurationClient,
-    IOrganizationClient,
-    IUserClient,
-    IDeviceClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 export enum GeneralActions {
     showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
@@ -14,11 +8,7 @@ export enum GeneralActions {
     setError = 'GENERAL_SET_ERROR',
     showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
     hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
-    setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
-    setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
-    setOrganizationClient = 'GENERAL_SET_ORGANIZATION_CLIENT',
-    setUserClient = 'GENERAL_SET_USER_CLIENT',
-    setDeviceClient = 'GENERAL_SET_DEVICE_CLIENT',
+    setOffChainDataSource = 'GENERAL_SET_OFF_CHAIN_DATA_SOURCE',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setCurrencies = 'GENERAL_SET_CURRENCIES',
     setCompliance = 'GENERAL_SET_COMPLIANCE',
@@ -113,65 +103,17 @@ export const hideRequestPasswordModal = () => ({
 
 export type THideRequestPasswordModalAction = typeof hideRequestPasswordModal;
 
-export interface ISetOffChainDataClientAction {
-    type: GeneralActions.setOffChainDataClient;
-    payload: IOffChainDataClient;
+export interface ISetOffChainDataSourceAction {
+    type: GeneralActions.setOffChainDataSource;
+    payload: IOffChainDataSource;
 }
 
-export const setOffChainDataClient = (payload: ISetOffChainDataClientAction['payload']) => ({
-    type: GeneralActions.setOffChainDataClient,
+export const setOffChainDataSource = (payload: ISetOffChainDataSourceAction['payload']) => ({
+    type: GeneralActions.setOffChainDataSource,
     payload
 });
 
-export type TSetOffChainDataClientAction = typeof setOffChainDataClient;
-
-export interface ISetConfigurationClientAction {
-    type: GeneralActions.setConfigurationClient;
-    payload: IConfigurationClient;
-}
-
-export const setConfigurationClient = (payload: ISetConfigurationClientAction['payload']) => ({
-    type: GeneralActions.setConfigurationClient,
-    payload
-});
-
-export type TSetConfigurationClientAction = typeof setConfigurationClient;
-
-export interface ISetOrganizationClientAction {
-    type: GeneralActions.setOrganizationClient;
-    payload: IOrganizationClient;
-}
-
-export const setOrganizationClient = (payload: ISetOrganizationClientAction['payload']) => ({
-    type: GeneralActions.setOrganizationClient,
-    payload
-});
-
-export type TSetOrganizationClientAction = typeof setOrganizationClient;
-
-export interface ISetUserClientAction {
-    type: GeneralActions.setUserClient;
-    payload: IUserClient;
-}
-
-export const setUserClient = (payload: ISetUserClientAction['payload']) => ({
-    type: GeneralActions.setUserClient,
-    payload
-});
-
-export type TSetUserClientAction = typeof setUserClient;
-
-export interface ISetDeviceClientAction {
-    type: GeneralActions.setDeviceClient;
-    payload: IDeviceClient;
-}
-
-export const setDeviceClient = (payload: ISetDeviceClientAction['payload']) => ({
-    type: GeneralActions.setDeviceClient,
-    payload
-});
-
-export type TSetDeviceClientAction = typeof setDeviceClient;
+export type TSetOffChainDataSourceAction = typeof setOffChainDataSource;
 
 export interface ISetEnvironmentAction {
     type: GeneralActions.setEnvironment;
@@ -243,13 +185,9 @@ export type IGeneralAction =
     | ISetErrorAction
     | IRequestPasswordModalAction
     | IHideRequestPasswordModalAction
-    | ISetOffChainDataClientAction
-    | ISetConfigurationClientAction
+    | ISetOffChainDataSourceAction
     | ISetEnvironmentAction
     | ISetCurrenciesAction
     | ISetComplianceAction
     | ISetCountryAction
-    | ISetRegionsAction
-    | ISetOrganizationClientAction
-    | ISetUserClientAction
-    | ISetDeviceClientAction;
+    | ISetRegionsAction;
