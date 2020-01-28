@@ -35,9 +35,9 @@
   "dependencies": {
     "@energyweb/origin-backend-core": "0.1.1",
     "@energyweb/utils-general": "4.1.1",
-    "@nestjs/common": "6.10.14",
+    "@nestjs/common": "6.11.4",
     "@nestjs/config": "^0.0.9",
-    "@nestjs/core": "6.10.14",
+    "@nestjs/core": "6.11.4",
     "@nestjs/jwt": "6.1.1",
     "@nestjs/passport": "6.1.1",
     "@nestjs/platform-express": "^6.10.14",
@@ -60,9 +60,9 @@
     "typeorm": "0.2.22"
   },
   "devDependencies": {
-    "@nestjs/cli": "6.14.0",
+    "@nestjs/cli": "6.14.1",
     "@nestjs/schematics": "6.9.1",
-    "@nestjs/testing": "6.10.14",
+    "@nestjs/testing": "6.11.4",
     "@types/bcryptjs": "2.4.2",
     "@types/body-parser": "1.17.1",
     "@types/cors": "2.8.6",
