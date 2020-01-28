@@ -33,9 +33,9 @@ export class Product {
 
 Where
 
-- `deviceType` - describes the the type of the device for e.g using I-REC types
-- `location` - describes the location of the the device for e.g can be multi-level like Country->Region->Province
-- `deviceVintage` - describes the vintage of the device for e.g the start year of the device operation
+- `deviceType` - describes the type of the device for e.g. using I-REC types
+- `location` - describes the location of the the device for e.g. can be multi-level like Country->Region->Province
+- `deviceVintage` - describes the vintage of the device for e.g. the start year of the device operation
 
 For a producing device all fields are mandatory.
 

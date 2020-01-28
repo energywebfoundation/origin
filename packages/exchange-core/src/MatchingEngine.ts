@@ -19,7 +19,10 @@ export class MatchingEngine {
 
     public cancellationQueue = List<string>();
 
-    constructor(private deviceService: IDeviceService, private locationService: ILocationService) {}
+    constructor(
+        private readonly deviceService: IDeviceService,
+        private readonly locationService: ILocationService
+    ) {}
 
     public submitOrder(order: Ask | Bid) {
         if (order.side === OrderSide.Ask) {

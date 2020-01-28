@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { List } from 'immutable';
 
 import { MatchingEngine } from '../MatchingEngine';
-import { Order, OrderSide, OrderStatus } from '../Order';
+import { Order, OrderStatus } from '../Order';
 import { Trade } from '../Trade';
 import { Product } from '../Product';
 import { Ask } from '../Ask';
@@ -100,29 +100,6 @@ describe('Matching tests', () => {
             assert.equal(t1.volume, t2.volume);
             assert.equal(t1.price, t2.price);
         });
-    };
-
-    const cloneOrder = (order: Order, traded: number) => {
-        const cloned =
-            order.side === OrderSide.Bid
-                ? new Bid(
-                      order.id,
-                      order.price,
-                      order.volume,
-                      order.product,
-                      order.validFrom,
-                      order.status
-                  )
-                : new Ask(
-                      order.id,
-                      order.price,
-                      order.volume,
-                      order.product,
-                      order.validFrom,
-                      order.status
-                  );
-
-        return cloned.updateVolume(traded);
     };
 
     const executeTestCase = (testCase: ITestCase, done: any) => {
@@ -247,7 +224,7 @@ describe('Matching tests', () => {
                 new Trade(bidsBefore[1], asksBefore[0], onekWh, asksBefore[0].price)
             ];
 
-            const bidsAfter = [cloneOrder(bidsBefore[1], onekWh) as Bid];
+            const bidsAfter = [bidsBefore[1].clone().updateVolume(onekWh)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });
@@ -281,7 +258,7 @@ describe('Matching tests', () => {
                 new Trade(bidsBefore[1], asksBefore[0], onekWh * 2, asksBefore[0].price)
             ];
 
-            const asksAfter = [cloneOrder(asksBefore[0], onekWh * 3) as Ask, asksBefore[1]];
+            const asksAfter = [asksBefore[0].clone().updateVolume(onekWh * 3), asksBefore[1]];
             const bidsAfter: Bid[] = [];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
@@ -298,7 +275,7 @@ describe('Matching tests', () => {
             ];
 
             const asksAfter: Ask[] = [];
-            const bidsAfter: Bid[] = [cloneOrder(bidsBefore[0], onekWh * 3) as Bid];
+            const bidsAfter: Bid[] = [bidsBefore[0].clone().updateVolume(onekWh * 3)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
         });

@@ -39,6 +39,10 @@ export class Ask extends Order {
         return this.filterBy(bid.product, deviceService, locationService);
     }
 
+    public clone() {
+        return new Ask(this.id, this.price, this.volume, this.product, this.validFrom, this.status);
+    }
+
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceService) {
         if (!product.deviceType) {
             return true;

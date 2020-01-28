@@ -40,6 +40,10 @@ export class Bid extends Order {
         return hasMatchingDeviceType && hasMatchingVintage && hasMatchingLocation;
     }
 
+    public clone() {
+        return new Bid(this.id, this.price, this.volume, this.product, this.validFrom, this.status);
+    }
+
     private hasMatchingDeviceType(product: Product, deviceService: IDeviceService) {
         if (!this.product.deviceType || !product.deviceType) {
             return true;
