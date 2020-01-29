@@ -3,20 +3,8 @@ import { GeneralFunctions, ISpecialTx } from '@energyweb/utils-general';
 import { PastEventOptions } from 'web3-eth-contract';
 import { EventLog } from 'web3-core';
 import MarketLogicJSON from '../../build/contracts/lightweight/MarketLogic.json';
-import { DemandStatus } from '../blockchain-facade/Demand';
 
-const SUPPORTED_EVENTS = [
-    'allEvents',
-    'createdNewDemand',
-    'createdNewSupply',
-    'deletedDemand',
-    'LogAgreementFullySigned',
-    'LogAgreementCreated',
-    'LogChangeOwner',
-    'DemandStatusChanged',
-    'DemandUpdated',
-    'DemandPartiallyFilled'
-];
+const SUPPORTED_EVENTS = ['allEvents', 'LogPublishForSale', 'LogUnpublishForSale'];
 
 export class MarketLogic extends GeneralFunctions {
     web3: Web3;
@@ -51,144 +39,8 @@ export class MarketLogic extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
-    async createAgreement(
-        _propertiesDocumentHash: string,
-        _documentDBURL: string,
-        _demandId: number,
-        _supplyId: number,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.createAgreement(
-            _propertiesDocumentHash,
-            _documentDBURL,
-            _demandId,
-            _supplyId
-        );
-
-        return this.send(method, txParams);
-    }
-
-    async approveAgreementSupply(_agreementId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.approveAgreementSupply(_agreementId);
-
-        return this.send(method, txParams);
-    }
-
-    async getDemand(_demandId: string, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getDemand(_demandId).call(txParams);
-    }
-
-    async deleteDemand(_demandId: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.deleteDemand(_demandId);
-
-        return this.send(method, txParams);
-    }
-
-    async updateDemand(
-        _demandId: string,
-        _propertiesDocumentHash: string,
-        _documentDBURL: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.updateDemand(
-            _demandId,
-            _propertiesDocumentHash,
-            _documentDBURL
-        );
-
-        return this.send(method, txParams);
-    }
-
-    async fillDemand(_demandId: string, _certificateId: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.fillDemand(_demandId, _certificateId);
-
-        return this.send(method, txParams);
-    }
-
-    async fillDemandAt(
-        _demandId: string,
-        _certificateId: string,
-        _energy: number,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.fillDemandAt(_demandId, _certificateId, _energy);
-
-        return this.send(method, txParams);
-    }
-
-    async fillAgreement(_demandId: string, _certificateId: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.fillAgreement(_demandId, _certificateId);
-
-        return this.send(method, txParams);
-    }
-
-    async approveAgreementDemand(_agreementId: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.approveAgreementDemand(_agreementId);
-
-        return this.send(method, txParams);
-    }
-
-    async getAllAgreementListLength(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getAllAgreementListLength().call(txParams);
-    }
-
-    async createSupply(
-        _propertiesDocumentHash: string,
-        _documentDBURL: string,
-        _deviceId: number,
-        txParams?: ISpecialTx,
-        skipGasEstimation = false
-    ) {
-        const method = this.web3Contract.methods.createSupply(
-            _propertiesDocumentHash,
-            _documentDBURL,
-            _deviceId
-        );
-
-        return this.send(method, txParams, skipGasEstimation);
-    }
-
-    async getAgreement(_agreementId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getAgreement(_agreementId).call(txParams);
-    }
-
-    async getAllSupplyListLength(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getAllSupplyListLength().call(txParams);
-    }
-
-    async createDemand(
-        _propertiesDocumentHash: string,
-        _documentDBURL: string,
-        txParams?: ISpecialTx
-    ) {
-        const method = this.web3Contract.methods.createDemand(
-            _propertiesDocumentHash,
-            _documentDBURL
-        );
-
-        return this.send(method, txParams);
-    }
-
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
         return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
-    }
-
-    async getAgreementStruct(_agreementId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getAgreementStruct(_agreementId).call(txParams);
-    }
-
-    async getSupply(_supplyId: number, txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getSupply(_supplyId).call(txParams);
-    }
-
-    async getAllDemandListLength(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getAllDemandListLength().call(txParams);
-    }
-
-    async changeDemandStatus(_demandId: string, _status: DemandStatus, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.changeDemandStatus(_demandId, _status);
-
-        return this.send(method, txParams);
     }
 
     async getPurchasableCertificate(_certificateId: number, txParams?: ISpecialTx) {
@@ -218,6 +70,21 @@ export class MarketLogic extends GeneralFunctions {
 
     async splitAndBuyCertificate(_certificateId: number, _energy: number, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.splitAndBuyCertificate(_certificateId, _energy);
+
+        return this.send(method, txParams);
+    }
+
+    async splitAndBuyCertificateFor(
+        _certificateId: number,
+        _energy: number,
+        _newOwner: string,
+        txParams?: ISpecialTx
+    ) {
+        const method = this.web3Contract.methods.splitAndBuyCertificateFor(
+            _certificateId,
+            _energy,
+            _newOwner
+        );
 
         return this.send(method, txParams);
     }
