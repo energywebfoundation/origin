@@ -13,6 +13,7 @@ import moment from 'moment';
 import React, { ReactNode } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { IDemand, DemandPostData } from '@energyweb/origin-backend-core';
 
 import { BuyCertificateBulkModal } from './Modal/BuyCertificateBulkModal';
 import { BuyCertificateModal } from './Modal/BuyCertificateModal';
@@ -489,7 +490,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
             const currencies = useSelector(getCurrencies);
 
-            const offChainProperties: Demand.IDemandOffChainProperties = {
+            const offChainProperties: DemandPostData = {
+                owner: this.props.configuration.blockchainProperties.activeUser.address,
                 timeFrame: TimeFrame.yearly,
                 maxPriceInCentsPerMwh: 0,
                 currency: currencies[0],

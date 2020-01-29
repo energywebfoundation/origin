@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { IDevice } from '@energyweb/origin-backend-core';
 import { IRequestClient, RequestClient } from './RequestClient';
 

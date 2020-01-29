@@ -8,9 +8,7 @@ import {
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
 import {
-    Agreement,
     Demand,
-    Supply,
     PurchasableCertificate,
     Contracts as MarketContracts,
     Currency
@@ -20,7 +18,7 @@ import { buildRights, Role, Contracts as UserRegistryContracts } from '@energywe
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DemandPostData } from '@energyweb/origin-backend-core';
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -196,7 +194,8 @@ const deployDemand = async (
         privateKey: traderPK
     });
 
-    const demandOffChainProps: Demand.IDemandOffChainProperties = {
+    const demandOffChainProps: DemandPostData = {
+        owner: accountTrader,
         timeFrame: TimeFrame.hourly,
         maxPriceInCentsPerMwh: price,
         currency,
@@ -253,34 +252,6 @@ const deployDevice = (config: Configuration.Entity) => {
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
 };
 
-const deploySupply = (
-    config: Configuration.Entity,
-    deviceId: string,
-    requiredEnergy: number,
-    price = 150,
-    currency: Currency = 'USD'
-) => {
-    const deviceOwnerConfig = changeUser(config, {
-        address: deviceOwnerAddress,
-        privateKey: deviceOwnerPK
-    });
-
-    return Supply.createSupply(
-        {
-            url: null,
-            propertiesDocumentHash: null,
-            deviceId
-        },
-        {
-            priceInCents: price,
-            currency,
-            availableWh: requiredEnergy,
-            timeFrame: TimeFrame.hourly
-        },
-        deviceOwnerConfig
-    );
-};
-
 const deployCertificate = async (
     config: Configuration.Entity,
     deviceId: string,
@@ -312,64 +283,4 @@ const deployCertificate = async (
     return new PurchasableCertificate.Entity('0', deviceOwnerConfig).sync();
 };
 
-const deployAgreement = async (
-    config: Configuration.Entity,
-    demandId: string,
-    supplyId: string,
-    price = 150,
-    currency: Currency = 'USD'
-) => {
-    const traderConfig = changeUser(config, {
-        address: accountTrader,
-        privateKey: traderPK
-    });
-
-    const startTime = moment()
-        .add(-1, 'day')
-        .unix();
-    const endTime = moment()
-        .add(1, 'day')
-        .unix();
-
-    const agreementOffChainProps: Agreement.IAgreementOffChainProperties = {
-        start: startTime,
-        end: endTime,
-        priceInCents: price,
-        currency,
-        period: 10,
-        timeFrame: TimeFrame.hourly
-    };
-
-    const agreementProps: Agreement.IAgreementOnChainProperties = {
-        propertiesDocumentHash: null,
-        url: null,
-        demandId,
-        supplyId
-    };
-
-    const agreement = await Agreement.createAgreement(
-        agreementProps,
-        agreementOffChainProps,
-        traderConfig
-    );
-
-    const deviceOwnerConfig = changeUser(config, {
-        address: deviceOwnerAddress,
-        privateKey: deviceOwnerPK
-    });
-
-    const deviceOwnerAgreement = await new Agreement.Entity(agreement.id, deviceOwnerConfig).sync();
-    await deviceOwnerAgreement.approveAgreementSupply();
-
-    return deviceOwnerAgreement.sync();
-};
-
-export {
-    deploy,
-    changeUser,
-    deployDemand,
-    deployCertificate,
-    deployDevice,
-    deploySupply,
-    deployAgreement
-};
+export { deploy, changeUser, deployDemand, deployCertificate, deployDevice };

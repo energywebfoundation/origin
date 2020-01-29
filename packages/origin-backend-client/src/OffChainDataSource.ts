@@ -4,6 +4,7 @@ import { IUserClient, UserClient } from "./UserClient";
 import { IDeviceClient, DeviceClient } from "./DeviceClient";
 import { IRequestClient, RequestClient } from "./RequestClient";
 import { IOrganizationClient, OrganizationClient } from "./OrganizationClient";
+import { IDemandClient, DemandClient } from "./DemandClient";
 
 export interface IOffChainDataSource {
     baseUrl: string;
@@ -13,6 +14,7 @@ export interface IOffChainDataSource {
     userClient: IUserClient;
     deviceClient: IDeviceClient;
     organizationClient: IOrganizationClient;
+    demandClient: IDemandClient;
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
@@ -22,6 +24,7 @@ export class OffChainDataSource implements IOffChainDataSource {
     userClient: IUserClient;
     deviceClient: IDeviceClient;
     organizationClient: IOrganizationClient;
+    demandClient: DemandClient;
 
     constructor(
         public readonly baseUrl: string,
@@ -32,5 +35,6 @@ export class OffChainDataSource implements IOffChainDataSource {
         this.userClient = new UserClient(this.baseUrl, this.requestClient);
         this.deviceClient = new DeviceClient(this.baseUrl, this.requestClient);
         this.organizationClient = new OrganizationClient(this.baseUrl, this.requestClient);
+        this.demandClient = new DemandClient(this.baseUrl, this.requestClient);
     }
 }

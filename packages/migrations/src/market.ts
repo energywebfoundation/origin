@@ -6,8 +6,9 @@ import { Configuration, TimeFrame, Compliance } from '@energyweb/utils-general';
 import { User, UserLogic, Role, buildRights } from '@energyweb/user-registry';
 import { DeviceLogic } from '@energyweb/device-registry';
 import { CertificateLogic } from '@energyweb/origin';
-import { Demand, Supply, Agreement, MarketLogic, MarketUser } from '@energyweb/market';
+import { Demand, MarketLogic, MarketUser } from '@energyweb/market';
 import { OffChainDataSource } from '@energyweb/origin-backend-client';
+import { DemandPostData } from '@energyweb/origin-backend-core';
 
 import { certificateDemo } from './certificate';
 import { logger } from './Logger';
@@ -167,7 +168,8 @@ export const marketDemo = async (
                     break;
                 }
 
-                const demandOffchainProps: Demand.IDemandOffChainProperties = {
+                const demandOffChainProps: DemandPostData = {
+                    owner: action.data.trader,
                     timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame],
                     maxPriceInCentsPerMwh: action.data.maxPriceInCentsPerMwh,
                     currency: action.data.currency,
@@ -184,8 +186,7 @@ export const marketDemo = async (
                 };
 
                 try {
-                    const demand = await Demand.createDemand(demandOffchainProps, conf);
-                    delete demand.proofs;
+                    const demand = await Demand.createDemand(demandOffChainProps, conf);
                     delete demand.configuration;
                     conf.logger.info(`Demand Created, ID: ${demand.id}`);
                 } catch (e) {
@@ -194,126 +195,6 @@ export const marketDemo = async (
 
                 console.log('-----------------------------------------------------------\n');
 
-                break;
-            case 'CREATE_SUPPLY':
-                console.log('-----------------------------------------------------------');
-
-                conf.blockchainProperties.activeUser = {
-                    address: action.data.deviceOwner,
-                    privateKey: action.data.deviceOwnerPK
-                };
-
-                const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
-                    priceInCents: parseInt(action.data.price, 10) * 100,
-                    currency: action.data.currency,
-                    availableWh: action.data.availableWh,
-                    timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame]
-                };
-
-                const supplyProps: Supply.ISupplyOnChainProperties = {
-                    url: '',
-                    propertiesDocumentHash: '',
-                    deviceId: action.data.deviceId
-                };
-
-                try {
-                    const supply = await Supply.createSupply(
-                        supplyProps,
-                        supplyOffChainProperties,
-                        conf
-                    );
-                    delete supply.proofs;
-                    delete supply.configuration;
-                    conf.logger.info(`Onboarded Supply ID: ${supply.id}`);
-                } catch (e) {
-                    conf.logger.error(`Could not onboard a supply\n${e}`);
-                }
-
-                console.log('-----------------------------------------------------------\n');
-
-                break;
-
-            case 'MAKE_AGREEMENT':
-                console.log('-----------------------------------------------------------');
-
-                conf.blockchainProperties.activeUser = {
-                    address: action.data.creator,
-                    privateKey: action.data.creatorPK
-                };
-
-                if (action.data.startTime === -1) {
-                    action.data.startTime = Math.floor(Date.now() / 1000);
-                    action.data.endTime += action.data.startTime;
-                    logger.verbose(
-                        `Agreement starts at ${action.data.startTime} and ends at ${action.data.endTime}`
-                    );
-                }
-
-                const agreementOffchainProps: Agreement.IAgreementOffChainProperties = {
-                    start: action.data.startTime,
-                    end: action.data.endTime,
-                    priceInCents: parseInt(action.data.price, 10) * 100,
-                    currency: action.data.currency,
-                    period: action.data.period,
-                    timeFrame: TimeFrame[action.data.timeframe as keyof typeof TimeFrame]
-                };
-
-                const agreementProps: Agreement.IAgreementOnChainProperties = {
-                    propertiesDocumentHash: null,
-                    url: null,
-                    demandId: action.data.demandId,
-                    supplyId: action.data.supplyId
-                };
-
-                try {
-                    const agreement = await Agreement.createAgreement(
-                        agreementProps,
-                        agreementOffchainProps,
-                        conf
-                    );
-                    delete agreement.proofs;
-                    delete agreement.configuration;
-                    delete agreement.propertiesDocumentHash;
-                    if (agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner) {
-                        conf.logger.info('Agreement Confirmed');
-                    } else if (!agreement.approvedByDemandOwner) {
-                        conf.logger.info('Demand Owner did not approve yet');
-                    } else if (!agreement.approvedBySupplyOwner) {
-                        conf.logger.info('Supply Owner did not approve yet');
-                    }
-                } catch (e) {
-                    conf.logger.error(`Error making an agreement\n${e}`);
-                }
-
-                console.log('-----------------------------------------------------------\n');
-                break;
-            case 'APPROVE_AGREEMENT':
-                console.log('-----------------------------------------------------------');
-
-                conf.blockchainProperties.activeUser = {
-                    address: action.data.agree,
-                    privateKey: action.data.agreePK
-                };
-
-                try {
-                    let agreement: Agreement.Entity = await new Agreement.Entity(
-                        action.data.agreementId.toString(),
-                        conf
-                    ).sync();
-                    await agreement.approveAgreementSupply();
-                    agreement = await agreement.sync();
-                    if (agreement.approvedBySupplyOwner && agreement.approvedByDemandOwner) {
-                        conf.logger.info('Agreement Confirmed');
-                    } else if (!agreement.approvedByDemandOwner) {
-                        conf.logger.info('Demand Owner did not approve yet');
-                    } else if (!agreement.approvedBySupplyOwner) {
-                        conf.logger.info('Supply Owner did not approve yet');
-                    }
-                } catch (e) {
-                    conf.logger.error(`Could not approve agreement\n${e}`);
-                }
-
-                console.log('-----------------------------------------------------------\n');
                 break;
             default:
                 const passString = JSON.stringify(action);

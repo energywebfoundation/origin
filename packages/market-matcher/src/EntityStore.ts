@@ -1,4 +1,4 @@
-import { Agreement, Demand, PurchasableCertificate, Supply } from '@energyweb/market';
+import { Demand, PurchasableCertificate } from '@energyweb/market';
 import { EntityListener, IEntityStore, Listener } from '@energyweb/market-matcher-core';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import * as Winston from 'winston';
@@ -6,11 +6,7 @@ import * as Winston from 'winston';
 import { IEntityFetcher } from './EntityFetcher';
 
 export class EntityStore implements IEntityStore {
-    private demands: Map<string, Demand.Entity> = new Map<string, Demand.Entity>();
-
-    private supplies: Map<string, Supply.Entity> = new Map<string, Supply.Entity>();
-
-    private agreements: Map<string, Agreement.Entity> = new Map<string, Agreement.Entity>();
+    private demands: Map<number, Demand.Entity> = new Map<number, Demand.Entity>();
 
     private certificates: Map<string, PurchasableCertificate.Entity> = new Map<
         string,
@@ -42,7 +38,7 @@ export class EntityStore implements IEntityStore {
         this.demandListeners.register(listener);
     }
 
-    public async getDemand(id: string): Promise<Demand.Entity> {
+    public async getDemand(id: number): Promise<Demand.Entity> {
         if (!this.demands.has(id)) {
             const demand = await this.fetcher.getDemand(id, 1);
 
@@ -50,20 +46,6 @@ export class EntityStore implements IEntityStore {
         }
 
         return this.demands.get(id);
-    }
-
-    public async getSupply(id: string): Promise<Supply.Entity> {
-        if (!this.supplies.has(id)) {
-            const supply = await this.fetcher.getSupply(id, 1);
-
-            this.supplies.set(id, supply);
-        }
-
-        return this.supplies.get(id);
-    }
-
-    public getAgreements() {
-        return Array.from(this.agreements.values());
     }
 
     public getDemands() {
@@ -93,22 +75,10 @@ export class EntityStore implements IEntityStore {
     }
 
     private async syncExistingEvents() {
-        this.logger.verbose('* Getting all active agreements');
-        const agreementListLength = await this.fetcher.getAgreementListLength();
-        for (let i = 0; i < agreementListLength; i++) {
-            await this.registerAgreement(i.toString());
-        }
-
         this.logger.verbose('* Getting all active demands');
         const demandListLength = await this.fetcher.getDemandListLength();
-        for (let i = 0; i < demandListLength; i++) {
-            await this.handleDemand(i.toString(), false);
-        }
-
-        this.logger.verbose('* Getting all active supplies');
-        const supplyListLength = await this.fetcher.getSupplyListLength();
-        for (let i = 0; i < supplyListLength; i++) {
-            await this.registerSupply(i.toString());
+        for (let i = 1; i <= demandListLength; i++) {
+            await this.handleDemand(i, false);
         }
 
         this.logger.verbose('* Getting all certificates');
@@ -134,8 +104,6 @@ export class EntityStore implements IEntityStore {
         );
 
         this.registerToDemandEvents(marketContractEventHandler);
-        this.registerToSupplyEvents(marketContractEventHandler);
-        this.registerToAgreementEvents(marketContractEventHandler);
         this.registerToPurchasableCertificateEvents(marketContractEventHandler);
 
         const eventHandlerManager = new EventHandlerManager(4000, this.config);
@@ -166,28 +134,6 @@ export class EntityStore implements IEntityStore {
         });
     }
 
-    private registerToAgreementEvents(marketContractEventHandler: ContractEventHandler) {
-        marketContractEventHandler.onEvent('LogAgreementFullySigned', async (event: any) => {
-            const { _agreementId: id, _demandId, _supplyId } = event.returnValues;
-
-            this.logger.verbose(
-                `Event: LogAgreementFullySigned - (Agreement, Demand, Supply) ID: (${id}, ${_demandId}, ${_supplyId})`
-            );
-
-            await this.registerAgreement(id);
-        });
-    }
-
-    private registerToSupplyEvents(marketContractEventHandler: ContractEventHandler) {
-        marketContractEventHandler.onEvent('createdNewSupply', async (event: any) => {
-            const { _supplyId: id } = event.returnValues;
-
-            this.logger.verbose(`Event: createdNewSupply supply: ${id}`);
-
-            await this.registerSupply(id);
-        });
-    }
-
     private registerToPurchasableCertificateEvents(
         marketContractEventHandler: ContractEventHandler
     ) {
@@ -212,10 +158,12 @@ export class EntityStore implements IEntityStore {
         });
     }
 
-    private async handleDemand(id: string, trigger = true) {
+    private async handleDemand(id: number, trigger = true) {
         const demand = await this.fetcher.getDemand(id);
 
-        if (!demand.offChainProperties.automaticMatching) {
+        console.log({ demand });
+
+        if (!demand.automaticMatching) {
             this.logger.verbose(
                 `[Demand ${demand.id}] Skipped. Does not allow automatic matching.`
             );
@@ -238,20 +186,6 @@ export class EntityStore implements IEntityStore {
         if (trigger) {
             this.demandListeners.trigger(demand);
         }
-    }
-
-    private async registerSupply(id: string) {
-        const supply = await this.fetcher.getSupply(id);
-
-        this.supplies.set(supply.id, supply);
-        this.logger.verbose(`Registered new supply #${supply.id}`);
-    }
-
-    private async registerAgreement(id: string) {
-        const agreement = await this.fetcher.getAgreement(id);
-
-        this.agreements.set(agreement.id, agreement);
-        this.logger.verbose(`[Agreement ${agreement.id}] Registered`);
     }
 
     private async handleCertificate(id: string, trigger = true) {

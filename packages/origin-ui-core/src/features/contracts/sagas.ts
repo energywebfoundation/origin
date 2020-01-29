@@ -30,6 +30,7 @@ import {
     getEnvironment
 } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
+import { DemandStatus } from '@energyweb/origin-backend-core';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -148,7 +149,7 @@ function* initEventHandler() {
             marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
                 if (
                     parseInt(event.returnValues._status as string, 10) ===
-                    Demand.DemandStatus.ARCHIVED
+                    DemandStatus.ARCHIVED
                 ) {
                     emitter({
                         action: demandUpdated(

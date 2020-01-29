@@ -419,7 +419,7 @@ export class Demo {
     async deployDemand() {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.TRADER;
 
-        const demandOffChainProps: Demand.IDemandOffChainProperties = {
+        const demandOffChainProps: IDemand = {
             timeFrame: TimeFrame.hourly,
             maxPriceInCentsPerMwh: 150000,
             currency: 'USD',

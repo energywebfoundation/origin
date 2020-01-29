@@ -1,24 +1,13 @@
 import { DeviceLogic, ProducingDevice } from '@energyweb/device-registry';
-import { Demand, MarketLogic, Supply, PurchasableCertificate } from '@energyweb/market';
+import { Demand, MarketLogic, PurchasableCertificate } from '@energyweb/market';
 import { CertificateLogic } from '@energyweb/origin';
 import { UserLogic } from '@energyweb/user-registry';
-import {
-    Configuration,
-    ContractEventHandler,
-    EventHandlerManager,
-    Unit
-} from '@energyweb/utils-general';
+import { Configuration, Unit } from '@energyweb/utils-general';
 import { assert } from 'chai';
 
+import { DemandPartiallyFilled } from '@energyweb/origin-backend-core';
 import { startMatcher } from '..';
-import {
-    deploy,
-    deployDemand,
-    deployCertificate,
-    deployDevice,
-    deploySupply,
-    deployAgreement
-} from './TestEnvironment';
+import { deploy, deployDemand, deployCertificate, deployDevice } from './TestEnvironment';
 
 describe('Market-matcher e2e tests', async () => {
     const assertMatched = (
@@ -28,33 +17,34 @@ describe('Market-matcher e2e tests', async () => {
         requiredEnergy: number,
         done: Mocha.Done
     ) => {
-        const marketContractEventHandler = new ContractEventHandler(
-            config.blockchainProperties.marketLogicInstance,
-            0
-        );
+        const interval = setInterval(async () => {
+            const syncedDemand = await demand.sync();
 
-        marketContractEventHandler.onEvent('DemandPartiallyFilled', async (event: any) => {
-            const { _demandId, _certificateId, _amount } = event.returnValues;
+            if (syncedDemand.demandPartiallyFilledEvents.length > 0) {
+                for (const eventString of syncedDemand.demandPartiallyFilledEvents) {
+                    const event: DemandPartiallyFilled = JSON.parse(eventString);
 
-            if (_demandId === demand.id) {
-                const certificate = await new PurchasableCertificate.Entity(
-                    certificateId,
-                    config
-                ).sync();
+                    console.log({
+                        demandId: syncedDemand.id,
+                        event,
+                        certificateId
+                    });
 
-                assert.equal(_certificateId, certificate.id);
-                assert.equal(_amount, requiredEnergy);
-                assert.equal(certificate.certificate.owner, demand.demandOwner);
+                    if (event.certificateId === certificateId) {
+                        const certificate = await new PurchasableCertificate.Entity(
+                            certificateId,
+                            config
+                        ).sync();
 
-                done();
-            } else {
-                done('Non-matching demandId');
+                        assert.equal(event.energy, requiredEnergy);
+                        assert.equal(certificate.certificate.owner, demand.owner);
+
+                        clearInterval(interval);
+                        done();
+                    }
+                }
             }
-        });
-
-        const eventHandlerManager = new EventHandlerManager(1000, config);
-        eventHandlerManager.registerEventHandler(marketContractEventHandler);
-        eventHandlerManager.start();
+        }, 1000);
     };
 
     describe('Certificate -> Demand matching tests', () => {
@@ -74,10 +64,7 @@ describe('Market-matcher e2e tests', async () => {
             device = await deployDevice(config);
             certificate = await deployCertificate(config, device.id, requiredEnergy);
 
-            await certificate.publishForSale(
-                demand.offChainProperties.maxPriceInCentsPerMwh / 100,
-                demand.offChainProperties.currency
-            );
+            await certificate.publishForSale(demand.maxPriceInCentsPerMwh / 100, demand.currency);
 
             await startMatcher(matcherConfig);
         });
@@ -105,10 +92,7 @@ describe('Market-matcher e2e tests', async () => {
             device = await deployDevice(config);
             certificate = await deployCertificate(config, device.id, certificateEnergy);
 
-            await certificate.publishForSale(
-                demand.offChainProperties.maxPriceInCentsPerMwh / 100,
-                demand.offChainProperties.currency
-            );
+            await certificate.publishForSale(demand.maxPriceInCentsPerMwh / 100, demand.currency);
 
             await startMatcher(matcherConfig);
         });
@@ -147,40 +131,6 @@ describe('Market-matcher e2e tests', async () => {
 
         it('demand should be matched with existing certificate', done => {
             assertMatched(config, demand, certificate.id, requiredEnergy, done);
-        }).timeout(60000);
-    });
-
-    describe('Agreement -> Certificate matching tests', () => {
-        const requiredEnergy = 1 * Unit.MWh;
-        const priceInCents = 150;
-        const currency = 'USD';
-
-        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
-        let demand: Demand.Entity;
-        let device: ProducingDevice.Entity;
-        let certificate: PurchasableCertificate.Entity;
-        let supply: Supply.Entity;
-
-        before(async () => {
-            const configuration = await deploy();
-            const { matcherConfig } = configuration;
-
-            config = configuration.config;
-            device = await deployDevice(config);
-            certificate = await deployCertificate(config, device.id, requiredEnergy);
-
-            supply = await deploySupply(config, device.id, requiredEnergy, priceInCents, currency);
-            demand = await deployDemand(config, requiredEnergy, priceInCents, currency);
-
-            await deployAgreement(config, demand.id, supply.id, priceInCents, currency);
-
-            await certificate.publishForSale(priceInCents, currency);
-
-            await startMatcher(matcherConfig);
-        });
-
-        it('demand should be matched with existing certificate', done => {
-            assertMatched(config, demand, certificate.id, requiredEnergy, done);
-        }).timeout(60000);
+        }).timeout(20000);
     });
 });

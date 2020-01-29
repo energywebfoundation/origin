@@ -30,9 +30,9 @@ export class DemandMatcher {
             for (const certificate of certificates) {
                 const matchingResult = await this.certificateService.executeMatching(
                     certificate,
-                    demand,
-                    false
+                    demand
                 );
+
                 if (matchingResult) {
                     matched = true;
                     break;

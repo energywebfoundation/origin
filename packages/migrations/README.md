@@ -73,9 +73,6 @@ Currently the following action types are supported:
 * BUY_CERTIFICATE
 * BUY_CERTIFICATE_BULK
 * CREATE_DEMAND
-* CREATE_SUPPLY
-* MAKE_AGREEMENT
-* APPROVE_AGREEMENT
 
 ### APPROVE_CERTIFICATION_REQUEST
 usage: command to approve certification requests, it creates certificates
@@ -468,112 +465,6 @@ We want to report a demand with target watt-hour per period(timeframe) as <code>
     }
 }
 </code>
-
-### CREATE_SUPPLY
-usage: command to report a supply
-<br>params:
-* <code>deviceId</code>: device id of the device which is creating the supply
-* <code>deviceOwner</code>: device owner's address
-* <code>deviceOwnerPK</code>: device owner's private key
-* <code>price</code>: price per certified Wh
-* <code>currency</code>: currency of exchange as string (USD,
-    EUR,
-    THB,
-    SGD)
-* <code>availableWh</code>: Available watt-hour per period
-* <code>timeframe</code>: period or the timeframe of the contract
-
-#### example
-We want to create a supply linked to device id <code>1</code>. The supply reports the avilable watt-hour per period(timeframe <code>hourly</code>) to be <code>10</code>. The price per watt-hour is set at <code>10</code>in units of <code>USD</code>(i.e. 10 USD per certified watt-hour).
-
-<code>
-{
-    "type": "CREATE_SUPPLY",
-    "data": {
-        "deviceId": 1,
-        "deviceOwner": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
-        "deviceOwnerPK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec",
-        "price": 10,
-        "currency": "USD",
-        "availableWh": 10,
-        "timeframe": "hourly"
-    }
-}
-</code>
-
-### MAKE_AGREEMENT
-usage: command to make an agreement - pairing a demand with an appropriate supply.
-<br>params:
-* <code>creator</code>: (address) creator of the agreement (either the trader or the supplier)
-* <code>creatorPK</code>: private key of the creator
-* <code>startTime</code>: contract's start time (UNIX, UTC)
-* <code>endTime</code>: contract's end time (UNIX, UTC)
-* <code>price</code>: agreed price per certified watt-hour
-* <code>currency</code>: currency of exchange as string (USD,
-    EUR,
-    THB,
-    SGD)
-* <code>timeframe</code>: period or the timeframe of the contract
-* <code>period</code>: total period of the contract in units of timeframe
-* <code>currentWh</code>: current Wh reading of the device
-* <code>currentPeriod</code>: current period of the contract
-* <code>demandId</code>: ID number of the demand that is being addressed
-* <code>supplyId</code>:ID number of the supply that is paired with the demand
-
-#### example
-We want to make an agreement between the demand<code>0</code> and supply<code>0</code>. The agreed price between the two parties is set at <code>10 USD</code> with the timeframe of the contract being <code>hourly</code> for a period of <code>10</code>(hours). The current period and watt-hour readings are stored as <code>0</code> marking the genesis of the agreement. The trader with the address <code>0x4095f1db44884764C17c7A9A31B4Bf20f5779691</code> is creating the agreement. Although the supplier must approve the agreement to actually confirm it.
-
-<code>
-{
-    "type": "MAKE_AGREEMENT",
-    "data": {
-      "creator": "0x4095f1db44884764C17c7A9A31B4Bf20f5779691",
-      "creatorPK": "0x9d66d342a3b6014a7cff6ff0379b192dbe193e43bb6979625c600c4996bb3b85",
-      "startTime": 1549055441,
-      "endTime": 1549056441,
-      "price": 10,
-      "currency": "USD",
-      "timeframe": "hourly",
-      "period": 10,
-      "currentWh": 0,
-      "currentPeriod": 0,
-      "demandId": 0,
-      "supplyId": 0
-    }
-}
-</code>
-
-##### Sidenote:
-If you set the <code>startTime</code> as <code>-1</code> it would be automatically set to the latest block timestamp. Accordingly, <code>endTime</code> would be set as <code>startTime</code> + <code>endTime</code>.
-
-<code>
-    "startTime": -1,
-    "endTime": 3600,
-</code>
-
-for the above code block <code>startTime</code> would be the latest block timestamp and <code>endTime</code> would be latest block timestamp + 3600 seconds (one hour).
-
-### APPROVE_AGREEMENT
-usage: command to approve an agreement
-<br>params:
-* <code>agreementId</code>: ID of the agreement you want to approve on
-* <code>deviceOwner</code>: address of the supplier/trader who wants to approve the agreement
-* <code>deviceOwnerPK</code>: approver's private key
-
-#### example
-We had created an agreement with id <code>0</code> signed by the traders account. Although to confirm the agreement the supplier must approve the agreement. Therefore the supplier with address <code>0x51ba6877a2c4580d50f7ceece02e2f24e78ef123</code> approves agreement id <code>0</code> in the below example.
-
-<code>
-{
-    "type": "APPROVE_AGREEMENT",
-    "data": {
-        "agreementId": 0,
-        "agree": "0x51ba6877a2c4580d50f7ceece02e2f24e78ef123",
-        "agreePK": "0x6ee02c057cda3019132c670b425e6caea4f055ac8f64377d2463f123e71babec"
-    }
-}
-</code>
-
 
 #### SLEEP
 usage: command to pause the flow for a certain amount of time

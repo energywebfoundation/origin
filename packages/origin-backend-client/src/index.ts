@@ -4,4 +4,5 @@ export * from './OrganizationClient';
 export * from './UserClient';
 export * from './RequestClient';
 export * from './DeviceClient';
+export * from './DemandClient';
 export * from './OffChainDataSource';
