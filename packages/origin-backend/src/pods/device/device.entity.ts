@@ -7,6 +7,9 @@ export class Device extends BaseEntity {
     id: number;
 
     @Column()
+    status: number;
+
+    @Column()
     facilityName: string;
 
     @Column()

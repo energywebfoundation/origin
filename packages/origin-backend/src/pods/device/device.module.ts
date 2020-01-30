@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Device } from './device.entity';
 import { DeviceController } from './device.controller';
+import { EventsModule } from '../../events/events.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Device])],
+    imports: [TypeOrmModule.forFeature([Device]), EventsModule],
     providers: [],
     controllers: [DeviceController]
 })

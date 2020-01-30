@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
-import { IDemand, DemandStatus, DemandPostData } from '@energyweb/origin-backend-core';
+import { IDemand, DemandStatus, DemandPostData, DemandUpdateData } from '@energyweb/origin-backend-core';
 
 import {
     Controller,
@@ -9,22 +9,23 @@ import {
     NotFoundException,
     Post,
     Body,
-    BadRequestException,
     UnprocessableEntityException,
     Delete,
     Put,
-    UseGuards
+    Inject
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Demand } from './demand.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
+import { EventService } from '../../events/events.service';
+import { SupportedEvents, createdNewDemand, DemandPartiallyFilled } from '../../events/events';
 
 @Controller('/Demand')
 export class DemandController {
     constructor(
-        @InjectRepository(Demand)
-        private readonly demandRepository: Repository<Demand>
+        @InjectRepository(Demand) private readonly demandRepository: Repository<Demand>,
+        @Inject(EventService) private readonly eventService: EventService
     ) {}
 
     @Get()
@@ -48,34 +49,38 @@ export class DemandController {
     }
 
     @Post()
-    async post(@Body() body: any) {
-        try {
-            const newEntity = new Demand();
+    async post(@Body() body: DemandPostData) {
+        let newEntity = new Demand();
+        
+        const data: Omit<IDemand, 'id'> = {
+            ...body,
+            status: DemandStatus.ACTIVE,
+            demandPartiallyFilledEvents: []
+        };
 
-            const data: Omit<IDemand, 'id'> = {
-                ...(body as DemandPostData),
-                status: DemandStatus.ACTIVE,
-                demandPartiallyFilledEvents: []
-            };
+        Object.assign(newEntity, data);
 
-            Object.assign(newEntity, data);
+        const validationErrors = await validate(newEntity);
 
-            const validationErrors = await validate(newEntity);
-
-            if (validationErrors.length > 0) {
-                throw new UnprocessableEntityException({
-                    success: false,
-                    errors: validationErrors
-                });
-            } else {
-                await this.demandRepository.save(newEntity);
-
-                return newEntity;
-            }
-        } catch (error) {
-            console.warn('Error while saving entity', error);
-            throw new BadRequestException('Could not save Demand.');
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
+            });
         }
+
+        newEntity = await this.demandRepository.save(newEntity);
+
+        const eventData: createdNewDemand = {
+            demandId: newEntity.id
+        };
+
+        this.eventService.emit({
+            name: SupportedEvents.CREATE_NEW_DEMAND,
+            data: eventData
+        });
+
+        return newEntity;
     }
 
     @Delete('/:id')
@@ -102,25 +107,57 @@ export class DemandController {
     }
 
     @Put('/:id')
-    async put(@Param('id') id: string, @Body() body: any) {
+    async put(@Param('id') id: string, @Body() body: DemandUpdateData) {
         const existing = await this.demandRepository.findOne(id);
 
         if (!existing) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        existing.status = body.status;
+        existing.status = body.status ?? existing.status;
+
+        if (body.demandPartiallyFilledEvent) {
+            existing.demandPartiallyFilledEvents.push(
+                JSON.stringify(body.demandPartiallyFilledEvent)
+            );
+        }
+
+        const hasNewFillEvent = body.demandPartiallyFilledEvent !== null;
+
+        if (hasNewFillEvent) {
+            existing.demandPartiallyFilledEvents.push(
+                JSON.stringify(body.demandPartiallyFilledEvent)
+            );
+        }
 
         try {
             await existing.save();
-
-            return {
-                message: `Demand ${id} successfully updated`
-            };
         } catch (error) {
             throw new UnprocessableEntityException({
                 message: `Demand ${id} could not be updated due to an unkown error`
             });
         }
+
+        this.eventService.emit({
+            name: SupportedEvents.DEMAND_UPDATED,
+            data: { demandId: existing.id }
+        });
+
+        if (hasNewFillEvent) {
+            const eventData: DemandPartiallyFilled = {
+                demandId: existing.id,
+                certificateId: body.demandPartiallyFilledEvent.certificateId,
+                energy: body.demandPartiallyFilledEvent.energy
+            };
+    
+            this.eventService.emit({
+                name: SupportedEvents.DEMAND_UPDATED,
+                data: eventData
+            });
+        }
+
+        return {
+            message: `Demand ${id} successfully updated`
+        };
     }
 }

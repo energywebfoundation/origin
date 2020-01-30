@@ -1,6 +1,8 @@
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus, DeviceUpdateData } from '@energyweb/origin-backend-core';
+import { EventService } from '../../events/events.service';
+import { SupportedEvents, DeviceStatusChanged } from '../../events/events';
 
 import {
     Controller,
@@ -12,7 +14,8 @@ import {
     BadRequestException,
     UnprocessableEntityException,
     Delete,
-    Put
+    Put,
+    Inject
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -22,8 +25,8 @@ import { StorageErrors } from '../../enums/StorageErrors';
 @Controller('/Device')
 export class DeviceController {
     constructor(
-        @InjectRepository(Device)
-        private readonly deviceRepository: Repository<Device>
+        @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
+        @Inject(EventService) private readonly eventService: EventService
     ) {}
 
     @Get()
@@ -53,7 +56,10 @@ export class DeviceController {
         try {
             const newEntity = new Device();
 
-            Object.assign(newEntity, body);
+            Object.assign(newEntity, {
+                ...body,
+                status: DeviceStatus.Submitted
+            });
             newEntity.id = Number(id);
 
             const validationErrors = await validate(newEntity);
@@ -88,5 +94,38 @@ export class DeviceController {
         return {
             message: `Entity ${id} deleted`
         };
+    }
+
+    @Put('/:id')
+    async put(@Param('id') id: string, @Body() body: DeviceUpdateData) {
+        const existing = await this.deviceRepository.findOne(id);
+
+        if (!existing) {
+            throw new NotFoundException(StorageErrors.NON_EXISTENT);
+        }
+
+        existing.status = body.status;
+
+        try {
+            await existing.save();
+
+            const event: DeviceStatusChanged = {
+                deviceId: id,
+                status: body.status
+            };
+    
+            this.eventService.emit({
+                name: SupportedEvents.DEVICE_STATUS_CHANGED,
+                data: event
+            });
+
+            return {
+                message: `Device ${id} successfully updated`
+            };
+        } catch (error) {
+            throw new UnprocessableEntityException({
+                message: `Device ${id} could not be updated due to an unknown error`
+            });
+        }
     }
 }

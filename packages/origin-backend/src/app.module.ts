@@ -27,6 +27,7 @@ import { OrganizationModule } from './pods/organization/organization.module';
 import { DeviceModule } from './pods/device/device.module';
 import { DemandModule } from './pods/demand/demand.module';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
 
 import { AppController } from './app.controller';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
@@ -68,7 +69,8 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         OrganizationModule,
         DeviceModule,
         DemandModule,
-        AuthModule
+        AuthModule,
+        EventsModule
     ],
     controllers: [AppController],
     providers: []

@@ -1,5 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
-import { IsInt, IsDate, Min, IsBoolean } from 'class-validator';
+import { IsInt, Min, IsBoolean } from 'class-validator';
 import { DemandStatus } from '@energyweb/origin-backend-core';
 
 @Entity()
@@ -15,11 +15,9 @@ export class Demand extends BaseEntity {
     status: DemandStatus;
 
     @Column()
-    @IsDate()
     startTime: number;
 
     @Column()
-    @IsDate()
     endTime: number;
 
     @Column()
@@ -32,7 +30,6 @@ export class Demand extends BaseEntity {
     maxPriceInCentsPerMwh: number;
 
     @Column()
-    @Min(0)
     currency: string;
     
     @Column()
@@ -43,10 +40,10 @@ export class Demand extends BaseEntity {
     @IsBoolean()
     automaticMatching: boolean;
 
-    @Column()
+    @Column("simple-array")
     location?: string[];
 
-    @Column()
+    @Column("simple-array")
     deviceType?: string[];
 
     @Column()
@@ -66,7 +63,7 @@ export class Demand extends BaseEntity {
     @IsBoolean()
     procureFromSingleFacility?: boolean;
 
-    @Column()
+    @Column("simple-array")
     vintage?: [number, number];
 
     @Column("simple-array")
