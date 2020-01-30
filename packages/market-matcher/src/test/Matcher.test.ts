@@ -5,7 +5,6 @@ import { UserLogic } from '@energyweb/user-registry';
 import { Configuration, Unit } from '@energyweb/utils-general';
 import { assert } from 'chai';
 
-import { DemandPartiallyFilled } from '@energyweb/origin-backend-core';
 import { startMatcher } from '..';
 import { deploy, deployDemand, deployCertificate, deployDevice } from './TestEnvironment';
 
@@ -21,15 +20,7 @@ describe('Market-matcher e2e tests', async () => {
             const syncedDemand = await demand.sync();
 
             if (syncedDemand.demandPartiallyFilledEvents.length > 0) {
-                for (const eventString of syncedDemand.demandPartiallyFilledEvents) {
-                    const event: DemandPartiallyFilled = JSON.parse(eventString);
-
-                    console.log({
-                        demandId: syncedDemand.id,
-                        event,
-                        certificateId
-                    });
-
+                for (const event of syncedDemand.demandPartiallyFilledEvents) {
                     if (event.certificateId === certificateId) {
                         const certificate = await new PurchasableCertificate.Entity(
                             certificateId,
@@ -44,7 +35,7 @@ describe('Market-matcher e2e tests', async () => {
                     }
                 }
             }
-        }, 1000);
+        }, 3000);
     };
 
     describe('Certificate -> Demand matching tests', () => {

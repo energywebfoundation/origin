@@ -78,6 +78,7 @@ export class DemandMatcher {
                 certificate,
                 producingDevice
             );
+
             this.logger.verbose(
                 `[Demand #${demand.id}] Result of matching with certificate ${
                     certificate.id

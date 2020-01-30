@@ -6,6 +6,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import { formatDate } from '../../utils/helper';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 describe('SmartMeterReadingsChart', () => {
     it('correctly renders', async () => {

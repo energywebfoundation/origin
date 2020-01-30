@@ -26,7 +26,7 @@ interface IMockOptions {
 }
 
 describe('MatchableDemand tests', () => {
-    const country = 221;
+    const country = 'Thailand';
 
     describe('Certificates', () => {
         const missingDemand = 1000;
@@ -66,7 +66,9 @@ describe('MatchableDemand tests', () => {
             producingDeviceOffChainProperties.deviceType.returns(
                 options.producingDeviceDeviceType || deviceType
             );
-            producingDeviceOffChainProperties.country.returns(country);
+            producingDeviceOffChainProperties.country.returns(
+                Countries.find(c => c.name === country).id
+            );
             producingDeviceOffChainProperties.address.returns(options.address || address);
             producingDeviceOffChainProperties.region.returns(options.region || region);
             producingDeviceOffChainProperties.province.returns(options.province || province);
@@ -189,9 +191,8 @@ describe('MatchableDemand tests', () => {
         });
 
         it('should match demand with certificate when province is in passed region', async () => {
-            const countryId = Countries.find(c => c.name === 'Thailand').id;
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                location: [`${countryId};Central`]
+                location: [`${country};Central`]
             });
 
             const matchableDemand = new MatchableDemand(demand);
@@ -205,7 +206,7 @@ describe('MatchableDemand tests', () => {
 
         it('should not match demand with certificate when province is not included in location', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                location: ['Thailand;Central', 'Thailand;Central;Nonthaburi']
+                location: [`${country};Central`, `${country};Central;Nonthaburi`]
             });
 
             const matchableDemand = new MatchableDemand(demand);

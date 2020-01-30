@@ -28,7 +28,7 @@ import { createLogger } from 'redux-logger';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 import { setOffChainDataSource } from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -102,6 +102,7 @@ const setupStoreInternal = (
 
 interface ICreateProducingDeviceProperties {
     id: string;
+    status: DeviceStatus,
     owner?: string;
     facilityName?: string;
     deviceType?: string;
@@ -116,6 +117,7 @@ interface ICreateProducingDeviceProperties {
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
+    status: DeviceStatus.Active,
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
     country: Countries.find(c => c.name === 'Thailand').id,
@@ -133,7 +135,8 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
-    const offChainProperties: IDevice= {
+    const offChainProperties: IDevice = {
+        status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
             properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,

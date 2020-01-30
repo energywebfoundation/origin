@@ -161,8 +161,6 @@ export class EntityStore implements IEntityStore {
     private async handleDemand(id: number, trigger = true) {
         const demand = await this.fetcher.getDemand(id);
 
-        console.log({ demand });
-
         if (!demand.automaticMatching) {
             this.logger.verbose(
                 `[Demand ${demand.id}] Skipped. Does not allow automatic matching.`

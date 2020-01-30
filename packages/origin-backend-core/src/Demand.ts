@@ -5,6 +5,7 @@ export enum DemandStatus {
 }
 
 export interface DemandPartiallyFilled {
+    blockNumber: number;
     certificateId: string;
     energy: number;
 }
@@ -28,7 +29,7 @@ export interface IDemand {
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
     automaticMatching: boolean;
-    demandPartiallyFilledEvents: string[]
+    demandPartiallyFilledEvents: DemandPartiallyFilled[]
 }
 
 export type DemandPostData = Omit<IDemand, 'id' | 'status' | 'demandPartiallyFilledEvents'>;

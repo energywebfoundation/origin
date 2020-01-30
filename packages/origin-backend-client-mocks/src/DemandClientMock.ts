@@ -38,7 +38,8 @@ export class DemandClientMock implements IDemandClient {
     update(id: number, data: DemandUpdateData): Promise<IDemand> {
         const demand: IDemand = this.storage.get(id);
 
-        Object.assign(demand, data);
+        demand.status = data.status,
+        demand.demandPartiallyFilledEvents.push(data.demandPartiallyFilledEvent);
 
         this.storage.set(id, demand);
 

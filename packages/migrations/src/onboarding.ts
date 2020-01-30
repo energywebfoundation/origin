@@ -1,5 +1,5 @@
 import { Device, ProducingDevice } from '@energyweb/device-registry';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, Countries } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 import { MarketUser } from '@energyweb/market';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
@@ -143,9 +143,9 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
 
         const deviceProducingPropsOffChain: IDevice = {
             status: deviceStatusFactory(action.data.status),
-            operationalSince: action.data.operationalSince,
+            operationalSince: Number(action.data.operationalSince),
             capacityInW: action.data.capacityInW,
-            country: action.data.country,
+            country: Countries.find(c => c.name === action.data.country).id,
             address: action.data.address,
             gpsLatitude: action.data.gpsLatitude,
             gpsLongitude: action.data.gpsLongitude,

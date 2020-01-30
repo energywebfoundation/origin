@@ -53,27 +53,28 @@ export class DeviceController {
     async post(@Param('id') id: string, @Body() body: IDevice) {
         console.log(`<POST> Device`);
 
-        try {
-            const newEntity = new Device();
+        const newEntity = new Device();
+        
+        Object.assign(newEntity, {
+            ...body,
+            status: DeviceStatus.Submitted
+        });
 
-            Object.assign(newEntity, {
-                ...body,
-                status: DeviceStatus.Submitted
+        newEntity.id = Number(id);
+
+        const validationErrors = await validate(newEntity);
+        
+        if (validationErrors.length > 0) {
+            throw new UnprocessableEntityException({
+                success: false,
+                errors: validationErrors
             });
-            newEntity.id = Number(id);
+        } 
 
-            const validationErrors = await validate(newEntity);
+        try {
+            await this.deviceRepository.save(newEntity);
 
-            if (validationErrors.length > 0) {
-                throw new UnprocessableEntityException({
-                    success: false,
-                    errors: validationErrors
-                });
-            } else {
-                await this.deviceRepository.save(newEntity);
-
-                return newEntity;
-            }
+            return newEntity;
         } catch (error) {
             console.warn('Error while saving entity', error);
             throw new BadRequestException('Could not save device.');

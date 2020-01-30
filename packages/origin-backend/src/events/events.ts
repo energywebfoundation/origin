@@ -16,7 +16,8 @@ export type DemandUpdated = {
 export type DemandPartiallyFilled = {
     demandId: number,
     certificateId: string,
-    energy: number
+    energy: number,
+    blockNumber: number
 }
 
 export enum SupportedEvents {

@@ -33,9 +33,8 @@ export class Device extends BaseEntity {
     country: number;
 
     @Column()
-    @IsDate()
     @Min(0)
-    operationalSince: Date;
+    operationalSince: number;
 
     @Column()
     @IsInt()

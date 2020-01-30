@@ -192,7 +192,7 @@ describe('DeviceLogic', () => {
     it('should return the deployed device correctly', async () => {
         const deployedDevice = await deviceLogic.getDeviceById(0);
 
-        assert.equal(deployedDevice.length, 5);
+        assert.equal(deployedDevice.length, 4);
 
         assert.equal(deployedDevice.smartMeter, deviceSmartmeter);
         assert.equal(deployedDevice.owner, deviceOwnerAddress);
@@ -297,22 +297,6 @@ describe('DeviceLogic', () => {
             _timestamp: TIMESTAMP.toString()
         });
     });
-
-    it('should fail when trying to log with saveSmartMeterRead with a deactivated device', async () => {
-        let failed = false;
-
-        try {
-            await deviceLogic.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash', 0, {
-                privateKey: deviceSmartmeterPK
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'saveSmartMeterRead: device not active');
-        }
-
-        assert.isTrue(failed);
-    });
-
 
     it('should return updated device correctly', async () => {
         const device0 = await deviceLogic.getDeviceById(0);

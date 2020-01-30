@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
-import { IDemand, DemandStatus, DemandPostData, DemandUpdateData } from '@energyweb/origin-backend-core';
+import { IDemand, DemandStatus, DemandPostData, DemandUpdateData, DemandPartiallyFilled } from '@energyweb/origin-backend-core';
 
 import {
     Controller,
@@ -19,7 +19,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Demand } from './demand.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
 import { EventService } from '../../events/events.service';
-import { SupportedEvents, createdNewDemand, DemandPartiallyFilled } from '../../events/events';
+import { SupportedEvents, createdNewDemand, DemandPartiallyFilled as DemandPartiallyFilledType } from '../../events/events';
 
 @Controller('/Demand')
 export class DemandController {
@@ -32,20 +32,32 @@ export class DemandController {
     async getAll() {
         console.log(`<GET> Demand all`);
 
-        return this.demandRepository.find();
+        const allDemands = await this.demandRepository.find();
+
+        for (let demand of allDemands) {
+            demand.demandPartiallyFilledEvents = demand.demandPartiallyFilledEvents.map(
+                event => JSON.parse(event)
+            );
+        }
+
+        return allDemands;
     }
 
     @Get('/:id')
     async get(@Param('id') id: string) {
-        const existingEntity = await this.demandRepository.findOne(id, {
+        const existing = await this.demandRepository.findOne(id, {
             loadRelationIds: true
         });
 
-        if (!existingEntity) {
+        if (!existing) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        return existingEntity;
+        existing.demandPartiallyFilledEvents = existing.demandPartiallyFilledEvents.map(
+            event => JSON.parse(event)
+        );
+
+        return existing;
     }
 
     @Post()
@@ -144,10 +156,11 @@ export class DemandController {
         });
 
         if (hasNewFillEvent) {
-            const eventData: DemandPartiallyFilled = {
+            const eventData: DemandPartiallyFilledType = {
                 demandId: existing.id,
                 certificateId: body.demandPartiallyFilledEvent.certificateId,
-                energy: body.demandPartiallyFilledEvent.energy
+                energy: body.demandPartiallyFilledEvent.energy,
+                blockNumber: body.demandPartiallyFilledEvent.blockNumber
             };
     
             this.eventService.emit({

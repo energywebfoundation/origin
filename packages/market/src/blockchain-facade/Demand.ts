@@ -50,7 +50,7 @@ export class Entity implements IDemandEntity {
 
     vintage: [number, number];
 
-    demandPartiallyFilledEvents: string[] = [];
+    demandPartiallyFilledEvents: DemandPartiallyFilled[] = [];
 
     initialized: boolean;
 
@@ -125,7 +125,8 @@ export class Entity implements IDemandEntity {
 
         const event: DemandPartiallyFilled = {
             certificateId,
-            energy
+            energy,
+            blockNumber: tx.blockNumber
         };
 
         await this.update({ demandPartiallyFilledEvent: event });
@@ -307,7 +308,7 @@ export const calculateMissingEnergyDemand = async (
         energyPerTimeFrame
     );
 
-    const filledEvents = demand.demandPartiallyFilledEvents.map(event => JSON.parse(event));
+    const filledEvents = demand.demandPartiallyFilledEvents;
 
     config.logger.debug(
         `[Demand #${demand.id}] filledEvents ${JSON.stringify(
