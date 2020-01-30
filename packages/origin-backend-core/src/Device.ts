@@ -1,4 +1,11 @@
+export enum DeviceStatus {
+    Submitted,
+    Denied,
+    Active
+}
+
 export interface IDevice {
+    status: DeviceStatus;
     facilityName: string;
     description: string;
     images: string;
@@ -16,3 +23,5 @@ export interface IDevice {
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
 }
+
+export type DeviceUpdateData = Pick<IDevice, 'status'>;

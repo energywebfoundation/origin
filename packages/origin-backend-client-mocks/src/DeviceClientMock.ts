@@ -1,4 +1,4 @@
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceUpdateData } from '@energyweb/origin-backend-core';
 
 import { IDeviceClient } from '@energyweb/origin-backend-client';
 
@@ -18,4 +18,18 @@ export class DeviceClientMock implements IDeviceClient {
 
         return data;
     }
+
+    async update(
+        id: number,
+        data: DeviceUpdateData
+    ): Promise<IDevice> {
+        const device = this.storage.get(id);
+
+        Object.assign(device, data);
+
+        this.storage.set(id, device);
+
+        return device;
+    }
 }
+

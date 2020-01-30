@@ -5,7 +5,6 @@ export enum DemandStatus {
 }
 
 export interface DemandPartiallyFilled {
-    blockNumber: number;
     certificateId: string;
     energy: number;
 }
@@ -33,4 +32,7 @@ export interface IDemand {
 }
 
 export type DemandPostData = Omit<IDemand, 'id' | 'status' | 'demandPartiallyFilledEvents'>;
-export type DemandUpdateData = Pick<IDemand, 'demandPartiallyFilledEvents'>;
+export type DemandUpdateData = {
+    status?: DemandStatus;
+    demandPartiallyFilledEvent?: DemandPartiallyFilled
+};
