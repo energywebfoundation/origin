@@ -33,6 +33,7 @@
   "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
   "license": "GPL-3.0",
   "dependencies": {
+    "@energyweb/exchange": "0.0.1",
     "@energyweb/origin-backend-core": "0.1.1",
     "@energyweb/utils-general": "4.1.1",
     "@nestjs/common": "6.11.4",
