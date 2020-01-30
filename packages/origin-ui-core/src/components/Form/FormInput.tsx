@@ -1,21 +1,26 @@
 import React from 'react';
-import { FormControl } from '@material-ui/core';
+import { FormControl, FormControlTypeMap } from '@material-ui/core';
 import { Field } from 'formik';
 import { TextField } from 'formik-material-ui';
 
 interface IProps {
-    label: string;
     property: string;
     className: string;
+    label?: string;
+    variant?: FormControlTypeMap['props']['variant'];
     required?: boolean;
     disabled?: boolean;
+    type?: string;
 }
 
 export function FormInput(props: IProps) {
+    const variant = props.variant ?? 'filled';
+    const type = props.type ?? 'text';
+
     return (
         <FormControl
             fullWidth
-            variant="filled"
+            variant={variant}
             className={props.className}
             required={props.required}
         >
@@ -23,10 +28,11 @@ export function FormInput(props: IProps) {
                 label={props.label}
                 name={props.property}
                 component={TextField}
-                variant="filled"
+                variant={variant}
                 fullWidth
                 required={props.required}
                 disabled={props.disabled}
+                type={type}
             />
         </FormControl>
     );

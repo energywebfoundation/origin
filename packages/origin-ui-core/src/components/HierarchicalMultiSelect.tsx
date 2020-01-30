@@ -280,18 +280,20 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                     {...dataTest('hierarchical-multi-select-level-2')}
                 />
             )}
-            {levelThreeValues.length > 0 && (
-                <MultiSelectAutocomplete
-                    label={props.selectOptions[2].label}
-                    placeholder={readOnly ? '' : props.selectOptions[2].placeholder}
-                    options={levelThreeValues}
-                    onChange={value => setValueByLevel(value, 3)}
-                    selectedValues={selectedValuesLevelThree}
-                    className="mt-3"
-                    disabled={disabled}
-                    {...dataTest('hierarchical-multi-select-level-3')}
-                />
-            )}
+            {props.selectOptions &&
+                props.selectOptions[2]?.label &&
+                levelThreeValues.length > 0 && (
+                    <MultiSelectAutocomplete
+                        label={props.selectOptions[2].label}
+                        placeholder={readOnly ? '' : props.selectOptions[2].placeholder}
+                        options={levelThreeValues}
+                        onChange={value => setValueByLevel(value, 3)}
+                        selectedValues={selectedValuesLevelThree}
+                        className="mt-3"
+                        disabled={disabled}
+                        {...dataTest('hierarchical-multi-select-level-3')}
+                    />
+                )}
         </>
     );
 }
