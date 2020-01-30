@@ -1,7 +1,10 @@
-import { Controller, Logger, Post, Body } from '@nestjs/common';
+import { IUser } from '@energyweb/origin-backend-core';
+import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
-import { OrderService } from './order.service';
+import { UserDecorator } from '../decorators/user.decorator';
 import { CreateOrderDto } from './create-order.dto';
+import { OrderService } from './order.service';
 
 @Controller('order')
 export class OrderController {
@@ -10,11 +13,11 @@ export class OrderController {
     constructor(private readonly orderService: OrderService) {}
 
     @Post()
-    public async create(@Body() newOrder: CreateOrderDto) {
+    @UseGuards(AuthGuard())
+    public async create(@UserDecorator() user: IUser, @Body() newOrder: CreateOrderDto) {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
-        // TODO: userId from JWT token
-        const order = await this.orderService.create({ ...newOrder, userId: '1' });
+        const order = await this.orderService.create({ ...newOrder, userId: user.id.toString() });
 
         this.orderService.submit(order);
 

@@ -32,9 +32,11 @@
   },
   "dependencies": {
     "@energyweb/exchange-core": "0.0.1",
+    "@energyweb/origin-backend-core": "0.1.1",
     "@energyweb/utils-general": "4.1.1",
     "@nestjs/common": "6.11.4",
     "@nestjs/core": "6.11.4",
+    "@nestjs/passport": "6.1.1",
     "@nestjs/platform-express": "6.11.4",
     "@nestjs/schedule": "^0.1.1",
     "@nestjs/swagger": "^4.2.2",

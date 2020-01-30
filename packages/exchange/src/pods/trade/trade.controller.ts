@@ -1,5 +1,9 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { IUser } from '@energyweb/origin-backend-core';
+
 import { TradeService } from './trade.service';
+import { UserDecorator } from '../decorators/user.decorator';
 
 @Controller('trade')
 export class TradeController {
@@ -7,8 +11,9 @@ export class TradeController {
 
     constructor(private readonly tradeService: TradeService) {}
 
+    @UseGuards(AuthGuard())
     @Get()
-    public getAll() {
-        return this.tradeService.getAll('2');
+    public getAll(@UserDecorator() user: IUser) {
+        return this.tradeService.getAll(user.id.toString());
     }
 }

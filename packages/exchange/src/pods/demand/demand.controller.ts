@@ -1,4 +1,8 @@
-import { Controller, Post, Logger, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import { IUser } from '@energyweb/origin-backend-core';
+import { Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+import { UserDecorator } from '../decorators/user.decorator';
 import { DemandService } from './demand.service';
 
 @Controller('demand')
@@ -22,12 +26,17 @@ export class DemandController {
     }
 
     @Get(':id')
-    public async findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-        return this.demandService.findOne('2', id);
+    @UseGuards(AuthGuard())
+    public async findOne(
+        @UserDecorator() user: IUser,
+        @Param('id', new ParseUUIDPipe({ version: '4' })) id: string
+    ) {
+        return this.demandService.findOne(user.id.toString(), id);
     }
 
     @Get()
-    public async getAll() {
-        return this.demandService.getAll('2');
+    @UseGuards(AuthGuard())
+    public async getAll(@UserDecorator() user: IUser) {
+        return this.demandService.getAll(user.id.toString());
     }
 }
