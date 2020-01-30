@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import dotenv from 'dotenv';
 
-import { Device } from '@energyweb/device-registry';
 import { Unit } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { DeviceStatus } from '@energyweb/origin-backend-core';
 
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
@@ -197,11 +197,11 @@ describe('Origin Listener Tests', async () => {
 
         const newDeviceId = await demo.deployNewDevice();
 
-        assert.equal(await demo.getDeviceStatus(newDeviceId), Device.DeviceStatus.Submitted);
+        assert.equal(await demo.getDeviceStatus(newDeviceId), DeviceStatus.Submitted);
         assert.isAbove(parseInt(newDeviceId, 10), 0);
 
         await demo.approveDevice(newDeviceId);
-        assert.equal(await demo.getDeviceStatus(newDeviceId), Device.DeviceStatus.Active);
+        assert.equal(await demo.getDeviceStatus(newDeviceId), DeviceStatus.Active);
 
         await waitForConditionAndAssert(
             () => emailService.sentEmails.length >= 1,

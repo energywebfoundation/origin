@@ -25,7 +25,7 @@ import {
 
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus, DemandPostData } from '@energyweb/origin-backend-core';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -283,11 +283,11 @@ export class Demo {
             smartMeter: { address: this.ACCOUNTS.SMART_METER.address },
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
             lastSmartMeterReadFileHash: ''
         };
 
         const deviceProducingPropsOffChain: IDevice = {
+            status: DeviceStatus.Active,
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             facilityName: 'Wuthering Heights Windfarm',
@@ -327,11 +327,11 @@ export class Demo {
             smartMeter: { address: NULL_ADDRESS },
             owner: { address: this.ACCOUNTS.DEVICE_MANAGER.address },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Submitted,
             lastSmartMeterReadFileHash: ''
         };
 
         const deviceProducingPropsOffChain: IDevice = {
+            status: DeviceStatus.Submitted,
             deviceType: 'Wind',
             complianceRegistry: 'I-REC',
             facilityName: 'Test Device',
@@ -372,16 +372,16 @@ export class Demo {
         const device = await new ProducingDevice.Entity(deviceId, this.conf).sync();
 
         try {
-            await device.setStatus(Device.DeviceStatus.Active);
+            await device.setStatus(DeviceStatus.Active);
         } catch (error) {
             throw new Error(error);
         }
     }
 
     async getDeviceStatus(deviceId: string) {
-        const { status } = await new ProducingDevice.Entity(deviceId, this.conf).sync();
+        const { offChainProperties } = await new ProducingDevice.Entity(deviceId, this.conf).sync();
 
-        return status;
+        return offChainProperties.status;
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
@@ -419,7 +419,8 @@ export class Demo {
     async deployDemand() {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.TRADER;
 
-        const demandOffChainProps: IDemand = {
+        const demandOffChainProps: DemandPostData = {
+            owner: this.ACCOUNTS.TRADER,
             timeFrame: TimeFrame.hourly,
             maxPriceInCentsPerMwh: 150000,
             currency: 'USD',
@@ -440,12 +441,12 @@ export class Demo {
         return Demand.createDemand(demandOffChainProps, this.conf);
     }
 
-    async fillDemand(demandId: string, certId: string) {
+    async fillDemand(demandId: number, certId: string) {
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.MATCHER;
 
         const demand = await new Demand.Entity(demandId, this.conf).sync();
         const certificate = await new PurchasableCertificate.Entity(certId, this.conf).sync();
-        const fillTx = await demand.fill(certificate.id);
+        const fillTx = await demand.fillAt(certificate.id, certificate.certificate.energy);
 
         return fillTx.status;
     }

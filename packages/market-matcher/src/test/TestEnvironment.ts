@@ -7,6 +7,7 @@ import {
     ProducingDevice,
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
+import { DeviceStatus, IDevice, DemandPostData } from '@energyweb/origin-backend-core';
 import {
     Demand,
     PurchasableCertificate,
@@ -18,7 +19,6 @@ import { buildRights, Role, Contracts as UserRegistryContracts } from '@energywe
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
-import { IDevice, DemandPostData } from '@energyweb/origin-backend-core';
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
 
@@ -226,11 +226,11 @@ const deployDevice = (config: Configuration.Entity) => {
         smartMeter: { address: deviceSmartMeter },
         owner: { address: deviceOwnerAddress },
         lastSmartMeterReadWh: 0,
-        status: Device.DeviceStatus.Active,
         lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
     };
 
     const devicePropsOffChain: IDevice = {
+        status: DeviceStatus.Active,
         facilityName: 'MatcherTestFacility',
         operationalSince: 0,
         capacityInW: 10,

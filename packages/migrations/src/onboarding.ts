@@ -2,18 +2,18 @@ import { Device, ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { User } from '@energyweb/user-registry';
 import { MarketUser } from '@energyweb/market';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function deviceStatusFactory(status: string) {
-    if (!(status in Device.DeviceStatus)) {
+    if (!(status in DeviceStatus)) {
         throw new Error(`Device status can't be: ${status}.`);
     }
 
-    return Device.DeviceStatus[status as keyof typeof Device.DeviceStatus];
+    return DeviceStatus[status as keyof typeof DeviceStatus];
 }
 
 export const onboardDemo = async (actionString: string, conf: Configuration.Entity) => {
@@ -136,13 +136,13 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             smartMeter: { address: action.data.smartMeter },
             owner: { address: action.data.owner },
             lastSmartMeterReadWh: action.data.lastSmartMeterReadWh,
-            status: deviceStatusFactory(action.data.status),
             lastSmartMeterReadFileHash: action.data.lastSmartMeterReadFileHas
         };
 
         const deviceTypeConfig = action.data.deviceType;
 
         const deviceProducingPropsOffChain: IDevice = {
+            status: deviceStatusFactory(action.data.status),
             operationalSince: action.data.operationalSince,
             capacityInW: action.data.capacityInW,
             country: action.data.country,

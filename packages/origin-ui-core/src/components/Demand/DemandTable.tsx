@@ -192,7 +192,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                 return;
             }
 
-            await Demand.deleteDemand(demand.id.toString(), this.props.configuration);
+            await Demand.deleteDemand(demand.id, this.props.configuration);
 
             showNotification('Demand deleted', NotificationType.Success);
         } catch (error) {

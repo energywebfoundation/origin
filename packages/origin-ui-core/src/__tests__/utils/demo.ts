@@ -15,7 +15,7 @@ import {
 } from '@energyweb/device-registry';
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
-
+import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IStoreState } from '../../types';
@@ -208,11 +208,11 @@ export async function deployDemo() {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
-        status: Device.DeviceStatus.Active,
         lastSmartMeterReadFileHash: ''
     };
 
     const deviceProducingPropsOffChain: IDevice = {
+        status: DeviceStatus.Active,
         deviceType: 'Wind;Onshore',
         complianceRegistry: 'I-REC',
         facilityName: 'Wuthering Heights Windfarm',

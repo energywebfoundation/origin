@@ -18,7 +18,7 @@ import {
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -206,11 +206,11 @@ describe('PurchasableCertificate-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
         const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,

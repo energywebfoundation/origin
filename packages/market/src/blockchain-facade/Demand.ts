@@ -124,14 +124,11 @@ export class Entity implements IDemandEntity {
         }
 
         const event: DemandPartiallyFilled = {
-            blockNumber: tx.blockNumber,
             certificateId,
             energy
         };
 
-        const allEvents: string[] = [...this.demandPartiallyFilledEvents, JSON.stringify(event)];
-
-        await this.update({ demandPartiallyFilledEvents: allEvents });
+        await this.update({ demandPartiallyFilledEvent: event });
 
         return tx;
     }
@@ -209,10 +206,10 @@ export const createDemand = async (
 };
 
 export const deleteDemand = async (
-    demandId: string,
+    demandId: number,
     configuration: Configuration.Entity
 ): Promise<boolean> => {
-    await configuration.offChainDataSource.demandClient.delete(Number(demandId));
+    await configuration.offChainDataSource.demandClient.delete(demandId);
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demandId} deleted`);

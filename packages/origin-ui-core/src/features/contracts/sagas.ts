@@ -146,7 +146,7 @@ function* initEventHandler() {
                 }
             });
 
-            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
+            marketContractEventHandler.onEvent('DemandUpdated', async (event: any) => {
                 if (
                     parseInt(event.returnValues._status as string, 10) ===
                     DemandStatus.ARCHIVED

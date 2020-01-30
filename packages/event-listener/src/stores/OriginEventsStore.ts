@@ -7,7 +7,7 @@ export interface IPartiallyFilledDemand {
 }
 
 export interface ICertificateMatchesDemand {
-    demandId: string;
+    demandId: number;
     certificateId: string;
 }
 
@@ -60,7 +60,7 @@ export class OriginEventsStore implements IOriginEventsStore {
     }
 
     public registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void {
-        const userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
+        const userStorage: IUserTempStorage = this.userStorage(demand.owner);
 
         userStorage.matchingCertificates.push({
             demandId: demand.id,

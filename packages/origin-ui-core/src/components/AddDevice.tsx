@@ -34,7 +34,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import axios from 'axios';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -139,13 +139,13 @@ export function AddDevice() {
             smartMeter: { address: DEFAULT_ADDRESS },
             owner: { address: currentUser.id },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Submitted,
             lastSmartMeterReadFileHash: ''
         };
 
         const [region, province] = selectedLocation;
 
         const deviceProducingPropsOffChain: IDevice = {
+            status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
             facilityName: values.facilityName,

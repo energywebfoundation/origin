@@ -19,8 +19,13 @@ import {
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import {
+    DeviceStatus,
+    UserRegisterData,
+    IDevice,
+    DemandPostData
+} from '@energyweb/origin-backend-core';
 
-import { UserRegisterData, IDevice, DemandPostData } from '@energyweb/origin-backend-core';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { MarketLogic, Demand, MarketUser } from '..';
@@ -285,11 +290,11 @@ describe('Market-Facade', () => {
             smartMeter: { address: deviceSmartMeter },
             owner: { address: deviceOwnerAddress },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
         const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             operationalSince: 0,
             capacityInW: 10,
             country: 221,

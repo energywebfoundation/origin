@@ -17,7 +17,7 @@ import {
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 import { deployERC721TestReceiver } from './deploy';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
@@ -176,11 +176,11 @@ describe('CertificateLogic-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
             lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
         const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,

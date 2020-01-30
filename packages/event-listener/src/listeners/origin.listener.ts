@@ -169,7 +169,7 @@ export class OriginEventListener implements IOriginEventListener {
 
             const demand = await new Demand.Entity(_demandId, this.conf).sync();
 
-            this.originEventsStore.registerPartiallyFilledDemand(demand.demandOwner, {
+            this.originEventsStore.registerPartiallyFilledDemand(demand.owner, {
                 demandId: _demandId,
                 certificateId: _certificateId,
                 amount: _amount
@@ -180,7 +180,7 @@ export class OriginEventListener implements IOriginEventListener {
             );
 
             if (await demand.isFulfilled()) {
-                this.originEventsStore.registerFulfilledDemand(demand.demandOwner, _demandId);
+                this.originEventsStore.registerFulfilledDemand(demand.owner, _demandId);
 
                 this.conf.logger.info(`DemandFulfilled: Demand #${_demandId} has been fulfilled.`);
             }
