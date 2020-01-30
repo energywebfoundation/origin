@@ -21,14 +21,17 @@ import Web3 from 'web3';
 
 import { configurationUpdated, demandCreated, demandUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
+import {
+    setError,
+    setLoading,
+    GeneralActions,
+    IEnvironment,
+    ISetOffChainDataSourceAction
+} from '../general/actions';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
-import {
-    getOffChainDataSource,
-    getEnvironment
-} from '../general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
 import { DemandStatus } from '@energyweb/origin-backend-core';
 
@@ -147,10 +150,7 @@ function* initEventHandler() {
             });
 
             marketContractEventHandler.onEvent('DemandUpdated', async (event: any) => {
-                if (
-                    parseInt(event.returnValues._status as string, 10) ===
-                    DemandStatus.ARCHIVED
-                ) {
+                if (parseInt(event.returnValues._status as string, 10) === DemandStatus.ARCHIVED) {
                     emitter({
                         action: demandUpdated(
                             await new Demand.Entity(
@@ -225,10 +225,7 @@ function* initEventHandler() {
     }
 }
 
-async function getMarketContractLookupAddressFromAPI(
-    configurationClient: IConfigurationClient,
-    baseURL: string
-) {
+async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
     try {
         const marketContracts = await configurationClient.get('MarketContractLookup');
 
@@ -260,15 +257,20 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             return;
         }
 
-        const baseURL = `${environment.BACKEND_URL}/api`;
+        let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
-        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+        if (!offChainDataSource) {
+            const action: ISetOffChainDataSourceAction = yield take(
+                GeneralActions.setOffChainDataSource
+            );
+
+            offChainDataSource = action.payload;
+        }
 
         if (!marketContractLookupAddress) {
             marketContractLookupAddress = yield call(
                 getMarketContractLookupAddressFromAPI,
-                offChainDataSource.configurationClient,
-                baseURL
+                offChainDataSource.configurationClient
             );
         }
 

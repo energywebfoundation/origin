@@ -18,12 +18,18 @@ import { getConfiguration } from '../selectors';
 import { getUserById, getUsers, getUserFetcher } from './selectors';
 import { getOffChainDataSource } from '../general/selectors';
 import { MarketUser } from '@energyweb/market';
-import { IRequestClient, IUserClient, IOrganizationClient } from '@energyweb/origin-backend-client';
+import {
+    IRequestClient,
+    IUserClient,
+    IOrganizationClient,
+    IOffChainDataSource
+} from '@energyweb/origin-backend-client';
 import { showNotification, NotificationType } from '../../utils';
 import {
     IUserWithRelationsIds,
     IOrganizationWithRelationsIds
 } from '@energyweb/origin-backend-core';
+import { GeneralActions, ISetOffChainDataSourceAction } from '../general/actions';
 
 const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -97,6 +103,16 @@ function* requestCurrentUserDetailsSaga(action: IUpdateCurrentUserIdAction): Sag
 function* setPreviouslyLoggedInOffchainUser(): SagaIterator {
     const authenticationTokenFromStorage = getStoredAuthenticationToken();
 
+    let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+
+    if (!offChainDataSource) {
+        const action: ISetOffChainDataSourceAction = yield take(
+            GeneralActions.setOffChainDataSource
+        );
+
+        offChainDataSource = action.payload;
+    }
+
     const requestClient: IRequestClient = (yield select(getOffChainDataSource)).requestClient;
 
     if (!authenticationTokenFromStorage || !requestClient) {
@@ -132,7 +148,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
                 ? action.payload
                 : getStoredAuthenticationToken();
 
-        let userClient: IUserClient = (yield select(getOffChainDataSource)).userClient;
+        const userClient: IUserClient = (yield select(getOffChainDataSource)).userClient;
 
         if (!authenticationToken) {
             return;
@@ -144,7 +160,9 @@ function* fetchOffchainUserDetails(): SagaIterator {
             let organization: IOrganizationWithRelationsIds = null;
 
             if (typeof userProfile.organization !== 'undefined') {
-                const organizationClient: IOrganizationClient = (yield select(getOffChainDataSource)).organizationClient;
+                const organizationClient: IOrganizationClient = (yield select(
+                    getOffChainDataSource
+                )).organizationClient;
 
                 organization = yield call(
                     [organizationClient, organizationClient.getById],

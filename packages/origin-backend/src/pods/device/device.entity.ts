@@ -1,8 +1,9 @@
 import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
 import { IsInt, IsDate, Min, IsLatitude, IsLongitude } from 'class-validator';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 @Entity()
-export class Device extends BaseEntity {
+export class Device extends BaseEntity implements IDevice {
     @PrimaryColumn()
     id: number;
 
@@ -39,7 +40,7 @@ export class Device extends BaseEntity {
     @Column()
     @IsInt()
     @Min(0)
-    capacityInW: number
+    capacityInW: number;
 
     @Column()
     @IsLatitude()
@@ -51,4 +52,16 @@ export class Device extends BaseEntity {
 
     @Column()
     timezone: string;
+
+    @Column()
+    deviceType: string;
+
+    @Column()
+    complianceRegistry: string;
+
+    @Column()
+    otherGreenAttributes: string;
+
+    @Column()
+    typeOfPublicSupport: string;
 }

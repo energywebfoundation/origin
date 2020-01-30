@@ -108,7 +108,7 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
         const promises = producingDevices.map(async device => {
             const user = getUserById(this.props.users, device.owner.address);
 
-            const organization = await this.props.organizationClient.getById(
+            const organization = await this.props.organizationClient?.getById(
                 user?.information?.organization
             );
 
@@ -307,7 +307,7 @@ export const ProducingDeviceTable = connect(
         users: getUsers(state),
         currentUser: getCurrentUser(state),
         baseURL: getBaseURL(),
-        organizationClient: getOffChainDataSource(state).organizationClient
+        organizationClient: getOffChainDataSource(state)?.organizationClient
     }),
     mapDispatchToProps
 )(ProducingDeviceTableClass);
