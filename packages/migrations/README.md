@@ -432,7 +432,6 @@ usage: command to create a demand
     Solar,
     RunRiverHydro,
     BiomassGas)
-* <code>minCO2Offset</code>: minimum amount of CO2 offset required
 * <code>otherGreenAttributes</code>: green attributes as string
 * <code>typeOfPublicSupport</code>: type of public support as string
 * <code>energyPerTimeFrame</code>: required energy per time frame
@@ -457,7 +456,6 @@ We want to report a demand with target watt-hour per period(timeframe) as <code>
         "country": "string",
         "region": "string",
         "devicetype": "Biomass from agriculture",
-        "minCO2Offset": 10,
         "otherGreenAttributes": "string",
         "typeOfPublicSupport": "string",
         "energyPerTimeFrame": 10,

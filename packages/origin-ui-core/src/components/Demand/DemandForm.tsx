@@ -113,9 +113,7 @@ export function DemandForm(props: IProps) {
                 demandNeedsInDisplayUnit: EnergyFormatter.getValueInDisplayUnit(
                     demand.energyPerTimeFrame
                 ).toString(),
-                maxPricePerMWh: Math.round(
-                    demand.maxPriceInCentsPerMwh
-                ).toString(),
+                maxPricePerMWh: Math.round(demand.maxPriceInCentsPerMwh).toString(),
                 procureFromSingleFacility: demand.procureFromSingleFacility,
                 timeframe: demand.timeFrame,
                 automaticMatching: demand.automaticMatching
@@ -123,28 +121,17 @@ export function DemandForm(props: IProps) {
 
             setInitialFormValuesFromDemand(newInitialFormValuesFromDemand);
 
-            if (
-                demand.vintage &&
-                demand.vintage.length === 2
-            ) {
+            if (demand.vintage && demand.vintage.length === 2) {
                 setVintage(demand.vintage);
             }
 
-            if (
-                demand.deviceType &&
-                demand.deviceType.length > 0
-            ) {
+            if (demand.deviceType && demand.deviceType.length > 0) {
                 setSelectedDeviceType(demand.deviceType);
             }
 
-            if (
-                demand.location &&
-                demand.location.length > 0
-            ) {
+            if (demand.location && demand.location.length > 0) {
                 setSelectedLocation(
-                    demand.location.map(location =>
-                        location.replace(`${country};`, '')
-                    )
+                    demand.location.map(location => location.replace(`${country};`, ''))
                 );
             }
         }
@@ -197,7 +184,7 @@ export function DemandForm(props: IProps) {
             owner: demand?.owner,
             status: demand?.status,
             demandPartiallyFilledEvents: demand?.demandPartiallyFilledEvents,
-            currency: values.currency as string,
+            currency: values.currency,
             startTime: values.startDate.unix(),
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
@@ -234,7 +221,10 @@ export function DemandForm(props: IProps) {
 
                 showNotification('Demand edited', NotificationType.Success);
             } else {
-                const createdDemand = await Demand.createDemand(offChainProps as DemandPostData, configuration);
+                const createdDemand = await Demand.createDemand(
+                    offChainProps as DemandPostData,
+                    configuration
+                );
 
                 showNotification('Demand created', NotificationType.Success);
 
@@ -257,7 +247,7 @@ export function DemandForm(props: IProps) {
         initialFormValues = INITIAL_FORM_VALUES;
     }
 
-    if (!initialFormValues) {
+    if (!initialFormValues || !regions) {
         return <Skeleton variant="rect" height={200} />;
     }
 
@@ -368,7 +358,7 @@ export function DemandForm(props: IProps) {
                                             required
                                             disabled={disabled}
                                         >
-                                            {currencies.map(option => (
+                                            {currencies?.map(option => (
                                                 <MenuItem value={option} key={option}>
                                                     {option}
                                                 </MenuItem>

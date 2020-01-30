@@ -426,7 +426,6 @@ export class Demo {
             currency: 'USD',
             location: ['Thailand;Central;Nakhon Pathom'],
             deviceType: ['Wind'],
-            minCO2Offset: 10,
             otherGreenAttributes: 'string',
             typeOfPublicSupport: 'string',
             energyPerTimeFrame: 1 * Unit.MWh,

@@ -201,7 +201,6 @@ const deployDemand = async (
         currency,
         location: ['Thailand;Central;Nakhon Pathom'],
         deviceType: ['Solar'],
-        minCO2Offset: 10,
         otherGreenAttributes: 'string',
         typeOfPublicSupport: 'string',
         energyPerTimeFrame: requiredEnergy,

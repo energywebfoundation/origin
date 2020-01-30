@@ -107,17 +107,14 @@ async function getCurrenciesFromAPI(offChainDataSource: IOffChainDataSource) {
         }
 
         return null;
-    } catch {
+    } catch (error) {
+        console.warn('Error while trying to get currency', error);
         return null;
     }
 }
 
 async function getCountryFromAPI(offChainDataSource: IOffChainDataSource) {
-    try {
-        return offChainDataSource.configurationClient.get('Country');
-    } catch {
-        return null;
-    }
+    return offChainDataSource.configurationClient.get('Country');
 }
 
 function* setupEnvironment(): SagaIterator {
@@ -128,15 +125,15 @@ function* setupEnvironment(): SagaIterator {
 
 function* fillCurrency(): SagaIterator {
     while (true) {
-        yield take(GeneralActions.setEnvironment);
+        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
 
         const environment: IEnvironment = yield select(getEnvironment);
+        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
-        if (!environment) {
-            return;
+        if (!environment || !offChainDataSource) {
+            continue;
         }
 
-        const offChainDataSource = yield select(getOffChainDataSource);
         const currencies = yield call(getCurrenciesFromAPI, offChainDataSource);
 
         yield put(
@@ -171,18 +168,23 @@ function* fillCompliance(): SagaIterator {
 
 function* fillCountryAndRegions(): SagaIterator {
     while (true) {
-        yield take(GeneralActions.setEnvironment);
+        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
 
         const environment: IEnvironment = yield select(getEnvironment);
+        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
-        if (!environment) {
-            return;
+        if (!environment || !offChainDataSource) {
+            continue;
         }
-
-        const offChainDataSource = yield select(getOffChainDataSource);
 
         try {
             const country = yield call(getCountryFromAPI, offChainDataSource);
+
+            if (!country) {
+                console.warn(
+                    `Country from API is null. It might result in application not functioning.`
+                );
+            }
 
             yield put(setCountry(country ? country.name : null));
             yield put(setRegions(country ? country.regions : null));
@@ -208,7 +210,6 @@ function* initializeOffChainDataSource(): SagaIterator {
         yield put(setOffChainDataSource(offChainDataSource));
     }
 }
-
 
 export function* generalSaga(): SagaIterator {
     yield all([

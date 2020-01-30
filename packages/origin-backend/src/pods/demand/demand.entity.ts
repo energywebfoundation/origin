@@ -1,9 +1,9 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
-import { IsInt, Min, IsBoolean } from 'class-validator';
-import { DemandStatus } from '@energyweb/origin-backend-core';
+import { IsInt, Min, IsBoolean, IsOptional } from 'class-validator';
+import { DemandStatus, IDemandProperties } from '@energyweb/origin-backend-core';
 
 @Entity()
-export class Demand extends BaseEntity {
+export class Demand extends BaseEntity implements IDemandProperties {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -31,7 +31,7 @@ export class Demand extends BaseEntity {
 
     @Column()
     currency: string;
-    
+
     @Column()
     @Min(0)
     energyPerTimeFrame: number;
@@ -40,15 +40,11 @@ export class Demand extends BaseEntity {
     @IsBoolean()
     automaticMatching: boolean;
 
-    @Column("simple-array")
+    @Column('simple-array')
     location?: string[];
 
-    @Column("simple-array")
+    @Column('simple-array')
     deviceType?: string[];
-
-    @Column()
-    @Min(0)
-    minCO2Offset?: number;
 
     @Column()
     otherGreenAttributes?: string;
@@ -59,13 +55,14 @@ export class Demand extends BaseEntity {
     @Column()
     registryCompliance?: string;
 
-    @Column()
+    @Column({ default: false })
+    @IsOptional()
     @IsBoolean()
     procureFromSingleFacility?: boolean;
 
-    @Column("simple-array")
+    @Column('simple-array')
     vintage?: [number, number];
 
-    @Column("simple-array")
+    @Column('simple-array')
     demandPartiallyFilledEvents: string[];
 }

@@ -10,7 +10,7 @@ export interface DemandPartiallyFilled {
     energy: number;
 }
 
-export interface IDemand {
+export interface IDemandProperties {
     id: number;
     owner: string;
     status: DemandStatus;
@@ -19,7 +19,6 @@ export interface IDemand {
     currency: string;
     location?: string[];
     deviceType?: string[];
-    minCO2Offset?: number;
     otherGreenAttributes?: string;
     typeOfPublicSupport?: string;
     energyPerTimeFrame: number;
@@ -29,11 +28,14 @@ export interface IDemand {
     procureFromSingleFacility?: boolean;
     vintage?: [number, number];
     automaticMatching: boolean;
-    demandPartiallyFilledEvents: DemandPartiallyFilled[]
+}
+
+export interface IDemand extends IDemandProperties {
+    demandPartiallyFilledEvents: DemandPartiallyFilled[];
 }
 
 export type DemandPostData = Omit<IDemand, 'id' | 'status' | 'demandPartiallyFilledEvents'>;
 export type DemandUpdateData = {
     status?: DemandStatus;
-    demandPartiallyFilledEvent?: DemandPartiallyFilled
+    demandPartiallyFilledEvent?: DemandPartiallyFilled;
 };

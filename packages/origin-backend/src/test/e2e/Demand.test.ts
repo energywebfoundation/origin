@@ -29,7 +29,6 @@ describe('Demand API tests', async () => {
         currency: 'USD',
         location: ['Thailand;Central;Nakhon Pathom'],
         deviceType: ['Solar'],
-        minCO2Offset: 10,
         otherGreenAttributes: 'string',
         typeOfPublicSupport: 'string',
         energyPerTimeFrame: 10,
@@ -66,7 +65,7 @@ describe('Demand API tests', async () => {
 
             const allEvents = eventsClient.allEvents;
             assert.equal(allEvents.length, 1);
-            
+
             const creationEvent = allEvents[0];
 
             assert.equal(creationEvent.name, 'createdNewDemand');

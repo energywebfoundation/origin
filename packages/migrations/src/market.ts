@@ -175,7 +175,6 @@ export const marketDemo = async (
                     currency: action.data.currency,
                     location: [action.data.location],
                     deviceType: action.data.devicetype,
-                    minCO2Offset: action.data.minCO2Offset,
                     otherGreenAttributes: action.data.otherGreenAttributes,
                     typeOfPublicSupport: action.data.typeOfPublicSupport,
                     energyPerTimeFrame: action.data.energyPerTimeFrame,
