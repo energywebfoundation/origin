@@ -13,6 +13,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
+  "main": "dist/js/src/index.js",
   "scripts": {
     "build": "yarn build:ts",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",

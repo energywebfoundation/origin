@@ -8,7 +8,7 @@ import { TradeController } from './trade.controller';
 @Module({
     providers: [TradeService],
     exports: [TradeService],
-    imports: [TypeOrmModule.forFeature([Trade])],
+    imports: [TypeOrmModule.forFeature([Trade], 'ExchangeConnection')],
     controllers: [TradeController]
 })
 export class TradeModule {}

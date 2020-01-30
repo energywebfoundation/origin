@@ -9,7 +9,9 @@ export class AppService {
     constructor(
         private readonly matchingEngineService: MatchingEngineService,
         private readonly ordersService: OrderService
-    ) {}
+    ) {
+        this.init();
+    }
 
     public async init() {
         this.logger.log('Initializing matching engine');

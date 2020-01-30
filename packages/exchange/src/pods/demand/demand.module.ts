@@ -10,7 +10,11 @@ import { MatchingEngineModule } from '../matching-engine/matching-engine.module'
 @Module({
     providers: [DemandService],
     exports: [DemandService],
-    imports: [TypeOrmModule.forFeature([Demand]), OrderModule, MatchingEngineModule],
+    imports: [
+        TypeOrmModule.forFeature([Demand], 'ExchangeConnection'),
+        OrderModule,
+        MatchingEngineModule
+    ],
     controllers: [DemandController]
 })
 export class DemandModule {}

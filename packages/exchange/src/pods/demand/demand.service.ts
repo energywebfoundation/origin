@@ -10,7 +10,7 @@ import { MatchingEngineService } from '../matching-engine/matching-engine.servic
 @Injectable()
 export class DemandService {
     constructor(
-        @InjectRepository(Demand)
+        @InjectRepository(Demand, 'ExchangeConnection')
         private readonly repository: Repository<Demand>,
         private readonly orderService: OrderService,
         private readonly matchingService: MatchingEngineService

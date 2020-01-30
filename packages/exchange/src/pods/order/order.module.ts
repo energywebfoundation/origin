@@ -9,7 +9,7 @@ import { OrderController } from './order.controller';
 @Module({
     providers: [OrderService],
     exports: [OrderService],
-    imports: [TypeOrmModule.forFeature([Order]), MatchingEngineModule],
+    imports: [TypeOrmModule.forFeature([Order], 'ExchangeConnection'), MatchingEngineModule],
     controllers: [OrderController]
 })
 export class OrderModule {}

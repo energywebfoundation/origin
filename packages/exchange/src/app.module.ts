@@ -15,6 +15,7 @@ import { OrderBookModule } from './pods/order-book/order-book.module';
 @Module({
     imports: [
         TypeOrmModule.forRoot({
+            name: 'ExchangeConnection',
             type: 'postgres',
             host: 'localhost',
             port: 5432,
@@ -26,6 +27,15 @@ import { OrderBookModule } from './pods/order-book/order-book.module';
             logging: ['query']
         }),
         ScheduleModule.forRoot(),
+        MatchingEngineModule,
+        TradeModule,
+        OrderModule,
+        DemandModule,
+        OrderBookModule
+    ],
+    exports: [
+        TypeOrmModule,
+        ScheduleModule,
         MatchingEngineModule,
         TradeModule,
         OrderModule,

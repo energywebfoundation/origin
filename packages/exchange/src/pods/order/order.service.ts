@@ -10,7 +10,7 @@ import { Order } from './order.entity';
 @Injectable()
 export class OrderService {
     constructor(
-        @InjectRepository(Order)
+        @InjectRepository(Order, 'ExchangeConnection')
         private readonly repository: Repository<Order>,
         private readonly matchingEngineService: MatchingEngineService
     ) {}
