@@ -1,22 +1,15 @@
 import moment from 'moment';
 import { TransactionReceipt } from 'web3-core';
 
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
 
 import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
-
-export enum DeviceStatus {
-    Submitted,
-    Denied,
-    Active
-}
 
 export interface IOnChainProperties {
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
-    status: DeviceStatus;
     lastSmartMeterReadFileHash: string;
 }
 
@@ -32,7 +25,6 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity implements
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
     lastSmartMeterReadFileHash: string;
-    status: DeviceStatus;
 
     initialized: boolean;
 
@@ -86,16 +78,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity implements
         );
     }
 
-    async setStatus(status: DeviceStatus): Promise<TransactionReceipt> {
-        const {
-            deviceLogicInstance
-        }: { deviceLogicInstance?: DeviceLogic } = this.configuration.blockchainProperties;
-        const id = parseInt(this.id, 10);
-
-        return deviceLogicInstance.setStatus(
-            id,
-            status, 
-            Configuration.getAccount(this.configuration)
-        );
+    async setStatus(status: DeviceStatus): Promise<IDevice> {
+        return this.configuration.offChainDataSource.deviceClient.update(Number(this.id), { status });
     }
 }

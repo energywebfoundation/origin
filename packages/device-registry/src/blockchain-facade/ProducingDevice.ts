@@ -49,7 +49,6 @@ export const createDevice = async (
     } = await configuration.blockchainProperties.deviceLogicInstance.createDevice(
         devicePropertiesOnChain.smartMeter.address,
         devicePropertiesOnChain.owner.address,
-        devicePropertiesOnChain.status,
         Configuration.getAccount(configuration)
     );
 
@@ -88,7 +87,6 @@ export class Entity extends Device.Entity implements IProducingDevice {
             this.smartMeter = { address: device.smartMeter };
             this.owner = { address: device.owner };
             this.lastSmartMeterReadWh = Number(device.lastSmartMeterReadWh);
-            this.status = Number(device.status);
             this.lastSmartMeterReadFileHash = device.lastSmartMeterReadFileHash;
 
             this.initialized = true;

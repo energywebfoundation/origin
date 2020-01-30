@@ -12,12 +12,11 @@ import {
 } from '@energyweb/user-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
 import { DeviceLogic, ProducingDevice, Device } from '..';
 import { logger } from '../Logger';
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
-import { DeviceStatus } from '../blockchain-facade/Device';
 
 describe('Device Facade', () => {
     dotenv.config({
@@ -111,11 +110,11 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                status: DeviceStatus.Active,
                 lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
             };
 
-            const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            const devicePropsOffChain: IDevice = {
+                status: DeviceStatus.Active,
                 operationalSince: 0,
                 capacityInW: 10,
                 country: 221,
@@ -149,7 +148,6 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                status: DeviceStatus.Active,
                 lastSmartMeterReadFileHash: '',
                 offChainProperties: devicePropsOffChain
             } as Partial<ProducingDevice.Entity>);
@@ -173,9 +171,9 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 100,
-                status: DeviceStatus.Active,
                 lastSmartMeterReadFileHash: 'newFileHash',
                 offChainProperties: {
+                    status: DeviceStatus.Active,
                     operationalSince: 0,
                     capacityInW: 10,
                     country: 221,
