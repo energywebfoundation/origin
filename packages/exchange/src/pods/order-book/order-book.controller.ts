@@ -1,4 +1,4 @@
-import { Product } from '@energyweb/exchange-core';
+import { Product, DeviceVintage } from '@energyweb/exchange-core';
 import { Controller, Get, Query } from '@nestjs/common';
 
 import { OrderBookService } from './order-book.service';
@@ -19,7 +19,7 @@ export class OrderBookController {
             product = { ...product, location: [location] };
         }
         if (vintage) {
-            product = { ...product, deviceVintage: vintage };
+            product = { ...product, deviceVintage: new DeviceVintage(vintage) };
         }
 
         return this.orderBookService.getByProduct(product);

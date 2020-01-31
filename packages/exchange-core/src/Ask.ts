@@ -55,7 +55,7 @@ export class Ask extends Order {
         if (!product.deviceVintage || !this.product.deviceVintage) {
             return true;
         }
-        return this.product.deviceVintage <= product.deviceVintage;
+        return this.product.deviceVintage.matches(product.deviceVintage);
     }
 
     private hasMatchingLocation(product: Product, locationService: ILocationService) {

@@ -1,6 +1,7 @@
 import {
     Ask,
     Bid,
+    DeviceVintage,
     MatchingEngine,
     OrderSide,
     TradeExecutedEvent,
@@ -13,6 +14,7 @@ import { List } from 'immutable';
 
 import { Order as OrderEntity } from '../order/order.entity';
 import { TradeService } from '../trade/trade.service';
+import { ProductDTO } from '../order/product.dto';
 
 @Injectable()
 export class MatchingEngineService {
@@ -75,7 +77,7 @@ export class MatchingEngineService {
                   order.id,
                   order.price,
                   order.currentVolume,
-                  order.product,
+                  this.toProduct(order.product),
                   order.validFrom,
                   order.status
               )
@@ -83,9 +85,19 @@ export class MatchingEngineService {
                   order.id,
                   order.price,
                   order.currentVolume,
-                  order.product,
+                  this.toProduct(order.product),
                   order.validFrom,
                   order.status
               );
+    }
+
+    private toProduct(product: ProductDTO): Product {
+        return {
+            ...product,
+            deviceVintage: new DeviceVintage(
+                product.deviceVintage.year,
+                product.deviceVintage.operator
+            )
+        };
     }
 }

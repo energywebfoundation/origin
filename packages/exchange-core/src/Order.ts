@@ -48,11 +48,11 @@ export abstract class Order implements IOrder {
         this._volume = volume;
     }
 
-    public updateVolume(traded: number) {
-        if (traded > this.volume) {
+    public updateWithTradedVolume(tradedVolume: number) {
+        if (tradedVolume > this.volume) {
             throw new Error('Order overmatched');
         }
-        this._volume -= traded;
+        this._volume -= tradedVolume;
         this._status = this.volume === 0 ? OrderStatus.Filled : OrderStatus.PartiallyFilled;
 
         return this;

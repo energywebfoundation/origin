@@ -8,6 +8,8 @@ import { Trade } from '../Trade';
 import { Product } from '../Product';
 import { Ask } from '../Ask';
 import { Bid } from '../Bid';
+import { DeviceVintage } from '../DeviceVintage';
+import { Operator } from '../Operator';
 
 interface IOrderCreationArgs {
     product?: Product;
@@ -31,7 +33,7 @@ describe('Matching tests', () => {
 
     const twoUSD = 2;
     const onekWh = 1000;
-    const deviceVintage = 2019;
+    const deviceVintage = new DeviceVintage(2019);
     const locationCentral = ['Thailand;Central;Nakhon Pathom'];
     const locationEast = ['Thailand;East;Nakhon Pathom'];
 
@@ -224,7 +226,7 @@ describe('Matching tests', () => {
                 new Trade(bidsBefore[1], asksBefore[0], onekWh, asksBefore[0].price)
             ];
 
-            const bidsAfter = [bidsBefore[1].clone().updateVolume(onekWh)];
+            const bidsAfter = [bidsBefore[1].clone().updateWithTradedVolume(onekWh)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });
@@ -258,7 +260,10 @@ describe('Matching tests', () => {
                 new Trade(bidsBefore[1], asksBefore[0], onekWh * 2, asksBefore[0].price)
             ];
 
-            const asksAfter = [asksBefore[0].clone().updateVolume(onekWh * 3), asksBefore[1]];
+            const asksAfter = [
+                asksBefore[0].clone().updateWithTradedVolume(onekWh * 3),
+                asksBefore[1]
+            ];
             const bidsAfter: Bid[] = [];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
@@ -275,7 +280,7 @@ describe('Matching tests', () => {
             ];
 
             const asksAfter: Ask[] = [];
-            const bidsAfter: Bid[] = [bidsBefore[0].clone().updateVolume(onekWh * 3)];
+            const bidsAfter: Bid[] = [bidsBefore[0].clone().updateWithTradedVolume(onekWh * 3)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter, bidsAfter }, done);
         });
@@ -475,13 +480,18 @@ describe('Matching tests', () => {
     });
 
     describe('vintage matching', () => {
-        it('should not match when bid vintage is older than ask', done => {
+        it('should not match when ask vintage not equals bid vintage', done => {
             const asksBefore = [
-                createAsk({ product: { deviceVintage: 2019, deviceType: solarTypeLevel3 } })
+                createAsk({
+                    product: { deviceVintage: new DeviceVintage(2010), deviceType: solarTypeLevel3 }
+                })
             ];
             const bidsBefore = [
                 createBid({
-                    product: { deviceVintage: 2018, deviceType: solarTypeLevel3 }
+                    product: {
+                        deviceVintage: new DeviceVintage(2011),
+                        deviceType: solarTypeLevel3
+                    }
                 })
             ];
 
@@ -490,13 +500,18 @@ describe('Matching tests', () => {
             executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
         });
 
-        it('should match when bid vintage is younger than ask', done => {
+        it('should match when ask vintage is younger than bid', done => {
             const asksBefore = [
-                createAsk({ product: { deviceVintage: 2010, deviceType: solarTypeLevel3 } })
+                createAsk({
+                    product: { deviceVintage: new DeviceVintage(2018), deviceType: solarTypeLevel3 }
+                })
             ];
             const bidsBefore = [
                 createBid({
-                    product: { deviceVintage: 2018, deviceType: solarTypeLevel3 }
+                    product: {
+                        deviceVintage: new DeviceVintage(2010, Operator.GreaterThanOrEqualsTo),
+                        deviceType: solarTypeLevel3
+                    }
                 })
             ];
 
@@ -509,11 +524,13 @@ describe('Matching tests', () => {
 
         it('should match when bid vintage is the same as ask', done => {
             const asksBefore = [
-                createAsk({ product: { deviceVintage: 2010, deviceType: solarTypeLevel3 } })
+                createAsk({
+                    product: { deviceVintage: new DeviceVintage(2018), deviceType: solarTypeLevel3 }
+                })
             ];
             const bidsBefore = [
                 createBid({
-                    product: { deviceVintage: 2010, deviceType: solarTypeLevel3 }
+                    product: { deviceVintage: new DeviceVintage(2018), deviceType: solarTypeLevel3 }
                 })
             ];
 

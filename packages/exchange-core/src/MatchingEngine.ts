@@ -136,8 +136,8 @@ export class MatchingEngine {
 
             executed = executed.concat({
                 trade: new Trade(bid, ask, filled, ask.price),
-                ask: ask.updateVolume(filled),
-                bid: bid.updateVolume(filled)
+                ask: ask.updateWithTradedVolume(filled),
+                bid: bid.updateWithTradedVolume(filled)
             });
 
             return true;

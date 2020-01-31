@@ -83,9 +83,9 @@ export class Bid extends Order {
     }
 
     private hasMatchingVintage(product: Product) {
-        if (!product.deviceVintage || !this.product.deviceVintage) {
+        if (!this.product.deviceVintage || !product.deviceVintage) {
             return true;
         }
-        return this.product.deviceVintage >= product.deviceVintage;
+        return product.deviceVintage.matches(this.product.deviceVintage);
     }
 }
