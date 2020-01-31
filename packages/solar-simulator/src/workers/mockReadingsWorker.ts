@@ -118,26 +118,45 @@ async function saveProducingDeviceSmartMeterRead(
 const { device } = workerData;
 
 const currentTime = moment.tz(device.timezone);
-const measurementTime = currentTime
-    .clone()
-    .subtract(1, 'day')
-    .startOf('day');
 
 (async () => {
     const marketContractLookupAddress = await getMarketContractLookupAddress();
     const conf = await getDeviceConf(marketContractLookupAddress);
 
-    while (measurementTime.isSameOrBefore(currentTime)) {
-        const generateReadingsTimeData = workerData.DATA.find(
-            (row: any) =>
-                row[0] ===
-                measurementTime
-                    .clone()
-                    .year(2015)
-                    .format('DD.MM.YYYY HH:mm')
-        );
+    const MOCK_READINGS_MINUTES_INTERVAL =
+        parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
 
-        const multiplier = parseFloat(generateReadingsTimeData[1]);
+    let measurementTime = currentTime
+        .clone()
+        .subtract(1, 'day')
+        .startOf('day');
+
+    while (measurementTime.isSameOrBefore(currentTime)) {
+        const newMeasurementTime = measurementTime
+            .clone()
+            .add(MOCK_READINGS_MINUTES_INTERVAL, 'minute');
+
+        const measurementTimeWithFixedYear = measurementTime
+            .clone()
+            .year(2015)
+            .unix();
+        const newMeasurementTimeWithFixedYear = newMeasurementTime
+            .clone()
+            .year(2015)
+            .unix();
+
+        const combinedMultiplierForMatchingRows = (workerData.DATA as any[])
+            .filter((row: any) => {
+                const rowTime = moment.tz(row[0], 'DD.MM.YYYY HH:mm', device.timezone).unix();
+
+                return (
+                    rowTime > measurementTimeWithFixedYear &&
+                    rowTime <= newMeasurementTimeWithFixedYear
+                );
+            })
+            .reduce((a, b) => a + parseFloat(b[1]), 0);
+
+        const multiplier = combinedMultiplierForMatchingRows ?? 0;
         const energyGenerated = Math.round(device.maxCapacity * multiplier);
 
         const isValidMeterReading = energyGenerated > 0;
@@ -157,7 +176,10 @@ const measurementTime = currentTime
                     conf
                 );
             } catch (error) {
-                console.error(`Error while trying to save meter read for device ${device.id}`);
+                console.error(
+                    `Error while trying to save meter read for device ${device.id}`,
+                    error?.message
+                );
             }
         }
 
@@ -167,6 +189,6 @@ const measurementTime = currentTime
             } Energy Read of: ${energyGenerated} Wh - [${measurementTime.format()}]`
         );
 
-        measurementTime.add(15, 'minute');
+        measurementTime = newMeasurementTime;
     }
 })();
