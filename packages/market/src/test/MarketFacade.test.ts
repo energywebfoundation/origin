@@ -18,14 +18,30 @@ import {
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 
+import { UserRegisterData } from '@energyweb/origin-backend-core';
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
 import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
 import { PurchasableCertificate, MarketLogic, Demand, Supply, Agreement, MarketUser } from '..';
+
+function createTestRegisterData(email: string): UserRegisterData {
+    return {
+        email,
+        firstName: 'John',
+        lastName: 'Doe',
+        password: 'test',
+        telephone: '111-111-111',
+        title: 'Mr'
+    };
+}
 
 describe('Market-Facade', () => {
     dotenv.config({
@@ -111,6 +127,9 @@ describe('Market-Facade', () => {
     });
 
     it('should init the config', () => {
+        const baseUrl = `${process.env.BACKEND_URL}/api`;
+        const userClient = new UserClientMock();
+
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -124,9 +143,10 @@ describe('Market-Facade', () => {
                 web3
             },
             offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
+                baseUrl,
                 client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock()
+                configurationClient: new ConfigurationClientMock(),
+                userClient
             },
             logger
         };
@@ -145,21 +165,14 @@ describe('Market-Facade', () => {
                     Role.DeviceManager,
                     Role.Trader,
                     Role.Matcher
-                ]),
-                organization: 'Admin'
+                ])
             },
             {
-                firstName: 'Admin',
-                surname: 'Admin',
-                email: '',
-                street: '',
-                number: '',
-                zip: '',
-                city: '',
-                country: '',
-                state: ''
+                notifications: false
             },
-            conf
+            conf,
+            createTestRegisterData('admin@example.com'),
+            privateKeyDeployment
         );
 
         await MarketUser.createMarketUser(
@@ -168,21 +181,14 @@ describe('Market-Facade', () => {
                 propertiesDocumentHash: null,
                 id: accountTrader,
                 active: true,
-                roles: buildRights([Role.Trader]),
-                organization: 'trader'
+                roles: buildRights([Role.Trader])
             },
             {
-                firstName: 'trader',
-                surname: 'trader',
-                email: '',
-                street: '',
-                number: '',
-                zip: '',
-                city: '',
-                country: '',
-                state: ''
+                notifications: false
             },
-            conf
+            conf,
+            createTestRegisterData('trader@example.com'),
+            traderPK
         );
 
         await MarketUser.createMarketUser(
@@ -191,21 +197,14 @@ describe('Market-Facade', () => {
                 propertiesDocumentHash: null,
                 id: deviceOwnerAddress,
                 active: true,
-                roles: buildRights([Role.DeviceManager]),
-                organization: 'deviceOwner'
+                roles: buildRights([Role.DeviceManager])
             },
             {
-                firstName: 'deviceOwner',
-                surname: 'deviceOwner',
-                email: '',
-                street: '',
-                number: '',
-                zip: '',
-                city: '',
-                country: '',
-                state: ''
+                notifications: false
             },
-            conf
+            conf,
+            createTestRegisterData('deviceowner@example.com'),
+            deviceOwnerPK
         );
 
         await MarketUser.createMarketUser(
@@ -214,21 +213,14 @@ describe('Market-Facade', () => {
                 propertiesDocumentHash: null,
                 id: issuerAccount,
                 active: true,
-                roles: buildRights([Role.Issuer]),
-                organization: 'issuer'
+                roles: buildRights([Role.Issuer])
             },
             {
-                firstName: 'issuer',
-                surname: 'issuer',
-                email: '',
-                street: '',
-                number: '',
-                zip: '',
-                city: '',
-                country: '',
-                state: ''
+                notifications: false
             },
-            conf
+            conf,
+            createTestRegisterData('issuer@example.com'),
+            issuerPK
         );
 
         await MarketUser.createMarketUser(
@@ -237,21 +229,14 @@ describe('Market-Facade', () => {
                 propertiesDocumentHash: null,
                 id: matcherAccount,
                 active: true,
-                roles: buildRights([Role.Matcher]),
-                organization: 'matcher'
+                roles: buildRights([Role.Matcher])
             },
             {
-                firstName: 'matcher',
-                surname: 'matcher',
-                email: '',
-                street: '',
-                number: '',
-                zip: '',
-                city: '',
-                country: '',
-                state: ''
+                notifications: false
             },
-            conf
+            conf,
+            createTestRegisterData('matcher@example.com'),
+            matcherPK
         );
 
         await MarketUser.createMarketUser(
@@ -260,47 +245,30 @@ describe('Market-Facade', () => {
                 propertiesDocumentHash: null,
                 id: marketLogic.web3Contract.options.address,
                 active: true,
-                roles: buildRights([Role.Matcher]),
-                organization: 'marketLogic'
+                roles: buildRights([Role.Matcher])
             },
             {
-                firstName: 'marketLogic',
-                surname: 'marketLogic',
-                email: '',
-                street: '',
-                number: '',
-                zip: '',
-                city: '',
-                country: '',
-                state: ''
+                notifications: false
             },
             conf
         );
     });
 
     it('should update MarketUser off-chain properties', async () => {
-        const newEmail = 'testemail@example.com';
-
         let user = await new MarketUser.Entity(accountDeployment, conf).sync();
         await user.update({
-            firstName: 'Admin',
-            surname: 'Admin',
-            email: newEmail,
-            street: '',
-            number: '',
-            zip: '',
-            city: '',
-            country: '',
-            state: ''
+            notifications: true
         });
 
         user = await user.sync();
 
-        assert.equal(user.offChainProperties.email, newEmail);
+        assert.deepEqual(user.offChainProperties, {
+            notifications: true
+        });
     });
 
     it('should not update user properties when blockchain tx fails', async () => {
-        const newEmail = 'testemail@example.com';
+        const newNotifications = false;
 
         conf.blockchainProperties.userLogicInstance.updateUser = async (
             id: string,
@@ -316,7 +284,7 @@ describe('Market-Facade', () => {
         const oldUserProperties = user.offChainProperties;
 
         const newOffChainProperties = { ...oldUserProperties };
-        newOffChainProperties.email = newEmail;
+        newOffChainProperties.notifications = newNotifications;
 
         let failed = false;
 
@@ -390,7 +358,7 @@ describe('Market-Facade', () => {
 
             const demandOffChainProps: Demand.IDemandOffChainProperties = {
                 timeFrame: TimeFrame.hourly,
-                maxPricePerMwh: 1.5,
+                maxPriceInCentsPerMwh: 150,
                 currency: 'USD',
                 location: ['Thailand;Central;Nakhon Pathom'],
                 deviceType: ['Solar'],
@@ -443,7 +411,7 @@ describe('Market-Facade', () => {
                 location: ['Thailand;Central;Nakhon Pathom'],
                 minCO2Offset: 10,
                 otherGreenAttributes: 'string',
-                maxPricePerMwh: 1.5,
+                maxPriceInCentsPerMwh: 150,
                 registryCompliance: 'I-REC',
                 energyPerTimeFrame: 10,
                 timeFrame: TimeFrame.hourly,
@@ -623,7 +591,7 @@ describe('Market-Facade', () => {
             };
 
             const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
-                price: 10,
+                priceInCents: 1000,
                 currency: 'USD',
                 availableWh: 10,
                 timeFrame: TimeFrame.hourly
@@ -649,7 +617,7 @@ describe('Market-Facade', () => {
                 offChainProperties: {
                     availableWh: 10,
                     currency: 'USD',
-                    price: 10,
+                    priceInCents: 1000,
                     timeFrame: TimeFrame.hourly
                 }
             } as Partial<Supply.Entity>);
@@ -666,7 +634,7 @@ describe('Market-Facade', () => {
                 offChainProperties: {
                     availableWh: 10,
                     currency: 'USD',
-                    price: 10,
+                    priceInCents: 1000,
                     timeFrame: TimeFrame.hourly
                 }
             } as Partial<Supply.Entity>);
@@ -692,7 +660,7 @@ describe('Market-Facade', () => {
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
                 end: startTime + 1000,
-                price: 10,
+                priceInCents: 1000,
                 currency: 'USD',
                 period: 10,
                 timeFrame: TimeFrame.hourly
@@ -728,7 +696,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -753,7 +721,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -784,7 +752,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -802,7 +770,7 @@ describe('Market-Facade', () => {
             const agreementOffchainProps: IAgreementOffChainProperties = {
                 start: startTime,
                 end: startTime + 1000,
-                price: 10,
+                priceInCents: 1000,
                 currency: 'USD',
                 period: 10,
                 timeFrame: TimeFrame.hourly
@@ -835,7 +803,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }
@@ -866,7 +834,7 @@ describe('Market-Facade', () => {
                     currency: 'USD',
                     end: startTime + 1000,
                     period: 10,
-                    price: 10,
+                    priceInCents: 1000,
                     start: startTime,
                     timeFrame: TimeFrame.hourly
                 }

@@ -34,8 +34,6 @@ export class ImageController {
             images: Express.Multer.File[];
         }
     ) {
-        console.log(`POST - Image`);
-
         const { images } = files;
 
         if (typeof images === 'undefined') {

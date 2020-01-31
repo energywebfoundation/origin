@@ -27,6 +27,8 @@ export const getOrganizationClient = (state: IStoreState) => state.general.organ
 
 export const getUserClient = (state: IStoreState) => state.general.userClient;
 
+export const getRequestClient = (state: IStoreState) => state.general.requestClient;
+
 export const getEnvironment = (state: IStoreState) => state.general.environment;
 
 export const getCurrencies = (state: IStoreState): string[] => state.general.currencies;

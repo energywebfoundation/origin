@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "3.3.1",
+  "version": "3.3.2",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/build",
@@ -46,10 +46,11 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/device-registry": "2.0.1",
-    "@energyweb/origin": "3.1.1",
-    "@energyweb/user-registry": "2.0.4",
-    "@energyweb/utils-general": "4.1.0",
+    "@energyweb/device-registry": "3.0.0",
+    "@energyweb/origin": "3.1.2",
+    "@energyweb/user-registry": "2.0.5",
+    "@energyweb/utils-general": "4.1.1",
+    "@energyweb/origin-backend-core": "0.1.1",
     "moment": "^2.24.0",
     "polly-js": "^1.6.5",
     "web3": "1.2.4",
@@ -59,11 +60,11 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/origin-backend-client": "2.2.2",
+    "@energyweb/origin-backend-client": "2.2.3",
+    "@energyweb/origin-backend-client-mocks": "0.0.1",
     "@fluffy-spoon/substitute": "1.107.0",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0",
-    "ganache-cli": "6.5.1",
     "truffle-flattener": "1.4.2"
   },
   "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",

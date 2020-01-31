@@ -12,7 +12,11 @@ import {
 } from '@energyweb/user-registry';
 import { Configuration } from '@energyweb/utils-general';
 
-import { OffChainDataClientMock, ConfigurationClientMock } from '@energyweb/origin-backend-client';
+import {
+    OffChainDataClientMock,
+    ConfigurationClientMock,
+    UserClientMock
+} from '@energyweb/origin-backend-client-mocks';
 import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
 import { logger } from '../Logger';
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
@@ -52,13 +56,9 @@ describe('Device Facade', () => {
             privateKeyDeployment
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            'admin',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(
             accountDeployment,
@@ -76,13 +76,9 @@ describe('Device Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            deviceOwnerAddress,
-            'deviceOwner',
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', deviceOwnerAddress, {
+            privateKey: privateKeyDeployment
+        });
         await userLogic.setRoles(
             deviceOwnerAddress,
             buildRights([Role.DeviceManager, Role.DeviceAdmin]),
@@ -105,7 +101,8 @@ describe('Device Facade', () => {
                 offChainDataSource: {
                     baseUrl: `${process.env.BACKEND_URL}/api`,
                     client: new OffChainDataClientMock(),
-                    configurationClient: new ConfigurationClientMock()
+                    configurationClient: new ConfigurationClientMock(),
+                    userClient: new UserClientMock()
                 },
                 logger
             };

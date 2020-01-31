@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.5](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.4...@energyweb/solar-simulator@1.0.5) (2020-01-17)
+
+
+### Bug Fixes
+
+* **solar-simulator:** fix reading web3 variable ([ac2f855](https://github.com/energywebfoundation/origin/commit/ac2f8553fef783d857b8dbe533a932828ac28ddf))
+
+
+
+
+
 ## [1.0.4](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.3...@energyweb/solar-simulator@1.0.4) (2020-01-07)
 
 

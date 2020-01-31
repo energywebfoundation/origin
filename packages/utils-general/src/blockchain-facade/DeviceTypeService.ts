@@ -6,6 +6,7 @@ export interface IDeviceService {
     encode(deviceTypes: DecodedDeviceType): EncodedDeviceType;
     decode(encodedDeviceType: EncodedDeviceType): DecodedDeviceType;
     includesDeviceType(current: string, requested: string[]): boolean;
+    includesSomeDeviceType(current: string[], requested: string[]): boolean;
     validate(deviceTypes: string[]): { areValid: boolean; unknown: string[] };
 }
 
@@ -114,6 +115,18 @@ export class IRECDeviceService implements IDeviceService {
 
         return highestSpecificityTypes.some(requestedDeviceType =>
             checkedType.startsWith(this.encode([requestedDeviceType])[0])
+        );
+    }
+
+    includesSomeDeviceType(checkedTypes: string[], types: string[]): boolean {
+        const highestSpecificityTypes = this.filterForHighestSpecificity(types).map(type => [
+            ...this.decode([type])[0]
+        ]);
+
+        return highestSpecificityTypes.some(requestedDeviceType =>
+            checkedTypes.some(checkedType =>
+                checkedType.startsWith(this.encode([requestedDeviceType])[0])
+            )
         );
     }
 

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.2.0...@energyweb/origin-backend@3.3.0) (2020-01-17)
+
+
+### Bug Fixes
+
+* **origin-backend:** add default config value ([49f3d50](https://github.com/energywebfoundation/origin/commit/49f3d50c5f9e938e5597e54d490879d2d19c671d))
+* **origin-backend:** change test command ([41e4892](https://github.com/energywebfoundation/origin/commit/41e4892c90c84a5fb6ebfa125f0c0334b947599c))
+
+
+### Features
+
+* **origin-backend:** implement authentication ([baa9fea](https://github.com/energywebfoundation/origin/commit/baa9feaa3567b104bcf46134526097c8fc8b86fb))
+
+
+
+
+
 # [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.1.0...@energyweb/origin-backend@3.2.0) (2020-01-07)
 
 

@@ -1,13 +1,14 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { setupStore, WrapperComponent } from '../utils/helpers';
-import { Header } from '../../components/Header';
+import { Header, getAddressDisplay } from '../../components/Header';
 import { User } from '@energyweb/user-registry';
 import { addUser } from '../../features/users/actions';
 import { addAccount, addEncryptedAccount } from '../../features/authentication/actions';
 import { IStoreState } from '../../types';
 import { Store } from 'redux';
 import { MemoryHistory } from 'history';
+import { IUserWithRelationsIds } from '@energyweb/origin-backend-core';
 
 const ENCRYPTED_TRADER_KEYSTORE = {
     address: '0x7672fa3f8C04aBBcbaD14d896AaD8bedECe72d2b',
@@ -32,19 +33,33 @@ const ENCRYPTED_TRADER_KEYSTORE = {
     }
 };
 
-const USER_TRADER = {
+const USER_TRADER = ({
     active: true,
     id: '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
     initialized: true,
-    offChainProperties: {
-        firstName: 'John',
-        surname: 'Doe Six',
-        email: 'trader@mailinator.com'
-    },
-    organization: 'Trader Organization',
+    offChainProperties: {},
     roles: 8,
-    isRole: (role: number) => !!role
-};
+    isRole: (role: number) => !!role,
+    information: ({
+        firstName: 'Trader_Forename',
+        lastName: 'Trader_Surname'
+    } as Partial<IUserWithRelationsIds>) as IUserWithRelationsIds
+} as Partial<User.Entity>) as User.Entity;
+
+const USER_DEVICE_MANAGER = ({
+    active: true,
+    id: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
+    initialized: true,
+    offChainProperties: {},
+    roles: 12,
+    information: ({
+        firstName: 'DM_Forename',
+        lastName: 'DM_Surname'
+    } as Partial<IUserWithRelationsIds>) as IUserWithRelationsIds
+} as Partial<User.Entity>) as User.Entity;
+
+const EXPECTED_USER_TRADER_DISPLAY = getAddressDisplay(null, USER_TRADER);
+const EXPECTED_USER_DEVICE_MANAGER_DISPLAY = getAddressDisplay(null, USER_DEVICE_MANAGER);
 
 describe('Header', () => {
     let store: Store<IStoreState>;
@@ -116,7 +131,7 @@ describe('Header', () => {
             </WrapperComponent>
         );
 
-        expect(rendered.find('.MuiSelect-root').text()).toBe('Trader Organization');
+        expect(rendered.find('.MuiSelect-root').text()).toBe(EXPECTED_USER_TRADER_DISPLAY);
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(true);
 
         rendered.find(`.MuiSelect-root`).simulate('mousedown');
@@ -154,21 +169,7 @@ describe('Header', () => {
                 },
                 ENCRYPTED_TRADER_KEYSTORE
             ],
-            users: [
-                {
-                    active: true,
-                    id: '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
-                    initialized: true,
-                    offChainProperties: {
-                        firstName: 'John',
-                        surname: 'Doe Four',
-                        email: 'devicemanager@mailinator.com'
-                    },
-                    organization: 'Device Manager Organization',
-                    roles: 12
-                },
-                USER_TRADER
-            ]
+            users: [USER_DEVICE_MANAGER, USER_TRADER]
         };
 
         SETUP.encryptedAccounts.map(encryptedAccount =>
@@ -187,7 +188,7 @@ describe('Header', () => {
             </WrapperComponent>
         );
 
-        expect(rendered.find('.MuiSelect-root').text()).toBe('Trader Organization');
+        expect(rendered.find('.MuiSelect-root').text()).toBe(EXPECTED_USER_TRADER_DISPLAY);
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
 
         rendered.find(`.MuiSelect-root`).simulate('mousedown');
@@ -195,9 +196,9 @@ describe('Header', () => {
         expect(
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
         ).toStrictEqual([
-            'Trader Organization (MetaMask)',
-            'Device Manager Organization',
-            'Trader Organization'
+            `${EXPECTED_USER_TRADER_DISPLAY} (MetaMask)`,
+            EXPECTED_USER_DEVICE_MANAGER_DISPLAY,
+            EXPECTED_USER_TRADER_DISPLAY
         ]);
     });
 
@@ -229,7 +230,7 @@ describe('Header', () => {
 
         expect(
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
-        ).toStrictEqual(['Trader Organization', 'Guest (MetaMask)']);
+        ).toStrictEqual([EXPECTED_USER_TRADER_DISPLAY, 'Guest (MetaMask)']);
     });
 
     it('correctly displays MetaMask guest account alongside encrypted account', async () => {
@@ -255,13 +256,15 @@ describe('Header', () => {
             </WrapperComponent>
         );
 
-        expect(rendered.find('.MuiSelect-root').text()).toBe('Guest');
+        const EXPECTED_GUEST_DISPLAY = getAddressDisplay(SETUP.accounts[0].address, null);
+
+        expect(rendered.find('.MuiSelect-root').text()).toBe(EXPECTED_GUEST_DISPLAY);
         expect(rendered.find('.MuiSelect-root').hasClass('Mui-disabled')).toBe(false);
 
         rendered.find(`.MuiSelect-root`).simulate('mousedown');
 
         expect(
             Array.from(document.querySelectorAll(`#menu- ul li`)).map(i => i.textContent)
-        ).toStrictEqual(['Guest (MetaMask)', 'Trader Organization']);
+        ).toStrictEqual([`${EXPECTED_GUEST_DISPLAY} (MetaMask)`, EXPECTED_USER_TRADER_DISPLAY]);
     });
 });

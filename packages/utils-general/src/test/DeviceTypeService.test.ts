@@ -20,106 +20,216 @@ describe('DeviceTypeService tests', () => {
         assert.deepEqual(encoded, expectedResult);
     });
 
-    it('should decode device types', () => {
-        const decoded = deviceTypeService.decode([
-            'Solar;Concentration',
-            'Wind;Offshore',
-            'Marine;Tidal;Inshore'
-        ]);
+    describe('includesDeviceType()', () => {
+        it('should decode device types', () => {
+            const decoded = deviceTypeService.decode([
+                'Solar;Concentration',
+                'Wind;Offshore',
+                'Marine;Tidal;Inshore'
+            ]);
 
-        const expectedResult = [
-            ['Solar', 'Concentration'],
-            ['Wind', 'Offshore'],
-            ['Marine', 'Tidal', 'Inshore']
-        ];
+            const expectedResult = [
+                ['Solar', 'Concentration'],
+                ['Wind', 'Offshore'],
+                ['Marine', 'Tidal', 'Inshore']
+            ];
 
-        assert.deepEqual(decoded, expectedResult);
+            assert.deepEqual(decoded, expectedResult);
+        });
+
+        it('should decode device types', () => {
+            const decoded = deviceTypeService.decode([
+                'Solar;Concentration',
+                'Wind;Offshore',
+                'Marine;Tidal;Inshore'
+            ]);
+
+            const expectedResult = [
+                ['Solar', 'Concentration'],
+                ['Wind', 'Offshore'],
+                ['Marine', 'Tidal', 'Inshore']
+            ];
+
+            assert.deepEqual(decoded, expectedResult);
+        });
+
+        it('should find demanded device types when types matches', () => {
+            const demandDeviceTypes = ['Solar;Concentration'];
+            const supplyDeviceTypes = 'Solar;Concentration';
+
+            const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
+            assert.isTrue(res);
+        });
+
+        it('should find demanded device types when current has one of matches', () => {
+            const demandDeviceTypes = ['Solar;Concentration', 'Wind'];
+            const supplyDeviceTypes = 'Solar;Concentration';
+
+            const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
+            assert.isTrue(res);
+        });
+
+        it('should not find demanded device types when types matches', () => {
+            const demandDeviceTypes = ['Solar;Concentration'];
+            const supplyDeviceTypes = 'Wind;Onshore';
+
+            const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
+            assert.isFalse(res);
+        });
+
+        it('should correctly handle cases where level one types are included with deeper types of the same category', () => {
+            const TEST_MATRIX = [
+                [['Solar'], 'Solar;Photovoltaic;Roof mounted', true],
+                [['Marine', 'Marine;Tidal'], 'Marine;Tidal;Inshore', true],
+                [
+                    ['Marine', 'Marine;Tidal', 'Marine;Tidal;Offshore'],
+                    'Marine;Tidal;Inshore',
+                    false
+                ],
+                [['Wind', 'Wind;Onshore'], 'Wind;Onshore', true],
+                [['Wind', 'Wind;Onshore', 'Solar'], 'Wind;Onshore', true],
+                [['Wind', 'Wind;Onshore'], 'Wind;Offshore', false],
+                [['Wind', 'Wind;Onshore', 'Solar;Photovoltaic'], 'Wind;Offshore', false],
+                [['Wind', 'Wind;Onshore', 'Wind;Offshore'], 'Wind', false],
+                [['Wind;Onshore', 'Wind;Offshore'], 'Wind', false],
+                [['Marine', 'Marine;Tidal'], 'Marine', false]
+            ];
+
+            for (const [deviceTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
+                assert.equal(
+                    deviceTypeService.includesDeviceType(
+                        typeToCheck as string,
+                        deviceTypes as string[]
+                    ),
+                    expectedResult
+                );
+            }
+        });
+
+        it('should find demanded device types when demanded devices are less specific than current', () => {
+            const demandDeviceTypes = ['Solar'];
+            const supplyDeviceTypes = 'Solar;Photovoltaic;Roof mounted';
+
+            const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
+            assert.isTrue(res);
+        });
+
+        it('should not find demanded device types when demanded devices are more specific than current', () => {
+            const demandDeviceTypes = ['Marine;Tidal;Inshore'];
+            const supplyDeviceTypes = 'Marine;Tidal';
+
+            const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
+            assert.isFalse(res);
+        });
+
+        it('should not find demanded device types when demanded devices are more specific than current', () => {
+            const demandDeviceTypes = ['Marine;Tidal;Inshore'];
+            const supplyDeviceTypes = 'Marine;Tidal';
+
+            const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
+            assert.isFalse(res);
+        });
     });
 
-    it('should decode device types', () => {
-        const decoded = deviceTypeService.decode([
-            'Solar;Concentration',
-            'Wind;Offshore',
-            'Marine;Tidal;Inshore'
-        ]);
+    describe('includesDeviceTypeMany', () => {
+        it('should find demanded device types when types matches', () => {
+            const demandDeviceTypes = ['Solar;Concentration'];
+            const supplyDeviceTypes = ['Solar;Concentration'];
 
-        const expectedResult = [
-            ['Solar', 'Concentration'],
-            ['Wind', 'Offshore'],
-            ['Marine', 'Tidal', 'Inshore']
-        ];
-
-        assert.deepEqual(decoded, expectedResult);
-    });
-
-    it('should find demanded device types when types matches', () => {
-        const demandDeviceTypes = ['Solar;Concentration'];
-        const supplyDeviceTypes = 'Solar;Concentration';
-
-        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
-        assert.isTrue(res);
-    });
-
-    it('should find demanded device types when current has one of matches', () => {
-        const demandDeviceTypes = ['Solar;Concentration', 'Wind'];
-        const supplyDeviceTypes = 'Solar;Concentration';
-
-        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
-        assert.isTrue(res);
-    });
-
-    it('should not find demanded device types when types matches', () => {
-        const demandDeviceTypes = ['Solar;Concentration'];
-        const supplyDeviceTypes = 'Wind;Onshore';
-
-        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
-        assert.isFalse(res);
-    });
-
-    it('should correctly handle cases where level one types are included with deeper types of the same category', () => {
-        const TEST_MATRIX = [
-            [['Solar'], 'Solar;Photovoltaic;Roof mounted', true],
-            [['Marine', 'Marine;Tidal'], 'Marine;Tidal;Inshore', true],
-            [['Marine', 'Marine;Tidal', 'Marine;Tidal;Offshore'], 'Marine;Tidal;Inshore', false],
-            [['Wind', 'Wind;Onshore'], 'Wind;Onshore', true],
-            [['Wind', 'Wind;Onshore', 'Solar'], 'Wind;Onshore', true],
-            [['Wind', 'Wind;Onshore'], 'Wind;Offshore', false],
-            [['Wind', 'Wind;Onshore', 'Solar;Photovoltaic'], 'Wind;Offshore', false],
-            [['Wind', 'Wind;Onshore', 'Wind;Offshore'], 'Wind', false],
-            [['Wind;Onshore', 'Wind;Offshore'], 'Wind', false],
-            [['Marine', 'Marine;Tidal'], 'Marine', false]
-        ];
-
-        for (const [deviceTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
-            assert.equal(
-                deviceTypeService.includesDeviceType(typeToCheck as string, deviceTypes as string[]),
-                expectedResult
+            const res = deviceTypeService.includesSomeDeviceType(
+                supplyDeviceTypes,
+                demandDeviceTypes
             );
-        }
-    });
+            assert.isTrue(res);
+        });
 
-    it('should find demanded device types when demanded devices are less specific than current', () => {
-        const demandDeviceTypes = ['Solar'];
-        const supplyDeviceTypes = 'Solar;Photovoltaic;Roof mounted';
+        it('should find demanded device types when current has one of matches', () => {
+            const demandDeviceTypes = ['Solar;Concentration', 'Wind'];
+            const supplyDeviceTypes = ['Solar;Concentration'];
 
-        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
-        assert.isTrue(res);
-    });
+            const res = deviceTypeService.includesSomeDeviceType(
+                supplyDeviceTypes,
+                demandDeviceTypes
+            );
+            assert.isTrue(res);
+        });
 
-    it('should not find demanded device types when demanded devices are more specific than current', () => {
-        const demandDeviceTypes = ['Marine;Tidal;Inshore'];
-        const supplyDeviceTypes = 'Marine;Tidal';
+        it('should not find demanded device types when types matches', () => {
+            const demandDeviceTypes = ['Solar;Concentration'];
+            const supplyDeviceTypes = ['Wind;Onshore'];
 
-        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
-        assert.isFalse(res);
-    });
+            const res = deviceTypeService.includesSomeDeviceType(
+                supplyDeviceTypes,
+                demandDeviceTypes
+            );
+            assert.isFalse(res);
+        });
 
-    it('should not find demanded device types when demanded devices are more specific than current', () => {
-        const demandDeviceTypes = ['Marine;Tidal;Inshore'];
-        const supplyDeviceTypes = 'Marine;Tidal';
+        it('should correctly handle cases where level one types are included with deeper types of the same category', () => {
+            const TEST_MATRIX = [
+                [['Solar'], ['Solar;Photovoltaic;Roof mounted', 'Wind'], true],
+                [['Marine', 'Marine;Tidal'], ['Marine;Tidal;Inshore', 'Solar'], true],
+                [
+                    ['Marine', 'Marine;Tidal', 'Marine;Tidal;Offshore'],
+                    ['Marine;Tidal;Inshore'],
+                    false
+                ],
+                [['Wind', 'Wind;Onshore'], ['Wind;Onshore'], true],
+                [['Wind', 'Wind;Onshore', 'Solar'], ['Wind;Onshore'], true],
+                [['Wind', 'Wind;Onshore'], ['Wind;Offshore'], false],
+                [
+                    ['Wind', 'Wind;Onshore', 'Solar;Photovoltaic'],
+                    ['Wind;Offshore', 'Marine'],
+                    false
+                ],
+                [['Wind', 'Wind;Onshore', 'Wind;Offshore'], ['Wind', 'Solar'], false],
+                [['Wind;Onshore', 'Wind;Offshore'], ['Wind', 'Solar'], false],
+                [['Marine', 'Marine;Tidal'], ['Marine', 'Solar'], false]
+            ];
 
-        const res = deviceTypeService.includesDeviceType(supplyDeviceTypes, demandDeviceTypes);
-        assert.isFalse(res);
+            for (const [deviceTypes, typeToCheck, expectedResult] of TEST_MATRIX) {
+                assert.equal(
+                    deviceTypeService.includesSomeDeviceType(
+                        typeToCheck as string[],
+                        deviceTypes as string[]
+                    ),
+                    expectedResult
+                );
+            }
+        });
+
+        it('should find demanded device types when demanded devices are less specific than current', () => {
+            const demandDeviceTypes = ['Solar'];
+            const supplyDeviceTypes = ['Solar;Photovoltaic;Roof mounted'];
+
+            const res = deviceTypeService.includesSomeDeviceType(
+                supplyDeviceTypes,
+                demandDeviceTypes
+            );
+            assert.isTrue(res);
+        });
+
+        it('should not find demanded device types when demanded devices are more specific than current', () => {
+            const demandDeviceTypes = ['Marine;Tidal;Inshore'];
+            const supplyDeviceTypes = ['Marine;Tidal'];
+
+            const res = deviceTypeService.includesSomeDeviceType(
+                supplyDeviceTypes,
+                demandDeviceTypes
+            );
+            assert.isFalse(res);
+        });
+
+        it('should not find demanded device types when demanded devices are more specific than current', () => {
+            const demandDeviceTypes = ['Marine;Tidal;Inshore'];
+            const supplyDeviceTypes = ['Marine;Tidal'];
+
+            const res = deviceTypeService.includesSomeDeviceType(
+                supplyDeviceTypes,
+                demandDeviceTypes
+            );
+            assert.isFalse(res);
+        });
     });
 
     describe('filterForHighestSpecificity()', () => {

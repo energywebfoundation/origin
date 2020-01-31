@@ -37,6 +37,7 @@ export interface IOffChainProperties {
     images: string;
     region: string;
     province: string;
+    deviceGroup?: string;
 }
 
 export interface ISmartMeterRead {

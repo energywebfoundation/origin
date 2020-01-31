@@ -24,3 +24,5 @@ export {
     IRECBusinessLegalStatus,
     IRECBusinessLegalStatusLabelsMap
 } from './irec/BusinessLegalStatus';
+export { ILocationService, LocationService } from './blockchain-facade/LocationService';
+export * from './Signing';

@@ -49,14 +49,12 @@ export class UserLogic extends GeneralFunctions {
         _propertiesDocumentHash: string,
         _documentDBURL: string,
         _user: string,
-        _organization: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createUser(
             _propertiesDocumentHash,
             _documentDBURL,
-            _user,
-            _organization
+            _user
         );
 
         return this.send(method, txParams);

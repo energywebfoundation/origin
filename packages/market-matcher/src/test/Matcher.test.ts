@@ -75,7 +75,7 @@ describe('Market-matcher e2e tests', async () => {
             certificate = await deployCertificate(config, device.id, requiredEnergy);
 
             await certificate.publishForSale(
-                demand.offChainProperties.maxPricePerMwh / 100,
+                demand.offChainProperties.maxPriceInCentsPerMwh / 100,
                 demand.offChainProperties.currency
             );
 
@@ -106,7 +106,7 @@ describe('Market-matcher e2e tests', async () => {
             certificate = await deployCertificate(config, device.id, certificateEnergy);
 
             await certificate.publishForSale(
-                demand.offChainProperties.maxPricePerMwh / 100,
+                demand.offChainProperties.maxPriceInCentsPerMwh / 100,
                 demand.offChainProperties.currency
             );
 
@@ -123,7 +123,7 @@ describe('Market-matcher e2e tests', async () => {
 
     describe('Demand -> Certificate matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
-        const price = 150;
+        const priceInCents = 150;
         const currency = 'USD';
 
         let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
@@ -138,11 +138,11 @@ describe('Market-matcher e2e tests', async () => {
             config = configuration.config;
             device = await deployDevice(config);
             certificate = await deployCertificate(config, device.id, requiredEnergy);
-            await certificate.publishForSale(price / 100, currency);
+            await certificate.publishForSale(priceInCents, currency);
 
             await startMatcher(matcherConfig);
 
-            demand = await deployDemand(config, requiredEnergy, price, currency);
+            demand = await deployDemand(config, requiredEnergy, priceInCents, currency);
         });
 
         it('demand should be matched with existing certificate', done => {
@@ -152,7 +152,7 @@ describe('Market-matcher e2e tests', async () => {
 
     describe('Agreement -> Certificate matching tests', () => {
         const requiredEnergy = 1 * Unit.MWh;
-        const price = 150;
+        const priceInCents = 150;
         const currency = 'USD';
 
         let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
@@ -169,12 +169,12 @@ describe('Market-matcher e2e tests', async () => {
             device = await deployDevice(config);
             certificate = await deployCertificate(config, device.id, requiredEnergy);
 
-            supply = await deploySupply(config, device.id, requiredEnergy, price, currency);
-            demand = await deployDemand(config, requiredEnergy, price, currency);
+            supply = await deploySupply(config, device.id, requiredEnergy, priceInCents, currency);
+            demand = await deployDemand(config, requiredEnergy, priceInCents, currency);
 
-            await deployAgreement(config, demand.id, supply.id, price, currency);
+            await deployAgreement(config, demand.id, supply.id, priceInCents, currency);
 
-            await certificate.publishForSale(price / 100, currency);
+            await certificate.publishForSale(priceInCents, currency);
 
             await startMatcher(matcherConfig);
         });

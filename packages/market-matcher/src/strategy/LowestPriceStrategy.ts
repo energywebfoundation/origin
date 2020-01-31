@@ -5,7 +5,7 @@ import { IStrategy } from '@energyweb/market-matcher-core';
 export class LowestPriceStrategy implements IStrategy {
     private agreementPriorities = [
         (a: Agreement.IAgreement, b: Agreement.IAgreement) =>
-            a.offChainProperties.price - b.offChainProperties.price
+            a.offChainProperties.priceInCents - b.offChainProperties.priceInCents
     ];
 
     private certificatePriorities = [

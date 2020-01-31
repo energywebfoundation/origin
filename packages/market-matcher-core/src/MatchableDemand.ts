@@ -1,6 +1,6 @@
-import { ProducingDevice, LocationService } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import moment from 'moment';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
@@ -30,7 +30,7 @@ export class MatchableDemand {
                 MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
             .validate(
-                certificate.price <= offChainProperties.maxPricePerMwh,
+                certificate.price <= offChainProperties.maxPriceInCentsPerMwh,
                 MatchingErrorReason.TOO_EXPENSIVE
             )
             .validate(
@@ -59,7 +59,7 @@ export class MatchableDemand {
 
     public matchesSupply(supply: Supply.ISupply) {
         const supplyPricePerMwh =
-            (supply.offChainProperties.price / supply.offChainProperties.availableWh) * 1e6;
+            (supply.offChainProperties.priceInCents / supply.offChainProperties.availableWh) * 1e6;
 
         const { offChainProperties } = this.demand;
 
@@ -70,7 +70,7 @@ export class MatchableDemand {
                 MatchingErrorReason.NOT_ENOUGH_ENERGY
             )
             .validate(
-                supplyPricePerMwh <= offChainProperties.maxPricePerMwh,
+                supplyPricePerMwh <= offChainProperties.maxPriceInCentsPerMwh,
                 MatchingErrorReason.TOO_EXPENSIVE
             )
             .result();

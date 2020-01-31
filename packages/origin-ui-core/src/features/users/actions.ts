@@ -1,12 +1,17 @@
 import { MarketUser } from '@energyweb/market';
 import { IStoreState } from '../../types';
+import { IUserWithRelations } from '@energyweb/origin-backend-core';
 
 export enum UsersActions {
     addUser = 'ADD_USER',
     updateUser = 'UPDATE_USER',
     updateCurrentUserId = 'UPDATE_CURRENT_USER_ID',
     requestUser = 'REQUEST_USER',
-    updateFetcher = 'UPDATE_USER_FETCHER'
+    updateFetcher = 'UPDATE_USER_FETCHER',
+    setUserOffchain = 'SET_USER_OFFCHAIN',
+    setAuthenticationToken = 'SET_AUTHENTICATION_TOKEN',
+    clearAuthenticationToken = 'CLEAR_AUTHENTICATION_TOKEN',
+    refreshUserOffchain = 'REFRESH_USER_OFFCHAIN'
 }
 
 export interface IAddUserAction {
@@ -73,9 +78,57 @@ export const updateFetcher = (payload: IUpdateFetcherAction['payload']) => ({
 
 export type TUpdateFetcherAction = typeof updateFetcher;
 
+export interface ISetUserOffchainAction {
+    type: UsersActions.setUserOffchain;
+    payload: IUserWithRelations;
+}
+
+export const setUserOffchain = (payload: ISetUserOffchainAction['payload']) => ({
+    type: UsersActions.setUserOffchain,
+    payload
+});
+
+export type TSetUserOffchainAction = typeof setUserOffchain;
+
+export interface IRefreshUserOffchainAction {
+    type: UsersActions.refreshUserOffchain;
+}
+
+export const refreshUserOffchain = () => ({
+    type: UsersActions.refreshUserOffchain
+});
+
+export type TRefreshUserOffchainAction = typeof refreshUserOffchain;
+
+export interface ISetAuthenticationTokenAction {
+    type: UsersActions.setAuthenticationToken;
+    payload: string;
+}
+
+export const setAuthenticationToken = (payload: ISetAuthenticationTokenAction['payload']) => ({
+    type: UsersActions.setAuthenticationToken,
+    payload
+});
+
+export type TSetAuthenticationTokenAction = typeof setAuthenticationToken;
+
+export interface IClearAuthenticationTokenAction {
+    type: UsersActions.clearAuthenticationToken;
+}
+
+export const clearAuthenticationToken = () => ({
+    type: UsersActions.clearAuthenticationToken
+});
+
+export type TClearAuthenticationTokenAction = typeof clearAuthenticationToken;
+
 export type IUsersAction =
     | IAddUserAction
     | IUpdateUserAction
     | IUpdateCurrentUserIdAction
     | IRequestUserAction
-    | IUpdateFetcherAction;
+    | IUpdateFetcherAction
+    | ISetUserOffchainAction
+    | ISetAuthenticationTokenAction
+    | IClearAuthenticationTokenAction
+    | IRefreshUserOffchainAction;

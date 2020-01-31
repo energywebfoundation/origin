@@ -22,13 +22,20 @@ jest.setTimeout(100000);
 describe('Application[E2E]', () => {
     it('correctly navigates to producing device details', async () => {
         const ganacheServer = await startGanache();
-        const { configurationClient, offChainDataClient } = await deployDemo();
+        const {
+            configurationClient,
+            offChainDataClient,
+            organizationClient,
+            userClient
+        } = await deployDemo();
 
         const { store, history } = setupStore([`/devices/production?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
             logActions: false,
             configurationClient,
-            offChainDataClient
+            offChainDataClient,
+            organizationClient,
+            userClient
         });
 
         const rendered = mount(
@@ -66,7 +73,7 @@ describe('Application[E2E]', () => {
             await refresh();
 
             expect(rendered.find('.ViewProfile div.MuiSelect-select').text()).toBe(
-                'Trader organization'
+                'Trader_Forename Trader_Surname'
             );
         }
 
@@ -174,6 +181,8 @@ describe('Application[E2E]', () => {
                 .simulate('click');
 
             rendered.update();
+
+            await wait(1000);
 
             expect(rendered.find('table tbody tr td div').map(el => el.text())).toEqual([
                 'Facility name',

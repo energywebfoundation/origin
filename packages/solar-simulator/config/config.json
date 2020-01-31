@@ -41,7 +41,7 @@
     }
   ],
   "config": {
-    "ENERGY_READ_CHECK_INTERVAL": 29000,
+    "ENERGY_READ_CHECK_INTERVAL": 3600000,
     "ACCOUNT_GENERATION": {
       "mnemonic": "chalk park staff buzz chair purchase wise oak receive avoid avoid home",
       "startIndex": 20

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@4.1.0...@energyweb/utils-general@4.1.1) (2020-01-17)
+
+**Note:** Version bump only for package @energyweb/utils-general
+
+
+
+
+
 # [4.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@4.0.0...@energyweb/utils-general@4.1.0) (2020-01-07)
 
 
