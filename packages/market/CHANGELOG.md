@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.3.2...@energyweb/market@4.0.0) (2020-01-31)
+
+
+### Features
+
+* introduce concept of email/password login ([49f49ee](https://github.com/energywebfoundation/origin/commit/49f49ee412ca47f91277a3d66875aaf92be73472))
+* **market:** use priceInCents instead of price ([a01554e](https://github.com/energywebfoundation/origin/commit/a01554ee805141e95215bfeec58f1b6eb10ac954))
+
+
+### BREAKING CHANGES
+
+* change offchain properties and user creation
+* **market:** Because of the use of a new precise-proofs library, we have to use price in cents instead of prices with decimal points
+
+
+
+
+
 ## [3.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.3.1...@energyweb/market@3.3.2) (2020-01-17)
 
 **Note:** Version bump only for package @energyweb/market
