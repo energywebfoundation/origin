@@ -12,7 +12,17 @@ export enum OrderStatus {
     PartiallyFilled
 }
 
-export abstract class Order {
+export interface IOrder {
+    id: string;
+    side: OrderSide;
+    status: OrderStatus;
+    validFrom: Date;
+    product: Product;
+    price: number;
+    volume: number;
+}
+
+export abstract class Order implements IOrder {
     private _volume: number;
 
     private _status: OrderStatus;
@@ -29,7 +39,7 @@ export abstract class Order {
         public readonly id: string,
         public readonly side: OrderSide,
         status: OrderStatus,
-        public readonly validFrom: number,
+        public readonly validFrom: Date,
         public readonly product: Product,
         public readonly price: number,
         volume: number

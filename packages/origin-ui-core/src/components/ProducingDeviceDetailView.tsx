@@ -27,6 +27,7 @@ import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { formatDate } from '../utils/helper';
 import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import { DeviceGroupForm } from './DeviceGroupForm';
 
 interface IProps {
     id: number;
@@ -264,6 +265,9 @@ export function ProducingDeviceDetailView(props: IProps) {
                             </div>
                         )}
                     </div>
+                    {selectedDevice?.offChainProperties?.deviceGroup && (
+                        <DeviceGroupForm device={selectedDevice} readOnly={true} />
+                    )}
                     {props.showCertificates && (
                         <>
                             <br />

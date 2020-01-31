@@ -22,6 +22,7 @@ export interface IDevice {
     complianceRegistry: string;
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
+    deviceGroup?: string;
 }
 
 export type DeviceUpdateData = Pick<IDevice, 'status'>;

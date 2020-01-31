@@ -1,11 +1,18 @@
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IDeviceService, ILocationService } from '@energyweb/utils-general';
 import { Order, OrderStatus, OrderSide } from './Order';
 import { Product } from './Product';
 import { Bid } from './Bid';
 
 export class Ask extends Order {
-    constructor(id: string, price: number, volume: number, product: Product, validFrom: number) {
-        super(id, OrderSide.Ask, OrderStatus.Active, validFrom, product, price, volume);
+    constructor(
+        id: string,
+        price: number,
+        volume: number,
+        product: Product,
+        validFrom: Date,
+        status: OrderStatus
+    ) {
+        super(id, OrderSide.Ask, status, validFrom, product, price, volume);
 
         if (product.deviceType?.length !== 1) {
             throw new Error('Unable to create ask order. AssetType has to be specified');
@@ -14,8 +21,8 @@ export class Ask extends Order {
 
     public filterBy(
         product: Product,
-        deviceService: IRECDeviceService,
-        locationService: LocationService
+        deviceService: IDeviceService,
+        locationService: ILocationService
     ): boolean {
         const hasMatchingDeviceType = this.hasMatchingDeviceType(product, deviceService);
         const hasMatchingVintage = this.hasMatchingVintage(product);
@@ -26,13 +33,17 @@ export class Ask extends Order {
 
     public matches(
         bid: Bid,
-        deviceService: IRECDeviceService,
-        locationService: LocationService
+        deviceService: IDeviceService,
+        locationService: ILocationService
     ): boolean {
         return this.filterBy(bid.product, deviceService, locationService);
     }
 
-    private hasMatchingDeviceType(product: Product, deviceService: IRECDeviceService) {
+    public clone() {
+        return new Ask(this.id, this.price, this.volume, this.product, this.validFrom, this.status);
+    }
+
+    private hasMatchingDeviceType(product: Product, deviceService: IDeviceService) {
         if (!product.deviceType) {
             return true;
         }
@@ -47,7 +58,7 @@ export class Ask extends Order {
         return this.product.deviceVintage <= product.deviceVintage;
     }
 
-    private hasMatchingLocation(product: Product, locationService: LocationService) {
+    private hasMatchingLocation(product: Product, locationService: ILocationService) {
         if (!product.location) {
             return true;
         }

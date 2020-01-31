@@ -113,7 +113,7 @@ export function DemandForm(props: IProps) {
                 demandNeedsInDisplayUnit: EnergyFormatter.getValueInDisplayUnit(
                     demand.energyPerTimeFrame
                 ).toString(),
-                maxPricePerMWh: Math.round(demand.maxPriceInCentsPerMwh).toString(),
+                maxPricePerMWh: Math.round(demand.maxPriceInCentsPerMwh / 100).toString(),
                 procureFromSingleFacility: demand.procureFromSingleFacility,
                 timeframe: demand.timeFrame,
                 automaticMatching: demand.automaticMatching

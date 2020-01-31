@@ -52,12 +52,9 @@ describe('Device Facade', () => {
             privateKeyDeployment
         );
 
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            accountDeployment,
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', accountDeployment, {
+            privateKey: privateKeyDeployment
+        });
 
         await userLogic.setRoles(
             accountDeployment,
@@ -75,12 +72,9 @@ describe('Device Facade', () => {
     });
 
     it('should onboard tests-users', async () => {
-        await userLogic.createUser(
-            'propertiesDocumentHash',
-            'documentDBURL',
-            deviceOwnerAddress,
-            { privateKey: privateKeyDeployment }
-        );
+        await userLogic.createUser('propertiesDocumentHash', 'documentDBURL', deviceOwnerAddress, {
+            privateKey: privateKeyDeployment
+        });
         await userLogic.setRoles(
             deviceOwnerAddress,
             buildRights([Role.DeviceManager, Role.DeviceAdmin]),

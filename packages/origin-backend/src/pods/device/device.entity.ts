@@ -64,4 +64,7 @@ export class Device extends BaseEntity implements IDevice {
 
     @Column()
     typeOfPublicSupport: string;
+
+    @Column()
+    deviceGroup: string;
 }

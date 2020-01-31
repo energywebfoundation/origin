@@ -1,4 +1,10 @@
-export class LocationService {
+export interface ILocationService {
+    matches(currentLocation: string[], checkedLocation: string): boolean;
+    encode(decoded: string[][]): string[];
+    decode(encoded: string[]): string[][];
+}
+
+export class LocationService implements ILocationService {
     public matches(currentLocation: string[], checkedLocation: string) {
         const highestSpecificityTypes = this.filterForHighestSpecificity(
             currentLocation

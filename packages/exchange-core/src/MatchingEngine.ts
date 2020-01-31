@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { IDeviceService, ILocationService } from '@energyweb/utils-general';
 
 import { OrderSide, Order, OrderStatus } from './Order';
 import { Trade } from './Trade';
@@ -8,24 +8,23 @@ import { Product } from './Product';
 import { Bid } from './Bid';
 import { Ask } from './Ask';
 
-export type Listener<T> = (entity: T) => void;
+export type TradeExecutedEvent = { trade: Trade; ask: Ask; bid: Bid };
 
-type ExecutedTrade = { trade: Trade; askKey: number; bidKey: number; isPartial: boolean };
-
-export class Matching {
-    private deviceService = new IRECDeviceService();
-
-    private locationService = new LocationService();
-
+export class MatchingEngine {
     private bids: List<Bid> = List<Bid>();
 
     private asks: List<Ask> = List<Ask>();
 
-    public trades = new Subject<List<Trade>>();
+    public trades = new Subject<List<TradeExecutedEvent>>();
 
     public cancellationQueue = List<string>();
 
-    public submitOrder(order: Order) {
+    constructor(
+        private readonly deviceService: IDeviceService,
+        private readonly locationService: ILocationService
+    ) {}
+
+    public submitOrder(order: Ask | Bid) {
         if (order.side === OrderSide.Ask) {
             this.asks = this.insert(this.asks, order as Ask);
         } else {
@@ -67,24 +66,25 @@ export class Matching {
     }
 
     private match() {
-        let result = List<ExecutedTrade>();
+        let executedTrades = List<TradeExecutedEvent>();
         this.cancel();
 
-        this.bids.forEach((bid, key) => {
-            const executed = this.generateTrades(bid, key);
+        this.bids.forEach(bid => {
+            const executed = this.generateTrades(bid);
             if (executed.isEmpty()) {
                 return false;
             }
 
             this.updateOrderBook(executed);
-            result = result.concat(executed);
+
+            executedTrades = executedTrades.concat(executed);
 
             return true;
         });
 
         this.cleanOrderBook();
 
-        return result.map(m => m.trade);
+        return executedTrades;
     }
 
     private cancel() {
@@ -103,10 +103,16 @@ export class Matching {
         this.cancellationQueue = List<string>();
     }
 
-    private updateOrderBook(matched: List<ExecutedTrade>) {
+    private updateOrderBook(matched: List<TradeExecutedEvent>) {
         matched.forEach(m => {
-            this.asks = this.asks.update(m.askKey, order => order.updateVolume(m.trade.volume));
-            this.bids = this.bids.update(m.bidKey, order => order.updateVolume(m.trade.volume));
+            this.asks = this.asks.set(
+                this.asks.findIndex(ask => ask.id === m.ask.id),
+                m.ask
+            );
+            this.bids = this.bids.set(
+                this.bids.findIndex(bid => bid.id === m.bid.id),
+                m.bid
+            );
         });
     }
 
@@ -115,27 +121,23 @@ export class Matching {
         this.bids = this.bids.filterNot(bid => bid.status === OrderStatus.Filled);
     }
 
-    private generateTrades(bid: Bid, bidKey: number) {
-        let executed = List<ExecutedTrade>();
-        let missing = bid.volume;
+    private generateTrades(bid: Bid) {
+        let executed = List<TradeExecutedEvent>();
 
-        this.asks.forEach((ask, key) => {
+        this.asks.forEach(ask => {
             const isMatching = this.matches(bid, ask);
-            const isFilled = missing === 0;
+            const isFilled = bid.volume === 0;
 
             if (!isMatching || isFilled) {
                 return false;
             }
 
-            const isPartial = missing < ask.volume;
-            const filled = isPartial ? ask.volume - missing : ask.volume;
-            missing -= filled;
+            const filled = Math.min(ask.volume, bid.volume);
 
-            executed = executed.push({
+            executed = executed.concat({
                 trade: new Trade(bid, ask, filled, ask.price),
-                askKey: key,
-                bidKey,
-                isPartial
+                ask: ask.updateVolume(filled),
+                bid: bid.updateVolume(filled)
             });
 
             return true;

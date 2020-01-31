@@ -54,12 +54,13 @@ export class DeviceController {
         console.log(`<POST> Device`);
 
         const newEntity = new Device();
-        
+
         Object.assign(newEntity, {
             ...body,
             status: DeviceStatus.Submitted
         });
 
+        newEntity.deviceGroup = body.deviceGroup ?? '';
         newEntity.id = Number(id);
 
         const validationErrors = await validate(newEntity);
