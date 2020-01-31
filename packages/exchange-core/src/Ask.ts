@@ -15,7 +15,7 @@ export class Ask extends Order {
         super(id, OrderSide.Ask, status, validFrom, product, price, volume);
 
         if (product.deviceType?.length !== 1) {
-            throw new Error('Unable to create ask order. AssetType has to be specified');
+            throw new Error('Unable to create ask order. DeviceType has to be specified');
         }
     }
 
