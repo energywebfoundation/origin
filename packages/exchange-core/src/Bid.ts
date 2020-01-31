@@ -86,6 +86,6 @@ export class Bid extends Order {
         if (!product.deviceVintage || !this.product.deviceVintage) {
             return true;
         }
-        return this.product.deviceVintage >= product.deviceVintage;
+        return this.product.deviceVintage <= product.deviceVintage;
     }
 }

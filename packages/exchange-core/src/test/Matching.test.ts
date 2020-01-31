@@ -475,9 +475,9 @@ describe('Matching tests', () => {
     });
 
     describe('vintage matching', () => {
-        it('should not match when bid vintage is older than ask', done => {
+        it('should not match when ask vintage is older than bid', done => {
             const asksBefore = [
-                createAsk({ product: { deviceVintage: 2019, deviceType: solarTypeLevel3 } })
+                createAsk({ product: { deviceVintage: 2010, deviceType: solarTypeLevel3 } })
             ];
             const bidsBefore = [
                 createBid({
@@ -490,13 +490,13 @@ describe('Matching tests', () => {
             executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
         });
 
-        it('should match when bid vintage is younger than ask', done => {
+        it('should match when ask vintage is younger than bid', done => {
             const asksBefore = [
-                createAsk({ product: { deviceVintage: 2010, deviceType: solarTypeLevel3 } })
+                createAsk({ product: { deviceVintage: 2018, deviceType: solarTypeLevel3 } })
             ];
             const bidsBefore = [
                 createBid({
-                    product: { deviceVintage: 2018, deviceType: solarTypeLevel3 }
+                    product: { deviceVintage: 2010, deviceType: solarTypeLevel3 }
                 })
             ];
 
