@@ -1,6 +1,7 @@
 import { Configuration } from '@energyweb/utils-general';
 import { MarketUser } from '@energyweb/market';
 
+import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import { IOriginEventsStore } from '../stores/OriginEventsStore';
 
 import EmailTypes from '../email/EmailTypes';
@@ -18,22 +19,30 @@ export class NotificationService implements INotificationService {
     ) {}
 
     public async notify() {
-        const allUsers: Promise<
-            MarketUser.Entity
-        >[] = this.originEventsStore
-            .getAllUsers()
-            .map(async userId => new MarketUser.Entity(userId, this.conf).sync());
+        const onChainUsers: MarketUser.Entity[] = [];
+        const offChainUserEmails: string[] = [];
 
-        const notifyUsers: MarketUser.Entity[] = (await Promise.all(allUsers)).filter(
-            user => user.offChainProperties.notifications
-        );
+        for (const userId of this.originEventsStore.getAllUsers()) {
+            try {
+                const user = await new MarketUser.Entity(userId, this.conf).sync();
+                onChainUsers.push(user);
+            } catch (e) {
+                offChainUserEmails.push(userId);
+            }
+        }
 
-        for (const user of notifyUsers) {
+        for (const user of onChainUsers) {
             await this.notifyIssuedCertificates(user);
             await this.notifyMatchingCertificates(user);
             await this.notifyPartiallyFilledDemand(user);
             await this.notifyFulfilledDemand(user);
             await this.notifyDeviceStatusChange(user);
+        }
+
+        for (const email of offChainUserEmails) {
+            await this.notifyOrganizationStatusChange(email);
+            await this.notifyOrganizationInvitation(email);
+            await this.notifyOrganizationRemovedMember(email);
         }
     }
 
@@ -64,7 +73,7 @@ export class NotificationService implements INotificationService {
                 `Matched the following certificates to your demands:<br />${partiallyFilledDemands
                     .map(
                         match =>
-                            `Matched certificate ${match.certificateId} with amount ${match.amount} Wh to demand ${match.demandId}.`
+                            `Matched certificate ${match.certificateId} with amount ${match.energy} Wh to demand ${match.demandId}.`
                     )
                     .join('<br />')}`,
                 () => this.originEventsStore.resetPartiallyFilledDemands(user.id)
@@ -129,6 +138,63 @@ export class NotificationService implements INotificationService {
                     .join('<br />')}<br /><a href="${url}">${url}</a>`,
                 () => this.originEventsStore.resetDeviceStatusChanges(user.id)
             );
+        }
+    }
+
+    private async notifyOrganizationStatusChange(emailAddress: string) {
+        const organizationStatusChanges = this.originEventsStore.getOrganizationStatusChanges(
+            emailAddress
+        );
+
+        if (organizationStatusChanges.length > 0) {
+            for (const change of organizationStatusChanges) {
+                const url = `${process.env.UI_BASE_URL}/organization/organization-view/${change.organizationId}`;
+
+                await this.sendNotificationEmail(
+                    EmailTypes.ORGANIZATION_STATUS_CHANGES,
+                    emailAddress,
+                    `Status of your registration changed to ${
+                        OrganizationStatus[change.status]
+                    }. To find out more please visit <a href="${url}">${url}</a>`,
+                    () => this.originEventsStore.resetOrganizationStatusChanges(emailAddress)
+                );
+            }
+        }
+    }
+
+    private async notifyOrganizationInvitation(emailAddress: string) {
+        const organizationInvitations = this.originEventsStore.getOrganizationInvitations(
+            emailAddress
+        );
+
+        if (organizationInvitations.length > 0) {
+            for (const invitation of organizationInvitations) {
+                const url = `${process.env.UI_BASE_URL}/organization/organization-invitations`;
+
+                await this.sendNotificationEmail(
+                    EmailTypes.ORGANIZATION_INVITATION,
+                    emailAddress,
+                    `Organization ${invitation.organizationName} has invited you to join the organization. To accept the invitation, please visit <a href="${url}">${url}</a>`,
+                    () => this.originEventsStore.resetOrganizationInvitations(emailAddress)
+                );
+            }
+        }
+    }
+
+    private async notifyOrganizationRemovedMember(emailAddress: string) {
+        const organizationRemovedMember = this.originEventsStore.getOrganizationRemovedMember(
+            emailAddress
+        );
+
+        if (organizationRemovedMember.length > 0) {
+            for (const removed of organizationRemovedMember) {
+                await this.sendNotificationEmail(
+                    EmailTypes.ORGANIZATION_REMOVED_MEMBER,
+                    emailAddress,
+                    `Organization ${removed.organizationName} has removed you from the organization.`,
+                    () => this.originEventsStore.resetOrganizationRemovedMembers(emailAddress)
+                );
+            }
         }
     }
 
