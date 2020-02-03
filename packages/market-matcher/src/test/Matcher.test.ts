@@ -65,63 +65,63 @@ describe('Market-matcher e2e tests', async () => {
         }).timeout(20000);
     });
 
-    // describe('Certificate -> Demand splitting + matching tests', () => {
-    //     const requiredEnergy = 1 * Unit.MWh;
-    //     const certificateEnergy = 2 * requiredEnergy;
+    describe('Certificate -> Demand splitting + matching tests', () => {
+        const requiredEnergy = 1 * Unit.MWh;
+        const certificateEnergy = 2 * requiredEnergy;
 
-    //     let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
-    //     let demand: Demand.Entity;
-    //     let device: ProducingDevice.Entity;
-    //     let certificate: PurchasableCertificate.Entity;
+        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
+        let demand: Demand.Entity;
+        let device: ProducingDevice.Entity;
+        let certificate: PurchasableCertificate.Entity;
 
-    //     before(async () => {
-    //         const configuration = await deploy();
-    //         const { matcherConfig } = configuration;
+        before(async () => {
+            const configuration = await deploy();
+            const { matcherConfig } = configuration;
 
-    //         config = configuration.config;
-    //         demand = await deployDemand(config, requiredEnergy);
-    //         device = await deployDevice(config);
-    //         certificate = await deployCertificate(config, device.id, certificateEnergy);
+            config = configuration.config;
+            demand = await deployDemand(config, requiredEnergy);
+            device = await deployDevice(config);
+            certificate = await deployCertificate(config, device.id, certificateEnergy);
 
-    //         await certificate.publishForSale(demand.maxPriceInCentsPerMwh / 100, demand.currency);
+            await certificate.publishForSale(demand.maxPriceInCentsPerMwh / 100, demand.currency);
 
-    //         await startMatcher(matcherConfig);
-    //     });
+            await startMatcher(matcherConfig);
+        });
 
-    //     it('certificate should be matched with existing demand', done => {
-    //         // here we expecting that initial certificate #0 will be split into #1 and #2
-    //         // #1 is expected to be matched with the demand
-    //         const expectedMatchedCertificateId = '1';
-    //         assertMatched(config, demand, expectedMatchedCertificateId, requiredEnergy, done);
-    //     }).timeout(20000);
-    // });
+        it('certificate should be matched with existing demand', done => {
+            // here we expecting that initial certificate #0 will be split into #1 and #2
+            // #1 is expected to be matched with the demand
+            const expectedMatchedCertificateId = '1';
+            assertMatched(config, demand, expectedMatchedCertificateId, requiredEnergy, done);
+        }).timeout(20000);
+    });
 
-    // describe('Demand -> Certificate matching tests', () => {
-    //     const requiredEnergy = 1 * Unit.MWh;
-    //     const priceInCents = 150;
-    //     const currency = 'USD';
+    describe('Demand -> Certificate matching tests', () => {
+        const requiredEnergy = 1 * Unit.MWh;
+        const priceInCents = 150;
+        const currency = 'USD';
 
-    //     let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
-    //     let demand: Demand.Entity;
-    //     let device: ProducingDevice.Entity;
-    //     let certificate: PurchasableCertificate.Entity;
+        let config: Configuration.Entity<MarketLogic, DeviceLogic, CertificateLogic, UserLogic>;
+        let demand: Demand.Entity;
+        let device: ProducingDevice.Entity;
+        let certificate: PurchasableCertificate.Entity;
 
-    //     before(async () => {
-    //         const configuration = await deploy();
-    //         const { matcherConfig } = configuration;
+        before(async () => {
+            const configuration = await deploy();
+            const { matcherConfig } = configuration;
 
-    //         config = configuration.config;
-    //         device = await deployDevice(config);
-    //         certificate = await deployCertificate(config, device.id, requiredEnergy);
-    //         await certificate.publishForSale(priceInCents, currency);
+            config = configuration.config;
+            device = await deployDevice(config);
+            certificate = await deployCertificate(config, device.id, requiredEnergy);
+            await certificate.publishForSale(priceInCents, currency);
 
-    //         await startMatcher(matcherConfig);
+            await startMatcher(matcherConfig);
 
-    //         demand = await deployDemand(config, requiredEnergy, priceInCents, currency);
-    //     });
+            demand = await deployDemand(config, requiredEnergy, priceInCents, currency);
+        });
 
-    //     it('demand should be matched with existing certificate', done => {
-    //         assertMatched(config, demand, certificate.id, requiredEnergy, done);
-    //     }).timeout(20000);
-    // });
+        it('demand should be matched with existing certificate', done => {
+            assertMatched(config, demand, certificate.id, requiredEnergy, done);
+        }).timeout(20000);
+    });
 });
