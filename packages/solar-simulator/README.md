@@ -45,7 +45,7 @@ To run simulator and consumer services you need to deploy Origin first.
 
 Edit `.env` in the root of the monorepo and configure:
 - `WEB3` - by default configured to local Ganache instance (`http://localhost:8545`), if you've deployed Origin to Volta, use: `https://volta-rpc.energyweb.org`
-- `ENERGY_API_BASE_URL` - the address on which simulation server is running, by default locally it's `http://localhost:3031`, in Docker it's `http://simulation:3031`
+- `ENERGY_API_BASE_URL` - the address on which simulation server is running, by default locally it's `http://localhost:3032`, in Docker it's `http://simulation:3032`
 
 ### Device
 

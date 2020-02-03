@@ -19,7 +19,7 @@ import { PowerFormatter } from '../../utils/PowerFormatter';
 
 jest.setTimeout(100000);
 
-describe.skip('Application[E2E]', () => {
+describe('Application[E2E]', () => {
     it('correctly navigates to producing device details', async () => {
         const ganacheServer = await startGanache();
         const {

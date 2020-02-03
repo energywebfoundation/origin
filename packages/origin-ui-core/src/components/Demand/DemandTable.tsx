@@ -267,9 +267,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             const deviceService = new IRECDeviceService();
 
             const topLevelDeviceTypes = demand.deviceType
-                ? deviceService
-                      .decode(demand.deviceType)
-                      .filter(type => type.length === 1)
+                ? deviceService.decode(demand.deviceType).filter(type => type.length === 1)
                 : [];
 
             const deviceType =
@@ -296,26 +294,22 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
             return {
                 buyer: enrichedDemandData.demandOwnerOrganization?.name,
-                duration: `${formatDate(
-                    moment.unix(demand.startTime)
-                )} - ${formatDate(moment.unix(demand.endTime))}`,
+                duration: `${formatDate(moment.unix(demand.startTime))} - ${formatDate(
+                    moment.unix(demand.endTime)
+                )}`,
                 region: this.getRegionText(demand),
                 deviceType,
                 repeatable:
                     typeof demand.timeFrame !== 'undefined'
                         ? TimeFrame[demand.timeFrame]
                         : NO_VALUE_TEXT,
-                fromSingleFacility: demand.procureFromSingleFacility
-                    ? 'yes'
-                    : 'no',
+                fromSingleFacility: demand.procureFromSingleFacility ? 'yes' : 'no',
                 vintage:
                     demand.vintage?.length === 2
                         ? `${demand.vintage[0]} - ${demand.vintage[1]}`
                         : NO_VALUE_TEXT,
                 demand: EnergyFormatter.format(demand.energyPerTimeFrame),
-                max: `${(demand.maxPriceInCentsPerMwh / 100).toFixed(2)} ${
-                    demand.currency
-                }`,
+                max: `${(demand.maxPriceInCentsPerMwh / 100).toFixed(2)} ${demand.currency}`,
                 status: demandStatus,
                 energy: overallDemand
             };

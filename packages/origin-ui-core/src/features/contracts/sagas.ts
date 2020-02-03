@@ -134,35 +134,43 @@ function* initEventHandler() {
                 });
             });
 
-            configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.CREATE_NEW_DEMAND, async (event: any) => {
-                try {
-                    const demand = await new Demand.Entity(
-                        event.data.demandId.toString(),
-                        configuration
-                    ).sync();
+            configuration.offChainDataSource.eventClient.subscribe(
+                SupportedEvents.CREATE_NEW_DEMAND,
+                async (event: any) => {
+                    try {
+                        const demand = new Demand.Entity(
+                            event.data.demandId.toString(),
+                            configuration
+                        );
 
-                    emitter({
-                        action: demandCreated(demand)
-                    });
-                } catch (error) {
-                    console.error(`Error while handling ${SupportedEvents.CREATE_NEW_DEMAND} event`, error);
+                        await demand.sync();
+
+                        emitter({
+                            action: demandCreated(demand)
+                        });
+                    } catch (error) {
+                        console.error(
+                            `Error while handling ${SupportedEvents.CREATE_NEW_DEMAND} event`,
+                            error
+                        );
+                    }
                 }
-            });
+            );
 
-            configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.DEMAND_UPDATED, async (event: any) => {
-                const { demandId, status } = event.data;
+            configuration.offChainDataSource.eventClient.subscribe(
+                SupportedEvents.DEMAND_UPDATED,
+                async (event: any) => {
+                    const { demandId, status } = event.data;
 
-                if (parseInt(status as string, 10) === DemandStatus.ARCHIVED) {
-                    emitter({
-                        action: demandUpdated(
-                            await new Demand.Entity(
-                                demandId.toString(),
-                                configuration
-                            ).sync()
-                        )
-                    });
+                    if (parseInt(status as string, 10) === DemandStatus.ARCHIVED) {
+                        emitter({
+                            action: demandUpdated(
+                                await new Demand.Entity(demandId.toString(), configuration).sync()
+                            )
+                        });
+                    }
                 }
-            });
+            );
 
             certificateContractEventHandler.onEvent('LogCertificateSplit', async function(
                 event: any
