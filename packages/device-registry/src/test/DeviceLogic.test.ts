@@ -143,21 +143,21 @@ describe('DeviceLogic', () => {
         );
     });
 
-    it('should not create active device when the user does not have the device admin rights as user', async () => {
+    it('should not create active device when the user does not have the device admin/manager rights as user', async () => {
         let failed = false;
         try {
             await deviceLogic.createDevice(
                 deviceSmartmeter,
-                traderAndDeviceManagerAddress,
+                deviceSmartmeter,
                 {
-                    privateKey: traderAndDeviceManagerPK
+                    privateKey: deviceSmartmeterPK
                 }
             );
         } catch (ex) {
             failed = true;
             assert.include(
                 ex.message,
-                'only admin and issuer can add devices'
+                'device owner has to have device manager role'
             );
         }
         assert.isTrue(failed);
