@@ -1,5 +1,6 @@
 export interface ILocationService {
     matches(currentLocation: string[], checkedLocation: string): boolean;
+    matchesSome(currentLocation: string[], checkedLocations: string[]): boolean;
     encode(decoded: string[][]): string[];
     decode(encoded: string[]): string[][];
 }
@@ -12,6 +13,18 @@ export class LocationService implements ILocationService {
 
         return highestSpecificityTypes.some(location =>
             checkedLocation.startsWith(this.encode([location])[0])
+        );
+    }
+
+    public matchesSome(currentLocation: string[], checkedLocations: string[]) {
+        const highestSpecificityTypes = this.filterForHighestSpecificity(
+            currentLocation
+        ).map(type => [...this.decode([type])[0]]);
+
+        return highestSpecificityTypes.some(location =>
+            checkedLocations.some(checkedLocation =>
+                checkedLocation.startsWith(this.encode([location])[0])
+            )
         );
     }
 

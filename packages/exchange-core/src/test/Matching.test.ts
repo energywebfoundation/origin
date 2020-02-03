@@ -46,6 +46,9 @@ describe('Matching tests', () => {
     const windTypeLevel2 = deviceService.encode([['Wind', 'Onshore']]);
     const windTypeLevel22 = deviceService.encode([['Wind', 'Offshore']]);
 
+    const marineTypeLevel3 = deviceService.encode([['Marine', 'Tidal', 'Offshore']]);
+    const marineTypeLevel1 = deviceService.encode([['Marine']]);
+
     let initialOrderId = 0;
 
     const createAsk = (args?: IOrderCreationArgs) => {
@@ -453,6 +456,34 @@ describe('Matching tests', () => {
             );
         });
 
+        it('should return order book based on device type where bids are of different types with multiple choices', () => {
+            const asks = [
+                createAsk({ product: { deviceType: solarTypeLevel3 } }),
+                createAsk({ product: { deviceType: solarTypeLevel32 } }),
+                createAsk({ product: { deviceType: windTypeLevel2 } }),
+                createAsk({ product: { deviceType: marineTypeLevel3 } })
+            ];
+            const bids = [
+                createBid({ product: { deviceType: marineTypeLevel1 } }),
+                createBid({ product: { deviceType: windTypeLevel1.concat(solarTypeLevel1) } }),
+                createBid({ product: { deviceType: marineTypeLevel1.concat(solarTypeLevel1) } }),
+                createBid({ product: { deviceType: windTypeLevel2 } }),
+                createBid({ product: { deviceType: solarTypeLevel1 } }),
+                createBid({ product: { deviceType: solarTypeLevel2 } })
+            ];
+
+            const expectedAsks = asks.slice(0, -1);
+            const expectedBids = bids.slice(1);
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                { deviceType: solarTypeLevel1.concat(windTypeLevel1) },
+                expectedAsks,
+                expectedBids
+            );
+        });
+
         it('should return order book based on location', () => {
             const asks = [
                 createAsk({ product: { location: locationCentral, deviceType: solarTypeLevel3 } }),
@@ -473,6 +504,32 @@ describe('Matching tests', () => {
                 asks,
                 bids,
                 { location: locationEast },
+                expectedAsks,
+                expectedBids
+            );
+        });
+
+        it('should return order book based on multiple locations', () => {
+            const asks = [
+                createAsk({ product: { location: locationCentral, deviceType: solarTypeLevel3 } }),
+                createAsk({ product: { location: locationEast, deviceType: solarTypeLevel3 } }),
+                createAsk({ product: { location: locationCentral, deviceType: solarTypeLevel3 } })
+            ];
+            const bids = [
+                createBid({ product: { location: ['Thailand'] } }),
+                createBid({ product: { location: ['Thailand;Central'] } }),
+                createBid({ product: { location: locationCentral } }),
+                createBid({ product: { location: locationEast } }),
+                createBid({ product: { location: ['Malaysia'] } })
+            ];
+
+            const expectedAsks = asks;
+            const expectedBids = bids.slice(0, -1);
+
+            executeOrderBookQuery(
+                asks,
+                bids,
+                { location: locationEast.concat(locationCentral) },
                 expectedAsks,
                 expectedBids
             );
@@ -592,6 +649,142 @@ describe('Matching tests', () => {
             const expectedTrades = [
                 new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price)
             ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
+        });
+    });
+
+    describe('Multi device type matching', () => {
+        it('should match with solar and wind asks', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceType: solarTypeLevel3 } }),
+                createAsk({ product: { deviceType: windTypeLevel2 } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { deviceType: ['Solar', 'Wind'] },
+                    volume: onekWh * 2
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[1].price)
+            ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+
+        it('should match with solar only because if was created earlier', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceType: solarTypeLevel3 }, volume: onekWh * 2 }),
+                createAsk({ product: { deviceType: windTypeLevel2 } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { deviceType: ['Solar', 'Wind'] },
+                    volume: onekWh * 2
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price)
+            ];
+
+            const asksAfter = [asksBefore[1]];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter }, done);
+        });
+
+        it('should match with solar and wind and update the remaining bid', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceType: solarTypeLevel3 }, volume: onekWh * 2 }),
+                createAsk({ product: { deviceType: windTypeLevel2 } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { deviceType: ['Solar', 'Wind'] },
+                    volume: onekWh * 4
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[0].price)
+            ];
+
+            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(onekWh * 3)];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
+        });
+    });
+
+    describe('Multi location matching', () => {
+        it('should match with east and central', done => {
+            const asksBefore = [
+                createAsk({ product: { deviceType: solarTypeLevel3, location: locationCentral } }),
+                createAsk({ product: { deviceType: solarTypeLevel3, location: locationEast } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { location: ['Thailand;East', 'Thailand;Central'] },
+                    volume: onekWh * 2
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[1].price)
+            ];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades }, done);
+        });
+
+        it('should match with central only because if was created earlier', done => {
+            const asksBefore = [
+                createAsk({
+                    product: { deviceType: solarTypeLevel3, location: locationCentral },
+                    volume: onekWh * 2
+                }),
+                createAsk({ product: { deviceType: solarTypeLevel3, location: locationEast } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { location: ['Thailand;East', 'Thailand;Central'] },
+                    volume: onekWh * 2
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price)
+            ];
+
+            const asksAfter = [asksBefore[1]];
+
+            executeTestCase({ asksBefore, bidsBefore, expectedTrades, asksAfter }, done);
+        });
+
+        it('should match with central and east and update the remaining bid', done => {
+            const asksBefore = [
+                createAsk({
+                    product: { deviceType: solarTypeLevel3, location: locationCentral },
+                    volume: onekWh * 2
+                }),
+                createAsk({ product: { deviceType: solarTypeLevel3, location: locationEast } })
+            ];
+            const bidsBefore = [
+                createBid({
+                    product: { location: ['Thailand;East', 'Thailand;Central'] },
+                    volume: onekWh * 4
+                })
+            ];
+
+            const expectedTrades = [
+                new Trade(bidsBefore[0], asksBefore[0], onekWh * 2, asksBefore[0].price),
+                new Trade(bidsBefore[0], asksBefore[1], onekWh, asksBefore[0].price)
+            ];
+
+            const bidsAfter = [bidsBefore[0].clone().updateWithTradedVolume(onekWh * 3)];
 
             executeTestCase({ asksBefore, bidsBefore, expectedTrades, bidsAfter }, done);
         });

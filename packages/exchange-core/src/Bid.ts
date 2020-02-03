@@ -66,8 +66,8 @@ export class Bid extends Order {
         }
 
         return (
-            locationService.matches(product.location, this.product.location[0]) ||
-            locationService.matches(this.product.location, product.location[0])
+            locationService.matchesSome(product.location, this.product.location) ||
+            locationService.matchesSome(this.product.location, product.location)
         );
     }
 
