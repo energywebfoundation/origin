@@ -7,18 +7,12 @@ import {
     MessageBody
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
-import { getPort } from '../port'
+import { getEventsServerPort } from '../port'
 
 import moment from 'moment';
-import { SupportedEvents, SupportedEventType } from './events';
+import { SupportedEvents, IEvent, NewEvent } from '@energyweb/origin-backend-core';
 
-export interface IEvent {
-    name: string;
-    data: any;
-    timestamp: number;
-}
-
-const PORT = getPort() + 1;
+const PORT = getEventsServerPort();
 
 @WebSocketGateway(PORT, { transports: ['websocket'] })
 export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
@@ -49,7 +43,7 @@ export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDis
     }
 
     private broadcastEvent(event: IEvent) {
-        this.logger.log(`Broadcasting a new "${event.name}" event.`);
+        this.logger.log(`Broadcasting a new "${event.type}" event.`);
 
         const content = JSON.stringify(event);
 
@@ -66,24 +60,23 @@ export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDis
     }
 
     @SubscribeMessage('events')
-    handleEvent(@MessageBody() payload: any) {
-        this.logger.log(`Incoming message: ${JSON.stringify(payload)}`);
+    handleEvent(@MessageBody() incomingEvent: NewEvent) {
+        this.logger.log(`Incoming event: ${JSON.stringify(incomingEvent)}`);
 
-        const { name, data } = payload;
+        const { type, data } = incomingEvent;
 
-        if (!name || !data) {
+        if (!type || !data) {
             return 'Incorrect event structure';
         }
 
         const supportedEvents = Object.values(SupportedEvents);
 
-        if (!supportedEvents.includes(name)) {
+        if (!supportedEvents.includes(type)) {
             return `Unsupported event name. Please use one of the following: ${supportedEvents.join(', ')}`;
         }
 
-        const event = {
-            name,
-            data: data as SupportedEventType,
+        const event: IEvent = {
+            ...incomingEvent,
             timestamp: moment().unix()
         };
 
@@ -91,6 +84,6 @@ export class EventsWebSocketGateway implements OnGatewayConnection, OnGatewayDis
 
         this.broadcastEvent(event);
 
-        return `Saved ${name} event.`;
+        return `Saved ${type} event.`;
     }
 }

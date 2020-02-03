@@ -1,7 +1,6 @@
 import { Configuration } from '@energyweb/utils-general';
 import { MarketUser } from '@energyweb/market';
 
-import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { IOriginEventsStore } from '../stores/OriginEventsStore';
 
 import EmailTypes from '../email/EmailTypes';
@@ -125,9 +124,7 @@ export class NotificationService implements INotificationService {
                 `Your following devices have had their status changed:<br />${deviceStatusChanges
                     .map(
                         deviceStatusChange =>
-                            `Device #${deviceStatusChange.deviceId}: ${
-                                DeviceStatus[parseInt(deviceStatusChange.status, 10)]
-                            }`
+                            `Device #${deviceStatusChange.deviceId}: ${deviceStatusChange.status}`
                     )
                     .join('<br />')}<br /><a href="${url}">${url}</a>`,
                 () => this.originEventsStore.resetDeviceStatusChanges(user.id)

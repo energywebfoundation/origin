@@ -17,8 +17,8 @@ program.parse(process.argv);
     const privateKey = process.env.MATCHER_PRIV_KEY;
     const web3 = new Web3(process.env.WEB3);
 
-    const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
-    const baseUrl = `${backendUrl}/api`;
+    const backendUrl: string = process.env.BACKEND_URL || 'http://localhost';
+    const backendPort: number = Number(process.env.BACKEND_PORT) || 3035;
 
     const matcherInterval = Number(process.env.MATCHER_INTERVAL) || 15;
 
@@ -26,7 +26,7 @@ program.parse(process.argv);
 
     console.log(`[MARKET-MATCHER] Trying to get Market contract address`);
 
-    const offChainDataSource = new OffChainDataSource(baseUrl);
+    const offChainDataSource = new OffChainDataSource(backendUrl, Number(backendPort));
 
     while (storedMarketContractAddresses.length === 0) {
         storedMarketContractAddresses = await offChainDataSource.configurationClient.get(

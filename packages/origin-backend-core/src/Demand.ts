@@ -1,14 +1,12 @@
+import { DemandPartiallyFilledEvent } from './Events';
+
 export enum DemandStatus {
     ACTIVE,
     PAUSED,
     ARCHIVED
 }
 
-export interface DemandPartiallyFilled {
-    blockNumber: number;
-    certificateId: string;
-    energy: number;
-}
+export type DemandPartiallyFilled = Omit<DemandPartiallyFilledEvent, 'demandId'>;
 
 export interface IDemandProperties {
     id: number;

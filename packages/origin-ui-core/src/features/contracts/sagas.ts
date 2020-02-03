@@ -134,7 +134,7 @@ function* initEventHandler() {
                 });
             });
 
-            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            marketContractEventHandler.onEvent('CreatedNewDemand', async (event: any) => {
                 try {
                     const demand = await new Demand.Entity(
                         event.returnValues._demandId.toString(),
@@ -145,7 +145,7 @@ function* initEventHandler() {
                         action: demandCreated(demand)
                     });
                 } catch (error) {
-                    console.error(`Error while handling "createdNewDemand" event`, error);
+                    console.error(`Error while handling "CreatedNewDemand" event`, error);
                 }
             });
 

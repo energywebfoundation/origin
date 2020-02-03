@@ -14,7 +14,8 @@ import {
     buildRights,
     Role,
     UserLogic,
-    Contracts as UserRegistryContracts
+    Contracts as UserRegistryContracts,
+    User
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
@@ -125,33 +126,40 @@ describe('Market-Facade', () => {
                 certificateLogicInstance: certificateLogic,
                 web3
             },
-            offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });
 
     it('should create all the users', async () => {
-        await MarketUser.createMarketUser(
-            {
-                url: null,
-                propertiesDocumentHash: null,
-                id: accountDeployment,
-                active: true,
-                roles: buildRights([
-                    Role.UserAdmin,
-                    Role.DeviceAdmin,
-                    Role.DeviceManager,
-                    Role.Trader,
-                    Role.Matcher
-                ])
-            },
-            {
-                notifications: false
-            },
+        const roles = buildRights([
+            Role.UserAdmin,
+            Role.DeviceAdmin,
+            Role.DeviceManager,
+            Role.Trader,
+            Role.Matcher
+        ]);
+
+        const adminPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: accountDeployment,
+            active: true,
+            roles
+        };
+        const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
+            notifications: false
+        };
+
+        const marketUser = await MarketUser.createMarketUser(
+            adminPropsOnChain,
+            adminPropsOffChain,
             conf,
             createTestRegisterData('admin@example.com'),
             privateKeyDeployment
         );
+
+        assert.equal(marketUser.roles, roles);
 
         await MarketUser.createMarketUser(
             {

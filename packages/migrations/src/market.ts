@@ -37,9 +37,10 @@ export const marketDemo = async (
     const certificateLogic = new CertificateLogic(web3, contractConfig.certificateLogic);
     const marketLogic = new MarketLogic(web3, contractConfig.marketLogic);
 
-    const baseUrl = `${process.env.BACKEND_URL}/api`;
-
-    const offChainDataSource = new OffChainDataSource(baseUrl);
+    const offChainDataSource = new OffChainDataSource(
+        process.env.BACKEND_URL,
+        Number(process.env.BACKEND_PORT)
+    );
 
     const conf: Configuration.Entity = {
         blockchainProperties: {

@@ -36,6 +36,10 @@ describe('User Facade', () => {
     const RIGHTS = buildRights([Role.Trader, Role.DeviceManager]);
 
     it('should deploy the contracts', async () => {
+
+        console.log({
+            web3: process.env.WEB3
+        })
         userLogic = await migrateUserRegistryContracts(web3, privateKeyDeployment);
 
         assert.exists(userLogic);
@@ -54,8 +58,6 @@ describe('User Facade', () => {
             dummy: true
         };
 
-        const baseUrl = `${process.env.BACKEND_URL}/api`;
-
         conf = {
             blockchainProperties: {
                 web3,
@@ -65,7 +67,7 @@ describe('User Facade', () => {
                     privateKey: privateKeyDeployment
                 }
             },
-            offChainDataSource: new OffChainDataSourceMock(baseUrl),
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
 

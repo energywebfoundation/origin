@@ -92,7 +92,10 @@ const measurementTime = currentTime
     .startOf('day');
 
 (async () => {
-    const offChainDataSource = new OffChainDataSource(`${process.env.BACKEND_URL}/api`);
+    const offChainDataSource = new OffChainDataSource(
+        process.env.BACKEND_URL,
+        Number(process.env.BACKEND_PORT)
+    );
 
     const conf = {
         blockchainProperties: {

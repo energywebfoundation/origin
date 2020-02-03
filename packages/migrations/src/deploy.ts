@@ -30,7 +30,10 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
     }
 
-    const offChainDataSource = new OffChainDataSource(`${process.env.BACKEND_URL}/api`);
+    const offChainDataSource = new OffChainDataSource(
+        process.env.BACKEND_URL,
+        Number(process.env.BACKEND_PORT)
+    );
 
     await offChainDataSource.configurationClient.add('Compliance', complianceRegistry ?? 'none');
     await offChainDataSource.configurationClient.add('Country', country);

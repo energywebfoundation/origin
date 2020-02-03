@@ -202,7 +202,7 @@ export function AddDevice() {
         }
 
         try {
-            const response = await axios.post(`${environment.BACKEND_URL}/api/Image`, formData, {
+            const response = await axios.post(`${environment.BACKEND_URL}:${environment.BACKEND_PORT}/api/Image`, formData, {
                 headers: { 'Content-type': 'multipart/form-data' }
             });
 

@@ -83,7 +83,8 @@ async function getENV(): Promise<IEnvironment> {
 
     return {
         MODE: 'development',
-        BACKEND_URL: 'http://localhost:3030',
+        BACKEND_URL: 'http://localhost',
+        BACKEND_PORT: '3030',
         BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
         WEB3: 'http://localhost:8545',
         REGISTRATION_MESSAGE_TO_SIGN: 'I register as Origin user'
@@ -204,8 +205,10 @@ function* initializeOffChainDataSource(): SagaIterator {
             return;
         }
 
-        const baseURL = `${environment.BACKEND_URL}/api`;
-        const offChainDataSource = new OffChainDataSource(baseURL);
+        const offChainDataSource = new OffChainDataSource(
+            environment.BACKEND_URL,
+            Number(environment.BACKEND_PORT)
+        );
 
         yield put(setOffChainDataSource(offChainDataSource));
     }

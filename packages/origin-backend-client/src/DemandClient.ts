@@ -16,12 +16,12 @@ export interface IDemandClient {
 
 export class DemandClient implements IDemandClient {
     constructor(
-        private readonly baseURL: string,
+        private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
     private get endpoint() {
-        return `${this.baseURL}/Demand`;
+        return `${this.dataApiUrl}/Demand`;
     }
 
     public async getById(id: number): Promise<IDemand> {

@@ -54,7 +54,7 @@
     },
     "devDependencies": {
         "@energyweb/origin-backend-client-mocks": "0.0.1",
-        "@energyweb/origin-backend-core": "^0.1.1"
+        "@energyweb/origin-backend-core": "0.1.1"
     },
     "publishConfig": {
         "access": "public",

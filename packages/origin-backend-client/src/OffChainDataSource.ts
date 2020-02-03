@@ -5,9 +5,10 @@ import { IDeviceClient, DeviceClient } from "./DeviceClient";
 import { IRequestClient, RequestClient } from "./RequestClient";
 import { IOrganizationClient, OrganizationClient } from "./OrganizationClient";
 import { IDemandClient, DemandClient } from "./DemandClient";
+import { IEventClient, EventClient } from "./EventClient";
 
 export interface IOffChainDataSource {
-    baseUrl: string;
+    dataApiUrl: string;
     requestClient: IRequestClient;
     preciseProofClient: IPreciseProofClient;
     configurationClient: IConfigurationClient;
@@ -15,6 +16,7 @@ export interface IOffChainDataSource {
     deviceClient: IDeviceClient;
     organizationClient: IOrganizationClient;
     demandClient: IDemandClient;
+    eventClient: IEventClient;
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
@@ -24,17 +26,27 @@ export class OffChainDataSource implements IOffChainDataSource {
     userClient: IUserClient;
     deviceClient: IDeviceClient;
     organizationClient: IOrganizationClient;
-    demandClient: DemandClient;
+    demandClient: IDemandClient;
+    eventClient: IEventClient;
 
     constructor(
-        public readonly baseUrl: string,
+        public readonly backendUrl: string,
+        public readonly port: number = 80,
         public readonly requestClient: IRequestClient = new RequestClient()
     ) {
+        const eventApi = `${this.backendUrl}:${port + 1}`;
+
         this.preciseProofClient = new PreciseProofClient(this.requestClient);
-        this.configurationClient = new ConfigurationClient(this.baseUrl, this.requestClient);
-        this.userClient = new UserClient(this.baseUrl, this.requestClient);
-        this.deviceClient = new DeviceClient(this.baseUrl, this.requestClient);
-        this.organizationClient = new OrganizationClient(this.baseUrl, this.requestClient);
-        this.demandClient = new DemandClient(this.baseUrl, this.requestClient);
+        this.configurationClient = new ConfigurationClient(this.dataApiUrl, this.requestClient);
+        this.userClient = new UserClient(this.dataApiUrl, this.requestClient);
+        this.deviceClient = new DeviceClient(this.dataApiUrl, this.requestClient);
+        this.organizationClient = new OrganizationClient(this.dataApiUrl, this.requestClient);
+        this.demandClient = new DemandClient(this.dataApiUrl, this.requestClient);
+
+        this.eventClient = new EventClient(eventApi);
+    }
+
+    get dataApiUrl() {
+        return `${this.backendUrl}:${this.port}/api`;
     }
 }

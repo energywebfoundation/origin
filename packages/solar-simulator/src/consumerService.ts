@@ -31,7 +31,10 @@ async function createBlockchainConfiguration() {
             web3
         },
         logger,
-        offChainDataSource: new OffChainDataSource(`${process.env.BACKEND_URL}/api`)
+        offChainDataSource: new OffChainDataSource(
+            process.env.BACKEND_URL,
+            Number(process.env.BACKEND_PORT)
+        )
     };
 
     let storedMarketContractAddresses: string[] = [];
@@ -69,7 +72,7 @@ interface IEnergyMeasurement {
 }
 
 export async function startConsumerService(configFilePath: string) {
-    const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
+    const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3032`;
     const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
     const CHECK_INTERVAL = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
     const conf = await createBlockchainConfiguration();

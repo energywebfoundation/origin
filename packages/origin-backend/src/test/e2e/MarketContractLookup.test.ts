@@ -17,7 +17,7 @@ describe('MarketContractLookup API tests', async () => {
     });
     let apiServer: INestApplication;
 
-    const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
+    const BASE_API_URL = `http://localhost:${process.env.BACKEND_PORT}/api`;
 
     const marketContractLookup = '0x665b25e0edc2d9b5dee75c5f652f92f5b58be12b';
     const marketContractLookup2 = '0x123b25e0edc2d9b5dee75c5f652f92f5b58be12b';

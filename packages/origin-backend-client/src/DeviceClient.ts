@@ -10,12 +10,12 @@ export interface IDeviceClient {
 
 export class DeviceClient implements IDeviceClient {
     constructor(
-        private readonly baseURL: string,
+        private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
     private get endpoint() {
-        return `${this.baseURL}/Device`;
+        return `${this.dataApiUrl}/Device`;
     }
 
     public async getById(id: number): Promise<IDevice> {

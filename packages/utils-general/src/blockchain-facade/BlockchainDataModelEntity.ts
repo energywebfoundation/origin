@@ -47,7 +47,7 @@ export abstract class Entity implements IOnChainProperties {
     }
 
     get baseUrl(): string {
-        return `${this.configuration.offChainDataSource.baseUrl}/Entity`;
+        return `${this.configuration.offChainDataSource.dataApiUrl}/Entity`;
     }
 
     get fullUrl(): string {

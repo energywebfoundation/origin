@@ -113,10 +113,7 @@ export async function deployDemo() {
     deployResult.certificateLogic = certificateLogicAddress;
     deployResult.marketLogic = marketContractLookup;
 
-    const BACKEND_URL = 'http://localhost:3030';
-    const baseUrl = `${BACKEND_URL}/api`;
-
-    const offChainDataSource = new OffChainDataSourceMock(baseUrl);
+    const offChainDataSource = new OffChainDataSourceMock();
 
     await offChainDataSource.configurationClient.add(
         'MarketContractLookup',
@@ -145,12 +142,12 @@ export async function deployDemo() {
     };
 
     function createOrganization(user: IUserWithRelationsIds, name: string) {
-        const newOrganization = offChainDataSource.organizationClient.addMocked(
+        const newOrganization = (offChainDataSource.organizationClient as any).addMocked(
             ({ name } as Partial<OrganizationPostData>) as OrganizationPostData,
             user.id
         );
 
-        offChainDataSource.userClient.updateMocked(user.id, {
+        (offChainDataSource.userClient as any).updateMocked(user.id, {
             ...user,
             organization: newOrganization.id
         });

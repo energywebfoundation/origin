@@ -150,7 +150,7 @@ export const createProducingDevice = (
         complianceRegistry:
             properties.complianceRegistry ||
             DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.complianceRegistry,
-        country: Countries.find(c => c.name === properties.country).id || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
+        country: Countries.find(c => c.name === properties.country)?.id || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
         gpsLatitude: '',
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',

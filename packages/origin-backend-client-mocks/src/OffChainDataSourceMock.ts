@@ -7,7 +7,8 @@ import {
     IRequestClient,
     RequestClient,
     IOrganizationClient,
-    IDemandClient
+    IDemandClient,
+    IEventClient
 } from "@energyweb/origin-backend-client";
 
 import { PreciseProofClientMock } from "./PreciseProofClientMock";
@@ -16,25 +17,24 @@ import { UserClientMock } from "./UserClientMock";
 import { DeviceClientMock } from "./DeviceClientMock";
 import { OrganizationClientMock } from "./OrganizationClientMock";
 import { DemandClientMock } from "./DemandClientMock";
+import { EventClientMock } from "./EventClientMock";
 
 export class OffChainDataSourceMock implements IOffChainDataSource {
+    dataApiUrl: string;
 
-    preciseProofClient: IPreciseProofClient;
-    configurationClient: IConfigurationClient;
-    userClient: IUserClient;
-    deviceClient: IDeviceClient;
-    organizationClient: IOrganizationClient;
+    preciseProofClient: IPreciseProofClient = new PreciseProofClientMock();
+    configurationClient: IConfigurationClient = new ConfigurationClientMock();
+    userClient: IUserClient = new UserClientMock();
+    organizationClient: IOrganizationClient = new OrganizationClientMock();
+    eventClient: IEventClient = new EventClientMock();
+
     demandClient: IDemandClient;
+    deviceClient: IDeviceClient;
 
-    constructor(
-        public readonly baseUrl: string,
-        public readonly requestClient: IRequestClient = new RequestClient()
-    ) {
-        this.preciseProofClient = new PreciseProofClientMock();
-        this.configurationClient = new ConfigurationClientMock(this.baseUrl);
-        this.userClient = new UserClientMock();
-        this.deviceClient = new DeviceClientMock();
-        this.organizationClient = new OrganizationClientMock();
-        this.demandClient = new DemandClientMock();
+    requestClient: IRequestClient = new RequestClient();
+
+    constructor() {
+        this.deviceClient = new DeviceClientMock(this.eventClient);
+        this.demandClient = new DemandClientMock(this.eventClient);
     }
 }

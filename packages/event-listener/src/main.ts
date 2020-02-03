@@ -15,7 +15,10 @@ program.parse(process.argv);
 
     await startEventListener({
         web3Url: process.env.WEB3,
-        offChainDataSource: new OffChainDataSource(`${process.env.BACKEND_URL}/api`),
+        offChainDataSource: new OffChainDataSource(
+            process.env.BACKEND_URL,
+            Number(process.env.BACKEND_PORT)
+        ),
         accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
         scanInterval: 3000,
         notificationInterval: 60000,

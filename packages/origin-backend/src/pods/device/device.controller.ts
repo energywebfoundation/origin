@@ -1,8 +1,7 @@
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
-import { IDevice, DeviceStatus, DeviceUpdateData } from '@energyweb/origin-backend-core';
-import { EventService } from '../../events/events.service';
-import { SupportedEvents, DeviceStatusChanged } from '../../events/events';
+import { IDevice, DeviceStatus, DeviceUpdateData, SupportedEvents, DeviceStatusChanged } from '@energyweb/origin-backend-core';
+import { EventsWebSocketGateway } from '../../events/events.gateway';
 
 import {
     Controller,
@@ -26,7 +25,7 @@ import { StorageErrors } from '../../enums/StorageErrors';
 export class DeviceController {
     constructor(
         @InjectRepository(Device) private readonly deviceRepository: Repository<Device>,
-        @Inject(EventService) private readonly eventService: EventService
+        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway
     ) {}
 
     @Get()
@@ -116,8 +115,8 @@ export class DeviceController {
                 status: body.status
             };
     
-            this.eventService.emit({
-                name: SupportedEvents.DEVICE_STATUS_CHANGED,
+            this.eventGateway.handleEvent({
+                type: SupportedEvents.DEVICE_STATUS_CHANGED,
                 data: event
             });
 

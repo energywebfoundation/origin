@@ -3,6 +3,7 @@ import { EntityListener, IEntityStore, Listener } from '@energyweb/market-matche
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import * as Winston from 'winston';
 
+import { SupportedEvents } from '@energyweb/origin-backend-core';
 import { IEntityFetcher } from './EntityFetcher';
 
 export class EntityStore implements IEntityStore {
@@ -17,7 +18,7 @@ export class EntityStore implements IEntityStore {
 
     private demandListeners: EntityListener<Demand.Entity>;
 
-    private demandEvents = ['createdNewDemand', 'DemandStatusChanged', 'DemandUpdated'];
+    private demandEvents = [SupportedEvents.CREATE_NEW_DEMAND, SupportedEvents.DEMAND_UPDATED];
 
     private certificateEvents = ['LogPublishForSale', 'LogUnpublishForSale'];
 
@@ -103,7 +104,7 @@ export class EntityStore implements IEntityStore {
             currentBlockNumber
         );
 
-        this.registerToDemandEvents(marketContractEventHandler);
+        this.registerToDemandEvents();
         this.registerToPurchasableCertificateEvents(marketContractEventHandler);
 
         const eventHandlerManager = new EventHandlerManager(4000, this.config);
@@ -147,19 +148,26 @@ export class EntityStore implements IEntityStore {
         });
     }
 
-    private registerToDemandEvents(marketContractEventHandler: ContractEventHandler) {
-        this.demandEvents.forEach(eventName => {
-            marketContractEventHandler.onEvent(eventName, async (event: any) => {
-                const { _demandId: id } = event.returnValues;
-                this.logger.verbose(`Event: ${eventName} demand: ${id}`);
+    private registerToDemandEvents() {
+        this.demandEvents.forEach((event: SupportedEvents) => {
+            this.config.offChainDataSource.eventClient.subscribe(
+                event,
+                async (incomingEvent: any) => {
+                    const { demandId } = incomingEvent.data;
+                    this.logger.verbose(`Event: ${incomingEvent.type} demand: ${demandId}`);
 
-                await this.handleDemand(id);
-            });
+                    await this.handleDemand(demandId);
+                }
+            );
         });
     }
 
     private async handleDemand(id: number, trigger = true) {
-        const demand = await this.fetcher.getDemand(id);
+        let demand = await this.fetcher.getDemand(id);
+
+        if (!demand.initialized) {
+            demand = await demand.sync();
+        }
 
         if (!demand.automaticMatching) {
             this.logger.verbose(

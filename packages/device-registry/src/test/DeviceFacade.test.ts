@@ -94,7 +94,7 @@ describe('Device Facade', () => {
                     userLogicInstance: userLogic,
                     web3
                 },
-                offChainDataSource: new OffChainDataSourceMock(`${process.env.BACKEND_URL}/api`),
+                offChainDataSource: new OffChainDataSourceMock(),
                 logger
             };
 

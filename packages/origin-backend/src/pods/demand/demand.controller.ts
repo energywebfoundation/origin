@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
-import { IDemand, DemandStatus, DemandPostData, DemandUpdateData, DemandPartiallyFilled } from '@energyweb/origin-backend-core';
+import { IDemand, DemandStatus, DemandPostData, DemandUpdateData, SupportedEvents, CreatedNewDemand, DemandPartiallyFilledEvent } from '@energyweb/origin-backend-core';
 
 import {
     Controller,
@@ -18,14 +18,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Demand } from './demand.entity';
 import { StorageErrors } from '../../enums/StorageErrors';
-import { EventService } from '../../events/events.service';
-import { SupportedEvents, createdNewDemand, DemandPartiallyFilled as DemandPartiallyFilledType } from '../../events/events';
+import { EventsWebSocketGateway } from '../../events/events.gateway';
 
 @Controller('/Demand')
 export class DemandController {
     constructor(
         @InjectRepository(Demand) private readonly demandRepository: Repository<Demand>,
-        @Inject(EventService) private readonly eventService: EventService
+        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway
     ) {}
 
     @Get()
@@ -83,12 +82,12 @@ export class DemandController {
 
         newEntity = await this.demandRepository.save(newEntity);
 
-        const eventData: createdNewDemand = {
+        const eventData: CreatedNewDemand = {
             demandId: newEntity.id
         };
 
-        this.eventService.emit({
-            name: SupportedEvents.CREATE_NEW_DEMAND,
+        this.eventGateway.handleEvent({
+            type: SupportedEvents.CREATE_NEW_DEMAND,
             data: eventData
         });
 
@@ -150,21 +149,21 @@ export class DemandController {
             });
         }
 
-        this.eventService.emit({
-            name: SupportedEvents.DEMAND_UPDATED,
+        this.eventGateway.handleEvent({
+            type: SupportedEvents.DEMAND_UPDATED,
             data: { demandId: existing.id }
         });
 
         if (hasNewFillEvent) {
-            const eventData: DemandPartiallyFilledType = {
+            const eventData: DemandPartiallyFilledEvent = {
                 demandId: existing.id,
                 certificateId: body.demandPartiallyFilledEvent.certificateId,
                 energy: body.demandPartiallyFilledEvent.energy,
                 blockNumber: body.demandPartiallyFilledEvent.blockNumber
             };
     
-            this.eventService.emit({
-                name: SupportedEvents.DEMAND_UPDATED,
+            this.eventGateway.handleEvent({
+                type: SupportedEvents.DEMAND_PARTIALLY_FILLED,
                 data: eventData
             });
         }

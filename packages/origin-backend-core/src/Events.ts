@@ -1,11 +1,19 @@
-import { DeviceStatus } from "@energyweb/origin-backend-core";
+import { DeviceStatus } from "./Device";
+
+export type NewEvent = Omit<IEvent, 'timestamp'>;
+
+export interface IEvent {
+    type: SupportedEvents;
+    data: SupportedEventData;
+    timestamp: number;
+}
 
 export type DeviceStatusChanged = {
     deviceId: string,
     status: DeviceStatus
 };
 
-export type createdNewDemand = {
+export type CreatedNewDemand = {
     demandId: number
 };
 
@@ -13,7 +21,7 @@ export type DemandUpdated = {
     demandId: number
 }
 
-export type DemandPartiallyFilled = {
+export type DemandPartiallyFilledEvent = {
     demandId: number,
     certificateId: string,
     energy: number,
@@ -22,12 +30,12 @@ export type DemandPartiallyFilled = {
 
 export enum SupportedEvents {
     DEVICE_STATUS_CHANGED = 'DeviceStatusChanged',
-    CREATE_NEW_DEMAND = 'createdNewDemand',
+    CREATE_NEW_DEMAND = 'CreatedNewDemand',
     DEMAND_UPDATED = 'DemandUpdated',
     DEMAND_PARTIALLY_FILLED = 'DemandPartiallyFilled'
 };
 
-export type SupportedEventType = DeviceStatusChanged
-    | createdNewDemand
+export type SupportedEventData = DeviceStatusChanged
+    | CreatedNewDemand
     | DemandUpdated
-    | DemandPartiallyFilled;
+    | DemandPartiallyFilledEvent;
