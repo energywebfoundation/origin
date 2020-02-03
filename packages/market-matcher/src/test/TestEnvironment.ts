@@ -7,10 +7,9 @@ import {
     ProducingDevice,
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
+import { DeviceStatus, IDevice, DemandPostData } from '@energyweb/origin-backend-core';
 import {
-    Agreement,
     Demand,
-    Supply,
     PurchasableCertificate,
     Contracts as MarketContracts,
     Currency
@@ -18,11 +17,7 @@ import {
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { buildRights, Role, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IMatcherConfig } from '..';
 import { logger } from '../Logger';
@@ -165,30 +160,18 @@ const deploy = async () => {
             certificateLogicInstance: certificateLogic,
             web3
         },
-        offChainDataSource: {
-            baseUrl: `${process.env.BACKEND_URL}/api`,
-            client: new OffChainDataClientMock(),
-            configurationClient: new ConfigurationClientMock(),
-            userClient: new UserClientMock()
-        },
+        offChainDataSource: new OffChainDataSourceMock(),
         logger
     };
 
-    await config.offChainDataSource.configurationClient.add(
-        config.offChainDataSource.baseUrl,
-        'Country',
-        {
-            name: 'Thailand',
-            regions: { Central: ['Nakhon Pathom'] }
-        }
-    );
+    await config.offChainDataSource.configurationClient.add('Country', {
+        name: 'Thailand',
+        regions: { Central: ['Nakhon Pathom'] }
+    });
 
     const matcherConfig: IMatcherConfig = {
         web3Url: process.env.WEB3,
-        offChainDataSourceUrl: `${process.env.BACKEND_URL}/api`,
-        offChainDataSourceClient: config.offChainDataSource.client,
-        configurationClient: config.offChainDataSource.configurationClient,
-        userClient: config.offChainDataSource.userClient,
+        offChainDataSource: config.offChainDataSource,
         marketLogicAddress,
         matcherAccount: {
             address: accountDeployment,
@@ -211,13 +194,13 @@ const deployDemand = async (
         privateKey: traderPK
     });
 
-    const demandOffChainProps: Demand.IDemandOffChainProperties = {
+    const demandOffChainProps: DemandPostData = {
+        owner: accountTrader,
         timeFrame: TimeFrame.hourly,
         maxPriceInCentsPerMwh: price,
         currency,
         location: ['Thailand;Central;Nakhon Pathom'],
         deviceType: ['Solar'],
-        minCO2Offset: 10,
         otherGreenAttributes: 'string',
         typeOfPublicSupport: 'string',
         energyPerTimeFrame: requiredEnergy,
@@ -242,18 +225,15 @@ const deployDevice = (config: Configuration.Entity) => {
         smartMeter: { address: deviceSmartMeter },
         owner: { address: deviceOwnerAddress },
         lastSmartMeterReadWh: 0,
-        status: Device.DeviceStatus.Active,
-        usageType: Device.UsageType.Producing,
-        lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-        propertiesDocumentHash: null,
-        url: null
+        lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
     };
 
-    const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+    const devicePropsOffChain: IDevice = {
+        status: DeviceStatus.Active,
         facilityName: 'MatcherTestFacility',
         operationalSince: 0,
         capacityInW: 10,
-        country: 'Thailand',
+        country: 221,
         address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
         gpsLatitude: '14.059500',
         gpsLongitude: '99.977800',
@@ -269,34 +249,6 @@ const deployDevice = (config: Configuration.Entity) => {
     };
 
     return ProducingDevice.createDevice(deviceProps, devicePropsOffChain, deployerConfig);
-};
-
-const deploySupply = (
-    config: Configuration.Entity,
-    deviceId: string,
-    requiredEnergy: number,
-    price = 150,
-    currency: Currency = 'USD'
-) => {
-    const deviceOwnerConfig = changeUser(config, {
-        address: deviceOwnerAddress,
-        privateKey: deviceOwnerPK
-    });
-
-    return Supply.createSupply(
-        {
-            url: null,
-            propertiesDocumentHash: null,
-            deviceId
-        },
-        {
-            priceInCents: price,
-            currency,
-            availableWh: requiredEnergy,
-            timeFrame: TimeFrame.hourly
-        },
-        deviceOwnerConfig
-    );
 };
 
 const deployCertificate = async (
@@ -330,64 +282,4 @@ const deployCertificate = async (
     return new PurchasableCertificate.Entity('0', deviceOwnerConfig).sync();
 };
 
-const deployAgreement = async (
-    config: Configuration.Entity,
-    demandId: string,
-    supplyId: string,
-    price = 150,
-    currency: Currency = 'USD'
-) => {
-    const traderConfig = changeUser(config, {
-        address: accountTrader,
-        privateKey: traderPK
-    });
-
-    const startTime = moment()
-        .add(-1, 'day')
-        .unix();
-    const endTime = moment()
-        .add(1, 'day')
-        .unix();
-
-    const agreementOffChainProps: Agreement.IAgreementOffChainProperties = {
-        start: startTime,
-        end: endTime,
-        priceInCents: price,
-        currency,
-        period: 10,
-        timeFrame: TimeFrame.hourly
-    };
-
-    const agreementProps: Agreement.IAgreementOnChainProperties = {
-        propertiesDocumentHash: null,
-        url: null,
-        demandId,
-        supplyId
-    };
-
-    const agreement = await Agreement.createAgreement(
-        agreementProps,
-        agreementOffChainProps,
-        traderConfig
-    );
-
-    const deviceOwnerConfig = changeUser(config, {
-        address: deviceOwnerAddress,
-        privateKey: deviceOwnerPK
-    });
-
-    const deviceOwnerAgreement = await new Agreement.Entity(agreement.id, deviceOwnerConfig).sync();
-    await deviceOwnerAgreement.approveAgreementSupply();
-
-    return deviceOwnerAgreement.sync();
-};
-
-export {
-    deploy,
-    changeUser,
-    deployDemand,
-    deployCertificate,
-    deployDevice,
-    deploySupply,
-    deployAgreement
-};
+export { deploy, changeUser, deployDemand, deployCertificate, deployDevice };
