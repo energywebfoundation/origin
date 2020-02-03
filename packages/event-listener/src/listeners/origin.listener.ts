@@ -9,7 +9,11 @@ import {
     SupportedEvents,
     IEvent,
     DeviceStatusChanged,
-    DemandPartiallyFilledEvent
+    DemandPartiallyFilledEvent,
+    OrganizationStatusChanged,
+    OrganizationStatus,
+    OrganizationInvitationEvent,
+    OrganizationRemovedMember
 } from '@energyweb/origin-backend-core';
 import { IEventListenerConfig } from '../config/IEventListenerConfig';
 import { IEventListener } from './IEventListener';
@@ -178,15 +182,17 @@ export class OriginEventListener implements IOriginEventListener {
                 const {
                     demandId,
                     certificateId,
-                    energy
+                    energy,
+                    blockNumber
                 } = event.data as DemandPartiallyFilledEvent;
 
                 const demand = await new Demand.Entity(demandId, this.conf).sync();
 
                 this.originEventsStore.registerPartiallyFilledDemand(demand.owner, {
                     demandId,
-                    certificateId: Number(certificateId),
-                    amount: energy
+                    certificateId,
+                    energy,
+                    blockNumber
                 });
 
                 this.conf.logger.info(
@@ -200,6 +206,59 @@ export class OriginEventListener implements IOriginEventListener {
                         `DemandFulfilled: Demand #${demandId} has been fulfilled.`
                     );
                 }
+            }
+        );
+
+        this.conf.offChainDataSource.eventClient.subscribe(
+            SupportedEvents.ORGANIZATION_STATUS_CHANGED,
+            async (event: IEvent) => {
+                const {
+                    organizationId,
+                    organizationEmail,
+                    status
+                } = event.data as OrganizationStatusChanged;
+
+                this.originEventsStore.registerOrganizationStatusChange(organizationEmail, {
+                    organizationId,
+                    organizationEmail,
+                    status
+                });
+
+                this.conf.logger.info(
+                    `Event: ${SupportedEvents.ORGANIZATION_STATUS_CHANGED}: Organization #${organizationId} status changed to ${OrganizationStatus[status]}.`
+                );
+            }
+        );
+
+        this.conf.offChainDataSource.eventClient.subscribe(
+            SupportedEvents.ORGANIZATION_INVITATION,
+            async (event: IEvent) => {
+                const { organizationName, email } = event.data as OrganizationInvitationEvent;
+
+                this.originEventsStore.registerOrganizationInvitation(email, {
+                    organizationName,
+                    email
+                });
+
+                this.conf.logger.info(
+                    `Event: ${SupportedEvents.ORGANIZATION_INVITATION}: Organization "${organizationName}" has invited ${email} to join the organization.`
+                );
+            }
+        );
+
+        this.conf.offChainDataSource.eventClient.subscribe(
+            SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+            async (event: IEvent) => {
+                const { organizationName, email } = event.data as OrganizationRemovedMember;
+
+                this.originEventsStore.registerOrganizationRemovedMember(email, {
+                    organizationName,
+                    email
+                });
+
+                this.conf.logger.info(
+                    `Event: ${SupportedEvents.ORGANIZATION_REMOVED_MEMBER}: Organization "${organizationName}" has removed ${email} from the organization.`
+                );
             }
         );
 

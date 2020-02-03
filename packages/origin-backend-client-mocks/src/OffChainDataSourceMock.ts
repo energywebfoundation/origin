@@ -25,11 +25,11 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
     preciseProofClient: IPreciseProofClient = new PreciseProofClientMock();
     configurationClient: IConfigurationClient = new ConfigurationClientMock();
     userClient: IUserClient = new UserClientMock();
-    organizationClient: IOrganizationClient = new OrganizationClientMock();
     eventClient: IEventClient = new EventClientMock();
-
+    
     demandClient: IDemandClient;
     deviceClient: IDeviceClient;
+    organizationClient: IOrganizationClient;
 
     requestClient: IRequestClient = new RequestClient();
 
@@ -37,6 +37,7 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
         this.eventClient.start();
 
         this.deviceClient = new DeviceClientMock(this.eventClient);
-        this.demandClient = new DemandClientMock(this.eventClient);
+        this.demandClient = new DemandClientMock(this.eventClient)
+        this.organizationClient = new OrganizationClientMock(this.eventClient);
     }
 }

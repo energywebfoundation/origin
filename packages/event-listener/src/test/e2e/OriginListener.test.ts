@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import Web3 from 'web3';
 
 import { Unit } from '@energyweb/utils-general';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
+import { DeviceStatus, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
@@ -221,6 +221,72 @@ describe('Origin Listener Tests', async () => {
         await waitForConditionAndAssert(
             () => emailService.sentEmails.length >= 1,
             () => assert.isTrue(notificationSent(emailService, EmailTypes.DEVICE_STATUS_CHANGED)),
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when an organization status is changed', async () => {
+        await listener.start();
+
+        const newOrganization = await demo.createOrganization();
+        assert.equal(newOrganization.status, OrganizationStatus.Submitted);
+
+        const updatedOrganization = await demo.approveOrganization(newOrganization.id);
+        assert.equal(updatedOrganization.status, OrganizationStatus.Active);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 1,
+            () =>
+                assert.isTrue(
+                    notificationSent(emailService, EmailTypes.ORGANIZATION_STATUS_CHANGES)
+                ),
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when a user is invited to an organization', async () => {
+        await listener.start();
+
+        const newOrganization = await demo.createOrganization();
+        assert.equal(newOrganization.status, OrganizationStatus.Submitted);
+
+        const updatedOrganization = await demo.approveOrganization(newOrganization.id);
+        assert.equal(updatedOrganization.status, OrganizationStatus.Active);
+
+        await demo.inviteAdminToOrganization(newOrganization.id);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 1,
+            () => assert.isTrue(notificationSent(emailService, EmailTypes.ORGANIZATION_INVITATION)),
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when a user is removed from an organization', async () => {
+        await listener.start();
+
+        const newOrganization = await demo.createOrganization();
+        assert.equal(newOrganization.status, OrganizationStatus.Submitted);
+
+        const updatedOrganization = await demo.approveOrganization(newOrganization.id);
+        assert.equal(updatedOrganization.status, OrganizationStatus.Active);
+
+        const result = await demo.inviteAdminToOrganization(newOrganization.id);
+        await demo.acceptInvitationToOrganization(Number(result.error));
+
+        await demo.removeAdminFromOrganization(newOrganization.id);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 3,
+            () => {
+                assert.isTrue(
+                    notificationSent(emailService, EmailTypes.ORGANIZATION_STATUS_CHANGES)
+                );
+                assert.isTrue(notificationSent(emailService, EmailTypes.ORGANIZATION_INVITATION));
+                assert.isTrue(
+                    notificationSent(emailService, EmailTypes.ORGANIZATION_REMOVED_MEMBER)
+                );
+            },
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });

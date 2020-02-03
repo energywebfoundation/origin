@@ -9,7 +9,11 @@ import {
     OrganizationInviteCreateReturnData,
     IOrganizationInvitation,
     IUserWithRelationsIds,
-    OrganizationRemoveMemberReturnData
+    OrganizationRemoveMemberReturnData,
+    OrganizationStatusChanged,
+    SupportedEvents,
+    OrganizationInvitationEvent,
+    OrganizationRemovedMember
 } from '@energyweb/origin-backend-core';
 
 import {
@@ -25,7 +29,8 @@ import {
     Put,
     UseGuards,
     Query,
-    ParseIntPipe
+    ParseIntPipe,
+    Inject
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -36,6 +41,7 @@ import { UserDecorator } from '../user/user.decorator';
 import { UserService } from '../user/user.service';
 import { OrganizationInvitation } from './organizationInvitation.entity';
 import { User } from '../user/user.entity';
+import { EventsWebSocketGateway } from '../../events/events.gateway';
 
 @Controller('/Organization')
 export class OrganizationController {
@@ -44,7 +50,8 @@ export class OrganizationController {
         private readonly organizationRepository: Repository<Organization>,
         @InjectRepository(OrganizationInvitation)
         private readonly organizationInvitationRepository: Repository<OrganizationInvitation>,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        @Inject(EventsWebSocketGateway) private readonly eventGateway: EventsWebSocketGateway
     ) {}
 
     @Get()
@@ -182,15 +189,26 @@ export class OrganizationController {
 
         try {
             await existingEntity.save();
-
-            return {
-                message: `Entity ${id} successfully updated`
-            };
         } catch (error) {
             throw new UnprocessableEntityException({
                 message: `Entity ${id} could not be updated due to an unkown error`
             });
         }
+
+        const eventData: OrganizationStatusChanged = {
+            organizationId: existingEntity.id,
+            organizationEmail: existingEntity.email,
+            status: parsedStatus
+        };
+
+        this.eventGateway.handleEvent({
+            type: SupportedEvents.ORGANIZATION_STATUS_CHANGED,
+            data: eventData
+        });
+
+        return {
+            message: `Entity ${id} successfully updated`
+        };
     }
 
     @Put('invitation/:invitationId')
@@ -311,6 +329,16 @@ export class OrganizationController {
 
             await organization.save();
 
+            const eventData: OrganizationInvitationEvent = {
+                email,
+                organizationName: organization.name
+            };
+    
+            this.eventGateway.handleEvent({
+                type: SupportedEvents.ORGANIZATION_INVITATION,
+                data: eventData
+            });
+
             return {
                 success: true,
                 error: null
@@ -380,6 +408,16 @@ export class OrganizationController {
             removedUser.organization = null;
 
             removedUser.save();
+
+            const eventData: OrganizationRemovedMember = {
+                organizationName: organization.name,
+                email: removedUser.email
+            };
+    
+            this.eventGateway.handleEvent({
+                type: SupportedEvents.ORGANIZATION_REMOVED_MEMBER,
+                data: eventData
+            });
 
             return {
                 success: true,

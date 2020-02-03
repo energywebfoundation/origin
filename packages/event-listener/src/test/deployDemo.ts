@@ -25,7 +25,12 @@ import {
 
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
 import moment from 'moment';
-import { IDevice, DeviceStatus, DemandPostData } from '@energyweb/origin-backend-core';
+import {
+    IDevice,
+    DeviceStatus,
+    DemandPostData,
+    OrganizationStatus
+} from '@energyweb/origin-backend-core';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 function createTestRegisterData(email: string) {
@@ -61,6 +66,8 @@ export class Demo {
     private ACCOUNTS: any;
 
     private logger: Winston.Logger;
+
+    private adminUser: MarketUser.Entity;
 
     constructor(
         public web3Url: string,
@@ -191,7 +198,7 @@ export class Demo {
         const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
             notifications: false
         };
-        await MarketUser.createMarketUser(
+        this.adminUser = await MarketUser.createMarketUser(
             adminPropsOnChain,
             adminPropsOffChain,
             this.conf,
@@ -318,7 +325,6 @@ export class Demo {
     }
 
     async deployNewDevice() {
-        console.log('deploy new device');
         this.conf.blockchainProperties.activeUser = this.ACCOUNTS.DEVICE_MANAGER;
 
         const deviceProducingProps: Device.IOnChainProperties = {
@@ -451,5 +457,56 @@ export class Demo {
         const certificate = await new PurchasableCertificate.Entity(certId, this.conf).sync();
 
         return certificate.forSale;
+    }
+
+    async createOrganization() {
+        const leadUserId = (await this.adminUser.getInformation()).id;
+
+        return (this.conf.offChainDataSource.organizationClient as any).addMocked(
+            {
+                address: 'Address',
+                ceoName: 'Ceo name',
+                telephone: '1',
+                ceoPassportNumber: '1',
+                code: '1',
+                numberOfEmployees: 1,
+                postcode: '1',
+                shareholders: '1',
+                name: 'TestOrganization',
+                contact: 'Contact',
+                email: 'admin@example.com',
+                vatNumber: 'XY123456',
+                website: 'http://example.com',
+                yearOfRegistration: 2020,
+                headquartersCountry: 83,
+                companyNumber: '',
+                country: 83,
+                businessTypeSelect: 'Private individual',
+                businessTypeInput: '',
+                activeCountries: '[83]'
+            },
+            leadUserId
+        );
+    }
+
+    async approveOrganization(id: number) {
+        return this.conf.offChainDataSource.organizationClient.update(id, {
+            status: OrganizationStatus.Active
+        });
+    }
+
+    async inviteAdminToOrganization(id: number) {
+        return (this.conf.offChainDataSource.organizationClient as any).inviteMocked(
+            'admin@example.com',
+            id
+        );
+    }
+
+    async acceptInvitationToOrganization(invitationId: number) {
+        return this.conf.offChainDataSource.organizationClient.acceptInvitation(invitationId);
+    }
+
+    async removeAdminFromOrganization(organizationId: number) {
+        return this.conf.offChainDataSource.organizationClient.removeMember(organizationId, 1);
     }
 }
