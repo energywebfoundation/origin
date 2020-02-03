@@ -124,10 +124,10 @@ export class Entity implements IDemandEntity {
             throw new Error('Failed to fill demand.');
         }
 
-        const parentCert = await new Certificate.Entity(certificateId, this.configuration).sync();
+        const { children } = await new Certificate.Entity(certificateId, this.configuration).sync();
 
         const event: DemandPartiallyFilled = {
-            certificateId: parentCert.children[0],
+            certificateId: children.length > 0 ? children[0] : certificateId,
             energy,
             blockNumber: tx.blockNumber
         };
