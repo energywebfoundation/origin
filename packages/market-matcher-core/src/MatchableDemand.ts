@@ -1,7 +1,8 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Demand, Supply, PurchasableCertificate } from '@energyweb/market';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { Demand, PurchasableCertificate } from '@energyweb/market';
+import { IRECDeviceService, LocationService, Countries } from '@energyweb/utils-general';
 import moment from 'moment';
+import { DemandStatus } from '@energyweb/origin-backend-core';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
@@ -10,13 +11,13 @@ export class MatchableDemand {
 
     private locationService = new LocationService();
 
-    constructor(public demand: Demand.IDemand) {}
+    constructor(public demand: Demand.IDemandEntity) {}
 
     public async matchesCertificate(
         certificate: PurchasableCertificate.IPurchasableCertificate,
         producingDevice: ProducingDevice.IProducingDevice
     ) {
-        const { offChainProperties } = this.demand;
+        const { deviceType, maxPriceInCentsPerMwh, currency } = this.demand;
 
         const missingEnergyInCurrentPeriod = await this.demand.missingEnergyInPeriod(
             moment().unix()
@@ -29,19 +30,13 @@ export class MatchableDemand {
                 missingEnergyInCurrentPeriod && missingEnergyInCurrentPeriod.value > 0,
                 MatchingErrorReason.PERIOD_ALREADY_FILLED
             )
+            .validate(certificate.price <= maxPriceInCentsPerMwh, MatchingErrorReason.TOO_EXPENSIVE)
+            .validate(certificate.currency === currency, MatchingErrorReason.NON_MATCHING_CURRENCY)
             .validate(
-                certificate.price <= offChainProperties.maxPriceInCentsPerMwh,
-                MatchingErrorReason.TOO_EXPENSIVE
-            )
-            .validate(
-                certificate.currency === offChainProperties.currency,
-                MatchingErrorReason.NON_MATCHING_CURRENCY
-            )
-            .validate(
-                offChainProperties.deviceType
+                deviceType
                     ? this.deviceService.includesDeviceType(
                           producingDevice.offChainProperties.deviceType,
-                          offChainProperties.deviceType
+                          deviceType
                       )
                     : true,
                 MatchingErrorReason.NON_MATCHING_DEVICE_TYPE
@@ -57,53 +52,32 @@ export class MatchableDemand {
             .result();
     }
 
-    public matchesSupply(supply: Supply.ISupply) {
-        const supplyPricePerMwh =
-            (supply.offChainProperties.priceInCents / supply.offChainProperties.availableWh) * 1e6;
-
-        const { offChainProperties } = this.demand;
-
-        return new Validator<MatchingErrorReason>()
-            .validate(this.isActive, MatchingErrorReason.NON_ACTIVE_DEMAND)
-            .validate(
-                supply.offChainProperties.availableWh >= offChainProperties.energyPerTimeFrame,
-                MatchingErrorReason.NOT_ENOUGH_ENERGY
-            )
-            .validate(
-                supplyPricePerMwh <= offChainProperties.maxPriceInCentsPerMwh,
-                MatchingErrorReason.TOO_EXPENSIVE
-            )
-            .result();
-    }
-
     private get isActive() {
-        return this.demand.status === Demand.DemandStatus.ACTIVE;
+        return this.demand.status === DemandStatus.ACTIVE;
     }
 
     private matchesVintage(device: ProducingDevice.IProducingDevice) {
-        if (!this.demand.offChainProperties.vintage) {
+        if (!this.demand.vintage) {
             return true;
         }
 
-        const { operationalSince } = device.offChainProperties;
-        const [vintageStart, vintageEnd] = this.demand.offChainProperties.vintage;
-        const operationalSinceYear = moment.unix(operationalSince).year();
+        const [vintageStart, vintageEnd] = this.demand.vintage;
+        const operationalSinceYear = moment.unix(device.offChainProperties.operationalSince).year();
 
         return operationalSinceYear >= vintageStart && operationalSinceYear <= vintageEnd;
     }
 
     private matchesLocation(device: ProducingDevice.IProducingDevice) {
-        if (!this.demand.offChainProperties.location) {
+        if (!this.demand.location) {
             return true;
         }
 
         try {
-            const matchableLocation = `${device.offChainProperties.country};${device.offChainProperties.region};${device.offChainProperties.province}`;
+            const matchableLocation = `${
+                Countries.find(c => c.id === device.offChainProperties.country).name
+            };${device.offChainProperties.region};${device.offChainProperties.province}`;
 
-            return this.locationService.matches(
-                this.demand.offChainProperties.location,
-                matchableLocation
-            );
+            return this.locationService.matches(this.demand.location, matchableLocation);
         } catch (e) {
             return false;
         }
