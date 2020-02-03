@@ -95,13 +95,15 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         require(isRole(RoleManagement.Role.DeviceManager, _owner), "device owner has to have device manager role");
         require(
             _owner == msg.sender ||
+            isRole(RoleManagement.Role.DevicManager, msg.sender) ||
             isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
             isRole(RoleManagement.Role.Issuer, msg.sender),
-            "only device admin and issuer can create a device for different owner"
+            "only device admin, manager and issuer can create a device for different owner"
         );
         require(
+            isRole(RoleManagement.Role.DevicManager, msg.sender) ||
             isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
-            isRole(RoleManagement.Role.Issuer, msg.sender), "only admin and issuer can add devices"
+            isRole(RoleManagement.Role.Issuer, msg.sender), "only device admin, manager and issuer can add devices"
         );
 
         DeviceDefinitions.Device memory _device = DeviceDefinitions.Device({
