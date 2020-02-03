@@ -124,7 +124,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     status: DeviceStatus.Active,
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
-    country: Countries.find(c => c.name === 'Thailand').id,
+    country: 'Thailand',
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityInW: 9876543,
     operationalSince: 1568746970,
@@ -154,7 +154,7 @@ export const createProducingDevice = (
         complianceRegistry:
             properties.complianceRegistry ||
             DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.complianceRegistry,
-        country: Countries.find(c => c.name === properties.country)?.id || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
+        country: properties.country || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
         gpsLatitude: '',
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',

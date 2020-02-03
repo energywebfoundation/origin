@@ -29,9 +29,7 @@ export class Device extends BaseEntity implements IDevice {
     province: string;
 
     @Column()
-    @IsInt()
-    @Min(0)
-    country: number;
+    country: string;
 
     @Column()
     @Min(0)

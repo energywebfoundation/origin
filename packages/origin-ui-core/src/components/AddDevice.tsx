@@ -152,7 +152,7 @@ export function AddDevice() {
             capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
                 parseFloat(values.capacity)
             ),
-            country: Countries.find(c => c.name === country).id,
+            country,
             address: values.address,
             region,
             province: province.split(';')[1],

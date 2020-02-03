@@ -223,7 +223,7 @@ export function DeviceGroupForm(props: IProps) {
             complianceRegistry: compliance,
             facilityName: values.facilityName,
             capacityInW: sumCapacityOfDevices(values.children),
-            country: Countries.find(c => c.name === country).id,
+            country,
             address: '',
             region: '',
             province: '',

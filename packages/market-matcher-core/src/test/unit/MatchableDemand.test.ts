@@ -1,7 +1,7 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, PurchasableCertificate, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Year, Countries } from '@energyweb/utils-general';
+import { Year } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -66,9 +66,7 @@ describe('MatchableDemand tests', () => {
             producingDeviceOffChainProperties.deviceType.returns(
                 options.producingDeviceDeviceType || deviceType
             );
-            producingDeviceOffChainProperties.country.returns(
-                Countries.find(c => c.name === country).id
-            );
+            producingDeviceOffChainProperties.country.returns(country);
             producingDeviceOffChainProperties.address.returns(options.address || address);
             producingDeviceOffChainProperties.region.returns(options.region || region);
             producingDeviceOffChainProperties.province.returns(options.province || province);

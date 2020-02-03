@@ -214,7 +214,7 @@ describe('PurchasableCertificate-Facade', () => {
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,
-            country: 221,
+            country: 'Thailand',
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '14.059500',

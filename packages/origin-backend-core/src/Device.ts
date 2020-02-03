@@ -12,7 +12,7 @@ export interface IDevice {
     address: string;
     region: string;
     province: string;
-    country: number;
+    country: string;
     operationalSince: number;
     capacityInW: number
     gpsLatitude: string;

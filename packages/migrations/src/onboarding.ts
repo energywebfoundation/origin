@@ -145,7 +145,7 @@ export const onboardDemo = async (actionString: string, conf: Configuration.Enti
             status: deviceStatusFactory(action.data.status),
             operationalSince: Number(action.data.operationalSince),
             capacityInW: action.data.capacityInW,
-            country: Countries.find(c => c.name === action.data.country).id,
+            country: action.data.country,
             address: action.data.address,
             gpsLatitude: action.data.gpsLatitude,
             gpsLongitude: action.data.gpsLongitude,
