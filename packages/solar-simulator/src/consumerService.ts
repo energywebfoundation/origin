@@ -9,11 +9,7 @@ import fs from 'fs';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { createBlockchainProperties } from '@energyweb/market';
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 
 export function wait(milliseconds: number) {
     return new Promise(resolve => {
@@ -30,19 +26,15 @@ async function createBlockchainConfiguration() {
         transports: [new Winston.transports.Console({ level: 'silly' })]
     });
 
-    const baseUrl = `${process.env.BACKEND_URL}/api`;
-
     const conf: Configuration.Entity = {
         blockchainProperties: {
             web3
         },
         logger,
-        offChainDataSource: {
-            baseUrl,
-            client: new OffChainDataClient(),
-            configurationClient: new ConfigurationClient(),
-            userClient: new UserClient(baseUrl)
-        }
+        offChainDataSource: new OffChainDataSource(
+            process.env.BACKEND_URL,
+            Number(process.env.BACKEND_PORT)
+        )
     };
 
     let storedMarketContractAddresses: string[] = [];
@@ -51,7 +43,6 @@ async function createBlockchainConfiguration() {
 
     while (storedMarketContractAddresses.length === 0) {
         storedMarketContractAddresses = await conf.offChainDataSource.configurationClient.get(
-            baseUrl,
             'MarketContractLookup'
         );
 
@@ -81,7 +72,7 @@ interface IEnergyMeasurement {
 }
 
 export async function startConsumerService(configFilePath: string) {
-    const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3031`;
+    const ENERGY_API_BASE_URL = process.env.ENERGY_API_BASE_URL || `http://localhost:3032`;
     const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
     const CHECK_INTERVAL = CONFIG.config.ENERGY_READ_CHECK_INTERVAL || 29000;
     const conf = await createBlockchainConfiguration();
