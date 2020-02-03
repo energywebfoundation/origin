@@ -48,9 +48,9 @@ export class DemandClientMock implements IDemandClient {
             timestamp: moment().unix()
         };
 
-        (this.eventClient as any).triggerEvent(sendEvent);
-
         this.storage.set(demand.id, demand);
+
+        (this.eventClient as any).triggerEvent(sendEvent);
 
         return demand;
     }
