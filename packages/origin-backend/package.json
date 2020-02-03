@@ -60,7 +60,7 @@
     "rxjs": "6.5.4",
     "sqlite3": "4.1.1",
     "typeorm": "0.2.22",
-    "ws": "^7.2.1"
+    "ws": "7.2.1"
   },
   "devDependencies": {
     "@nestjs/cli": "6.14.1",

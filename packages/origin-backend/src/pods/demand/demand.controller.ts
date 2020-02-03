@@ -66,7 +66,14 @@ export class DemandController {
         const data: Omit<IDemand, 'id'> = {
             ...body,
             status: DemandStatus.ACTIVE,
-            demandPartiallyFilledEvents: []
+            demandPartiallyFilledEvents: [],
+            location: body.location ?? [],
+            deviceType: body.deviceType ?? [],
+            otherGreenAttributes: body.otherGreenAttributes ?? '',
+            typeOfPublicSupport: body.typeOfPublicSupport ?? '',
+            registryCompliance: body.registryCompliance ?? '',
+            procureFromSingleFacility: body.procureFromSingleFacility ?? false,
+            vintage: body.vintage ?? [1900, 2100]
         };
 
         Object.assign(newEntity, data);

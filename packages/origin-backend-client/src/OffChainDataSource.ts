@@ -44,6 +44,7 @@ export class OffChainDataSource implements IOffChainDataSource {
         this.demandClient = new DemandClient(this.dataApiUrl, this.requestClient);
 
         this.eventClient = new EventClient(eventApi);
+        this.eventClient.start();
     }
 
     get dataApiUrl() {

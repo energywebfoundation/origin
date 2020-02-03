@@ -56,7 +56,7 @@ export class DeviceController {
 
         Object.assign(newEntity, {
             ...body,
-            status: DeviceStatus.Submitted
+            status: body.status ?? DeviceStatus.Submitted
         });
 
         newEntity.deviceGroup = body.deviceGroup ?? '';

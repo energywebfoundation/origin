@@ -886,7 +886,7 @@ export const CertificateTable = connect(
         currentUser: getCurrentUser(state),
         producingDevices: getProducingDevices(state),
         users: getUsers(state),
-        organizationClient: getOffChainDataSource(state).organizationClient
+        organizationClient: getOffChainDataSource(state)?.organizationClient
     }),
     dispatchProps
 )(CertificateTableClass);

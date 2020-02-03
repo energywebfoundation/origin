@@ -358,7 +358,7 @@ export const DemandTable = withRouter(
             demands: getDemands(state),
             currentUser: getCurrentUser(state),
             baseURL: getBaseURL(),
-            organizationClient: getOffChainDataSource(state).organizationClient
+            organizationClient: getOffChainDataSource(state)?.organizationClient
         })
     )(DemandTableClass)
 );

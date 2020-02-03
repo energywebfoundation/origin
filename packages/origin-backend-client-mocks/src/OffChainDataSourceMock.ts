@@ -34,6 +34,8 @@ export class OffChainDataSourceMock implements IOffChainDataSource {
     requestClient: IRequestClient = new RequestClient();
 
     constructor() {
+        this.eventClient.start();
+
         this.deviceClient = new DeviceClientMock(this.eventClient);
         this.demandClient = new DemandClientMock(this.eventClient);
     }

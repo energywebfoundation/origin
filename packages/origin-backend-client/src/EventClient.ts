@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import WebSocket, { MessageEvent } from 'isomorphic-ws';
 import { IEvent, SupportedEvents } from '@energyweb/origin-backend-core';
 
 export enum MessageType {
@@ -24,28 +24,37 @@ export class EventClient implements IEventClient {
 
     private allCallbacks: ISubscription[] = [];
 
-    constructor(private url: string) {}
+    constructor(private url: string) {
+        this.url = this.url.replace(/(http)(s)?\:\/\//, "ws$2://")
+    }
 
     start() {
         this.client = new WebSocket(this.url);
         this.started = true;
 
-        this.client.on('message', (msg: any) => {
-            console.log({msg})
-            const msgType = this.getMessageType(msg);
+        this.client.onopen = () => {
+            console.log(`Connected to the WebSocket event server on: ${this.url}`);
+            this.client.send(Date.now());
+        };
+          
+        this.client.onclose = () => console.log(`Disconnected from ${this.url}`);
+
+        this.client.onmessage = (msg: MessageEvent) => {
+            const { data } = msg;
+            const msgType = this.getMessageType(data.toString());
 
             switch (msgType) {
                 case MessageType.INFO_MSG:
-                    console.log(msg);
+                    console.log(data);
                     break;
 
                 case MessageType.NEW_EVENT:
                     console.log('New incoming event.');
-                    const event: IEvent = JSON.parse(msg);
+                    const event: IEvent = JSON.parse(data.toString());
                     this.handleEvent(event);
                     break;
             }
-        });
+        };
     }
 
     stop() {
@@ -53,6 +62,9 @@ export class EventClient implements IEventClient {
     }
 
     subscribe(event: SupportedEvents, callback: Function) {
+        if (!this.started) {
+            throw new Error('Please start the Event client before subscribing to an event.');
+        }
         this.allCallbacks.push({
             event,
             callback

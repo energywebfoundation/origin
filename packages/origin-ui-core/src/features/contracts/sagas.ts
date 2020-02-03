@@ -33,7 +33,7 @@ import { addCertificate, requestCertificateEntityFetch } from '../certificates/a
 import { IStoreState } from '../../types';
 import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
-import { DemandStatus } from '@energyweb/origin-backend-core';
+import { DemandStatus, SupportedEvents } from '@energyweb/origin-backend-core';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -84,7 +84,7 @@ async function initConf(
 
 function* initEventHandler() {
     const configuration: IStoreState['configuration'] = yield select(getConfiguration);
-
+    
     if (!configuration) {
         return;
     }
@@ -134,10 +134,10 @@ function* initEventHandler() {
                 });
             });
 
-            marketContractEventHandler.onEvent('CreatedNewDemand', async (event: any) => {
+            configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.CREATE_NEW_DEMAND, async (event: any) => {
                 try {
                     const demand = await new Demand.Entity(
-                        event.returnValues._demandId.toString(),
+                        event.data.demandId.toString(),
                         configuration
                     ).sync();
 
@@ -149,12 +149,14 @@ function* initEventHandler() {
                 }
             });
 
-            marketContractEventHandler.onEvent('DemandUpdated', async (event: any) => {
-                if (parseInt(event.returnValues._status as string, 10) === DemandStatus.ARCHIVED) {
+            configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.DEMAND_UPDATED, async (event: any) => {
+                const { demandId, status } = event.data;
+
+                if (parseInt(status as string, 10) === DemandStatus.ARCHIVED) {
                     emitter({
                         action: demandUpdated(
                             await new Demand.Entity(
-                                event.returnValues._demandId.toString(),
+                                demandId.toString(),
                                 configuration
                             ).sync()
                         )

@@ -175,13 +175,14 @@ export function DemandForm(props: IProps) {
         dispatch(setLoading(true));
 
         console.log({
+            values,
             demand,
             edit
         });
 
         const offChainProps: IDemand = {
             id: demand?.id,
-            owner: demand?.owner,
+            owner: demand?.owner ?? currentUser.id,
             status: demand?.status,
             demandPartiallyFilledEvents: demand?.demandPartiallyFilledEvents,
             currency: values.currency,

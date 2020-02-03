@@ -183,5 +183,5 @@ export const DeviceMap = connect((state: IStoreState, ownProps: IOwnProps) => ({
     devices: ownProps.devices || getProducingDevices(state),
     baseURL: getBaseURL(),
     configuration: getConfiguration(state),
-    organizationClient: getOffChainDataSource(state).organizationClient
+    organizationClient: getOffChainDataSource(state)?.organizationClient
 }))(DeviceMapClass);
