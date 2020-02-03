@@ -15,7 +15,7 @@ import { FormInput } from '../Form/FormInput';
 import { FormCountrySelect } from '../Form/FormCountrySelect';
 import { FormBusinessTypeSelect } from '../Form/FormBusinessTypeSelect';
 import { FormCountryMultiSelect } from '../Form/FormCountryMultiSelect';
-import { getOrganizationClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import { useLinks } from '../../utils/routing';
 import { IAutocompleteMultiSelectOptionType } from '../MultiSelectAutocomplete';
 
@@ -141,7 +141,7 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export function OrganizationForm(props: IProps) {
     const { entity, readOnly } = props;
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
     const [activeCountries, setActiveCountries] = useState<IAutocompleteMultiSelectOptionType[]>(
         []
     );

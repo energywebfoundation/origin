@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IRECDeviceService, Unit } from '@energyweb/utils-general';
+import { IRECDeviceService, Unit, Countries } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -34,6 +34,7 @@ import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/ac
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { FormInput } from './Form/FormInput';
 import { Skeleton } from '@material-ui/lab';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -213,19 +214,16 @@ export function DeviceGroupForm(props: IProps) {
             smartMeter: { address: DEFAULT_ADDRESS },
             owner: { address: currentUser.id },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Submitted,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: '',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: ''
         };
 
-        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+        const deviceProducingPropsOffChain: IDevice = {
+            status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
             facilityName: values.facilityName,
             capacityInW: sumCapacityOfDevices(values.children),
-            country,
+            country: Countries.find(c => c.name === country).id,
             address: '',
             region: '',
             province: '',

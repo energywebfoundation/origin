@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { IRECDeviceService, Countries } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -34,6 +34,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import axios from 'axios';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -138,23 +139,20 @@ export function AddDevice() {
             smartMeter: { address: DEFAULT_ADDRESS },
             owner: { address: currentUser.id },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Submitted,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: '',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: ''
         };
 
         const [region, province] = selectedLocation;
 
-        const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+        const deviceProducingPropsOffChain: IDevice = {
+            status: DeviceStatus.Submitted,
             deviceType,
             complianceRegistry: compliance,
             facilityName: values.facilityName,
             capacityInW: PowerFormatter.getBaseValueFromValueInDisplayUnit(
                 parseFloat(values.capacity)
             ),
-            country,
+            country: Countries.find(c => c.name === country).id,
             address: values.address,
             region,
             province: province.split(';')[1],
@@ -204,7 +202,7 @@ export function AddDevice() {
         }
 
         try {
-            const response = await axios.post(`${environment.BACKEND_URL}/api/Image`, formData, {
+            const response = await axios.post(`${environment.BACKEND_URL}:${environment.BACKEND_PORT}/api/Image`, formData, {
                 headers: { 'Content-type': 'multipart/form-data' }
             });
 

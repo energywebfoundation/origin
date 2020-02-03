@@ -1,9 +1,4 @@
-import {
-    IOffChainDataClient,
-    IConfigurationClient,
-    IOrganizationClient,
-    IUserClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 export enum GeneralActions {
     showAccountChangedModal = 'SHOW_ACCOUNT_CHANGED_MODAL',
@@ -13,10 +8,7 @@ export enum GeneralActions {
     setError = 'GENERAL_SET_ERROR',
     showRequestPasswordModal = 'SHOW_REQUEST_PASSWORD_MODAL',
     hideRequestPasswordModal = 'HIDE_REQUEST_PASSWORD_MODAL',
-    setOffChainDataClient = 'GENERAL_SET_OFF_CHAIN_DATA_CLIENT',
-    setConfigurationClient = 'GENERAL_SET_CONFIGURATION_CLIENT',
-    setOrganizationClient = 'GENERAL_SET_ORGANIZATION_CLIENT',
-    setUserClient = 'GENERAL_SET_USER_CLIENT',
+    setOffChainDataSource = 'GENERAL_SET_OFF_CHAIN_DATA_SOURCE',
     setEnvironment = 'GENERAL_SET_ENVIRONMENT',
     setCurrencies = 'GENERAL_SET_CURRENCIES',
     setCompliance = 'GENERAL_SET_COMPLIANCE',
@@ -27,6 +19,7 @@ export enum GeneralActions {
 export interface IEnvironment {
     MODE: string;
     BACKEND_URL: string;
+    BACKEND_PORT: string;
     BLOCKCHAIN_EXPLORER_URL: string;
     WEB3: string;
     REGISTRATION_MESSAGE_TO_SIGN: string;
@@ -111,53 +104,17 @@ export const hideRequestPasswordModal = () => ({
 
 export type THideRequestPasswordModalAction = typeof hideRequestPasswordModal;
 
-export interface ISetOffChainDataClientAction {
-    type: GeneralActions.setOffChainDataClient;
-    payload: IOffChainDataClient;
+export interface ISetOffChainDataSourceAction {
+    type: GeneralActions.setOffChainDataSource;
+    payload: IOffChainDataSource;
 }
 
-export const setOffChainDataClient = (payload: ISetOffChainDataClientAction['payload']) => ({
-    type: GeneralActions.setOffChainDataClient,
+export const setOffChainDataSource = (payload: ISetOffChainDataSourceAction['payload']) => ({
+    type: GeneralActions.setOffChainDataSource,
     payload
 });
 
-export type TSetOffChainDataClientAction = typeof setOffChainDataClient;
-
-export interface ISetConfigurationClientAction {
-    type: GeneralActions.setConfigurationClient;
-    payload: IConfigurationClient;
-}
-
-export const setConfigurationClient = (payload: ISetConfigurationClientAction['payload']) => ({
-    type: GeneralActions.setConfigurationClient,
-    payload
-});
-
-export type TSetConfigurationClientAction = typeof setConfigurationClient;
-
-export interface ISetOrganizationClientAction {
-    type: GeneralActions.setOrganizationClient;
-    payload: IOrganizationClient;
-}
-
-export const setOrganizationClient = (payload: ISetOrganizationClientAction['payload']) => ({
-    type: GeneralActions.setOrganizationClient,
-    payload
-});
-
-export type TSetOrganizationClientAction = typeof setOrganizationClient;
-
-export interface ISetUserClientAction {
-    type: GeneralActions.setUserClient;
-    payload: IUserClient;
-}
-
-export const setUserClient = (payload: ISetUserClientAction['payload']) => ({
-    type: GeneralActions.setUserClient,
-    payload
-});
-
-export type TSetUserClientAction = typeof setUserClient;
+export type TSetOffChainDataSourceAction = typeof setOffChainDataSource;
 
 export interface ISetEnvironmentAction {
     type: GeneralActions.setEnvironment;
@@ -229,12 +186,9 @@ export type IGeneralAction =
     | ISetErrorAction
     | IRequestPasswordModalAction
     | IHideRequestPasswordModalAction
-    | ISetOffChainDataClientAction
-    | ISetConfigurationClientAction
+    | ISetOffChainDataSourceAction
     | ISetEnvironmentAction
     | ISetCurrenciesAction
     | ISetComplianceAction
     | ISetCountryAction
-    | ISetRegionsAction
-    | ISetOrganizationClientAction
-    | ISetUserClientAction;
+    | ISetRegionsAction;

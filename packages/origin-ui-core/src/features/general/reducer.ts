@@ -1,14 +1,5 @@
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
-import {
-    IOffChainDataClient,
-    OffChainDataClient,
-    ConfigurationClient,
-    IConfigurationClient,
-    IOrganizationClient,
-    IUserClient,
-    IRequestClient,
-    RequestClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
@@ -18,19 +9,13 @@ export interface IGeneralState {
     requestPasswordModalVisible: boolean;
     requestPasswordModalTitle: string;
     requestPasswordModalCallback: (password: string) => void;
-    offChainDataClient: IOffChainDataClient;
-    configurationClient: IConfigurationClient;
-    organizationClient: IOrganizationClient;
-    requestClient: IRequestClient;
-    userClient: IUserClient;
+    offChainDataSource: IOffChainDataSource;
     environment: IEnvironment;
     currencies: string[];
     compliance: string;
     country: string;
     regions: object;
 }
-
-const requestClient = new RequestClient();
 
 const defaultState: IGeneralState = {
     accountChangedModalVisible: false,
@@ -40,11 +25,7 @@ const defaultState: IGeneralState = {
     requestPasswordModalVisible: false,
     requestPasswordModalCallback: null,
     requestPasswordModalTitle: null,
-    offChainDataClient: new OffChainDataClient(requestClient),
-    configurationClient: new ConfigurationClient(requestClient),
-    organizationClient: null,
-    requestClient,
-    userClient: null,
+    offChainDataSource: null,
     environment: null,
     currencies: [],
     compliance: null,
@@ -95,28 +76,10 @@ export default function reducer(state = defaultState, action: IGeneralAction): I
                 requestPasswordModalTitle: null
             };
 
-        case GeneralActions.setOffChainDataClient:
+        case GeneralActions.setOffChainDataSource:
             return {
                 ...state,
-                offChainDataClient: action.payload
-            };
-
-        case GeneralActions.setConfigurationClient:
-            return {
-                ...state,
-                configurationClient: action.payload
-            };
-
-        case GeneralActions.setOrganizationClient:
-            return {
-                ...state,
-                organizationClient: action.payload
-            };
-
-        case GeneralActions.setUserClient:
-            return {
-                ...state,
-                userClient: action.payload
+                offChainDataSource: action.payload
             };
 
         case GeneralActions.setEnvironment:

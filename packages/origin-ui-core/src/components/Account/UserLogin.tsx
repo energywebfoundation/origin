@@ -15,7 +15,7 @@ import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
-import { getUserClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import { setAuthenticationToken } from '../../features/users/actions';
 
 interface IFormValues {
@@ -39,7 +39,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 });
 
 export function UserLogin() {
-    const userClient = useSelector(getUserClient);
+    const userClient = useSelector(getOffChainDataSource).userClient;
     const dispatch = useDispatch();
 
     const useStyles = makeStyles(() =>

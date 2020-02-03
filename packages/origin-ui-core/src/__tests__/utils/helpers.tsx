@@ -12,7 +12,7 @@ import {
     IUserFetcher
 } from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Configuration, Compliance } from '@energyweb/utils-general';
+import { Configuration, Compliance, Countries } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -25,19 +25,10 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import {
-    IConfigurationClient,
-    IOffChainDataClient,
-    IOrganizationClient,
-    IUserClient
-} from '@energyweb/origin-backend-client';
-import {
-    setConfigurationClient,
-    setOffChainDataClient,
-    setOrganizationClient,
-    setUserClient
-} from '../../features/general/actions';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { setOffChainDataSource } from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -68,10 +59,7 @@ export async function waitForConditionAndAssert(
 const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
-    configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient,
-    userClient: IUserClient,
-    organizationClient: IOrganizationClient,
+    offChainDataSource: IOffChainDataSource,
     runSagas = true
 ) => {
     const history = createMemoryHistory({
@@ -97,20 +85,12 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
-    if (configurationClient) {
-        store.dispatch(setConfigurationClient(configurationClient));
-    }
-
-    if (offChainDataClient) {
-        store.dispatch(setOffChainDataClient(offChainDataClient));
-    }
-
-    if (userClient) {
-        store.dispatch(setUserClient(userClient));
-    }
-
-    if (organizationClient) {
-        store.dispatch(setOrganizationClient(organizationClient));
+    console.log('Setting mocked off chain data source');
+    console.log({
+        offChainDataSource
+    })
+    if (offChainDataSource) {
+        store.dispatch(setOffChainDataSource(offChainDataSource));
     }
 
     const sagasTasks: Task[] = runSagas
@@ -126,6 +106,7 @@ const setupStoreInternal = (
 
 interface ICreateProducingDeviceProperties {
     id: string;
+    status: DeviceStatus,
     owner?: string;
     facilityName?: string;
     deviceType?: string;
@@ -140,16 +121,17 @@ interface ICreateProducingDeviceProperties {
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
+    status: DeviceStatus.Active,
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
-    country: 'Thailand',
+    country: Countries.find(c => c.name === 'Thailand').id,
     address: '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
     capacityInW: 9876543,
     operationalSince: 1568746970,
     complianceRegistry: 'I-REC',
     region: 'Central',
     province: 'Nakhon Pathom'
-} as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
+} as Partial<IDevice>) as IDevice;
 
 export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
@@ -157,7 +139,8 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
-    const offChainProperties: ProducingDevice.IOffChainProperties = {
+    const offChainProperties: IDevice = {
+        status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
             properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,
@@ -171,7 +154,7 @@ export const createProducingDevice = (
         complianceRegistry:
             properties.complianceRegistry ||
             DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.complianceRegistry,
-        country: properties.country || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
+        country: Countries.find(c => c.name === properties.country)?.id || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.country,
         gpsLatitude: '',
         gpsLongitude: '',
         timezone: 'Asia/Bangkok',
@@ -231,10 +214,7 @@ export const createCertificate = (
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
-    configurationClient?: IConfigurationClient;
-    offChainDataClient?: IOffChainDataClient;
-    userClient?: IUserClient;
-    organizationClient?: IOrganizationClient;
+    offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
     userFetcher?: IUserFetcher;
 }
@@ -252,10 +232,7 @@ export const setupStore = (
     const { store, history, sagasTasks } = setupStoreInternal(
         initialHistoryEntries,
         options.logActions,
-        options.configurationClient,
-        options.offChainDataClient,
-        options.userClient,
-        options.organizationClient,
+        options.offChainDataSource,
         options.runSagas
     );
 
