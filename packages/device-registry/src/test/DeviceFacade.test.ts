@@ -11,16 +11,12 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 import { Configuration } from '@energyweb/utils-general';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { DeviceStatus, IDevice } from '@energyweb/origin-backend-core';
 
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
-import { DeviceLogic, ProducingDevice, Device, ConsumingDevice } from '..';
+import { DeviceLogic, ProducingDevice, Device } from '..';
 import { logger } from '../Logger';
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
-import { DeviceStatus } from '../blockchain-facade/Device';
 
 describe('Device Facade', () => {
     dotenv.config({
@@ -98,12 +94,7 @@ describe('Device Facade', () => {
                     userLogicInstance: userLogic,
                     web3
                 },
-                offChainDataSource: {
-                    baseUrl: `${process.env.BACKEND_URL}/api`,
-                    client: new OffChainDataClientMock(),
-                    configurationClient: new ConfigurationClientMock(),
-                    userClient: new UserClientMock()
-                },
+                offChainDataSource: new OffChainDataSourceMock(),
                 logger
             };
 
@@ -113,17 +104,14 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                status: DeviceStatus.Active,
-                usageType: Device.UsageType.Producing,
-                lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-                propertiesDocumentHash: null,
-                url: null
+                lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
             };
 
-            const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+            const devicePropsOffChain: IDevice = {
+                status: DeviceStatus.Active,
                 operationalSince: 0,
                 capacityInW: 10,
-                country: 'Thailand',
+                country: 221,
                 address:
                     '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
                 gpsLatitude: '0.0123123',
@@ -154,11 +142,8 @@ describe('Device Facade', () => {
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 0,
-                status: DeviceStatus.Active,
-                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: '',
-                offChainProperties: devicePropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`
+                offChainProperties: devicePropsOffChain
             } as Partial<ProducingDevice.Entity>);
 
             assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
@@ -176,19 +161,16 @@ describe('Device Facade', () => {
             device = await device.sync();
 
             assert.deepOwnInclude(device, {
-                id: '0',
                 initialized: true,
                 smartMeter: { address: deviceSmartmeter },
                 owner: { address: deviceOwnerAddress },
                 lastSmartMeterReadWh: 100,
-                status: DeviceStatus.Active,
-                usageType: Device.UsageType.Producing,
                 lastSmartMeterReadFileHash: 'newFileHash',
-                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
                 offChainProperties: {
+                    status: DeviceStatus.Active,
                     operationalSince: 0,
                     capacityInW: 10,
-                    country: 'Thailand',
+                    country: 221,
                     address:
                         '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
                     gpsLatitude: '0.0123123',
@@ -210,121 +192,6 @@ describe('Device Facade', () => {
         describe('getSmartMeterReads', () => {
             it('should correctly return reads', async () => {
                 const device = await new ProducingDevice.Entity('0', conf).sync();
-                const reads = await device.getSmartMeterReads();
-
-                assert.deepEqual(reads, [
-                    {
-                        energy: 100,
-                        timestamp: SM_READ_TIMESTAMP
-                    }
-                ]);
-            });
-        });
-    });
-
-    describe('ConsumingDevice', () => {
-        it('should onboard a new consuming device', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceOwnerAddress,
-                privateKey: deviceOwnerPK
-            };
-
-            const FACILITY_NAME = 'Wuthering Heights Windfarm';
-
-            const deviceProps: Device.IOnChainProperties = {
-                smartMeter: { address: deviceSmartMeter2 },
-                owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 0,
-                status: DeviceStatus.Active,
-                usageType: Device.UsageType.Consuming,
-                lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-                propertiesDocumentHash: null,
-                url: null
-            };
-
-            const devicePropsOffChain: Device.IOffChainProperties = {
-                operationalSince: 0,
-                capacityInW: 10,
-                country: 'Thailand',
-                address:
-                    '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
-                gpsLatitude: '0.0123123',
-                gpsLongitude: '31.1231',
-                timezone: 'Asia/Bangkok',
-                facilityName: FACILITY_NAME,
-                description: '',
-                images: '',
-                region: '',
-                province: ''
-            };
-
-            assert.equal(await ConsumingDevice.getDeviceListLength(conf), 0);
-
-            const device = await ConsumingDevice.createDevice(
-                deviceProps,
-                devicePropsOffChain,
-                conf
-            );
-
-            assert.deepOwnInclude(device, {
-                initialized: true,
-                smartMeter: { address: deviceSmartMeter2 },
-                owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 0,
-                status: DeviceStatus.Active,
-                usageType: Device.UsageType.Consuming,
-                lastSmartMeterReadFileHash: '',
-                offChainProperties: devicePropsOffChain,
-                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`
-            } as Partial<ConsumingDevice.Entity>);
-
-            assert.equal(await ConsumingDevice.getDeviceListLength(conf), 1);
-        });
-
-        it('should log a new meter reading', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceSmartMeter2,
-                privateKey: deviceSmartmeter2PK
-            };
-            let device = (await ConsumingDevice.getAllDevices(conf))[0];
-            device = await device.sync();
-
-            await device.saveSmartMeterRead(100, 'newFileHash', SM_READ_TIMESTAMP);
-
-            device = await device.sync();
-
-            assert.deepOwnInclude(device, {
-                id: '1',
-                initialized: true,
-                smartMeter: { address: deviceSmartMeter2 },
-                owner: { address: deviceOwnerAddress },
-                lastSmartMeterReadWh: 100,
-                status: DeviceStatus.Active,
-                usageType: Device.UsageType.Consuming,
-                lastSmartMeterReadFileHash: 'newFileHash',
-                url: `${process.env.BACKEND_URL}/api/Entity/${device.propertiesDocumentHash}`,
-                offChainProperties: {
-                    operationalSince: 0,
-                    capacityInW: 10,
-                    country: 'Thailand',
-                    address:
-                        '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
-                    gpsLatitude: '0.0123123',
-                    gpsLongitude: '31.1231',
-                    timezone: 'Asia/Bangkok',
-                    facilityName: 'Wuthering Heights Windfarm',
-                    description: '',
-                    images: '',
-                    region: '',
-                    province: ''
-                }
-            } as Partial<ConsumingDevice.Entity>);
-        });
-
-        describe('getSmartMeterReads ConsumingDevice', () => {
-            it('should correctly return reads', async () => {
-                let device = (await ConsumingDevice.getAllDevices(conf))[0];
-                device = await device.sync();
                 const reads = await device.getSmartMeterReads();
 
                 assert.deepEqual(reads, [
