@@ -1,94 +1,77 @@
 import {
-    BlockchainDataModelEntity,
-    Compliance,
     Configuration,
     extendArray,
     Resolution,
     TimeFrame,
     TimeSeriesElement,
-    Timestamp,
-    TS,
-    Year
+    TS
 } from '@energyweb/utils-general';
 import moment from 'moment';
-import polly from 'polly-js';
+
+import {
+    IDemand,
+    DemandStatus,
+    DemandPostData,
+    DemandUpdateData,
+    DemandPartiallyFilled
+} from '@energyweb/origin-backend-core';
 import { TransactionReceipt } from 'web3-core';
+import { Certificate } from '@energyweb/origin';
 
-import DemandOffChainPropertiesSchema from '../../schemas/DemandOffChainProperties.schema.json';
-import { MarketLogic } from '../wrappedContracts/MarketLogic';
-import { Currency } from '../types';
-
-export interface IDemandOffChainProperties {
-    timeFrame: TimeFrame;
-    maxPriceInCentsPerMwh: number;
-    currency: Currency;
-    location?: string[];
-    deviceType?: string[];
-    minCO2Offset?: number;
-    otherGreenAttributes?: string;
-    typeOfPublicSupport?: string;
-    energyPerTimeFrame: number;
-    registryCompliance?: Compliance;
-    startTime: Timestamp;
-    endTime: Timestamp;
-    procureFromSingleFacility?: boolean;
-    vintage?: [Year, Year];
-    automaticMatching: boolean;
-}
-
-export enum DemandStatus {
-    ACTIVE,
-    PAUSED,
-    ARCHIVED
-}
-
-export interface IDemandOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
-    demandOwner: string;
-    status: DemandStatus;
-}
-
-export interface IDemand extends IDemandOnChainProperties {
-    id: string;
-    offChainProperties: IDemandOffChainProperties;
-    fill: (entityId: string) => Promise<TransactionReceipt>;
+export interface IDemandEntity extends IDemand {
     fillAt: (entityId: string, energy: number) => Promise<TransactionReceipt>;
-    fillAgreement: (entityId: string) => Promise<TransactionReceipt>;
     missingEnergyInPeriod: (timeStamp: number) => Promise<TimeSeriesElement>;
     missingEnergyInCurrentPeriod: () => Promise<TimeSeriesElement>;
 }
 
-export class Entity extends BlockchainDataModelEntity.Entity implements IDemand {
-    offChainProperties: IDemandOffChainProperties;
-
+export class Entity implements IDemandEntity {
     status: DemandStatus;
 
-    demandOwner: string;
+    owner: string;
+
+    currency: string;
+
+    timeFrame: number;
+
+    location: string[];
+
+    deviceType: string[];
+
+    maxPriceInCentsPerMwh: number;
+
+    energyPerTimeFrame: number;
+
+    startTime: number;
+
+    endTime: number;
+
+    automaticMatching: boolean;
+
+    procureFromSingleFacility: boolean;
+
+    vintage: [number, number];
+
+    demandPartiallyFilledEvents: DemandPartiallyFilled[] = [];
 
     initialized: boolean;
 
-    marketLogicInstance: MarketLogic;
-
-    constructor(id: string, configuration: Configuration.Entity) {
-        super(id, configuration);
-
-        this.marketLogicInstance = configuration.blockchainProperties.marketLogicInstance;
+    constructor(public id: number, public configuration: Configuration.Entity) {
         this.initialized = false;
     }
 
     async sync(): Promise<Entity> {
         if (this.id != null) {
-            const demand = await this.marketLogicInstance.getDemand(this.id);
+            const demand = await this.configuration.offChainDataSource.demandClient.getById(
+                Number(this.id)
+            );
 
-            if (demand._owner === '0x0000000000000000000000000000000000000000') {
+            if (!demand || demand.owner === '0x0000000000000000000000000000000000000000') {
                 return this;
             }
 
-            this.propertiesDocumentHash = demand._propertiesDocumentHash;
-            this.url = demand._documentDBURL;
-            this.demandOwner = demand._owner;
-            this.status = Number(demand._status);
+            Object.assign(this, demand);
+
             this.initialized = true;
-            this.offChainProperties = await this.getOffChainProperties();
 
             if (this.configuration.logger) {
                 this.configuration.logger.verbose(`Demand ${this.id} synced`);
@@ -101,58 +84,57 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     async clone(): Promise<Entity> {
         await this.sync();
 
-        return createDemand(this.offChainProperties, this.configuration); // eslint-disable-line @typescript-eslint/no-use-before-define
-    }
-
-    async update(offChainProperties: IDemandOffChainProperties) {
-        const updatedOffChainStorageProperties = this.prepareEntityCreation(
-            offChainProperties,
-            DemandOffChainPropertiesSchema
-        );
-
-        await this.syncOffChainStorage(offChainProperties, updatedOffChainStorageProperties);
-
-        await this.marketLogicInstance.updateDemand(
-            this.id,
-            updatedOffChainStorageProperties.rootHash,
-            this.fullUrl,
+        return createDemand(
             {
-                from: this.configuration.blockchainProperties.activeUser.address,
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            }
+                owner: this.owner,
+                currency: this.currency,
+                timeFrame: this.timeFrame,
+                maxPriceInCentsPerMwh: this.maxPriceInCentsPerMwh,
+                energyPerTimeFrame: this.energyPerTimeFrame,
+                startTime: this.startTime,
+                endTime: this.endTime,
+                automaticMatching: this.automaticMatching,
+                location: this.location,
+                deviceType: this.deviceType,
+                procureFromSingleFacility: this.procureFromSingleFacility,
+                vintage: this.vintage
+            },
+            this.configuration
+        ); // eslint-disable-line @typescript-eslint/no-use-before-define
+    }
+
+    async update(offChainProperties: DemandUpdateData): Promise<IDemandEntity> {
+        await this.configuration.offChainDataSource.demandClient.update(
+            this.id,
+            offChainProperties
         );
 
-        return new Entity(this.id, this.configuration).sync();
+        return this.sync();
     }
 
-    async fill(entityId: string): Promise<TransactionReceipt> {
-        return this.marketLogicInstance.fillDemand(this.id, entityId, {
-            from: this.configuration.blockchainProperties.activeUser.address,
-            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-        });
-    }
+    async fillAt(certificateId: string, energy: number): Promise<TransactionReceipt> {
+        const tx = await this.configuration.blockchainProperties.marketLogicInstance.splitAndBuyCertificateFor(
+            Number(certificateId),
+            energy,
+            this.owner,
+            Configuration.getAccount(this.configuration)
+        );
 
-    async fillAt(entityId: string, energy: number): Promise<TransactionReceipt> {
-        return this.marketLogicInstance.fillDemandAt(this.id, entityId, energy, {
-            from: this.configuration.blockchainProperties.activeUser.address,
-            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-        });
-    }
+        if (!tx.status) {
+            throw new Error('Failed to fill demand.');
+        }
 
-    async fillAgreement(entityId: string): Promise<TransactionReceipt> {
-        return this.marketLogicInstance.fillAgreement(this.id, entityId, {
-            from: this.configuration.blockchainProperties.activeUser.address,
-            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-        });
-    }
+        const { children } = await new Certificate.Entity(certificateId, this.configuration).sync();
 
-    async changeStatus(status: DemandStatus) {
-        await this.marketLogicInstance.changeDemandStatus(this.id, status, {
-            from: this.configuration.blockchainProperties.activeUser.address,
-            privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-        });
+        const event: DemandPartiallyFilled = {
+            certificateId: children.length > 0 ? children[0] : certificateId,
+            energy,
+            blockNumber: tx.blockNumber
+        };
 
-        return new Entity(this.id, this.configuration).sync();
+        await this.update({ demandPartiallyFilledEvent: event });
+
+        return tx;
     }
 
     async missingEnergy(): Promise<TimeSeriesElement[]> {
@@ -164,7 +146,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
             this,
             this.configuration
         );
-        const resolution = timeFrameToResolution(this.offChainProperties.timeFrame);
+        const resolution = timeFrameToResolution(this.timeFrame);
 
         const currentPeriod = moment
             .unix(timeStamp)
@@ -186,24 +168,21 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IDemand 
     }
 }
 
-export const getAllDemandsListLength = async (configuration: Configuration.Entity) => {
-    return parseInt(
-        await configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength(),
-        10
-    );
+export const getDemandListLength = async (configuration: Configuration.Entity): Promise<number> => {
+    return (await configuration.offChainDataSource.demandClient.getAll()).length;
 };
 
 export const getAllDemands = async (configuration: Configuration.Entity) => {
-    const demandsPromises = Array(await getAllDemandsListLength(configuration))
+    const demandsPromises = Array(await getDemandListLength(configuration))
         .fill(null)
-        .map((item, index) => new Entity(index.toString(), configuration).sync());
+        .map((item, index) => new Entity(index + 1, configuration).sync());
 
     return (await Promise.all(demandsPromises)).filter(promise => promise.initialized);
 };
 
 export const filterDemandBy = async (
     configuration: Configuration.Entity,
-    onChainProperties: Partial<IDemandOnChainProperties>
+    onChainProperties: Partial<IDemand>
 ) => {
     const allDemands = await getAllDemands(configuration);
     const filter = { ...onChainProperties } as Partial<Entity>;
@@ -211,55 +190,17 @@ export const filterDemandBy = async (
     return extendArray(allDemands).filterBy(filter);
 };
 
-export const getDemandListLength = async (configuration: Configuration.Entity): Promise<number> => {
-    return configuration.blockchainProperties.marketLogicInstance.getAllDemandListLength();
-};
-
 export const createDemand = async (
-    demandPropertiesOffChain: IDemandOffChainProperties,
+    demandPropertiesOffChain: DemandPostData,
     configuration: Configuration.Entity
 ): Promise<Entity> => {
     const demand = new Entity(null, configuration);
 
-    const offChainStorageProperties = demand.prepareEntityCreation(
-        demandPropertiesOffChain,
-        DemandOffChainPropertiesSchema
+    const newDemand = await configuration.offChainDataSource.demandClient.add(
+        demandPropertiesOffChain
     );
 
-    await polly()
-        .waitAndRetry(10)
-        .executeForPromise(async () => {
-            demand.id = (await getDemandListLength(configuration)).toString();
-            await demand.throwIfExists();
-        });
-
-    await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
-
-    const {
-        status: successCreateDemand,
-        logs
-    } = await configuration.blockchainProperties.marketLogicInstance.createDemand(
-        offChainStorageProperties.rootHash,
-        `${demand.baseUrl}/${offChainStorageProperties.rootHash}`,
-        {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        }
-    );
-
-    if (!successCreateDemand) {
-        await demand.deleteFromOffChainStorage();
-        throw new Error('createDemand: Saving on-chain data failed. Reverting...');
-    }
-
-    const idFromTx = configuration.blockchainProperties.web3.utils
-        .hexToNumber(logs[0].topics[1])
-        .toString();
-
-    if (demand.id !== idFromTx) {
-        demand.id = idFromTx;
-        await demand.syncOffChainStorage(demandPropertiesOffChain, offChainStorageProperties);
-    }
+    demand.id = newDemand.id;
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demand.id} created`);
@@ -269,26 +210,16 @@ export const createDemand = async (
 };
 
 export const deleteDemand = async (
-    demandId: string,
+    demandId: number,
     configuration: Configuration.Entity
 ): Promise<boolean> => {
-    let success = true;
-
-    try {
-        await configuration.blockchainProperties.marketLogicInstance.deleteDemand(demandId, {
-            from: configuration.blockchainProperties.activeUser.address,
-            privateKey: configuration.blockchainProperties.activeUser.privateKey
-        });
-    } catch (e) {
-        success = false;
-        throw e;
-    }
+    await configuration.offChainDataSource.demandClient.delete(demandId);
 
     if (configuration.logger) {
         configuration.logger.info(`Demand ${demandId} deleted`);
     }
 
-    return success;
+    return true;
 };
 
 const timeFrameToResolution = (timeFrame: TimeFrame): Resolution => {
@@ -362,10 +293,10 @@ export const alignToResolution = (timestamp: number, resolution: Resolution) =>
         .unix();
 
 export const calculateMissingEnergyDemand = async (
-    demand: IDemand,
+    demand: IDemandEntity,
     config: Configuration.Entity
 ) => {
-    const { startTime, endTime, timeFrame, energyPerTimeFrame } = demand.offChainProperties;
+    const { startTime, endTime, timeFrame, energyPerTimeFrame } = demand;
 
     if (timeFrame === TimeFrame.halfHourly) {
         throw new Error('Half-hourly demands are not supported');
@@ -380,16 +311,13 @@ export const calculateMissingEnergyDemand = async (
         energyPerTimeFrame
     );
 
-    const marketLogic: MarketLogic = config.blockchainProperties.marketLogicInstance;
-    const filledEvents = await marketLogic.getEvents('DemandPartiallyFilled', {
-        filter: { _demandId: demand.id }
-    });
+    const filledEvents = demand.demandPartiallyFilledEvents;
 
     config.logger.debug(
         `[Demand #${demand.id}] filledEvents ${JSON.stringify(
             filledEvents.map(e => ({
                 block: e.blockNumber,
-                value: e.returnValues._amount
+                value: e.energy
             }))
         )}`
     );
@@ -400,7 +328,7 @@ export const calculateMissingEnergyDemand = async (
             const timestamp = parseInt(block.timestamp.toString(), 10);
             const nearestTime = alignToResolution(timestamp, resolution);
 
-            return { time: nearestTime, value: Number(log.returnValues._amount) * -1 };
+            return { time: nearestTime, value: Number(log.energy) * -1 };
         })
     );
 

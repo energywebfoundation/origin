@@ -17,11 +17,8 @@ import {
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -152,9 +149,6 @@ describe('PurchasableCertificate-Facade', () => {
             }
         );
 
-        const baseUrl = `${process.env.BACKEND_URL}/api`;
-        const userClient = new UserClientMock();
-
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -167,12 +161,7 @@ describe('PurchasableCertificate-Facade', () => {
                 marketLogicInstance: marketLogic,
                 web3
             },
-            offChainDataSource: {
-                baseUrl,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });
@@ -217,18 +206,15 @@ describe('PurchasableCertificate-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
-        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+        const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,
-            country: 'Thailand',
+            country: 221,
             address:
                 '95 Moo 7, Sa Si Mum Sub-district, Kamphaeng Saen District, Nakhon Province 73140',
             gpsLatitude: '14.059500',

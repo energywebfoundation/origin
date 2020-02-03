@@ -70,21 +70,6 @@ async function run() {
     await fs.ensureDir(`${ROOT_DIRECTORY}/schemas`);
 
     await generateSchemaIfNew(
-        'yarn --silent build-schema:AgreementPropertiesOffChain',
-        '/schemas/AgreementOffChainProperties.schema.json'
-    );
-
-    await generateSchemaIfNew(
-        'yarn --silent build-schema:DemandPropertiesOffChain',
-        '/schemas/DemandOffChainProperties.schema.json'
-    );
-
-    await generateSchemaIfNew(
-        'yarn --silent build-schema:SupplyPropertiesOffChain',
-        '/schemas/SupplyOffChainProperties.schema.json'
-    );
-
-    await generateSchemaIfNew(
         'yarn --silent build-schema:MarketUserPropertiesOffChain',
         '/schemas/MarketUserOffChainProperties.schema.json'
     );
