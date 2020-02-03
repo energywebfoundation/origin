@@ -5,11 +5,7 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migratePublicIssuer, migrateRegistry, migratePrivateIssuer } from '../migrate';
 import { Certificate, PublicIssuer, PrivateIssuer } from '..';
@@ -89,12 +85,7 @@ describe('Cerificate tests', () => {
                 },
                 web3
             },
-            offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient: new UserClientMock()
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });
