@@ -84,7 +84,7 @@ async function initConf(
 
 function* initEventHandler() {
     const configuration: IStoreState['configuration'] = yield select(getConfiguration);
-    
+
     if (!configuration) {
         return;
     }
@@ -133,10 +133,6 @@ function* initEventHandler() {
                     action: requestCertificateEntityFetch(id)
                 });
             });
-
-            console.log({
-                eventClient: configuration.offChainDataSource.eventClient
-            })
 
             configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.CREATE_NEW_DEMAND, async (event: any) => {
                 try {

@@ -3,11 +3,15 @@ import {
     DemandPostData,
     DemandUpdateData,
     DemandStatus,
-    IDemand
+    IDemand,
+    CreatedNewDemand,
+    IEvent,
+    SupportedEvents,
+    DemandUpdated,
+    DemandPartiallyFilledEvent
 } from '@energyweb/origin-backend-core';
 
 import { IDemandClient, IEventClient } from '@energyweb/origin-backend-client';
-import { CreatedNewDemand, IEvent, SupportedEvents, DemandUpdated, DemandPartiallyFilledEvent } from '@energyweb/origin-backend-core';
 
 export class DemandClientMock implements IDemandClient {
     private storage = new Map<number, IDemand>();
@@ -28,10 +32,10 @@ export class DemandClientMock implements IDemandClient {
         this.idCounter++;
 
         const demand: IDemand = {
+            ...data,
             id: this.idCounter,
             status: DemandStatus.ACTIVE,
-            demandPartiallyFilledEvents: [],
-            ...data
+            demandPartiallyFilledEvents: []
         };
 
         const eventData: CreatedNewDemand = {
@@ -83,13 +87,13 @@ export class DemandClientMock implements IDemandClient {
                 demandId: demand.id,
                 ...data.demandPartiallyFilledEvent
             };
-    
+
             const sendEvent: IEvent = {
                 type: SupportedEvents.DEMAND_PARTIALLY_FILLED,
                 data: eventData,
                 timestamp: moment().unix()
             };
-    
+
             (this.eventClient as any).triggerEvent(sendEvent);
         }
 

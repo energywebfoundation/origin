@@ -12,7 +12,7 @@ import {
     IUserFetcher
 } from '../../features/users/actions';
 import { ReactWrapper, CommonWrapper } from 'enzyme';
-import { Configuration, Compliance, Countries } from '@energyweb/utils-general';
+import { Configuration, Compliance } from '@energyweb/utils-general';
 import { Certificate } from '@energyweb/origin';
 
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -85,10 +85,6 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
-    console.log('Setting mocked off chain data source');
-    console.log({
-        offChainDataSource
-    })
     if (offChainDataSource) {
         store.dispatch(setOffChainDataSource(offChainDataSource));
     }
@@ -106,7 +102,7 @@ const setupStoreInternal = (
 
 interface ICreateProducingDeviceProperties {
     id: string;
-    status: DeviceStatus,
+    status: DeviceStatus;
     owner?: string;
     facilityName?: string;
     deviceType?: string;

@@ -13,7 +13,7 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
-import { IDemand, DemandUpdateData, DemandPostData } from '@energyweb/origin-backend-core';
+import { DemandUpdateData, DemandPostData } from '@energyweb/origin-backend-core';
 import { dataTest } from '../../utils/helper';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
@@ -174,17 +174,8 @@ export function DemandForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        console.log({
-            values,
-            demand,
-            edit
-        });
-
-        const offChainProps: IDemand = {
-            id: demand?.id,
-            owner: demand?.owner ?? currentUser.id,
-            status: demand?.status,
-            demandPartiallyFilledEvents: demand?.demandPartiallyFilledEvents,
+        const offChainProps: DemandPostData = {
+            owner: currentUser.id,
             currency: values.currency,
             startTime: values.startDate.unix(),
             endTime: values.endDate.unix(),

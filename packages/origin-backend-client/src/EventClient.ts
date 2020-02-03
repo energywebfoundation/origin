@@ -20,23 +20,28 @@ export interface IEventClient {
 
 export class EventClient implements IEventClient {
     public client: WebSocket;
-    public started: boolean = false;
+
+    public started = false;
 
     private allCallbacks: ISubscription[] = [];
 
     constructor(private url: string) {
-        this.url = this.url.replace(/(http)(s)?\:\/\//, "ws$2://")
+        this.url = this.url.replace(/(http)(s)?\:\/\//, 'ws$2://');
     }
 
     start() {
         this.client = new WebSocket(this.url);
         this.started = true;
 
+        this.client.onerror = error => {
+            console.error(`EventClient: WebSocket error: `, error?.message || error);
+        };
+
         this.client.onopen = () => {
             console.log(`Connected to the WebSocket event server on: ${this.url}`);
             this.client.send(Date.now());
         };
-          
+
         this.client.onclose = () => console.log(`Disconnected from ${this.url}`);
 
         this.client.onmessage = (msg: MessageEvent) => {
@@ -52,6 +57,9 @@ export class EventClient implements IEventClient {
                     console.log('New incoming event.');
                     const event: IEvent = JSON.parse(data.toString());
                     this.handleEvent(event);
+                    break;
+
+                default:
                     break;
             }
         };

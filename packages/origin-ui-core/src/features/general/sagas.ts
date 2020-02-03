@@ -109,7 +109,10 @@ async function getCurrenciesFromAPI(offChainDataSource: IOffChainDataSource) {
 
         return null;
     } catch (error) {
-        console.warn('Error while trying to get currency', error);
+        console.warn('Error while trying to get currency', {
+            message: error?.message,
+            config: error?.config
+        });
         return null;
     }
 }
@@ -199,19 +202,17 @@ function* initializeOffChainDataSource(): SagaIterator {
         yield take(GeneralActions.setEnvironment);
 
         const environment: IEnvironment = yield select(getEnvironment);
-        let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
         if (!environment || offChainDataSource) {
             continue;
         }
 
-        console.log('Setting real off chain data source');
-        offChainDataSource = new OffChainDataSource(
-            environment.BACKEND_URL,
-            Number(environment.BACKEND_PORT)
+        yield put(
+            setOffChainDataSource(
+                new OffChainDataSource(environment.BACKEND_URL, Number(environment.BACKEND_PORT))
+            )
         );
-
-        yield put(setOffChainDataSource(offChainDataSource));
     }
 }
 

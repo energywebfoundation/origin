@@ -1,5 +1,5 @@
 import { GeneralActions, IGeneralAction, IEnvironment } from './actions';
-import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 export interface IGeneralState {
     accountChangedModalVisible: boolean;
