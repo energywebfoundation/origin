@@ -73,12 +73,10 @@ describe('CertificateTable', () => {
         } as Partial<IOrganizationClient>) as IOrganizationClient;
 
         const offChainDataSource: Partial<IOffChainDataSource> = {
-            organizationClient: organizationClient
-        }
+            organizationClient
+        };
 
-        store.dispatch(
-            setOffChainDataSource(offChainDataSource as IOffChainDataSource)
-        );
+        store.dispatch(setOffChainDataSource(offChainDataSource as IOffChainDataSource));
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>
