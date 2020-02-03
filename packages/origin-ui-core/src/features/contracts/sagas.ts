@@ -134,6 +134,10 @@ function* initEventHandler() {
                 });
             });
 
+            console.log({
+                eventClient: configuration.offChainDataSource.eventClient
+            })
+
             configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.CREATE_NEW_DEMAND, async (event: any) => {
                 try {
                     const demand = await new Demand.Entity(
@@ -145,7 +149,7 @@ function* initEventHandler() {
                         action: demandCreated(demand)
                     });
                 } catch (error) {
-                    console.error(`Error while handling "CreatedNewDemand" event`, error);
+                    console.error(`Error while handling ${SupportedEvents.CREATE_NEW_DEMAND} event`, error);
                 }
             });
 

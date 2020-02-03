@@ -55,7 +55,7 @@ describe('Market-matcher e2e tests', async () => {
             device = await deployDevice(config);
             certificate = await deployCertificate(config, device.id, requiredEnergy);
 
-            await certificate.publishForSale(demand.maxPriceInCentsPerMwh / 100, demand.currency);
+            await certificate.publishForSale(demand.maxPriceInCentsPerMwh, demand.currency);
 
             await startMatcher(matcherConfig);
         });
@@ -83,7 +83,7 @@ describe('Market-matcher e2e tests', async () => {
             device = await deployDevice(config);
             certificate = await deployCertificate(config, device.id, certificateEnergy);
 
-            await certificate.publishForSale(demand.maxPriceInCentsPerMwh / 100, demand.currency);
+            await certificate.publishForSale(demand.maxPriceInCentsPerMwh, demand.currency);
 
             await startMatcher(matcherConfig);
         });

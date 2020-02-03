@@ -147,15 +147,14 @@ function* fillCurrency(): SagaIterator {
 
 function* fillCompliance(): SagaIterator {
     while (true) {
-        yield take(GeneralActions.setEnvironment);
+        yield take([GeneralActions.setEnvironment, GeneralActions.setOffChainDataSource]);
 
         const environment: IEnvironment = yield select(getEnvironment);
+        const offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
-        if (!environment) {
-            return;
+        if (!environment || !offChainDataSource) {
+            continue;
         }
-
-        const offChainDataSource = yield select(getOffChainDataSource);
 
         try {
             const compliance = yield call(getComplianceFromAPI, offChainDataSource);
@@ -200,12 +199,14 @@ function* initializeOffChainDataSource(): SagaIterator {
         yield take(GeneralActions.setEnvironment);
 
         const environment: IEnvironment = yield select(getEnvironment);
+        let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
 
-        if (!environment) {
-            return;
+        if (!environment || offChainDataSource) {
+            continue;
         }
 
-        const offChainDataSource = new OffChainDataSource(
+        console.log('Setting real off chain data source');
+        offChainDataSource = new OffChainDataSource(
             environment.BACKEND_URL,
             Number(environment.BACKEND_PORT)
         );

@@ -85,6 +85,10 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
+    console.log('Setting mocked off chain data source');
+    console.log({
+        offChainDataSource
+    })
     if (offChainDataSource) {
         store.dispatch(setOffChainDataSource(offChainDataSource));
     }

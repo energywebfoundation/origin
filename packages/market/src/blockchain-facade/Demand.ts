@@ -16,6 +16,7 @@ import {
     DemandPartiallyFilled
 } from '@energyweb/origin-backend-core';
 import { TransactionReceipt } from 'web3-core';
+import { Certificate } from '@energyweb/origin';
 
 export interface IDemandEntity extends IDemand {
     fillAt: (entityId: string, energy: number) => Promise<TransactionReceipt>;
@@ -123,8 +124,10 @@ export class Entity implements IDemandEntity {
             throw new Error('Failed to fill demand.');
         }
 
+        const parentCert = await new Certificate.Entity(certificateId, this.configuration).sync();
+
         const event: DemandPartiallyFilled = {
-            certificateId,
+            certificateId: parentCert.children[0],
             energy,
             blockNumber: tx.blockNumber
         };
