@@ -19,7 +19,7 @@ export function Certificates() {
     function CertificateTableKeyDemand(key: SelectedState, demandId?: number) {
         let demand: Demand.Entity = null;
         if (demandId !== undefined) {
-            demand = demands.find(d => d.id === demandId.toString());
+            demand = demands.find(d => d.id === demandId);
         }
 
         return <CertificateTable selectedState={key} demand={demand} />;

@@ -15,27 +15,25 @@ import {
     Demand,
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
-import {
-    IOffChainDataClient,
-    IConfigurationClient,
-    IUserClient
-} from '@energyweb/origin-backend-client';
+import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
 import { configurationUpdated, demandCreated, demandUpdated } from '../actions';
 import { ProducingDevice } from '@energyweb/device-registry';
-import { setError, setLoading, GeneralActions, IEnvironment } from '../general/actions';
+import {
+    setError,
+    setLoading,
+    GeneralActions,
+    IEnvironment,
+    ISetOffChainDataSourceAction
+} from '../general/actions';
 import { producingDeviceCreatedOrUpdated } from '../producingDevices/actions';
 import { addCertificate, requestCertificateEntityFetch } from '../certificates/actions';
 import { IStoreState } from '../../types';
-import {
-    getOffChainDataClient,
-    getConfigurationClient,
-    getEnvironment,
-    getUserClient
-} from '../general/selectors';
+import { getOffChainDataSource, getEnvironment } from '../general/selectors';
 import { getMarketContractLookupAddress } from './selectors';
+import { DemandStatus, SupportedEvents } from '@energyweb/origin-backend-core';
 
 enum ERROR {
     WRONG_NETWORK_OR_CONTRACT_ADDRESS = "Please make sure you've chosen correct blockchain network and the contract address is valid."
@@ -44,10 +42,7 @@ enum ERROR {
 async function initConf(
     marketContractLookupAddress: string,
     routerSearch: string,
-    offChainDataClient: IOffChainDataClient,
-    configurationClient: IConfigurationClient,
-    userClient: IUserClient,
-    baseURL: string,
+    offChainDataSource: IOffChainDataSource,
     environmentWeb3: string
 ): Promise<IStoreState['configuration']> {
     let web3: Web3 = null;
@@ -78,12 +73,7 @@ async function initConf(
 
     return {
         blockchainProperties,
-        offChainDataSource: {
-            baseUrl: baseURL,
-            client: offChainDataClient,
-            configurationClient,
-            userClient
-        },
+        offChainDataSource,
         logger: Winston.createLogger({
             level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
@@ -144,10 +134,10 @@ function* initEventHandler() {
                 });
             });
 
-            marketContractEventHandler.onEvent('createdNewDemand', async (event: any) => {
+            configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.CREATE_NEW_DEMAND, async (event: any) => {
                 try {
                     const demand = await new Demand.Entity(
-                        event.returnValues._demandId.toString(),
+                        event.data.demandId.toString(),
                         configuration
                     ).sync();
 
@@ -155,19 +145,18 @@ function* initEventHandler() {
                         action: demandCreated(demand)
                     });
                 } catch (error) {
-                    console.error(`Error while handling "createdNewDemand" event`, error);
+                    console.error(`Error while handling ${SupportedEvents.CREATE_NEW_DEMAND} event`, error);
                 }
             });
 
-            marketContractEventHandler.onEvent('DemandStatusChanged', async (event: any) => {
-                if (
-                    parseInt(event.returnValues._status as string, 10) ===
-                    Demand.DemandStatus.ARCHIVED
-                ) {
+            configuration.offChainDataSource.eventClient.subscribe(SupportedEvents.DEMAND_UPDATED, async (event: any) => {
+                const { demandId, status } = event.data;
+
+                if (parseInt(status as string, 10) === DemandStatus.ARCHIVED) {
                     emitter({
                         action: demandUpdated(
                             await new Demand.Entity(
-                                event.returnValues._demandId.toString(),
+                                demandId.toString(),
                                 configuration
                             ).sync()
                         )
@@ -238,12 +227,9 @@ function* initEventHandler() {
     }
 }
 
-async function getMarketContractLookupAddressFromAPI(
-    configurationClient: IConfigurationClient,
-    baseURL: string
-) {
+async function getMarketContractLookupAddressFromAPI(configurationClient: IConfigurationClient) {
     try {
-        const marketContracts = await configurationClient.get(baseURL, 'MarketContractLookup');
+        const marketContracts = await configurationClient.get('MarketContractLookup');
 
         if (marketContracts.length > 0) {
             return marketContracts[marketContracts.length - 1];
@@ -273,15 +259,20 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
             return;
         }
 
-        const baseURL = `${environment.BACKEND_URL}/api`;
+        let offChainDataSource: IOffChainDataSource = yield select(getOffChainDataSource);
+
+        if (!offChainDataSource) {
+            const action: ISetOffChainDataSourceAction = yield take(
+                GeneralActions.setOffChainDataSource
+            );
+
+            offChainDataSource = action.payload;
+        }
 
         if (!marketContractLookupAddress) {
-            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-
             marketContractLookupAddress = yield call(
                 getMarketContractLookupAddressFromAPI,
-                configurationClient,
-                baseURL
+                offChainDataSource.configurationClient
             );
         }
 
@@ -302,18 +293,11 @@ function* fillMarketContractLookupAddressIfMissing(): SagaIterator {
 
         let configuration: IStoreState['configuration'];
         try {
-            const offChainDataClient: IOffChainDataClient = yield select(getOffChainDataClient);
-            const configurationClient: IConfigurationClient = yield select(getConfigurationClient);
-            const userClient: IUserClient = yield select(getUserClient);
-
             configuration = yield call(
                 initConf,
                 marketContractLookupAddress,
                 routerSearch,
-                offChainDataClient,
-                configurationClient,
-                userClient,
-                baseURL,
+                offChainDataSource,
                 environment.WEB3
             );
 

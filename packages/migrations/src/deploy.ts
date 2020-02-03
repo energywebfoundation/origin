@@ -5,7 +5,7 @@ import fs from 'fs';
 
 import { marketDemo } from './market';
 import { deployEmptyContracts } from './deployEmpty';
-import { ConfigurationClient } from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
 program.option('-c, --config <config_file_path>', 'path to the config file');
@@ -30,12 +30,16 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
     }
 
-    const client = new ConfigurationClient();
+    const offChainDataSource = new OffChainDataSource(
+        process.env.BACKEND_URL,
+        Number(process.env.BACKEND_PORT)
+    );
 
-    await client.add(`${process.env.BACKEND_URL}/api`, 'Compliance', complianceRegistry ?? 'none');
-    await client.add(`${process.env.BACKEND_URL}/api`, 'Country', country);
+    await offChainDataSource.configurationClient.add('Compliance', complianceRegistry ?? 'none');
+    await offChainDataSource.configurationClient.add('Country', country);
+
     for (const currency of currencies) {
-        await client.add(`${process.env.BACKEND_URL}/api`, 'Currency', currency);
+        await offChainDataSource.configurationClient.add('Currency', currency);
     }
 
     const contractConfig = await deployEmptyContracts();
@@ -43,6 +47,6 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
     await marketDemo(configFilePath, contractConfig);
 
     if (contractConfig && contractConfig.marketLogic) {
-        await client.add(`${process.env.BACKEND_URL}/api`, 'MarketContractLookup', contractConfig.marketLogic.toLowerCase());
+        await offChainDataSource.configurationClient.add('MarketContractLookup', contractConfig.marketLogic.toLowerCase());
     }
 })();

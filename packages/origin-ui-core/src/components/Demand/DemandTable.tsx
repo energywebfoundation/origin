@@ -30,8 +30,8 @@ import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
 import { formatDate } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { getOrganizationClient } from '../../features/general/selectors';
+import { IOrganizationWithRelationsIds, DemandStatus } from '@energyweb/origin-backend-core';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 interface IStateProps {
@@ -77,21 +77,21 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                     availableOptions: [
                         {
                             label: 'Active',
-                            value: Demand.DemandStatus.ACTIVE.toString()
+                            value: DemandStatus.ACTIVE.toString()
                         },
                         {
                             label: 'Paused',
-                            value: Demand.DemandStatus.PAUSED.toString()
+                            value: DemandStatus.PAUSED.toString()
                         },
                         {
                             label: 'Archived',
-                            value: Demand.DemandStatus.ARCHIVED.toString()
+                            value: DemandStatus.ARCHIVED.toString()
                         }
                     ],
                     defaultOptions: [
-                        Demand.DemandStatus.ACTIVE.toString(),
-                        Demand.DemandStatus.PAUSED.toString(),
-                        Demand.DemandStatus.ARCHIVED.toString()
+                        DemandStatus.ACTIVE.toString(),
+                        DemandStatus.PAUSED.toString(),
+                        DemandStatus.ARCHIVED.toString()
                     ]
                 }
             }
@@ -101,7 +101,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
     async enrichData(demands: Demand.Entity[]): Promise<IEnrichedDemandData[]> {
         const promises = demands.map(async (demand: Demand.Entity) => {
             const demandOwner = await new MarketUser.Entity(
-                demand.demandOwner,
+                demand.owner,
                 this.props.configuration
             ).sync();
 
@@ -121,7 +121,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
     getRegionText(demand: Demand.Entity): string {
         let text = '';
-        const { location } = demand.offChainProperties;
+        const { location } = demand;
 
         if (location) {
             text = location
@@ -136,13 +136,13 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
     viewDemand(rowIndex: number) {
         const demand = this.state.paginatedData[rowIndex].demand;
 
-        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id));
+        this.props.history.push(getDemandViewLink(this.props.baseURL, demand.id.toString()));
     }
 
     cloneDemand(rowIndex: number) {
         const demand = this.state.paginatedData[rowIndex].demand;
 
-        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id));
+        this.props.history.push(getDemandCloneLink(this.props.baseURL, demand.id.toString()));
     }
 
     async editDemand(rowIndex: number) {
@@ -156,7 +156,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         if (
             !this.props.currentUser ||
             !this.props.currentUser.id ||
-            demand.demandOwner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
+            demand.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
         ) {
             showNotification(
                 `You need to be owner of the demand to edit it.`,
@@ -165,7 +165,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             return;
         }
 
-        this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id));
+        this.props.history.push(getDemandEditLink(this.props.baseURL, demand.id.toString()));
     }
 
     async deleteDemand(rowIndex: number) {
@@ -175,7 +175,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
             if (
                 !this.props.currentUser ||
                 !this.props.currentUser.id ||
-                demand.demandOwner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
+                demand.owner.toLowerCase() !== this.props.currentUser.id.toLowerCase()
             ) {
                 showNotification(
                     `You need to be owner of the demand to delete it.`,
@@ -184,7 +184,7 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
                 return;
             }
 
-            if (demand.status === Demand.DemandStatus.ARCHIVED) {
+            if (demand.status === DemandStatus.ARCHIVED) {
                 showNotification(
                     `You can't delete a demand that has been already archived.`,
                     NotificationType.Error
@@ -266,9 +266,9 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
             const deviceService = new IRECDeviceService();
 
-            const topLevelDeviceTypes = demand.offChainProperties.deviceType
+            const topLevelDeviceTypes = demand.deviceType
                 ? deviceService
-                      .decode(demand.offChainProperties.deviceType)
+                      .decode(demand.deviceType)
                       .filter(type => type.length === 1)
                 : [];
 
@@ -279,42 +279,42 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
 
             const overallDemand = EnergyFormatter.format(
                 Demand.calculateTotalEnergyDemand(
-                    demand.offChainProperties.startTime,
-                    demand.offChainProperties.endTime,
-                    demand.offChainProperties.energyPerTimeFrame,
-                    demand.offChainProperties.timeFrame
+                    demand.startTime,
+                    demand.endTime,
+                    demand.energyPerTimeFrame,
+                    demand.timeFrame
                 )
             );
 
             let demandStatus = 'Active';
 
-            if (demand.status === Demand.DemandStatus.PAUSED) {
+            if (demand.status === DemandStatus.PAUSED) {
                 demandStatus = 'Paused';
-            } else if (demand.status === Demand.DemandStatus.ARCHIVED) {
+            } else if (demand.status === DemandStatus.ARCHIVED) {
                 demandStatus = 'Archived';
             }
 
             return {
                 buyer: enrichedDemandData.demandOwnerOrganization?.name,
                 duration: `${formatDate(
-                    moment.unix(demand.offChainProperties.startTime)
-                )} - ${formatDate(moment.unix(demand.offChainProperties.endTime))}`,
+                    moment.unix(demand.startTime)
+                )} - ${formatDate(moment.unix(demand.endTime))}`,
                 region: this.getRegionText(demand),
                 deviceType,
                 repeatable:
-                    typeof demand.offChainProperties.timeFrame !== 'undefined'
-                        ? TimeFrame[demand.offChainProperties.timeFrame]
+                    typeof demand.timeFrame !== 'undefined'
+                        ? TimeFrame[demand.timeFrame]
                         : NO_VALUE_TEXT,
-                fromSingleFacility: demand.offChainProperties.procureFromSingleFacility
+                fromSingleFacility: demand.procureFromSingleFacility
                     ? 'yes'
                     : 'no',
                 vintage:
-                    demand.offChainProperties.vintage?.length === 2
-                        ? `${demand.offChainProperties.vintage[0]} - ${demand.offChainProperties.vintage[1]}`
+                    demand.vintage?.length === 2
+                        ? `${demand.vintage[0]} - ${demand.vintage[1]}`
                         : NO_VALUE_TEXT,
-                demand: EnergyFormatter.format(demand.offChainProperties.energyPerTimeFrame),
-                max: `${(demand.offChainProperties.maxPriceInCentsPerMwh / 100).toFixed(2)} ${
-                    demand.offChainProperties.currency
+                demand: EnergyFormatter.format(demand.energyPerTimeFrame),
+                max: `${(demand.maxPriceInCentsPerMwh / 100).toFixed(2)} ${
+                    demand.currency
                 }`,
                 status: demandStatus,
                 energy: overallDemand
@@ -358,7 +358,7 @@ export const DemandTable = withRouter(
             demands: getDemands(state),
             currentUser: getCurrentUser(state),
             baseURL: getBaseURL(),
-            organizationClient: getOrganizationClient(state)
+            organizationClient: getOffChainDataSource(state)?.organizationClient
         })
     )(DemandTableClass)
 );

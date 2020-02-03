@@ -21,7 +21,10 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@energyweb/origin-backend-core": "1.0.0",
-    "axios": "0.19.2"
+    "axios": "0.19.2",
+    "isomorphic-ws": "4.0.1",
+    "moment": "2.24.0",
+    "ws": "7.2.1"
   },
   "files": [
     "dist"

@@ -3,21 +3,17 @@ import { IConfigurationClient, ConfigurationItem } from '@energyweb/origin-backe
 export class ConfigurationClientMock implements IConfigurationClient {
     private storage = new Map<string, any>();
 
-    public async get(baseUrl: string, item: ConfigurationItem) {
-        const url = `${baseUrl}/${item}`;
-
-        return this.storage.get(url);
+    public async get(item: ConfigurationItem) {
+        return this.storage.get(item);
     }
 
-    public async add(baseUrl: string, item: ConfigurationItem, value: string | object) {
-        const url = `${baseUrl}/${item}`;
-
+    public async add(item: ConfigurationItem, value: string | object) {
         if (typeof value === 'string') {
-            const values = this.storage.get(url) || [];
+            const values = this.storage.get(item) || [];
             values.push(value);
-            this.storage.set(url, values);
+            this.storage.set(item, values);
         } else if (typeof value === 'object') {
-            this.storage.set(url, value);
+            this.storage.set(item, value);
         }
 
         return true;

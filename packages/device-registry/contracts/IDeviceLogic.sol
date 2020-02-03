@@ -7,7 +7,6 @@ contract IDeviceLogic {
 
     event LogDeviceCreated(address _sender, uint indexed _deviceId);
     event LogDeviceFullyInitialized(uint indexed _deviceId);
-    event DeviceStatusChanged(uint indexed _deviceId, DeviceDefinitions.DeviceStatus _status);
     event LogNewMeterRead(
         uint indexed _deviceId,
         uint _oldMeterRead,
@@ -26,11 +25,6 @@ contract IDeviceLogic {
     /// @return the Device-struct as memory
     function getDevice(uint _deviceId) external view returns (DeviceDefinitions.Device memory device);
 
-	/// @notice Sets status
-	/// @param _deviceId The id belonging to an entry in the device registry
-	/// @param _status device status
-    function setStatus(uint _deviceId, DeviceDefinitions.DeviceStatus _status) external;
-
 	/// @notice Logs meter read
 	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @param _newMeterRead The current meter read of the device
@@ -44,23 +38,13 @@ contract IDeviceLogic {
     /// @notice creates an device with the provided parameters
 	/// @param _smartMeter smartmeter of the device
 	/// @param _owner device-owner
-	/// @param _status device status
-	/// @param _usageType consuming or producing device
-	/// @param _propertiesDocumentHash hash of the document with the properties of an device
-	/// @param _url where to find the documentHash
 	/// @return generated device-id
-    function createDevice(
-        address _smartMeter,
-        address _owner,
-        DeviceDefinitions.DeviceStatus _status,
-        DeviceDefinitions.UsageType _usageType,
-        string calldata _propertiesDocumentHash,
-        string calldata _url) external returns (uint deviceId);
+    function createDevice(address _smartMeter, address _owner) external returns (uint deviceId);
 
     function getSmartMeterReadsForDevice(uint _deviceId) external view
         returns (DeviceDefinitions.SmartMeterRead[] memory reads);
 
-    /// @notice Gets an device
+    /// @notice Gets a device
 	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @return Full informations of an device
     function getDeviceById(uint _deviceId) public view returns (DeviceDefinitions.Device memory);

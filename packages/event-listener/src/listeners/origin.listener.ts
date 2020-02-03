@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import polly from 'polly-js';
 
 import { ProducingDevice } from '@energyweb/device-registry';
@@ -6,8 +5,13 @@ import { Demand, MarketUser, PurchasableCertificate, NoneCurrency } from '@energ
 import { MatchableDemand } from '@energyweb/market-matcher-core';
 import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
 
+import {
+    SupportedEvents,
+    IEvent,
+    DeviceStatusChanged,
+    DemandPartiallyFilledEvent
+} from '@energyweb/origin-backend-core';
 import { IEventListenerConfig } from '../config/IEventListenerConfig';
-import { initOriginConfig } from '../config/origin.config';
 import { IEventListener } from './IEventListener';
 import { IOriginEventsStore } from '../stores/OriginEventsStore';
 import { IEmailServiceProvider } from '../services/email.service';
@@ -19,11 +23,7 @@ export interface IOriginEventListener extends IEventListener {
 }
 
 export class OriginEventListener implements IOriginEventListener {
-    public web3: Web3;
-
     public started: boolean;
-
-    public conf: Configuration.Entity;
 
     public manager: EventHandlerManager;
 
@@ -32,18 +32,17 @@ export class OriginEventListener implements IOriginEventListener {
     private interval: any;
 
     constructor(
-        public config: IEventListenerConfig,
+        public conf: Configuration.Entity,
+        public listenerConfig: IEventListenerConfig,
         public marketLookupAddress: string,
         public emailService: IEmailServiceProvider,
         private originEventsStore: IOriginEventsStore
     ) {
-        this.web3 = new Web3(config.web3Url || 'http://localhost:8550');
         this.started = false;
         this.interval = null;
     }
 
     public async start(): Promise<void> {
-        this.conf = await initOriginConfig(this.marketLookupAddress, this.web3, this.config);
         this.notificationService = new NotificationService(
             this.conf,
             this.emailService,
@@ -65,18 +64,27 @@ export class OriginEventListener implements IOriginEventListener {
             currentBlockNumber
         );
 
-        deviceContractEventHandler.onEvent('DeviceStatusChanged', async (event: any) => {
-            const { _deviceId, _status } = event.returnValues;
-            this.conf.logger.info(`Event: DeviceStatusChanged #${_deviceId} to status ${_status}`);
+        try {
+            this.conf.offChainDataSource.eventClient.subscribe(
+                SupportedEvents.DEVICE_STATUS_CHANGED,
+                async (event: IEvent) => {
+                    const { deviceId, status } = event.data as DeviceStatusChanged;
+                    this.conf.logger.info(
+                        `Event: DeviceStatusChanged #${deviceId} to status ${status}`
+                    );
 
-            const device = await new ProducingDevice.Entity(_deviceId, this.conf).sync();
+                    const device = await new ProducingDevice.Entity(deviceId, this.conf).sync();
 
-            this.originEventsStore.registerDeviceStatusChange(
-                device.owner.address,
-                _deviceId,
-                _status
+                    this.originEventsStore.registerDeviceStatusChange(
+                        device.owner.address,
+                        deviceId,
+                        status
+                    );
+                }
             );
-        });
+        } catch (e) {
+            console.error(e);
+        }
 
         certificateContractEventHandler.onEvent('LogCreatedCertificate', async (event: any) => {
             const certId = event.returnValues._certificateId;
@@ -164,29 +172,38 @@ export class OriginEventListener implements IOriginEventListener {
             }
         });
 
-        marketContractEventHandler.onEvent('DemandPartiallyFilled', async (event: any) => {
-            const { _demandId, _certificateId, _amount } = event.returnValues;
+        this.conf.offChainDataSource.eventClient.subscribe(
+            SupportedEvents.DEMAND_PARTIALLY_FILLED,
+            async (event: IEvent) => {
+                const {
+                    demandId,
+                    certificateId,
+                    energy
+                } = event.data as DemandPartiallyFilledEvent;
 
-            const demand = await new Demand.Entity(_demandId, this.conf).sync();
+                const demand = await new Demand.Entity(demandId, this.conf).sync();
 
-            this.originEventsStore.registerPartiallyFilledDemand(demand.demandOwner, {
-                demandId: _demandId,
-                certificateId: _certificateId,
-                amount: _amount
-            });
+                this.originEventsStore.registerPartiallyFilledDemand(demand.owner, {
+                    demandId,
+                    certificateId: Number(certificateId),
+                    amount: energy
+                });
 
-            this.conf.logger.info(
-                `Event: DemandPartiallyFilled: Matched certificate #${_certificateId} with energy ${_amount} to Demand #${_demandId}.`
-            );
+                this.conf.logger.info(
+                    `Event: DemandPartiallyFilled: Matched certificate #${certificateId} with energy ${energy} to Demand #${demandId}.`
+                );
 
-            if (await demand.isFulfilled()) {
-                this.originEventsStore.registerFulfilledDemand(demand.demandOwner, _demandId);
+                if (await demand.isFulfilled()) {
+                    this.originEventsStore.registerFulfilledDemand(demand.owner, demandId);
 
-                this.conf.logger.info(`DemandFulfilled: Demand #${_demandId} has been fulfilled.`);
+                    this.conf.logger.info(
+                        `DemandFulfilled: Demand #${demandId} has been fulfilled.`
+                    );
+                }
             }
-        });
+        );
 
-        this.manager = new EventHandlerManager(this.config.scanInterval, this.conf);
+        this.manager = new EventHandlerManager(this.listenerConfig.scanInterval, this.conf);
         this.manager.registerEventHandler(deviceContractEventHandler);
         this.manager.registerEventHandler(certificateContractEventHandler);
         this.manager.registerEventHandler(marketContractEventHandler);
@@ -194,14 +211,16 @@ export class OriginEventListener implements IOriginEventListener {
         this.manager.start();
         this.interval = setInterval(
             this.notificationService.notify.bind(this.notificationService),
-            this.config.notificationInterval
+            this.listenerConfig.notificationInterval
         );
 
         this.started = true;
         this.conf.logger.info(`Started listener for ${this.marketLookupAddress}`);
         this.conf.logger.info(
             `Running the listener with account ${
-                this.web3.eth.accounts.privateKeyToAccount(this.config.accountPrivKey).address
+                this.conf.blockchainProperties.web3.eth.accounts.privateKeyToAccount(
+                    this.listenerConfig.accountPrivKey
+                ).address
             }`
         );
     }

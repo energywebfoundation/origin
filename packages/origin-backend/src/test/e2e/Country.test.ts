@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import 'mocha';
 import dotenv from 'dotenv';
 import { assert } from 'chai';
@@ -17,7 +17,7 @@ describe('Country API tests', async () => {
     });
     let apiServer: INestApplication;
 
-    const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
+    const BASE_API_URL = `http://localhost:${process.env.BACKEND_PORT}/api`;
 
     const country = {
         name: 'Test Country',

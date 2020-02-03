@@ -8,7 +8,7 @@ import { Paper, Grid, Button, useTheme, makeStyles, createStyles } from '@materi
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
-import { getOrganizationClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 
 interface IFormValues {
     email: string;
@@ -26,7 +26,7 @@ const VALIDATION_SCHEMA = Yup.object({
 });
 
 export function OrganizationInvite() {
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
 
     const dispatch = useDispatch();
 

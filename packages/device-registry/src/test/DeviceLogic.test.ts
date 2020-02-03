@@ -1,15 +1,13 @@
 import 'mocha';
 import { assert } from 'chai';
-import * as fs from 'fs';
 import moment from 'moment';
 import Web3 from 'web3';
 import dotenv from 'dotenv';
 
-import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts, User } from '@energyweb/user-registry';
+import { buildRights, Role, UserLogic, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
 
 import { migrateDeviceRegistryContracts } from '../utils/migrateContracts';
 import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
-import { DeviceStatus } from '../blockchain-facade/Device';
 
 describe('DeviceLogic', () => {
     dotenv.config({
@@ -100,10 +98,6 @@ describe('DeviceLogic', () => {
             await deviceLogic.createDevice(
                 deviceSmartmeter,
                 deviceOwnerAddress,
-                DeviceStatus.Active,
-                0,
-                'propertiesDocumentHash',
-                'url',
                 {
                     privateKey: deviceOwnerPK
                 }
@@ -122,10 +116,6 @@ describe('DeviceLogic', () => {
             await deviceLogic.createDevice(
                 deviceSmartmeter,
                 deviceOwnerAddress,
-                DeviceStatus.Active,
-                0,
-                'propertiesDocumentHash',
-                'url',
                 {
                     privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
                 }
@@ -159,10 +149,6 @@ describe('DeviceLogic', () => {
             await deviceLogic.createDevice(
                 deviceSmartmeter,
                 traderAndDeviceManagerAddress,
-                DeviceStatus.Active,
-                0,
-                'propertiesDocumentHash',
-                'url',
                 {
                     privateKey: traderAndDeviceManagerPK
                 }
@@ -171,7 +157,7 @@ describe('DeviceLogic', () => {
             failed = true;
             assert.include(
                 ex.message,
-                'only admin and issuer can add devices with status other than submitted'
+                'only admin and issuer can add devices'
             );
         }
         assert.isTrue(failed);
@@ -181,10 +167,6 @@ describe('DeviceLogic', () => {
         const tx = await deviceLogic.createDevice(
             deviceSmartmeter,
             deviceOwnerAddress,
-            DeviceStatus.Active,
-            0,
-            'propertiesDocumentHash',
-            'url',
             { privateKey: privateKeyDeployment }
         );
 
@@ -210,16 +192,12 @@ describe('DeviceLogic', () => {
     it('should return the deployed device correctly', async () => {
         const deployedDevice = await deviceLogic.getDeviceById(0);
 
-        assert.equal(deployedDevice.length, 8);
+        assert.equal(deployedDevice.length, 4);
 
         assert.equal(deployedDevice.smartMeter, deviceSmartmeter);
         assert.equal(deployedDevice.owner, deviceOwnerAddress);
         assert.equal(deployedDevice.lastSmartMeterReadWh, 0);
-        assert.equal(deployedDevice.status, DeviceStatus.Active);
-        assert.equal(deployedDevice.usageType, 0);
         assert.equal(deployedDevice.lastSmartMeterReadFileHash, '');
-        assert.equal(deployedDevice.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(deployedDevice.url, 'url');
     });
 
     it('should return device by ID correctly', async () => {
@@ -228,10 +206,7 @@ describe('DeviceLogic', () => {
         assert.equal(device0.smartMeter, deviceSmartmeter);
         assert.equal(device0.owner, deviceOwnerAddress);
         assert.equal(device0.lastSmartMeterReadWh, 0);
-        assert.equal(device0.status, DeviceStatus.Active);
         assert.equal(device0.lastSmartMeterReadFileHash, '');
-        assert.equal(device0.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(device0.url, 'url');
     });
 
     it('should fail when trying to log with saveSmartMeterRead using the wrong smart meter', async () => {
@@ -323,99 +298,13 @@ describe('DeviceLogic', () => {
         });
     });
 
-    it('should fail when trying to change status of device as non-issuer', async () => {
-        let failed = false;
-
-        try {
-            await deviceLogic.setStatus(0, DeviceStatus.Denied, {
-                privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'user does not have the required role');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should be able to deactivate a device', async () => {
-        const tx = await deviceLogic.setStatus(0, DeviceStatus.Denied, {
-            privateKey: issuerPK
-        });
-
-        const statusChangedEvent = (await deviceLogic.getAllLogDeviceStatusChangedEvents({
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        }))[0];
-
-        assert.equal(statusChangedEvent.event, 'DeviceStatusChanged');
-        assert.deepEqual(statusChangedEvent.returnValues, {
-            0: '0',
-            1: DeviceStatus.Denied.toString(),
-            _deviceId: '0',
-            _status: DeviceStatus.Denied.toString()
-        });
-    });
-
-    it('should fail when trying to log with saveSmartMeterRead with a deactivated device', async () => {
-        let failed = false;
-
-        try {
-            await deviceLogic.saveSmartMeterRead(0, 300, 'lastSmartMeterReadFileHash', 0, {
-                privateKey: deviceSmartmeterPK
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'saveSmartMeterRead: device not active');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should fail when trying to activate a device as a non-issuer', async () => {
-        let failed = false;
-
-        try {
-            await deviceLogic.setStatus(0, DeviceStatus.Active, {
-                privateKey: '0x191c4b074672d9eda0ce576cfac79e44e320ffef5e3aadd55e000de57341d36c'
-            });
-        } catch (ex) {
-            failed = true;
-            assert.include(ex.message, 'user does not have the required role');
-        }
-
-        assert.isTrue(failed);
-    });
-
-    it('should be able to deactivate a device', async () => {
-        const tx = await deviceLogic.setStatus(0, DeviceStatus.Denied, {
-            privateKey: issuerPK
-        });
-
-        const statusChangedEvent = (await deviceLogic.getAllLogDeviceStatusChangedEvents({
-            fromBlock: tx.blockNumber,
-            toBlock: tx.blockNumber
-        }))[0];
-
-        assert.equal(statusChangedEvent.event, 'DeviceStatusChanged');
-        assert.deepEqual(statusChangedEvent.returnValues, {
-            0: '0',
-            1: DeviceStatus.Denied.toString(),
-            _deviceId: '0',
-            _status: DeviceStatus.Denied.toString()
-        });
-    });
-
     it('should return updated device correctly', async () => {
         const device0 = await deviceLogic.getDeviceById(0);
 
         assert.equal(device0.smartMeter, deviceSmartmeter);
         assert.equal(device0.owner, deviceOwnerAddress);
         assert.equal(device0.lastSmartMeterReadWh, '200');
-        assert.equal(device0.status, DeviceStatus.Denied);
         assert.equal(device0.lastSmartMeterReadFileHash, 'lastSmartMeterReadFileHash#2');
-        assert.equal(device0.propertiesDocumentHash, 'propertiesDocumentHash');
-        assert.equal(device0.url, 'url');
     });
 
     it('should return the correct latest hashes + meter readings', async () => {

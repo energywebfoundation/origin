@@ -14,23 +14,23 @@ import {
     buildRights,
     Role,
     UserLogic,
-    Contracts as UserRegistryContracts
+    Contracts as UserRegistryContracts,
+    User
 } from '@energyweb/user-registry';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+    DeviceStatus,
+    UserRegisterData,
+    IDevice,
+    DemandPostData
+} from '@energyweb/origin-backend-core';
 
-import { UserRegisterData } from '@energyweb/origin-backend-core';
-import { deployERC20TestToken } from '../utils/deployERC20TestToken';
-import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
-import { IAgreementOffChainProperties } from '../blockchain-facade/Agreement';
 import { logger } from '../Logger';
 import { migrateMarketRegistryContracts } from '../utils/migrateContracts';
-import { PurchasableCertificate, MarketLogic, Demand, Supply, Agreement, MarketUser } from '..';
+import { MarketLogic, Demand, MarketUser } from '..';
+import { IDemandEntity } from '../blockchain-facade/Demand';
 
 function createTestRegisterData(email: string): UserRegisterData {
     return {
@@ -63,9 +63,6 @@ describe('Market-Facade', () => {
     let certificateLogic: CertificateLogic;
     let marketLogic: MarketLogic;
 
-    let erc20TestToken: Erc20TestToken;
-    let erc20TestTokenAddress: string;
-
     const deviceOwnerPK = '0xfaab95e72c3ac39f7c060125d9eca3558758bb248d1a4cdc9c1b7fd3f91a4485';
     const deviceOwnerAddress = web3.eth.accounts.privateKeyToAccount(deviceOwnerPK).address;
 
@@ -80,16 +77,6 @@ describe('Market-Facade', () => {
 
     const issuerPK = '0x622d56ab7f0e75ac133722cc065260a2792bf30ea3265415fe04f3a2dba7e1ac';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
-
-    it('should set ERC20 token', async () => {
-        erc20TestTokenAddress = await deployERC20TestToken(
-            web3,
-            accountTrader,
-            privateKeyDeployment
-        );
-
-        erc20TestToken = new Erc20TestToken(web3, erc20TestTokenAddress);
-    });
 
     it('should deploy user-registry contracts', async () => {
         userLogic = await UserRegistryContracts.migrateUserRegistryContracts(
@@ -127,9 +114,6 @@ describe('Market-Facade', () => {
     });
 
     it('should init the config', () => {
-        const baseUrl = `${process.env.BACKEND_URL}/api`;
-        const userClient = new UserClientMock();
-
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -142,38 +126,40 @@ describe('Market-Facade', () => {
                 certificateLogicInstance: certificateLogic,
                 web3
             },
-            offChainDataSource: {
-                baseUrl,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });
 
     it('should create all the users', async () => {
-        await MarketUser.createMarketUser(
-            {
-                url: null,
-                propertiesDocumentHash: null,
-                id: accountDeployment,
-                active: true,
-                roles: buildRights([
-                    Role.UserAdmin,
-                    Role.DeviceAdmin,
-                    Role.DeviceManager,
-                    Role.Trader,
-                    Role.Matcher
-                ])
-            },
-            {
-                notifications: false
-            },
+        const roles = buildRights([
+            Role.UserAdmin,
+            Role.DeviceAdmin,
+            Role.DeviceManager,
+            Role.Trader,
+            Role.Matcher
+        ]);
+
+        const adminPropsOnChain: User.IUserOnChainProperties = {
+            propertiesDocumentHash: null,
+            url: null,
+            id: accountDeployment,
+            active: true,
+            roles
+        };
+        const adminPropsOffChain: MarketUser.IMarketUserOffChainProperties = {
+            notifications: false
+        };
+
+        const marketUser = await MarketUser.createMarketUser(
+            adminPropsOnChain,
+            adminPropsOffChain,
             conf,
             createTestRegisterData('admin@example.com'),
             privateKeyDeployment
         );
+
+        assert.equal(marketUser.roles, roles);
 
         await MarketUser.createMarketUser(
             {
@@ -312,14 +298,11 @@ describe('Market-Facade', () => {
             smartMeter: { address: deviceSmartMeter },
             owner: { address: deviceOwnerAddress },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
-        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+        const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             operationalSince: 0,
             capacityInW: 10,
             country: 'Thailand',
@@ -356,13 +339,13 @@ describe('Market-Facade', () => {
                 privateKey: traderPK
             };
 
-            const demandOffChainProps: Demand.IDemandOffChainProperties = {
+            const demandOffChainProps: DemandPostData = {
+                owner: accountTrader,
                 timeFrame: TimeFrame.hourly,
                 maxPriceInCentsPerMwh: 150,
                 currency: 'USD',
                 location: ['Thailand;Central;Nakhon Pathom'],
                 deviceType: ['Solar'],
-                minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 typeOfPublicSupport: 'string',
                 energyPerTimeFrame: 10,
@@ -379,14 +362,12 @@ describe('Market-Facade', () => {
             assert.equal(await Demand.getDemandListLength(conf), 1);
 
             assert.ownInclude(demand, {
-                id: '0',
+                id: 1,
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${demand.propertiesDocumentHash}`,
-                demandOwner: accountTrader,
-                status: 0
+                status: 0,
+                owner: accountTrader,
+                ...demandOffChainProps
             } as Partial<Demand.Entity>);
-
-            assert.deepEqual(demand.offChainProperties, demandOffChainProps);
         });
 
         it('should return 1 demand for getAllDemands', async () => {
@@ -395,21 +376,14 @@ describe('Market-Facade', () => {
         });
 
         it('should return demand', async () => {
-            const demand = await new Demand.Entity('0', conf).sync();
+            const demand: IDemandEntity = await new Demand.Entity(1, conf).sync();
 
             assert.ownInclude(demand, {
-                id: '0',
+                id: 1,
                 initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${demand.propertiesDocumentHash}`,
-                demandOwner: accountTrader,
-                status: 0
-            } as Partial<Demand.Entity>);
-
-            assert.deepOwnInclude(demand.offChainProperties, {
-                deviceType: ['Solar'],
+                owner: accountTrader,
+                status: 0,
                 currency: 'USD',
-                location: ['Thailand;Central;Nakhon Pathom'],
-                minCO2Offset: 10,
                 otherGreenAttributes: 'string',
                 maxPriceInCentsPerMwh: 150,
                 registryCompliance: 'I-REC',
@@ -418,449 +392,17 @@ describe('Market-Facade', () => {
                 typeOfPublicSupport: 'string',
                 startTime: START_TIME,
                 endTime: END_TIME
-            });
+            } as Partial<Demand.Entity>);
+
+            assert.deepEqual(demand.deviceType, ['Solar']);
+            assert.deepEqual(demand.location, ['Thailand;Central;Nakhon Pathom']);
         });
 
         it('should clone demand', async () => {
-            const demand = await new Demand.Entity('0', conf).sync();
+            const demand = await new Demand.Entity(0, conf).sync();
             const clone = await demand.clone();
 
             assert.notEqual(clone.id, demand.id);
-            assert.notEqual(clone.propertiesDocumentHash, demand.propertiesDocumentHash);
-            assert.notEqual(clone.url, demand.url);
-
-            assert.deepEqual(clone.offChainProperties, demand.offChainProperties);
-        });
-
-        it('should update demand off chain properties', async () => {
-            const demand = await new Demand.Entity('0', conf).clone();
-
-            const oldPropertiesHash = demand.propertiesDocumentHash;
-            const oldOffChainProperties = demand.offChainProperties;
-
-            const offChainProperties = { ...demand.offChainProperties };
-            offChainProperties.procureFromSingleFacility = !demand.offChainProperties
-                .procureFromSingleFacility;
-            offChainProperties.deviceType = ['Hydro-electric Head', 'Mixed pumped storage head'];
-
-            const updated = await demand.update(offChainProperties);
-
-            assert.equal(updated.id, demand.id);
-            assert.equal(updated.status, demand.status);
-            assert.notEqual(updated.propertiesDocumentHash, oldPropertiesHash);
-            assert.notDeepEqual(updated.offChainProperties, oldOffChainProperties);
-        });
-
-        it('should not update demand properties when blockchain tx fails', async () => {
-            conf.blockchainProperties.marketLogicInstance.updateDemand = async (
-                id: string,
-                hash: string,
-                url: string,
-                tx: any
-            ) => {
-                throw new Error(`Intentional Error: ${id}, ${hash}, ${url}, ${tx}`);
-            };
-
-            let demand = await new Demand.Entity('0', conf).sync();
-
-            const oldDemandProperties = demand.offChainProperties;
-
-            const newOffChainProperties = { ...oldDemandProperties };
-            newOffChainProperties.deviceType = ['Hydro-electric Head', 'Mixed pumped storage head'];
-
-            let failed = false;
-
-            try {
-                await demand.update(newOffChainProperties);
-            } catch (e) {
-                assert.isTrue(e.message.includes('Intentional Error'));
-                failed = true;
-            }
-
-            assert.isTrue(failed);
-
-            demand = await demand.sync();
-
-            assert.deepEqual(demand.offChainProperties, oldDemandProperties);
-        });
-
-        it('should trigger DemandPartiallyFilled event after agreement demand filled', async () => {
-            const producingDevice = await new ProducingDevice.Entity('0', conf).sync();
-
-            conf.blockchainProperties.activeUser = {
-                address: deviceSmartMeter,
-                privateKey: deviceSmartMeterPK
-            };
-
-            await producingDevice.saveSmartMeterRead(1e6, 'newMeterRead');
-
-            await certificateLogic.requestCertificates(0, 0, {
-                privateKey: deviceOwnerPK
-            });
-
-            await certificateLogic.approveCertificationRequest(0, {
-                privateKey: issuerPK
-            });
-
-            conf.blockchainProperties.activeUser = {
-                address: deviceOwnerAddress,
-                privateKey: deviceOwnerPK
-            };
-
-            let certificate = await new PurchasableCertificate.Entity('0', conf).sync();
-
-            await erc20TestToken.approve(deviceOwnerAddress, 2, { privateKey: traderPK });
-
-            conf.blockchainProperties.activeUser = {
-                address: matcherAccount,
-                privateKey: matcherPK
-            };
-            const demand = await new Demand.Entity('0', conf).sync();
-
-            const fillTx = await demand.fillAgreement(certificate.id);
-
-            const demandPartiallyFilledEvents = await marketLogic.getEvents(
-                'DemandPartiallyFilled',
-                {
-                    fromBlock: fillTx.blockNumber,
-                    toBlock: fillTx.blockNumber
-                }
-            );
-
-            assert.equal(demandPartiallyFilledEvents.length, 1);
-
-            certificate = await certificate.sync();
-            assert.equal(certificate.certificate.owner, demand.demandOwner);
-        });
-
-        it('should trigger DemandPartiallyFilled event after demand filled', async () => {
-            const producingDevice = await new ProducingDevice.Entity('0', conf).sync();
-
-            conf.blockchainProperties.activeUser = {
-                address: deviceSmartMeter,
-                privateKey: deviceSmartMeterPK
-            };
-
-            await producingDevice.saveSmartMeterRead(2e6, 'newMeterRead');
-
-            await certificateLogic.requestCertificates(0, 1, {
-                privateKey: deviceOwnerPK
-            });
-
-            await certificateLogic.approveCertificationRequest(1, {
-                privateKey: issuerPK
-            });
-
-            conf.blockchainProperties.activeUser = {
-                address: deviceOwnerAddress,
-                privateKey: deviceOwnerPK
-            };
-
-            const certificate = await new PurchasableCertificate.Entity('1', conf).sync();
-
-            await certificate.publishForSale(1000, 'USD');
-
-            conf.blockchainProperties.activeUser = {
-                address: matcherAccount,
-                privateKey: matcherPK
-            };
-
-            const demand = await new Demand.Entity('0', conf).sync();
-            const fillTx = await demand.fill(certificate.id);
-
-            const demandPartiallyFilledEvents = await marketLogic.getEvents(
-                'DemandPartiallyFilled',
-                {
-                    fromBlock: fillTx.blockNumber,
-                    toBlock: fillTx.blockNumber
-                }
-            );
-
-            assert.equal(demandPartiallyFilledEvents.length, 1);
-
-            const filledCertificate = await certificate.sync();
-            assert.equal(filledCertificate.certificate.owner, demand.demandOwner);
-        });
-    });
-
-    describe('Supply-Facade', () => {
-        it('should onboard an supply', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceOwnerAddress,
-                privateKey: deviceOwnerPK
-            };
-
-            const supplyOffChainProperties: Supply.ISupplyOffChainProperties = {
-                priceInCents: 1000,
-                currency: 'USD',
-                availableWh: 10,
-                timeFrame: TimeFrame.hourly
-            };
-
-            const supplyProps: Supply.ISupplyOnChainProperties = {
-                url: null,
-                propertiesDocumentHash: null,
-                deviceId: '0'
-            };
-
-            assert.equal(await Supply.getSupplyListLength(conf), 0);
-
-            const supply = await Supply.createSupply(supplyProps, supplyOffChainProperties, conf);
-
-            assert.equal(await Supply.getSupplyListLength(conf), 1);
-
-            assert.deepOwnInclude(supply, {
-                id: '0',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${supply.propertiesDocumentHash}`,
-                deviceId: '0',
-                offChainProperties: {
-                    availableWh: 10,
-                    currency: 'USD',
-                    priceInCents: 1000,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Supply.Entity>);
-        });
-
-        it('should return supply', async () => {
-            const supply: Supply.Entity = await new Supply.Entity('0', conf).sync();
-
-            assert.deepOwnInclude(supply, {
-                id: '0',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${supply.propertiesDocumentHash}`,
-                deviceId: '0',
-                offChainProperties: {
-                    availableWh: 10,
-                    currency: 'USD',
-                    priceInCents: 1000,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Supply.Entity>);
-        });
-
-        it('should get all supplies', async () => {
-            const allSupplies = await Supply.getAllSupplies(conf);
-            assert.equal(allSupplies.length, 1);
-        });
-    });
-
-    describe('Agreement-Facade', () => {
-        let startTime: number;
-
-        it('should create an agreement', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
-            };
-
-            startTime = moment().unix();
-
-            const agreementOffchainProps: IAgreementOffChainProperties = {
-                start: startTime,
-                end: startTime + 1000,
-                priceInCents: 1000,
-                currency: 'USD',
-                period: 10,
-                timeFrame: TimeFrame.hourly
-            };
-
-            const agreementProps: Agreement.IAgreementOnChainProperties = {
-                propertiesDocumentHash: null,
-                url: null,
-                demandId: '0',
-                supplyId: '0'
-            };
-
-            const agreement = await Agreement.createAgreement(
-                agreementProps,
-                agreementOffchainProps,
-                conf
-            );
-
-            assert.equal(await Agreement.getAgreementListLength(conf), 1);
-
-            delete agreement.proofs;
-            delete agreement.configuration;
-
-            assert.deepOwnInclude(agreement, {
-                id: '0',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
-                demandId: '0',
-                supplyId: '0',
-                approvedBySupplyOwner: false,
-                approvedByDemandOwner: true,
-                offChainProperties: {
-                    currency: 'USD',
-                    end: startTime + 1000,
-                    period: 10,
-                    priceInCents: 1000,
-                    start: startTime,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Agreement.Entity>);
-        });
-
-        it('should return an agreement', async () => {
-            const agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
-
-            delete agreement.proofs;
-            delete agreement.configuration;
-
-            assert.deepOwnInclude(agreement, {
-                id: '0',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
-                demandId: '0',
-                supplyId: '0',
-                approvedBySupplyOwner: false,
-                approvedByDemandOwner: true,
-                offChainProperties: {
-                    currency: 'USD',
-                    end: startTime + 1000,
-                    period: 10,
-                    priceInCents: 1000,
-                    start: startTime,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Agreement.Entity>);
-        });
-
-        it('should agree to an agreement as supply', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceOwnerAddress,
-                privateKey: deviceOwnerPK
-            };
-
-            let agreement: Agreement.Entity = await new Agreement.Entity('0', conf).sync();
-
-            await agreement.approveAgreementSupply();
-
-            agreement = await agreement.sync();
-
-            assert.deepOwnInclude(agreement, {
-                id: '0',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
-                demandId: '0',
-                supplyId: '0',
-                approvedBySupplyOwner: true,
-                approvedByDemandOwner: true,
-                offChainProperties: {
-                    currency: 'USD',
-                    end: startTime + 1000,
-                    period: 10,
-                    priceInCents: 1000,
-                    start: startTime,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Agreement.Entity>);
-        });
-
-        it('should create a 2nd agreement', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: deviceOwnerAddress,
-                privateKey: deviceOwnerPK
-            };
-
-            startTime = moment().unix();
-
-            const agreementOffchainProps: IAgreementOffChainProperties = {
-                start: startTime,
-                end: startTime + 1000,
-                priceInCents: 1000,
-                currency: 'USD',
-                period: 10,
-                timeFrame: TimeFrame.hourly
-            };
-
-            const agreementProps: Agreement.IAgreementOnChainProperties = {
-                propertiesDocumentHash: null,
-                url: null,
-                demandId: '0',
-                supplyId: '0'
-            };
-
-            const agreement = await Agreement.createAgreement(
-                agreementProps,
-                agreementOffchainProps,
-                conf
-            );
-
-            assert.equal(await Agreement.getAgreementListLength(conf), 2);
-
-            assert.deepOwnInclude(agreement, {
-                id: '1',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
-                demandId: '0',
-                supplyId: '0',
-                approvedBySupplyOwner: true,
-                approvedByDemandOwner: false,
-                offChainProperties: {
-                    currency: 'USD',
-                    end: startTime + 1000,
-                    period: 10,
-                    priceInCents: 1000,
-                    start: startTime,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Agreement.Entity>);
-        });
-
-        it('should agree to an agreement as demand', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
-            };
-
-            let agreement: Agreement.Entity = await new Agreement.Entity('1', conf).sync();
-
-            await agreement.approveAgreementDemand();
-
-            agreement = await agreement.sync();
-
-            assert.deepOwnInclude(agreement, {
-                id: '1',
-                initialized: true,
-                url: `${process.env.BACKEND_URL}/api/Entity/${agreement.propertiesDocumentHash}`,
-                demandId: '0',
-                supplyId: '0',
-                approvedBySupplyOwner: true,
-                approvedByDemandOwner: true,
-                offChainProperties: {
-                    currency: 'USD',
-                    end: startTime + 1000,
-                    period: 10,
-                    priceInCents: 1000,
-                    start: startTime,
-                    timeFrame: TimeFrame.hourly
-                }
-            } as Partial<Agreement.Entity>);
-        });
-
-        it('should get all agreements', async () => {
-            const allAgreements = await Agreement.getAllAgreements(conf);
-
-            assert.equal(allAgreements.length, 2);
-            assert.equal(allAgreements.length, await Agreement.getAgreementListLength(conf));
-        });
-
-        it('should delete a demand', async () => {
-            conf.blockchainProperties.activeUser = {
-                address: accountTrader,
-                privateKey: traderPK
-            };
-
-            const amountOfDemands = await Demand.getDemandListLength(conf);
-
-            const deleted = await Demand.deleteDemand('0', conf);
-            assert.isTrue(deleted);
-
-            // Should remain the same
-            assert.equal(await Demand.getDemandListLength(conf), amountOfDemands);
         });
     });
 });

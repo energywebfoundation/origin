@@ -3,11 +3,7 @@ import Web3 from 'web3';
 import path from 'path';
 import program from 'commander';
 
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { startMatcher } from '.';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
@@ -21,8 +17,8 @@ program.parse(process.argv);
     const privateKey = process.env.MATCHER_PRIV_KEY;
     const web3 = new Web3(process.env.WEB3);
 
-    const backendUrl: string = process.env.BACKEND_URL || 'http://localhost:3035';
-    const baseUrl = `${backendUrl}/api`;
+    const backendUrl: string = process.env.BACKEND_URL || 'http://localhost';
+    const backendPort: number = Number(process.env.BACKEND_PORT) || 3035;
 
     const matcherInterval = Number(process.env.MATCHER_INTERVAL) || 15;
 
@@ -30,10 +26,10 @@ program.parse(process.argv);
 
     console.log(`[MARKET-MATCHER] Trying to get Market contract address`);
 
-    const configurationClient = new ConfigurationClient();
+    const offChainDataSource = new OffChainDataSource(backendUrl, Number(backendPort));
+
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await configurationClient.get(
-            baseUrl,
+        storedMarketContractAddresses = await offChainDataSource.configurationClient.get(
             'MarketContractLookup'
         );
 
@@ -56,10 +52,7 @@ program.parse(process.argv);
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
             privateKey
         },
-        offChainDataSourceUrl: baseUrl,
-        offChainDataSourceClient: new OffChainDataClient(),
-        configurationClient,
-        userClient: new UserClient(baseUrl),
+        offChainDataSource,
         matcherInterval
     };
 

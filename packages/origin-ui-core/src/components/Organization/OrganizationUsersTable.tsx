@@ -5,11 +5,11 @@ import { TableMaterial } from '../Table/TableMaterial';
 import { DeleteOutline } from '@material-ui/icons';
 import { getUserOffchain } from '../../features/users/selectors';
 import { setLoading } from '../../features/general/actions';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { getOrganizationClient } from '../../features/general/selectors';
 import { IUser } from '@energyweb/origin-backend-core';
 
 interface IRecord {
@@ -17,7 +17,7 @@ interface IRecord {
 }
 
 export function OrganizationUsersTable() {
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource)?.organizationClient;
     const userOffchain = useSelector(getUserOffchain);
 
     const dispatch = useDispatch();

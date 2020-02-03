@@ -53,11 +53,7 @@ export function getCertificateDetailLink(baseURL: string, certificateId: string 
     return `${getCertificatesLink(baseURL)}/detail_view/${certificateId}`;
 }
 
-export function getCertificatesForDemandLink(baseURL: string, demandId: string | number) {
-    if (typeof demandId === 'number') {
-        demandId = demandId.toString();
-    }
-
+export function getCertificatesForDemandLink(baseURL: string, demandId: number) {
     return `${getCertificatesLink(baseURL)}/for_demand/${demandId}`;
 }
 
@@ -90,7 +86,7 @@ export function useLinks() {
         getDemandViewLink: (id: string) => getDemandViewLink(baseURL, id),
         getCertificateDetailLink: (certificateId: string | number) =>
             getCertificateDetailLink(baseURL, certificateId),
-        getCertificatesForDemandLink: (demandId: string | number) =>
+        getCertificatesForDemandLink: (demandId: number) =>
             getCertificatesForDemandLink(baseURL, demandId),
         getProducingDeviceDetailLink: (deviceId: string | number) =>
             getProducingDeviceDetailLink(baseURL, deviceId),

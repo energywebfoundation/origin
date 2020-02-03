@@ -12,7 +12,7 @@ interface IMatchParams {
 export function DemandClone() {
     const demands = useSelector(getDemands);
     const params: IMatchParams = useParams();
-    const demand = demands.find(d => d.id === params.id);
+    const demand = demands.find(d => d.id.toString() === params.id);
 
     return <DemandForm demand={demand} clone={true} />;
 }

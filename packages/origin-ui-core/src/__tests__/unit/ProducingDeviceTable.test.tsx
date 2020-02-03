@@ -3,20 +3,22 @@ import { mount } from 'enzyme';
 import { ProducingDeviceTable } from '../../components/ProducingDeviceTable';
 import { dataTestSelector } from '../../utils/helper';
 import { setupStore, WrapperComponent, createRenderedHelpers } from '../utils/helpers';
-import { setOrganizationClient } from '../../features/general/actions';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import { setOffChainDataSource } from '../../features/general/actions';
+import { IOrganizationWithRelationsIds, DeviceStatus } from '@energyweb/origin-backend-core';
+import { IOrganizationClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
         const { store, history, addProducingDevice } = setupStore();
 
         addProducingDevice({
-            id: '0'
+            id: '0',
+            status: DeviceStatus.Active
         });
 
         addProducingDevice({
             id: '1',
+            status: DeviceStatus.Active,
             facilityName: 'Biomass Energy Facility',
             deviceType: 'Gaseous;Agricultural gas',
             address:
@@ -28,13 +30,19 @@ describe('ProducingDeviceTable', () => {
             province: 'Nakhon Pathom'
         });
 
+        const organizationClient: IOrganizationClient = ({
+            getById: async () =>
+                (({ name: 'Example Organization' } as Partial<
+                    IOrganizationWithRelationsIds
+                >) as IOrganizationWithRelationsIds)
+        } as Partial<IOrganizationClient>) as IOrganizationClient;
+
+        const offChainDataSource: Partial<IOffChainDataSource> = {
+            organizationClient: organizationClient
+        }
+
         store.dispatch(
-            setOrganizationClient(({
-                getById: async () =>
-                    (({ name: 'Example Organization' } as Partial<
-                        IOrganizationWithRelationsIds
-                    >) as IOrganizationWithRelationsIds)
-            } as Partial<IOrganizationClient>) as IOrganizationClient)
+            setOffChainDataSource(offChainDataSource as IOffChainDataSource)
         );
 
         const rendered = mount(

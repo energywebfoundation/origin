@@ -20,16 +20,16 @@ export interface IUserClient {
 
 export class UserClient implements IUserClient {
     constructor(
-        private readonly baseURL: string,
+        private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
     private get authEndpoint() {
-        return `${this.baseURL}/auth`;
+        return `${this.dataApiUrl}/auth`;
     }
 
     private get userEndpoint() {
-        return `${this.baseURL}/User`;
+        return `${this.dataApiUrl}/User`;
     }
 
     public async register(formData: UserRegisterData): Promise<UserRegisterReturnData> {

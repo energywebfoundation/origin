@@ -1,4 +1,5 @@
 import { Demand } from '@energyweb/market';
+import { DeviceStatus } from '@energyweb/origin-backend-core';
 
 export interface IPartiallyFilledDemand {
     demandId: number;
@@ -7,13 +8,13 @@ export interface IPartiallyFilledDemand {
 }
 
 export interface ICertificateMatchesDemand {
-    demandId: string;
+    demandId: number;
     certificateId: string;
 }
 
 export interface IDeviceStatusChange {
     deviceId: string;
-    status: string;
+    status: DeviceStatus;
 }
 
 interface IUserTempStorage {
@@ -38,7 +39,11 @@ export interface IOriginEventsStore {
     registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void;
     registerPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
     registerFulfilledDemand(demandOwnerId: string, demandId: number): void;
-    registerDeviceStatusChange(deviceOwnerId: string, deviceId: string, deviceStatus: string): void;
+    registerDeviceStatusChange(
+        deviceOwnerId: string,
+        deviceId: string,
+        deviceStatus: DeviceStatus
+    ): void;
 
     resetIssuedCertificates(userId: string): void;
     resetMatchingCertificates(userId: string): void;
@@ -60,7 +65,7 @@ export class OriginEventsStore implements IOriginEventsStore {
     }
 
     public registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void {
-        const userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
+        const userStorage: IUserTempStorage = this.userStorage(demand.owner);
 
         userStorage.matchingCertificates.push({
             demandId: demand.id,
@@ -84,7 +89,7 @@ export class OriginEventsStore implements IOriginEventsStore {
     public registerDeviceStatusChange(
         deviceOwnerId: string,
         deviceId: string,
-        deviceStatus: string
+        deviceStatus: DeviceStatus
     ): void {
         const userStorage: IUserTempStorage = this.userStorage(deviceOwnerId);
         userStorage.deviceStatusChanges.push({

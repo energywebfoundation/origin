@@ -11,6 +11,9 @@ import { Currency } from './pods/currency/currency.entity';
 import { Compliance } from './pods/compliance/compliance.entity';
 import { Organization } from './pods/organization/organization.entity';
 import { User } from './pods/user/user.entity';
+import { Device } from './pods/device/device.entity';
+import { Demand } from './pods/demand/demand.entity';
+
 import { UserModule } from './pods/user/user.module';
 import { ComplianceModule } from './pods/compliance/compliance.module';
 import createConfig from './config/configuration';
@@ -21,7 +24,11 @@ import { ImageModule } from './pods/image/image.module';
 import { JsonEntityModule } from './pods/json-entity/json-entity.module';
 import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
 import { OrganizationModule } from './pods/organization/organization.module';
+import { DeviceModule } from './pods/device/device.module';
+import { DemandModule } from './pods/demand/demand.module';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
+
 import { AppController } from './app.controller';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 
@@ -43,6 +50,8 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
                     Currency,
                     Compliance,
                     Country,
+                    Device,
+                    Demand,
                     Organization,
                     User,
                     OrganizationInvitation
@@ -58,7 +67,10 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         JsonEntityModule,
         ContractsStorageModule,
         OrganizationModule,
-        AuthModule
+        DeviceModule,
+        DemandModule,
+        AuthModule,
+        EventsModule
     ],
     controllers: [AppController],
     providers: []
