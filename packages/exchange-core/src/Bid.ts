@@ -66,8 +66,8 @@ export class Bid extends Order {
         }
 
         return (
-            locationService.matches(product.location, this.product.location[0]) ||
-            locationService.matches(this.product.location, product.location[0])
+            locationService.matchesSome(product.location, this.product.location) ||
+            locationService.matchesSome(this.product.location, product.location)
         );
     }
 
@@ -83,9 +83,9 @@ export class Bid extends Order {
     }
 
     private hasMatchingVintage(product: Product) {
-        if (!product.deviceVintage || !this.product.deviceVintage) {
+        if (!this.product.deviceVintage || !product.deviceVintage) {
             return true;
         }
-        return this.product.deviceVintage >= product.deviceVintage;
+        return product.deviceVintage.matches(this.product.deviceVintage);
     }
 }

@@ -1,5 +1,5 @@
-import { Product } from '@energyweb/exchange-core';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ProductDTO } from './product.dto';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -29,5 +29,5 @@ export class Order extends BaseEntity {
     validFrom: Date;
 
     @Column('json')
-    product: Product;
+    product: ProductDTO;
 }
