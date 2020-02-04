@@ -30,9 +30,9 @@ export class DemandMatcher {
             for (const certificate of certificates) {
                 const matchingResult = await this.certificateService.executeMatching(
                     certificate,
-                    demand,
-                    false
+                    demand
                 );
+
                 if (matchingResult) {
                     matched = true;
                     break;
@@ -78,6 +78,7 @@ export class DemandMatcher {
                 certificate,
                 producingDevice
             );
+
             this.logger.verbose(
                 `[Demand #${demand.id}] Result of matching with certificate ${
                     certificate.id

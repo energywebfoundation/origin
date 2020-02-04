@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.5.2...@energyweb/migrations@1.0.0) (2020-01-31)
+
+
+### Features
+
+* add ability to add device group ([d01a9ed](https://github.com/energywebfoundation/origin/commit/d01a9ed1c7e474635f4ff342844fb94a8b4c3bc9))
+* **migrations:** introduce concept of email/password user ([c708787](https://github.com/energywebfoundation/origin/commit/c70878739f64dbdcf9f974fecb1efce87bf90279))
+
+
+### BREAKING CHANGES
+
+* **migrations:** change CREATE_ACCOUNT, remove ADD_CONSUMING_DEVICE
+
+
+
+
+
 ## [0.5.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@0.5.1...@energyweb/migrations@0.5.2) (2020-01-17)
 
 **Note:** Version bump only for package @energyweb/migrations

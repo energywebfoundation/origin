@@ -3,7 +3,6 @@ import { PastEventOptions } from 'web3-eth-contract';
 import Web3 from 'web3';
 import moment from 'moment';
 import DeviceLogicJSON from '../../build/contracts/lightweight/DeviceLogic.json';
-import { UsageType, DeviceStatus } from '../blockchain-facade/Device';
 
 export class DeviceLogic extends GeneralFunctions {
     web3: Web3;
@@ -40,10 +39,6 @@ export class DeviceLogic extends GeneralFunctions {
         return this.web3Contract.getPastEvents('LogDeviceFullyInitialized', this.createFilter(eventFilter));
     }
 
-    async getAllLogDeviceStatusChangedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('DeviceStatusChanged', this.createFilter(eventFilter));
-    }
-
     async getSmartMeterReadsForDeviceByIndex(
         _deviceId: number,
         _indexes: number[],
@@ -73,19 +68,11 @@ export class DeviceLogic extends GeneralFunctions {
     async createDevice(
         _smartMeter: string,
         _owner: string,
-        _status: DeviceStatus,
-        _usageType: UsageType,
-        _propertiesDocumentHash: string,
-        _url: string,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.createDevice(
             _smartMeter,
-            _owner,
-            _status,
-            _usageType,
-            _propertiesDocumentHash,
-            _url
+            _owner
         );
 
         return this.send(method, txParams);
@@ -126,12 +113,6 @@ export class DeviceLogic extends GeneralFunctions {
 
     async isRole(_role: number, _caller: string, txParams?: ISpecialTx) {
         return this.web3Contract.methods.isRole(_role, _caller).call(txParams);
-    }
-
-    async setStatus(_deviceId: number, _status: DeviceStatus, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.setStatus(_deviceId, _status);
-
-        return this.send(method, txParams);
     }
 
     async userLogicAddress(txParams?: ISpecialTx) {

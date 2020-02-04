@@ -124,7 +124,7 @@ const DEFAULT_ENERGY_ROWS_LIMIT = 5;
 
 export async function startAPI(configFilePath: string, dataFilePath: string): Promise<Server> {
     const CONFIG = JSON.parse(fs.readFileSync(configFilePath).toString());
-    const PORT = extractPort(process.env.ENERGY_API_BASE_URL) || 3031;
+    const PORT = extractPort(process.env.ENERGY_API_BASE_URL) || 3032;
     const DATA = parse(fs.readFileSync(dataFilePath), { columns: false, trim: true });
 
     const app = express();

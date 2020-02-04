@@ -1,4 +1,5 @@
 import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
+import { IDemand } from '@energyweb/origin-backend-core';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -6,11 +7,7 @@ import Web3 from 'web3';
 import { Eth, BlockTransactionObject } from 'web3-eth';
 import { EventLog } from 'web3-core';
 
-import {
-    calculateMissingEnergyDemand,
-    IDemand,
-    IDemandOffChainProperties
-} from '../../blockchain-facade/Demand';
+import { calculateMissingEnergyDemand, IDemandEntity } from '../../blockchain-facade/Demand';
 import { MarketLogic } from '../../wrappedContracts/MarketLogic';
 
 type FilledEvent = { blockNumber: number; value: number };
@@ -63,16 +60,27 @@ describe('Demand unit tests', () => {
             timeFrame: TimeFrame,
             energyPerTimeFrame: number
         ) => {
-            const demand = Substitute.for<IDemand>();
-            const offChainProperties = Substitute.for<IDemandOffChainProperties>();
+            const demand = Substitute.for<IDemandEntity>();
+            const offChainProperties = Substitute.for<IDemand>();
 
             offChainProperties.startTime.returns(start.unix());
             offChainProperties.endTime.returns(end.unix());
             offChainProperties.timeFrame.returns(timeFrame);
             offChainProperties.energyPerTimeFrame.returns(energyPerTimeFrame);
 
-            demand.id.returns((demandNonce++).toString());
-            demand.offChainProperties.returns(offChainProperties);
+            demand.id.returns(demandNonce++);
+
+            demand.owner.returns(offChainProperties.owner);
+            demand.currency.returns(offChainProperties.currency);
+            demand.timeFrame.returns(offChainProperties.timeFrame);
+            demand.maxPriceInCentsPerMwh.returns(offChainProperties.maxPriceInCentsPerMwh);
+            demand.energyPerTimeFrame.returns(offChainProperties.energyPerTimeFrame);
+            demand.startTime.returns(offChainProperties.startTime);
+            demand.endTime.returns(offChainProperties.endTime);
+            demand.automaticMatching.returns(offChainProperties.automaticMatching);
+            demand.demandPartiallyFilledEvents.returns(
+                offChainProperties.demandPartiallyFilledEvents
+            );
 
             return demand;
         };

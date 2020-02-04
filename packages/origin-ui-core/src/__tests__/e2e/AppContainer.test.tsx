@@ -23,19 +23,13 @@ describe('Application[E2E]', () => {
     it('correctly navigates to producing device details', async () => {
         const ganacheServer = await startGanache();
         const {
-            configurationClient,
-            offChainDataClient,
-            organizationClient,
-            userClient
+            conf: { offChainDataSource }
         } = await deployDemo();
 
         const { store, history } = setupStore([`/devices/production?rpc=ws://localhost:8545`], {
             mockUserFetcher: false,
             logActions: false,
-            configurationClient,
-            offChainDataClient,
-            organizationClient,
-            userClient
+            offChainDataSource
         });
 
         const rendered = mount(

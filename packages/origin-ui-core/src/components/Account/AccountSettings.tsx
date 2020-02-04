@@ -24,7 +24,7 @@ import { MarketUser } from '@energyweb/market';
 
 import { showNotification, NotificationType } from '../../utils/notifications';
 import { getMarketContractLookupAddress } from '../../features/contracts/selectors';
-import { getCurrencies, getUserClient, getEnvironment } from '../../features/general/selectors';
+import { getCurrencies, getOffChainDataSource, getEnvironment } from '../../features/general/selectors';
 import { getCurrentUser, getUserOffchain, getCurrentUserId } from '../../features/users/selectors';
 import { setMarketContractLookupAddress } from '../../features/contracts/actions';
 import { OriginConfigurationContext } from '../OriginConfigurationContext';
@@ -52,7 +52,7 @@ export function AccountSettings() {
     const marketLookupAddress = useSelector(getMarketContractLookupAddress);
     const userOffchain = useSelector(getUserOffchain);
     const currencies = useSelector(getCurrencies);
-    const userClient = useSelector(getUserClient);
+    const userClient = useSelector(getOffChainDataSource).userClient;
     const web3 = useSelector(getWeb3);
     const currentUserId = useSelector(getCurrentUserId);
     const usingPK = useSelector(isUsingInBrowserPK);

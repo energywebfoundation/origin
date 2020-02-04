@@ -2,13 +2,9 @@ import * as Configuration from './Configuration';
 
 export class ContractEventHandler {
     lastBlockChecked: number;
-
     unhandledEvents: any[];
-
     contractInstance: any;
-
     onEventRegistry: Map<string, any>;
-
     onAnyContractEventRegistry: any[];
 
     constructor(contractInstance: any, lastBlockChecked: number) {

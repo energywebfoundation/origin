@@ -3,7 +3,6 @@ import 'mocha';
 import dotenv from 'dotenv';
 import { assert } from 'chai';
 import * as fs from 'fs';
-import * as http from 'http';
 
 import { INestApplication } from '@nestjs/common';
 import { startAPI } from '../..';
@@ -18,7 +17,7 @@ describe('Currency API tests', async () => {
     });
     let apiServer: INestApplication;
 
-    const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
+    const BASE_API_URL = `http://localhost:${process.env.BACKEND_PORT}/api`;
 
     const currency = 'USD';
     const currency2 = 'EUR';

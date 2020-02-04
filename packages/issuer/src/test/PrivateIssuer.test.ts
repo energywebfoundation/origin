@@ -5,11 +5,7 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migratePrivateIssuer, migratePublicIssuer, migrateRegistry } from '../migrate';
 import { RequestIssue, PrivateIssuer, Registry, PublicIssuer } from '..';
@@ -84,12 +80,7 @@ describe('PrivateIssuer', () => {
                 },
                 web3
             },
-            offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient: new UserClientMock()
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });

@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.5...@energyweb/solar-simulator@1.1.0) (2020-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.19.1 ([40aa752](https://github.com/energywebfoundation/origin/commit/40aa7522c28cb2f6c32608669f154633be749649))
+* **deps:** update dependency axios to v0.19.2 ([696eb46](https://github.com/energywebfoundation/origin/commit/696eb46fd2c7d26c223baaaf9f75d7943fc71517))
+* **deps:** update dependency commander to v4.1.0 ([8924878](https://github.com/energywebfoundation/origin/commit/8924878d49b059f96f31ca2b7c4c46fe48462cd2))
+* **deps:** update dependency csv-parse to v4.8.5 ([d95bb22](https://github.com/energywebfoundation/origin/commit/d95bb2214180d8686ac24dc717faf2ec540bf16b))
+* **deps:** update dependency ethers to v4.0.43 ([423c681](https://github.com/energywebfoundation/origin/commit/423c6816c24199136d9e73952d9cde69778dcbe2))
+
+
+### Features
+
+* **solar-simulator:** configurable past readings time interval ([0fd55ae](https://github.com/energywebfoundation/origin/commit/0fd55aeb496de49c3a9ebde71371bc988d46fb1c))
+
+
+
+
+
 ## [1.0.5](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.0.4...@energyweb/solar-simulator@1.0.5) (2020-01-17)
 
 

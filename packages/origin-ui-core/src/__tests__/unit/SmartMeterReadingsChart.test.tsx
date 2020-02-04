@@ -6,6 +6,7 @@ import { ProducingDevice, Device } from '@energyweb/device-registry';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment-timezone';
 import { formatDate } from '../../utils/helper';
+import { IDevice } from '@energyweb/origin-backend-core';
 
 describe('SmartMeterReadingsChart', () => {
     it('correctly renders', async () => {
@@ -19,7 +20,7 @@ describe('SmartMeterReadingsChart', () => {
         );
         const currentDayHour = currentTime.hour();
 
-        const offChainProperties: Partial<ProducingDevice.IOffChainProperties> = {
+        const offChainProperties: Partial<IDevice> = {
             timezone: 'Asia/Bangkok'
         };
 
@@ -31,7 +32,7 @@ describe('SmartMeterReadingsChart', () => {
         ];
 
         const producingDevice: Partial<ProducingDevice.Entity> = {
-            offChainProperties: offChainProperties as ProducingDevice.IOffChainProperties,
+            offChainProperties: offChainProperties as IDevice,
             getSmartMeterReads: async () => reads
         };
 

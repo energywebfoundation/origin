@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@3.0.0...@energyweb/device-registry@4.0.0) (2020-01-31)
+
+
+### chore
+
+* **device-registry:** rm locationservice logic ([0b669b1](https://github.com/energywebfoundation/origin/commit/0b669b18f8135d95ad89da64d2f2a4933dc6028b))
+
+
+### Features
+
+* add ability to add device group ([d01a9ed](https://github.com/energywebfoundation/origin/commit/d01a9ed1c7e474635f4ff342844fb94a8b4c3bc9))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** LocationService has been moved to utils-general package
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@2.0.1...@energyweb/device-registry@3.0.0) (2020-01-17)
 
 

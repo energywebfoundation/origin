@@ -1,4 +1,4 @@
-import { ConsumingDevice, ProducingDevice } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
@@ -69,31 +69,6 @@ export const certificateDemo = async (
             console.log('-----------------------------------------------------------\n');
 
             break;
-        case 'SAVE_SMARTMETER_READ_CONSUMING':
-            console.log('-----------------------------------------------------------');
-
-            conf.blockchainProperties.activeUser = {
-                address: action.data.smartMeter,
-                privateKey: action.data.smartMeterPK
-            };
-
-            try {
-                let device = await new ConsumingDevice.Entity(action.data.deviceId, conf).sync();
-                await device.saveSmartMeterRead(
-                    action.data.meterreading,
-                    action.data.filehash,
-                    action.data.timestamp || 0
-                );
-                device = await device.sync();
-                conf.logger.verbose('Consuming meter reading saved');
-            } catch (e) {
-                conf.logger.error('Could not save smart meter reading for consuming device\n' + e);
-            }
-
-            console.log('-----------------------------------------------------------\n');
-
-            break;
-
         case 'TRANSFER_CERTIFICATE':
             console.log('-----------------------------------------------------------');
 

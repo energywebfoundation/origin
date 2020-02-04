@@ -1,13 +1,10 @@
 import { assert } from 'chai';
 import dotenv from 'dotenv';
+import Web3 from 'web3';
 
-import { Device } from '@energyweb/device-registry';
 import { Unit } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { DeviceStatus, OrganizationStatus } from '@energyweb/origin-backend-core';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { EmailServiceProvider, IEmail } from '../../services/email.service';
 import { IOriginEventListener, OriginEventListener } from '../../listeners/origin.listener';
@@ -15,6 +12,8 @@ import { OriginEventsStore } from '../../stores/OriginEventsStore';
 import { Demo } from '../deployDemo';
 import { TestEmailAdapter } from '../TestAdapter';
 import EmailTypes from '../../email/EmailTypes';
+import { IEventListenerConfig } from '../../config/IEventListenerConfig';
+import { initOriginConfig } from '../../config/origin.config';
 
 const SCAN_INTERVAL = 500;
 const APPROX_EMAIL_SENDING_TIME = 10000;
@@ -58,35 +57,41 @@ describe('Origin Listener Tests', async () => {
     let store: OriginEventsStore;
 
     let currentSmRead = 0;
-    const offChainDataClient = new OffChainDataClientMock();
-    const configurationClient = new ConfigurationClientMock();
-    const userClient = new UserClientMock();
+
+    const offChainDataSource = new OffChainDataSourceMock();
 
     before(async () => {
         demo = new Demo(
             process.env.WEB3,
             process.env.DEPLOY_KEY,
+            offChainDataSource,
             process.env.EVENT_LISTENER_PRIV_KEY
         );
-        await demo.deploy(offChainDataClient, configurationClient, userClient);
+        await demo.deploy();
     });
 
     beforeEach(async () => {
         emailService = new EmailServiceProvider(new TestEmailAdapter(), 'from@energyweb.org');
         store = new OriginEventsStore();
 
-        const config = {
+        const listenerConfig: IEventListenerConfig = {
             web3Url: process.env.WEB3,
-            offChainDataSourceUrl: process.env.BACKEND_URL,
-            offChainDataSourceClient: offChainDataClient,
-            configurationClient,
-            userClient,
+            offChainDataSource,
             accountPrivKey: process.env.EVENT_LISTENER_PRIV_KEY,
             scanInterval: SCAN_INTERVAL,
             notificationInterval: SCAN_INTERVAL
         };
 
-        listener = new OriginEventListener(config, demo.marketContractLookup, emailService, store);
+        const web3 = new Web3(listenerConfig.web3Url || 'http://localhost:8550');
+        const conf = await initOriginConfig(demo.marketContractLookup, web3, listenerConfig);
+
+        listener = new OriginEventListener(
+            conf,
+            listenerConfig,
+            demo.marketContractLookup,
+            emailService,
+            store
+        );
     });
 
     afterEach(async () => {
@@ -207,15 +212,81 @@ describe('Origin Listener Tests', async () => {
 
         const newDeviceId = await demo.deployNewDevice();
 
-        assert.equal(await demo.getDeviceStatus(newDeviceId), Device.DeviceStatus.Submitted);
+        assert.equal(await demo.getDeviceStatus(newDeviceId), DeviceStatus.Submitted);
         assert.isAbove(parseInt(newDeviceId, 10), 0);
 
         await demo.approveDevice(newDeviceId);
-        assert.equal(await demo.getDeviceStatus(newDeviceId), Device.DeviceStatus.Active);
+        assert.equal(await demo.getDeviceStatus(newDeviceId), DeviceStatus.Active);
 
         await waitForConditionAndAssert(
             () => emailService.sentEmails.length >= 1,
             () => assert.isTrue(notificationSent(emailService, EmailTypes.DEVICE_STATUS_CHANGED)),
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when an organization status is changed', async () => {
+        await listener.start();
+
+        const newOrganization = await demo.createOrganization();
+        assert.equal(newOrganization.status, OrganizationStatus.Submitted);
+
+        const updatedOrganization = await demo.approveOrganization(newOrganization.id);
+        assert.equal(updatedOrganization.status, OrganizationStatus.Active);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 1,
+            () =>
+                assert.isTrue(
+                    notificationSent(emailService, EmailTypes.ORGANIZATION_STATUS_CHANGES)
+                ),
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when a user is invited to an organization', async () => {
+        await listener.start();
+
+        const newOrganization = await demo.createOrganization();
+        assert.equal(newOrganization.status, OrganizationStatus.Submitted);
+
+        const updatedOrganization = await demo.approveOrganization(newOrganization.id);
+        assert.equal(updatedOrganization.status, OrganizationStatus.Active);
+
+        await demo.inviteAdminToOrganization(newOrganization.id);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 1,
+            () => assert.isTrue(notificationSent(emailService, EmailTypes.ORGANIZATION_INVITATION)),
+            SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
+        );
+    });
+
+    it('an email is sent when a user is removed from an organization', async () => {
+        await listener.start();
+
+        const newOrganization = await demo.createOrganization();
+        assert.equal(newOrganization.status, OrganizationStatus.Submitted);
+
+        const updatedOrganization = await demo.approveOrganization(newOrganization.id);
+        assert.equal(updatedOrganization.status, OrganizationStatus.Active);
+
+        const result = await demo.inviteAdminToOrganization(newOrganization.id);
+        await demo.acceptInvitationToOrganization(Number(result.error));
+
+        await demo.removeAdminFromOrganization(newOrganization.id);
+
+        await waitForConditionAndAssert(
+            () => emailService.sentEmails.length >= 3,
+            () => {
+                assert.isTrue(
+                    notificationSent(emailService, EmailTypes.ORGANIZATION_STATUS_CHANGES)
+                );
+                assert.isTrue(notificationSent(emailService, EmailTypes.ORGANIZATION_INVITATION));
+                assert.isTrue(
+                    notificationSent(emailService, EmailTypes.ORGANIZATION_REMOVED_MEMBER)
+                );
+            },
             SCAN_INTERVAL + APPROX_EMAIL_SENDING_TIME
         );
     });

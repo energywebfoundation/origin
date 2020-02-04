@@ -1,5 +1,4 @@
 export { MatchableDemand } from './MatchableDemand';
-export { MatchableAgreement } from './MatchableAgreement';
 export { CertificateMatcher } from './CertificateMatcher';
 export { DemandMatcher } from './DemandMatcher';
 export { CertificateService } from './CertificateService';

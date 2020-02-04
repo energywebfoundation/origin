@@ -2,13 +2,14 @@ import { assert } from 'chai';
 
 import { Configuration } from '@energyweb/utils-general';
 
+import { DemandStatus } from '@energyweb/origin-backend-core';
 import * as Demand from '../blockchain-facade/Demand';
 
 describe('Demand tests', () => {
     const testDemands = [
-        { status: Demand.DemandStatus.ACTIVE },
-        { status: Demand.DemandStatus.ACTIVE },
-        { status: Demand.DemandStatus.ARCHIVED }
+        { status: DemandStatus.ACTIVE },
+        { status: DemandStatus.ACTIVE },
+        { status: DemandStatus.ARCHIVED }
     ];
 
     let oldGetAllDemands: any;
@@ -26,13 +27,13 @@ describe('Demand tests', () => {
         const config = {} as Configuration.Entity;
 
         const activeDemands = await Demand.filterDemandBy(config, {
-            status: Demand.DemandStatus.ACTIVE
+            status: DemandStatus.ACTIVE
         });
 
         assert.equal(activeDemands.length, 2);
 
         const archivedDemands = await Demand.filterDemandBy(config, {
-            status: Demand.DemandStatus.ARCHIVED
+            status: DemandStatus.ARCHIVED
         });
 
         assert.equal(archivedDemands.length, 1);

@@ -17,7 +17,6 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
 
     event LogDeviceCreated(address _sender, uint indexed _deviceId);
     event LogDeviceFullyInitialized(uint indexed _deviceId);
-    event DeviceStatusChanged(uint indexed _deviceId, DeviceDefinitions.DeviceStatus _status);
     event LogNewMeterRead(
         uint indexed _deviceId,
         uint _oldMeterRead,
@@ -57,15 +56,6 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
         return getDeviceById(_deviceId);
     }
 
-    function setStatus(uint _deviceId, DeviceDefinitions.DeviceStatus _status)
-        external
-        onlyRole(RoleManagement.Role.Issuer)
-    {
-        allDevices[_deviceId].status = _status;
-
-        emit DeviceStatusChanged(_deviceId, _status);
-    }
-
 	/// @notice Logs meter read
 	/// @param _deviceId The id belonging to an entry in the device registry
 	/// @param _newMeterRead The current meter read of the device
@@ -97,41 +87,30 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
     /// @notice creates an device with the provided parameters
 	/// @param _smartMeter smartmeter of the device
 	/// @param _owner device-owner
-	/// @param _status device status
-	/// @param _usageType consuming or producing device
-	/// @param _propertiesDocumentHash hash of the document with the properties of an device
-	/// @param _url where to find the documentHash
 	/// @return generated device-id
     function createDevice(
         address _smartMeter,
-        address _owner,
-        DeviceDefinitions.DeviceStatus _status,
-        DeviceDefinitions.UsageType _usageType,
-        string calldata _propertiesDocumentHash,
-        string calldata _url
+        address _owner
     ) external returns (uint deviceId) {
         require(isRole(RoleManagement.Role.DeviceManager, _owner), "device owner has to have device manager role");
         require(
             _owner == msg.sender ||
+            isRole(RoleManagement.Role.DeviceManager, msg.sender) ||
             isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
             isRole(RoleManagement.Role.Issuer, msg.sender),
-            "only device admin and issuer can create a device for different owner"
+            "only device admin, manager and issuer can create a device for different owner"
         );
         require(
-            _status == DeviceDefinitions.DeviceStatus.Submitted ||
+            isRole(RoleManagement.Role.DeviceManager, msg.sender) ||
             isRole(RoleManagement.Role.DeviceAdmin, msg.sender) ||
-            isRole(RoleManagement.Role.Issuer, msg.sender), "only admin and issuer can add devices with status other than submitted"
+            isRole(RoleManagement.Role.Issuer, msg.sender), "only device admin, manager and issuer can add devices"
         );
 
         DeviceDefinitions.Device memory _device = DeviceDefinitions.Device({
             smartMeter: _smartMeter,
             owner: _owner,
             lastSmartMeterReadWh: 0,
-            status: _status,
-            usageType: _usageType,
-            lastSmartMeterReadFileHash: "",
-            propertiesDocumentHash: _propertiesDocumentHash,
-            url: _url
+            lastSmartMeterReadFileHash: ""
         });
 
         deviceId = allDevices.length;
@@ -214,8 +193,6 @@ contract DeviceLogic is Initializable, RoleManagement, IDeviceLogic {
 
         /// @dev need to check if new meter read is higher then the old one
         require(_newMeterRead > oldMeterRead, "saveSmartMeterRead: meter read too low");
-
-        require(device.status == DeviceDefinitions.DeviceStatus.Active, "saveSmartMeterRead: device not active");
 
         device.lastSmartMeterReadWh = _newMeterRead;
         device.lastSmartMeterReadFileHash = _smartMeterReadFileHash;

@@ -15,7 +15,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { getOrganizationClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 
 interface IRecord {
     organization: IOrganization;
@@ -41,7 +41,7 @@ interface IProps {
 
 export function OrganizationInvitationTable(props: IProps) {
     const currentUser = useSelector(getCurrentUser);
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
 
     const dispatch = useDispatch();
 

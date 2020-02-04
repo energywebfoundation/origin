@@ -25,19 +25,10 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import {
-    IConfigurationClient,
-    IOffChainDataClient,
-    IOrganizationClient,
-    IUserClient
-} from '@energyweb/origin-backend-client';
-import {
-    setConfigurationClient,
-    setOffChainDataClient,
-    setOrganizationClient,
-    setUserClient
-} from '../../features/general/actions';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { setOffChainDataSource } from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -68,10 +59,7 @@ export async function waitForConditionAndAssert(
 const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
-    configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient,
-    userClient: IUserClient,
-    organizationClient: IOrganizationClient,
+    offChainDataSource: IOffChainDataSource,
     runSagas = true
 ) => {
     const history = createMemoryHistory({
@@ -97,20 +85,8 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
-    if (configurationClient) {
-        store.dispatch(setConfigurationClient(configurationClient));
-    }
-
-    if (offChainDataClient) {
-        store.dispatch(setOffChainDataClient(offChainDataClient));
-    }
-
-    if (userClient) {
-        store.dispatch(setUserClient(userClient));
-    }
-
-    if (organizationClient) {
-        store.dispatch(setOrganizationClient(organizationClient));
+    if (offChainDataSource) {
+        store.dispatch(setOffChainDataSource(offChainDataSource));
     }
 
     const sagasTasks: Task[] = runSagas
@@ -126,6 +102,7 @@ const setupStoreInternal = (
 
 interface ICreateProducingDeviceProperties {
     id: string;
+    status: DeviceStatus;
     owner?: string;
     facilityName?: string;
     deviceType?: string;
@@ -140,6 +117,7 @@ interface ICreateProducingDeviceProperties {
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
+    status: DeviceStatus.Active,
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
     country: 'Thailand',
@@ -149,7 +127,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     complianceRegistry: 'I-REC',
     region: 'Central',
     province: 'Nakhon Pathom'
-} as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
+} as Partial<IDevice>) as IDevice;
 
 export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
@@ -157,7 +135,8 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
-    const offChainProperties: ProducingDevice.IOffChainProperties = {
+    const offChainProperties: IDevice = {
+        status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
             properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,
@@ -231,10 +210,7 @@ export const createCertificate = (
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
-    configurationClient?: IConfigurationClient;
-    offChainDataClient?: IOffChainDataClient;
-    userClient?: IUserClient;
-    organizationClient?: IOrganizationClient;
+    offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
     userFetcher?: IUserFetcher;
 }
@@ -252,10 +228,7 @@ export const setupStore = (
     const { store, history, sagasTasks } = setupStoreInternal(
         initialHistoryEntries,
         options.logActions,
-        options.configurationClient,
-        options.offChainDataClient,
-        options.userClient,
-        options.organizationClient,
+        options.offChainDataSource,
         options.runSagas
     );
 

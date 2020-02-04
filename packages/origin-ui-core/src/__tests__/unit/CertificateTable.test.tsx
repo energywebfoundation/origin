@@ -4,9 +4,9 @@ import { CertificateTable, SelectedState } from '../../components/CertificateTab
 import { Certificate } from '@energyweb/origin';
 import { Unit } from '@energyweb/utils-general';
 import { setupStore, createRenderedHelpers, WrapperComponent } from '../utils/helpers';
-import { setOrganizationClient } from '../../features/general/actions';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import { setOffChainDataSource } from '../../features/general/actions';
+import { IOrganizationWithRelationsIds, DeviceStatus } from '@energyweb/origin-backend-core';
+import { IOrganizationClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 describe('CertificateTable', () => {
     it('correctly renders', async () => {
@@ -25,7 +25,8 @@ describe('CertificateTable', () => {
 
         addProducingDevice({
             id: '0',
-            owner: '0x123'
+            owner: '0x123',
+            status: DeviceStatus.Active
         });
 
         addCertificate({
@@ -64,14 +65,18 @@ describe('CertificateTable', () => {
             } as Certificate.ICertificate
         });
 
-        store.dispatch(
-            setOrganizationClient(({
-                getById: async () =>
-                    (({ name: 'Example Organization' } as Partial<
-                        IOrganizationWithRelationsIds
-                    >) as IOrganizationWithRelationsIds)
-            } as Partial<IOrganizationClient>) as IOrganizationClient)
-        );
+        const organizationClient: IOrganizationClient = ({
+            getById: async () =>
+                (({ name: 'Example Organization' } as Partial<
+                    IOrganizationWithRelationsIds
+                >) as IOrganizationWithRelationsIds)
+        } as Partial<IOrganizationClient>) as IOrganizationClient;
+
+        const offChainDataSource: Partial<IOffChainDataSource> = {
+            organizationClient
+        };
+
+        store.dispatch(setOffChainDataSource(offChainDataSource as IOffChainDataSource));
 
         const rendered = mount(
             <WrapperComponent store={store} history={history}>

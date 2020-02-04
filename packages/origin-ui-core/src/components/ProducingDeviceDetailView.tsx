@@ -25,7 +25,7 @@ import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { formatDate } from '../utils/helper';
-import { getOrganizationClient } from '../features/general/selectors';
+import { getOffChainDataSource } from '../features/general/selectors';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
 import { DeviceGroupForm } from './DeviceGroupForm';
 
@@ -39,7 +39,7 @@ export function ProducingDeviceDetailView(props: IProps) {
     const certificates = useSelector(getCertificates);
     const producingDevices = useSelector(getProducingDevices);
     const users = useSelector(getUsers);
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
 
     const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
 

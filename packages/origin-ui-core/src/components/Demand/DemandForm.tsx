@@ -13,6 +13,7 @@ import {
     Button,
     Tooltip
 } from '@material-ui/core';
+import { DemandUpdateData, DemandPostData } from '@energyweb/origin-backend-core';
 import { dataTest } from '../../utils/helper';
 import { useSelector, useDispatch } from 'react-redux';
 import { getConfiguration } from '../../features/selectors';
@@ -106,44 +107,31 @@ export function DemandForm(props: IProps) {
     useEffect(() => {
         function setupFormBasedOnDemand() {
             const newInitialFormValuesFromDemand: IFormValues = {
-                currency: demand.offChainProperties.currency as IFormValues['currency'],
-                startDate: moment.unix(demand.offChainProperties.startTime),
-                endDate: moment.unix(demand.offChainProperties.endTime),
+                currency: demand.currency as IFormValues['currency'],
+                startDate: moment.unix(demand.startTime),
+                endDate: moment.unix(demand.endTime),
                 demandNeedsInDisplayUnit: EnergyFormatter.getValueInDisplayUnit(
-                    demand.offChainProperties.energyPerTimeFrame
+                    demand.energyPerTimeFrame
                 ).toString(),
-                maxPricePerMWh: Math.round(
-                    demand.offChainProperties.maxPriceInCentsPerMwh / 100
-                ).toString(),
-                procureFromSingleFacility: demand.offChainProperties.procureFromSingleFacility,
-                timeframe: demand.offChainProperties.timeFrame,
-                automaticMatching: demand.offChainProperties.automaticMatching
+                maxPricePerMWh: Math.round(demand.maxPriceInCentsPerMwh / 100).toString(),
+                procureFromSingleFacility: demand.procureFromSingleFacility,
+                timeframe: demand.timeFrame,
+                automaticMatching: demand.automaticMatching
             };
 
             setInitialFormValuesFromDemand(newInitialFormValuesFromDemand);
 
-            if (
-                demand.offChainProperties.vintage &&
-                demand.offChainProperties.vintage.length === 2
-            ) {
-                setVintage(demand.offChainProperties.vintage);
+            if (demand.vintage && demand.vintage.length === 2) {
+                setVintage(demand.vintage);
             }
 
-            if (
-                demand.offChainProperties.deviceType &&
-                demand.offChainProperties.deviceType.length > 0
-            ) {
-                setSelectedDeviceType(demand.offChainProperties.deviceType);
+            if (demand.deviceType && demand.deviceType.length > 0) {
+                setSelectedDeviceType(demand.deviceType);
             }
 
-            if (
-                demand.offChainProperties.location &&
-                demand.offChainProperties.location.length > 0
-            ) {
+            if (demand.location && demand.location.length > 0) {
                 setSelectedLocation(
-                    demand.offChainProperties.location.map(location =>
-                        location.replace(`${country};`, '')
-                    )
+                    demand.location.map(location => location.replace(`${country};`, ''))
                 );
             }
         }
@@ -186,8 +174,9 @@ export function DemandForm(props: IProps) {
         formikActions.setSubmitting(true);
         dispatch(setLoading(true));
 
-        const offChainProps: Demand.IDemandOffChainProperties = {
-            currency: values.currency as string,
+        const offChainProps: DemandPostData = {
+            owner: currentUser.id,
+            currency: values.currency,
             startTime: values.startDate.unix(),
             endTime: values.endDate.unix(),
             timeFrame: values.timeframe,
@@ -220,15 +209,18 @@ export function DemandForm(props: IProps) {
 
         try {
             if (edit) {
-                await demand.update(offChainProps);
+                await demand.update(offChainProps as DemandUpdateData);
 
                 showNotification('Demand edited', NotificationType.Success);
             } else {
-                const createdDemand = await Demand.createDemand(offChainProps, configuration);
+                const createdDemand = await Demand.createDemand(
+                    offChainProps as DemandPostData,
+                    configuration
+                );
 
                 showNotification('Demand created', NotificationType.Success);
 
-                history.push(getDemandViewLink(createdDemand.id));
+                history.push(getDemandViewLink(createdDemand.id.toString()));
             }
         } catch (error) {
             console.error('Demand form error', error);
@@ -247,7 +239,7 @@ export function DemandForm(props: IProps) {
         initialFormValues = INITIAL_FORM_VALUES;
     }
 
-    if (!initialFormValues) {
+    if (!initialFormValues || !regions) {
         return <Skeleton variant="rect" height={200} />;
     }
 
@@ -358,7 +350,7 @@ export function DemandForm(props: IProps) {
                                             required
                                             disabled={disabled}
                                         >
-                                            {currencies.map(option => (
+                                            {currencies?.map(option => (
                                                 <MenuItem value={option} key={option}>
                                                     {option}
                                                 </MenuItem>
