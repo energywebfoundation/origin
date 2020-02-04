@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@4.0.0...@energyweb/device-registry@5.0.0) (2020-02-04)
+
+
+### Bug Fixes
+
+* allow Device Manager to add new devices ([3caee18](https://github.com/energywebfoundation/origin/commit/3caee187814433debca8e83b24949d1765c1b750))
+* deviceLogic tests ([c3f7af7](https://github.com/energywebfoundation/origin/commit/c3f7af7720fa959b3a582ceed16e8e443b580708))
+
+
+### Features
+
+* Move some Device properties to off-chain storage, remove on-chain proofs + remove unused Consuming Devices definition ([8b9424e](https://github.com/energywebfoundation/origin/commit/8b9424e3ed826f39db989bb8e2c7495c682a4c38))
+
+
+### BREAKING CHANGES
+
+* The Device.Entity API has changed.
+
+
+
+
+
 # [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@3.0.0...@energyweb/device-registry@4.0.0) (2020-01-31)
 
 

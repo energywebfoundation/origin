@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@0.1.0...@energyweb/exchange-core@0.1.1) (2020-02-04)
+
+
+### Bug Fixes
+
+* **exchange-core:** multiple locations matching + tests ([e4d28b3](https://github.com/energywebfoundation/origin/commit/e4d28b337dbdfb42da1c584219acd92e2266bca3))
+
+
+
+
+
 # 0.1.0 (2020-01-31)
 
 
