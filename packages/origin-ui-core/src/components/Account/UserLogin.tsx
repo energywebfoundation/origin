@@ -9,6 +9,7 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Field, Form, FormikActions } from 'formik';
 import * as Yup from 'yup';
@@ -39,7 +40,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 });
 
 export function UserLogin() {
-    const userClient = useSelector(getOffChainDataSource).userClient;
+    const userClient = useSelector(getOffChainDataSource)?.userClient;
     const dispatch = useDispatch();
 
     const useStyles = makeStyles(() =>
@@ -75,6 +76,10 @@ export function UserLogin() {
     }
 
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
+
+    if (!userClient) {
+        return <Skeleton variant="rect" height={200} />;
+    }
 
     return (
         <Paper className={classes.container}>
