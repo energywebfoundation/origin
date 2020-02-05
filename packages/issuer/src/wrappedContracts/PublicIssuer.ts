@@ -99,6 +99,10 @@ export class PublicIssuer extends GeneralFunctions {
         return this.send(method, txParams);
     }
 
+    async getRegistryAddress(txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getRegistryAddress().call(txParams);
+    }
+
     async version(txParams?: ISpecialTx) {
         return this.web3Contract.methods.version().call(txParams);
     }
