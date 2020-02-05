@@ -38,6 +38,7 @@
     "@nestjs/schedule": "^0.1.1",
     "@nestjs/swagger": "^4.2.2",
     "@nestjs/typeorm": "^6.2.0",
+    "bn.js": "^5.1.1",
     "immutable": "^4.0.0-rc.12",
     "pg": "^7.17.1",
     "reflect-metadata": "0.1.13",

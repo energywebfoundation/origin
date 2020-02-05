@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { OrderService } from '../order/order.service';
 import { Demand } from './demand.entity';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
+import { ProductDTO } from '../order/product.dto';
 
 @Injectable()
 export class DemandService {
@@ -20,7 +21,7 @@ export class DemandService {
         userId: string,
         price: number,
         volume: number,
-        product: Product,
+        product: ProductDTO,
         start: Date
     ) {
         const bid = await this.orderService.create({
@@ -28,7 +29,7 @@ export class DemandService {
             price,
             volume,
             validFrom: start,
-            product,
+            product: ProductDTO.toProduct(product),
             userId
         });
 
@@ -38,7 +39,7 @@ export class DemandService {
                 price,
                 volumePerPeriod: volume,
                 periods: 1,
-                product,
+                product: ProductDTO.toProduct(product),
                 start: start.getTime(),
                 bids: [bid]
             })

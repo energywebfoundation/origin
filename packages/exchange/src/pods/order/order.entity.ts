@@ -1,5 +1,13 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+    ManyToOne
+} from 'typeorm';
 import { ProductDTO } from './product.dto';
+import { Asset } from '../asset/asset.entity';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -30,4 +38,7 @@ export class Order extends BaseEntity {
 
     @Column('json')
     product: ProductDTO;
+
+    @ManyToOne(() => Asset)
+    asset: Asset;
 }

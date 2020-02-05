@@ -77,7 +77,7 @@ export class MatchingEngineService {
                   order.id,
                   order.price,
                   order.currentVolume,
-                  this.toProduct(order.product),
+                  ProductDTO.toProduct(order.product),
                   order.validFrom,
                   order.status
               )
@@ -85,19 +85,9 @@ export class MatchingEngineService {
                   order.id,
                   order.price,
                   order.currentVolume,
-                  this.toProduct(order.product),
+                  ProductDTO.toProduct(order.product),
                   order.validFrom,
                   order.status
               );
-    }
-
-    private toProduct(product: ProductDTO): Product {
-        return {
-            ...product,
-            deviceVintage: new DeviceVintage(
-                product.deviceVintage.year,
-                product.deviceVintage.operator
-            )
-        };
     }
 }

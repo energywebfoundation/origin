@@ -1,4 +1,5 @@
-import { OrderSide, Product } from '@energyweb/exchange-core';
+import { OrderSide } from '@energyweb/exchange-core';
+import { ProductDTO } from './product.dto';
 
 export class CreateOrderDto {
     readonly side: OrderSide;
@@ -9,7 +10,7 @@ export class CreateOrderDto {
 
     readonly validFrom: Date;
 
-    readonly product: Product;
+    readonly product: ProductDTO;
 
     readonly userId: string;
 }
