@@ -64,9 +64,15 @@ describe('PrivateIssuer', () => {
             registry.web3Contract.options.address,
             publicIssuer.web3Contract.options.address
         );
-        const version = await privateIssuer.version();
 
+        const version = await privateIssuer.version();
         assert.equal(version, 'v0.1');
+
+        const registryAddress = await privateIssuer.getRegistryAddress();
+        assert.equal(registryAddress, registry.web3Contract.options.address);
+
+        const publicIssuerAddress = await privateIssuer.getPublicIssuerAddress();
+        assert.equal(publicIssuerAddress, publicIssuer.web3Contract.options.address);
 
         conf = {
             blockchainProperties: {

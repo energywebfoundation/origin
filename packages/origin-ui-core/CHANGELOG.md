@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.1.0...@energyweb/origin-ui-core@0.1.1) (2020-02-04)
+
+
+### Bug Fixes
+
+* **origin-ui-core:** fix preserving logged in user after refresh ([e03884a](https://github.com/energywebfoundation/origin/commit/e03884abafe319e5d5e35a6e385224466dde60c2))
+
+
+
+
+
 # [0.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@0.0.2...@energyweb/origin-ui-core@0.1.0) (2020-01-31)
 
 

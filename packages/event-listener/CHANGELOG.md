@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@3.2.2...@energyweb/event-listener@3.3.0) (2020-02-04)
+
+
+### Features
+
+* email notifications for organization status change, member invitation and removal ([a2f0dae](https://github.com/energywebfoundation/origin/commit/a2f0dae5dab021980c702dc339654d52af2db47d))
+
+
+
+
+
 ## [3.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/event-listener@3.2.1...@energyweb/event-listener@3.2.2) (2020-01-31)
 
 **Note:** Version bump only for package @energyweb/event-listener

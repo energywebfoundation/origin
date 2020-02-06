@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "2.2.3",
+    "version": "2.3.0",
     "main": "dist/js/src/index.js",
     "bin": {
         "market-matcher": "./bin/market-matcher"
@@ -36,14 +36,14 @@
     },
     "types": "dist/js/src/exports.d.ts",
     "dependencies": {
-        "@energyweb/device-registry": "4.0.0",
-        "@energyweb/market": "4.0.0",
-        "@energyweb/market-matcher-core": "1.2.3",
-        "@energyweb/origin": "3.1.3",
-        "@energyweb/origin-backend-client": "3.0.0",
-        "@energyweb/origin-backend-client-mocks": "0.1.0",
-        "@energyweb/user-registry": "3.0.0",
-        "@energyweb/utils-general": "5.0.0",
+        "@energyweb/device-registry": "5.0.0",
+        "@energyweb/market": "5.0.0",
+        "@energyweb/market-matcher-core": "2.0.0",
+        "@energyweb/origin": "3.1.4",
+        "@energyweb/origin-backend-client": "3.1.0",
+        "@energyweb/origin-backend-client-mocks": "0.2.0",
+        "@energyweb/user-registry": "3.0.1",
+        "@energyweb/utils-general": "6.0.0",
         "commander": "^4.0.1",
         "dotenv": "^8.2.0",
         "moment": "^2.24.0",
@@ -54,7 +54,7 @@
         "winston": "3.2.1"
     },
     "devDependencies": {
-        "@energyweb/origin-backend-core": "1.0.0",
+        "@energyweb/origin-backend-core": "1.1.0",
         "@fluffy-spoon/substitute": "1.107.0",
         "@types/lolex": "5.1.0",
         "lolex": "5.1.2"

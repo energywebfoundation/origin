@@ -102,6 +102,10 @@ contract PublicIssuer is Initializable, Ownable {
         return _requestId <= requestIssueNonce && request.approved && request.revoked == false;
     }
 
+    function getRegistryAddress() public view returns (address) {
+        return address(registry);
+    }
+
     function version() public view returns (string memory) {
         return "v0.1";
     }

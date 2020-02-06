@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@4.0.0...@energyweb/market@5.0.0) (2020-02-04)
+
+
+### Features
+
+* Make Demand entirely off-chain, remove Supply and Agreements because unused ([2591968](https://github.com/energywebfoundation/origin/commit/259196806d62e6518f307b660861c3b42f2ede2b))
+
+
+### BREAKING CHANGES
+
+* Supply and Agreements are no longer supported
+
+
+
+
+
 # [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@3.3.2...@energyweb/market@4.0.0) (2020-01-31)
 
 

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@5.0.0...@energyweb/utils-general@6.0.0) (2020-02-04)
+
+
+### Features
+
+* easier OffChainDataSource definition ([4f7fff0](https://github.com/energywebfoundation/origin/commit/4f7fff0801dcef7e918ae76e6adb12d8b3f46d75))
+* **utils-general:** multiple locations matching ([fede4d7](https://github.com/energywebfoundation/origin/commit/fede4d7a2604e0a4bb13069b67edd0e7c9ec7e5d))
+
+
+### BREAKING CHANGES
+
+* Configuration.Entity now requires a different (simpler) OffChainDataSource definition
+
+
+
+
+
 # [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@4.1.1...@energyweb/utils-general@5.0.0) (2020-01-31)
 
 

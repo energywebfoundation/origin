@@ -236,6 +236,14 @@ contract PrivateIssuer is Initializable, Ownable {
         return _requestId <= requestIssueNonce && request.approved && request.revoked == false;
     }
 
+    function getPublicIssuerAddress() public view returns (address) {
+        return address(publicIssuer);
+    }
+
+    function getRegistryAddress() public view returns (address) {
+        return address(registry);
+    }
+
     function version() public view returns (string memory) {
         return "v0.1";
     }
