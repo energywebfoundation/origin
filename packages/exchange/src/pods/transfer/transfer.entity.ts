@@ -1,8 +1,9 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Asset } from '../asset/asset.entity';
+import { TransferDirection } from './transfer-direction';
 
 @Entity()
-export class Deposit extends BaseEntity {
+export class Transfer extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -19,5 +20,11 @@ export class Deposit extends BaseEntity {
     transactionHash: string;
 
     @Column()
-    status: string;
+    confirmed: boolean;
+
+    @Column()
+    confirmationBlock: number;
+
+    @Column()
+    direction: TransferDirection;
 }

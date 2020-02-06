@@ -12,9 +12,10 @@ import { TradeModule } from './pods/trade/trade.module';
 import { DemandModule } from './pods/demand/demand.module';
 import { OrderBookModule } from './pods/order-book/order-book.module';
 import { AssetModule } from './pods/asset/asset.module';
-import { DepositModule } from './pods/deposit/deposit.module';
+import { TransferModule } from './pods/transfer/transfer.module';
 import { Asset } from './pods/asset/asset.entity';
 import { AccountModule } from './pods/account/account.module';
+import { Transfer } from './pods/transfer/transfer.entity';
 
 @Module({
     imports: [
@@ -25,7 +26,7 @@ import { AccountModule } from './pods/account/account.module';
             username: 'postgres',
             password: 'postgres',
             database: 'origin-exchange',
-            entities: [Demand, Order, Trade, Asset],
+            entities: [Demand, Order, Trade, Asset, Transfer],
             synchronize: true,
             logging: ['query']
         }),
@@ -36,7 +37,7 @@ import { AccountModule } from './pods/account/account.module';
         DemandModule,
         OrderBookModule,
         AssetModule,
-        DepositModule,
+        TransferModule,
         AccountModule
     ],
     providers: [AppService]

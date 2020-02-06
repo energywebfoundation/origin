@@ -1,11 +1,10 @@
 import {
     Ask,
     Bid,
-    DeviceVintage,
     MatchingEngine,
     OrderSide,
-    TradeExecutedEvent,
-    Product
+    Product,
+    TradeExecutedEvent
 } from '@energyweb/exchange-core';
 import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
@@ -13,8 +12,8 @@ import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
 import { Order as OrderEntity } from '../order/order.entity';
-import { TradeService } from '../trade/trade.service';
 import { ProductDTO } from '../order/product.dto';
+import { TradeService } from '../trade/trade.service';
 
 @Injectable()
 export class MatchingEngineService {

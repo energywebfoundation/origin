@@ -1,9 +1,6 @@
-import { OrderSide } from '@energyweb/exchange-core';
 import { ProductDTO } from './product.dto';
 
-export class CreateOrderDto {
-    readonly side: OrderSide;
-
+export class CreateBidDTO {
     readonly volume: number;
 
     readonly price: number;
