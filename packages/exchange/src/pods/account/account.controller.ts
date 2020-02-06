@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { AccountService } from './account.service';
 
 @Controller('account')
@@ -7,6 +7,11 @@ export class AccountController {
 
     @Get()
     public getAccount() {
-        return this.accountService.get('1');
+        return this.accountService.getAccountAssets('1');
+    }
+
+    @Post()
+    public createAccount() {
+        this.accountService.createAccount('1');
     }
 }

@@ -6,6 +6,7 @@ import { AssetService } from './asset.service';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Asset])],
-    providers: [AssetService]
+    providers: [AssetService],
+    exports: [AssetService]
 })
 export class AssetModule {}

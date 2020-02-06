@@ -1,39 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection, EntityManager } from 'typeorm';
 
 import { Asset } from './asset.entity';
 
 @Injectable()
 export class AssetService {
     constructor(
-        @InjectRepository(Asset)
-        private readonly repository: Repository<Asset>
+        @InjectConnection()
+        private readonly connection: Connection
     ) {}
 
-    public async createIfNotExist(
-        address: string,
-        tokenId: string,
-        deviceId: string,
-        manager?: EntityManager
-    ) {
-        const entityManager = manager || this.repository.manager;
+    public async createIfNotExist(asset: Omit<Asset, 'id'>, transaction?: EntityManager) {
+        if (transaction) {
+            return this.create(asset, transaction);
+        }
 
-        let existingAsset = await entityManager.findOne<Asset>(Asset, null, {
+        return this.connection.transaction(tr => this.create(asset, tr));
+    }
+
+    private async create(asset: Omit<Asset, 'id'>, transaction: EntityManager) {
+        let existingAsset = await transaction.findOne<Asset>(Asset, null, {
             where: {
-                address,
-                tokenId
+                address: asset.address,
+                tokenId: asset.tokenId
             }
         });
 
         if (!existingAsset) {
-            existingAsset = await entityManager
-                .create<Asset>(Asset, {
-                    address,
-                    tokenId,
-                    deviceId
-                })
-                .save();
+            existingAsset = await transaction.create<Asset>(Asset, asset).save();
         }
 
         return existingAsset;

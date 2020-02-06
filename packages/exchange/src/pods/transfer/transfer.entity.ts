@@ -20,6 +20,9 @@ export class Transfer extends BaseEntity {
     transactionHash: string;
 
     @Column()
+    address: string;
+
+    @Column()
     confirmed: boolean;
 
     @Column()

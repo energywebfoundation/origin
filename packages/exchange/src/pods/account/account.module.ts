@@ -6,7 +6,7 @@ import { AccountService } from './account.service';
 import { OrderModule } from '../order/order.module';
 
 @Module({
-    imports: [TradeModule, TransferModule, forwardRef(() => OrderModule)],
+    imports: [TradeModule, forwardRef(() => TransferModule), forwardRef(() => OrderModule)],
     providers: [AccountService],
     exports: [AccountService],
     controllers: [AccountController]

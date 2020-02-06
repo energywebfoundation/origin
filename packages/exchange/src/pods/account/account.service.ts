@@ -1,26 +1,59 @@
 import { OrderSide } from '@energyweb/exchange-core';
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { InjectConnection } from '@nestjs/typeorm';
 import BN from 'bn.js';
 import { Map } from 'immutable';
+import { Connection, EntityManager } from 'typeorm';
 
 import { Asset } from '../asset/asset.entity';
-import { TransferService } from '../transfer/transfer.service';
 import { OrderService } from '../order/order.service';
 import { TradeService } from '../trade/trade.service';
-import { Account } from './account';
-import { AccountAsset } from './account-asset';
 import { TransferDirection } from '../transfer/transfer-direction';
+import { TransferService } from '../transfer/transfer.service';
+import { AccountAsset } from './account-asset';
+import { Account as AccountEntity } from './account.entity';
+import { Account } from './account';
 
 @Injectable()
 export class AccountService {
     constructor(
         private readonly tradeService: TradeService,
+        @Inject(forwardRef(() => TransferService))
         private readonly transferService: TransferService,
         @Inject(forwardRef(() => OrderService))
-        private readonly orderService: OrderService
+        private readonly orderService: OrderService,
+        @InjectConnection()
+        private readonly connection: Connection
     ) {}
 
-    public async get(userId: string): Promise<Account> {
+    public createAccount(userId: string, transaction?: EntityManager) {
+        if (transaction) {
+            return this.create(userId, transaction);
+        }
+
+        return this.connection.transaction(tr => this.create(userId, tr));
+    }
+
+    private async create(userId: string, transaction: EntityManager) {
+        let account = await transaction.findOne<AccountEntity>(AccountEntity, null, {
+            where: { userId }
+        });
+        if (!account) {
+            account = await transaction
+                .create<AccountEntity>(AccountEntity, { address: '0x1234' })
+                .save();
+        }
+
+        return account;
+    }
+
+    public async findByAddress(address: string, transaction?: EntityManager) {
+        const manager = transaction || this.connection.manager;
+
+        return manager.findOne<AccountEntity>(AccountEntity, { where: { address } });
+    }
+
+    public async getAccountAssets(userId: string): Promise<Account> {
         const deposits = await this.getTransfers(userId);
         const trades = await this.getTrades(userId);
         const sellOrders = await this.getSellOrders(userId);
@@ -40,7 +73,7 @@ export class AccountService {
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: number) {
-        const { available } = await this.get(userId);
+        const { available } = await this.getAccountAssets(userId);
         const [{ amount }] = available.filter(({ asset }) => asset.id === assetId);
 
         return amount.gte(new BN(assetAmount));
