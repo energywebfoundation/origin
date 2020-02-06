@@ -12,17 +12,15 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
-import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { Skeleton } from '@material-ui/lab';
 
 interface IProps {
     approvedOnly?: boolean;
 }
-
-const deviceTypeService = new IRECDeviceService();
 
 interface IRecord {
     certificationRequestId: number;
@@ -118,6 +116,10 @@ export function CertificationRequestsTable(props: IProps) {
         dispatch(setLoading(false));
     }
 
+    if (!configuration) {
+        return <Skeleton variant="rect" height={200} />;
+    }
+
     const actions =
         currentUser?.isRole(Role.Issuer) && !props.approvedOnly
             ? [
@@ -141,7 +143,9 @@ export function CertificationRequestsTable(props: IProps) {
         return {
             facility: device.offChainProperties.facilityName,
             locationText: getDeviceLocationText(device),
-            type: deviceTypeService.getDisplayText(device.offChainProperties.deviceType),
+            type: configuration.deviceTypeService.getDisplayText(
+                device.offChainProperties.deviceType
+            ),
             capacity: PowerFormatter.format(device.offChainProperties.capacityInW),
             meterRead: EnergyFormatter.format(energy)
         };

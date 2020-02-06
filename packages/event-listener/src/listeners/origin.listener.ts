@@ -160,10 +160,10 @@ export class OriginEventListener implements IOriginEventListener {
             const demandsMatchCertificate: Demand.Entity[] = [];
 
             for (const demand of demands) {
-                const { result } = await new MatchableDemand(demand).matchesCertificate(
-                    publishedCertificate,
-                    producingDevice
-                );
+                const { result } = await new MatchableDemand(
+                    demand,
+                    this.conf.deviceTypeService
+                ).matchesCertificate(publishedCertificate, producingDevice);
                 if (result) {
                     demandsMatchCertificate.push(demand);
                 }

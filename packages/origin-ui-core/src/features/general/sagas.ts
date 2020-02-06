@@ -1,4 +1,4 @@
-import { call, put, delay, select, take, all, fork } from 'redux-saga/effects';
+import { call, put, delay, select, take, all, fork, cancelled } from 'redux-saga/effects';
 import { Configuration } from '@energyweb/utils-general';
 import { SagaIterator } from 'redux-saga';
 import {
@@ -22,7 +22,7 @@ import {
 } from './selectors';
 import { UsersActions } from '../users/actions';
 import { isUsingInBrowserPK } from '../authentication/selectors';
-import axios from 'axios';
+import axios, { Canceler } from 'axios';
 import { IOffChainDataSource, OffChainDataSource } from '@energyweb/origin-backend-client';
 
 function* showAccountChangedModalOnChange(): SagaIterator {
@@ -72,22 +72,36 @@ function* showAccountChangedModalOnChange(): SagaIterator {
     }
 }
 
-async function getENV(): Promise<IEnvironment> {
-    try {
-        const response = await axios.get('env-config.js');
-
-        return response.data;
-    } catch (error) {
-        console.warn('Error while fetching env-config.js');
-    }
+function prepareGetEnvironmentTask(): {
+    getEnvironment: () => Promise<IEnvironment>;
+    cancel: Canceler;
+} {
+    const source = axios.CancelToken.source();
 
     return {
-        MODE: 'development',
-        BACKEND_URL: 'http://localhost',
-        BACKEND_PORT: '3030',
-        BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
-        WEB3: 'http://localhost:8545',
-        REGISTRATION_MESSAGE_TO_SIGN: 'I register as Origin user'
+        getEnvironment: async () => {
+            try {
+                const response = await axios.get('env-config.js', {
+                    cancelToken: source.token
+                });
+
+                return response.data;
+            } catch (error) {
+                if (!axios.isCancel(error)) {
+                    console.warn('Error while fetching env-config.js', error?.message ?? error);
+                }
+            }
+
+            return {
+                MODE: 'development',
+                BACKEND_URL: 'http://localhost',
+                BACKEND_PORT: '3030',
+                BLOCKCHAIN_EXPLORER_URL: 'https://volta-explorer.energyweb.org',
+                WEB3: 'http://localhost:8545',
+                REGISTRATION_MESSAGE_TO_SIGN: 'I register as Origin user'
+            };
+        },
+        cancel: source.cancel
     };
 }
 
@@ -122,9 +136,19 @@ async function getCountryFromAPI(offChainDataSource: IOffChainDataSource) {
 }
 
 function* setupEnvironment(): SagaIterator {
-    const environment: IEnvironment = yield call(getENV);
+    let getEnvironmentTask: ReturnType<typeof prepareGetEnvironmentTask>;
 
-    yield put(setEnvironment(environment));
+    try {
+        getEnvironmentTask = yield call(prepareGetEnvironmentTask);
+
+        const environment: IEnvironment = yield call(getEnvironmentTask.getEnvironment);
+
+        yield put(setEnvironment(environment));
+    } finally {
+        if (yield cancelled()) {
+            getEnvironmentTask.cancel();
+        }
+    }
 }
 
 function* fillCurrency(): SagaIterator {
