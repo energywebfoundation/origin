@@ -6,7 +6,7 @@ import {
     TimeTrigger
 } from '@energyweb/market-matcher-core';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 import Web3 from 'web3';
 
 import { Role } from '@energyweb/user-registry';
@@ -38,7 +38,10 @@ const createBlockchainConfig = async (
     return {
         blockchainProperties,
         logger,
-        offChainDataSource: matcherConfig.offChainDataSource
+        offChainDataSource: matcherConfig.offChainDataSource,
+        deviceTypeService: new DeviceTypeService(
+            await matcherConfig.offChainDataSource.configurationClient.get('device-types')
+        )
     };
 };
 
