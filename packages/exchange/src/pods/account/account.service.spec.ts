@@ -27,7 +27,7 @@ describe('AccountService', () => {
     let orderService: OrderService;
 
     const registerTransfer = (...transfers: Partial<Transfer>[]) => {
-        jest.spyOn(transferService, 'getAll').mockImplementation(
+        jest.spyOn(transferService, 'getAllCompleted').mockImplementation(
             async () => transfers as Transfer[]
         );
     };

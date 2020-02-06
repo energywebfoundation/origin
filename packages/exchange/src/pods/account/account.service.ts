@@ -57,7 +57,7 @@ export class AccountService {
     }
 
     private async getTransfers(userId: string) {
-        const transfers = await this.transferService.getAll(userId);
+        const transfers = await this.transferService.getAllCompleted(userId);
 
         return this.sumByAsset(
             transfers,
