@@ -34,7 +34,7 @@ export class MatchableDemand {
             .validate(certificate.price <= maxPriceInCentsPerMwh, MatchingErrorReason.TOO_EXPENSIVE)
             .validate(certificate.currency === currency, MatchingErrorReason.NON_MATCHING_CURRENCY)
             .validate(
-                deviceType
+                deviceType?.length > 0
                     ? this.deviceTypeService.includesDeviceType(
                           producingDevice.offChainProperties.deviceType,
                           deviceType
@@ -69,7 +69,7 @@ export class MatchableDemand {
     }
 
     private matchesLocation(device: ProducingDevice.IProducingDevice) {
-        if (!this.demand.location) {
+        if (!this.demand.location || this.demand.location.length === 0) {
             return true;
         }
 

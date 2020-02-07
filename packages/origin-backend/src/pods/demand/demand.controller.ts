@@ -1,6 +1,14 @@
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
-import { IDemand, DemandStatus, DemandPostData, DemandUpdateData, SupportedEvents, CreatedNewDemand, DemandPartiallyFilledEvent } from '@energyweb/origin-backend-core';
+import {
+    IDemand,
+    DemandStatus,
+    DemandPostData,
+    DemandUpdateData,
+    SupportedEvents,
+    CreatedNewDemand,
+    DemandPartiallyFilledEvent
+} from '@energyweb/origin-backend-core';
 
 import {
     Controller,
@@ -29,17 +37,7 @@ export class DemandController {
 
     @Get()
     async getAll() {
-        console.log(`<GET> Demand all`);
-
-        const allDemands = await this.demandRepository.find();
-
-        for (let demand of allDemands) {
-            demand.demandPartiallyFilledEvents = demand.demandPartiallyFilledEvents.map(
-                event => JSON.parse(event)
-            );
-        }
-
-        return allDemands;
+        return this.demandRepository.find();
     }
 
     @Get('/:id')
@@ -52,17 +50,13 @@ export class DemandController {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
 
-        existing.demandPartiallyFilledEvents = existing.demandPartiallyFilledEvents.map(
-            event => JSON.parse(event)
-        );
-
         return existing;
     }
 
     @Post()
     async post(@Body() body: DemandPostData) {
         let newEntity = new Demand();
-        
+
         const data: Omit<IDemand, 'id'> = {
             ...body,
             status: DemandStatus.ACTIVE,
@@ -108,7 +102,7 @@ export class DemandController {
         if (!existing) {
             throw new NotFoundException(StorageErrors.NON_EXISTENT);
         }
-        
+
         existing.status = DemandStatus.ARCHIVED;
 
         try {
@@ -134,18 +128,10 @@ export class DemandController {
 
         existing.status = body.status ?? existing.status;
 
-        if (body.demandPartiallyFilledEvent) {
-            existing.demandPartiallyFilledEvents.push(
-                JSON.stringify(body.demandPartiallyFilledEvent)
-            );
-        }
-
         const hasNewFillEvent = body.demandPartiallyFilledEvent !== null;
 
         if (hasNewFillEvent) {
-            existing.demandPartiallyFilledEvents.push(
-                JSON.stringify(body.demandPartiallyFilledEvent)
-            );
+            existing.demandPartiallyFilledEvents.push(body.demandPartiallyFilledEvent);
         }
 
         try {
@@ -168,7 +154,7 @@ export class DemandController {
                 energy: body.demandPartiallyFilledEvent.energy,
                 blockNumber: body.demandPartiallyFilledEvent.blockNumber
             };
-    
+
             this.eventGateway.handleEvent({
                 type: SupportedEvents.DEMAND_PARTIALLY_FILLED,
                 data: eventData
