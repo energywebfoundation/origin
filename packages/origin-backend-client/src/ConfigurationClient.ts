@@ -1,6 +1,11 @@
 import { IRequestClient, RequestClient } from './RequestClient';
 
-export type ConfigurationItem = 'MarketContractLookup' | 'Currency' | 'Compliance' | 'Country';
+export type ConfigurationItem =
+    | 'MarketContractLookup'
+    | 'Currency'
+    | 'Compliance'
+    | 'Country'
+    | 'device-types';
 
 export interface IConfigurationClient {
     get(item: ConfigurationItem): Promise<any>;

@@ -1,8 +1,6 @@
 import React from 'react';
-import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
-import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
-import { DatePicker } from '@material-ui/pickers';
-import { IRECDeviceService } from '@energyweb/utils-general';
+import { useSelector } from 'react-redux';
+import { Moment } from 'moment';
 import {
     InputLabel,
     FormControl,
@@ -12,9 +10,13 @@ import {
     FilledInput,
     Chip
 } from '@material-ui/core';
-import { Moment } from 'moment';
+import { DatePicker } from '@material-ui/pickers';
+
+import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
+import { CustomSlider, CustomSliderThumbComponent } from '../CustomSlider';
 import { dataTest } from '../../utils/helper';
 import { HierarchicalMultiSelect } from '../HierarchicalMultiSelect';
+import { getConfiguration } from '../../features/selectors';
 
 interface IProps {
     filter: ICustomFilter;
@@ -22,9 +24,9 @@ interface IProps {
 }
 
 export function IndividualFilter(props: IProps) {
-    const irecDeviceService = new IRECDeviceService();
-
     const { filter } = props;
+
+    const configuration = useSelector(getConfiguration);
 
     if (!filter) {
         return null;
@@ -91,7 +93,7 @@ export function IndividualFilter(props: IProps) {
                 <HierarchicalMultiSelect
                     selectedValue={filter.selectedValue ? filter.selectedValue : []}
                     onChange={e => props.changeFilterValue(filter, e)}
-                    allValues={irecDeviceService.DeviceTypes}
+                    allValues={configuration?.deviceTypeService?.deviceTypes}
                     selectOptions={[
                         {
                             label: 'Device type',

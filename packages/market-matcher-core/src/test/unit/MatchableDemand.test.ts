@@ -1,7 +1,7 @@
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, PurchasableCertificate, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Year } from '@energyweb/utils-general';
+import { Year, DeviceTypeService } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
@@ -27,6 +27,7 @@ interface IMockOptions {
 
 describe('MatchableDemand tests', () => {
     const country = 'Thailand';
+    const deviceTypeService = new DeviceTypeService([['Solar'], ['Wind']]);
 
     describe('Certificates', () => {
         const missingDemand = 1000;
@@ -87,7 +88,7 @@ describe('MatchableDemand tests', () => {
         it('should match certificate', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({});
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -101,7 +102,7 @@ describe('MatchableDemand tests', () => {
                 status: DemandStatus.ARCHIVED
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -116,7 +117,7 @@ describe('MatchableDemand tests', () => {
                 isFilledDemand: true
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -131,7 +132,7 @@ describe('MatchableDemand tests', () => {
                 price: energyPrice + 1
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -146,7 +147,7 @@ describe('MatchableDemand tests', () => {
                 currency: 'EUR'
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -161,7 +162,7 @@ describe('MatchableDemand tests', () => {
                 producingDeviceDeviceType: 'Wind'
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -178,7 +179,7 @@ describe('MatchableDemand tests', () => {
                 province: 'Warsaw'
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -193,7 +194,7 @@ describe('MatchableDemand tests', () => {
                 location: [`${country};Central`]
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -207,7 +208,7 @@ describe('MatchableDemand tests', () => {
                 location: [`${country};Central`, `${country};Central;Nonthaburi`]
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -224,7 +225,7 @@ describe('MatchableDemand tests', () => {
                 vintage: [2000, 2005]
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice

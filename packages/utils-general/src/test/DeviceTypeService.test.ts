@@ -1,11 +1,33 @@
 import { assert } from 'chai';
-import { IRECDeviceService } from '../blockchain-facade/DeviceTypeService';
+import { DeviceTypeService } from '../blockchain-facade/DeviceTypeService';
 
 describe('DeviceTypeService tests', () => {
-    const deviceTypeService = new IRECDeviceService();
+    const deviceTypeService = new DeviceTypeService([
+        ['Solar'],
+        ['Solar', 'Photovoltaic'],
+        ['Solar', 'Photovoltaic', 'Roof mounted'],
+        ['Solar', 'Photovoltaic', 'Ground mounted'],
+        ['Solar', 'Photovoltaic', 'Classic silicon'],
+        ['Solar', 'Concentration'],
+        ['Wind'],
+        ['Wind', 'Onshore'],
+        ['Wind', 'Offshore'],
+        ['Marine'],
+        ['Marine', 'Tidal'],
+        ['Marine', 'Tidal', 'Inshore'],
+        ['Marine', 'Tidal', 'Offshore'],
+        ['Marine', 'Wave'],
+        ['Marine', 'Wave', 'Onshore'],
+        ['Marine', 'Wave', 'Offshore'],
+        ['Marine', 'Currents'],
+        ['Marine', 'Pressure'],
+        ['Marine', 'Thermal'],
+        ['Liquid'],
+        ['Thermal']
+    ]);
 
     it('should return device type structure', () => {
-        assert.isNotNull(deviceTypeService.DeviceTypes);
+        assert.isNotNull(deviceTypeService.deviceTypes);
     });
 
     it('should encode device types', () => {

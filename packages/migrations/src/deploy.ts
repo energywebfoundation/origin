@@ -3,9 +3,9 @@ import program from 'commander';
 import path from 'path';
 import fs from 'fs';
 
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
 import { marketDemo } from './market';
 import { deployEmptyContracts } from './deployEmpty';
-import { OffChainDataSource } from '@energyweb/origin-backend-client';
 
 program.option('-e, --env <env_file_path>', 'path to the .env file');
 program.option('-c, --config <config_file_path>', 'path to the config file');
@@ -22,10 +22,14 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         path: envFile
     });
 
-    const { currencies, country, complianceRegistry } = JSON.parse(fs.readFileSync(configFilePath, 'utf8').toString());
+    const { currencies, country, complianceRegistry, deviceTypes } = JSON.parse(
+        fs.readFileSync(configFilePath, 'utf8').toString()
+    );
 
     if (!country) {
-        throw new Error('Please specify a country in the format: { name: "countryName", regions: {} }')
+        throw new Error(
+            'Please specify a country in the format: { name: "countryName", regions: {} }'
+        );
     } else if (currencies.length < 1) {
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
     }
@@ -42,11 +46,18 @@ const configFilePath = absolutePath(program.config ?? '../config/demo-config.jso
         await offChainDataSource.configurationClient.add('Currency', currency);
     }
 
+    await offChainDataSource.configurationClient.add('device-types', deviceTypes);
+
     const contractConfig = await deployEmptyContracts();
 
     await marketDemo(configFilePath, contractConfig);
 
     if (contractConfig && contractConfig.marketLogic) {
-        await offChainDataSource.configurationClient.add('MarketContractLookup', contractConfig.marketLogic.toLowerCase());
+        await offChainDataSource.configurationClient.add(
+            'MarketContractLookup',
+            contractConfig.marketLogic.toLowerCase()
+        );
     }
+
+    offChainDataSource.eventClient.stop();
 })();

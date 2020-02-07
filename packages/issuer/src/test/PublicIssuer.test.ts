@@ -52,7 +52,7 @@ describe('PublicIssuer', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                issuerLogicInstance: { public: publicIssuer },
+                issuerLogicInstance: { public: publicIssuer, private: null },
                 web3
             },
             offChainDataSource: new OffChainDataSourceMock(),
@@ -154,8 +154,10 @@ describe('PublicIssuer', () => {
         requestIssue = await requestIssue.sync();
         assert.isTrue(requestIssue.revoked);
 
-        const deviceOwnerBalance = await registry.balanceOf(accountDeviceOwner, Number(certificateId));
+        const deviceOwnerBalance = await registry.balanceOf(
+            accountDeviceOwner,
+            Number(certificateId)
+        );
         assert.equal(deviceOwnerBalance, volume);
     });
-
 });

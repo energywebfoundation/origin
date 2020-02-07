@@ -1,17 +1,18 @@
+import moment from 'moment';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Demand, PurchasableCertificate } from '@energyweb/market';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
-import moment from 'moment';
+import { LocationService, IDeviceTypeService } from '@energyweb/utils-general';
 import { DemandStatus } from '@energyweb/origin-backend-core';
 import { Validator } from './Validator';
 import { MatchingErrorReason } from './MatchingErrorReason';
 
 export class MatchableDemand {
-    private deviceService = new IRECDeviceService();
-
     private locationService = new LocationService();
 
-    constructor(public demand: Demand.IDemandEntity) {}
+    constructor(
+        public demand: Demand.IDemandEntity,
+        public readonly deviceTypeService: IDeviceTypeService
+    ) {}
 
     public async matchesCertificate(
         certificate: PurchasableCertificate.IPurchasableCertificate,
@@ -34,7 +35,7 @@ export class MatchableDemand {
             .validate(certificate.currency === currency, MatchingErrorReason.NON_MATCHING_CURRENCY)
             .validate(
                 deviceType
-                    ? this.deviceService.includesDeviceType(
+                    ? this.deviceTypeService.includesDeviceType(
                           producingDevice.offChainProperties.deviceType,
                           deviceType
                       )

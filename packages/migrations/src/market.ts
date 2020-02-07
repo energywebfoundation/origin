@@ -202,4 +202,5 @@ export const marketDemo = async (
         }
     }
     conf.logger.info(`Total Time: ${(Date.now() - startTime) / 1000} seconds`);
+    offChainDataSource.eventClient.stop();
 };

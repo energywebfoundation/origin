@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { IRECDeviceService, Countries } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -35,6 +34,7 @@ import axios from 'axios';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { Skeleton } from '@material-ui/lab';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -96,8 +96,6 @@ export function AddDevice() {
 
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
-
-    const irecDeviceService = new IRECDeviceService();
 
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
     const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
@@ -202,9 +200,13 @@ export function AddDevice() {
         }
 
         try {
-            const response = await axios.post(`${environment.BACKEND_URL}:${environment.BACKEND_PORT}/api/Image`, formData, {
-                headers: { 'Content-type': 'multipart/form-data' }
-            });
+            const response = await axios.post(
+                `${environment.BACKEND_URL}:${environment.BACKEND_PORT}/api/Image`,
+                formData,
+                {
+                    headers: { 'Content-type': 'multipart/form-data' }
+                }
+            );
 
             setImagesUploaded(true);
             setImagesUploadedList(response.data);
@@ -219,6 +221,10 @@ export function AddDevice() {
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
 
     const regions = useSelector(getRegions);
+
+    if (!configuration) {
+        return <Skeleton variant="rect" height={200} />;
+    }
 
     return (
         <Paper className={classes.container}>
@@ -270,7 +276,7 @@ export function AddDevice() {
                                             onChange={(value: string[]) =>
                                                 setSelectedDeviceType(value)
                                             }
-                                            allValues={irecDeviceService.DeviceTypes}
+                                            allValues={configuration.deviceTypeService.deviceTypes}
                                             selectOptions={[
                                                 {
                                                     label: 'Device type',

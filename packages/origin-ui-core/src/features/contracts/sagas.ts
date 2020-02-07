@@ -16,7 +16,12 @@ import {
     createBlockchainProperties as marketCreateBlockchainProperties
 } from '@energyweb/market';
 import { IOffChainDataSource, IConfigurationClient } from '@energyweb/origin-backend-client';
-import { Configuration, ContractEventHandler, EventHandlerManager } from '@energyweb/utils-general';
+import {
+    Configuration,
+    ContractEventHandler,
+    EventHandlerManager,
+    DeviceTypeService
+} from '@energyweb/utils-general';
 import Web3 from 'web3';
 
 import { configurationUpdated, demandCreated, demandUpdated } from '../actions';
@@ -78,7 +83,10 @@ async function initConf(
             level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
-        })
+        }),
+        deviceTypeService: new DeviceTypeService(
+            await offChainDataSource.configurationClient.get('device-types')
+        )
     };
 }
 

@@ -31,6 +31,8 @@ import { EventsModule } from './events/events.module';
 
 import { AppController } from './app.controller';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
+import { DeviceTypes } from './pods/device-types/device-types.entity';
+import { DeviceTypesModule } from './pods/device-types/device-types.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -54,7 +56,8 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
                     Demand,
                     Organization,
                     User,
-                    OrganizationInvitation
+                    OrganizationInvitation,
+                    DeviceTypes
                 ]
             }),
             inject: [ConfigService]
@@ -70,7 +73,8 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         DeviceModule,
         DemandModule,
         AuthModule,
-        EventsModule
+        EventsModule,
+        DeviceTypesModule
     ],
     controllers: [AppController],
     providers: []

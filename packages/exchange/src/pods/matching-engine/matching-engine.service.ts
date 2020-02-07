@@ -7,7 +7,7 @@ import {
     TradeExecutedEvent,
     Product
 } from '@energyweb/exchange-core';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
@@ -23,7 +23,7 @@ export class MatchingEngineService {
     private readonly logger = new Logger(MatchingEngineService.name);
 
     private readonly matchingEngine = new MatchingEngine(
-        new IRECDeviceService(),
+        new DeviceTypeService([]),
         new LocationService()
     );
 

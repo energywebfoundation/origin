@@ -180,4 +180,6 @@ const currentTime = moment.tz(device.timezone);
 
         measurementTime = newMeasurementTime;
     }
+
+    offChainDataSource.eventClient.stop();
 })();

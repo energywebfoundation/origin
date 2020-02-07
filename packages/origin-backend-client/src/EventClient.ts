@@ -67,6 +67,8 @@ export class EventClient implements IEventClient {
 
     stop() {
         this.started = false;
+
+        this.client.close();
     }
 
     subscribe(event: SupportedEvents, callback: Function) {

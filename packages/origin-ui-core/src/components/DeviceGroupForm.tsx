@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IRECDeviceService, Unit, Countries } from '@energyweb/utils-general';
+import { Unit } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -165,8 +165,6 @@ export function DeviceGroupForm(props: IProps) {
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
 
-    const irecDeviceService = new IRECDeviceService();
-
     const selectedDeviceType = ['Solar', 'Solar;Photovoltaic'];
 
     const history = useHistory();
@@ -266,7 +264,7 @@ export function DeviceGroupForm(props: IProps) {
         initialFormValues = INITIAL_FORM_VALUES;
     }
 
-    if (!initialFormValues) {
+    if (!initialFormValues || !configuration) {
         return <Skeleton variant="rect" height={200} />;
     }
 
@@ -315,7 +313,9 @@ export function DeviceGroupForm(props: IProps) {
                                                 <HierarchicalMultiSelect
                                                     selectedValue={selectedDeviceType}
                                                     onChange={null}
-                                                    allValues={irecDeviceService.DeviceTypes}
+                                                    allValues={
+                                                        configuration.deviceTypeService.deviceTypes
+                                                    }
                                                     selectOptions={[
                                                         {
                                                             label: 'Device type',

@@ -1,11 +1,11 @@
-import { IPreciseProofClient, PreciseProofClient } from "./PreciseProofClient";
-import { IConfigurationClient, ConfigurationClient } from "./ConfigurationClient";
-import { IUserClient, UserClient } from "./UserClient";
-import { IDeviceClient, DeviceClient } from "./DeviceClient";
-import { IRequestClient, RequestClient } from "./RequestClient";
-import { IOrganizationClient, OrganizationClient } from "./OrganizationClient";
-import { IDemandClient, DemandClient } from "./DemandClient";
-import { IEventClient, EventClient } from "./EventClient";
+import { IPreciseProofClient, PreciseProofClient } from './PreciseProofClient';
+import { IConfigurationClient, ConfigurationClient } from './ConfigurationClient';
+import { IUserClient, UserClient } from './UserClient';
+import { IDeviceClient, DeviceClient } from './DeviceClient';
+import { IRequestClient, RequestClient } from './RequestClient';
+import { IOrganizationClient, OrganizationClient } from './OrganizationClient';
+import { IDemandClient, DemandClient } from './DemandClient';
+import { IEventClient, EventClient } from './EventClient';
 
 export interface IOffChainDataSource {
     dataApiUrl: string;
@@ -20,13 +20,18 @@ export interface IOffChainDataSource {
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
-
     preciseProofClient: IPreciseProofClient;
+
     configurationClient: IConfigurationClient;
+
     userClient: IUserClient;
+
     deviceClient: IDeviceClient;
+
     organizationClient: IOrganizationClient;
+
     demandClient: IDemandClient;
+
     eventClient: IEventClient;
 
     constructor(

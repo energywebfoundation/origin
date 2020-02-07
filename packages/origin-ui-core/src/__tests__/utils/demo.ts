@@ -15,11 +15,18 @@ import {
 } from '@energyweb/device-registry';
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
-import { DeviceStatus } from '@energyweb/origin-backend-core';
+import {
+    DeviceStatus,
+    OrganizationPostData,
+    IUserWithRelationsIds,
+    IDevice
+} from '@energyweb/origin-backend-core';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IStoreState } from '../../types';
-import { OrganizationPostData, IUserWithRelationsIds, IDevice } from '@energyweb/origin-backend-core';
+
+import { TEST_DEVICE_TYPES } from './helpers';
+import { DeviceTypeService } from '@energyweb/utils-general';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -115,6 +122,8 @@ export async function deployDemo() {
 
     const offChainDataSource = new OffChainDataSourceMock();
 
+    await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
+
     await offChainDataSource.configurationClient.add(
         'MarketContractLookup',
         marketContractLookup.toLowerCase()
@@ -138,7 +147,10 @@ export async function deployDemo() {
             web3
         },
         offChainDataSource,
-        logger
+        logger,
+        deviceTypeService: new DeviceTypeService(
+            await offChainDataSource.configurationClient.get('device-types')
+        )
     };
 
     function createOrganization(user: IUserWithRelationsIds, name: string) {

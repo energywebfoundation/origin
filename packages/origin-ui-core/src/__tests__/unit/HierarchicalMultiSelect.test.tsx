@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import { EncodedDeviceType, IRECDeviceService } from '@energyweb/utils-general';
+import { EncodedDeviceType, DeviceTypeService } from '@energyweb/utils-general';
 import { setupStore, WrapperComponent } from '../utils/helpers';
 import { dataTestSelector } from '../../utils/helper';
 import { MultiSelectAutocomplete } from '../../components/MultiSelectAutocomplete';
@@ -12,13 +12,35 @@ let cleanupStore: () => void;
 function renderComponent(singleChoice = false) {
     function TestWrapper() {
         const [selectedDeviceType, setSelectedDeviceType] = useState<EncodedDeviceType>([]);
-        const irecDeviceService = new IRECDeviceService();
+        const deviceTypeService = new DeviceTypeService([
+            ['Solar'],
+            ['Solar', 'Photovoltaic'],
+            ['Solar', 'Photovoltaic', 'Roof mounted'],
+            ['Solar', 'Photovoltaic', 'Ground mounted'],
+            ['Solar', 'Photovoltaic', 'Classic silicon'],
+            ['Solar', 'Concentration'],
+            ['Wind'],
+            ['Wind', 'Onshore'],
+            ['Wind', 'Offshore'],
+            ['Solid'],
+            ['Solid', 'Muncipal waste'],
+            ['Solid', 'Muncipal waste', 'Biogenic'],
+            ['Solid', 'Industrial and commercial waste'],
+            ['Solid', 'Industrial and commercial waste', 'Biogenic'],
+            ['Solid', 'Wood'],
+            ['Solid', 'Wood', 'Forestry products'],
+            ['Solid', 'Wood', 'Forestry by-products & waste'],
+            ['Solid', 'Animal fats'],
+            ['Solid', 'Biomass from agriculture'],
+            ['Solid', 'Biomass from agriculture', 'Agricultural products'],
+            ['Solid', 'Biomass from agriculture', 'Agricultural by-products & waste']
+        ]);
 
         return (
             <HierarchicalMultiSelect
                 selectedValue={selectedDeviceType}
                 onChange={setSelectedDeviceType}
-                allValues={irecDeviceService.DeviceTypes}
+                allValues={deviceTypeService.deviceTypes}
                 selectOptions={[
                     {
                         label: 'Device type',
