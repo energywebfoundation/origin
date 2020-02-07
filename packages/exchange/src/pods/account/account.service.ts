@@ -10,9 +10,9 @@ import { OrderService } from '../order/order.service';
 import { TradeService } from '../trade/trade.service';
 import { TransferDirection } from '../transfer/transfer-direction';
 import { TransferService } from '../transfer/transfer.service';
+import { Account } from './account';
 import { AccountAsset } from './account-asset';
 import { Account as AccountEntity } from './account.entity';
-import { Account } from './account';
 
 @Injectable()
 export class AccountService {
@@ -26,7 +26,7 @@ export class AccountService {
         private readonly connection: Connection
     ) {}
 
-    public createAccount(userId: string, transaction?: EntityManager) {
+    public getOrCreateAccount(userId: string, transaction?: EntityManager) {
         if (transaction) {
             return this.create(userId, transaction);
         }
@@ -40,7 +40,7 @@ export class AccountService {
         });
         if (!account) {
             account = await transaction
-                .create<AccountEntity>(AccountEntity, { address: '0x1234' })
+                .create<AccountEntity>(AccountEntity, { userId, address: `0x1234${userId}` })
                 .save();
         }
 
@@ -53,7 +53,8 @@ export class AccountService {
         return manager.findOne<AccountEntity>(AccountEntity, { where: { address } });
     }
 
-    public async getAccountAssets(userId: string): Promise<Account> {
+    public async getAccount(userId: string): Promise<Account> {
+        const { address } = await this.getOrCreateAccount(userId);
         const deposits = await this.getTransfers(userId);
         const trades = await this.getTrades(userId);
         const sellOrders = await this.getSellOrders(userId);
@@ -66,17 +67,17 @@ export class AccountService {
         const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
 
         return {
-            userId,
+            address,
             available: Array.from(aggregated.values()),
             locked: Array.from(sellOrders.values())
         };
     }
 
     public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: number) {
-        const { available } = await this.getAccountAssets(userId);
-        const [{ amount }] = available.filter(({ asset }) => asset.id === assetId);
+        const { available } = await this.getAccount(userId);
+        const accountAsset = available.find(({ asset }) => asset.id === assetId);
 
-        return amount.gte(new BN(assetAmount));
+        return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
     }
 
     private async getSellOrders(userId: string) {

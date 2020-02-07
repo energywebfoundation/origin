@@ -67,7 +67,7 @@ describe('AccountService', () => {
             { asset: asset2, amount: '2000', direction: TransferDirection.Deposit }
         );
 
-        const res = await service.getAccountAssets('1');
+        const res = await service.getAccount('1');
 
         expect(res.available.length).toBe(2);
 
@@ -85,7 +85,7 @@ describe('AccountService', () => {
             { asset: asset2, amount: '3000', direction: TransferDirection.Deposit }
         );
 
-        const res = await service.getAccountAssets('1');
+        const res = await service.getAccount('1');
 
         expect(res.available.length).toBe(2);
 
@@ -108,7 +108,7 @@ describe('AccountService', () => {
             { ask: { asset: asset2 } as Order, bid: { userId } as Order, volume: 1000 }
         );
 
-        const res = await service.getAccountAssets(userId);
+        const res = await service.getAccount(userId);
 
         const expectedAsset1Amount = 1000 - 500;
         const expectedAsset2Amount = 2000 + 3000 + 1000;
@@ -129,7 +129,7 @@ describe('AccountService', () => {
 
         registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: 100 });
 
-        const res = await service.getAccountAssets(userId);
+        const res = await service.getAccount(userId);
 
         const expectedAsset1Amount = 1000 - 500 - 100;
 
@@ -154,7 +154,7 @@ describe('AccountService', () => {
 
         registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: 100 });
 
-        const res = await service.getAccountAssets(userId);
+        const res = await service.getAccount(userId);
 
         const expectedAsset1Amount = 1000 - 500 - 400 - 100;
         const expectedAsset2Amount = 2000 - 1000 - 1000;

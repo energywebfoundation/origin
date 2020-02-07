@@ -1,7 +1,7 @@
 import { AccountAsset } from './account-asset';
 
 export class Account {
-    public userId: string;
+    public address: string;
 
     public available: AccountAsset[];
 

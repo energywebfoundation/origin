@@ -10,7 +10,7 @@ export class Transfer extends BaseEntity {
     @Column()
     userId: string;
 
-    @ManyToOne(() => Asset)
+    @ManyToOne(() => Asset, { eager: true })
     asset: Asset;
 
     @Column('bigint')
@@ -25,8 +25,8 @@ export class Transfer extends BaseEntity {
     @Column()
     confirmed: boolean;
 
-    @Column()
-    confirmationBlock: number;
+    @Column({ nullable: true })
+    confirmationBlock?: number;
 
     @Column()
     direction: TransferDirection;

@@ -3,6 +3,7 @@ import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 
 import { Asset } from './asset.entity';
+import { AssetDTO } from './asset.dto';
 
 @Injectable()
 export class AssetService {
@@ -11,7 +12,11 @@ export class AssetService {
         private readonly connection: Connection
     ) {}
 
-    public async createIfNotExist(asset: Omit<Asset, 'id'>, transaction?: EntityManager) {
+    public async get(id: string) {
+        return this.connection.getRepository<Asset>(Asset).findOne(id);
+    }
+
+    public async createIfNotExist(asset: AssetDTO, transaction?: EntityManager) {
         if (transaction) {
             return this.create(asset, transaction);
         }
@@ -19,7 +24,7 @@ export class AssetService {
         return this.connection.transaction(tr => this.create(asset, tr));
     }
 
-    private async create(asset: Omit<Asset, 'id'>, transaction: EntityManager) {
+    private async create(asset: AssetDTO, transaction: EntityManager) {
         let existingAsset = await transaction.findOne<Asset>(Asset, null, {
             where: {
                 address: asset.address,

@@ -1,7 +1,7 @@
-import { Asset } from '../asset/asset.entity';
+import { AssetDTO } from '../asset/asset.dto';
 
 export class CreateDepositDTO {
-    public readonly asset: Omit<Asset, 'id'>;
+    public readonly asset: AssetDTO;
 
     public readonly address: string;
 

@@ -8,6 +8,8 @@ import { CreateBidDTO } from './create-bid.dto';
 import { Order } from './order.entity';
 import { AccountService } from '../account/account.service';
 import { CreateAskDTO } from './create-ask.dto';
+import { ProductService } from '../product/product.service';
+import { AssetService } from '../asset/asset.service';
 
 @Injectable()
 export class OrderService {
@@ -16,7 +18,9 @@ export class OrderService {
         private readonly repository: Repository<Order>,
         private readonly matchingEngineService: MatchingEngineService,
         @Inject(forwardRef(() => AccountService))
-        private readonly accountService: AccountService
+        private readonly accountService: AccountService,
+        private readonly productService: ProductService,
+        private readonly assetService: AssetService
     ) {}
 
     public async createBid(bid: CreateBidDTO) {
@@ -32,13 +36,19 @@ export class OrderService {
     }
 
     public async createAsk(ask: CreateAskDTO) {
-        if (!this.accountService.hasEnoughAssetAmount(ask.userId, ask.assetId, ask.volume)) {
+        if (
+            !(await this.accountService.hasEnoughAssetAmount(ask.userId, ask.assetId, ask.volume))
+        ) {
             throw new Error('Not enough assets');
         }
+
+        const { deviceId } = await this.assetService.get(ask.assetId);
+        const product = await this.productService.getProduct(deviceId);
 
         return this.repository
             .create({
                 ...ask,
+                product,
                 side: OrderSide.Ask,
                 status: OrderStatus.Active,
                 startVolume: ask.volume,

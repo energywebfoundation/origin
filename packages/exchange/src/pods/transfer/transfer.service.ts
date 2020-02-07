@@ -55,4 +55,11 @@ export class TransferService {
                 .save();
         });
     }
+
+    public async confirmDeposit(transactionHash: string) {
+        return this.repository.update(
+            { transactionHash },
+            { confirmed: true, confirmationBlock: 10000 }
+        );
+    }
 }

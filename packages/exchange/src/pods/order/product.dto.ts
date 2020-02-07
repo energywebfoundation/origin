@@ -2,7 +2,7 @@ import { DeviceVintage, Operator, Product } from '@energyweb/exchange-core';
 
 export type DeviceVintageDTO = {
     year: number;
-    operator: Operator;
+    operator?: Operator;
 };
 
 export class ProductDTO {
