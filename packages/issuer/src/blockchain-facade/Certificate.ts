@@ -13,7 +13,6 @@ export interface ICertificate {
     generationStartTime: number;
     generationEndTime: number;
 
-    energy: number;
     creationTime: number;
 
     sync(): Promise<ICertificate>;
@@ -24,6 +23,11 @@ export interface ICertificate {
     transfer(to: string, amount: number): Promise<TransactionReceipt>;
 
     getAllCertificateEvents(): Promise<EventLog[]>;
+
+    isOwned(): Promise<boolean>;
+    ownedVolume(): Promise<number>;
+    isClaimed(): Promise<boolean>;
+    claimedVolume(): Promise<number>;
 }
 
 const getAccountFromConfiguration = (configuration: Configuration.Entity) => ({

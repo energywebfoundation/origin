@@ -36,6 +36,8 @@ describe('Cerificate tests', () => {
     const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
+    let timestamp = moment().unix();
+
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
@@ -46,9 +48,8 @@ describe('Cerificate tests', () => {
     const issueCertificate = async (volume: number, isPrivate: boolean = false) => {
         setActiveUser(issuerPK);
 
-        const now = moment();
-        const generationStartTime = now.subtract(30, 'day').unix();
-        const generationEndTime = now.unix();
+        const generationStartTime = timestamp;
+        const generationEndTime = timestamp++;
         const deviceId = '1';
 
         return Certificate.createCertificate(
@@ -230,5 +231,41 @@ describe('Cerificate tests', () => {
         assert.isTrue(await certificate2.isClaimed());
         assert.equal(await certificate.claimedVolume(), totalVolume);
         assert.equal(await certificate2.claimedVolume(), totalVolume);
+    });
+
+    it('doesnt allow issuing the same certificate twice', async () => {
+        const totalVolume = 1e9;
+
+        setActiveUser(issuerPK);
+
+        const generationStartTime = timestamp;
+        const generationEndTime = timestamp++;
+        const deviceId = '1';
+
+        await Certificate.createCertificate(
+            accountDeviceOwner,
+            totalVolume,
+            generationStartTime,
+            generationEndTime,
+            deviceId,
+            conf
+        );
+
+        let failed = false;
+
+        try {
+            await Certificate.createCertificate(
+                accountDeviceOwner,
+                totalVolume,
+                generationStartTime,
+                generationEndTime,
+                deviceId,
+                conf
+            );
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
     });
 });

@@ -24,6 +24,8 @@ contract PublicIssuer is Initializable, Ownable {
     mapping(uint256 => RequestIssue) public requestIssueStorage;
     mapping(uint256 => uint256) public certificateToRequestStorage;
 
+    mapping(string => uint256) private deviceLatestGenerationTimestamp;
+
     function initialize(address _registry) public initializer {
         require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
         registry = Registry(_registry);
@@ -44,6 +46,12 @@ contract PublicIssuer is Initializable, Ownable {
     }
 
     function requestIssueFor(bytes memory _data, address _owner) public returns (uint) {
+        (uint256 from,, string memory deviceId) = decodeIssue(_data);
+        require(
+            from > deviceLatestGenerationTimestamp[deviceId],
+            "requested generation period overlaps already approved generation period"
+        );
+
         uint id = ++requestIssueNonce;
 
         requestIssueStorage[id] = RequestIssue({
@@ -82,6 +90,9 @@ contract PublicIssuer is Initializable, Ownable {
         uint256 certificateId = registry.issue(_to, _validityData, certificateTopic, _value, request.data);
         certificateToRequestStorage[certificateId] = _requestId;
 
+        (, uint256 to, string memory deviceId) = decodeIssue(request.data);
+        deviceLatestGenerationTimestamp[deviceId] = to;
+
         return certificateId;
     }
 
@@ -99,7 +110,9 @@ contract PublicIssuer is Initializable, Ownable {
     function isRequestValid(uint256 _requestId) external view returns (bool) {
         RequestIssue storage request = requestIssueStorage[_requestId];
 
-        return _requestId <= requestIssueNonce && request.approved && request.revoked == false;
+        return _requestId <= requestIssueNonce
+            && request.approved
+            && request.revoked == false;
     }
 
     function getRegistryAddress() public view returns (address) {
