@@ -78,7 +78,7 @@
     "@types/passport-local": "1.0.33",
     "@types/supertest": "2.0.8",
     "@types/websocket": "1.0.0",
-    "@types/ws": "^7.2.0",
+    "@types/ws": "7.2.0",
     "axios": "0.19.2",
     "jest": "25.1.0",
     "supertest": "4.0.2",
