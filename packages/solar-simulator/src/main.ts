@@ -14,7 +14,7 @@ program.option('-d, --data <data_file_path>', 'path to the data file');
 
 program.parse(process.argv);
 
-const envFile = program.env ? absolutePath(program.env) : '../../.env';
+const envFile = absolutePath(program.env ? program.env : '../../../.env');
 const configFilePath = absolutePath(program.config ?? '../config/config.json');
 const dataFilePath = absolutePath(program.data ?? '../config/data.csv');
 
