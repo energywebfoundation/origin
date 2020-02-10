@@ -1,5 +1,6 @@
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 import { PublicIssuer, PrivateIssuer, CommitmentSchema, ICommitment } from '..';
+import { CertificateTopic } from '../const';
 
 export interface IRequestIssueOnChainProperties {
     id: string;
@@ -120,10 +121,12 @@ export const createRequestIssue = async (
         privateKey: configuration.blockchainProperties.activeUser.privateKey
     };
 
+    const certificateTopic = isVolumePrivate ? CertificateTopic.PRIVATE_IREC : CertificateTopic.PUBLIC_IREC;
+
     const { logs } = await (
         forAddress
-            ? issuer.requestIssueFor(data, forAddress, fromAccount) 
-            : issuer.requestIssue(data, fromAccount)
+            ? issuer.requestIssueFor(certificateTopic, data, forAddress, fromAccount) 
+            : issuer.requestIssue(certificateTopic, data, fromAccount)
     );
 
     request.id = configuration.blockchainProperties.web3.utils

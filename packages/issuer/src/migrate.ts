@@ -13,13 +13,14 @@ import RegistryJSON from '../build/contracts/Registry.json';
 export async function migratePublicIssuer(web3: Web3, deployKey: string, registryAddress: string): Promise<PublicIssuer> {
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
+    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     const publicIssuerAddress = (await deploy(web3, PublicIssuerJSON.bytecode, {
         privateKey: privateKeyDeployment
     })).contractAddress;
 
     const publicIssuer = new PublicIssuer(web3, publicIssuerAddress);
-    await publicIssuer.initialize(registryAddress, {
+    await publicIssuer.initialize(registryAddress, accountDeployment, {
         privateKey: privateKeyDeployment
     });
 
@@ -32,13 +33,14 @@ export async function migratePublicIssuer(web3: Web3, deployKey: string, registr
 export async function migratePrivateIssuer(web3: Web3, deployKey: string, registryAddress: string, publicIssuerAddress: string): Promise<PrivateIssuer> {
 
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
+    const accountDeployment = web3.eth.accounts.privateKeyToAccount(privateKeyDeployment).address;
 
     const privateIssuerAddress = (await deploy(web3, PrivateIssuerJSON.bytecode, {
         privateKey: privateKeyDeployment
     })).contractAddress;
 
     const privateIssuer = new PrivateIssuer(web3, privateIssuerAddress);
-    await privateIssuer.initialize(registryAddress, publicIssuerAddress, {
+    await privateIssuer.initialize(registryAddress, publicIssuerAddress, accountDeployment, {
         privateKey: privateKeyDeployment
     });
 
@@ -57,9 +59,7 @@ export async function migrateRegistry(web3: Web3, deployKey: string): Promise<Re
     })).contractAddress;
 
     const registry = new Registry(web3, registryAddress);
-    await registry.initialize({
-        privateKey: privateKeyDeployment
-    });
+    await registry.initialize({ privateKey: privateKeyDeployment });
 
     console.log(`Registry created at ${registryAddress}`);
 

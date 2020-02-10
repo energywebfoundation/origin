@@ -2,7 +2,7 @@ import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 
-import { Registry, PublicIssuer, PrivateIssuer, PRIVATE_CERTIFICATE_TOPIC, PUBLIC_CERTIFICATE_TOPIC, ICommitment, CommitmentSchema } from '..';
+import { Registry, PublicIssuer, PrivateIssuer, CertificateTopic, ICommitment, CommitmentSchema } from '..';
 
 export interface ICertificate {
     id: string;
@@ -257,7 +257,7 @@ export const createCertificate = async (
         const privateIssuer: PrivateIssuer = configuration.blockchainProperties.issuerLogicInstance.private;
         const data = await privateIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await registry.issue(to, [], PRIVATE_CERTIFICATE_TOPIC, value, data, Configuration.getAccount(configuration));
+        const { logs } = await registry.issue(to, [], CertificateTopic.PRIVATE_IREC, value, data, Configuration.getAccount(configuration));
 
         certificate.id = getIdFromLogs(logs);
 
@@ -268,7 +268,7 @@ export const createCertificate = async (
         const publicIssuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public
         const data = await publicIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await publicIssuer.issue(to, value, data, Configuration.getAccount(configuration));
+        const { logs } = await publicIssuer.issue(CertificateTopic.PUBLIC_IREC, to, value, data, Configuration.getAccount(configuration));
 
         certificate.id = getIdFromLogs(logs);
     }

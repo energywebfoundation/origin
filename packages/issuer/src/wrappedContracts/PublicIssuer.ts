@@ -21,8 +21,8 @@ export class PublicIssuer extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(registryAddress: string, txParams: ISpecialTx) {
-        const method = this.web3Contract.methods.initialize(registryAddress);
+    async initialize(registryAddress: string, owner: string, txParams: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(registryAddress, owner);
 
         return this.send(method, txParams);
     }
@@ -43,14 +43,14 @@ export class PublicIssuer extends GeneralFunctions {
         return this.web3Contract.methods.getRequestIssue(_requestIssueId).call(txParams);
     }
 
-    async requestIssue(_data: any, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.requestIssue(_data);
+    async requestIssue(_topic: number, _data: any, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.requestIssue(_topic, _data);
 
         return this.send(method, txParams);
     }
 
-    async requestIssueFor(_data: any, _forAddress: string, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.requestIssueFor(_data, _forAddress);
+    async requestIssueFor(_topic: number, _data: any, _forAddress: string, txParams?: ISpecialTx) {
+        const method = this.web3Contract.methods.requestIssueFor(_topic, _data, _forAddress);
 
         return this.send(method, txParams);
     }
@@ -73,12 +73,14 @@ export class PublicIssuer extends GeneralFunctions {
     }
 
     async issue(
+        _topic: number,
         _to: string,
         _value: number,
         _data: any,
         txParams?: ISpecialTx
     ) {
         const method = this.web3Contract.methods.issue(
+            _topic,
             _to,
             _value,
             _data
