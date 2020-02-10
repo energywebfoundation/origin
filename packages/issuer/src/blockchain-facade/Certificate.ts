@@ -24,12 +24,12 @@ export interface ICertificate {
     transfer(to: string, amount: number): Promise<TransactionReceipt>;
 
     getAllCertificateEvents(): Promise<EventLog[]>;
-}
 
-const getAccountFromConfiguration = (configuration: Configuration.Entity) => ({
-    from: configuration.blockchainProperties.activeUser.address,
-    privateKey: configuration.blockchainProperties.activeUser.privateKey
-});
+    isOwned(byAddress?: string): Promise<boolean>;
+    ownedVolume(byAddress?: string): Promise<number>;
+    isClaimed(byAddress?: string): Promise<boolean>;
+    claimedVolume(byAddress?: string): Promise<number>;
+}
 
 export const getAllCertificateEvents = async (
     certId: number,
@@ -161,7 +161,7 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             amount,
             this.data,
             claimData,
-            getAccountFromConfiguration(this.configuration)
+            Configuration.getAccount(this.configuration)
         );
     }
 
@@ -175,61 +175,61 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             parseInt(this.id, 10),
             amount,
             this.data,
-            getAccountFromConfiguration(this.configuration)
+            Configuration.getAccount(this.configuration)
         );
     }
 
     async revoke(): Promise<TransactionReceipt> {
         const publicIssuer: PublicIssuer = this.configuration.blockchainProperties.issuerLogicInstance.public;
         
-        return publicIssuer.revokeCertificate(Number(this.id), getAccountFromConfiguration(this.configuration));
+        return publicIssuer.revokeCertificate(Number(this.id), Configuration.getAccount(this.configuration));
     }
 
     async getAllCertificateEvents(): Promise<EventLog[]> {
         return getAllCertificateEvents(parseInt(this.id, 10), this.configuration);
     }
 
-    async isOwned(): Promise<boolean> {
+    async isOwned(byAddress?: string): Promise<boolean> {
         if (this.isPrivate) {
             throw new Error('Unable to fetch owner for private certificates.');
         }
 
-        const ownedVolume = await this.ownedVolume();
+        const ownedVolume = await this.ownedVolume(byAddress);
 
         return ownedVolume > 0;
     }
 
-    async ownedVolume(): Promise<number> {
+    async ownedVolume(byAddress?: string): Promise<number> {
         if (this.isPrivate) {
             throw new Error('Unable to fetch volumes for private certificates.');
         }
 
         const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
-        const address = this.configuration.blockchainProperties.activeUser.address;
+        const activeUserAddress = this.configuration.blockchainProperties.activeUser.address;
 
         const balance = await registry.balanceOf(
-            address,
+            byAddress ?? activeUserAddress,
             Number(this.id),
-            { from: address }
+            Configuration.getAccount(this.configuration)
         );
         
         return Number(balance);
     }
 
-    async isClaimed(): Promise<boolean> {
-        const claimedVolume = await this.claimedVolume();
+    async isClaimed(byAddress?: string): Promise<boolean> {
+        const claimedVolume = await this.claimedVolume(byAddress);
 
         return claimedVolume > 0;
     }
     
-    async claimedVolume(): Promise<number> {
+    async claimedVolume(byAddress?: string): Promise<number> {
         const registry: Registry = this.configuration.blockchainProperties.certificateLogicInstance;
-        const address = this.configuration.blockchainProperties.activeUser.address;
+        const activeUserAddress = this.configuration.blockchainProperties.activeUser.address;
 
         const balance = await registry.claimedBalanceOf(
-            address,
+            byAddress ?? activeUserAddress,
             Number(this.id),
-            getAccountFromConfiguration(this.configuration)
+            Configuration.getAccount(this.configuration)
         );
         
         return Number(balance);
@@ -257,7 +257,7 @@ export const createCertificate = async (
         const privateIssuer: PrivateIssuer = configuration.blockchainProperties.issuerLogicInstance.private;
         const data = await privateIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await registry.issue(to, [], PRIVATE_CERTIFICATE_TOPIC, value, data, getAccountFromConfiguration(configuration));
+        const { logs } = await registry.issue(to, [], PRIVATE_CERTIFICATE_TOPIC, value, data, Configuration.getAccount(configuration));
 
         certificate.id = getIdFromLogs(logs);
 
@@ -268,7 +268,7 @@ export const createCertificate = async (
         const publicIssuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public
         const data = await publicIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await publicIssuer.issue(to, value, data, getAccountFromConfiguration(configuration));
+        const { logs } = await publicIssuer.issue(to, value, data, Configuration.getAccount(configuration));
 
         certificate.id = getIdFromLogs(logs);
     }
@@ -307,7 +307,7 @@ export async function claimCertificates(
     const claimData = certificates.map(cert => hexToBytes(randomHex(32)));
     const data = hexToBytes(randomHex(32));
 
-    const { from } = getAccountFromConfiguration(configuration);
+    const { from } = Configuration.getAccount(configuration);
 
     return registry.safeBatchTransferAndClaimFrom(
         from,
@@ -316,7 +316,7 @@ export async function claimCertificates(
         values,
         data,
         claimData,
-        getAccountFromConfiguration(configuration)
+        Configuration.getAccount(configuration)
     );
 }
 
@@ -338,7 +338,7 @@ export async function transferCertificates(
     // TO-DO: replace with proper data
     const data = hexToBytes(randomHex(32));
 
-    const { from } = getAccountFromConfiguration(configuration);
+    const { from } = Configuration.getAccount(configuration);
 
     return registry.safeBatchTransferFrom(
         from,
@@ -346,6 +346,6 @@ export async function transferCertificates(
         certificateIdsAsNumber,
         values,
         data,
-        getAccountFromConfiguration(configuration)
+        Configuration.getAccount(configuration)
     );
 }

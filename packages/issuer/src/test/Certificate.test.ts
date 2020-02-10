@@ -119,13 +119,11 @@ describe('Cerificate tests', () => {
 
         await certificate.transfer(accountTrader, totalVolume / 4);
 
-        assert.isTrue(await certificate.isOwned());
-        assert.equal(await certificate.ownedVolume(), (totalVolume / 4) * 3);
+        assert.isTrue(await certificate.isOwned(accountDeviceOwner));
+        assert.equal(await certificate.ownedVolume(accountDeviceOwner), (totalVolume / 4) * 3);
 
-        setActiveUser(traderPK);
-
-        assert.isTrue(await certificate.isOwned());
-        assert.equal(await certificate.ownedVolume(), totalVolume / 4);
+        assert.isTrue(await certificate.isOwned(accountTrader));
+        assert.equal(await certificate.ownedVolume(accountTrader), totalVolume / 4);
     });
 
     it('fails claiming a revoked certificate', async () => {
@@ -197,12 +195,10 @@ describe('Cerificate tests', () => {
         assert.equal(await certificate.ownedVolume(), 0);
         assert.equal(await certificate2.ownedVolume(), 0);
 
-        setActiveUser(traderPK);
-
-        assert.isTrue(await certificate.isOwned());
-        assert.isTrue(await certificate2.isOwned());
-        assert.equal(await certificate.ownedVolume(), totalVolume);
-        assert.equal(await certificate2.ownedVolume(), totalVolume);
+        assert.isTrue(await certificate.isOwned(accountTrader));
+        assert.isTrue(await certificate2.isOwned(accountTrader));
+        assert.equal(await certificate.ownedVolume(accountTrader), totalVolume);
+        assert.equal(await certificate2.ownedVolume(accountTrader), totalVolume);
     });
 
     it('batch claims certificates', async () => {
