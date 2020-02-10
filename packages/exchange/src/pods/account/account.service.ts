@@ -13,6 +13,7 @@ import { TransferService } from '../transfer/transfer.service';
 import { Account } from './account';
 import { AccountAsset } from './account-asset';
 import { Account as AccountEntity } from './account.entity';
+import { RequestWithdrawalDTO } from '../transfer/create-withdrawal.dto';
 
 @Injectable()
 export class AccountService {
@@ -73,7 +74,19 @@ export class AccountService {
         };
     }
 
-    public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: number) {
+    public async requestWithdrawal(withdrawal: RequestWithdrawalDTO) {
+        const { userId, assetId, amount } = withdrawal;
+
+        const hasEnoughAssetAmount = await this.hasEnoughAssetAmount(userId, assetId, amount);
+
+        if (!hasEnoughAssetAmount) {
+            throw new Error('Not enough assets');
+        }
+
+        return this.transferService.requestWithdrawal(withdrawal);
+    }
+
+    public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
         const { available } = await this.getAccount(userId);
         const accountAsset = available.find(({ asset }) => asset.id === assetId);
 

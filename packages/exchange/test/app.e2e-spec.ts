@@ -8,10 +8,11 @@ import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { AssetDTO } from '../src/pods/asset/asset.dto';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
+import { Order } from '../src/pods/order/order.entity';
+import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { Order } from 'src/pods/order/order.entity';
 
 describe('AppController (e2e)', () => {
     let app: INestApplication;
@@ -35,7 +36,7 @@ describe('AppController (e2e)', () => {
     };
 
     const confirmDeposit = () => {
-        return transferService.confirmDeposit(transactionHash);
+        return transferService.confirmTransfer(transactionHash);
     };
 
     beforeAll(async () => {
@@ -183,6 +184,48 @@ describe('AppController (e2e)', () => {
                 .post('/order/ask')
                 .send(createAsk)
                 .expect(403);
+        });
+
+        it('should not be able to withdraw without any deposit', async () => {
+            const withdrawal: RequestWithdrawalDTO = {
+                assetId: deposit.asset.id,
+                userId: user1Id,
+                amount,
+                address: '0x123'
+            };
+
+            await request(app.getHttpServer())
+                .post('/account/withdrawal')
+                .send(withdrawal)
+                .expect(403);
+        });
+
+        it('should be able to withdraw after confirming deposit', async () => {
+            await confirmDeposit();
+
+            const withdrawal: RequestWithdrawalDTO = {
+                assetId: deposit.asset.id,
+                userId: user1Id,
+                amount,
+                address: '0x123'
+            };
+
+            await request(app.getHttpServer())
+                .post('/account/withdrawal')
+                .send(withdrawal)
+                .expect(201);
+
+            await request(app.getHttpServer())
+                .get('/account/1')
+                .expect(200)
+                .expect(res => {
+                    const account = res.body as AccountDTO;
+
+                    expect(account.address).toBe(user1Address);
+                    expect(account.available.length).toBe(1);
+                    expect(account.available[0].amount).toEqual('0');
+                    expect(account.available[0].asset).toMatchObject(asset);
+                });
         });
     });
 

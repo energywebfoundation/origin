@@ -1,6 +1,6 @@
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
-import { Repository, Connection } from 'typeorm';
+import { Repository, Connection, EntityManager } from 'typeorm';
 
 import { Transfer } from './transfer.entity';
 import { TransferDirection } from './transfer-direction';
@@ -8,6 +8,7 @@ import { CreateDepositDTO } from './create-deposit.dto';
 import { AssetService } from '../asset/asset.service';
 import { Asset } from '../asset/asset.entity';
 import { AccountService } from '../account/account.service';
+import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 
 @Injectable()
 export class TransferService {
@@ -34,6 +35,22 @@ export class TransferService {
         });
     }
 
+    public async requestWithdrawal(
+        withdrawalDTO: RequestWithdrawalDTO,
+        transaction?: EntityManager
+    ) {
+        const withdrawal: Partial<Transfer> = {
+            ...withdrawalDTO,
+            asset: { id: withdrawalDTO.assetId } as Asset,
+            confirmed: false,
+            direction: TransferDirection.Withdrawal
+        };
+
+        const manager = transaction || this.repository.manager;
+
+        return manager.transaction(tr => tr.create<Transfer>(Transfer, withdrawal).save());
+    }
+
     public async createDeposit(depositDTO: CreateDepositDTO) {
         return this.connection.transaction<Transfer>(async manager => {
             const { id } = await this.assetService.createIfNotExist(depositDTO.asset, manager);
@@ -56,10 +73,14 @@ export class TransferService {
         });
     }
 
-    public async confirmDeposit(transactionHash: string) {
+    public async confirmTransfer(transactionHash: string) {
         return this.repository.update(
             { transactionHash },
             { confirmed: true, confirmationBlock: 10000 }
         );
+    }
+
+    public async updateTransactionHash(id: string, transactionHash: string) {
+        return this.repository.update({ id }, { transactionHash });
     }
 }

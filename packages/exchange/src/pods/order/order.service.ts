@@ -37,7 +37,11 @@ export class OrderService {
 
     public async createAsk(ask: CreateAskDTO) {
         if (
-            !(await this.accountService.hasEnoughAssetAmount(ask.userId, ask.assetId, ask.volume))
+            !(await this.accountService.hasEnoughAssetAmount(
+                ask.userId,
+                ask.assetId,
+                ask.volume.toString()
+            ))
         ) {
             throw new Error('Not enough assets');
         }
