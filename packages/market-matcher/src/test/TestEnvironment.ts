@@ -273,11 +273,7 @@ const deployCertificate = async (
     const producingDevice = await new ProducingDevice.Entity(deviceId, smartMeterConfig).sync();
     await producingDevice.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
 
-    await certificateLogic.requestCertificates(0, 0, {
-        privateKey: deviceOwnerPK
-    });
-
-    await certificateLogic.approveCertificationRequest(0, {
+    await certificateLogic.createArbitraryCertfificate(0, requiredEnergy, '', {
         privateKey: issuerPK
     });
 

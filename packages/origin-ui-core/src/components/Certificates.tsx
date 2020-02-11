@@ -10,6 +10,7 @@ import { useLinks } from '../utils/routing';
 import { useSelector } from 'react-redux';
 import { getDemands } from '../features/selectors';
 import { getCurrentUser } from '../features/users/selectors';
+import { CertificationRequestStatus } from '@energyweb/origin-backend-core';
 
 export function Certificates() {
     const demands = useSelector(getDemands);
@@ -45,8 +46,12 @@ export function Certificates() {
         return CertificateTableKeyDemand(SelectedState.ForDemand, demandId);
     }
 
+    const PendingCertificationRequestsTable = () => (
+        <CertificationRequestsTable status={CertificationRequestStatus.Pending} />
+    );
+
     const ApprovedCertificationRequestsTable = () => (
-        <CertificationRequestsTable approvedOnly={true} />
+        <CertificationRequestsTable status={CertificationRequestStatus.Approved} />
     );
 
     const isIssuer = currentUser && currentUser.isRole(Role.Issuer);
@@ -79,7 +84,7 @@ export function Certificates() {
         {
             key: 'pending',
             label: 'Pending',
-            component: CertificationRequestsTable,
+            component: PendingCertificationRequestsTable,
             show: true
         },
         {

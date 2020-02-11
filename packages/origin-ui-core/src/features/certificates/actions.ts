@@ -41,8 +41,10 @@ export interface IRequestCertificatesAction {
     type: CertificatesActions.requestCertificates;
     payload: {
         deviceId: string;
-        lastReadIndex: number;
         energy: number;
+        startTime: number;
+        endTime: number;
+        files: string[];
     };
 }
 
