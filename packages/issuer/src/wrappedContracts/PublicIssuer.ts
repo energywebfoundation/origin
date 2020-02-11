@@ -21,8 +21,8 @@ export class PublicIssuer extends GeneralFunctions {
         this.web3 = web3;
     }
 
-    async initialize(registryAddress: string, txParams: ISpecialTx) {
-        const method = this.web3Contract.methods.initialize(registryAddress);
+    async initialize(certificateTopic: number, registryAddress: string, owner: string, txParams: ISpecialTx) {
+        const method = this.web3Contract.methods.initialize(certificateTopic, registryAddress, owner);
 
         return this.send(method, txParams);
     }

@@ -33,6 +33,15 @@ describe('PublicIssuer', () => {
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
+    let timestamp = moment().unix();
+
+    const setActiveUser = (privateKey: string) => {
+        conf.blockchainProperties.activeUser = {
+            address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
+            privateKey
+        };
+    };
+
     it('migrates PublicIssuer and Registry', async () => {
         registry = await migrateRegistry(web3, privateKeyDeployment);
         publicIssuer = await migratePublicIssuer(
@@ -52,7 +61,7 @@ describe('PublicIssuer', () => {
                     address: accountDeployment,
                     privateKey: privateKeyDeployment
                 },
-                issuerLogicInstance: { public: publicIssuer, private: null },
+                issuerLogicInstance: { public: publicIssuer, private: publicIssuer },
                 web3
             },
             offChainDataSource: new OffChainDataSourceMock(),
@@ -61,14 +70,10 @@ describe('PublicIssuer', () => {
     });
 
     it('user correctly requests issuance', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountDeviceOwner,
-            privateKey: deviceOwnerPK
-        };
+        setActiveUser(deviceOwnerPK);
 
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
+        const fromTime = timestamp;
+        const toTime = timestamp++;
         const deviceId = '1';
 
         const requestIssue = await RequestIssue.createRequestIssue(
@@ -92,22 +97,20 @@ describe('PublicIssuer', () => {
     });
 
     it('issuer correctly approves issuance', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountDeviceOwner,
-            privateKey: deviceOwnerPK
-        };
+        setActiveUser(deviceOwnerPK);
 
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
+        const fromTime = timestamp;
+        const toTime = timestamp++;
         const deviceId = '1';
 
-        let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        let requestIssue = await RequestIssue.createRequestIssue(
+            fromTime,
+            toTime,
+            deviceId,
+            conf
+        );
 
-        conf.blockchainProperties.activeUser = {
-            address: issuerAccount,
-            privateKey: issuerPK
-        };
+        setActiveUser(issuerPK);
 
         const volume = 1000;
         const certificateId = await requestIssue.approve(accountDeviceOwner, volume);
@@ -124,22 +127,15 @@ describe('PublicIssuer', () => {
     });
 
     it('issuer revokes a certificate', async () => {
-        conf.blockchainProperties.activeUser = {
-            address: accountDeviceOwner,
-            privateKey: deviceOwnerPK
-        };
+        setActiveUser(deviceOwnerPK);
 
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
+        const fromTime = timestamp;
+        const toTime = timestamp++;
         const deviceId = '1';
 
         let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
 
-        conf.blockchainProperties.activeUser = {
-            address: issuerAccount,
-            privateKey: issuerPK
-        };
+        setActiveUser(issuerPK);
 
         const volume = 1000;
         const certificateId = await requestIssue.approve(accountDeviceOwner, volume);

@@ -8,7 +8,7 @@ export { Registry } from './wrappedContracts/Registry';
 export { PublicIssuer } from './wrappedContracts/PublicIssuer';
 export { PrivateIssuer } from './wrappedContracts/PrivateIssuer';
 
-export { PUBLIC_CERTIFICATE_TOPIC, PRIVATE_CERTIFICATE_TOPIC } from './const';
+export * from './const';
 export { migratePublicIssuer, migratePrivateIssuer, migrateRegistry } from './migrate';
 
 export { RequestIssue, Certificate, CommitmentSchema }

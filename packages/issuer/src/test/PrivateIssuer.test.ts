@@ -33,6 +33,8 @@ describe('PrivateIssuer', () => {
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
 
+    let timestamp = moment().unix();
+
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
@@ -43,9 +45,8 @@ describe('PrivateIssuer', () => {
     const createRequestIssue = async (conf: Configuration.Entity) => {
         setActiveUser(deviceOwnerPK);
 
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
+        const fromTime = timestamp;
+        const toTime = timestamp++;
         const deviceId = '1';
 
         return RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf, true);

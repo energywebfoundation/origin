@@ -1,5 +1,6 @@
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 import { PublicIssuer, PrivateIssuer, CommitmentSchema, ICommitment } from '..';
+import { CertificateTopic } from '../const';
 
 export interface IRequestIssueOnChainProperties {
     id: string;
