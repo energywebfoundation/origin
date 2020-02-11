@@ -8,7 +8,7 @@ import { Configuration } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migratePrivateIssuer, migratePublicIssuer, migrateRegistry } from '../migrate';
-import { RequestIssue, PrivateIssuer, Registry, PublicIssuer, CertificateTopic } from '..';
+import { RequestIssue, PrivateIssuer, Registry, PublicIssuer } from '..';
 
 import { logger } from '../Logger';
 

@@ -11,14 +11,14 @@ contract PublicIssuer is AbstractIssuer {
 
         request.approved = true;
 
-        uint256 certificateId = registry.issue(_to, _validityData, request.certificateTopic, _value, request.data);
+        uint256 certificateId = registry.issue(_to, _validityData, certificateTopic, _value, request.data);
         certificateToRequestStorage[certificateId] = _requestId;
 
         return certificateId;
     }
 
-    function issue(int _topic, address _to, uint _value, bytes memory _data) public onlyOwner returns (uint256) {
-        uint256 requestId = requestIssueFor(_topic, _data, _to);
+    function issue(address _to, uint _value, bytes memory _data) public onlyOwner returns (uint256) {
+        uint256 requestId = requestIssueFor(_data, _to);
 
         return approveIssue(
             _to,

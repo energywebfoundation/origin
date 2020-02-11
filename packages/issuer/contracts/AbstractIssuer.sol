@@ -9,7 +9,6 @@ contract AbstractIssuer is Initializable, Ownable {
     event IssueRequest(address indexed _owner, uint256 indexed _id);
 
     struct RequestIssue {
-        int certificateTopic;
         address owner;
         bytes data;
         bool approved;
@@ -21,6 +20,7 @@ contract AbstractIssuer is Initializable, Ownable {
         uint to;
     }
 
+    int public certificateTopic;
     Registry public registry;
 
     uint public requestIssueNonce;
@@ -28,9 +28,11 @@ contract AbstractIssuer is Initializable, Ownable {
     mapping(uint256 => RequestIssue) public requestIssueStorage;
     mapping(uint256 => uint256) public certificateToRequestStorage;
 
-    function initialize(address _registry, address _owner) public initializer {
+    function initialize(int _certificateTopic, address _registry, address _owner) public initializer {
         require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
         require(_owner != address(0), "initialize: Cannot use address 0x0 as the owner.");
+
+        certificateTopic = _certificateTopic;
 
         registry = Registry(_registry);
         Ownable.initialize(_owner);
@@ -52,11 +54,10 @@ contract AbstractIssuer is Initializable, Ownable {
         return getRequestIssue(certificateToRequestStorage[_certificateId]);
     }
 
-    function requestIssueFor(int _topic, bytes memory _data, address _owner) public returns (uint) {
+    function requestIssueFor(bytes memory _data, address _owner) public returns (uint) {
         uint id = ++requestIssueNonce;
 
         requestIssueStorage[id] = RequestIssue({
-            certificateTopic: _topic,
             owner: _owner,
             data: _data,
             approved: false,
@@ -68,8 +69,8 @@ contract AbstractIssuer is Initializable, Ownable {
         return id;
     }
 
-    function requestIssue(int _topic, bytes calldata _data) external {
-        requestIssueFor(_topic, _data, msg.sender);
+    function requestIssue(bytes calldata _data) external {
+        requestIssueFor(_data, msg.sender);
     }
 
     function isRequestValid(uint256 _requestId) external view returns (bool) {

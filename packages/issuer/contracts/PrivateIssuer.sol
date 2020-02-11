@@ -39,8 +39,8 @@ contract PrivateIssuer is Initializable, AbstractIssuer {
 	mapping(uint256 => bytes32) public commitments;
 	mapping(uint256 => bool) public migrations;
 
-	function initialize(address _registry, address _publicIssuer, address owner) public initializer {
-		this.initialize(_registry, owner);
+	function initialize(int _certificateTopic, address _registry, address _publicIssuer, address owner) public initializer {
+		this.initialize(_certificateTopic, _registry, owner);
 
 		require(_publicIssuer != address(0), "initialize: Cannot use address 0x0 as public issuer.");
 		publicIssuer = PublicIssuer(_publicIssuer);
@@ -104,9 +104,7 @@ contract PrivateIssuer is Initializable, AbstractIssuer {
 			migrations[request.certificateId] = true;
 			(,,bytes memory validityData, bytes memory data) = registry.getCertificate(request.certificateId);
 
-			RequestIssue memory privateRequestIssue = getRequestIssueForCertificate(request.certificateId);
-
-			uint requestId = publicIssuer.requestIssueFor(privateRequestIssue.certificateTopic, data, request.owner);
+			uint requestId = publicIssuer.requestIssueFor(data, request.owner);
 			uint id = publicIssuer.approveIssue(request.owner, requestId, _value, validityData);
 
 			emit PublicCertificateCreated(request.certificateId, id);

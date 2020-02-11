@@ -5,6 +5,7 @@ import { deploy } from '@energyweb/utils-general';
 import { PublicIssuer } from './wrappedContracts/PublicIssuer';
 import { PrivateIssuer } from './wrappedContracts/PrivateIssuer';
 import { Registry } from './wrappedContracts/Registry';
+import { CertificateTopic } from './const';
 
 import PublicIssuerJSON from '../build/contracts/PublicIssuer.json';
 import PrivateIssuerJSON from '../build/contracts/PrivateIssuer.json';
@@ -20,7 +21,7 @@ export async function migratePublicIssuer(web3: Web3, deployKey: string, registr
     })).contractAddress;
 
     const publicIssuer = new PublicIssuer(web3, publicIssuerAddress);
-    await publicIssuer.initialize(registryAddress, accountDeployment, {
+    await publicIssuer.initialize(CertificateTopic.PUBLIC_IREC, registryAddress, accountDeployment, {
         privateKey: privateKeyDeployment
     });
 
@@ -40,7 +41,7 @@ export async function migratePrivateIssuer(web3: Web3, deployKey: string, regist
     })).contractAddress;
 
     const privateIssuer = new PrivateIssuer(web3, privateIssuerAddress);
-    await privateIssuer.initialize(registryAddress, publicIssuerAddress, accountDeployment, {
+    await privateIssuer.initialize(CertificateTopic.PRIVATE_IREC, registryAddress, publicIssuerAddress, accountDeployment, {
         privateKey: privateKeyDeployment
     });
 

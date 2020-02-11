@@ -268,7 +268,7 @@ export const createCertificate = async (
         const publicIssuer: PublicIssuer = configuration.blockchainProperties.issuerLogicInstance.public
         const data = await publicIssuer.encodeIssue(fromTime, toTime, deviceId);
 
-        const { logs } = await publicIssuer.issue(CertificateTopic.PUBLIC_IREC, to, value, data, Configuration.getAccount(configuration));
+        const { logs } = await publicIssuer.issue(to, value, data, Configuration.getAccount(configuration));
 
         certificate.id = getIdFromLogs(logs);
     }
