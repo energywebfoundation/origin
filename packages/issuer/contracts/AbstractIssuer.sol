@@ -27,6 +27,8 @@ contract AbstractIssuer is Initializable, Ownable {
 
     mapping(uint256 => RequestIssue) public requestIssueStorage;
     mapping(uint256 => uint256) public certificateToRequestStorage;
+    // Device Id => Latest Generation Timestamp
+    mapping(string => uint256) public deviceLatestGenerationTimestamp;
 
     function initialize(int _certificateTopic, address _registry, address _owner) public initializer {
         require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
@@ -55,6 +57,14 @@ contract AbstractIssuer is Initializable, Ownable {
     }
 
     function requestIssueFor(bytes memory _data, address _owner) public returns (uint) {
+        (uint256 from, uint256 to, string memory deviceId) = decodeIssue(_data);
+        require(to > from, "Generation period invalid. 'to' is lower than 'from'");
+        require(to <= block.timestamp, "Generation period invalid. 'to' is higher than now");
+        require(
+            from >= deviceLatestGenerationTimestamp[deviceId],
+            "requested 'from' and 'to' overlap already approved generation period"
+        );
+
         uint id = ++requestIssueNonce;
 
         requestIssueStorage[id] = RequestIssue({
@@ -63,6 +73,8 @@ contract AbstractIssuer is Initializable, Ownable {
             approved: false,
             revoked: false
         });
+
+        deviceLatestGenerationTimestamp[deviceId] = to;
 
         emit IssueRequest(msg.sender, id);
 

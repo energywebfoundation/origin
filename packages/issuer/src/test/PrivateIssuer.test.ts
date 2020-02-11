@@ -33,7 +33,7 @@ describe('PrivateIssuer', () => {
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
 
-    let timestamp = moment().unix();
+    let timestamp = moment().subtract(10, 'year').unix();
 
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
@@ -46,7 +46,9 @@ describe('PrivateIssuer', () => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
-        const toTime = timestamp++;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
         const deviceId = '1';
 
         return RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf, true);

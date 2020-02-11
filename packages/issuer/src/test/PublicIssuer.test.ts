@@ -33,7 +33,7 @@ describe('PublicIssuer', () => {
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
     const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPK).address;
 
-    let timestamp = moment().unix();
+    let timestamp = moment().subtract(10, 'year').unix();
 
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
@@ -71,9 +71,11 @@ describe('PublicIssuer', () => {
 
     it('user correctly requests issuance', async () => {
         setActiveUser(deviceOwnerPK);
-
+        
         const fromTime = timestamp;
-        const toTime = timestamp++;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
         const deviceId = '1';
 
         const requestIssue = await RequestIssue.createRequestIssue(
@@ -100,7 +102,9 @@ describe('PublicIssuer', () => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
-        const toTime = timestamp++;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
         const deviceId = '1';
 
         let requestIssue = await RequestIssue.createRequestIssue(
@@ -130,7 +134,9 @@ describe('PublicIssuer', () => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
-        const toTime = timestamp++;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
         const deviceId = '1';
 
         let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
@@ -155,5 +161,52 @@ describe('PublicIssuer', () => {
             Number(certificateId)
         );
         assert.equal(deviceOwnerBalance, volume);
+    });
+
+    it('should fail to request 2 certificates with the same topic and generation period', async () => {
+        setActiveUser(deviceOwnerPK);
+
+        const fromTime = timestamp;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
+        const deviceId = '1';
+
+        await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+
+        let failed = false;
+
+        try {
+            await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+        } catch (e) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
+    it('should request the same certificate after revoking one', async () => {
+        setActiveUser(deviceOwnerPK);
+
+        const fromTime = timestamp;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
+        const deviceId = '1';
+
+        let requestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+
+        setActiveUser(issuerPK);
+
+        const volume = 1000;
+        await requestIssue.approve(accountDeviceOwner, volume);
+        requestIssue = await requestIssue.sync();
+
+        await requestIssue.revoke();
+        requestIssue = await requestIssue.sync();
+
+        const newRequestIssue = await RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf);
+
+        assert.exists(newRequestIssue);
     });
 });
