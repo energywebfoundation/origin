@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.1...@energyweb/origin-ui@1.5.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* yarn run:origin script ([cdaf7a3](https://github.com/energywebfoundation/origin/commit/cdaf7a3b56f326e63435a77929ec7755b299eceb))
+
+
+
+
+
 ## [1.5.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.0...@energyweb/origin-ui@1.5.1) (2020-02-04)
 
 **Note:** Version bump only for package @energyweb/origin-ui

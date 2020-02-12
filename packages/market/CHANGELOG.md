@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@5.0.0...@energyweb/market@6.0.0) (2020-02-12)
+
+
+### chore
+
+* **market:** move certificate requests off-chain ([1d76fd1](https://github.com/energywebfoundation/origin/commit/1d76fd1e3be90027b73dc5914857a76b92e212cb))
+
+
+### BREAKING CHANGES
+
+* **market:** remove getCertificationRequestEvents() from PurchasableCertificate
+
+
+
+
+
 # [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market@4.0.0...@energyweb/market@5.0.0) (2020-02-04)
 
 
