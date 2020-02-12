@@ -1,14 +1,15 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
     BaseEntity,
-    UpdateDateColumn,
+    Column,
+    Entity,
     JoinTable,
-    ManyToMany
+    ManyToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
 } from 'typeorm';
-import { Product } from '@energyweb/exchange-core';
+
 import { Order } from '../order/order.entity';
+import { ProductDTO } from '../order/product.dto';
 import { Trade } from '../trade/trade.entity';
 
 @Entity()
@@ -36,7 +37,7 @@ export class Demand extends BaseEntity {
     timeFrame: number;
 
     @Column('json')
-    product: Product;
+    product: ProductDTO;
 
     @ManyToMany(() => Order, {
         eager: true

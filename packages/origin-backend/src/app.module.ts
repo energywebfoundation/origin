@@ -36,7 +36,7 @@ import { DeviceTypesModule } from './pods/device-types/device-types.module';
 import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { CertificationRequestModule } from './pods/certificate/certificate.module';
 
-const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
+const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../../../.env');
 
 @Module({
     imports: [
