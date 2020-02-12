@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { IRECDeviceService, Countries } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../utils/notifications';
 import {
     Paper,
@@ -24,17 +23,17 @@ import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     getCompliance,
-    getEnvironment,
     getRegions,
-    getCountry
+    getCountry,
+    getOffChainDataSource
 } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
-import axios from 'axios';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { Skeleton } from '@material-ui/lab';
 
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -91,18 +90,16 @@ export function AddDevice() {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
-    const environment = useSelector(getEnvironment);
     const country = useSelector(getCountry);
+    const offChainDataSource = useSelector(getOffChainDataSource);
 
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
 
-    const irecDeviceService = new IRECDeviceService();
-
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
     const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
-    const [imagesUploadedList, setImagesUploadedList] = useState([]);
+    const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
 
     const history = useHistory();
 
@@ -195,19 +192,11 @@ export function AddDevice() {
             return;
         }
 
-        const formData = new FormData();
-
-        for (let i = 0; i < files.length; i++) {
-            formData.append(`images`, files[i]);
-        }
-
         try {
-            const response = await axios.post(`${environment.BACKEND_URL}:${environment.BACKEND_PORT}/api/Image`, formData, {
-                headers: { 'Content-type': 'multipart/form-data' }
-            });
+            const uploadedFiles = await offChainDataSource.filesClient.upload(files);
 
             setImagesUploaded(true);
-            setImagesUploadedList(response.data);
+            setImagesUploadedList(uploadedFiles);
         } catch (error) {
             showNotification(
                 `Unexpected error occurred when ploading images.`,
@@ -219,6 +208,10 @@ export function AddDevice() {
     const initialFormValues: IFormValues = INITIAL_FORM_VALUES;
 
     const regions = useSelector(getRegions);
+
+    if (!configuration) {
+        return <Skeleton variant="rect" height={200} />;
+    }
 
     return (
         <Paper className={classes.container}>
@@ -270,7 +263,7 @@ export function AddDevice() {
                                             onChange={(value: string[]) =>
                                                 setSelectedDeviceType(value)
                                             }
-                                            allValues={irecDeviceService.DeviceTypes}
+                                            allValues={configuration.deviceTypeService.deviceTypes}
                                             selectOptions={[
                                                 {
                                                     label: 'Device type',

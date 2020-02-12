@@ -50,8 +50,6 @@ export class ComplianceController {
 
     @Delete()
     async delete() {
-        console.log(`DELETE - Compliance`);
-
         const complianceRepository = getRepository(Compliance);
         const [compliance] = await complianceRepository.find();
 

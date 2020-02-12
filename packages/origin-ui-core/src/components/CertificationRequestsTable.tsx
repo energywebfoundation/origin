@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Certificate } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
 import { showNotification, NotificationType } from '../utils/notifications';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,28 +11,32 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from './Table/PaginatedLoaderHooks';
-import { IRECDeviceService } from '@energyweb/utils-general';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { getDeviceLocationText, LOCATION_TITLE } from '../utils/helper';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
+import { Skeleton } from '@material-ui/lab';
+import { getOffChainDataSource } from '../features/general/selectors';
+import {
+    ICertificationRequestWithRelationsIds,
+    CertificationRequestStatus
+} from '@energyweb/origin-backend-core';
+import { Certificate } from '@energyweb/origin';
 
 interface IProps {
-    approvedOnly?: boolean;
+    status: CertificationRequestStatus;
 }
 
-const deviceTypeService = new IRECDeviceService();
-
 interface IRecord {
-    certificationRequestId: number;
+    request: ICertificationRequestWithRelationsIds;
     device: ProducingDevice.Entity;
-    energy: number;
 }
 
 export function CertificationRequestsTable(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const currentUser = useSelector(getCurrentUser);
     const producingDevices = useSelector(getProducingDevices);
+    const offChainDataSource = useSelector(getOffChainDataSource);
 
     const dispatch = useDispatch();
 
@@ -41,43 +44,33 @@ export function CertificationRequestsTable(props: IProps) {
         requestedPageSize,
         offset
     }: IPaginatedLoaderHooksFetchDataParameters) {
-        if (!currentUser || producingDevices.length === 0) {
+        if (!currentUser || !offChainDataSource || producingDevices.length === 0) {
             return {
                 paginatedData: [],
                 total: 0
             };
         }
 
-        const view = props.approvedOnly ? 'approved' : 'pending';
-
         const isIssuer = currentUser.isRole(Role.Issuer);
 
-        const requests = await configuration.blockchainProperties.certificateLogicInstance.getCertificationRequests();
+        const requests = await offChainDataSource.certificateClient.getCertificationRequests();
 
         let newPaginatedData: IRecord[] = [];
 
         for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
-            const device = producingDevices.find(a => a.id === request.deviceId);
+            const device = producingDevices.find(a => a.id === request.device.toString());
 
             if (
-                (view === 'pending' && Number(request.status) !== 0) ||
-                (view === 'approved' && Number(request.status) !== 1) ||
+                request.status !== props.status ||
                 (!isIssuer && currentUser.id.toLowerCase() !== device?.owner.address.toLowerCase())
             ) {
                 continue;
             }
 
-            const reads = await device.getSmartMeterReads();
-
-            const energy = reads
-                .slice(request.readsStartIndex, Number(request.readsEndIndex) + 1)
-                .reduce((a, b) => a + Number(b.energy), 0);
-
             newPaginatedData.push({
-                certificationRequestId: i,
-                device,
-                energy
+                request,
+                device
             });
         }
 
@@ -97,15 +90,21 @@ export function CertificationRequestsTable(props: IProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [props.approvedOnly, currentUser, producingDevices.length]);
+    }, [props.status, currentUser, producingDevices.length]);
 
     async function approve(rowIndex: number) {
-        const certificationRequestId = paginatedData[rowIndex].certificationRequestId;
+        const request = paginatedData[rowIndex].request;
 
         dispatch(setLoading(true));
 
         try {
-            await Certificate.approveCertificationRequest(certificationRequestId, configuration);
+            await offChainDataSource.certificateClient.approveCertificationRequest(request.id);
+            Certificate.createArbitraryCertfificate(
+                request.device,
+                request.energy,
+                request.id,
+                configuration
+            );
 
             showNotification(`Certification request approved.`, NotificationType.Success);
 
@@ -118,8 +117,12 @@ export function CertificationRequestsTable(props: IProps) {
         dispatch(setLoading(false));
     }
 
+    if (!configuration) {
+        return <Skeleton variant="rect" height={200} />;
+    }
+
     const actions =
-        currentUser?.isRole(Role.Issuer) && !props.approvedOnly
+        currentUser?.isRole(Role.Issuer) && props.status === CertificationRequestStatus.Pending
             ? [
                   {
                       icon: <Check />,
@@ -134,16 +137,30 @@ export function CertificationRequestsTable(props: IProps) {
         { id: 'locationText', label: LOCATION_TITLE },
         { id: 'type', label: 'Type' },
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
-        { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` }
+        { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
+        { id: 'files', label: 'Evidence files' }
     ] as const;
 
-    const rows = paginatedData.map(({ device, energy }) => {
+    const rows = paginatedData.map(({ device, request }) => {
         return {
             facility: device.offChainProperties.facilityName,
             locationText: getDeviceLocationText(device),
-            type: deviceTypeService.getDisplayText(device.offChainProperties.deviceType),
+            type: configuration.deviceTypeService.getDisplayText(
+                device.offChainProperties.deviceType
+            ),
             capacity: PowerFormatter.format(device.offChainProperties.capacityInW),
-            meterRead: EnergyFormatter.format(energy)
+            meterRead: EnergyFormatter.format(request.energy),
+            files: request.files.map(f => (
+                <div key={f}>
+                    <a
+                        href={offChainDataSource.filesClient.getLink(f)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {f}
+                    </a>
+                </div>
+            ))
         };
     });
 

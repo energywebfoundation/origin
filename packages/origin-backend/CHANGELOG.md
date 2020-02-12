@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.4.0...@energyweb/origin-backend@3.5.0) (2020-02-04)
+
+
+### Bug Fixes
+
+* **deps:** update nest monorepo to v6.11.5 ([0ddc961](https://github.com/energywebfoundation/origin/commit/0ddc9619933b5dd0585c4767b7229bf502e55ccf))
+
+
+### Features
+
+* add a WebSocket-based event gateway to the backend + create entities for Demand and Device ([af703ce](https://github.com/energywebfoundation/origin/commit/af703ce9065ea2dc3c2034ca571b563886d12a55))
+* email notifications for organization status change, member invitation and removal ([a2f0dae](https://github.com/energywebfoundation/origin/commit/a2f0dae5dab021980c702dc339654d52af2db47d))
+
+
+
+
+
 # [3.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@3.3.0...@energyweb/origin-backend@3.4.0) (2020-01-31)
 
 

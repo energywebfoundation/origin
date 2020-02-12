@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher-core@1.2.3...@energyweb/market-matcher-core@2.0.0) (2020-02-04)
+
+
+### chore
+
+* Use off-chain events for Demand + remove matching Agrements ([9bfda40](https://github.com/energywebfoundation/origin/commit/9bfda403028b5117b2a1fa0d6b784c537ee7c3db))
+
+
+### BREAKING CHANGES
+
+* Agreement matching is no longer supported
+
+
+
+
+
 ## [1.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher-core@1.2.2...@energyweb/market-matcher-core@1.2.3) (2020-01-31)
 
 **Note:** Version bump only for package @energyweb/market-matcher-core

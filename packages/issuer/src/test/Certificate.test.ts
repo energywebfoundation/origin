@@ -36,6 +36,8 @@ describe('Cerificate tests', () => {
     const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
+    let timestamp = moment().subtract(10, 'year').unix();
+
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
@@ -46,9 +48,10 @@ describe('Cerificate tests', () => {
     const issueCertificate = async (volume: number, isPrivate: boolean = false) => {
         setActiveUser(issuerPK);
 
-        const now = moment();
-        const generationStartTime = now.subtract(30, 'day').unix();
-        const generationEndTime = now.unix();
+        const generationStartTime = timestamp;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const generationEndTime = timestamp;
         const deviceId = '1';
 
         return Certificate.createCertificate(
@@ -119,13 +122,11 @@ describe('Cerificate tests', () => {
 
         await certificate.transfer(accountTrader, totalVolume / 4);
 
-        assert.isTrue(await certificate.isOwned());
-        assert.equal(await certificate.ownedVolume(), (totalVolume / 4) * 3);
+        assert.isTrue(await certificate.isOwned(accountDeviceOwner));
+        assert.equal(await certificate.ownedVolume(accountDeviceOwner), (totalVolume / 4) * 3);
 
-        setActiveUser(traderPK);
-
-        assert.isTrue(await certificate.isOwned());
-        assert.equal(await certificate.ownedVolume(), totalVolume / 4);
+        assert.isTrue(await certificate.isOwned(accountTrader));
+        assert.equal(await certificate.ownedVolume(accountTrader), totalVolume / 4);
     });
 
     it('fails claiming a revoked certificate', async () => {
@@ -197,12 +198,10 @@ describe('Cerificate tests', () => {
         assert.equal(await certificate.ownedVolume(), 0);
         assert.equal(await certificate2.ownedVolume(), 0);
 
-        setActiveUser(traderPK);
-
-        assert.isTrue(await certificate.isOwned());
-        assert.isTrue(await certificate2.isOwned());
-        assert.equal(await certificate.ownedVolume(), totalVolume);
-        assert.equal(await certificate2.ownedVolume(), totalVolume);
+        assert.isTrue(await certificate.isOwned(accountTrader));
+        assert.isTrue(await certificate2.isOwned(accountTrader));
+        assert.equal(await certificate.ownedVolume(accountTrader), totalVolume);
+        assert.equal(await certificate2.ownedVolume(accountTrader), totalVolume);
     });
 
     it('batch claims certificates', async () => {

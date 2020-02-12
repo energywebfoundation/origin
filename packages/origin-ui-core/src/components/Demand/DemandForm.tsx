@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Role } from '@energyweb/user-registry';
-import { TimeFrame, IRECDeviceService } from '@energyweb/utils-general';
+import { TimeFrame } from '@energyweb/utils-general';
 import { showNotification, NotificationType } from '../../utils/notifications';
 import {
     Paper,
@@ -93,8 +93,6 @@ export function DemandForm(props: IProps) {
 
     const dispatch = useDispatch();
     const { getDemandViewLink } = useLinks();
-
-    const irecDeviceService = new IRECDeviceService();
 
     const [selectedLocation, setSelectedLocation] = useState([]);
     const [selectedDeviceType, setSelectedDeviceType] = useState([]);
@@ -239,7 +237,7 @@ export function DemandForm(props: IProps) {
         initialFormValues = INITIAL_FORM_VALUES;
     }
 
-    if (!initialFormValues || !regions) {
+    if (!initialFormValues || !regions || !configuration) {
         return <Skeleton variant="rect" height={200} />;
     }
 
@@ -400,7 +398,7 @@ export function DemandForm(props: IProps) {
                                     <HierarchicalMultiSelect
                                         selectedValue={selectedDeviceType}
                                         onChange={(value: string[]) => setSelectedDeviceType(value)}
-                                        allValues={irecDeviceService.DeviceTypes}
+                                        allValues={configuration.deviceTypeService?.deviceTypes}
                                         selectOptions={[
                                             {
                                                 label: 'Device type',

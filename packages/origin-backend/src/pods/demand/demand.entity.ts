@@ -1,6 +1,10 @@
 import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, Min, IsBoolean, IsOptional } from 'class-validator';
-import { DemandStatus, IDemandProperties } from '@energyweb/origin-backend-core';
+import {
+    DemandStatus,
+    IDemandProperties,
+    DemandPartiallyFilled
+} from '@energyweb/origin-backend-core';
 
 @Entity()
 export class Demand extends BaseEntity implements IDemandProperties {
@@ -63,6 +67,6 @@ export class Demand extends BaseEntity implements IDemandProperties {
     @Column('simple-array')
     vintage?: [number, number];
 
-    @Column('simple-array')
-    demandPartiallyFilledEvents: string[];
+    @Column('simple-json')
+    demandPartiallyFilledEvents: DemandPartiallyFilled[];
 }

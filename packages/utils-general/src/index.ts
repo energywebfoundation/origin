@@ -8,12 +8,7 @@ export { Configuration };
 export { validateJson } from './off-chain-data/json-validator';
 export { TimeFrame, Unit } from './blockchain-facade/EnumExports';
 export { deploy } from './deployment/deploy';
-export {
-    IDeviceService,
-    IRECDeviceService,
-    DecodedDeviceType,
-    EncodedDeviceType
-} from './blockchain-facade/DeviceTypeService';
+export * from './blockchain-facade/DeviceTypeService';
 export { extendArray } from './extensions/array.extensions';
 export { TimeSeries, Resolution, TimeSeriesElement, TS } from './TimeSeries';
 export { GeneralFunctions, ISpecialTx, getClientVersion } from './GeneralFunctions';

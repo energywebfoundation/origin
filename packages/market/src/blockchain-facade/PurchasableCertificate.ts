@@ -346,10 +346,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements IPurchas
         );
     }
 
-    async getCertificationRequestEvents() {
-        return this.certificate.getCertificationRequestEvents();
-    }
-
     async getAllCertificateEvents(): Promise<EventLog[]> {
         return this.certificate.getAllCertificateEvents();
     }

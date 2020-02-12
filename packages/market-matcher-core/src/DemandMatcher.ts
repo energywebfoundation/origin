@@ -51,7 +51,7 @@ export class DemandMatcher {
     }
 
     private async findMatchingCertificates(demand: Demand.Entity) {
-        const matchableDemand = new MatchableDemand(demand);
+        const matchableDemand = new MatchableDemand(demand, this.config.deviceTypeService);
 
         const certificates = await Promise.all(
             this.entityStore

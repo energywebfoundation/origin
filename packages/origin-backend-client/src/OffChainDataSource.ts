@@ -1,11 +1,13 @@
-import { IPreciseProofClient, PreciseProofClient } from "./PreciseProofClient";
-import { IConfigurationClient, ConfigurationClient } from "./ConfigurationClient";
-import { IUserClient, UserClient } from "./UserClient";
-import { IDeviceClient, DeviceClient } from "./DeviceClient";
-import { IRequestClient, RequestClient } from "./RequestClient";
-import { IOrganizationClient, OrganizationClient } from "./OrganizationClient";
-import { IDemandClient, DemandClient } from "./DemandClient";
-import { IEventClient, EventClient } from "./EventClient";
+import { IPreciseProofClient, PreciseProofClient } from './PreciseProofClient';
+import { IConfigurationClient, ConfigurationClient } from './ConfigurationClient';
+import { IUserClient, UserClient } from './UserClient';
+import { IDeviceClient, DeviceClient } from './DeviceClient';
+import { IRequestClient, RequestClient } from './RequestClient';
+import { IOrganizationClient, OrganizationClient } from './OrganizationClient';
+import { IDemandClient, DemandClient } from './DemandClient';
+import { IEventClient, EventClient } from './EventClient';
+import { FilesClient, IFilesClient } from './FilesClient';
+import { ICertificateClient, CertificateClient } from './CertificateClient';
 
 export interface IOffChainDataSource {
     dataApiUrl: string;
@@ -17,17 +19,28 @@ export interface IOffChainDataSource {
     organizationClient: IOrganizationClient;
     demandClient: IDemandClient;
     eventClient: IEventClient;
+    filesClient: IFilesClient;
+    certificateClient?: ICertificateClient; // @TODO change
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
-
     preciseProofClient: IPreciseProofClient;
+
     configurationClient: IConfigurationClient;
+
     userClient: IUserClient;
+
     deviceClient: IDeviceClient;
+
     organizationClient: IOrganizationClient;
+
     demandClient: IDemandClient;
+
     eventClient: IEventClient;
+
+    filesClient: IFilesClient;
+
+    certificateClient: ICertificateClient;
 
     constructor(
         public readonly backendUrl: string,
@@ -42,6 +55,8 @@ export class OffChainDataSource implements IOffChainDataSource {
         this.deviceClient = new DeviceClient(this.dataApiUrl, this.requestClient);
         this.organizationClient = new OrganizationClient(this.dataApiUrl, this.requestClient);
         this.demandClient = new DemandClient(this.dataApiUrl, this.requestClient);
+        this.filesClient = new FilesClient(this.dataApiUrl, this.requestClient);
+        this.certificateClient = new CertificateClient(this.dataApiUrl, this.requestClient);
 
         this.eventClient = new EventClient(eventApi);
         this.eventClient.start();

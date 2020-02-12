@@ -48,8 +48,6 @@ export class MarketContractLookupController {
         let { value } = body;
         value = value.toLowerCase();
 
-        console.log(`DELETE - MarketContractLookup ${value}`);
-
         const marketContractLookup = await this.marketContractLookupRepository.findOne(value);
 
         if (!marketContractLookup) {

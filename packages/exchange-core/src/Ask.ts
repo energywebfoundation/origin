@@ -1,4 +1,4 @@
-import { IDeviceService, ILocationService } from '@energyweb/utils-general';
+import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
 import { Order, OrderStatus, OrderSide } from './Order';
 import { Product } from './Product';
 import { Bid } from './Bid';
@@ -21,7 +21,7 @@ export class Ask extends Order {
 
     public filterBy(
         product: Product,
-        deviceService: IDeviceService,
+        deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
         const hasMatchingDeviceType = this.hasMatchingDeviceType(product, deviceService);
@@ -33,7 +33,7 @@ export class Ask extends Order {
 
     public matches(
         bid: Bid,
-        deviceService: IDeviceService,
+        deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
         return this.filterBy(bid.product, deviceService, locationService);
@@ -43,7 +43,7 @@ export class Ask extends Order {
         return new Ask(this.id, this.price, this.volume, this.product, this.validFrom, this.status);
     }
 
-    private hasMatchingDeviceType(product: Product, deviceService: IDeviceService) {
+    private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
         if (!product.deviceType) {
             return true;
         }

@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.10.0",
+    "version": "0.10.1",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -39,12 +39,15 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
+        "@energyweb/utils-general": "6.0.0",
+        "moment-range": "4.0.2",
         "web3": "1.2.4",
         "web3-core": "1.2.4",
         "web3-eth-contract": "1.2.4",
         "winston": "3.2.1"
     },
     "devDependencies": {
+        "@energyweb/origin-backend-client-mocks": "0.2.0",
         "ethlint": "1.2.5",
         "fs-extra": "8.1.0",
         "ganache-cli": "6.5.1",
@@ -54,6 +57,5 @@
     "publishConfig": {
         "access": "public",
         "registry": "https://registry.npmjs.org"
-    },
-    "private": true
+    }
 }

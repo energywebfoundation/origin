@@ -14,7 +14,7 @@ export interface IDevice {
     province: string;
     country: string;
     operationalSince: number;
-    capacityInW: number
+    capacityInW: number;
     gpsLatitude: string;
     gpsLongitude: string;
     timezone: string;
@@ -23,6 +23,10 @@ export interface IDevice {
     otherGreenAttributes: string;
     typeOfPublicSupport: string;
     deviceGroup?: string;
+}
+
+export interface IDeviceWithId extends IDevice {
+    id: number;
 }
 
 export type DeviceUpdateData = Pick<IDevice, 'status'>;
