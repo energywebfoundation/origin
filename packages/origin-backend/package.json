@@ -36,7 +36,7 @@
     "@energyweb/origin-backend-core": "1.2.0",
     "@energyweb/utils-general": "7.0.0",
     "@nestjs/common": "6.11.6",
-    "@nestjs/config": "^0.0.9",
+    "@nestjs/config": "^0.2.0",
     "@nestjs/core": "6.11.6",
     "@nestjs/jwt": "6.1.1",
     "@nestjs/passport": "6.1.1",
