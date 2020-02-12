@@ -15,11 +15,6 @@ contract AbstractIssuer is Initializable, Ownable {
         bool revoked;
     }
 
-    struct GenerationPeriod {
-        uint from;
-        uint to;
-    }
-
     int public certificateTopic;
     Registry public registry;
 
@@ -27,8 +22,9 @@ contract AbstractIssuer is Initializable, Ownable {
 
     mapping(uint256 => RequestIssue) public requestIssueStorage;
     mapping(uint256 => uint256) public certificateToRequestStorage;
-    // Device Id => Latest Generation Timestamp
-    mapping(string => uint256) public deviceLatestGenerationTimestamp;
+
+    // Device Id => RequestIssueIds[]
+    mapping(string => uint256[]) public requestsPerDevice;
 
     function initialize(int _certificateTopic, address _registry, address _owner) public initializer {
         require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
@@ -52,19 +48,15 @@ contract AbstractIssuer is Initializable, Ownable {
         return requestIssueStorage[_requestId];
     }
 
+    function getRequestIssuesForDevice(string memory _deviceId) public returns (uint256[] memory) {
+        return requestsPerDevice[_deviceId];
+    }
+
     function getRequestIssueForCertificate(uint _certificateId) public returns (RequestIssue memory) {
         return getRequestIssue(certificateToRequestStorage[_certificateId]);
     }
 
     function requestIssueFor(bytes memory _data, address _owner) public returns (uint) {
-        (uint256 from, uint256 to, string memory deviceId) = decodeIssue(_data);
-        require(to > from, "Generation period invalid. 'to' is lower than 'from'");
-        require(to <= block.timestamp, "Generation period invalid. 'to' is higher than now");
-        require(
-            from >= deviceLatestGenerationTimestamp[deviceId],
-            "requested 'from' and 'to' overlap already approved generation period"
-        );
-
         uint id = ++requestIssueNonce;
 
         requestIssueStorage[id] = RequestIssue({
@@ -74,9 +66,11 @@ contract AbstractIssuer is Initializable, Ownable {
             revoked: false
         });
 
-        deviceLatestGenerationTimestamp[deviceId] = to;
+        (,, string memory deviceId) = decodeIssue(_data);
 
-        emit IssueRequest(msg.sender, id);
+        requestsPerDevice[deviceId].push(id);
+
+        emit IssueRequest(_owner, id);
 
         return id;
     }

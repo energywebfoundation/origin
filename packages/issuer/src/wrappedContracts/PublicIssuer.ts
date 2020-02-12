@@ -43,6 +43,10 @@ export class PublicIssuer extends GeneralFunctions {
         return this.web3Contract.methods.getRequestIssue(_requestIssueId).call(txParams);
     }
 
+    async getRequestIssuesForDevice(_deviceId: string, txParams?: ISpecialTx) {
+        return this.web3Contract.methods.getRequestIssuesForDevice(_deviceId).call(txParams);
+    }
+
     async requestIssue(_data: any, txParams?: ISpecialTx) {
         const method = this.web3Contract.methods.requestIssue(_data);
 

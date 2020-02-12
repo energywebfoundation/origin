@@ -163,7 +163,7 @@ describe('PublicIssuer', () => {
         assert.equal(deviceOwnerBalance, volume);
     });
 
-    it('should fail to request 2 certificates with the same topic and generation period', async () => {
+    it('should fail to request 2 certificates with the same generation period', async () => {
         setActiveUser(deviceOwnerPK);
 
         const fromTime = timestamp;
