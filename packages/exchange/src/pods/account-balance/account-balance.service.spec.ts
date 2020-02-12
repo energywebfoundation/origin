@@ -7,21 +7,21 @@ import { Order } from '../order/order.entity';
 import { OrderService } from '../order/order.service';
 import { Trade } from '../trade/trade.entity';
 import { TradeService } from '../trade/trade.service';
-import { TransferService } from '../transfer/transfer.service';
-import { AccountService } from './account.service';
-import { Transfer } from '../transfer/transfer.entity';
 import { TransferDirection } from '../transfer/transfer-direction';
+import { Transfer } from '../transfer/transfer.entity';
+import { TransferService } from '../transfer/transfer.service';
+import { AccountBalanceService } from './account-balance.service';
 
 jest.mock('../trade/trade.service');
 jest.mock('../transfer/transfer.service');
 jest.mock('../order/order.service');
 
-describe('AccountService', () => {
+describe('AccountBalanceService', () => {
     const userId = '1';
     const asset1 = { id: '1', address: '0x1234', tokenId: '0' } as Asset;
     const asset2 = { id: '2', address: '0x1234', tokenId: '1' } as Asset;
 
-    let service: AccountService;
+    let service: AccountBalanceService;
     let tradeService: TradeService;
     let transferService: TransferService;
     let orderService: OrderService;
@@ -44,10 +44,10 @@ describe('AccountService', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AccountService, TradeService, TransferService, OrderService]
+            providers: [AccountBalanceService, TradeService, TransferService, OrderService]
         }).compile();
 
-        service = module.get<AccountService>(AccountService);
+        service = module.get<AccountBalanceService>(AccountBalanceService);
         tradeService = module.get<TradeService>(TradeService);
         transferService = module.get<TransferService>(TransferService);
         orderService = module.get<OrderService>(OrderService);
@@ -67,7 +67,7 @@ describe('AccountService', () => {
             { asset: asset2, amount: '2000', direction: TransferDirection.Deposit }
         );
 
-        const res = await service.getAccount('1');
+        const res = await service.getAccountBalance('1');
 
         expect(res.available.length).toBe(2);
 
@@ -85,7 +85,7 @@ describe('AccountService', () => {
             { asset: asset2, amount: '3000', direction: TransferDirection.Deposit }
         );
 
-        const res = await service.getAccount('1');
+        const res = await service.getAccountBalance('1');
 
         expect(res.available.length).toBe(2);
 
@@ -108,7 +108,7 @@ describe('AccountService', () => {
             { ask: { asset: asset2 } as Order, bid: { userId } as Order, volume: 1000 }
         );
 
-        const res = await service.getAccount(userId);
+        const res = await service.getAccountBalance(userId);
 
         const expectedAsset1Amount = 1000 - 500;
         const expectedAsset2Amount = 2000 + 3000 + 1000;
@@ -129,7 +129,7 @@ describe('AccountService', () => {
 
         registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: 100 });
 
-        const res = await service.getAccount(userId);
+        const res = await service.getAccountBalance(userId);
 
         const expectedAsset1Amount = 1000 - 500 - 100;
 
@@ -154,7 +154,7 @@ describe('AccountService', () => {
 
         registerOrder({ asset: asset1, side: OrderSide.Ask, currentVolume: 100 });
 
-        const res = await service.getAccount(userId);
+        const res = await service.getAccountBalance(userId);
 
         const expectedAsset1Amount = 1000 - 500 - 400 - 100;
         const expectedAsset2Amount = 2000 - 1000 - 1000;

@@ -1,15 +1,13 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "lib": [
-      "es6"
-    ],
-    "types": ["jest"],
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "removeComments": true,
-    "outDir": "./dist",
-    "baseUrl": "./"
-  },
-  "exclude": ["node_modules", "dist"]
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "lib": ["es6"],
+        "types": ["node", "jest"],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "removeComments": true,
+        "outDir": "./dist",
+        "baseUrl": "./"
+    },
+    "exclude": ["node_modules", "dist"]
 }

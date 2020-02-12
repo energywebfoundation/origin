@@ -1,9 +1,7 @@
-import { AccountAsset } from './account-asset';
+import { AccountBalance } from '../account-balance/account-balance';
 
 export class Account {
     public address: string;
 
-    public available: AccountAsset[];
-
-    public locked: AccountAsset[];
+    public balances: AccountBalance;
 }

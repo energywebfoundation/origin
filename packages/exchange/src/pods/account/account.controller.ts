@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Post, Body, ForbiddenException } from '@nestjs/common';
 
 import { AccountService } from './account.service';
-import { AccountDTO } from './account.dto';
+import { Account } from './account';
 import { RequestWithdrawalDTO } from '../transfer/create-withdrawal.dto';
 import { TransferService } from '../transfer/transfer.service';
 
@@ -14,20 +14,8 @@ export class AccountController {
 
     // TODO: id from auth header
     @Get(':id')
-    public async getAccount(@Param('id') userId: string): Promise<AccountDTO> {
-        const account = await this.accountService.getAccount(userId);
-
-        return {
-            address: account.address,
-            available: account.available.map(a => ({
-                ...a,
-                amount: a.amount.toString(10)
-            })),
-            locked: account.locked.map(a => ({
-                ...a,
-                amount: a.amount.toString(10)
-            }))
-        };
+    public async getAccount(@Param('id') userId: string): Promise<Account> {
+        return this.accountService.getAccount(userId);
     }
 
     @Post('withdrawal')

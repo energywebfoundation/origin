@@ -6,12 +6,13 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true
     },
-    "include": [
-        "src/**/*",
-    ],
+    "include": ["src/**/*", "test/**/*"],
     "references": [
         {
             "path": "../exchange-core/tsconfig.build.json"
+        },
+        {
+            "path": "../exchange-token-account/tsconfig.build.json"
         },
         {
             "path": "../utils-general/tsconfig.build.json"

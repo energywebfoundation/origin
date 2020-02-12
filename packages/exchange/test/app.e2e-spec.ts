@@ -1,10 +1,10 @@
 import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
 import { Account } from '../src/pods/account/account';
-import { AccountDTO } from '../src/pods/account/account.dto';
 import { AccountService } from '../src/pods/account/account.service';
 import { AssetDTO } from '../src/pods/asset/asset.dto';
 import { CreateAskDTO } from '../src/pods/order/create-ask.dto';
@@ -13,6 +13,7 @@ import { RequestWithdrawalDTO } from '../src/pods/transfer/create-withdrawal.dto
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
+import BN from 'bn.js';
 
 describe('AppController (e2e)', () => {
     let app: INestApplication;
@@ -40,10 +41,22 @@ describe('AppController (e2e)', () => {
     };
 
     beforeAll(async () => {
+        const configService = new ConfigService({
+            WEB3: 'http://localhost:8580',
+            // ganache account 0
+            EXCHANGE_ACCOUNT_DEPLOYER_PRIV:
+                '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5',
+            // ganache account 1
+            EXCHANGE_WALLET_PUB: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8'
+        });
+
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
             providers: [DatabaseService]
-        }).compile();
+        })
+            .overrideProvider(ConfigService)
+            .useValue(configService)
+            .compile();
 
         app = moduleFixture.createNestApplication();
         transferService = await app.resolve<TransferService>(TransferService);
@@ -53,7 +66,7 @@ describe('AppController (e2e)', () => {
         await app.init();
     });
 
-    describe('account deposit confirmation', async () => {
+    describe('account deposit confirmation', () => {
         const amount = '1000';
         const tokenId = '0';
         const asset = { address: asset1Address, tokenId, deviceId: tokenId };
@@ -73,7 +86,7 @@ describe('AppController (e2e)', () => {
                     const account = res.body as Account;
 
                     expect(account.address).toBe(user1Address);
-                    expect(account.available.length).toBe(0);
+                    expect(account.balances.available.length).toBe(0);
                 });
         });
 
@@ -85,12 +98,18 @@ describe('AppController (e2e)', () => {
                 .get('/account/1')
                 .expect(200)
                 .expect(res => {
-                    const account = res.body as AccountDTO;
+                    const account = res.body as Account;
+
+                    // TODO: simplify
+                    const expectedAmount = new BN(
+                        account.balances.available[0].amount.toString(),
+                        16
+                    ).toString(10);
 
                     expect(account.address).toBe(user1Address);
-                    expect(account.available.length).toBe(1);
-                    expect(account.available[0].amount).toEqual(amount);
-                    expect(account.available[0].asset).toMatchObject(asset);
+                    expect(account.balances.available.length).toBe(1);
+                    expect(expectedAmount).toEqual(amount);
+                    expect(account.balances.available[0].asset).toMatchObject(asset);
                 });
         });
     });
@@ -106,7 +125,6 @@ describe('AppController (e2e)', () => {
             const { address } = await accountService.getOrCreateAccount(user1Id);
             user1Address = address;
             deposit = await createDeposit(amount, asset);
-            console.log(deposit);
         });
 
         it('should not be able to create ask order on unconfirmed deposit', async () => {
@@ -219,12 +237,17 @@ describe('AppController (e2e)', () => {
                 .get('/account/1')
                 .expect(200)
                 .expect(res => {
-                    const account = res.body as AccountDTO;
+                    const account = res.body as Account;
+
+                    const expectedAmount = new BN(
+                        account.balances.available[0].amount.toString(),
+                        16
+                    ).toString(10);
 
                     expect(account.address).toBe(user1Address);
-                    expect(account.available.length).toBe(1);
-                    expect(account.available[0].amount).toEqual('0');
-                    expect(account.available[0].asset).toMatchObject(asset);
+                    expect(account.balances.available.length).toBe(1);
+                    expect(expectedAmount).toEqual('0');
+                    expect(account.balances.available[0].asset).toMatchObject(asset);
                 });
         });
     });

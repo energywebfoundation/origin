@@ -18,7 +18,8 @@
         "test": "test"
     },
     "scripts": {
-        "build": "yarn build:static && yarn build:ts",
+        "build": "yarn build:static && yarn build:ts && yarn copy:declarations",
+        "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
         "build:static": "yarn compile && yarn typechain:ethers",
         "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
         "compile": "truffle compile",
@@ -27,7 +28,7 @@
         "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8570",
         "test": "truffle test",
         "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
-        "clean": "shx rm -rf build src/ethers",
+        "clean": "shx rm -rf build dist src/ethers",
         "typechain:ethers": "typechain --target ethers --outDir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",

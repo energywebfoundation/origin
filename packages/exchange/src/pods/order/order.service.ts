@@ -6,10 +6,10 @@ import { Repository } from 'typeorm';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
 import { CreateBidDTO } from './create-bid.dto';
 import { Order } from './order.entity';
-import { AccountService } from '../account/account.service';
 import { CreateAskDTO } from './create-ask.dto';
 import { ProductService } from '../product/product.service';
 import { AssetService } from '../asset/asset.service';
+import { AccountBalanceService } from '../account-balance/account-balance.service';
 
 @Injectable()
 export class OrderService {
@@ -17,8 +17,8 @@ export class OrderService {
         @InjectRepository(Order)
         private readonly repository: Repository<Order>,
         private readonly matchingEngineService: MatchingEngineService,
-        @Inject(forwardRef(() => AccountService))
-        private readonly accountService: AccountService,
+        @Inject(forwardRef(() => AccountBalanceService))
+        private readonly accountBalanceService: AccountBalanceService,
         private readonly productService: ProductService,
         private readonly assetService: AssetService
     ) {}
@@ -37,7 +37,7 @@ export class OrderService {
 
     public async createAsk(ask: CreateAskDTO) {
         if (
-            !(await this.accountService.hasEnoughAssetAmount(
+            !(await this.accountBalanceService.hasEnoughAssetAmount(
                 ask.userId,
                 ask.assetId,
                 ask.volume.toString()

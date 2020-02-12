@@ -1,30 +1,24 @@
-import { OrderSide } from '@energyweb/exchange-core';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
-import BN from 'bn.js';
-import { Map } from 'immutable';
 import { Connection, EntityManager } from 'typeorm';
 
-import { Asset } from '../asset/asset.entity';
-import { OrderService } from '../order/order.service';
-import { TradeService } from '../trade/trade.service';
-import { TransferDirection } from '../transfer/transfer-direction';
+import { AccountBalanceService } from '../account-balance/account-balance.service';
+import { AccountDeployerService } from '../account-deployer/account-deployer.service';
+import { RequestWithdrawalDTO } from '../transfer/create-withdrawal.dto';
 import { TransferService } from '../transfer/transfer.service';
 import { Account } from './account';
-import { AccountAsset } from './account-asset';
 import { Account as AccountEntity } from './account.entity';
-import { RequestWithdrawalDTO } from '../transfer/create-withdrawal.dto';
 
 @Injectable()
 export class AccountService {
     constructor(
-        private readonly tradeService: TradeService,
+        @Inject(forwardRef(() => AccountBalanceService))
+        private readonly accountBalanceService: AccountBalanceService,
         @Inject(forwardRef(() => TransferService))
         private readonly transferService: TransferService,
-        @Inject(forwardRef(() => OrderService))
-        private readonly orderService: OrderService,
         @InjectConnection()
-        private readonly connection: Connection
+        private readonly connection: Connection,
+        private readonly accountDeployerService: AccountDeployerService
     ) {}
 
     public getOrCreateAccount(userId: string, transaction?: EntityManager) {
@@ -40,8 +34,10 @@ export class AccountService {
             where: { userId }
         });
         if (!account) {
+            const address = await this.accountDeployerService.deployAccount();
+
             account = await transaction
-                .create<AccountEntity>(AccountEntity, { userId, address: `0x1234${userId}` })
+                .create<AccountEntity>(AccountEntity, { userId, address })
                 .save();
         }
 
@@ -56,98 +52,28 @@ export class AccountService {
 
     public async getAccount(userId: string): Promise<Account> {
         const { address } = await this.getOrCreateAccount(userId);
-        const deposits = await this.getTransfers(userId);
-        const trades = await this.getTrades(userId);
-        const sellOrders = await this.getSellOrders(userId);
 
-        const sum = (oldVal: AccountAsset, newVal: AccountAsset) => ({
-            ...oldVal,
-            amount: oldVal.amount.add(newVal.amount)
-        });
-
-        const aggregated = deposits.mergeWith(sum, trades).mergeWith(sum, sellOrders);
+        const balances = await this.accountBalanceService.getAccountBalance(userId);
 
         return {
             address,
-            available: Array.from(aggregated.values()),
-            locked: Array.from(sellOrders.values())
+            balances
         };
     }
 
     public async requestWithdrawal(withdrawal: RequestWithdrawalDTO) {
         const { userId, assetId, amount } = withdrawal;
 
-        const hasEnoughAssetAmount = await this.hasEnoughAssetAmount(userId, assetId, amount);
+        const hasEnoughAssetAmount = await this.accountBalanceService.hasEnoughAssetAmount(
+            userId,
+            assetId,
+            amount
+        );
 
         if (!hasEnoughAssetAmount) {
             throw new Error('Not enough assets');
         }
 
         return this.transferService.requestWithdrawal(withdrawal);
-    }
-
-    public async hasEnoughAssetAmount(userId: string, assetId: string, assetAmount: string) {
-        const { available } = await this.getAccount(userId);
-        const accountAsset = available.find(({ asset }) => asset.id === assetId);
-
-        return accountAsset && accountAsset.amount.gte(new BN(assetAmount));
-    }
-
-    private async getSellOrders(userId: string) {
-        const sellOrders = await this.orderService.getActiveOrdersBySide(userId, OrderSide.Ask);
-
-        return this.sumByAsset(
-            sellOrders,
-            order => order.asset,
-            order => new BN(order.currentVolume * -1)
-        );
-    }
-
-    private async getTransfers(userId: string) {
-        const transfers = await this.transferService.getAllCompleted(userId);
-
-        return this.sumByAsset(
-            transfers,
-            transfer => transfer.asset,
-            transfer => {
-                const sign = transfer.direction === TransferDirection.Withdrawal ? -1 : 1;
-                return new BN(transfer.amount).mul(new BN(sign));
-            }
-        );
-    }
-
-    private async getTrades(userId: string) {
-        const trades = await this.tradeService.getAll(userId);
-
-        return this.sumByAsset(
-            trades,
-            trade => trade.ask.asset,
-            trade => {
-                const sign = trade.ask.userId === userId ? -1 : 1;
-                return new BN(trade.volume * sign);
-            }
-        );
-    }
-
-    private getUniqueAssetKey({ tokenId, address }: Asset) {
-        return `${address}#${tokenId}`;
-    }
-
-    private sumByAsset<T>(
-        records: T[],
-        assetSelector: (t: T) => Asset,
-        amountSelector: (t: T) => BN
-    ): Map<string, AccountAsset> {
-        return records.reduce((res, current) => {
-            const asset = assetSelector(current);
-            const currentAmount = amountSelector(current);
-
-            const assetKey = this.getUniqueAssetKey(asset);
-            const accountAsset = res.get(assetKey) || { asset, amount: new BN(0) };
-
-            const amount = accountAsset.amount.add(currentAmount);
-
-            return res.set(assetKey, { ...accountAsset, amount });
-        }, Map<string, AccountAsset>());
     }
 }

@@ -32,7 +32,7 @@ import { EventsModule } from './events/events.module';
 import { AppController } from './app.controller';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 
-const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
+const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../../../.env');
 
 @Module({
     imports: [
