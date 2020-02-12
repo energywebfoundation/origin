@@ -36,7 +36,7 @@ describe('Cerificate tests', () => {
     const traderPK = '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
     const accountTrader = web3.eth.accounts.privateKeyToAccount(traderPK).address;
 
-    let timestamp = moment().unix();
+    let timestamp = moment().subtract(10, 'year').unix();
 
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
@@ -49,7 +49,9 @@ describe('Cerificate tests', () => {
         setActiveUser(issuerPK);
 
         const generationStartTime = timestamp;
-        const generationEndTime = timestamp++;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const generationEndTime = timestamp;
         const deviceId = '1';
 
         return Certificate.createCertificate(
