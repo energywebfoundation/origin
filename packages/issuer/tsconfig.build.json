@@ -3,7 +3,8 @@
     "compilerOptions": {
         "composite": true,
         "rootDir": "./",
-        "outDir": "./dist/js"
+        "outDir": "./dist/js",
+        "resolveJsonModule": true
     },
     "include": ["./src/**/*", "./dist/ts/**/*", "./schemas/*.json", "./build/**/*.json"],
     "references": [
