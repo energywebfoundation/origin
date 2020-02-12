@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin@3.1.4...@energyweb/origin@4.0.0) (2020-02-12)
+
+
+### chore
+
+* **origin:** remove on-chain layer of certificate request ([7c7c67b](https://github.com/energywebfoundation/origin/commit/7c7c67b07becb86fa84ef12afe3b66addc04df8c))
+
+
+### BREAKING CHANGES
+
+* **origin:** move certificate requests logic off-chain
+
+
+
+
+
 ## [3.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/origin@3.1.3...@energyweb/origin@3.1.4) (2020-02-04)
 
 **Note:** Version bump only for package @energyweb/origin

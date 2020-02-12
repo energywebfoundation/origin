@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@1.0.1...@energyweb/migrations@2.0.0) (2020-02-12)
+
+
+### chore
+
+* **migrations:** configurable device types ([b22bd7e](https://github.com/energywebfoundation/origin/commit/b22bd7eb4dea65e6c9a9301fa8930bcfb4ad9e8f))
+
+
+### Features
+
+* change certification requests to be off-chain evidence based ([555c696](https://github.com/energywebfoundation/origin/commit/555c696aff17bafd11c8c5403add627d6c95fbd9))
+
+
+### BREAKING CHANGES
+
+* **migrations:** require deviceTypes in demo-config.json
+
+
+
+
+
 ## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@1.0.0...@energyweb/migrations@1.0.1) (2020-02-04)
 
 **Note:** Version bump only for package @energyweb/migrations
