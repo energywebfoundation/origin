@@ -23,14 +23,13 @@ import { getCurrentUser } from '../features/users/selectors';
 import { setLoading } from '../features/general/actions';
 import {
     getCompliance,
-    getEnvironment,
     getRegions,
-    getCountry
+    getCountry,
+    getOffChainDataSource
 } from '../features/general/selectors';
 import { HierarchicalMultiSelect } from './HierarchicalMultiSelect';
 import { CloudUpload } from '@material-ui/icons';
 import { ProducingDevice, Device } from '@energyweb/device-registry';
-import axios from 'axios';
 import { producingDeviceCreatedOrUpdated } from '../features/producingDevices/actions';
 import { PowerFormatter } from '../utils/PowerFormatter';
 import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
@@ -91,8 +90,8 @@ export function AddDevice() {
     const currentUser = useSelector(getCurrentUser);
     const configuration = useSelector(getConfiguration);
     const compliance = useSelector(getCompliance);
-    const environment = useSelector(getEnvironment);
     const country = useSelector(getCountry);
+    const offChainDataSource = useSelector(getOffChainDataSource);
 
     const dispatch = useDispatch();
     const { getDevicesOwnedLink } = useLinks();
@@ -100,7 +99,7 @@ export function AddDevice() {
     const [selectedDeviceType, setSelectedDeviceType] = useState<string[]>([]);
     const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
     const [imagesUploaded, setImagesUploaded] = useState(false);
-    const [imagesUploadedList, setImagesUploadedList] = useState([]);
+    const [imagesUploadedList, setImagesUploadedList] = useState<string[]>([]);
 
     const history = useHistory();
 
@@ -193,23 +192,11 @@ export function AddDevice() {
             return;
         }
 
-        const formData = new FormData();
-
-        for (let i = 0; i < files.length; i++) {
-            formData.append(`images`, files[i]);
-        }
-
         try {
-            const response = await axios.post(
-                `${environment.BACKEND_URL}:${environment.BACKEND_PORT}/api/Image`,
-                formData,
-                {
-                    headers: { 'Content-type': 'multipart/form-data' }
-                }
-            );
+            const uploadedFiles = await offChainDataSource.filesClient.upload(files);
 
             setImagesUploaded(true);
-            setImagesUploadedList(response.data);
+            setImagesUploadedList(uploadedFiles);
         } catch (error) {
             showNotification(
                 `Unexpected error occurred when ploading images.`,

@@ -395,6 +395,10 @@ export class Demo {
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
+        const LAST_SMART_METER_READ = Number(
+            (await this.deviceLogic.getDevice(0)).lastSmartMeterReadWh
+        );
+
         await this.deviceLogic.saveSmartMeterRead(
             0,
             smRead,
@@ -404,12 +408,15 @@ export class Demo {
                 privateKey: this.ACCOUNTS.SMART_METER.privateKey
             }
         );
-        await this.certificateLogic.requestCertificates(0, this.nextDeployedSmReadIndex, {
-            privateKey: this.ACCOUNTS.DEVICE_MANAGER.privateKey
-        });
-        await this.certificateLogic.approveCertificationRequest(this.nextDeployedSmReadIndex, {
-            privateKey: this.ACCOUNTS.ISSUER.privateKey
-        });
+
+        await this.certificateLogic.createArbitraryCertfificate(
+            0,
+            smRead - LAST_SMART_METER_READ,
+            '',
+            {
+                privateKey: this.ACCOUNTS.ISSUER.privateKey
+            }
+        );
 
         this.nextDeployedSmReadIndex += 1;
     }

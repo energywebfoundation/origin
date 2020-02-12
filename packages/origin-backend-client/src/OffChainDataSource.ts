@@ -6,6 +6,8 @@ import { IRequestClient, RequestClient } from './RequestClient';
 import { IOrganizationClient, OrganizationClient } from './OrganizationClient';
 import { IDemandClient, DemandClient } from './DemandClient';
 import { IEventClient, EventClient } from './EventClient';
+import { FilesClient, IFilesClient } from './FilesClient';
+import { ICertificateClient, CertificateClient } from './CertificateClient';
 
 export interface IOffChainDataSource {
     dataApiUrl: string;
@@ -17,6 +19,8 @@ export interface IOffChainDataSource {
     organizationClient: IOrganizationClient;
     demandClient: IDemandClient;
     eventClient: IEventClient;
+    filesClient: IFilesClient;
+    certificateClient?: ICertificateClient; // @TODO change
 }
 
 export class OffChainDataSource implements IOffChainDataSource {
@@ -34,6 +38,10 @@ export class OffChainDataSource implements IOffChainDataSource {
 
     eventClient: IEventClient;
 
+    filesClient: IFilesClient;
+
+    certificateClient: ICertificateClient;
+
     constructor(
         public readonly backendUrl: string,
         public readonly port: number = 80,
@@ -47,6 +55,8 @@ export class OffChainDataSource implements IOffChainDataSource {
         this.deviceClient = new DeviceClient(this.dataApiUrl, this.requestClient);
         this.organizationClient = new OrganizationClient(this.dataApiUrl, this.requestClient);
         this.demandClient = new DemandClient(this.dataApiUrl, this.requestClient);
+        this.filesClient = new FilesClient(this.dataApiUrl, this.requestClient);
+        this.certificateClient = new CertificateClient(this.dataApiUrl, this.requestClient);
 
         this.eventClient = new EventClient(eventApi);
         this.eventClient.start();

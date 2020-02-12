@@ -20,7 +20,7 @@ import createConfig from './config/configuration';
 import { Country } from './pods/country/country.entity';
 import { CountryModule } from './pods/country/country.module';
 import { CurrencyModule } from './pods/currency/currency.module';
-import { ImageModule } from './pods/image/image.module';
+import { FileModule } from './pods/file/file.module';
 import { JsonEntityModule } from './pods/json-entity/json-entity.module';
 import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
 import { OrganizationModule } from './pods/organization/organization.module';
@@ -33,6 +33,8 @@ import { AppController } from './app.controller';
 import { OrganizationInvitation } from './pods/organization/organizationInvitation.entity';
 import { DeviceTypes } from './pods/device-types/device-types.entity';
 import { DeviceTypesModule } from './pods/device-types/device-types.module';
+import { CertificationRequest } from './pods/certificate/certification-request.entity';
+import { CertificationRequestModule } from './pods/certificate/certificate.module';
 
 const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
 
@@ -57,12 +59,13 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
                     Organization,
                     User,
                     OrganizationInvitation,
-                    DeviceTypes
+                    DeviceTypes,
+                    CertificationRequest
                 ]
             }),
             inject: [ConfigService]
         }),
-        ImageModule,
+        FileModule,
         UserModule,
         ComplianceModule,
         CountryModule,
@@ -74,7 +77,8 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         DemandModule,
         AuthModule,
         EventsModule,
-        DeviceTypesModule
+        DeviceTypesModule,
+        CertificationRequestModule
     ],
     controllers: [AppController],
     providers: []
