@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import moment, { Moment } from 'moment';
-import { CertificateLogic } from '@energyweb/origin';
 import {
     Button,
     Dialog,
@@ -11,7 +10,6 @@ import {
 } from '@material-ui/core';
 import { DatePicker } from '@material-ui/pickers';
 import { useSelector, useDispatch } from 'react-redux';
-import { getConfiguration } from '../../features/selectors';
 import {
     requestCertificates,
     hideRequestCertificatesModal
@@ -20,8 +18,17 @@ import {
     getRequestCertificatesModalProducingDevice,
     getRequestCertificatesModalVisible
 } from '../../features/certificates/selectors';
-import { formatDate, DATE_FORMAT_DMY } from '../../utils/helper';
+import { DATE_FORMAT_DMY } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { Upload, IUploadedFile } from '../Upload';
+
+function setMinTimeInDay(date: Moment): Moment {
+    return date
+        .hours(0)
+        .minutes(0)
+        .seconds(0)
+        .milliseconds(0);
+}
 
 function setMaxTimeInDay(date: Moment): Moment {
     return date
@@ -32,58 +39,49 @@ function setMaxTimeInDay(date: Moment): Moment {
 }
 
 const DEFAULTS = {
-    fromDate: moment().toDate(),
+    fromDate: moment(),
     toDate: setMaxTimeInDay(moment())
 };
 
 export function RequestCertificatesModal() {
     const [fromDate, setFromDate] = useState(DEFAULTS.fromDate);
     const [toDate, setToDate] = useState(DEFAULTS.toDate);
-    const [reads, setReads] = useState([]);
+    const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState('');
+    const [files, setFiles] = useState<IUploadedFile[]>([]);
 
-    const configuration = useSelector(getConfiguration);
+    const cancelledFiles = files.filter(f => f.cancelled && !f.removed);
+    const filesBeingUploaded = files.filter(
+        f => !f.removed && !f.cancelled && f.uploadProgress !== 100
+    );
+    const uploadedFiles = files.filter(f => !f.removed && f.uploadedName);
+
     const producingDevice = useSelector(getRequestCertificatesModalProducingDevice);
     const showModal = useSelector(getRequestCertificatesModalVisible);
 
     const dispatch = useDispatch();
 
-    const fromTimestamp = moment(fromDate).unix();
-    const toTimestamp = moment(toDate).unix();
+    const parsedEnergyInDisplayUnit = parseFloat(energyInDisplayUnit);
 
-    const readsInTimeRange = reads.filter(
-        read => Number(read.timestamp) <= toTimestamp && Number(read.timestamp) >= fromTimestamp
-    );
+    const energyInBaseUnit =
+        typeof parsedEnergyInDisplayUnit === 'number' && !isNaN(parsedEnergyInDisplayUnit)
+            ? EnergyFormatter.getBaseValueFromValueInDisplayUnit(parsedEnergyInDisplayUnit)
+            : 0;
 
-    const energy = producingDevice ? readsInTimeRange.reduce((a, b) => a + Number(b.energy), 0) : 0;
-    const isFormValid = fromDate && toDate && fromDate <= toDate.toDate();
+    const isFormValid =
+        fromDate &&
+        toDate &&
+        fromDate.toDate() <= toDate.toDate() &&
+        energyInBaseUnit > 0 &&
+        cancelledFiles.length === 0 &&
+        filesBeingUploaded.length === 0;
 
     useEffect(() => {
-        (async () => {
-            if (!producingDevice) {
-                return;
-            }
+        if (!producingDevice) {
+            return;
+        }
 
-            setFromDate(DEFAULTS.fromDate);
-            setToDate(DEFAULTS.toDate);
-
-            const newReads = await producingDevice.getSmartMeterReads();
-
-            const certificateLogic: CertificateLogic =
-                configuration.blockchainProperties.certificateLogicInstance;
-
-            const requestedSMReadsLength = Number(
-                await certificateLogic.getDeviceRequestedCertsForSMReadsLength(
-                    Number(producingDevice.id)
-                )
-            );
-
-            const lastRequestedRead = newReads[requestedSMReadsLength];
-
-            if (lastRequestedRead) {
-                setFromDate(moment.unix(lastRequestedRead.timestamp).toDate());
-                setReads(newReads);
-            }
-        })();
+        setFromDate(DEFAULTS.fromDate);
+        setToDate(DEFAULTS.toDate);
     }, [producingDevice]);
 
     function handleClose() {
@@ -91,15 +89,19 @@ export function RequestCertificatesModal() {
     }
 
     async function requestCerts() {
-        const lastReadIndex = reads.indexOf(readsInTimeRange[readsInTimeRange.length - 1]);
-
         dispatch(
             requestCertificates({
                 deviceId: producingDevice.id,
-                lastReadIndex,
-                energy
+                startTime: fromDate.unix(),
+                endTime: toDate.unix(),
+                energy: energyInBaseUnit,
+                files: uploadedFiles.map(f => f.uploadedName)
             })
         );
+    }
+
+    function handleFromDateChange(date: Moment) {
+        setFromDate(setMinTimeInDay(date));
     }
 
     function handleToDateChange(date: Moment) {
@@ -111,7 +113,16 @@ export function RequestCertificatesModal() {
             <DialogTitle>{`Request certificates for ${producingDevice?.offChainProperties
                 ?.facilityName ?? ''}`}</DialogTitle>
             <DialogContent>
-                <TextField label="From" value={formatDate(moment(fromDate))} fullWidth disabled />
+                <DatePicker
+                    label={'From'}
+                    value={fromDate}
+                    onChange={handleFromDateChange}
+                    variant="inline"
+                    inputVariant="filled"
+                    className="mt-4"
+                    fullWidth
+                    format={DATE_FORMAT_DMY}
+                />
 
                 <DatePicker
                     label={'To'}
@@ -126,11 +137,13 @@ export function RequestCertificatesModal() {
 
                 <TextField
                     label={EnergyFormatter.displayUnit}
-                    value={EnergyFormatter.format(energy)}
+                    value={energyInDisplayUnit}
+                    onChange={event => setEnergyInDisplayUnit(event.target.value)}
                     className="mt-4"
                     fullWidth
-                    disabled
                 />
+
+                <Upload onChange={newFiles => setFiles(newFiles)} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="secondary">

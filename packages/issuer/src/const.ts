@@ -1,2 +1,4 @@
-export const PRIVATE_CERTIFICATE_TOPIC = 1234;
-export const PUBLIC_CERTIFICATE_TOPIC = 1235;
+export enum CertificateTopic {
+    PUBLIC_IREC = 1,
+    PRIVATE_IREC = 2
+}

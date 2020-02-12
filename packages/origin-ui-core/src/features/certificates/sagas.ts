@@ -18,14 +18,14 @@ import { requestUser } from '../users/actions';
 import { IStoreState } from '../../types';
 import { getConfiguration } from '../selectors';
 import { showNotification, NotificationType } from '../../utils/notifications';
-import { Certificate, CertificateLogic } from '@energyweb/origin';
 import { Role } from '@energyweb/user-registry';
 import { MarketUser, PurchasableCertificate, NoneCurrency } from '@energyweb/market';
-import { Device } from '@energyweb/device-registry';
 import { getCurrentUser } from '../users/selectors';
 import { setLoading } from '../general/actions';
 import { getCertificates, getCertificateFetcher, getCertificateById } from './selectors';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
+import { OffChainDataSource } from '@energyweb/origin-backend-client';
+import { getOffChainDataSource } from '../general/selectors';
 
 function areOffChainSettlementOptionsMissing(certificate: PurchasableCertificate.Entity) {
     return (
@@ -65,14 +65,21 @@ function* requestCertificatesSaga(): SagaIterator {
 
         yield put(hideRequestCertificatesModal());
 
-        const configuration: IStoreState['configuration'] = yield select(getConfiguration);
+        const offChainDataSource: OffChainDataSource = yield select(getOffChainDataSource);
 
         try {
-            yield call(
-                Certificate.requestCertificates,
-                action.payload.deviceId,
-                action.payload.lastReadIndex,
-                configuration
+            yield apply(
+                offChainDataSource.certificateClient,
+                offChainDataSource.certificateClient.requestCertificates,
+                [
+                    {
+                        device: parseInt(action.payload.deviceId, 10),
+                        energy: action.payload.energy,
+                        startTime: action.payload.startTime,
+                        endTime: action.payload.endTime,
+                        files: action.payload.files
+                    }
+                ]
             );
 
             showNotification(
@@ -83,6 +90,7 @@ function* requestCertificatesSaga(): SagaIterator {
                 NotificationType.Success
             );
         } catch (error) {
+            console.warn('Error while requesting certificates', error);
             showNotification(`Transaction could not be completed.`, NotificationType.Error);
         }
 
@@ -97,10 +105,7 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
         );
 
         const device = action.payload.producingDevice;
-        const configuration: IStoreState['configuration'] = yield select(getConfiguration);
         const currentUser: MarketUser.Entity = yield select(getCurrentUser);
-
-        const reads: Device.ISmartMeterRead[] = yield apply(device, device.getSmartMeterReads, []);
 
         if (device?.owner?.address?.toLowerCase() !== currentUser?.id?.toLowerCase()) {
             showNotification(
@@ -112,31 +117,8 @@ function* openRequestCertificatesModalSaga(): SagaIterator {
                 `You need to have Device Manager role to request certificates.`,
                 NotificationType.Error
             );
-        } else if (reads.length === 0) {
-            showNotification(
-                `There are no smart meter reads for this device.`,
-                NotificationType.Error
-            );
         } else {
-            const certificateLogic: CertificateLogic =
-                configuration.blockchainProperties.certificateLogicInstance;
-
-            const requestedCertsLength = yield apply(
-                certificateLogic,
-                certificateLogic.getDeviceRequestedCertsForSMReadsLength,
-                [Number(device.id)]
-            );
-
-            const lastRequestedSMReadIndex = Number(requestedCertsLength);
-
-            if (reads.length === lastRequestedSMReadIndex) {
-                showNotification(
-                    `You have already requested certificates for all smart meter reads for this device.`,
-                    NotificationType.Error
-                );
-            } else {
-                yield put(setRequestCertificatesModalVisibility(true));
-            }
+            yield put(setRequestCertificatesModalVisibility(true));
         }
     }
 }

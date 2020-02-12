@@ -4,3 +4,5 @@ export * from './OrganizationInvitation';
 export * from './Device';
 export * from './Demand';
 export * from './Events';
+export * from './General';
+export * from './CertificationRequest';

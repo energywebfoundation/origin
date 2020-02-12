@@ -7,3 +7,4 @@ export * from './DeviceClient';
 export * from './DemandClient';
 export * from './OffChainDataSource';
 export * from './EventClient';
+export * from './FilesClient';

@@ -21,13 +21,6 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     event LogCertificateClaimed(uint indexed _certificateId);
     event LogCertificateSplit(uint indexed _certificateId, uint _childOne, uint _childTwo);
 
-    event CertificationRequestCreated(uint deviceId, uint readsStartIndex, uint readsEndIndex);
-    event CertificationRequestApproved(uint deviceId, uint readsStartIndex, uint readsEndIndex);
-
-    mapping(uint => uint) internal deviceRequestedCertsForSMReadsLength;
-
-    CertificateDefinitions.CertificationRequest[] private certificationRequests;
-
     // Mapping of tokenId to Certificate
     mapping(uint256 => CertificateDefinitions.Certificate) private certificates;
 
@@ -141,76 +134,16 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
         return getCertificate(_certificateId).status == uint(CertificateDefinitions.Status.Claimed);
     }
 
-    function getCertificationRequests() public view returns (CertificateDefinitions.CertificationRequest[] memory) {
-        return certificationRequests;
-    }
+    function createArbitraryCertfificate(uint deviceId, uint energy, string memory certificationRequestId) public onlyRole(RoleManagement.Role.Issuer) {
+        DeviceDefinitions.Device memory device = deviceLogic.getDeviceById(deviceId);
 
-    function getCertificationRequestsLength() public view returns (uint) {
-        return certificationRequests.length;
-    }
-
-    function getDeviceRequestedCertsForSMReadsLength(uint _deviceId) public view returns (uint) {
-        return deviceRequestedCertsForSMReadsLength[_deviceId];
-    }
-
-    function requestCertificates(uint _deviceId, uint lastRequestedSMReadIndex) public {
-        DeviceDefinitions.Device memory device = deviceLogic.getDeviceById(_deviceId);
-
-        require(device.owner == msg.sender, "msg.sender must be device owner");
-
-        DeviceDefinitions.SmartMeterRead[] memory reads = deviceLogic.getSmartMeterReadsForDevice(_deviceId);
-
-        require(lastRequestedSMReadIndex < reads.length, "requestCertificates: index should be lower than smart meter reads length");
-
-        uint start = 0;
-        uint requestedSMReadsLength = getDeviceRequestedCertsForSMReadsLength(_deviceId);
-
-        if (requestedSMReadsLength > start) {
-            start = requestedSMReadsLength;
-        }
-
-        require(lastRequestedSMReadIndex >= start, "requestCertificates: index has to be higher or equal to start index");
-
-        certificationRequests.push(CertificateDefinitions.CertificationRequest(
-            _deviceId,
-            start,
-            lastRequestedSMReadIndex,
-            CertificateDefinitions.CertificationRequestStatus.Pending
-        ));
-
-        _setDeviceRequestedCertsForSMReadsLength(_deviceId, lastRequestedSMReadIndex + 1);
-
-        emit CertificationRequestCreated(_deviceId, start, lastRequestedSMReadIndex);
-    }
-
-    function approveCertificationRequest(uint _certicationRequestIndex) public onlyRole(RoleManagement.Role.Issuer) {
-        CertificateDefinitions.CertificationRequest storage request = certificationRequests[_certicationRequestIndex];
-
-        require(
-            request.status == CertificateDefinitions.CertificationRequestStatus.Pending,
-            "approveCertificationRequest: request has to be in pending state"
-        );
-
-        DeviceDefinitions.SmartMeterRead[] memory reads = deviceLogic.getSmartMeterReadsForDevice(request.deviceId);
-
-        uint certifyEnergy = 0;
-        for (uint i = request.readsStartIndex; i <= request.readsEndIndex; i++) {
-            certifyEnergy += reads[i].energy;
-        }
-
-        DeviceDefinitions.Device memory device = deviceLogic.getDeviceById(request.deviceId);
-
-        _createNewCertificate(request.deviceId, certifyEnergy, device.owner,  request.readsStartIndex, request.readsEndIndex);
-
-        request.status = CertificateDefinitions.CertificationRequestStatus.Approved;
-
-        emit CertificationRequestApproved(request.deviceId, request.readsStartIndex, request.readsEndIndex);
+        _createNewCertificate(deviceId, energy, device.owner, certificationRequestId);
     }
 
     /**
         internal functions
     */
-    function _createNewCertificate(uint deviceId, uint energy, address owner, uint readsStartIndex, uint readsEndIndex) internal {
+    function _createNewCertificate(uint deviceId, uint energy, address owner, string memory certificationRequestId) internal {
         uint newCertificateId = totalSupply();
 
         certificates[newCertificateId] = CertificateDefinitions.Certificate({
@@ -220,8 +153,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             creationTime: block.timestamp,
             parentId: newCertificateId,
             children: new uint256[](0),
-            readsStartIndex: readsStartIndex,
-            readsEndIndex: readsEndIndex
+            certificationRequestId: certificationRequestId
         });
 
         _mint(owner, newCertificateId);
@@ -288,16 +220,6 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
     /// @return The ids of the certificate
     function _createChildCertificates(uint parentId, uint energy) internal returns (uint childOneId, uint childTwoId) {
         CertificateDefinitions.Certificate memory parent = certificates[parentId];
-        DeviceDefinitions.SmartMeterRead[] memory reads = deviceLogic.getSmartMeterReadsForDevice(parent.deviceId);
-
-        uint parentEnergy = 0;
-        uint index = parent.readsStartIndex;
-        while(parentEnergy < energy) {
-            parentEnergy += reads[index++].energy;
-        }
-        if (parentEnergy > energy) {
-            index--;
-        }
 
         uint childIdOne = totalSupply();
         certificates[childIdOne] = CertificateDefinitions.Certificate({
@@ -307,8 +229,7 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             creationTime: parent.creationTime,
             parentId: parentId,
             children: new uint256[](0),
-            readsStartIndex: parent.readsStartIndex,
-            readsEndIndex: index
+            certificationRequestId: parent.certificationRequestId
         });
         _mint(ownerOf(parentId), childIdOne);
 
@@ -320,15 +241,10 @@ contract CertificateLogic is Initializable, ERC721, ERC721Enumerable, RoleManage
             creationTime: parent.creationTime,
             parentId: parentId,
             children: new uint256[](0),
-            readsStartIndex: index,
-            readsEndIndex: parent.readsEndIndex
+            certificationRequestId: parent.certificationRequestId
         });
         _mint(ownerOf(parentId), childIdTwo);
 
         return (childIdOne, childIdTwo);
-    }
-
-    function _setDeviceRequestedCertsForSMReadsLength(uint deviceId, uint readsLength) internal {
-        deviceRequestedCertsForSMReadsLength[deviceId] = readsLength;
     }
 }

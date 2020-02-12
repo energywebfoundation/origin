@@ -1,31 +1,22 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
+import "./AbstractIssuer.sol";
 import "./Registry.sol";
 import "./PublicIssuer.sol";
 
-contract PrivateIssuer is Initializable, Ownable {
+contract PrivateIssuer is Initializable, AbstractIssuer {
 	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
 
-	event IssueRequest(address indexed _owner, uint256 indexed _id);
 	event MigrateToPublicRequest(address indexed _owner, uint256 indexed _id);
 	event PrivateTransferRequest(address indexed _owner, uint256 indexed _id);
 	event PublicCertificateCreated(uint indexed _from, uint indexed _to);
 
-	Registry public registry;
 	PublicIssuer public publicIssuer;
 
 	int public privateCertificateTopic = 1234;
-	int public publicCertificateTopic = 1235;
-
-	struct RequestIssue {
-		address owner;
-		bytes data;
-		bool approved;
-        bool revoked;
-	}
 
 	struct RequestStateChange {
 		address owner;
@@ -39,25 +30,20 @@ contract PrivateIssuer is Initializable, Ownable {
 		bytes32 hash;
 	}
 
-	uint public requestIssueNonce;
 	uint public requestMigrateToPublicNonce;
 	uint public requestPrivateTransferNonce;
 
-	mapping(uint256 => RequestIssue) public requestIssueStorage;
 	mapping(uint256 => RequestStateChange) public requestMigrateToPublicStorage;
 	mapping(uint256 => RequestStateChange) public requestPrivateTransferStorage;
 
 	mapping(uint256 => bytes32) public commitments;
 	mapping(uint256 => bool) public migrations;
 
-	function initialize(address _registry, address _publicIssuer) public initializer {
-		require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
-		registry = Registry(_registry);
+	function initialize(int _certificateTopic, address _registry, address _publicIssuer, address owner) public initializer {
+		this.initialize(_certificateTopic, _registry, owner);
 
 		require(_publicIssuer != address(0), "initialize: Cannot use address 0x0 as public issuer.");
 		publicIssuer = PublicIssuer(_publicIssuer);
-
-		Ownable.initialize(msg.sender);
 	}
 
 	function updateCommitment(uint _id, bytes32 _previousCommitment, bytes32 _commitment) public {
@@ -71,38 +57,6 @@ contract PrivateIssuer is Initializable, Ownable {
 	/*
 		Private Issue
 	*/
-
-	function encodeIssue(uint _from, uint _to, string memory _deviceId) public pure returns (bytes memory) {
-		return abi.encode(_from, _to, _deviceId);
-	}
-
-	function decodeIssue(bytes memory _data) public pure returns (uint, uint, string memory) {
-		return abi.decode(_data, (uint, uint, string));
-	}
-
-    function getRequestIssue(uint _requestId) external returns (RequestIssue memory) {
-        return requestIssueStorage[_requestId];
-    }
-
-	function requestIssueFor(bytes memory _data, address _owner) public returns (uint256) {
-		uint id = ++requestIssueNonce;
-
-		requestIssueStorage[id] = RequestIssue({
-			owner: _owner,
-			data: _data,
-			approved: false,
-            revoked: false
-		});
-
-		emit IssueRequest(_owner, id);
-
-        return id;
-	}
-
-    function requestIssue(bytes calldata _data) external {
-        requestIssueFor(_data, msg.sender);
-    }
-
 	function approveIssue(address _to, uint _requestId, bytes32 _commitment, bytes calldata _validityData) external onlyOwner returns (uint256) {
 		RequestIssue storage request = requestIssueStorage[_requestId];
 		require(!request.approved, "Already issued"); //consider checking topic and other params from request
@@ -223,25 +177,8 @@ contract PrivateIssuer is Initializable, Ownable {
 		return _rootHash == hash;
 	}
 
-    function revokeRequest(uint256 _requestId) public onlyOwner {
-        RequestIssue storage request = requestIssueStorage[_requestId];
-        require(!request.revoked, "revokeRequest(): Already revoked");
-
-        request.revoked = true;
-    }
-
-    function isRequestValid(uint256 _requestId) external view returns (bool) {
-        RequestIssue storage request = requestIssueStorage[_requestId];
-
-        return _requestId <= requestIssueNonce && request.approved && request.revoked == false;
-    }
-
     function getPublicIssuerAddress() public view returns (address) {
         return address(publicIssuer);
-    }
-
-    function getRegistryAddress() public view returns (address) {
-        return address(registry);
     }
 
     function version() public view returns (string memory) {

@@ -1,9 +1,9 @@
 import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
-import { IsInt, IsDate, Min, IsLatitude, IsLongitude } from 'class-validator';
-import { IDevice } from '@energyweb/origin-backend-core';
+import { IsInt, Min, IsLatitude, IsLongitude } from 'class-validator';
+import { IDeviceWithId } from '@energyweb/origin-backend-core';
 
 @Entity()
-export class Device extends BaseEntity implements IDevice {
+export class Device extends BaseEntity implements IDeviceWithId {
     @PrimaryColumn()
     id: number;
 

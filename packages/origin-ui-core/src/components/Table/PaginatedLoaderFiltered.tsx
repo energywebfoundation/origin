@@ -1,3 +1,7 @@
+import moment, { Moment } from 'moment';
+
+import { IDeviceTypeService } from '@energyweb/utils-general';
+
 import { ICustomFilter, CustomFilterInputType } from './FiltersHeader';
 import {
     PaginatedLoader,
@@ -5,8 +9,6 @@ import {
     getInitialPaginatedLoaderState,
     IPaginatedLoader
 } from './PaginatedLoader';
-import moment, { Moment } from 'moment';
-import { IRECDeviceService } from '@energyweb/utils-general';
 import { clone } from '../../utils/helper';
 
 export type IPaginatedLoaderFilteredProps = {};
@@ -28,7 +30,7 @@ export abstract class PaginatedLoaderFiltered<
     Props extends IPaginatedLoaderFilteredProps,
     State extends IPaginatedLoaderFilteredState
 > extends PaginatedLoader<Props, State> implements IPaginatedLoader {
-    protected deviceTypeService = new IRECDeviceService();
+    protected deviceTypeService?: IDeviceTypeService;
 
     async loadPage(page: number, filters?: ICustomFilter[]) {
         const { appliedFilters } = this.state;
@@ -68,6 +70,11 @@ export abstract class PaginatedLoaderFiltered<
                     case CustomFilterInputType.multiselect:
                         return filter.selectedValue.includes(filteredPropertyResolvedValue);
                     case CustomFilterInputType.deviceType:
+                        if (!this.deviceTypeService) {
+                            throw new Error(
+                                `PaginatedLoaderFiltered requires "deviceTypeService" to be set to use "deviceType" filter`
+                            );
+                        }
                         if (
                             filter.selectedValue &&
                             filter.selectedValue.length !== 0 &&

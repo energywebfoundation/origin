@@ -2,6 +2,7 @@ import * as Winston from 'winston';
 import Web3 from 'web3';
 
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { IDeviceTypeService } from './DeviceTypeService';
 
 export interface Entity<
     TMarketLogic = any,
@@ -10,13 +11,15 @@ export interface Entity<
     TUserLogic = any
 > {
     blockchainProperties: BlockchainProperties<
+        { public: any; private: any },
         TMarketLogic,
         TDeviceLogic,
         TCertificateLogic,
         TUserLogic
     >;
-    offChainDataSource?: IOffChainDataSource;
     logger: Winston.Logger;
+    deviceTypeService?: IDeviceTypeService;
+    offChainDataSource?: IOffChainDataSource;
 }
 
 export interface BlockchainProperties<

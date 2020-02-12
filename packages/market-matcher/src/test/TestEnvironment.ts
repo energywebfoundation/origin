@@ -16,7 +16,7 @@ import {
 } from '@energyweb/market';
 import { CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
 import { buildRights, Role, Contracts as UserRegistryContracts } from '@energyweb/user-registry';
-import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, DeviceTypeService } from '@energyweb/utils-general';
 import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IMatcherConfig } from '..';
@@ -148,6 +148,10 @@ const deploy = async () => {
         privateKey: privateKeyDeployment
     });
 
+    const offChainDataSource = new OffChainDataSourceMock();
+
+    await offChainDataSource.configurationClient.add('device-types', [['Solar']]);
+
     const config: Configuration.Entity = {
         blockchainProperties: {
             activeUser: {
@@ -160,8 +164,11 @@ const deploy = async () => {
             certificateLogicInstance: certificateLogic,
             web3
         },
-        offChainDataSource: new OffChainDataSourceMock(),
-        logger
+        offChainDataSource,
+        logger,
+        deviceTypeService: new DeviceTypeService(
+            await offChainDataSource.configurationClient.get('device-types')
+        )
     };
 
     await config.offChainDataSource.configurationClient.add('Country', {
@@ -266,11 +273,7 @@ const deployCertificate = async (
     const producingDevice = await new ProducingDevice.Entity(deviceId, smartMeterConfig).sync();
     await producingDevice.saveSmartMeterRead(requiredEnergy, 'newMeterRead');
 
-    await certificateLogic.requestCertificates(0, 0, {
-        privateKey: deviceOwnerPK
-    });
-
-    await certificateLogic.approveCertificationRequest(0, {
+    await certificateLogic.createArbitraryCertfificate(0, requiredEnergy, '', {
         privateKey: issuerPK
     });
 

@@ -1,8 +1,4 @@
-import {
-    DemandPostData,
-    IDemand,
-    DemandUpdateData
-} from '@energyweb/origin-backend-core';
+import { DemandPostData, IDemand, DemandUpdateData } from '@energyweb/origin-backend-core';
 
 import { IRequestClient, RequestClient } from './RequestClient';
 
@@ -42,16 +38,19 @@ export class DemandClient implements IDemandClient {
     }
 
     public async add(data: DemandPostData): Promise<IDemand> {
-        const response = await this.requestClient.post<DemandPostData, IDemand>(this.endpoint, data);
+        const response = await this.requestClient.post<DemandPostData, IDemand>(
+            this.endpoint,
+            data
+        );
 
         return response.data;
     }
 
-    public async update(
-        id: number,
-        data: DemandUpdateData
-    ): Promise<IDemand> {
-        const response = await this.requestClient.put<DemandUpdateData, IDemand>(`${this.endpoint}/${id}`, data);
+    public async update(id: number, data: DemandUpdateData): Promise<IDemand> {
+        const response = await this.requestClient.put<DemandUpdateData, IDemand>(
+            `${this.endpoint}/${id}`,
+            data
+        );
 
         return response.data;
     }

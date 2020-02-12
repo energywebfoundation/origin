@@ -3,7 +3,7 @@ import { PurchasableCertificate, MarketUser } from '@energyweb/market';
 import { Role } from '@energyweb/user-registry';
 import { Link, Redirect } from 'react-router-dom';
 import { Configuration } from '@energyweb/utils-general';
-import { ProducingDevice, Device } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { connect } from 'react-redux';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check } from '@material-ui/icons';
@@ -187,7 +187,8 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
                 (!this.props.owner ||
                     record?.device?.owner?.address?.toLowerCase() ===
                         this.props.currentUser?.id?.toLowerCase()) &&
-                (includedStatuses.length === 0 || includedStatuses.includes(record.device.offChainProperties.status))
+                (includedStatuses.length === 0 ||
+                    includedStatuses.includes(record.device.offChainProperties.status))
         );
 
         const total = filteredEnrichedDeviceData.length;
@@ -219,9 +220,10 @@ class ProducingDeviceTableClass extends PaginatedLoaderFiltered<Props, IProducin
             owner: enrichedData.organizationName,
             facilityName: enrichedData.device.offChainProperties.facilityName,
             provinceRegion: enrichedData.locationText,
-            type: this.deviceTypeService.getDisplayText(
-                enrichedData.device.offChainProperties.deviceType
-            ),
+            type:
+                this.props.configuration?.deviceTypeService?.getDisplayText(
+                    enrichedData.device.offChainProperties.deviceType
+                ) ?? '',
             capacity: PowerFormatter.format(enrichedData.device.offChainProperties.capacityInW),
             read: EnergyFormatter.format(enrichedData.device.lastSmartMeterReadWh),
             status: DeviceStatus[enrichedData.device.offChainProperties.status]

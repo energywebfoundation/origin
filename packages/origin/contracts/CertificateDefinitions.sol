@@ -13,13 +13,6 @@ contract CertificateDefinitions {
         Split
     }
 
-    struct CertificationRequest {
-        uint deviceId;
-        uint readsStartIndex;
-        uint readsEndIndex;
-        CertificationRequestStatus status;
-    }
-
     struct Certificate {
         uint deviceId;
         uint energy;
@@ -27,7 +20,6 @@ contract CertificateDefinitions {
         uint creationTime;
         uint parentId;
         uint[] children;
-        uint readsStartIndex;
-        uint readsEndIndex;
+        string certificationRequestId;
     }
 }

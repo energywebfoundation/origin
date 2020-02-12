@@ -1,11 +1,13 @@
-import { Demand, MarketUser } from '@energyweb/market';
-
-import { Configuration, IRECDeviceService, TimeFrame } from '@energyweb/utils-general';
 import { Delete, Edit, FileCopy, Share } from '@material-ui/icons';
 import moment from 'moment';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router-dom';
+
+import { Demand, MarketUser } from '@energyweb/market';
+import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { IOrganizationWithRelationsIds, DemandStatus } from '@energyweb/origin-backend-core';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 import { getBaseURL, getConfiguration, getDemands } from '../../features/selectors';
 import { IStoreState } from '../../types';
@@ -30,9 +32,7 @@ import { TableMaterial } from '../Table/TableMaterial';
 import { getCurrentUser } from '../../features/users/selectors';
 import { formatDate } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
-import { IOrganizationWithRelationsIds, DemandStatus } from '@energyweb/origin-backend-core';
 import { getOffChainDataSource } from '../../features/general/selectors';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 interface IStateProps {
     configuration: Configuration.Entity;
@@ -264,10 +264,10 @@ class DemandTableClass extends PaginatedLoaderFiltered<Props, IDemandTableState>
         return this.state.paginatedData.map(enrichedDemandData => {
             const demand = enrichedDemandData.demand;
 
-            const deviceService = new IRECDeviceService();
-
             const topLevelDeviceTypes = demand.deviceType
-                ? deviceService.decode(demand.deviceType).filter(type => type.length === 1)
+                ? this.props.configuration?.deviceTypeService
+                      ?.decode(demand.deviceType)
+                      .filter(type => type.length === 1)
                 : [];
 
             const deviceType =

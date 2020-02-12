@@ -23,7 +23,7 @@ import {
     Contracts as UserRegistryContracts
 } from '@energyweb/user-registry';
 
-import { Configuration, TimeFrame, Unit } from '@energyweb/utils-general';
+import { Configuration, TimeFrame, Unit, DeviceTypeService } from '@energyweb/utils-general';
 import moment from 'moment';
 import {
     IDevice,
@@ -32,6 +32,7 @@ import {
     OrganizationStatus
 } from '@energyweb/origin-backend-core';
 import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { OrganizationClientMock } from '@energyweb/origin-backend-client-mocks';
 
 function createTestRegisterData(email: string) {
     return {
@@ -165,6 +166,8 @@ export class Demo {
         deployResult.certificateLogic = certificateLogicAddress;
         deployResult.marketLogic = this.marketContractLookup;
 
+        await this.offChainDataSource.configurationClient.add('device-types', [['Wind']]);
+
         this.conf = {
             blockchainProperties: {
                 activeUser: {
@@ -178,7 +181,10 @@ export class Demo {
                 web3: this.web3
             },
             offChainDataSource: this.offChainDataSource,
-            logger: this.logger
+            logger: this.logger,
+            deviceTypeService: new DeviceTypeService(
+                await this.offChainDataSource.configurationClient.get('device-types')
+            )
         };
 
         const adminPropsOnChain: User.IUserOnChainProperties = {
@@ -389,6 +395,10 @@ export class Demo {
     }
 
     async deploySmartMeterRead(smRead: number): Promise<void> {
+        const LAST_SMART_METER_READ = Number(
+            (await this.deviceLogic.getDevice(0)).lastSmartMeterReadWh
+        );
+
         await this.deviceLogic.saveSmartMeterRead(
             0,
             smRead,
@@ -398,12 +408,15 @@ export class Demo {
                 privateKey: this.ACCOUNTS.SMART_METER.privateKey
             }
         );
-        await this.certificateLogic.requestCertificates(0, this.nextDeployedSmReadIndex, {
-            privateKey: this.ACCOUNTS.DEVICE_MANAGER.privateKey
-        });
-        await this.certificateLogic.approveCertificationRequest(this.nextDeployedSmReadIndex, {
-            privateKey: this.ACCOUNTS.ISSUER.privateKey
-        });
+
+        await this.certificateLogic.createArbitraryCertfificate(
+            0,
+            smRead - LAST_SMART_METER_READ,
+            '',
+            {
+                privateKey: this.ACCOUNTS.ISSUER.privateKey
+            }
+        );
 
         this.nextDeployedSmReadIndex += 1;
     }
@@ -462,7 +475,8 @@ export class Demo {
     async createOrganization() {
         const leadUserId = (await this.adminUser.getInformation()).id;
 
-        return (this.conf.offChainDataSource.organizationClient as any).addMocked(
+        return (this.conf.offChainDataSource
+            .organizationClient as OrganizationClientMock).addMocked(
             {
                 address: 'Address',
                 ceoName: 'Ceo name',
@@ -496,10 +510,8 @@ export class Demo {
     }
 
     async inviteAdminToOrganization(id: number) {
-        return (this.conf.offChainDataSource.organizationClient as any).inviteMocked(
-            'admin@example.com',
-            id
-        );
+        return (this.conf.offChainDataSource
+            .organizationClient as OrganizationClientMock).inviteMocked('admin@example.com', id);
     }
 
     async acceptInvitationToOrganization(invitationId: number) {

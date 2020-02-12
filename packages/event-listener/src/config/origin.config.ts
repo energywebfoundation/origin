@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import * as Winston from 'winston';
 
 import { createBlockchainProperties as marketCreateBlockchainProperties } from '@energyweb/market';
-import { Configuration } from '@energyweb/utils-general';
+import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
 
 import { IEventListenerConfig } from './IEventListenerConfig';
 
@@ -28,6 +28,9 @@ export const initOriginConfig = async (
             level: 'verbose',
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
-        })
+        }),
+        deviceTypeService: new DeviceTypeService(
+            await listenerConfig.offChainDataSource.configurationClient.get('device-types')
+        )
     };
 };

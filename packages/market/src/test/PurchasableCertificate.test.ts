@@ -68,23 +68,15 @@ describe('PurchasableCertificate-Facade', () => {
     }
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
         const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            })
-        );
 
         setActiveUser(deviceOwnerPK);
 
         await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
             privateKey: deviceSmartmeterPK
         });
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
-            privateKey: deviceOwnerPK
-        });
-        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+
+        await certificateLogic.createArbitraryCertfificate(0, energy, '', {
             privateKey: issuerPK
         });
 

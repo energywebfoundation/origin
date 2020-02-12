@@ -1,4 +1,4 @@
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
 import { assert } from 'chai';
 import { List } from 'immutable';
 
@@ -28,7 +28,21 @@ interface ITestCase {
 }
 
 describe('Matching tests', () => {
-    const deviceService = new IRECDeviceService();
+    const deviceService = new DeviceTypeService([
+        ['Solar'],
+        ['Solar', 'Photovoltaic'],
+        ['Solar', 'Photovoltaic', 'Roof mounted'],
+        ['Solar', 'Photovoltaic', 'Ground mounted'],
+        ['Solar', 'Photovoltaic', 'Classic silicon'],
+        ['Solar', 'Concentration'],
+        ['Wind'],
+        ['Wind', 'Onshore'],
+        ['Wind', 'Offshore'],
+        ['Marine'],
+        ['Marine', 'Tidal'],
+        ['Marine', 'Tidal', 'Inshore'],
+        ['Marine', 'Tidal', 'Offshore']
+    ]);
     const locationService = new LocationService();
 
     const twoUSD = 2;

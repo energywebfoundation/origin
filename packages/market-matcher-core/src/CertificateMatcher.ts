@@ -76,7 +76,9 @@ export class CertificateMatcher {
             this.config
         ).sync();
 
-        const demands = this.entityStore.getDemands().map(demand => new MatchableDemand(demand));
+        const demands = this.entityStore
+            .getDemands()
+            .map(demand => new MatchableDemand(demand, this.config.deviceTypeService));
 
         this.logger.verbose(
             `[Certificate #${certificate.id}] Found ${(demands || []).length} demands`
