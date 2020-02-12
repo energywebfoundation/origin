@@ -34,6 +34,7 @@
         "@energyweb/exchange-core": "0.1.1",
         "@energyweb/exchange-token-account": "0.0.1",
         "@energyweb/utils-general": "6.0.0",
+        "@energyweb/issuer": "0.10.1",
         "@nestjs/common": "6.11.6",
         "@nestjs/core": "6.11.6",
         "@nestjs/platform-express": "6.11.6",

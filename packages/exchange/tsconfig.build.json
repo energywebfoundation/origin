@@ -16,6 +16,9 @@
         },
         {
             "path": "../utils-general/tsconfig.build.json"
+        },
+        {
+            "path": "../issuer/tsconfig.build.json"
         }
     ]
 }

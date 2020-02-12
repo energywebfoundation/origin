@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 
@@ -11,6 +11,8 @@ import { Account as AccountEntity } from './account.entity';
 
 @Injectable()
 export class AccountService {
+    private readonly logger = new Logger(AccountService.name);
+
     constructor(
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
@@ -30,10 +32,12 @@ export class AccountService {
     }
 
     private async create(userId: string, transaction: EntityManager) {
+        this.logger.debug(`Trying to find account for userId=${userId}`);
         let account = await transaction.findOne<AccountEntity>(AccountEntity, null, {
             where: { userId }
         });
         if (!account) {
+            this.logger.debug(`Account for userId=${userId} not found. Creating.`);
             const address = await this.accountDeployerService.deployAccount();
 
             account = await transaction
@@ -41,13 +45,19 @@ export class AccountService {
                 .save();
         }
 
+        this.logger.debug(`Returning account ${JSON.stringify(account)} `);
+
         return account;
     }
 
     public async findByAddress(address: string, transaction?: EntityManager) {
+        this.logger.debug(`Requesting account for address ${address}`);
         const manager = transaction || this.connection.manager;
 
-        return manager.findOne<AccountEntity>(AccountEntity, { where: { address } });
+        const account = await manager.findOne<AccountEntity>(AccountEntity, { where: { address } });
+
+        this.logger.debug(`Returning ${JSON.stringify(account)}`);
+        return account;
     }
 
     public async getAccount(userId: string): Promise<Account> {
