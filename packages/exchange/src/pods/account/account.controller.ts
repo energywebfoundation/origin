@@ -28,9 +28,4 @@ export class AccountController {
             throw new ForbiddenException();
         }
     }
-
-    @Get('transfers')
-    public async getTransfers() {
-        return this.transferService.getAll('1');
-    }
 }

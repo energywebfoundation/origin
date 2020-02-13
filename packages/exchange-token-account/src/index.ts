@@ -1,5 +1,4 @@
 import { TokenAccountFactory } from './ethers/TokenAccountFactory';
-import { TokenAccount } from './ethers/TokenAccount';
 
-const ethers = {TokenAccount, TokenAccountFactory};
+const ethers = { TokenAccountFactory };
 export { ethers };

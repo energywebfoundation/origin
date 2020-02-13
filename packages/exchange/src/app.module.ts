@@ -22,6 +22,7 @@ import { TradeModule } from './pods/trade/trade.module';
 import { Transfer } from './pods/transfer/transfer.entity';
 import { TransferModule } from './pods/transfer/transfer.module';
 import { AccountBalanceModule } from './pods/account-balance/account-balance.module';
+import { DepositWatcherModule } from './pods/deposit-watcher/deposit-watcher.module';
 
 const getEnvFilePath = () => {
     if (__dirname.includes('dist/js')) {
@@ -55,7 +56,8 @@ const getEnvFilePath = () => {
         AccountModule,
         ProductModule,
         AccountDeployerModule,
-        AccountBalanceModule
+        AccountBalanceModule,
+        DepositWatcherModule
     ],
     providers: [AppService]
 })

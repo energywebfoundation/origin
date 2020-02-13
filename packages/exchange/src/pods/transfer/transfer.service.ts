@@ -1,4 +1,4 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, Logger } from '@nestjs/common';
 import { InjectRepository, InjectConnection } from '@nestjs/typeorm';
 import { Repository, Connection, EntityManager } from 'typeorm';
 
@@ -12,6 +12,8 @@ import { RequestWithdrawalDTO } from './create-withdrawal.dto';
 
 @Injectable()
 export class TransferService {
+    private readonly logger = new Logger(TransferService.name);
+
     constructor(
         @InjectRepository(Transfer)
         private readonly repository: Repository<Transfer>,
@@ -52,6 +54,8 @@ export class TransferService {
     }
 
     public async createDeposit(depositDTO: CreateDepositDTO) {
+        this.logger.debug(`Requested deposit creation for ${JSON.stringify(depositDTO)}`);
+
         return this.connection.transaction<Transfer>(async manager => {
             const { id } = await this.assetService.createIfNotExist(depositDTO.asset, manager);
             const { userId } = await this.accountService.findByAddress(depositDTO.address);
@@ -66,6 +70,8 @@ export class TransferService {
                 userId
             };
 
+            this.logger.debug(`Storing deposit ${JSON.stringify(deposit)}`);
+
             return manager
                 .getRepository<Transfer>(Transfer)
                 .create(deposit)
@@ -73,14 +79,32 @@ export class TransferService {
         });
     }
 
-    public async confirmTransfer(transactionHash: string) {
+    public async confirmTransfer(transactionHash: string, blockNumber: number) {
+        this.logger.debug(
+            `Requested transaction ${transactionHash} confirmation on block ${blockNumber}`
+        );
         return this.repository.update(
             { transactionHash },
-            { confirmed: true, confirmationBlock: 10000 }
+            { confirmed: true, confirmationBlock: blockNumber }
         );
     }
 
     public async updateTransactionHash(id: string, transactionHash: string) {
         return this.repository.update({ id }, { transactionHash });
+    }
+
+    public async getLastConfirmationBlock() {
+        this.logger.debug('Requested last confirmation block from transfers');
+        const [transfer] = await this.repository.find({
+            take: 1,
+            order: { confirmationBlock: 'DESC' },
+            where: { direction: TransferDirection.Deposit }
+        });
+
+        const blockNumber = transfer?.confirmationBlock || 0;
+
+        this.logger.debug(`Last known confirmation block is ${blockNumber}`);
+
+        return blockNumber;
     }
 }
