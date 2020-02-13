@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Asset } from '../asset/asset.entity';
 import { TransferDirection } from './transfer-direction';
+import { TransferStatus } from './transfer-status';
 
 @Entity()
 export class Transfer extends BaseEntity {
@@ -23,7 +24,7 @@ export class Transfer extends BaseEntity {
     address: string;
 
     @Column()
-    confirmed: boolean;
+    status: TransferStatus;
 
     @Column({ nullable: true })
     confirmationBlock?: number;

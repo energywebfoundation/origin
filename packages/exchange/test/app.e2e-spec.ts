@@ -18,7 +18,6 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { DepositWatcherService } from '../src/pods/deposit-watcher/deposit-watcher.service';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -27,7 +26,6 @@ describe('AppController (e2e)', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
-    let depositWatcherService: DepositWatcherService;
 
     const user1Id = '1';
     let user1Address: string;
@@ -52,7 +50,7 @@ describe('AppController (e2e)', () => {
     };
 
     const confirmDeposit = () => {
-        return transferService.confirmTransfer(transactionHash, 10000);
+        return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
     const deployRegistry = async () => {
@@ -94,7 +92,6 @@ describe('AppController (e2e)', () => {
         transferService = await app.resolve<TransferService>(TransferService);
         accountService = await app.resolve<AccountService>(AccountService);
         databaseService = await app.resolve<DatabaseService>(DatabaseService);
-        depositWatcherService = await app.resolve<DepositWatcherService>(DepositWatcherService);
 
         const appService = await app.resolve<AppService>(AppService);
         await appService.init();
@@ -249,7 +246,7 @@ describe('AppController (e2e)', () => {
             };
 
             await request(app.getHttpServer())
-                .post('/account/withdrawal')
+                .post('/transfer/withdrawal')
                 .send(withdrawal)
                 .expect(403);
         });
@@ -265,7 +262,7 @@ describe('AppController (e2e)', () => {
             };
 
             await request(app.getHttpServer())
-                .post('/account/withdrawal')
+                .post('/transfer/withdrawal')
                 .send(withdrawal)
                 .expect(201);
 

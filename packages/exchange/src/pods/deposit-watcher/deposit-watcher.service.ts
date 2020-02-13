@@ -83,7 +83,7 @@ export class DepositWatcherService {
 
             const receipt = await this.provider.waitForTransaction(transactionHash);
 
-            await this.transferService.confirmTransfer(transactionHash, receipt.blockNumber);
+            await this.transferService.setAsConfirmed(transactionHash, receipt.blockNumber);
 
             this.logger.debug(
                 `Successfully created deposit of tokenId=${id} from ${from} with value=${value}`
