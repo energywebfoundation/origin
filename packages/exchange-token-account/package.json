@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.0.1",
+    "version": "0.1.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -36,10 +36,10 @@
         "ethers": "4.0.44"
     },
     "devDependencies": {
-        "@energyweb/issuer": "0.10.1",
+        "@energyweb/issuer": "0.11.0",
+        "truffle-typings": "1.0.8",
         "typechain": "1.0.5",
-        "typechain-target-ethers": "1.0.3",
-        "truffle-typings": "1.0.8"
+        "typechain-target-ethers": "1.0.3"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher-core@2.0.0...@energyweb/market-matcher-core@3.0.0) (2020-02-12)
+
+
+### Bug Fixes
+
+* fix demand matching and saving demand partially filled events ([6462129](https://github.com/energywebfoundation/origin/commit/646212912192599a52454d3e498bf73c4314a0ac))
+
+
+### chore
+
+* **market-matcher-core:** abstract DeviceTypeService ([7a7ea85](https://github.com/energywebfoundation/origin/commit/7a7ea8556d3d8ba70a26b2c38b774d75847e92d1))
+
+
+### BREAKING CHANGES
+
+* **market-matcher-core:** require DeviceTypeService in MatchableDemand constructor
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher-core@1.2.3...@energyweb/market-matcher-core@2.0.0) (2020-02-04)
 
 

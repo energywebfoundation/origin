@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@6.0.0...@energyweb/utils-general@7.0.0) (2020-02-12)
+
+
+### chore
+
+* **utils-general:** configurable DeviceTypeService ([94694eb](https://github.com/energywebfoundation/origin/commit/94694ebc3437bcc4abea7ffc3ff5905e9bc9f06e))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** Rename IRECDeviceService to DeviceTypeService and make it configurable
+
+
+
+
+
 # [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@5.0.0...@energyweb/utils-general@6.0.0) (2020-02-04)
 
 

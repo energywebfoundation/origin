@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@3.1.0...@energyweb/origin-backend-client@3.2.0) (2020-02-12)
+
+
+### Features
+
+* change certification requests to be off-chain evidence based ([555c696](https://github.com/energywebfoundation/origin/commit/555c696aff17bafd11c8c5403add627d6c95fbd9))
+
+
+
+
+
 # [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@3.0.0...@energyweb/origin-backend-client@3.1.0) (2020-02-04)
 
 
