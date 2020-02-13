@@ -76,6 +76,7 @@ export class DepositWatcherService {
                 asset: {
                     address: this.registryAddress,
                     tokenId: id.toString(),
+                    // TODO: fetch the real device ID from contract after we agree on the structure of the bytes field
                     deviceId: 'dummy'
                 }
             });
