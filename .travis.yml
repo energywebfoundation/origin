@@ -2,37 +2,42 @@ sudo: required
 dist: bionic
 language: node_js
 node_js:
-    - '12'
+  - "12"
 
 git:
   depth: false
 
 cache:
-    yarn: true
-    directories:
-        - packages/utils-general/build
-        - packages/utils-general/dist
-        - packages/user-registry/schemas
-        - packages/user-registry/build
-        - packages/user-registry/dist
-        - packages/origin-backend/dist
-        - packages/origin-backend-client/dist
-        - packages/device-registry/schemas
-        - packages/device-registry/build
-        - packages/device-registry/dist
-        - packages/origin/build
-        - packages/origin/dist
-        - packages/market/schemas
-        - packages/market/build
-        - packages/market/dist
-        - packages/market-matcher/dist
-        - packages/market-matcher-core/dist
-        - packages/event-listener/dist
-
+  yarn: true
+  directories:
+    - packages/utils-general/build
+    - packages/utils-general/dist
+    - packages/user-registry/schemas
+    - packages/user-registry/build
+    - packages/user-registry/dist
+    - packages/origin-backend/dist
+    - packages/origin-backend-client/dist
+    - packages/device-registry/schemas
+    - packages/device-registry/build
+    - packages/device-registry/dist
+    - packages/origin/build
+    - packages/origin/dist
+    - packages/market/schemas
+    - packages/market/build
+    - packages/market/dist
+    - packages/market-matcher/dist
+    - packages/market-matcher-core/dist
+    - packages/event-listener/dist
+    - packages/exchange/dist
+    - packages/exchange-core/dist
+    - packages/exchange-token-account/dist
+    - packages/exchange-token-account/build
+    - packages/issuer/build
+    - packages/issuer/dist
 
 before_install:
-    - sh scripts/restore-original-timestamps.sh
-    - git fetch origin master:master
+  - sh scripts/restore-original-timestamps.sh
+  - git fetch origin master:master
 
 before_deploy:
   - git config --global user.email ${GITHUB_EMAIL}
