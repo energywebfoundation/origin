@@ -353,7 +353,6 @@ describe('AppController (e2e)', () => {
 
     afterAll(async () => {
         try {
-            depositWatcherService.stop();
             await app.close();
         } catch (error) {
             console.error(error);

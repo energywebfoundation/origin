@@ -92,4 +92,19 @@ export class TransferService {
     public async updateTransactionHash(id: string, transactionHash: string) {
         return this.repository.update({ id }, { transactionHash });
     }
+
+    public async getLastConfirmationBlock() {
+        this.logger.debug('Requested last confirmation block from transfers');
+        const [transfer] = await this.repository.find({
+            take: 1,
+            order: { confirmationBlock: 'DESC' },
+            where: { direction: TransferDirection.Deposit }
+        });
+
+        const blockNumber = transfer?.confirmationBlock || 0;
+
+        this.logger.debug(`Last known confirmation block is ${blockNumber}`);
+
+        return blockNumber;
+    }
 }

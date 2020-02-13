@@ -20,6 +20,6 @@ export class AppService {
 
         this.matchingEngineService.init(orders);
 
-        this.depositWatcherService.init();
+        await this.depositWatcherService.init();
     }
 }

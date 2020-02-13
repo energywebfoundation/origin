@@ -36,7 +36,11 @@ export class DepositWatcherService {
         this.logger.debug(`Initializing watcher for ${this.registryAddress}`);
 
         const topics = [this.tokenInterface.events.TransferSingle.topic];
+        const blockNumber = await this.transferService.getLastConfirmationBlock();
 
+        this.logger.debug(`Starting from block ${blockNumber}`);
+
+        this.provider.resetEventsBlock(blockNumber);
         this.provider.on(
             {
                 address: this.registryAddress,
@@ -44,10 +48,6 @@ export class DepositWatcherService {
             },
             (event: Log) => this.processEvent(event)
         );
-    }
-
-    public stop() {
-        this.provider.removeAllListeners();
     }
 
     private async processEvent(event: Log) {
