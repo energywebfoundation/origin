@@ -42,8 +42,8 @@ const getEnvFilePath = () => {
             password: 'postgres',
             database: 'origin-exchange',
             entities: [Demand, Order, Trade, Asset, Transfer, Account],
-            synchronize: true
-            //logging: ['query']
+            synchronize: true,
+            logging: ['query']
         }),
         ScheduleModule.forRoot(),
         MatchingEngineModule,
