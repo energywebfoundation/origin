@@ -7,23 +7,17 @@ import * as Winston from 'winston';
 import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { createBlockchainProperties } from '@energyweb/market';
-import {
-    OffChainDataClient,
-    ConfigurationClient,
-    UserClient
-} from '@energyweb/origin-backend-client';
+import { OffChainDataSource, IOffChainDataSource } from '@energyweb/origin-backend-client';
 
 const web3 = new Web3(process.env.WEB3);
-const baseUrl = `${process.env.BACKEND_URL}/api`;
 
-async function getMarketContractLookupAddress() {
+async function getMarketContractLookupAddress(offChainDataSource: IOffChainDataSource) {
     let storedMarketContractAddresses: string[] = [];
 
     console.log(`[SIMULATOR-MOCK-READINGS] Trying to get Market contract address`);
 
     while (storedMarketContractAddresses.length === 0) {
-        storedMarketContractAddresses = await new ConfigurationClient().get(
-            baseUrl,
+        storedMarketContractAddresses = await offChainDataSource.configurationClient.get(
             'MarketContractLookup'
         );
 
@@ -35,32 +29,6 @@ async function getMarketContractLookupAddress() {
     const storedMarketContractAddress = storedMarketContractAddresses.pop();
 
     return process.env.MARKET_CONTRACT_ADDRESS || storedMarketContractAddress;
-}
-
-async function getDeviceConf(marketContractLookupAddress: string) {
-    const conf: Configuration.Entity = {
-        blockchainProperties: {
-            web3
-        },
-        offChainDataSource: {
-            baseUrl,
-            client: new OffChainDataClient(),
-            configurationClient: new ConfigurationClient(),
-            userClient: new UserClient(baseUrl)
-        },
-        logger: Winston.createLogger({
-            level: 'verbose',
-            format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
-            transports: [new Winston.transports.Console({ level: 'silly' })]
-        })
-    };
-
-    conf.blockchainProperties = await createBlockchainProperties(
-        conf.blockchainProperties.web3,
-        marketContractLookupAddress
-    );
-
-    return conf;
 }
 
 async function getProducingDeviceSmartMeterRead(
@@ -118,26 +86,66 @@ async function saveProducingDeviceSmartMeterRead(
 const { device } = workerData;
 
 const currentTime = moment.tz(device.timezone);
-const measurementTime = currentTime
-    .clone()
-    .subtract(1, 'day')
-    .startOf('day');
 
 (async () => {
-    const marketContractLookupAddress = await getMarketContractLookupAddress();
-    const conf = await getDeviceConf(marketContractLookupAddress);
+    const offChainDataSource = new OffChainDataSource(
+        process.env.BACKEND_URL,
+        Number(process.env.BACKEND_PORT)
+    );
+
+    const conf = {
+        blockchainProperties: {
+            web3
+        },
+        offChainDataSource,
+        logger: Winston.createLogger({
+            level: 'verbose',
+            format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
+            transports: [new Winston.transports.Console({ level: 'silly' })]
+        })
+    };
+
+    const marketContractLookupAddress = await getMarketContractLookupAddress(offChainDataSource);
+
+    conf.blockchainProperties = await createBlockchainProperties(
+        conf.blockchainProperties.web3,
+        marketContractLookupAddress
+    );
+
+    const MOCK_READINGS_MINUTES_INTERVAL =
+        parseInt(process.env.SOLAR_SIMULATOR_PAST_READINGS_MINUTES_INTERVAL, 10) || 15;
+
+    let measurementTime = currentTime
+        .clone()
+        .subtract(1, 'day')
+        .startOf('day');
 
     while (measurementTime.isSameOrBefore(currentTime)) {
-        const generateReadingsTimeData = workerData.DATA.find(
-            (row: any) =>
-                row[0] ===
-                measurementTime
-                    .clone()
-                    .year(2015)
-                    .format('DD.MM.YYYY HH:mm')
-        );
+        const newMeasurementTime = measurementTime
+            .clone()
+            .add(MOCK_READINGS_MINUTES_INTERVAL, 'minute');
 
-        const multiplier = parseFloat(generateReadingsTimeData[1]);
+        const measurementTimeWithFixedYear = measurementTime
+            .clone()
+            .year(2015)
+            .unix();
+        const newMeasurementTimeWithFixedYear = newMeasurementTime
+            .clone()
+            .year(2015)
+            .unix();
+
+        const combinedMultiplierForMatchingRows = (workerData.DATA as any[])
+            .filter((row: any) => {
+                const rowTime = moment.tz(row[0], 'DD.MM.YYYY HH:mm', device.timezone).unix();
+
+                return (
+                    rowTime > measurementTimeWithFixedYear &&
+                    rowTime <= newMeasurementTimeWithFixedYear
+                );
+            })
+            .reduce((a, b) => a + parseFloat(b[1]), 0);
+
+        const multiplier = combinedMultiplierForMatchingRows ?? 0;
         const energyGenerated = Math.round(device.maxCapacity * multiplier);
 
         const isValidMeterReading = energyGenerated > 0;
@@ -157,7 +165,10 @@ const measurementTime = currentTime
                     conf
                 );
             } catch (error) {
-                console.error(`Error while trying to save meter read for device ${device.id}`);
+                console.error(
+                    `Error while trying to save meter read for device ${device.id}`,
+                    error?.message
+                );
             }
         }
 
@@ -167,6 +178,8 @@ const measurementTime = currentTime
             } Energy Read of: ${energyGenerated} Wh - [${measurementTime.format()}]`
         );
 
-        measurementTime.add(15, 'minute');
+        measurementTime = newMeasurementTime;
     }
+
+    offChainDataSource.eventClient.stop();
 })();

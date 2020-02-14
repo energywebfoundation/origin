@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@6.0.0...@energyweb/utils-general@7.0.0) (2020-02-12)
+
+
+### chore
+
+* **utils-general:** configurable DeviceTypeService ([94694eb](https://github.com/energywebfoundation/origin/commit/94694ebc3437bcc4abea7ffc3ff5905e9bc9f06e))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** Rename IRECDeviceService to DeviceTypeService and make it configurable
+
+
+
+
+
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@5.0.0...@energyweb/utils-general@6.0.0) (2020-02-04)
+
+
+### Features
+
+* easier OffChainDataSource definition ([4f7fff0](https://github.com/energywebfoundation/origin/commit/4f7fff0801dcef7e918ae76e6adb12d8b3f46d75))
+* **utils-general:** multiple locations matching ([fede4d7](https://github.com/energywebfoundation/origin/commit/fede4d7a2604e0a4bb13069b67edd0e7c9ec7e5d))
+
+
+### BREAKING CHANGES
+
+* Configuration.Entity now requires a different (simpler) OffChainDataSource definition
+
+
+
+
+
+# [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@4.1.1...@energyweb/utils-general@5.0.0) (2020-01-31)
+
+
+### Features
+
+* **issuer:** add JS wrappers for PublicIssuer and Certificate ([6511677](https://github.com/energywebfoundation/origin/commit/6511677012aaa8ec8239fa951f6311811bf030a2))
+* **utils-general:** add userClient requirement and typed signing ([24d4325](https://github.com/energywebfoundation/origin/commit/24d432591bced0ef967aa01fffe0e9870384d98e))
+* **utils-general:** added location service ([365d7f6](https://github.com/energywebfoundation/origin/commit/365d7f63fffeb4679d5c99ea12d8d923c9aff111))
+* **utils-general:** includesSomeDeviceType ([aa209b7](https://github.com/energywebfoundation/origin/commit/aa209b78ed6a649bef348dcf762a71ac9bb67571))
+* **utils-general:** solidity-compatible precise-proofs ([b47fb4b](https://github.com/energywebfoundation/origin/commit/b47fb4bad74a345032393bc5d869512e7ee9582c))
+
+
+### BREAKING CHANGES
+
+* **utils-general:** require UserClient in configuration
+
+
+
+
+
 ## [4.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@4.1.0...@energyweb/utils-general@4.1.1) (2020-01-17)
 
 **Note:** Version bump only for package @energyweb/utils-general

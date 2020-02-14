@@ -16,14 +16,11 @@ import {
     Contracts as DeviceRegistryContracts
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+
 import { deployERC721TestReceiver } from './deploy';
 import { TestReceiver } from '../wrappedContracts/TestReceiver';
-
 import { CertificateLogic, Certificate } from '..';
 import { migrateCertificateRegistryContracts } from '../utils/migrateContracts';
 import { logger } from '../blockchain-facade/Logger';
@@ -71,24 +68,20 @@ describe('CertificateLogic-Facade', () => {
         };
     }
 
+    const createCertificate = async (energy: number) =>
+        certificateLogic.createArbitraryCertfificate(0, energy, '', {
+            privateKey: issuerPK
+        });
+
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
         const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            })
-        );
 
         setActiveUser(deviceOwnerPK);
 
         await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
             privateKey: deviceSmartmeterPK
         });
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
-            privateKey: deviceOwnerPK
-        });
-        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+        await certificateLogic.createArbitraryCertfificate(0, energy, '', {
             privateKey: issuerPK
         });
 
@@ -134,12 +127,7 @@ describe('CertificateLogic-Facade', () => {
                 certificateLogicInstance: certificateLogic,
                 web3
             },
-            offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient: new UserClientMock()
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });
@@ -184,14 +172,11 @@ describe('CertificateLogic-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
-        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+        const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,
@@ -214,6 +199,8 @@ describe('CertificateLogic-Facade', () => {
         assert.equal(await ProducingDevice.getDeviceListLength(conf), 0);
 
         await ProducingDevice.createDevice(deviceProps, devicePropsOffChain, conf);
+
+        assert.equal(await ProducingDevice.getDeviceListLength(conf), 1);
     });
 
     it('should log a new meterreading ', async () => {
@@ -222,14 +209,8 @@ describe('CertificateLogic-Facade', () => {
         });
     });
 
-    it('should be able to request certificates', async () => {
-        await certificateLogic.requestCertificates(0, 0, {
-            privateKey: deviceOwnerPK
-        });
-    });
-
-    it('should be able to approve certification request', async () => {
-        await certificateLogic.approveCertificationRequest(0, {
+    it('should be able to create arbitrary certificate', async () => {
+        await certificateLogic.createArbitraryCertfificate(0, 100, '', {
             privateKey: issuerPK
         });
 
@@ -240,7 +221,6 @@ describe('CertificateLogic-Facade', () => {
 
     it('should return certificate', async () => {
         const certificate = await new Certificate.Entity('0', conf).sync();
-        const reads = await deviceLogic.getSmartMeterReadsForDevice(0);
 
         assert.equal(certificate.owner, accountDeviceOwner);
 
@@ -255,9 +235,7 @@ describe('CertificateLogic-Facade', () => {
             energy: 100,
             status: Certificate.Status.Active,
             creationTime: blockCreationTime,
-            parentId: 0,
-            generationStartTime: Number(reads[0].timestamp),
-            generationEndTime: Number(reads[0].timestamp)
+            parentId: 0
         } as Partial<Certificate.Entity>);
     });
 
@@ -299,13 +277,8 @@ describe('CertificateLogic-Facade', () => {
         await deviceLogic.saveSmartMeterRead(0, 200, 'lastSmartMeterReadFileHash', 0, {
             privateKey: deviceSmartmeterPK
         });
-        await certificateLogic.requestCertificates(0, 1, {
-            privateKey: deviceOwnerPK
-        });
 
-        await certificateLogic.approveCertificationRequest(1, {
-            privateKey: issuerPK
-        });
+        await createCertificate(100);
 
         const certificate = await new Certificate.Entity('1', conf).sync();
 
@@ -351,13 +324,7 @@ describe('CertificateLogic-Facade', () => {
             privateKey: deviceSmartmeterPK
         });
 
-        await certificateLogic.requestCertificates(0, 2, {
-            privateKey: deviceOwnerPK
-        });
-
-        await certificateLogic.approveCertificationRequest(2, {
-            privateKey: issuerPK
-        });
+        await createCertificate(100);
 
         const certificate = await new Certificate.Entity('2', conf).sync();
         blockCreationTime = parseInt((await web3.eth.getBlock('latest')).timestamp.toString(), 10);
@@ -382,8 +349,6 @@ describe('CertificateLogic-Facade', () => {
         };
 
         let certificate = await new Certificate.Entity('2', conf).sync();
-
-        const reads = await deviceLogic.getSmartMeterReadsForDevice(0);
 
         await certificate.splitCertificate(60);
 
@@ -413,9 +378,7 @@ describe('CertificateLogic-Facade', () => {
             energy: 60,
             status: Certificate.Status.Active,
             creationTime: blockCreationTime,
-            parentId: 2,
-            generationStartTime: Number(reads[2].timestamp),
-            generationEndTime: Number(reads[2].timestamp)
+            parentId: 2
         } as Partial<Certificate.Entity>);
 
         assert.deepOwnInclude(c2, {
@@ -427,9 +390,7 @@ describe('CertificateLogic-Facade', () => {
             energy: 40,
             status: Certificate.Status.Active,
             creationTime: blockCreationTime,
-            parentId: 2,
-            generationStartTime: Number(reads[2].timestamp),
-            generationEndTime: Number(reads[2].timestamp)
+            parentId: 2
         } as Partial<Certificate.Entity>);
 
         const activeCerts = await Certificate.getActiveCertificates(conf);
@@ -468,13 +429,7 @@ describe('CertificateLogic-Facade', () => {
             privateKey: deviceSmartmeterPK
         });
 
-        await certificateLogic.requestCertificates(0, 3, {
-            privateKey: deviceOwnerPK
-        });
-
-        await certificateLogic.approveCertificationRequest(3, {
-            privateKey: issuerPK
-        });
+        await createCertificate(100);
 
         const certificate = await new Certificate.Entity('5', conf).sync();
 
@@ -534,13 +489,7 @@ describe('CertificateLogic-Facade', () => {
             privateKey: deviceSmartmeterPK
         });
 
-        await certificateLogic.requestCertificates(0, 4, {
-            privateKey: deviceOwnerPK
-        });
-
-        await certificateLogic.approveCertificationRequest(4, {
-            privateKey: issuerPK
-        });
+        await createCertificate(100);
 
         const certificate = await new Certificate.Entity('6', conf).sync();
 
@@ -595,194 +544,12 @@ describe('CertificateLogic-Facade', () => {
         } as Partial<Certificate.Entity>);
     });
 
-    it('device owner can create multiple certification requests', async () => {
-        const STARTING_CERTIFICATE_LENGTH = Number(
-            await Certificate.getCertificateListLength(conf)
-        );
-        const STARTING_DEVICE_OWNER_BALANCE = Number(
-            await certificateLogic.balanceOf(accountDeviceOwner)
-        );
-        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
-        const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            })
-        );
-
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
-
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 200, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
-
-        assert.equal(
-            (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1,
-            LAST_SM_READ_INDEX + 2
-        );
-
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 301, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
-
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 425, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
-
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 582, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
-
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 2, {
-            privateKey: deviceOwnerPK
-        });
-
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 5, {
-            privateKey: deviceOwnerPK
-        });
-
-        assert.equal(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            }),
-            INITIAL_CERTIFICATION_REQUESTS_LENGTH + 2
-        );
-        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
-        assert.equal(
-            await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_DEVICE_OWNER_BALANCE
-        );
-
-        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
-            privateKey: issuerPK
-        });
-
-        assert.equal(
-            await Certificate.getCertificateListLength(conf),
-            STARTING_CERTIFICATE_LENGTH + 1
-        );
-        assert.equal(
-            await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_DEVICE_OWNER_BALANCE + 1
-        );
-
-        await certificateLogic.approveCertificationRequest(
-            INITIAL_CERTIFICATION_REQUESTS_LENGTH + 1,
-            {
-                privateKey: issuerPK
-            }
-        );
-
-        assert.equal(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            }),
-            INITIAL_CERTIFICATION_REQUESTS_LENGTH + 2
-        );
-
-        assert.equal(
-            await Certificate.getCertificateListLength(conf),
-            STARTING_CERTIFICATE_LENGTH + 2
-        );
-        assert.equal(
-            await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_DEVICE_OWNER_BALANCE + 2
-        );
-
-        const certificateOne = await new Certificate.Entity(
-            STARTING_CERTIFICATE_LENGTH.toString(),
-            conf
-        ).sync();
-
-        assert.equal(certificateOne.energy, 200);
-
-        const certificateTwo = await new Certificate.Entity(
-            (STARTING_CERTIFICATE_LENGTH + 1).toString(),
-            conf
-        ).sync();
-
-        assert.equal(certificateTwo.energy, 382);
-    });
-
-    it('issuer should not be able to issue certificates twice for the same certification request', async () => {
-        const STARTING_CERTIFICATE_LENGTH = Number(
-            await Certificate.getCertificateListLength(conf)
-        );
-        const STARTING_DEVICE_OWNER_BALANCE = Number(
-            await certificateLogic.balanceOf(accountDeviceOwner)
-        );
-        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
-        const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            })
-        );
-
-        await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + 100, '', 0, {
-            privateKey: deviceSmartmeterPK
-        });
-
-        assert.equal(await Certificate.getCertificateListLength(conf), STARTING_CERTIFICATE_LENGTH);
-        assert.equal(
-            await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_DEVICE_OWNER_BALANCE
-        );
-
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
-            privateKey: deviceOwnerPK
-        });
-
-        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
-            privateKey: issuerPK
-        });
-
-        assert.equal(
-            await Certificate.getCertificateListLength(conf),
-            STARTING_CERTIFICATE_LENGTH + 1
-        );
-        assert.equal(
-            await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_DEVICE_OWNER_BALANCE + 1
-        );
-
-        try {
-            await certificateLogic.approveCertificationRequest(
-                INITIAL_CERTIFICATION_REQUESTS_LENGTH,
-                {
-                    privateKey: issuerPK
-                }
-            );
-        } catch (e) {
-            assert.include(
-                e.message,
-                'approveCertificationRequest: request has to be in pending state'
-            );
-        }
-
-        assert.equal(
-            await Certificate.getCertificateListLength(conf),
-            STARTING_CERTIFICATE_LENGTH + 1
-        );
-        assert.equal(
-            await certificateLogic.balanceOf(accountDeviceOwner),
-            STARTING_DEVICE_OWNER_BALANCE + 1
-        );
-    });
-
     it('should create a new certificate (#10)', async () => {
         const STARTING_CERTIFICATE_LENGTH = Number(
             await Certificate.getCertificateListLength(conf)
         );
-        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
+
         const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            })
-        );
 
         conf.blockchainProperties.activeUser = {
             address: accountDeviceOwner,
@@ -799,13 +566,7 @@ describe('CertificateLogic-Facade', () => {
             }
         );
 
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
-            privateKey: deviceOwnerPK
-        });
-
-        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
-            privateKey: issuerPK
-        });
+        await createCertificate(100);
 
         const certificate = await new Certificate.Entity(
             STARTING_CERTIFICATE_LENGTH.toString(),

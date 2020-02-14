@@ -1,4 +1,4 @@
-import { IDeviceService, ILocationService } from '@energyweb/utils-general';
+import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
 
 import { Ask } from './Ask';
 import { Order, OrderSide, OrderStatus } from './Order';
@@ -18,7 +18,7 @@ export class Bid extends Order {
 
     public filterBy(
         product: Product,
-        deviceService: IDeviceService,
+        deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
         const isIncludedInDeviceType = this.isIncludedInDeviceType(product, deviceService);
@@ -30,7 +30,7 @@ export class Bid extends Order {
 
     public matches(
         ask: Ask,
-        deviceService: IDeviceService,
+        deviceService: IDeviceTypeService,
         locationService: ILocationService
     ): boolean {
         const hasMatchingDeviceType = this.hasMatchingDeviceType(ask.product, deviceService);
@@ -44,7 +44,7 @@ export class Bid extends Order {
         return new Bid(this.id, this.price, this.volume, this.product, this.validFrom, this.status);
     }
 
-    private hasMatchingDeviceType(product: Product, deviceService: IDeviceService) {
+    private hasMatchingDeviceType(product: Product, deviceService: IDeviceTypeService) {
         if (!this.product.deviceType || !product.deviceType) {
             return true;
         }
@@ -66,12 +66,12 @@ export class Bid extends Order {
         }
 
         return (
-            locationService.matches(product.location, this.product.location[0]) ||
-            locationService.matches(this.product.location, product.location[0])
+            locationService.matchesSome(product.location, this.product.location) ||
+            locationService.matchesSome(this.product.location, product.location)
         );
     }
 
-    private isIncludedInDeviceType(product: Product, deviceService: IDeviceService) {
+    private isIncludedInDeviceType(product: Product, deviceService: IDeviceTypeService) {
         if (!this.product.deviceType || !product.deviceType) {
             return true;
         }
@@ -83,9 +83,9 @@ export class Bid extends Order {
     }
 
     private hasMatchingVintage(product: Product) {
-        if (!product.deviceVintage || !this.product.deviceVintage) {
+        if (!this.product.deviceVintage || !product.deviceVintage) {
             return true;
         }
-        return this.product.deviceVintage >= product.deviceVintage;
+        return product.deviceVintage.matches(this.product.deviceVintage);
     }
 }

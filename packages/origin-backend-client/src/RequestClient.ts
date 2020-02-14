@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 
 export interface IRequestClient {
     authenticationToken: string;
@@ -10,6 +10,8 @@ export interface IRequestClient {
     put<T, U>(url: string, data?: T, config?: AxiosRequestConfig): Promise<AxiosResponse<U>>;
 
     delete<T, U>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<U>>;
+
+    generateCancelToken(): CancelTokenSource;
 }
 
 export class RequestClient implements IRequestClient {
@@ -29,6 +31,10 @@ export class RequestClient implements IRequestClient {
 
     async delete<T, U>(url: string, config: AxiosRequestConfig = {}) {
         return axios.delete<T, AxiosResponse<U>>(url, { ...this.config, ...config });
+    }
+
+    generateCancelToken() {
+        return axios.CancelToken.source();
     }
 
     private get config(): AxiosRequestConfig {

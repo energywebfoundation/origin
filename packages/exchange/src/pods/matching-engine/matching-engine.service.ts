@@ -3,15 +3,16 @@ import {
     Bid,
     MatchingEngine,
     OrderSide,
-    TradeExecutedEvent,
-    Product
+    Product,
+    TradeExecutedEvent
 } from '@energyweb/exchange-core';
-import { IRECDeviceService, LocationService } from '@energyweb/utils-general';
+import { DeviceTypeService, LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { List } from 'immutable';
 
 import { Order as OrderEntity } from '../order/order.entity';
+import { ProductDTO } from '../order/product.dto';
 import { TradeService } from '../trade/trade.service';
 
 @Injectable()
@@ -21,7 +22,7 @@ export class MatchingEngineService {
     private readonly logger = new Logger(MatchingEngineService.name);
 
     private readonly matchingEngine = new MatchingEngine(
-        new IRECDeviceService(),
+        new DeviceTypeService([]),
         new LocationService()
     );
 
@@ -75,7 +76,7 @@ export class MatchingEngineService {
                   order.id,
                   order.price,
                   order.currentVolume,
-                  order.product,
+                  ProductDTO.toProduct(order.product),
                   order.validFrom,
                   order.status
               )
@@ -83,7 +84,7 @@ export class MatchingEngineService {
                   order.id,
                   order.price,
                   order.currentVolume,
-                  order.product,
+                  ProductDTO.toProduct(order.product),
                   order.validFrom,
                   order.status
               );

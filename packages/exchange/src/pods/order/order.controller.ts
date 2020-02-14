@@ -1,9 +1,10 @@
 import { IUser } from '@energyweb/origin-backend-core';
-import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Logger, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
-import { CreateOrderDto } from './create-order.dto';
+import { CreateAskDTO } from './create-ask.dto';
+import { CreateBidDTO } from './create-bid.dto';
 import { OrderService } from './order.service';
 
 @Controller('order')
@@ -12,15 +13,41 @@ export class OrderController {
 
     constructor(private readonly orderService: OrderService) {}
 
-    @Post()
+    @Post('bid')
     @UseGuards(AuthGuard())
-    public async create(@UserDecorator() user: IUser, @Body() newOrder: CreateOrderDto) {
+    public async createBid(@UserDecorator() user: IUser, @Body() newOrder: CreateBidDTO) {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
-        const order = await this.orderService.create({ ...newOrder, userId: user.id.toString() });
+        try {
+            const order = await this.orderService.createBid({
+                ...newOrder,
+                userId: user.id.toString()
+            });
 
-        this.orderService.submit(order);
+            this.orderService.submit(order);
 
-        return order.id;
+            return order;
+        } catch (error) {
+            this.logger.error(error);
+
+            throw new ForbiddenException();
+        }
+    }
+
+    @Post('ask')
+    public async createAsk(@Body() newOrder: CreateAskDTO) {
+        this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
+
+        try {
+            const order = await this.orderService.createAsk({ ...newOrder, userId: '1' });
+
+            this.orderService.submit(order);
+
+            return order;
+        } catch (error) {
+            this.logger.error(error);
+
+            throw new ForbiddenException();
+        }
     }
 }

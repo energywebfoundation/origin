@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.3.0...@energyweb/market-matcher@2.4.0) (2020-02-12)
+
+
+### Features
+
+* change certification requests to be off-chain evidence based ([555c696](https://github.com/energywebfoundation/origin/commit/555c696aff17bafd11c8c5403add627d6c95fbd9))
+
+
+
+
+
+# [2.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.2.3...@energyweb/market-matcher@2.3.0) (2020-02-04)
+
+
+### Features
+
+* Use off-chain events for Demand + remove matching Agrements ([399ba89](https://github.com/energywebfoundation/origin/commit/399ba89012c31e82f96dc8049d8d65407f1fe9b1))
+
+
+
+
+
+## [2.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.2.2...@energyweb/market-matcher@2.2.3) (2020-01-31)
+
+**Note:** Version bump only for package @energyweb/market-matcher
+
+
+
+
+
 ## [2.2.2](https://github.com/energywebfoundation/origin/compare/@energyweb/market-matcher@2.2.1...@energyweb/market-matcher@2.2.2) (2020-01-17)
 
 **Note:** Version bump only for package @energyweb/market-matcher

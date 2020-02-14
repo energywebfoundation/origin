@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 import { Route, NavLink, Redirect } from 'react-router-dom';
 import { ProducingDeviceTable } from './ProducingDeviceTable';
 import { AddDevice } from './AddDevice';
+import { DeviceGroupForm } from './DeviceGroupForm';
 import { PageContent } from './PageContent/PageContent';
 import { ProducingDeviceDetailView } from './ProducingDeviceDetailView';
 import { DeviceMap } from './DeviceMap';
 import { useLinks } from '../utils/routing';
 import { getCurrentUser } from '../features/users/selectors';
-import { Device as DeviceNamespace } from '@energyweb/device-registry';
+import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { Role } from '@energyweb/user-registry';
 
 export function Device() {
@@ -41,7 +42,7 @@ export function Device() {
         return (
             <ProducingDeviceTable
                 hiddenColumns={['status']}
-                includedStatuses={[DeviceNamespace.DeviceStatus.Active]}
+                includedStatuses={[DeviceStatus.Active]}
                 actions={{
                     requestCertificates: true
                 }}
@@ -52,7 +53,7 @@ export function Device() {
     function ProductionPendingList() {
         return (
             <ProducingDeviceTable
-                includedStatuses={[DeviceNamespace.DeviceStatus.Submitted]}
+                includedStatuses={[DeviceStatus.Submitted]}
                 actions={{
                     approve: true
                 }}
@@ -89,6 +90,12 @@ export function Device() {
             key: 'add',
             label: 'Register device',
             component: AddDevice,
+            roles: [Role.DeviceManager]
+        },
+        {
+            key: 'add-group',
+            label: 'Register device group',
+            component: DeviceGroupForm,
             roles: [Role.DeviceManager]
         },
         {

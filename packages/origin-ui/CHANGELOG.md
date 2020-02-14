@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.1...@energyweb/origin-ui@1.5.2) (2020-02-12)
+
+
+### Bug Fixes
+
+* yarn run:origin script ([cdaf7a3](https://github.com/energywebfoundation/origin/commit/cdaf7a3b56f326e63435a77929ec7755b299eceb))
+
+
+
+
+
+## [1.5.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.5.0...@energyweb/origin-ui@1.5.1) (2020-02-04)
+
+**Note:** Version bump only for package @energyweb/origin-ui
+
+
+
+
+
+# [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.4.0...@energyweb/origin-ui@1.5.0) (2020-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update react ([5f9223d](https://github.com/energywebfoundation/origin/commit/5f9223d05d309fe6c1b1f291660b114f342a04c3))
+
+
+### Features
+
+* implement UI for inviting user to organization ([0ddf0f0](https://github.com/energywebfoundation/origin/commit/0ddf0f07e51c4a3f551b797a8d49ff347fd6a8ad))
+
+
+
+
+
 # [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@1.3.0...@energyweb/origin-ui@1.4.0) (2020-01-17)
 
 

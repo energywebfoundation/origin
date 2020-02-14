@@ -1,3 +1,6 @@
+import * as Moment from 'moment';
+import { extendMoment } from 'moment-range';
+
 import { Configuration, BlockchainDataModelEntity, Timestamp } from '@energyweb/utils-general';
 import { PublicIssuer, PrivateIssuer, CommitmentSchema, ICommitment } from '..';
 
@@ -113,17 +116,14 @@ export const createRequestIssue = async (
         ? configuration.blockchainProperties.issuerLogicInstance.private
         : configuration.blockchainProperties.issuerLogicInstance.public;
 
-    const data = await issuer.encodeIssue(fromTime, toTime, deviceId);
+    await validateGenerationPeriod(fromTime, toTime, deviceId, configuration, isVolumePrivate);
 
-    const fromAccount = {
-        from: configuration.blockchainProperties.activeUser.address,
-        privateKey: configuration.blockchainProperties.activeUser.privateKey
-    };
+    const data = await issuer.encodeIssue(fromTime, toTime, deviceId);
 
     const { logs } = await (
         forAddress
-            ? issuer.requestIssueFor(data, forAddress, fromAccount) 
-            : issuer.requestIssue(data, fromAccount)
+            ? issuer.requestIssueFor(data, forAddress, Configuration.getAccount(configuration)) 
+            : issuer.requestIssue(data, Configuration.getAccount(configuration))
     );
 
     request.id = configuration.blockchainProperties.web3.utils
@@ -136,3 +136,43 @@ export const createRequestIssue = async (
 
     return request.sync();
 };
+
+const validateGenerationPeriod = async (
+    fromTime: Timestamp,
+    toTime: Timestamp,
+    deviceId: string,
+    configuration: Configuration.Entity,
+    isPrivate?: boolean
+): Promise<boolean> => {
+    const issuer = isPrivate 
+        ? configuration.blockchainProperties.issuerLogicInstance.private
+        : configuration.blockchainProperties.issuerLogicInstance.public;
+
+    const moment = extendMoment(Moment);
+    const unix = (timestamp: Timestamp) => moment.unix(timestamp);
+
+    const requestIssueIds = await issuer.getRequestIssuesForDevice(deviceId, Configuration.getAccount(configuration));
+    const generationTimeRange = moment.range(unix(fromTime), unix(toTime));
+
+    for (const id of requestIssueIds) {
+        const requestIssue = await new Entity(id, configuration, isPrivate).sync();
+
+        if (requestIssue.revoked) {
+            continue;
+        }
+
+        const requestIssueGenerationRange = moment.range(unix(requestIssue.fromTime), unix(requestIssue.toTime));
+
+        if (generationTimeRange.overlaps(requestIssueGenerationRange)) {
+            throw new Error(
+                `Generation period ` + 
+                `${unix(fromTime).format()} - ${unix(toTime).format()}` + 
+                ` overlaps with the time period of ` + 
+                `${unix(requestIssue.fromTime).format()} - ${unix(requestIssue.toTime).format()}` + 
+                ` of request ${requestIssue.id}.`
+            );
+        }
+    }
+
+    return true;
+}

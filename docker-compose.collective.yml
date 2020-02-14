@@ -28,7 +28,7 @@ services:
   solar_simulator:
     image: "energyweb/solar-simulator:${TAG}"
     ports:
-      - "3031:3031"
+      - "3032:3032"
     env_file:
       - ./.env
     depends_on:

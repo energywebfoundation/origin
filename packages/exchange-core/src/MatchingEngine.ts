@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
-import { IDeviceService, ILocationService } from '@energyweb/utils-general';
+import { IDeviceTypeService, ILocationService } from '@energyweb/utils-general';
 
 import { OrderSide, Order, OrderStatus } from './Order';
 import { Trade } from './Trade';
@@ -20,7 +20,7 @@ export class MatchingEngine {
     public cancellationQueue = List<string>();
 
     constructor(
-        private readonly deviceService: IDeviceService,
+        private readonly deviceService: IDeviceTypeService,
         private readonly locationService: ILocationService
     ) {}
 
@@ -136,8 +136,8 @@ export class MatchingEngine {
 
             executed = executed.concat({
                 trade: new Trade(bid, ask, filled, ask.price),
-                ask: ask.updateVolume(filled),
-                bid: bid.updateVolume(filled)
+                ask: ask.updateWithTradedVolume(filled),
+                bid: bid.updateWithTradedVolume(filled)
             });
 
             return true;

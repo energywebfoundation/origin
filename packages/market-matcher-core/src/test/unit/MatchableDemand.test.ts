@@ -1,16 +1,17 @@
 import { ProducingDevice } from '@energyweb/device-registry';
-import { Demand, PurchasableCertificate, Supply, Currency } from '@energyweb/market';
+import { Demand, PurchasableCertificate, Currency } from '@energyweb/market';
 import { Certificate } from '@energyweb/origin';
-import { Year } from '@energyweb/utils-general';
+import { Year, DeviceTypeService } from '@energyweb/utils-general';
 import { Arg, Substitute } from '@fluffy-spoon/substitute';
 import { assert } from 'chai';
 import moment from 'moment';
 
+import { IDevice, DemandStatus } from '@energyweb/origin-backend-core';
 import { MatchableDemand } from '../../MatchableDemand';
 import { MatchingErrorReason } from '../../MatchingErrorReason';
 
 interface IMockOptions {
-    status?: Demand.DemandStatus;
+    status?: DemandStatus;
     energy?: number;
     price?: number;
     currency?: Currency;
@@ -26,6 +27,7 @@ interface IMockOptions {
 
 describe('MatchableDemand tests', () => {
     const country = 'Thailand';
+    const deviceTypeService = new DeviceTypeService([['Solar'], ['Wind']]);
 
     describe('Certificates', () => {
         const missingDemand = 1000;
@@ -40,22 +42,19 @@ describe('MatchableDemand tests', () => {
         const province = 'Nakhon Pathom';
 
         const createMatchingMocks = (options: IMockOptions) => {
-            const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
-            demandOffChainProperties.energyPerTimeFrame.returns(certificateEnergy);
-            demandOffChainProperties.maxPriceInCentsPerMwh.returns(energyPrice);
-            demandOffChainProperties.currency.returns(currency);
-            demandOffChainProperties.deviceType.returns([deviceType]);
-            demandOffChainProperties.location.returns(options.location || location);
-            demandOffChainProperties.vintage.returns(options.vintage || null);
-
-            const demand = Substitute.for<Demand.IDemand>();
+            const demand = Substitute.for<Demand.IDemandEntity>();
             demand
                 .missingEnergyInPeriod(Arg.all())
                 .returns(
                     Promise.resolve({ time: 0, value: options.isFilledDemand ? 0 : missingDemand })
                 );
-            demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
-            demand.offChainProperties.returns(demandOffChainProperties);
+            demand.status.returns(options.status || DemandStatus.ACTIVE);
+            demand.energyPerTimeFrame.returns(certificateEnergy);
+            demand.maxPriceInCentsPerMwh.returns(energyPrice);
+            demand.currency.returns(currency);
+            demand.deviceType.returns([deviceType]);
+            demand.location.returns(options.location || location);
+            demand.vintage.returns(options.vintage || null);
 
             const certificate = Substitute.for<PurchasableCertificate.IPurchasableCertificate>();
             certificate.price.returns(options.price || energyPrice);
@@ -64,9 +63,7 @@ describe('MatchableDemand tests', () => {
                 energy: options.energy || certificateEnergy
             } as Certificate.ICertificate);
 
-            const producingDeviceOffChainProperties = Substitute.for<
-                ProducingDevice.IOffChainProperties
-            >();
+            const producingDeviceOffChainProperties = Substitute.for<IDevice>();
             producingDeviceOffChainProperties.deviceType.returns(
                 options.producingDeviceDeviceType || deviceType
             );
@@ -91,7 +88,7 @@ describe('MatchableDemand tests', () => {
         it('should match certificate', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({});
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -102,10 +99,10 @@ describe('MatchableDemand tests', () => {
 
         it('should not match non active demand', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                status: Demand.DemandStatus.ARCHIVED
+                status: DemandStatus.ARCHIVED
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -120,7 +117,7 @@ describe('MatchableDemand tests', () => {
                 isFilledDemand: true
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -135,7 +132,7 @@ describe('MatchableDemand tests', () => {
                 price: energyPrice + 1
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -150,7 +147,7 @@ describe('MatchableDemand tests', () => {
                 currency: 'EUR'
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -165,7 +162,7 @@ describe('MatchableDemand tests', () => {
                 producingDeviceDeviceType: 'Wind'
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -182,7 +179,7 @@ describe('MatchableDemand tests', () => {
                 province: 'Warsaw'
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -194,10 +191,10 @@ describe('MatchableDemand tests', () => {
 
         it('should match demand with certificate when province is in passed region', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                location: ['Thailand;Central']
+                location: [`${country};Central`]
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -208,10 +205,10 @@ describe('MatchableDemand tests', () => {
 
         it('should not match demand with certificate when province is not included in location', async () => {
             const { demand, certificate, producingDevice } = createMatchingMocks({
-                location: ['Thailand;Central', 'Thailand;Central;Nonthaburi']
+                location: [`${country};Central`, `${country};Central;Nonthaburi`]
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -228,7 +225,7 @@ describe('MatchableDemand tests', () => {
                 vintage: [2000, 2005]
             });
 
-            const matchableDemand = new MatchableDemand(demand);
+            const matchableDemand = new MatchableDemand(demand, deviceTypeService);
             const { result, reason } = await matchableDemand.matchesCertificate(
                 certificate,
                 producingDevice
@@ -236,83 +233,6 @@ describe('MatchableDemand tests', () => {
 
             assert.isFalse(result);
             assert.equal(reason[0], MatchingErrorReason.VINTAGE_OUT_OF_RANGE);
-        });
-    });
-    describe('Supply', () => {
-        const supplyEnergy = 1000;
-        const energyPrice = 10000;
-        const currency = 'USD';
-        const deviceType = 'Solar';
-
-        const createMatchingMocks = (options: IMockOptions) => {
-            const demandOffChainProperties = Substitute.for<Demand.IDemandOffChainProperties>();
-            demandOffChainProperties.energyPerTimeFrame.returns(supplyEnergy);
-            demandOffChainProperties.maxPriceInCentsPerMwh.returns(energyPrice * 1e6);
-            demandOffChainProperties.currency.returns(currency);
-            demandOffChainProperties.deviceType.returns([deviceType]);
-
-            const demand = Substitute.for<Demand.IDemand>();
-            demand.status.returns(options.status || Demand.DemandStatus.ACTIVE);
-            demand.offChainProperties.returns(demandOffChainProperties);
-
-            const supplyOffChainProperties = Substitute.for<Supply.ISupplyOffChainProperties>();
-            supplyOffChainProperties.availableWh.returns(options.energy || supplyEnergy);
-            supplyOffChainProperties.priceInCents.returns(
-                options.price || (energyPrice * (options.energy || supplyEnergy)) / 1e6
-            );
-
-            const supply = Substitute.for<Supply.ISupply>();
-            supply.offChainProperties.returns(supplyOffChainProperties);
-
-            return {
-                demand,
-                supply
-            };
-        };
-
-        it('should match supply', () => {
-            const { demand, supply } = createMatchingMocks({});
-
-            const matchableDemand = new MatchableDemand(demand);
-            const { result } = matchableDemand.matchesSupply(supply);
-
-            assert.isTrue(result);
-        });
-
-        it('should not match non active demand', () => {
-            const { demand, supply } = createMatchingMocks({
-                status: Demand.DemandStatus.ARCHIVED
-            });
-
-            const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesSupply(supply);
-
-            assert.isFalse(result);
-            assert.equal(reason[0], MatchingErrorReason.NON_ACTIVE_DEMAND);
-        });
-
-        it('should not match active demand with exceeding energy', () => {
-            const { demand, supply } = createMatchingMocks({
-                energy: supplyEnergy - 1
-            });
-
-            const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesSupply(supply);
-
-            assert.isFalse(result);
-            assert.equal(reason[0], MatchingErrorReason.NOT_ENOUGH_ENERGY);
-        });
-
-        it('should not match demand with lower expected price', () => {
-            const { demand, supply } = createMatchingMocks({
-                price: energyPrice * 1e6
-            });
-
-            const matchableDemand = new MatchableDemand(demand);
-            const { result, reason } = matchableDemand.matchesSupply(supply);
-
-            assert.isFalse(result);
-            assert.equal(reason[0], MatchingErrorReason.TOO_EXPENSIVE);
         });
     });
 });

@@ -10,9 +10,10 @@ import { getUsers, getUserById } from '../features/users/selectors';
 import { requestUser } from '../features/users/actions';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
-import { getEnvironment, getOrganizationClient } from '../features/general/selectors';
+import { getEnvironment, getOffChainDataSource } from '../features/general/selectors';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
 import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
+import moment from 'moment';
 
 interface IProps {
     id: string;
@@ -32,7 +33,8 @@ export function CertificateDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
     const users = useSelector(getUsers);
     const environment = useSelector(getEnvironment);
-    const organizationClient = useSelector(getOrganizationClient);
+    const offChainDataSource = useSelector(getOffChainDataSource);
+    const organizationClient = offChainDataSource?.organizationClient;
 
     const [events, setEvents] = useState<IEnrichedEvent[]>([]);
     const [organizations, setOrganizations] = useState([] as IOrganizationWithRelationsIds[]);
@@ -155,18 +157,16 @@ export function CertificateDetailView(props: IProps) {
 
         const resolvedEvents = await Promise.all(jointEvents);
 
-        const certificationRequestEvents = await selectedCertificate.getCertificationRequestEvents();
+        const request = await offChainDataSource.certificateClient.getCertificationRequest(
+            selectedCertificate.certificate.certificationRequestId
+        );
 
-        if (certificationRequestEvents) {
+        if (request) {
             resolvedEvents.push({
-                txHash: certificationRequestEvents.certificationRequestCreatedEvent.transactionHash,
+                txHash: '',
                 label: 'Requested certification',
                 description: 'Device owner requested certification based on meter reads',
-                timestamp: (
-                    await configuration.blockchainProperties.web3.eth.getBlock(
-                        certificationRequestEvents.certificationRequestCreatedEvent.blockNumber
-                    )
-                ).timestamp
+                timestamp: moment(request.createdDate).unix()
             });
         }
 
@@ -196,15 +196,21 @@ export function CertificateDetailView(props: IProps) {
         eventsDisplay = events.reverse().map((event, index) => (
             <p key={index}>
                 <span className="timestamp text-muted">
-                    {formatDate(event.timestamp * 1000, true)} -{' '}
-                    <a
-                        href={`${environment.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
-                        className="text-muted"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        {event.txHash}
-                    </a>
+                    {formatDate(event.timestamp * 1000, true)}
+                    {event.txHash && (
+                        <>
+                            {' '}
+                            -{' '}
+                            <a
+                                href={`${environment.BLOCKCHAIN_EXPLORER_URL}/tx/${event.txHash}`}
+                                className="text-muted"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                {event.txHash}
+                            </a>
+                        </>
+                    )}
                 </span>
                 <br />
                 {event.label}

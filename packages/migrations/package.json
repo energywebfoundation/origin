@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "0.5.2",
+  "version": "2.0.0",
   "main": "dist/js/src/index.js",
   "bin": {
     "migrations": "./bin/migrations"
@@ -31,17 +31,17 @@
   },
   "types": "dist/js/index.d.ts",
   "dependencies": {
-    "@energyweb/device-registry": "3.0.0",
-    "@energyweb/market": "3.3.2",
-    "@energyweb/origin": "3.1.2",
-    "@energyweb/origin-backend": "3.3.0",
-    "@energyweb/origin-backend-client": "2.2.3",
-    "@energyweb/user-registry": "2.0.5",
-    "@energyweb/utils-general": "4.1.1",
+    "@energyweb/device-registry": "5.0.1",
+    "@energyweb/market": "6.0.0",
+    "@energyweb/origin": "4.0.0",
+    "@energyweb/origin-backend": "3.6.0",
+    "@energyweb/origin-backend-client": "3.2.0",
+    "@energyweb/user-registry": "3.0.2",
+    "@energyweb/utils-general": "7.0.0",
     "dotenv": "8.2.0",
     "web3": "1.2.4",
     "winston": "3.2.1",
-    "write-json-file": "4.2.1",
+    "write-json-file": "4.3.0",
     "yaeti": "1.0.2"
   },
   "publishConfig": {

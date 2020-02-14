@@ -1,42 +1,16 @@
 import moment from 'moment';
 import { TransactionReceipt } from 'web3-core';
 
-import { BlockchainDataModelEntity, Configuration, Timestamp } from '@energyweb/utils-general';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
+import { BlockchainDataModelEntity, Configuration } from '@energyweb/utils-general';
+
 import { DeviceLogic } from '../wrappedContracts/DeviceLogic';
 
-export enum DeviceStatus {
-    Submitted,
-    Denied,
-    Active
-}
-
-export enum UsageType {
-    Producing,
-    Consuming
-}
-
-export interface IOnChainProperties extends BlockchainDataModelEntity.IOnChainProperties {
+export interface IOnChainProperties {
     smartMeter: Configuration.EthAccount;
     owner: Configuration.EthAccount;
     lastSmartMeterReadWh: number;
-    status: DeviceStatus;
-    usageType: UsageType;
     lastSmartMeterReadFileHash: string;
-}
-
-export interface IOffChainProperties {
-    operationalSince: Timestamp;
-    capacityInW: number;
-    country: string;
-    address: string;
-    gpsLatitude: string;
-    gpsLongitude: string;
-    timezone: string;
-    facilityName: string;
-    description: string;
-    images: string;
-    region: string;
-    province: string;
 }
 
 export interface ISmartMeterRead {
@@ -44,21 +18,13 @@ export interface ISmartMeterRead {
     timestamp: number;
 }
 
-export abstract class Entity extends BlockchainDataModelEntity.Entity
-    implements IOnChainProperties {
-    offChainProperties: IOffChainProperties;
+export abstract class Entity extends BlockchainDataModelEntity.Entity implements IOnChainProperties {
+    offChainProperties: IDevice;
 
     smartMeter: Configuration.EthAccount;
-
     owner: Configuration.EthAccount;
-
     lastSmartMeterReadWh: number;
-
     lastSmartMeterReadFileHash: string;
-
-    status: DeviceStatus;
-
-    usageType: UsageType;
 
     initialized: boolean;
 
@@ -68,26 +34,25 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         this.initialized = false;
     }
 
+    async createOffChainProperties(devicePropertiesOffChain: IDevice) {
+        return this.configuration.offChainDataSource.deviceClient.add(Number(this.id), devicePropertiesOffChain);
+    }
+
+    async getOffChainProperties(): Promise<any> {
+        return this.configuration.offChainDataSource.deviceClient.getById(Number(this.id));
+    }
+
     async saveSmartMeterRead(
         meterReading: number,
         filehash: string,
         timestamp: number = moment().unix()
     ): Promise<TransactionReceipt> {
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return this.configuration.blockchainProperties.deviceLogicInstance.saveSmartMeterRead(
-                this.id,
-                meterReading,
-                filehash,
-                timestamp,
-                { privateKey: this.configuration.blockchainProperties.activeUser.privateKey }
-            );
-        }
         return this.configuration.blockchainProperties.deviceLogicInstance.saveSmartMeterRead(
             this.id,
             meterReading,
             filehash,
             timestamp,
-            { from: this.configuration.blockchainProperties.activeUser.address }
+            Configuration.getAccount(this.configuration)
         );
     }
 
@@ -113,20 +78,7 @@ export abstract class Entity extends BlockchainDataModelEntity.Entity
         );
     }
 
-    async setStatus(status: DeviceStatus): Promise<TransactionReceipt> {
-        const {
-            deviceLogicInstance
-        }: { deviceLogicInstance?: DeviceLogic } = this.configuration.blockchainProperties;
-        const id = parseInt(this.id, 10);
-
-        if (this.configuration.blockchainProperties.activeUser.privateKey) {
-            return deviceLogicInstance.setStatus(id, status, {
-                privateKey: this.configuration.blockchainProperties.activeUser.privateKey
-            });
-        }
-
-        return deviceLogicInstance.setStatus(id, status, {
-            from: this.configuration.blockchainProperties.activeUser.address
-        });
+    async setStatus(status: DeviceStatus): Promise<IDevice> {
+        return this.configuration.offChainDataSource.deviceClient.update(Number(this.id), { status });
     }
 }

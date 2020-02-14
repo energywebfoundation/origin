@@ -17,11 +17,8 @@ import {
 } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { Certificate, CertificateLogic, Contracts as OriginContracts } from '@energyweb/origin';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 import { deployERC20TestToken } from '../utils/deployERC20TestToken';
 import { Erc20TestToken } from '../wrappedContracts/Erc20TestToken';
@@ -71,23 +68,15 @@ describe('PurchasableCertificate-Facade', () => {
     }
 
     async function generateCertificateAndGetId(energy = 100): Promise<string> {
-        const LAST_SM_READ_INDEX = (await deviceLogic.getSmartMeterReadsForDevice(0)).length - 1;
         const LAST_SMART_METER_READ = Number((await deviceLogic.getDevice(0)).lastSmartMeterReadWh);
-        const INITIAL_CERTIFICATION_REQUESTS_LENGTH = Number(
-            await certificateLogic.getCertificationRequestsLength({
-                privateKey: issuerPK
-            })
-        );
 
         setActiveUser(deviceOwnerPK);
 
         await deviceLogic.saveSmartMeterRead(0, LAST_SMART_METER_READ + energy, '', 0, {
             privateKey: deviceSmartmeterPK
         });
-        await certificateLogic.requestCertificates(0, LAST_SM_READ_INDEX + 1, {
-            privateKey: deviceOwnerPK
-        });
-        await certificateLogic.approveCertificationRequest(INITIAL_CERTIFICATION_REQUESTS_LENGTH, {
+
+        await certificateLogic.createArbitraryCertfificate(0, energy, '', {
             privateKey: issuerPK
         });
 
@@ -152,9 +141,6 @@ describe('PurchasableCertificate-Facade', () => {
             }
         );
 
-        const baseUrl = `${process.env.BACKEND_URL}/api`;
-        const userClient = new UserClientMock();
-
         conf = {
             blockchainProperties: {
                 activeUser: {
@@ -167,12 +153,7 @@ describe('PurchasableCertificate-Facade', () => {
                 marketLogicInstance: marketLogic,
                 web3
             },
-            offChainDataSource: {
-                baseUrl,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });
@@ -217,14 +198,11 @@ describe('PurchasableCertificate-Facade', () => {
             smartMeter: { address: deviceSmartmeter },
             owner: { address: accountDeviceOwner },
             lastSmartMeterReadWh: 0,
-            status: Device.DeviceStatus.Active,
-            usageType: Device.UsageType.Producing,
-            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash',
-            propertiesDocumentHash: null,
-            url: null
+            lastSmartMeterReadFileHash: 'lastSmartMeterReadFileHash'
         };
 
-        const devicePropsOffChain: ProducingDevice.IOffChainProperties = {
+        const devicePropsOffChain: Omit<IDevice, 'id'> = {
+            status: DeviceStatus.Active,
             facilityName: 'TestFacility',
             operationalSince: 0,
             capacityInW: 10,

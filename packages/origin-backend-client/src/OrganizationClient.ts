@@ -35,12 +35,12 @@ export interface IOrganizationClient {
 
 export class OrganizationClient implements IOrganizationClient {
     constructor(
-        private readonly baseURL: string,
+        private readonly dataApiUrl: string,
         private readonly requestClient: IRequestClient = new RequestClient()
     ) {}
 
     private get endpoint() {
-        return `${this.baseURL}/Organization`;
+        return `${this.dataApiUrl}/Organization`;
     }
 
     public async getById(id: number): Promise<IOrganizationWithRelationsIds> {

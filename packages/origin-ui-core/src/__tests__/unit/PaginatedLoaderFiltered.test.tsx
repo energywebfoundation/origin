@@ -6,6 +6,8 @@ import {
 } from '../../components/Table/PaginatedLoaderFiltered';
 import { IPaginatedLoaderFetchDataReturnValues } from '../../components/Table/PaginatedLoader';
 import { CustomFilterInputType, ICustomFilter } from '../../components/Table/FiltersHeader';
+import { DeviceTypeService } from '@energyweb/utils-general';
+import { TEST_DEVICE_TYPES } from '../utils/helpers';
 
 describe('PaginatedLoaderFiltered', () => {
     describe('checkRecordPassesFilters()', () => {
@@ -23,6 +25,8 @@ describe('PaginatedLoaderFiltered', () => {
                 getPaginatedData(): Promise<IPaginatedLoaderFetchDataReturnValues> {
                     throw new Error('Method not implemented.');
                 }
+
+                deviceTypeService = new DeviceTypeService(TEST_DEVICE_TYPES);
             }
 
             const paginationFilteredLoader = new TestClass({});

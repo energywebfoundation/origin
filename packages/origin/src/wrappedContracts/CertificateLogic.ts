@@ -26,23 +26,38 @@ export class CertificateLogic extends GeneralFunctions {
     }
 
     async getAllCertificationApprovedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('CertificationRequestApproved', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'CertificationRequestApproved',
+            this.createFilter(eventFilter)
+        );
     }
 
     async getAllCertificationCreatedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('CertificationRequestCreated', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'CertificationRequestCreated',
+            this.createFilter(eventFilter)
+        );
     }
 
     async getAllLogCreatedCertificateEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogCreatedCertificate', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'LogCreatedCertificate',
+            this.createFilter(eventFilter)
+        );
     }
 
     async getAllLogCertificateClaimedEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogCertificateClaimed', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'LogCertificateClaimed',
+            this.createFilter(eventFilter)
+        );
     }
 
     async getAllLogCertificateSplitEvents(eventFilter?: PastEventOptions) {
-        return this.web3Contract.getPastEvents('LogCertificateSplit', this.createFilter(eventFilter));
+        return this.web3Contract.getPastEvents(
+            'LogCertificateSplit',
+            this.createFilter(eventFilter)
+        );
     }
 
     async getAllTransferEvents(eventFilter?: PastEventOptions) {
@@ -159,39 +174,19 @@ export class CertificateLogic extends GeneralFunctions {
         return this.web3Contract.methods.isApprovedForAll(_owner, _operator).call(txParams);
     }
 
-    async getCertificationRequests(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificationRequests().call(txParams);
-    }
-
-    async getCertificationRequestsLength(txParams?: ISpecialTx) {
-        return this.web3Contract.methods.getCertificationRequestsLength().call(txParams);
-    }
-
-    async requestCertificates(
-        _deviceId: number,
-        limitingSmartMeterReadIndex: number,
+    async createArbitraryCertfificate(
+        deviceId: number,
+        energy: number,
+        certificationRequestId?: string,
         txParams?: ISpecialTx
     ) {
-        const method = this.web3Contract.methods.requestCertificates(
-            _deviceId,
-            limitingSmartMeterReadIndex
+        const method = this.web3Contract.methods.createArbitraryCertfificate(
+            deviceId,
+            energy,
+            certificationRequestId || ''
         );
 
         return this.send(method, txParams);
-    }
-
-    async approveCertificationRequest(_certicationRequestIndex: number, txParams?: ISpecialTx) {
-        const method = this.web3Contract.methods.approveCertificationRequest(
-            _certicationRequestIndex
-        );
-
-        return this.send(method, txParams);
-    }
-
-    async getDeviceRequestedCertsForSMReadsLength(_deviceId: number, txParams?: ISpecialTx) {
-        return await this.web3Contract.methods
-            .getDeviceRequestedCertsForSMReadsLength(_deviceId)
-            .call(txParams);
     }
 
     async deviceLogicAddress(txParams?: ISpecialTx) {

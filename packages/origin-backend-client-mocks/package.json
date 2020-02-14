@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-backend-client-mocks",
-  "version": "0.0.1",
+  "version": "0.3.0",
   "description": "",
   "main": "dist/js/src/index.js",
   "scripts": {
@@ -20,9 +20,9 @@
   "author": "EnergyWeb DevHub GmbH",
   "license": "GPL-3.0",
   "dependencies": {
-    "@energyweb/utils-general": "4.1.1",
-    "@energyweb/origin-backend-core": "0.1.1",
-    "@energyweb/origin-backend-client": "2.2.3"
+    "@energyweb/origin-backend-client": "3.2.0",
+    "@energyweb/origin-backend-core": "1.2.0",
+    "@energyweb/utils-general": "7.0.0"
   },
   "files": [
     "dist"

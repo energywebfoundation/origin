@@ -17,7 +17,7 @@ describe('JsonEntity API tests', async () => {
     });
     let apiServer: INestApplication;
 
-    const BASE_API_URL = `http://localhost:${process.env.PORT}/api`;
+    const BASE_API_URL = `http://localhost:${process.env.BACKEND_PORT}/api`;
     const entityOwner = '0x24B207fFf1a1097d3c3D69fcE461544f83c6E774';
 
     const testHash = '1d5e7af973fe1387493b2b70e611c57fc3f354e6ec963b811cac529d8ed17288';

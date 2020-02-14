@@ -9,6 +9,9 @@ import { ConnectionOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import createConfig from './config/configuration';
+import { EventsModule } from './events/events.module';
+import { CertificationRequestModule } from './pods/certificate/certificate.module';
+import { CertificationRequest } from './pods/certificate/certification-request.entity';
 import { Compliance } from './pods/compliance/compliance.entity';
 import { ComplianceModule } from './pods/compliance/compliance.module';
 import { ContractsStorageModule } from './pods/contracts-storage/contracts-storage.module';
@@ -17,7 +20,13 @@ import { Country } from './pods/country/country.entity';
 import { CountryModule } from './pods/country/country.module';
 import { Currency } from './pods/currency/currency.entity';
 import { CurrencyModule } from './pods/currency/currency.module';
-import { ImageModule } from './pods/image/image.module';
+import { Demand } from './pods/demand/demand.entity';
+import { DemandModule } from './pods/demand/demand.module';
+import { DeviceTypes } from './pods/device-types/device-types.entity';
+import { DeviceTypesModule } from './pods/device-types/device-types.module';
+import { Device } from './pods/device/device.entity';
+import { DeviceModule } from './pods/device/device.module';
+import { FileModule } from './pods/file/file.module';
 import { JsonEntity } from './pods/json-entity/json-entity.entity';
 import { JsonEntityModule } from './pods/json-entity/json-entity.module';
 import { Organization } from './pods/organization/organization.entity';
@@ -44,14 +53,18 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
                     Currency,
                     Compliance,
                     Country,
+                    Device,
+                    Demand,
                     Organization,
                     User,
-                    OrganizationInvitation
+                    OrganizationInvitation,
+                    DeviceTypes,
+                    CertificationRequest
                 ]
             }),
             inject: [ConfigService]
         }),
-        ImageModule,
+        FileModule,
         UserModule,
         ComplianceModule,
         CountryModule,
@@ -59,7 +72,12 @@ const ENV_FILE_PATH = path.resolve(__dirname, '../../../../../.env');
         JsonEntityModule,
         ContractsStorageModule,
         OrganizationModule,
+        DeviceModule,
+        DemandModule,
         AuthModule,
+        EventsModule,
+        DeviceTypesModule,
+        CertificationRequestModule,
         ExchangeAppModule
     ],
     controllers: [AppController]

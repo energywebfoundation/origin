@@ -1,26 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { LoggerService } from '@nestjs/common';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 import { AppModule } from './app.module';
-
-function extractPort(url: string): number {
-    if (url) {
-        const backendUrlSplit: string[] = url.split(':');
-        const extractedPort: number = parseInt(backendUrlSplit[backendUrlSplit.length - 1], 10);
-
-        return extractedPort;
-    }
-
-    return null;
-}
+import { getPort } from './port';
 
 export async function startAPI(logger?: LoggerService) {
-    const PORT: number =
-        parseInt(process.env.PORT, 10) || extractPort(process.env.BACKEND_URL) || 3030;
+    const PORT = getPort();
 
     console.log(`Backend starting on port: ${PORT}`);
 
     const app = await NestFactory.create(AppModule);
+    app.useWebSocketAdapter(new WsAdapter(app));
     app.enableCors();
     app.setGlobalPrefix('api');
 

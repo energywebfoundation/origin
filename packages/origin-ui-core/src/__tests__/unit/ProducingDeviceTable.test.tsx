@@ -2,21 +2,45 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { ProducingDeviceTable } from '../../components/ProducingDeviceTable';
 import { dataTestSelector } from '../../utils/helper';
-import { setupStore, WrapperComponent, createRenderedHelpers } from '../utils/helpers';
-import { setOrganizationClient } from '../../features/general/actions';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import {
+    setupStore,
+    WrapperComponent,
+    createRenderedHelpers,
+    TEST_DEVICE_TYPES
+} from '../utils/helpers';
+import { IOrganizationWithRelationsIds, DeviceStatus } from '@energyweb/origin-backend-core';
+import { IOrganizationClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { configurationUpdated } from '../../features';
+import { Configuration, DeviceTypeService } from '@energyweb/utils-general';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 describe('ProducingDeviceTable', () => {
     it('correctly renders and search works', async () => {
-        const { store, history, addProducingDevice } = setupStore();
+        const offChainDataSource: IOffChainDataSource = new OffChainDataSourceMock();
+
+        offChainDataSource.organizationClient = ({
+            getById: async () =>
+                (({ name: 'Example Organization' } as Partial<
+                    IOrganizationWithRelationsIds
+                >) as IOrganizationWithRelationsIds)
+        } as Partial<IOrganizationClient>) as IOrganizationClient;
+
+        await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
+
+        const { store, history, addProducingDevice } = setupStore(undefined, {
+            offChainDataSource,
+            mockUserFetcher: false,
+            logActions: false
+        });
 
         addProducingDevice({
-            id: '0'
+            id: '0',
+            status: DeviceStatus.Active
         });
 
         addProducingDevice({
             id: '1',
+            status: DeviceStatus.Active,
             facilityName: 'Biomass Energy Facility',
             deviceType: 'Gaseous;Agricultural gas',
             address:
@@ -29,12 +53,9 @@ describe('ProducingDeviceTable', () => {
         });
 
         store.dispatch(
-            setOrganizationClient(({
-                getById: async () =>
-                    (({ name: 'Example Organization' } as Partial<
-                        IOrganizationWithRelationsIds
-                    >) as IOrganizationWithRelationsIds)
-            } as Partial<IOrganizationClient>) as IOrganizationClient)
+            configurationUpdated(({
+                deviceTypeService: new DeviceTypeService(TEST_DEVICE_TYPES)
+            } as Partial<Configuration.Entity>) as Configuration.Entity)
         );
 
         const rendered = mount(

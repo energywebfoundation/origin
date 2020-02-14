@@ -1,11 +1,11 @@
-import { Product, OrderSide } from '@energyweb/exchange-core';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { OrderService } from '../order/order.service';
-import { Demand } from './demand.entity';
 import { MatchingEngineService } from '../matching-engine/matching-engine.service';
+import { OrderService } from '../order/order.service';
+import { ProductDTO } from '../order/product.dto';
+import { Demand } from './demand.entity';
 
 @Injectable()
 export class DemandService {
@@ -20,15 +20,14 @@ export class DemandService {
         userId: string,
         price: number,
         volume: number,
-        product: Product,
+        product: ProductDTO,
         start: Date
     ) {
-        const bid = await this.orderService.create({
-            side: OrderSide.Bid,
+        const bid = await this.orderService.createBid({
             price,
             volume,
             validFrom: start,
-            product,
+            product: ProductDTO.toProduct(product),
             userId
         });
 
@@ -38,7 +37,7 @@ export class DemandService {
                 price,
                 volumePerPeriod: volume,
                 periods: 1,
-                product,
+                product: ProductDTO.toProduct(product),
                 start: start.getTime(),
                 bids: [bid]
             })

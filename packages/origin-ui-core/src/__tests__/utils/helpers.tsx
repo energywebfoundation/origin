@@ -25,23 +25,76 @@ import React from 'react';
 import MomentUtils from '@date-io/moment';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
-import {
-    IConfigurationClient,
-    IOffChainDataClient,
-    IOrganizationClient,
-    IUserClient
-} from '@energyweb/origin-backend-client';
-import {
-    setConfigurationClient,
-    setOffChainDataClient,
-    setOrganizationClient,
-    setUserClient
-} from '../../features/general/actions';
+import { IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { setOffChainDataSource } from '../../features/general/actions';
 import { OriginConfigurationProvider, createOriginConfiguration } from '../../components';
+import { IDevice, DeviceStatus } from '@energyweb/origin-backend-core';
 
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const flushPromises = () => new Promise(setImmediate);
+
+export const TEST_DEVICE_TYPES = [
+    ['Solar'],
+    ['Solar', 'Photovoltaic'],
+    ['Solar', 'Photovoltaic', 'Roof mounted'],
+    ['Solar', 'Photovoltaic', 'Ground mounted'],
+    ['Solar', 'Photovoltaic', 'Classic silicon'],
+    ['Solar', 'Concentration'],
+    ['Wind'],
+    ['Wind', 'Onshore'],
+    ['Wind', 'Offshore'],
+    ['Hydro-electric Head'],
+    ['Hydro-electric Head', 'Run-of-river head installation'],
+    ['Hydro-electric Head', 'Storage head installation'],
+    ['Hydro-electric Head', 'Pure pumped storage head installation'],
+    ['Hydro-electric Head', 'Mixed pumped storage head'],
+    ['Marine'],
+    ['Marine', 'Tidal'],
+    ['Marine', 'Tidal', 'Inshore'],
+    ['Marine', 'Tidal', 'Offshore'],
+    ['Marine', 'Wave'],
+    ['Marine', 'Wave', 'Onshore'],
+    ['Marine', 'Wave', 'Offshore'],
+    ['Marine', 'Currents'],
+    ['Marine', 'Pressure'],
+    ['Marine', 'Thermal'],
+    ['Solid'],
+    ['Solid', 'Muncipal waste'],
+    ['Solid', 'Muncipal waste', 'Biogenic'],
+    ['Solid', 'Industrial and commercial waste'],
+    ['Solid', 'Industrial and commercial waste', 'Biogenic'],
+    ['Solid', 'Wood'],
+    ['Solid', 'Wood', 'Forestry products'],
+    ['Solid', 'Wood', 'Forestry by-products & waste'],
+    ['Solid', 'Animal fats'],
+    ['Solid', 'Biomass from agriculture'],
+    ['Solid', 'Biomass from agriculture', 'Agricultural products'],
+    ['Solid', 'Biomass from agriculture', 'Agricultural by-products & waste'],
+    ['Liquid'],
+    ['Liquid', 'Municipal biodegradable waste'],
+    ['Liquid', 'Black liquor'],
+    ['Liquid', 'Pure plant oil'],
+    ['Liquid', 'Waste plant oil'],
+    ['Liquid', 'Refined vegetable oil'],
+    ['Liquid', 'Refined vegetable oil', 'Biodiesel (mono-alkyl ester)'],
+    ['Liquid', 'Refined vegetable oil', 'Biogasoline (C6-C12 hydrocarbon)'],
+    ['Gaseous'],
+    ['Gaseous', 'Landfill gas'],
+    ['Gaseous', 'Sewage gas'],
+    ['Gaseous', 'Agricultural gas'],
+    ['Gaseous', 'Agricultural gas', 'Animal manure'],
+    ['Gaseous', 'Agricultural gas', 'Energy crops'],
+    ['Gaseous', 'Gas from organic waste digestion'],
+    ['Gaseous', 'Process gas'],
+    ['Gaseous', 'Process gas', 'Biogenic'],
+    ['Thermal'],
+    ['Thermal', 'Internal combustion engine'],
+    ['Thermal', 'Internal combustion engine', 'Non CHP'],
+    ['Thermal', 'Internal combustion engine', 'CHP'],
+    ['Thermal', 'Steam turbine with condensation turbine'],
+    ['Thermal', 'Steam turbine with condensation turbine', 'Non CHP']
+];
 
 export async function waitForConditionAndAssert(
     conditionCheckFunction: () => Promise<boolean> | boolean,
@@ -68,10 +121,7 @@ export async function waitForConditionAndAssert(
 const setupStoreInternal = (
     initialHistoryEntries: string[],
     logActions = false,
-    configurationClient: IConfigurationClient,
-    offChainDataClient: IOffChainDataClient,
-    userClient: IUserClient,
-    organizationClient: IOrganizationClient,
+    offChainDataSource: IOffChainDataSource,
     runSagas = true
 ) => {
     const history = createMemoryHistory({
@@ -97,20 +147,8 @@ const setupStoreInternal = (
 
     const store = createStore(createRootReducer(history), middleware);
 
-    if (configurationClient) {
-        store.dispatch(setConfigurationClient(configurationClient));
-    }
-
-    if (offChainDataClient) {
-        store.dispatch(setOffChainDataClient(offChainDataClient));
-    }
-
-    if (userClient) {
-        store.dispatch(setUserClient(userClient));
-    }
-
-    if (organizationClient) {
-        store.dispatch(setOrganizationClient(organizationClient));
+    if (offChainDataSource) {
+        store.dispatch(setOffChainDataSource(offChainDataSource));
     }
 
     const sagasTasks: Task[] = runSagas
@@ -126,6 +164,7 @@ const setupStoreInternal = (
 
 interface ICreateProducingDeviceProperties {
     id: string;
+    status: DeviceStatus;
     owner?: string;
     facilityName?: string;
     deviceType?: string;
@@ -140,6 +179,7 @@ interface ICreateProducingDeviceProperties {
 }
 
 export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
+    status: DeviceStatus.Active,
     facilityName: 'Wuthering Heights facility',
     deviceType: 'Solar;Photovoltaic;Roof mounted',
     country: 'Thailand',
@@ -149,7 +189,7 @@ export const DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES = ({
     complianceRegistry: 'I-REC',
     region: 'Central',
     province: 'Nakhon Pathom'
-} as Partial<ProducingDevice.IOffChainProperties>) as ProducingDevice.IOffChainProperties;
+} as Partial<IDevice>) as IDevice;
 
 export const createProducingDevice = (
     properties: ICreateProducingDeviceProperties
@@ -157,7 +197,8 @@ export const createProducingDevice = (
     const owner = properties.owner || '0x0';
     const lastSmartMeterReadWh = properties.lastSmartMeterReadWh || 7777;
 
-    const offChainProperties: ProducingDevice.IOffChainProperties = {
+    const offChainProperties: IDevice = {
+        status: properties.status || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.status,
         address: properties.address || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.address,
         facilityName:
             properties.facilityName || DEFAULT_PRODUCING_DEVICE_OFFCHAIN_PROPERTIES.facilityName,
@@ -231,10 +272,7 @@ export const createCertificate = (
 interface ISetupStoreOptions {
     mockUserFetcher: boolean;
     logActions: boolean;
-    configurationClient?: IConfigurationClient;
-    offChainDataClient?: IOffChainDataClient;
-    userClient?: IUserClient;
-    organizationClient?: IOrganizationClient;
+    offChainDataSource?: IOffChainDataSource;
     runSagas?: boolean;
     userFetcher?: IUserFetcher;
 }
@@ -252,10 +290,7 @@ export const setupStore = (
     const { store, history, sagasTasks } = setupStoreInternal(
         initialHistoryEntries,
         options.logActions,
-        options.configurationClient,
-        options.offChainDataClient,
-        options.userClient,
-        options.organizationClient,
+        options.offChainDataSource,
         options.runSagas
     );
 

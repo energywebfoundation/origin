@@ -15,16 +15,18 @@ import {
 } from '@energyweb/device-registry';
 import { Contracts as OriginContracts } from '@energyweb/origin';
 import { Contracts as MarketContracts, MarketUser } from '@energyweb/market';
-
 import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock,
-    OrganizationClientMock
-} from '@energyweb/origin-backend-client-mocks';
+    DeviceStatus,
+    OrganizationPostData,
+    IUserWithRelationsIds,
+    IDevice
+} from '@energyweb/origin-backend-core';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { IStoreState } from '../../types';
-import { OrganizationPostData, IUserWithRelationsIds } from '@energyweb/origin-backend-core';
+
+import { TEST_DEVICE_TYPES } from './helpers';
+import { DeviceTypeService } from '@energyweb/utils-general';
 
 const connectionConfig = {
     web3: 'http://localhost:8545',
@@ -118,21 +120,16 @@ export async function deployDemo() {
     deployResult.certificateLogic = certificateLogicAddress;
     deployResult.marketLogic = marketContractLookup;
 
-    const configurationClient = new ConfigurationClientMock();
-    const offChainDataClient = new OffChainDataClientMock();
-    const userClient = new UserClientMock();
-    const organizationClient = new OrganizationClientMock();
+    const offChainDataSource = new OffChainDataSourceMock();
 
-    const BACKEND_URL = 'http://localhost:3030';
-    const baseUrl = `${BACKEND_URL}/api`;
+    await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
 
-    await configurationClient.add(
-        baseUrl,
+    await offChainDataSource.configurationClient.add(
         'MarketContractLookup',
         marketContractLookup.toLowerCase()
     );
-    await configurationClient.add(baseUrl, 'Currency', 'USD');
-    await configurationClient.add(baseUrl, 'Country', {
+    await offChainDataSource.configurationClient.add('Currency', 'USD');
+    await offChainDataSource.configurationClient.add('Country', {
         name: 'Thailand',
         regions: { Central: ['Nakhon Pathom'] }
     });
@@ -149,22 +146,20 @@ export async function deployDemo() {
             marketLogicInstance: marketLogic,
             web3
         },
-        offChainDataSource: {
-            baseUrl: `${BACKEND_URL}/api`,
-            client: offChainDataClient,
-            configurationClient,
-            userClient
-        },
-        logger
+        offChainDataSource,
+        logger,
+        deviceTypeService: new DeviceTypeService(
+            await offChainDataSource.configurationClient.get('device-types')
+        )
     };
 
     function createOrganization(user: IUserWithRelationsIds, name: string) {
-        const newOrganization = organizationClient.addMocked(
+        const newOrganization = (offChainDataSource.organizationClient as any).addMocked(
             ({ name } as Partial<OrganizationPostData>) as OrganizationPostData,
             user.id
         );
 
-        userClient.updateMocked(user.id, {
+        (offChainDataSource.userClient as any).updateMocked(user.id, {
             ...user,
             organization: newOrganization.id
         });
@@ -222,14 +217,11 @@ export async function deployDemo() {
         smartMeter: { address: ACCOUNTS.SMART_METER.address },
         owner: { address: ACCOUNTS.DEVICE_MANAGER.address },
         lastSmartMeterReadWh: 0,
-        status: Device.DeviceStatus.Active,
-        usageType: Device.UsageType.Producing,
-        lastSmartMeterReadFileHash: '',
-        propertiesDocumentHash: null,
-        url: null
+        lastSmartMeterReadFileHash: ''
     };
 
-    const deviceProducingPropsOffChain: ProducingDevice.IOffChainProperties = {
+    const deviceProducingPropsOffChain: IDevice = {
+        status: DeviceStatus.Active,
         deviceType: 'Wind;Onshore',
         complianceRegistry: 'I-REC',
         facilityName: 'Wuthering Heights Windfarm',
@@ -260,11 +252,7 @@ export async function deployDemo() {
 
     return {
         conf,
-        deployResult,
-        configurationClient,
-        offChainDataClient,
-        organizationClient,
-        userClient
+        deployResult
     };
 }
 

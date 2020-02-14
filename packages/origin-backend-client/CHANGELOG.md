@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@3.1.0...@energyweb/origin-backend-client@3.2.0) (2020-02-12)
+
+
+### Features
+
+* change certification requests to be off-chain evidence based ([555c696](https://github.com/energywebfoundation/origin/commit/555c696aff17bafd11c8c5403add627d6c95fbd9))
+
+
+
+
+
+# [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@3.0.0...@energyweb/origin-backend-client@3.1.0) (2020-02-04)
+
+
+### Features
+
+* Unify all data clients into an OffChainData definition ([6aff08d](https://github.com/energywebfoundation/origin/commit/6aff08d9a36eaec5c2e6a102f5c1979d8b459982))
+
+
+
+
+
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.2.3...@energyweb/origin-backend-client@3.0.0) (2020-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.19.1 ([40aa752](https://github.com/energywebfoundation/origin/commit/40aa7522c28cb2f6c32608669f154633be749649))
+* **deps:** update dependency axios to v0.19.2 ([696eb46](https://github.com/energywebfoundation/origin/commit/696eb46fd2c7d26c223baaaf9f75d7943fc71517))
+
+
+### Features
+
+* implement removing user from organization ([4c62da9](https://github.com/energywebfoundation/origin/commit/4c62da9837620dbfbca14e63fd7855de32c7dac5))
+* **origin-backend-client:** extend organization and user client functionality, remove mocks ([5ed33ce](https://github.com/energywebfoundation/origin/commit/5ed33ce32f34678e67f0398ba73e5c12efb3424c))
+
+
+### BREAKING CHANGES
+
+* **origin-backend-client:** remove backend client mocks from package
+
+
+
+
+
 ## [2.2.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@2.2.2...@energyweb/origin-backend-client@2.2.3) (2020-01-17)
 
 **Note:** Version bump only for package @energyweb/origin-backend-client

@@ -2,14 +2,31 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { CertificateTable, SelectedState } from '../../components/CertificateTable';
 import { Certificate } from '@energyweb/origin';
-import { Unit } from '@energyweb/utils-general';
-import { setupStore, createRenderedHelpers, WrapperComponent } from '../utils/helpers';
-import { setOrganizationClient } from '../../features/general/actions';
-import { IOrganizationWithRelationsIds } from '@energyweb/origin-backend-core';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
+import { Unit, DeviceTypeService, Configuration } from '@energyweb/utils-general';
+import {
+    setupStore,
+    createRenderedHelpers,
+    WrapperComponent,
+    TEST_DEVICE_TYPES
+} from '../utils/helpers';
+import { IOrganizationWithRelationsIds, DeviceStatus } from '@energyweb/origin-backend-core';
+import { IOrganizationClient, IOffChainDataSource } from '@energyweb/origin-backend-client';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
+import { configurationUpdated } from '../../features/actions';
 
 describe('CertificateTable', () => {
     it('correctly renders', async () => {
+        const offChainDataSource: IOffChainDataSource = new OffChainDataSourceMock();
+
+        offChainDataSource.organizationClient = ({
+            getById: async () =>
+                (({ name: 'Example Organization' } as Partial<
+                    IOrganizationWithRelationsIds
+                >) as IOrganizationWithRelationsIds)
+        } as Partial<IOrganizationClient>) as IOrganizationClient;
+
+        await offChainDataSource.configurationClient.add('device-types', TEST_DEVICE_TYPES);
+
         const {
             store,
             history,
@@ -17,7 +34,11 @@ describe('CertificateTable', () => {
             addProducingDevice,
             addCertificate,
             cleanupStore
-        } = setupStore();
+        } = setupStore(undefined, {
+            offChainDataSource,
+            mockUserFetcher: false,
+            logActions: false
+        });
 
         setCurrentUser({
             id: '0x123'
@@ -25,7 +46,8 @@ describe('CertificateTable', () => {
 
         addProducingDevice({
             id: '0',
-            owner: '0x123'
+            owner: '0x123',
+            status: DeviceStatus.Active
         });
 
         addCertificate({
@@ -65,12 +87,9 @@ describe('CertificateTable', () => {
         });
 
         store.dispatch(
-            setOrganizationClient(({
-                getById: async () =>
-                    (({ name: 'Example Organization' } as Partial<
-                        IOrganizationWithRelationsIds
-                    >) as IOrganizationWithRelationsIds)
-            } as Partial<IOrganizationClient>) as IOrganizationClient)
+            configurationUpdated(({
+                deviceTypeService: new DeviceTypeService(TEST_DEVICE_TYPES)
+            } as Partial<Configuration.Entity>) as Configuration.Entity)
         );
 
         const rendered = mount(

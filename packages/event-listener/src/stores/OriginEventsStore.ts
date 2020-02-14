@@ -1,28 +1,28 @@
 import { Demand } from '@energyweb/market';
-
-export interface IPartiallyFilledDemand {
-    demandId: number;
-    certificateId: number;
-    amount: number;
-}
+import {
+    DeviceStatus,
+    DeviceStatusChanged,
+    DemandPartiallyFilledEvent,
+    OrganizationStatusChanged,
+    OrganizationInvitationEvent,
+    OrganizationRemovedMember
+} from '@energyweb/origin-backend-core';
 
 export interface ICertificateMatchesDemand {
-    demandId: string;
+    demandId: number;
     certificateId: string;
-}
-
-export interface IDeviceStatusChange {
-    deviceId: string;
-    status: string;
 }
 
 interface IUserTempStorage {
     userId: string;
     issuedCertificates: number;
     matchingCertificates: ICertificateMatchesDemand[];
-    partiallyFilledDemands: IPartiallyFilledDemand[];
+    partiallyFilledDemands: DemandPartiallyFilledEvent[];
     fulfilledDemands: number[];
-    deviceStatusChanges: IDeviceStatusChange[];
+    deviceStatusChanges: DeviceStatusChanged[];
+    organizationStatusChanges: OrganizationStatusChanged[];
+    organizationInvitations: OrganizationInvitationEvent[];
+    organizationRemovedMembers: OrganizationRemovedMember[];
 }
 
 export interface IOriginEventsStore {
@@ -30,21 +30,37 @@ export interface IOriginEventsStore {
 
     getIssuedCertificates(userId: string): number;
     getMatchingCertificates(userId: string): ICertificateMatchesDemand[];
-    getPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[];
+    getPartiallyFilledDemands(userId: string): DemandPartiallyFilledEvent[];
     getFulfilledDemands(userId: string): number[];
-    getDeviceStatusChanges(userId: string): IDeviceStatusChange[];
+    getDeviceStatusChanges(userId: string): DeviceStatusChanged[];
+    getOrganizationStatusChanges(organizationEmail: string): OrganizationStatusChanged[];
+    getOrganizationInvitations(userEmail: string): OrganizationInvitationEvent[];
+    getOrganizationRemovedMember(userEmail: string): OrganizationRemovedMember[];
 
     registerIssuedCertificate(certOwnerId: string): void;
     registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void;
-    registerPartiallyFilledDemand(demandOwnerId: string, demand: IPartiallyFilledDemand): void;
+    registerPartiallyFilledDemand(demandOwnerId: string, demand: DemandPartiallyFilledEvent): void;
     registerFulfilledDemand(demandOwnerId: string, demandId: number): void;
-    registerDeviceStatusChange(deviceOwnerId: string, deviceId: string, deviceStatus: string): void;
+    registerDeviceStatusChange(
+        deviceOwnerId: string,
+        deviceId: string,
+        deviceStatus: DeviceStatus
+    ): void;
+    registerOrganizationStatusChange(
+        organizationEmail: string,
+        event: OrganizationStatusChanged
+    ): void;
+    registerOrganizationInvitation(userEmail: string, event: OrganizationInvitationEvent): void;
+    registerOrganizationRemovedMember(userEmail: string, event: OrganizationRemovedMember): void;
 
     resetIssuedCertificates(userId: string): void;
     resetMatchingCertificates(userId: string): void;
     resetPartiallyFilledDemands(userId: string): void;
     resetFulfilledDemands(userId: string): void;
     resetDeviceStatusChanges(userId: string): void;
+    resetOrganizationStatusChanges(organizationEmail: string): void;
+    resetOrganizationInvitations(userEmail: string): void;
+    resetOrganizationRemovedMembers(userEmail: string): void;
 }
 
 export class OriginEventsStore implements IOriginEventsStore {
@@ -60,7 +76,7 @@ export class OriginEventsStore implements IOriginEventsStore {
     }
 
     public registerMatchingCertificate(demand: Demand.Entity, certificateId: string): void {
-        const userStorage: IUserTempStorage = this.userStorage(demand.demandOwner);
+        const userStorage: IUserTempStorage = this.userStorage(demand.owner);
 
         userStorage.matchingCertificates.push({
             demandId: demand.id,
@@ -70,7 +86,7 @@ export class OriginEventsStore implements IOriginEventsStore {
 
     public registerPartiallyFilledDemand(
         demandOwnerId: string,
-        demand: IPartiallyFilledDemand
+        demand: DemandPartiallyFilledEvent
     ): void {
         const userStorage: IUserTempStorage = this.userStorage(demandOwnerId);
         userStorage.partiallyFilledDemands.push(demand);
@@ -84,13 +100,37 @@ export class OriginEventsStore implements IOriginEventsStore {
     public registerDeviceStatusChange(
         deviceOwnerId: string,
         deviceId: string,
-        deviceStatus: string
+        deviceStatus: DeviceStatus
     ): void {
         const userStorage: IUserTempStorage = this.userStorage(deviceOwnerId);
         userStorage.deviceStatusChanges.push({
             deviceId,
             status: deviceStatus
         });
+    }
+
+    public registerOrganizationStatusChange(
+        organizationEmail: string,
+        event: OrganizationStatusChanged
+    ): void {
+        const userStorage: IUserTempStorage = this.userStorage(organizationEmail);
+        userStorage.organizationStatusChanges.push(event);
+    }
+
+    public registerOrganizationInvitation(
+        userEmail: string,
+        event: OrganizationInvitationEvent
+    ): void {
+        const userStorage: IUserTempStorage = this.userStorage(userEmail);
+        userStorage.organizationInvitations.push(event);
+    }
+
+    public registerOrganizationRemovedMember(
+        userEmail: string,
+        event: OrganizationRemovedMember
+    ): void {
+        const userStorage: IUserTempStorage = this.userStorage(userEmail);
+        userStorage.organizationRemovedMembers.push(event);
     }
 
     public getIssuedCertificates(userId: string): number {
@@ -101,7 +141,7 @@ export class OriginEventsStore implements IOriginEventsStore {
         return this.userStorage(userId).matchingCertificates;
     }
 
-    public getPartiallyFilledDemands(userId: string): IPartiallyFilledDemand[] {
+    public getPartiallyFilledDemands(userId: string): DemandPartiallyFilledEvent[] {
         return this.userStorage(userId).partiallyFilledDemands;
     }
 
@@ -109,8 +149,20 @@ export class OriginEventsStore implements IOriginEventsStore {
         return this.userStorage(userId).fulfilledDemands;
     }
 
-    public getDeviceStatusChanges(userId: string): IDeviceStatusChange[] {
+    public getDeviceStatusChanges(userId: string): DeviceStatusChanged[] {
         return this.userStorage(userId).deviceStatusChanges;
+    }
+
+    public getOrganizationStatusChanges(organizationEmail: string): OrganizationStatusChanged[] {
+        return this.userStorage(organizationEmail).organizationStatusChanges;
+    }
+
+    public getOrganizationInvitations(userEmail: string): OrganizationInvitationEvent[] {
+        return this.userStorage(userEmail).organizationInvitations;
+    }
+
+    public getOrganizationRemovedMember(userEmail: string): OrganizationRemovedMember[] {
+        return this.userStorage(userEmail).organizationRemovedMembers;
     }
 
     public getAllUsers(): string[] {
@@ -137,6 +189,18 @@ export class OriginEventsStore implements IOriginEventsStore {
         this.userStorage(userId).deviceStatusChanges = [];
     }
 
+    public resetOrganizationStatusChanges(userId: string): void {
+        this.userStorage(userId).organizationStatusChanges = [];
+    }
+
+    public resetOrganizationInvitations(userEmail: string): void {
+        this.userStorage(userEmail).organizationInvitations = [];
+    }
+
+    public resetOrganizationRemovedMembers(userEmail: string): void {
+        this.userStorage(userEmail).organizationRemovedMembers = [];
+    }
+
     private initStorageForUser(userId: string): void {
         this.tempStorage.push({
             userId,
@@ -144,7 +208,10 @@ export class OriginEventsStore implements IOriginEventsStore {
             matchingCertificates: [],
             partiallyFilledDemands: [],
             fulfilledDemands: [],
-            deviceStatusChanges: []
+            deviceStatusChanges: [],
+            organizationStatusChanges: [],
+            organizationInvitations: [],
+            organizationRemovedMembers: []
         });
     }
 

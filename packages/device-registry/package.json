@@ -11,24 +11,20 @@
   "bugs": {
     "url": "https://github.com/energywebfoundation/origin/issues"
   },
-  "version": "3.0.0",
+  "version": "5.0.1",
   "main": "dist/js/src/index.js",
   "files": [
     "dist/js/build",
-    "dist/js/src",
-    "dist/js/schemas"
+    "dist/js/src"
   ],
   "directories": {
     "test": "test"
   },
   "scripts": {
     "build": "yarn build:static && yarn build:ts",
-    "build:static": "yarn compile && yarn extractABI && yarn build-schemas",
+    "build:static": "yarn compile && yarn extractABI",
     "build:ts": "tsc -b tsconfig.build.json --verbose --pretty",
     "build-and-deploy": "yarn build && yarn deploy-contracts",
-    "build-schema:DevicePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/Device.ts IOffChainProperties",
-    "build-schema:ProducingDevicePropertiesOffChain": "typescript-json-schema --ignoreErrors --required src/blockchain-facade/ProducingDevice.ts IOffChainProperties",
-    "build-schemas": "node ./scripts/buildSchemas.js",
     "compile": "truffle compile",
     "compile-contracts": "node build/ts/utils/deployment/compile",
     "deploy-contracts": "truffle migrate",
@@ -44,8 +40,8 @@
   },
   "types": "dist/js/src/index.d.ts",
   "dependencies": {
-    "@energyweb/user-registry": "2.0.5",
-    "@energyweb/utils-general": "4.1.1",
+    "@energyweb/user-registry": "3.0.2",
+    "@energyweb/utils-general": "7.0.0",
     "moment": "2.24.0",
     "polly-js": "^1.6.5",
     "web3": "1.2.4",
@@ -54,8 +50,8 @@
     "winston": "3.2.1"
   },
   "devDependencies": {
-    "@energyweb/origin-backend-client": "2.2.3",
-    "@energyweb/origin-backend-client-mocks": "0.0.1",
+    "@energyweb/origin-backend-client": "3.2.0",
+    "@energyweb/origin-backend-client-mocks": "0.3.0",
     "ethlint": "1.2.5",
     "fs-extra": "8.1.0"
   },

@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import { TextField, Select } from 'formik-material-ui';
 import { setLoading } from '../../features/general/actions';
 import { FormInput } from '../Form/FormInput';
-import { getUserClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 
 interface IFormValues {
     titleSelect: string;
@@ -66,7 +66,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
 export function UserRegister() {
-    const userClient = useSelector(getUserClient);
+    const userClient = useSelector(getOffChainDataSource).userClient;
     const dispatch = useDispatch();
 
     const useStyles = makeStyles(() =>

@@ -8,11 +8,14 @@ import {
 } from '@energyweb/market';
 import { MatchableDemand } from '@energyweb/market-matcher-core';
 import { Configuration, TimeFrame } from '@energyweb/utils-general';
+import { CircularProgress } from '@material-ui/core';
 import { AddShoppingCart, AssignmentReturn, AssignmentTurnedIn, Publish } from '@material-ui/icons';
 import moment from 'moment';
 import React, { ReactNode } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { DemandPostData, IOrganization } from '@energyweb/origin-backend-core';
+import { IOrganizationClient } from '@energyweb/origin-backend-client';
 
 import { BuyCertificateBulkModal } from './Modal/BuyCertificateBulkModal';
 import { BuyCertificateModal } from './Modal/BuyCertificateModal';
@@ -37,12 +40,9 @@ import { TableMaterial } from './Table/TableMaterial';
 import { getUserById, getUsers, getCurrentUser } from '../features/users/selectors';
 import { setLoading, TSetLoading } from '../features/general/actions';
 import { getCertificates } from '../features/certificates/selectors';
-import { getCurrencies, getOrganizationClient } from '../features/general/selectors';
+import { getCurrencies, getOffChainDataSource } from '../features/general/selectors';
 import { ClaimCertificateBulkModal } from './Modal/ClaimCertificateBulkModal';
-import { CircularProgress } from '@material-ui/core';
 import { EnergyFormatter } from '../utils/EnergyFormatter';
-import { IOrganizationClient } from '@energyweb/origin-backend-client';
-import { IOrganization } from '@energyweb/origin-backend-core';
 
 interface IOwnProps {
     certificates?: PurchasableCertificate.Entity[];
@@ -138,6 +138,10 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
         this.hideBuyBulkModal = this.hideBuyBulkModal.bind(this);
         this.hideClaimBulkModal = this.hideClaimBulkModal.bind(this);
         this.customSelectCounterGenerator = this.customSelectCounterGenerator.bind(this);
+    }
+
+    get deviceTypeService() {
+        return this.props.configuration?.deviceTypeService;
     }
 
     async componentDidMount() {
@@ -255,7 +259,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
     async initMatchingCertificates(demand: Demand.Entity) {
         const { certificates, configuration } = this.props;
 
-        const matchableDemand = new MatchableDemand(demand);
+        const matchableDemand = new MatchableDemand(demand, configuration.deviceTypeService);
         const find = async certificate => {
             const producingDevice = await new ProducingDevice.Entity(
                 certificate.certificate.deviceId.toString(),
@@ -489,7 +493,8 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
 
             const currencies = useSelector(getCurrencies);
 
-            const offChainProperties: Demand.IDemandOffChainProperties = {
+            const offChainProperties: DemandPostData = {
+                owner: this.props.configuration.blockchainProperties.activeUser.address,
                 timeFrame: TimeFrame.yearly,
                 maxPriceInCentsPerMwh: 0,
                 currency: currencies[0],
@@ -755,7 +760,7 @@ class CertificateTableClass extends PaginatedLoaderFilteredSorted<Props, ICertif
             let compliance = '';
 
             if (enrichedData.producingDevice?.offChainProperties) {
-                deviceType = this.deviceTypeService.getDisplayText(
+                deviceType = this.deviceTypeService?.getDisplayText(
                     enrichedData.producingDevice.offChainProperties.deviceType
                 );
 
@@ -884,7 +889,7 @@ export const CertificateTable = connect(
         currentUser: getCurrentUser(state),
         producingDevices: getProducingDevices(state),
         users: getUsers(state),
-        organizationClient: getOrganizationClient(state)
+        organizationClient: getOffChainDataSource(state)?.organizationClient
     }),
     dispatchProps
 )(CertificateTableClass);

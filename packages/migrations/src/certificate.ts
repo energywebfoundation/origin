@@ -1,4 +1,4 @@
-import { ConsumingDevice, ProducingDevice } from '@energyweb/device-registry';
+import { ProducingDevice } from '@energyweb/device-registry';
 import { Configuration } from '@energyweb/utils-general';
 import { CertificateLogic, Certificate } from '@energyweb/origin';
 import { PurchasableCertificate, Contracts as MarketContracts } from '@energyweb/market';
@@ -19,29 +19,6 @@ export const certificateDemo = async (
     const certificateLogic: CertificateLogic = conf.blockchainProperties.certificateLogicInstance;
 
     switch (action.type) {
-        case 'APPROVE_CERTIFICATION_REQUEST':
-            console.log('-----------------------------------------------------------');
-
-            try {
-                await certificateLogic.approveCertificationRequest(
-                    action.data.certificationRequestIndex,
-                    {
-                        privateKey: action.data.issuerPK
-                    }
-                );
-
-                conf.logger.info(
-                    `Certification request #${action.data.certificationRequestIndex} approved`
-                );
-            } catch (e) {
-                conf.logger.error(
-                    `Could not approve certification request #${action.data.certificationRequestIndex}\n`,
-                    e
-                );
-            }
-
-            console.log('-----------------------------------------------------------\n');
-            break;
         case 'SAVE_SMARTMETER_READ_PRODUCING':
             console.log('-----------------------------------------------------------');
 
@@ -69,31 +46,6 @@ export const certificateDemo = async (
             console.log('-----------------------------------------------------------\n');
 
             break;
-        case 'SAVE_SMARTMETER_READ_CONSUMING':
-            console.log('-----------------------------------------------------------');
-
-            conf.blockchainProperties.activeUser = {
-                address: action.data.smartMeter,
-                privateKey: action.data.smartMeterPK
-            };
-
-            try {
-                let device = await new ConsumingDevice.Entity(action.data.deviceId, conf).sync();
-                await device.saveSmartMeterRead(
-                    action.data.meterreading,
-                    action.data.filehash,
-                    action.data.timestamp || 0
-                );
-                device = await device.sync();
-                conf.logger.verbose('Consuming meter reading saved');
-            } catch (e) {
-                conf.logger.error('Could not save smart meter reading for consuming device\n' + e);
-            }
-
-            console.log('-----------------------------------------------------------\n');
-
-            break;
-
         case 'TRANSFER_CERTIFICATE':
             console.log('-----------------------------------------------------------');
 
@@ -191,32 +143,6 @@ export const certificateDemo = async (
                 conf.logger.info(`Certificate ${action.data.certId} published for sale`);
             } catch (e) {
                 conf.logger.error(`Could not set publish ${action.data.certId} for sale\n`, e);
-            }
-
-            console.log('-----------------------------------------------------------\n');
-            break;
-        case 'REQUEST_CERTIFICATES':
-            console.log('-----------------------------------------------------------');
-
-            const deviceId = Number(action.data.deviceId);
-
-            try {
-                await certificateLogic.requestCertificates(
-                    deviceId,
-                    action.data.lastRequestedSMRead,
-                    {
-                        privateKey: action.data.deviceOwnerPK
-                    }
-                );
-
-                conf.logger.info(
-                    `Requested certificates for device ${deviceId} up to SM read ${action.data.lastRequestedSMRead}`
-                );
-            } catch (e) {
-                conf.logger.error(
-                    `Could not request certificates for device ${deviceId} up to SM read ${action.data.lastRequestedSMRead}\n`,
-                    e
-                );
             }
 
             console.log('-----------------------------------------------------------\n');

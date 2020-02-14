@@ -5,11 +5,7 @@ import 'mocha';
 import moment from 'moment';
 
 import { Configuration } from '@energyweb/utils-general';
-import {
-    OffChainDataClientMock,
-    ConfigurationClientMock,
-    UserClientMock
-} from '@energyweb/origin-backend-client-mocks';
+import { OffChainDataSourceMock } from '@energyweb/origin-backend-client-mocks';
 
 import { migratePrivateIssuer, migratePublicIssuer, migrateRegistry } from '../migrate';
 import { RequestIssue, PrivateIssuer, Registry, PublicIssuer } from '..';
@@ -37,6 +33,8 @@ describe('PrivateIssuer', () => {
 
     const issuerPK = '0x50397ee7580b44c966c3975f561efb7b58a54febedaa68a5dc482e52fb696ae7';
 
+    let timestamp = moment().subtract(10, 'year').unix();
+
     const setActiveUser = (privateKey: string) => {
         conf.blockchainProperties.activeUser = {
             address: web3.eth.accounts.privateKeyToAccount(privateKey).address,
@@ -47,9 +45,10 @@ describe('PrivateIssuer', () => {
     const createRequestIssue = async (conf: Configuration.Entity) => {
         setActiveUser(deviceOwnerPK);
 
-        const now = moment();
-        const fromTime = now.subtract(30, 'day').unix();
-        const toTime = now.unix();
+        const fromTime = timestamp;
+        // Simulate time moving forward 1 month
+        timestamp += 30 * 24 * 3600;
+        const toTime = timestamp;
         const deviceId = '1';
 
         return RequestIssue.createRequestIssue(fromTime, toTime, deviceId, conf, true);
@@ -68,9 +67,15 @@ describe('PrivateIssuer', () => {
             registry.web3Contract.options.address,
             publicIssuer.web3Contract.options.address
         );
-        const version = await privateIssuer.version();
 
+        const version = await privateIssuer.version();
         assert.equal(version, 'v0.1');
+
+        const registryAddress = await privateIssuer.getRegistryAddress();
+        assert.equal(registryAddress, registry.web3Contract.options.address);
+
+        const publicIssuerAddress = await privateIssuer.getPublicIssuerAddress();
+        assert.equal(publicIssuerAddress, publicIssuer.web3Contract.options.address);
 
         conf = {
             blockchainProperties: {
@@ -84,12 +89,7 @@ describe('PrivateIssuer', () => {
                 },
                 web3
             },
-            offChainDataSource: {
-                baseUrl: `${process.env.BACKEND_URL}/api`,
-                client: new OffChainDataClientMock(),
-                configurationClient: new ConfigurationClientMock(),
-                userClient: new UserClientMock()
-            },
+            offChainDataSource: new OffChainDataSourceMock(),
             logger
         };
     });

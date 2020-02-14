@@ -1,7 +1,6 @@
 import { TransactionReceipt, EventLog } from 'web3-core';
 
 import { Configuration, BlockchainDataModelEntity } from '@energyweb/utils-general';
-import { ProducingDevice } from '@energyweb/device-registry';
 
 import { CertificateLogic } from '..';
 
@@ -17,6 +16,7 @@ export interface ICertificate {
     deviceId: number;
     generationStartTime: number;
     generationEndTime: number;
+    certificationRequestId: string;
 
     owner: string;
     energy: number;
@@ -38,7 +38,6 @@ export interface ICertificate {
     transferFrom(_to: string): Promise<TransactionReceipt>;
     safeTransferFrom(_to: string, _calldata?: string): Promise<TransactionReceipt>;
 
-    getCertificationRequestEvents(): any;
     getAllCertificateEvents(): Promise<EventLog[]>;
 }
 
@@ -135,12 +134,21 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
     public deviceId: number;
 
     public generationStartTime: number;
+
     public generationEndTime: number;
+
     public owner: string;
+
     public energy: number;
+
     public status: Status;
+
     public creationTime: number;
+
     public parentId: number;
+
+    public certificationRequestId: string;
+
     public children: string[];
 
     public initialized: boolean;
@@ -167,13 +175,9 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
             this.status = Number(cert.status);
             this.creationTime = Number(cert.creationTime);
             this.parentId = Number(cert.parentId);
+            this.certificationRequestId = cert.certificationRequestId;
 
-            const reads = await new ProducingDevice.Entity(
-                this.deviceId.toString(),
-                this.configuration
-            ).getSmartMeterReadsByIndex([Number(cert.readsStartIndex), Number(cert.readsEndIndex)]);
-            this.generationStartTime = reads[0].timestamp;
-            this.generationEndTime = reads[1].timestamp;
+            this.syncCertificationRequestOffChainData();
 
             this.initialized = true;
 
@@ -183,6 +187,22 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         }
 
         return this;
+    }
+
+    async syncCertificationRequestOffChainData() {
+        if (
+            typeof this.certificationRequestId === 'undefined' ||
+            !this.configuration.offChainDataSource?.certificateClient
+        ) {
+            return;
+        }
+
+        const request = await this.configuration.offChainDataSource.certificateClient.getCertificationRequest(
+            this.certificationRequestId
+        );
+
+        this.generationStartTime = request.startTime;
+        this.generationEndTime = request.endTime;
     }
 
     async claimCertificate(): Promise<TransactionReceipt> {
@@ -254,84 +274,6 @@ export class Entity extends BlockchainDataModelEntity.Entity implements ICertifi
         return this.configuration.blockchainProperties.certificateLogicInstance.getApproved(
             this.id
         );
-    }
-
-    async getCertificationRequestEvents() {
-        const {
-            certificateLogicInstance
-        }: {
-            certificateLogicInstance?: CertificateLogic;
-        } = this.configuration.blockchainProperties;
-
-        const logCreatedEvents = await certificateLogicInstance.getAllLogCreatedCertificateEvents({
-            filter: {
-                _certificateId: this.id
-            },
-            fromBlock: 0
-        });
-
-        const logCreatedEvent = logCreatedEvents[0];
-
-        if (!logCreatedEvent) {
-            return null;
-        }
-
-        const certificationRequestsApprovedEvents = await certificateLogicInstance.getAllCertificationApprovedEvents(
-            {
-                filter: {
-                    deviceId: this.deviceId
-                },
-                fromBlock: logCreatedEvent.blockNumber,
-                toBlock: logCreatedEvent.blockNumber
-            }
-        );
-
-        if (
-            !certificationRequestsApprovedEvents ||
-            certificationRequestsApprovedEvents.length === 0
-        ) {
-            return null;
-        }
-
-        const allReads = await (
-            await new ProducingDevice.Entity(this.deviceId.toString(), this.configuration).sync()
-        ).getSmartMeterReads();
-
-        const approvedCertificationRequestEvent = certificationRequestsApprovedEvents.filter(
-            request => {
-                return (
-                    allReads
-                        .slice(
-                            request.returnValues.readsStartIndex,
-                            parseInt(request.returnValues.readsEndIndex, 10) + 1
-                        )
-                        .reduce((a, b) => a + b.energy, 0) === this.energy
-                );
-            }
-        )[0];
-
-        const certificationRequestsCreatedEvents = await certificateLogicInstance.getAllCertificationCreatedEvents(
-            {
-                filter: {
-                    readsStartIndex: approvedCertificationRequestEvent.returnValues.readsStartIndex,
-                    readsEndIndex: approvedCertificationRequestEvent.returnValues.readsEndIndex,
-                    deviceId: this.deviceId
-                },
-                fromBlock: 0
-            }
-        );
-
-        if (
-            !certificationRequestsCreatedEvents ||
-            certificationRequestsCreatedEvents.length === 0
-        ) {
-            return null;
-        }
-
-        return {
-            approvedCertificationRequestEvent,
-            certificationRequestCreatedEvent: certificationRequestsCreatedEvents[0]
-        };
     }
 
     async getAllCertificateEvents(): Promise<EventLog[]> {
@@ -437,24 +379,26 @@ export async function claimCertificates(
     );
 }
 
-export async function requestCertificates(
-    deviceId: string,
-    limitingSmartMeterReadIndex: number,
-    configuration: Configuration.Entity
-) {
-    return configuration.blockchainProperties.certificateLogicInstance.requestCertificates(
-        parseInt(deviceId, 10),
-        limitingSmartMeterReadIndex,
-        getAccountFromConfiguration(configuration)
-    );
-}
-
 export async function approveCertificationRequest(
     certicationRequestIndex: number,
     configuration: Configuration.Entity
 ) {
     return configuration.blockchainProperties.certificateLogicInstance.approveCertificationRequest(
         certicationRequestIndex,
+        getAccountFromConfiguration(configuration)
+    );
+}
+
+export async function createArbitraryCertfificate(
+    deviceId: number,
+    energy: number,
+    certificationRequestId: string,
+    configuration: Configuration.Entity
+) {
+    return configuration.blockchainProperties.certificateLogicInstance.createArbitraryCertfificate(
+        deviceId,
+        energy,
+        certificationRequestId,
         getAccountFromConfiguration(configuration)
     );
 }

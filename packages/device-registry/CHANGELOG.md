@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@5.0.0...@energyweb/device-registry@5.0.1) (2020-02-12)
+
+**Note:** Version bump only for package @energyweb/device-registry
+
+
+
+
+
+# [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@4.0.0...@energyweb/device-registry@5.0.0) (2020-02-04)
+
+
+### Bug Fixes
+
+* allow Device Manager to add new devices ([3caee18](https://github.com/energywebfoundation/origin/commit/3caee187814433debca8e83b24949d1765c1b750))
+* deviceLogic tests ([c3f7af7](https://github.com/energywebfoundation/origin/commit/c3f7af7720fa959b3a582ceed16e8e443b580708))
+
+
+### Features
+
+* Move some Device properties to off-chain storage, remove on-chain proofs + remove unused Consuming Devices definition ([8b9424e](https://github.com/energywebfoundation/origin/commit/8b9424e3ed826f39db989bb8e2c7495c682a4c38))
+
+
+### BREAKING CHANGES
+
+* The Device.Entity API has changed.
+
+
+
+
+
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@3.0.0...@energyweb/device-registry@4.0.0) (2020-01-31)
+
+
+### chore
+
+* **device-registry:** rm locationservice logic ([0b669b1](https://github.com/energywebfoundation/origin/commit/0b669b18f8135d95ad89da64d2f2a4933dc6028b))
+
+
+### Features
+
+* add ability to add device group ([d01a9ed](https://github.com/energywebfoundation/origin/commit/d01a9ed1c7e474635f4ff342844fb94a8b4c3bc9))
+
+
+### BREAKING CHANGES
+
+* **device-registry:** LocationService has been moved to utils-general package
+
+
+
+
+
 # [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/device-registry@2.0.1...@energyweb/device-registry@3.0.0) (2020-01-17)
 
 

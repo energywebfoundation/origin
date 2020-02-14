@@ -10,7 +10,7 @@ import {
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table/PaginatedLoaderHooks';
-import { getOrganizationClient } from '../../features/general/selectors';
+import { getOffChainDataSource } from '../../features/general/selectors';
 import { Countries } from '@energyweb/utils-general';
 import { IOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { useLinks } from '../../utils/routing';
@@ -34,7 +34,7 @@ function getOrganizationText(status: OrganizationStatus) {
 
 export function OrganizationTable() {
     const currentUser = useSelector(getCurrentUser);
-    const organizationClient = useSelector(getOrganizationClient);
+    const organizationClient = useSelector(getOffChainDataSource).organizationClient;
 
     const { getOrganizationViewLink } = useLinks();
 

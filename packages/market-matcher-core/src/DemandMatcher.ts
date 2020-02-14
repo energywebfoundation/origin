@@ -30,9 +30,9 @@ export class DemandMatcher {
             for (const certificate of certificates) {
                 const matchingResult = await this.certificateService.executeMatching(
                     certificate,
-                    demand,
-                    false
+                    demand
                 );
+
                 if (matchingResult) {
                     matched = true;
                     break;
@@ -51,7 +51,7 @@ export class DemandMatcher {
     }
 
     private async findMatchingCertificates(demand: Demand.Entity) {
-        const matchableDemand = new MatchableDemand(demand);
+        const matchableDemand = new MatchableDemand(demand, this.config.deviceTypeService);
 
         const certificates = await Promise.all(
             this.entityStore
@@ -78,6 +78,7 @@ export class DemandMatcher {
                 certificate,
                 producingDevice
             );
+
             this.logger.verbose(
                 `[Demand #${demand.id}] Result of matching with certificate ${
                     certificate.id
