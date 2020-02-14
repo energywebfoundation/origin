@@ -6,6 +6,7 @@
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0",
     "private": true,
+    "main": "dist/js/src/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -36,6 +37,7 @@
         "@energyweb/exchange-token-account": "0.1.0",
         "@energyweb/utils-general": "7.0.0",
         "@energyweb/issuer": "0.11.0",
+        "@energyweb/origin-backend-core": "1.2.0",
         "@nestjs/common": "6.11.6",
         "@nestjs/config": "0.2.2",
         "@nestjs/core": "6.11.6",
