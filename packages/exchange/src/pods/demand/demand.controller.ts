@@ -1,5 +1,5 @@
 import { IUser } from '@energyweb/origin-backend-core';
-import { Controller, Get, Logger, Param, ParseUUIDPipe, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Logger, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { UserDecorator } from '../decorators/user.decorator';
@@ -10,20 +10,6 @@ export class DemandController {
     private readonly logger = new Logger(DemandController.name);
 
     constructor(private readonly demandService: DemandService) {}
-
-    @Post()
-    public async test() {
-        this.logger.log(`Creating test demand`);
-        const demand = await this.demandService.createSingle(
-            '2',
-            100,
-            100,
-            { deviceType: ['Solar'] },
-            new Date()
-        );
-
-        return demand.id;
-    }
 
     @Get(':id')
     @UseGuards(AuthGuard())

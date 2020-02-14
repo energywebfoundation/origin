@@ -2,6 +2,7 @@ import { IUser } from '@energyweb/origin-backend-core';
 import { Body, Controller, ForbiddenException, Logger, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ensureUser } from '../../utils/validationHelpers';
 import { UserDecorator } from '../decorators/user.decorator';
 import { CreateAskDTO } from './create-ask.dto';
 import { CreateBidDTO } from './create-bid.dto';
@@ -17,6 +18,8 @@ export class OrderController {
     @UseGuards(AuthGuard())
     public async createBid(@UserDecorator() user: IUser, @Body() newOrder: CreateBidDTO) {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
+
+        ensureUser(newOrder, user);
 
         try {
             const order = await this.orderService.createBid({
@@ -35,11 +38,17 @@ export class OrderController {
     }
 
     @Post('ask')
-    public async createAsk(@Body() newOrder: CreateAskDTO) {
+    @UseGuards(AuthGuard())
+    public async createAsk(@UserDecorator() user: IUser, @Body() newOrder: CreateAskDTO) {
         this.logger.log(`Creating new order ${JSON.stringify(newOrder)}`);
 
+        ensureUser(newOrder, user);
+
         try {
-            const order = await this.orderService.createAsk({ ...newOrder, userId: '1' });
+            const order = await this.orderService.createAsk({
+                ...newOrder,
+                userId: user.id.toString()
+            });
 
             this.orderService.submit(order);
 
