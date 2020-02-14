@@ -18,7 +18,6 @@ import { TransferDirection } from '../src/pods/transfer/transfer-direction';
 import { Transfer } from '../src/pods/transfer/transfer.entity';
 import { TransferService } from '../src/pods/transfer/transfer.service';
 import { DatabaseService } from './database.service';
-import { DepositWatcherService } from '../src/pods/deposit-watcher/deposit-watcher.service';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -27,7 +26,6 @@ describe('AppController (e2e)', () => {
     let transferService: TransferService;
     let databaseService: DatabaseService;
     let accountService: AccountService;
-    let depositWatcherService: DepositWatcherService;
 
     const user1Id = '1';
     let user1Address: string;
@@ -52,7 +50,7 @@ describe('AppController (e2e)', () => {
     };
 
     const confirmDeposit = () => {
-        return transferService.confirmTransfer(transactionHash, 10000);
+        return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
     const deployRegistry = async () => {
@@ -79,6 +77,8 @@ describe('AppController (e2e)', () => {
                 '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5',
             // ganache account 1
             EXCHANGE_WALLET_PUB: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8',
+            EXCHANGE_WALLET_PRIV:
+                '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3',
             REGISTRY_ADDRESS: registry.address
         });
 
@@ -94,7 +94,6 @@ describe('AppController (e2e)', () => {
         transferService = await app.resolve<TransferService>(TransferService);
         accountService = await app.resolve<AccountService>(AccountService);
         databaseService = await app.resolve<DatabaseService>(DatabaseService);
-        depositWatcherService = await app.resolve<DepositWatcherService>(DepositWatcherService);
 
         const appService = await app.resolve<AppService>(AppService);
         await appService.init();
@@ -249,7 +248,7 @@ describe('AppController (e2e)', () => {
             };
 
             await request(app.getHttpServer())
-                .post('/account/withdrawal')
+                .post('/transfer/withdrawal')
                 .send(withdrawal)
                 .expect(403);
         });
@@ -265,7 +264,7 @@ describe('AppController (e2e)', () => {
             };
 
             await request(app.getHttpServer())
-                .post('/account/withdrawal')
+                .post('/transfer/withdrawal')
                 .send(withdrawal)
                 .expect(201);
 
@@ -290,6 +289,32 @@ describe('AppController (e2e)', () => {
 
     describe('Deposits using deployed registry', () => {
         let depositAddress: string;
+
+        const provider = new ethers.providers.JsonRpcProvider(web3);
+        const tokenReceiverPrivateKey =
+            '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
+        const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
+
+        const issueToken = async (to: string, amount: string) => {
+            const receipt = await registry.functions.issue(to, '0x0', 100, amount, '0x0');
+
+            return receipt.wait();
+        };
+
+        const depositToken = async (to: string, amount: string) => {
+            const registryWithUserAsSigner = registry.connect(tokenReceiver);
+
+            const transferReceipt = await registryWithUserAsSigner.functions.safeTransferFrom(
+                tokenReceiver.address,
+                to,
+                1,
+                amount,
+                '0x0'
+            );
+
+            return transferReceipt.wait();
+        };
+
         beforeEach(async () => {
             const { address } = await accountService.getOrCreateAccount(user1Id);
             depositAddress = address;
@@ -298,32 +323,8 @@ describe('AppController (e2e)', () => {
         it('should discover token deposit', async () => {
             const depositAmount = '10';
 
-            const provider = new ethers.providers.JsonRpcProvider(web3);
-            const tokenReceiverPrivateKey =
-                '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
-            const tokenReceiver = new ethers.Wallet(tokenReceiverPrivateKey, provider);
-
-            const receipt = await registry.functions.issue(
-                tokenReceiver.address,
-                '0x0',
-                100,
-                1000,
-                '0x0'
-            );
-
-            await receipt.wait();
-
-            const registryWithUserAsSigner = registry.connect(tokenReceiver);
-
-            const transferReceipt = await registryWithUserAsSigner.functions.safeTransferFrom(
-                tokenReceiver.address,
-                depositAddress,
-                1,
-                depositAmount,
-                '0x0'
-            );
-
-            await transferReceipt.wait();
+            await issueToken(tokenReceiver.address, '1000');
+            await depositToken(depositAddress, depositAmount);
 
             await sleep(3000);
 
@@ -334,12 +335,56 @@ describe('AppController (e2e)', () => {
                     const transfers = res.body as Transfer[];
                     const [tokenDeposit] = transfers;
 
-                    expect(transfers.length).toBe(1);
+                    expect(transfers).toHaveLength(1);
                     expect(tokenDeposit.userId).toBe(user1Id);
                     expect(tokenDeposit.direction).toBe(TransferDirection.Deposit);
                     expect(tokenDeposit.amount).toBe(depositAmount);
                     expect(tokenDeposit.address).toBe(depositAddress);
                 });
+        });
+
+        it('should withdraw to requested address', async () => {
+            jest.setTimeout(10000);
+
+            const withdrawalAmount = '5';
+            // ganache account 10
+            const withdrawalAddress = '0x6cc53915DBec95A66deb7c709C800cAc40eE55f9';
+            const startBalance = (await registry.functions.balanceOf(
+                withdrawalAddress,
+                1
+            )) as ethers.utils.BigNumber;
+
+            const depositAmount = '10';
+
+            await depositToken(depositAddress, depositAmount);
+
+            await sleep(3000);
+
+            const res = await request(app.getHttpServer()).get('/transfer/all');
+            const [deposit] = res.body as Transfer[];
+
+            expect(deposit.id).toBeDefined();
+
+            const withdrawal: RequestWithdrawalDTO = {
+                assetId: deposit.asset.id,
+                userId: user1Id,
+                amount: withdrawalAmount,
+                address: withdrawalAddress
+            };
+
+            await request(app.getHttpServer())
+                .post('/transfer/withdrawal')
+                .send(withdrawal)
+                .expect(201);
+
+            await sleep(5000);
+
+            const endBalance = (await registry.functions.balanceOf(
+                withdrawalAddress,
+                1
+            )) as ethers.utils.BigNumber;
+
+            expect(endBalance.gt(startBalance)).toBeTruthy();
         });
     });
 

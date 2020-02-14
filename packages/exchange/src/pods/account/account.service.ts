@@ -4,8 +4,6 @@ import { Connection, EntityManager } from 'typeorm';
 
 import { AccountBalanceService } from '../account-balance/account-balance.service';
 import { AccountDeployerService } from '../account-deployer/account-deployer.service';
-import { RequestWithdrawalDTO } from '../transfer/create-withdrawal.dto';
-import { TransferService } from '../transfer/transfer.service';
 import { Account } from './account';
 import { Account as AccountEntity } from './account.entity';
 
@@ -16,8 +14,6 @@ export class AccountService {
     constructor(
         @Inject(forwardRef(() => AccountBalanceService))
         private readonly accountBalanceService: AccountBalanceService,
-        @Inject(forwardRef(() => TransferService))
-        private readonly transferService: TransferService,
         @InjectConnection()
         private readonly connection: Connection,
         private readonly accountDeployerService: AccountDeployerService
@@ -69,21 +65,5 @@ export class AccountService {
             address,
             balances
         };
-    }
-
-    public async requestWithdrawal(withdrawal: RequestWithdrawalDTO) {
-        const { userId, assetId, amount } = withdrawal;
-
-        const hasEnoughAssetAmount = await this.accountBalanceService.hasEnoughAssetAmount(
-            userId,
-            assetId,
-            amount
-        );
-
-        if (!hasEnoughAssetAmount) {
-            throw new Error('Not enough assets');
-        }
-
-        return this.transferService.requestWithdrawal(withdrawal);
     }
 }
