@@ -24,6 +24,7 @@
         "lint": "eslint \"src/**/*{.ts,.tsx}\"",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "test": "jest",
+        "test:concurrent": "yarn test",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
