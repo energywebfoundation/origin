@@ -132,6 +132,7 @@ export class WithdrawalProcessorService {
             this.logger.error(
                 `[Withdrawal ${id}] User ${withdrawal.userId} has not enough funds to proceed`
             );
+            await this.transferService.setAsError(id);
             return;
         }
 
